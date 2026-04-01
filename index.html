@@ -10,71 +10,73 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --black: #080808;
-      --dark: #111111;
-      --dark-2: #1A1A1A;
-      --dark-3: #222222;
-      --gold: #C8965A;
-      --gold-dim: rgba(200,150,90,0.15);
-      --gold-border: rgba(200,150,90,0.3);
-      --white: #FFFFFF;
-      --off-white: #F0EDE8;
-      --text: #F2EFE9;
-      --text-mid: #C4BCB4;
-      --text-muted: #807870;
-      --border: rgba(255,255,255,0.06);
-      --border-mid: rgba(255,255,255,0.1);
+      --bg: #F9F7F4;
+      --surface: #FFFFFF;
+      --surface-2: #F3F1ED;
+      --surface-3: #EAE7E2;
+      --black: #1A1816;
+      --text: #1A1816;
+      --text-mid: #5C5550;
+      --text-muted: #9C9490;
+      --gold: #A0722A;
+      --gold-light: #F5ECD9;
+      --gold-border: #D4A853;
+      --border: rgba(0,0,0,0.08);
+      --border-mid: rgba(0,0,0,0.13);
       --radius: 12px;
-      --radius-lg: 20px;
-      --radius-xl: 28px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
     }
 
     html { scroll-behavior: smooth; }
 
     body {
       font-family: 'DM Sans', sans-serif;
-      background: var(--black);
+      background: var(--bg);
       color: var(--text);
       min-height: 100vh;
       overflow-x: hidden;
       font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ── NAV ── */
+    /* NAV */
     nav {
       position: fixed;
       top: 0; left: 0; right: 0;
-      height: 60px;
-      background: rgba(8,8,8,0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 0.5px solid var(--border);
+      height: 58px;
+      background: rgba(249,247,244,0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 2.5rem;
+      padding: 0 2rem;
       z-index: 100;
     }
 
     .nav-logo {
       font-family: 'Syne', sans-serif;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 800;
-      letter-spacing: 0.22em;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--white);
+      color: var(--black);
     }
 
     .nav-logo span { color: var(--gold); }
 
     .nav-tag {
-      font-size: 11px;
+      font-size: 12px;
       color: var(--text-muted);
       font-style: italic;
-      letter-spacing: 0.02em;
     }
 
-    /* ── HERO ── */
+    /* HERO */
     .hero {
       min-height: 100vh;
       display: flex;
@@ -82,45 +84,22 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 100px 2rem 60px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: -20%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(200,150,90,0.08) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .hero::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 200px;
-      background: linear-gradient(to bottom, transparent, var(--black));
-      pointer-events: none;
+      padding: 100px 2rem 80px;
     }
 
     .hero-eyebrow {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
       font-family: 'Syne', sans-serif;
       font-size: 10px;
       font-weight: 700;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--gold);
-      border: 0.5px solid var(--gold-border);
-      background: var(--gold-dim);
-      padding: 6px 14px;
+      background: var(--gold-light);
+      border: 1px solid var(--gold-border);
+      padding: 5px 14px;
       border-radius: 20px;
       margin-bottom: 2rem;
     }
@@ -131,16 +110,17 @@
       height: 5px;
       border-radius: 50%;
       background: var(--gold);
+      flex-shrink: 0;
     }
 
     .hero h1 {
       font-family: 'Syne', sans-serif;
-      font-size: clamp(32px, 5vw, 62px);
+      font-size: clamp(34px, 5vw, 60px);
       font-weight: 700;
-      line-height: 1.18;
-      color: var(--white);
-      margin-bottom: 1.75rem;
-      letter-spacing: -0.01em;
+      line-height: 1.15;
+      color: var(--black);
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.02em;
     }
 
     .hero h1 em {
@@ -149,30 +129,29 @@
       font-family: 'DM Sans', sans-serif;
       font-weight: 300;
       font-size: 0.95em;
-      letter-spacing: 0.01em;
     }
 
     .hero-sub {
-      font-size: clamp(15px, 2vw, 18px);
-      line-height: 1.7;
+      font-size: clamp(15px, 2vw, 17px);
+      line-height: 1.75;
       color: var(--text-mid);
-      max-width: 520px;
-      margin-bottom: 3rem;
+      max-width: 500px;
+      margin-bottom: 2.5rem;
       font-weight: 400;
     }
 
     .hero-cta {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      background: var(--gold);
-      color: var(--black);
+      gap: 8px;
+      background: var(--black);
+      color: #fff;
       font-family: 'Syne', sans-serif;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      padding: 14px 28px;
+      padding: 13px 26px;
       border-radius: 40px;
       border: none;
       cursor: pointer;
@@ -181,33 +160,29 @@
     }
 
     .hero-cta:hover {
-      background: var(--off-white);
+      background: var(--gold);
       transform: translateY(-1px);
     }
 
-    .hero-cta .arrow { font-size: 16px; }
-
-    /* ── TOOL SECTION ── */
-    .tool-section {
-      padding: 0 1.5rem 6rem;
-    }
+    /* TOOL SECTION */
+    .tool-section { padding: 0 1.25rem 6rem; }
 
     .tool-inner {
-      max-width: 760px;
+      max-width: 720px;
       margin: 0 auto;
     }
 
-    /* ── WHAT YOU GET ── */
-    .what-label {
+    /* WHAT YOU GET */
+    .section-header {
       text-align: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
     }
 
-    .what-label h2 {
+    .section-header h2 {
       font-family: 'Syne', sans-serif;
-      font-size: 13px;
+      font-size: 11px;
       font-weight: 700;
-      letter-spacing: 0.16em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--text-muted);
     }
@@ -215,192 +190,317 @@
     .outputs-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-bottom: 1.5rem;
+      gap: 8px;
+      margin-bottom: 1.25rem;
     }
 
-    @media (max-width: 540px) { .outputs-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 520px) { .outputs-grid { grid-template-columns: 1fr; } }
 
     .output-card {
-      background: var(--dark-2);
-      border: 0.5px solid var(--border);
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 1.25rem 1.25rem 1.25rem 1rem;
+      padding: 1.1rem 1.1rem 1.1rem 1.25rem;
       display: flex;
-      gap: 14px;
+      gap: 12px;
       align-items: flex-start;
-      transition: border-color 0.2s;
-      position: relative;
-      overflow: hidden;
+      border-left: 3px solid var(--gold-border);
+      box-shadow: var(--shadow);
     }
 
-    .output-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 3px;
-      height: 100%;
-      background: var(--gold);
-      opacity: 0.5;
-    }
-
-    .output-card:hover { border-color: var(--border-mid); }
-
-    .output-icon {
-      font-size: 18px;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
+    .output-icon { font-size: 16px; flex-shrink: 0; margin-top: 2px; }
 
     .output-title {
       font-family: 'Syne', sans-serif;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
-      color: var(--white);
-      letter-spacing: 0.04em;
+      color: var(--black);
+      letter-spacing: 0.02em;
       margin-bottom: 3px;
     }
 
     .output-desc {
       font-size: 13px;
-      color: var(--text-mid);
-      line-height: 1.55;
+      color: var(--text-muted);
+      line-height: 1.5;
     }
 
-    /* ── INPUT CARD ── */
-    .input-card {
-      background: var(--dark);
-      border: 0.5px solid var(--border-mid);
+    /* EXAMPLE CARD */
+    .example-wrap { margin-bottom: 1.25rem; }
+
+    .section-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .example-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: var(--radius-xl);
-      padding: 2rem;
-      margin-bottom: 1.5rem;
+      overflow: hidden;
+      box-shadow: var(--shadow);
       position: relative;
+    }
+
+    .example-card::after {
+      content: 'SAMPLE OUTPUT';
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      font-family: 'Syne', sans-serif;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    .example-body { padding: 1.5rem; }
+
+    .example-moment {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-style: italic;
+      line-height: 1.65;
+      padding: 10px 14px;
+      background: var(--surface-2);
+      border-left: 3px solid var(--border-mid);
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 1.25rem;
+    }
+
+    .example-moment strong { color: var(--text-mid); font-style: normal; font-weight: 500; }
+
+    .example-row {
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .example-row:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+
+    .example-row-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .example-hook {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.5;
+      padding: 12px 16px;
+      background: var(--surface-2);
+      border-left: 3px solid var(--gold-border);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      color: var(--black);
+    }
+
+    .example-text { font-size: 14px; line-height: 1.75; color: var(--text); }
+
+    .example-spine { display: flex; flex-direction: column; gap: 6px; }
+
+    .example-spine-item {
+      font-size: 13px;
+      color: var(--text-mid);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.5;
+    }
+
+    .example-spine-item::before { content: '→'; color: var(--gold); flex-shrink: 0; }
+
+    .example-cta-box {
+      font-size: 14px;
+      padding: 10px 14px;
+      background: var(--gold-light);
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius);
+      color: var(--gold);
+      line-height: 1.6;
+    }
+
+    .example-footer {
+      padding: 0.875rem 1.5rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface-2);
+      font-size: 12px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* PLATFORM SELECTOR */
+    .platform-wrap { margin-bottom: 1.25rem; }
+
+    .platform-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .platform-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 8px 14px;
+      border-radius: 40px;
+      border: 1px solid var(--border-mid);
+      background: var(--surface);
+      color: var(--text-mid);
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+      box-shadow: var(--shadow);
+    }
+
+    .platform-pill:hover { border-color: var(--gold-border); color: var(--black); }
+
+    .platform-pill.selected {
+      background: var(--gold-light);
+      border-color: var(--gold-border);
+      color: var(--gold);
+    }
+
+    .platform-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-top: 8px;
+    }
+
+    /* INPUT CARD */
+    .input-card {
+      background: var(--surface);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-xl);
+      padding: 1.75rem;
+      margin-bottom: 1.25rem;
+      box-shadow: var(--shadow-md);
     }
 
     .input-card-label {
       font-family: 'Syne', sans-serif;
       font-size: 10px;
       font-weight: 700;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--text-muted);
-      margin-bottom: 1rem;
+      margin-bottom: 0.875rem;
       display: flex;
       align-items: center;
       gap: 8px;
-    }
-
-    .input-card-label::before {
-      content: '02';
-      background: var(--dark-3);
-      border: 0.5px solid var(--border-mid);
-      color: var(--gold);
-      font-size: 9px;
-      padding: 2px 7px;
-      border-radius: 4px;
     }
 
     .input-wrap { position: relative; }
 
     textarea {
       width: 100%;
-      min-height: 130px;
-      padding: 16px 50px 16px 16px;
-      border: 0.5px solid var(--border-mid);
+      min-height: 120px;
+      padding: 14px 48px 14px 14px;
+      border: 1px solid var(--border-mid);
       border-radius: var(--radius);
       font-family: 'DM Sans', sans-serif;
       font-size: 15px;
       color: var(--text);
-      background: var(--dark-2);
+      background: var(--surface-2);
       resize: vertical;
       line-height: 1.7;
-      transition: border-color 0.2s, background 0.2s;
+      transition: all 0.15s;
     }
 
     textarea:focus {
       outline: none;
       border-color: var(--gold-border);
-      background: var(--dark-3);
+      background: var(--surface);
+      box-shadow: 0 0 0 3px rgba(160,114,42,0.08);
     }
 
-    textarea::placeholder { color: var(--text-muted); font-style: italic; }
+    textarea::placeholder { color: var(--text-muted); }
 
     .char-hint {
-      font-size: 10px;
+      font-size: 11px;
       color: var(--text-muted);
       text-align: right;
-      margin-top: 6px;
+      margin-top: 5px;
     }
 
     /* MIC */
     .mic-btn {
       position: absolute;
-      bottom: 12px;
-      right: 12px;
-      width: 34px;
-      height: 34px;
+      bottom: 10px;
+      right: 10px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
-      border: 0.5px solid var(--border-mid);
-      background: var(--dark-3);
+      border: 1px solid var(--border-mid);
+      background: var(--surface);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.15s;
       font-size: 14px;
-      color: var(--text-mid);
+      transition: all 0.15s;
+      box-shadow: var(--shadow);
     }
 
-    .mic-btn:hover { border-color: var(--gold-border); background: var(--gold-dim); }
-    .mic-btn.recording { border-color: #EF4444; background: rgba(239,68,68,0.15); animation: pulse 1s ease-in-out infinite; }
-    @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.1);} }
+    .mic-btn:hover { border-color: var(--gold-border); background: var(--gold-light); }
+    .mic-btn.recording { border-color: #DC2626; background: #FEF2F2; animation: pulse 1s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.08);} }
 
     /* CHIPS */
-    .chips {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-top: 1rem;
-      align-items: center;
-    }
+    .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 1rem; align-items: center; }
 
-    .chips-label {
-      font-size: 10px;
-      color: var(--text-muted);
-      font-style: italic;
-      flex-shrink: 0;
-    }
+    .chips-label { font-size: 11px; color: var(--text-muted); font-style: italic; flex-shrink: 0; }
 
     .chip {
-      font-size: 11px;
+      font-size: 12px;
       padding: 5px 12px;
-      border: 0.5px solid var(--border-mid);
+      border: 1px solid var(--border-mid);
       border-radius: 20px;
       cursor: pointer;
-      background: var(--dark-3);
+      background: var(--surface-2);
       color: var(--text-mid);
       font-family: 'DM Sans', sans-serif;
-      transition: all 0.15s;
+      transition: all 0.12s;
     }
 
-    .chip:hover {
-      border-color: var(--gold-border);
-      color: var(--gold);
-      background: var(--gold-dim);
-    }
+    .chip:hover { border-color: var(--gold-border); color: var(--gold); background: var(--gold-light); }
 
     /* RUN BUTTON */
     .run-btn {
       width: 100%;
-      padding: 16px;
-      background: var(--gold);
-      color: var(--black);
+      padding: 15px;
+      background: var(--black);
+      color: #fff;
       border: none;
       border-radius: var(--radius);
       font-family: 'Syne', sans-serif;
       font-size: 12px;
       font-weight: 800;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       cursor: pointer;
       margin-top: 1.25rem;
@@ -408,18 +508,18 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 8px;
     }
 
-    .run-btn:hover { background: var(--off-white); transform: translateY(-1px); }
+    .run-btn:hover { background: var(--gold); transform: translateY(-1px); }
     .run-btn:active { transform: scale(0.99); }
-    .run-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+    .run-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 
     /* LOADER */
     .loader { display: none; text-align: center; padding: 1.5rem 0 0.5rem; }
     .loader.show { display: block; }
 
-    .loader-dots { display: inline-flex; gap: 7px; align-items: center; }
+    .loader-dots { display: inline-flex; gap: 6px; align-items: center; }
     .loader-dots span {
       width: 7px; height: 7px;
       background: var(--gold);
@@ -435,93 +535,92 @@
     }
 
     .loader-text {
-      font-size: 12px;
+      font-size: 13px;
       color: var(--text-muted);
-      margin-top: 10px;
+      margin-top: 8px;
       font-style: italic;
-      letter-spacing: 0.04em;
     }
 
     /* ERROR */
     .error-box {
       display: none;
       font-size: 13px;
-      color: #FCA5A5;
-      background: rgba(239,68,68,0.08);
-      border: 0.5px solid rgba(239,68,68,0.2);
+      color: #991B1B;
+      background: #FEF2F2;
+      border: 1px solid #FECACA;
       border-radius: var(--radius);
-      padding: 12px 16px;
+      padding: 12px 14px;
       margin-top: 1rem;
       line-height: 1.5;
     }
     .error-box.show { display: block; }
 
-    /* ── OUTPUT ── */
+    /* OUTPUT */
     .out-card {
-      background: var(--dark);
-      border: 0.5px solid var(--border-mid);
+      background: var(--surface);
+      border: 1px solid var(--border-mid);
       border-radius: var(--radius-xl);
       overflow: hidden;
       display: none;
-      animation: fadeUp 0.4s ease;
+      animation: fadeUp 0.35s ease;
+      box-shadow: var(--shadow-md);
     }
 
     .out-card.show { display: block; }
 
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
+      from { opacity: 0; transform: translateY(12px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
     .out-header {
-      padding: 1.25rem 1.75rem;
-      border-bottom: 0.5px solid var(--border);
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: var(--dark-2);
+      background: var(--surface-2);
     }
 
     .out-label {
       font-family: 'Syne', sans-serif;
       font-size: 10px;
       font-weight: 700;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--gold);
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
     }
 
     .out-label::before {
       content: '';
-      width: 6px;
-      height: 6px;
+      width: 6px; height: 6px;
       border-radius: 50%;
       background: var(--gold);
     }
 
     .new-btn {
-      font-size: 11px;
-      color: var(--text-muted);
-      background: var(--dark-3);
-      border: 0.5px solid var(--border-mid);
+      font-size: 12px;
+      color: var(--text-mid);
+      background: var(--surface);
+      border: 1px solid var(--border-mid);
       border-radius: 6px;
-      padding: 6px 12px;
+      padding: 5px 12px;
       cursor: pointer;
       font-family: 'DM Sans', sans-serif;
-      transition: all 0.15s;
+      transition: all 0.12s;
     }
 
-    .new-btn:hover { color: var(--text); border-color: var(--border-mid); }
+    .new-btn:hover { background: var(--surface-3); color: var(--black); }
 
-    .out-body { padding: 2rem 1.75rem; }
+    .out-body { padding: 1.75rem; }
 
     .blk {
-      margin-bottom: 1.75rem;
-      padding-bottom: 1.75rem;
-      border-bottom: 0.5px solid var(--border);
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
     }
 
     .blk:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
@@ -533,25 +632,24 @@
       letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--text-muted);
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.625rem;
     }
 
     .blk-text {
       font-size: 15px;
-      line-height: 1.85;
+      line-height: 1.8;
       color: var(--text);
     }
 
     .hook-box {
-      font-size: 19px;
+      font-size: 18px;
       font-weight: 400;
-      line-height: 1.55;
-      padding: 16px 20px;
-      background: var(--dark-2);
-      border-left: 3px solid var(--gold);
+      line-height: 1.5;
+      padding: 14px 18px;
+      background: var(--surface-2);
+      border-left: 3px solid var(--gold-border);
       border-radius: 0 var(--radius) var(--radius) 0;
-      color: var(--white);
-      letter-spacing: -0.01em;
+      color: var(--black);
     }
 
     .pill {
@@ -561,53 +659,53 @@
       font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      padding: 5px 14px;
+      padding: 4px 12px;
       border-radius: 20px;
-      background: var(--gold);
-      color: var(--black);
-      margin-bottom: 10px;
+      background: var(--black);
+      color: #fff;
+      margin-bottom: 8px;
     }
 
     .pill.soft {
-      background: var(--dark-3);
+      background: var(--surface-2);
       color: var(--text-mid);
-      border: 0.5px solid var(--border-mid);
+      border: 1px solid var(--border-mid);
     }
 
     .warn-box {
       font-size: 14px;
-      padding: 12px 16px;
-      background: rgba(251,191,36,0.06);
-      border: 0.5px solid rgba(251,191,36,0.2);
+      padding: 12px 14px;
+      background: #FFFBEB;
+      border: 1px solid #FCD34D;
       border-radius: var(--radius);
-      color: #FCD34D;
+      color: #92400E;
       line-height: 1.7;
     }
 
     .success-box {
       font-size: 14px;
-      padding: 12px 16px;
-      background: rgba(52,211,153,0.06);
-      border: 0.5px solid rgba(52,211,153,0.2);
+      padding: 12px 14px;
+      background: #F0FDF4;
+      border: 1px solid #86EFAC;
       border-radius: var(--radius);
-      color: #6EE7B7;
+      color: #166534;
       line-height: 1.7;
     }
 
     .script-box {
       font-size: 14px;
       line-height: 1.9;
-      padding: 16px 18px;
-      background: var(--dark-2);
+      padding: 14px 16px;
+      background: var(--surface-2);
       border-radius: var(--radius);
       color: var(--text);
       white-space: pre-wrap;
-      border: 0.5px solid var(--border);
+      border: 1px solid var(--border);
     }
 
     .broll-item {
-      padding: 8px 0;
-      border-bottom: 0.5px solid var(--border);
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
       font-size: 14px;
       color: var(--text-mid);
       line-height: 1.6;
@@ -616,285 +714,42 @@
       gap: 10px;
     }
 
-    .broll-item::before {
-      content: '→';
-      color: var(--gold);
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-
+    .broll-item::before { content: '→'; color: var(--gold); flex-shrink: 0; }
     .broll-item:last-child { border-bottom: none; }
 
     /* COPY */
     .copy-btn {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
       font-size: 10px;
       font-family: 'Syne', sans-serif;
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--text-muted);
-      background: var(--dark-3);
-      border: 0.5px solid var(--border);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
       border-radius: 5px;
       padding: 4px 10px;
       cursor: pointer;
-      transition: all 0.15s;
+      transition: all 0.12s;
       margin-top: 10px;
       float: right;
     }
 
-    .copy-btn:hover { border-color: var(--gold-border); color: var(--gold); }
-    .copy-btn.copied { border-color: rgba(52,211,153,0.4); color: #6EE7B7; background: rgba(52,211,153,0.06); }
-
-    /* PLATFORM SELECTOR */
-    .platform-wrap {
-      margin-bottom: 1.5rem;
-    }
-
-    .platform-wrap-label {
-      font-family: 'Syne', sans-serif;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 0.875rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .platform-wrap-label::after {
-      content: '';
-      flex: 1;
-      height: 0.5px;
-      background: var(--border);
-    }
-
-    .platform-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .platform-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      font-family: 'Syne', sans-serif;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      padding: 9px 16px;
-      border-radius: 40px;
-      border: 0.5px solid var(--border-mid);
-      background: var(--dark-2);
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: all 0.15s;
-      user-select: none;
-    }
-
-    .platform-pill:hover {
-      border-color: var(--gold-border);
-      color: var(--text);
-    }
-
-    .platform-pill.selected {
-      background: var(--gold-dim);
-      border-color: var(--gold-border);
-      color: var(--gold);
-    }
-
-    .platform-pill .p-icon {
-      font-size: 14px;
-    }
-
-    .platform-hint {
-      font-size: 12px;
-      color: var(--text-mid);
-      font-style: italic;
-      margin-top: 8px;
-    }
-
-    /* EXAMPLE CARD */
-    .example-wrap {
-      margin-bottom: 1.5rem;
-    }
-
-    .example-label {
-      font-family: 'Syne', sans-serif;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 0.875rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .example-label::after {
-      content: '';
-      flex: 1;
-      height: 0.5px;
-      background: var(--border);
-    }
-
-    .example-card {
-      background: var(--dark-2);
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-      position: relative;
-    }
-
-    .example-card::before {
-      content: 'SAMPLE OUTPUT';
-      position: absolute;
-      top: 14px;
-      right: 16px;
-      font-family: 'Syne', sans-serif;
-      font-size: 8px;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      color: var(--text-muted);
-      background: var(--dark-3);
-      border: 0.5px solid var(--border-mid);
-      padding: 3px 8px;
-      border-radius: 4px;
-    }
-
-    .example-body {
-      padding: 1.5rem 1.5rem 1.25rem;
-    }
-
-    .example-moment {
-      font-size: 12px;
-      color: var(--text-muted);
-      font-style: italic;
-      line-height: 1.6;
-      padding: 10px 14px;
-      background: var(--dark-3);
-      border-left: 2px solid var(--border-mid);
-      border-radius: 0 6px 6px 0;
-      margin-bottom: 1.25rem;
-    }
-
-    .example-moment strong {
-      color: var(--text-mid);
-      font-style: normal;
-      font-weight: 500;
-    }
-
-    .example-row {
-      margin-bottom: 1.1rem;
-      padding-bottom: 1.1rem;
-      border-bottom: 0.5px solid var(--border);
-    }
-
-    .example-row:last-child {
-      margin-bottom: 0;
-      padding-bottom: 0;
-      border-bottom: none;
-    }
-
-    .example-row-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 8px;
-      font-weight: 700;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 0.5rem;
-    }
-
-    .example-hook {
-      font-size: 16px;
-      font-weight: 400;
-      line-height: 1.5;
-      padding: 12px 16px;
-      background: var(--dark);
-      border-left: 3px solid var(--gold);
-      border-radius: 0 var(--radius) var(--radius) 0;
-      color: var(--white);
-    }
-
-    .example-text {
-      font-size: 14px;
-      line-height: 1.8;
-      color: var(--text);
-    }
-
-    .example-spine {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .example-spine-item {
-      font-size: 13px;
-      color: var(--text-mid);
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      line-height: 1.5;
-    }
-
-    .example-spine-item::before {
-      content: '→';
-      color: var(--gold);
-      flex-shrink: 0;
-    }
-
-    .example-cta-box {
-      font-size: 14px;
-      padding: 10px 14px;
-      background: var(--gold-dim);
-      border: 0.5px solid var(--gold-border);
-      border-radius: var(--radius);
-      color: var(--gold);
-      line-height: 1.6;
-    }
-
-    .example-footer {
-      padding: 0.875rem 1.5rem;
-      border-top: 0.5px solid var(--border);
-      background: var(--dark-3);
-      font-size: 11px;
-      color: var(--text-muted);
-      font-style: italic;
-    }
+    .copy-btn:hover { border-color: var(--gold-border); color: var(--gold); background: var(--gold-light); }
+    .copy-btn.copied { border-color: #86EFAC; color: #166534; background: #F0FDF4; }
 
     /* FOOTER */
     footer {
       text-align: center;
       padding: 2.5rem 1rem;
-      font-size: 11px;
+      font-size: 12px;
       color: var(--text-muted);
-      border-top: 0.5px solid var(--border);
-      letter-spacing: 0.04em;
+      border-top: 1px solid var(--border);
     }
 
     footer strong { color: var(--gold); }
-
-    /* DIVIDER */
-    .section-divider {
-      text-align: center;
-      padding: 3rem 0 2rem;
-    }
-
-    .section-divider-line {
-      width: 40px;
-      height: 1px;
-      background: var(--gold);
-      margin: 0 auto 1.5rem;
-      opacity: 0.5;
-    }
   </style>
 </head>
 <body>
@@ -907,68 +762,63 @@
   <div class="hero">
     <div class="hero-eyebrow">Built for creators</div>
     <h1>You have the moment.<br/><em>Let's find the story.</em></h1>
-    <p class="hero-sub">Tell S.A.M. what happened. Get the hook, the script, the platform strategy — everything you need to turn a real moment into content that actually builds your following.</p>
-    <a href="#tool" class="hero-cta">Start now <span class="arrow">↓</span></a>
+    <p class="hero-sub">Tell S.A.M. what happened. Get the hook, the script, the platform strategy — everything you need to turn a real moment into content that builds your following.</p>
+    <a href="#tool" class="hero-cta">Start now ↓</a>
   </div>
 
   <div class="tool-section" id="tool">
     <div class="tool-inner">
 
-      <div class="what-label">
+      <div class="section-header">
         <h2>Here's what we'll build from your moment</h2>
       </div>
 
       <div class="outputs-grid">
         <div class="output-card">
-          <div class="output-icon">&#9654;</div>
+          <div class="output-icon">▶</div>
           <div>
             <div class="output-title">The real story</div>
-            <div class="output-desc">What your moment is actually about — the emotional core a stranger would stop for</div>
+            <div class="output-desc">The emotional core a stranger would actually stop for</div>
           </div>
         </div>
         <div class="output-card">
-          <div class="output-icon">&#9889;</div>
+          <div class="output-icon">⚡</div>
           <div>
             <div class="output-title">3 hook options</div>
-            <div class="output-desc">The first 3 seconds that stop the scroll — emotion, curiosity, and identity</div>
+            <div class="output-desc">The first 3 seconds that stop the scroll</div>
           </div>
         </div>
         <div class="output-card">
-          <div class="output-icon">&#9997;</div>
+          <div class="output-icon">✍</div>
           <div>
             <div class="output-title">A full script</div>
-            <div class="output-desc">Complete short-form narration, ready to record — with pacing notes and b-roll</div>
+            <div class="output-desc">Ready to record — with pacing notes and b-roll</div>
           </div>
         </div>
         <div class="output-card">
-          <div class="output-icon">&#10137;</div>
+          <div class="output-icon">→</div>
           <div>
             <div class="output-title">Platform strategy</div>
-            <div class="output-desc">Where this belongs, how to post it, and how to get 3 pieces from one moment</div>
+            <div class="output-desc">Where to post it and how to get 3 pieces from one moment</div>
           </div>
         </div>
       </div>
 
-
       <div class="example-wrap">
-        <div class="example-label">Real example — parents see the tree</div>
+        <div class="section-label">Real example — parents see the tree</div>
         <div class="example-card">
           <div class="example-body">
-
             <div class="example-moment">
               <strong>The moment:</strong> My parents flew in from Florida and saw the cottage renovation for the first time. When they looked at the front yard they saw this big white blooming tree and both said wow. I had my camera ready. It was the most emotional moment in 6 months of work.
             </div>
-
             <div class="example-row">
               <div class="example-row-title">What this is really about</div>
               <div class="example-text">This isn't a renovation update — it's the first time the people you love saw what you've been building for them. The tree didn't stop them. The reality of what you did for six months did.</div>
             </div>
-
             <div class="example-row">
               <div class="example-row-title">Your hook</div>
               <div class="example-hook">Six months of work. They'd only ever seen it through a screen. Until today.</div>
             </div>
-
             <div class="example-row">
               <div class="example-row-title">Story spine</div>
               <div class="example-spine">
@@ -977,39 +827,24 @@
                 <div class="example-spine-item">They walked to the front yard, saw the blooming tree, and I saw exactly why I've been doing this.</div>
               </div>
             </div>
-
             <div class="example-row">
               <div class="example-row-title">Call to action</div>
               <div class="example-cta-box">If you're building something for someone you love — follow. You don't want to miss the ending.</div>
             </div>
-
           </div>
           <div class="example-footer">S.A.M. built this from one real moment. Yours is next.</div>
         </div>
       </div>
 
-
       <div class="platform-wrap">
-        <div class="platform-wrap-label">Where do you post?</div>
+        <div class="section-label">Where do you post?</div>
         <div class="platform-grid">
-          <button class="platform-pill" data-platform="TikTok" onclick="togglePlatform(this)">
-            <span class="p-icon">🎵</span> TikTok
-          </button>
-          <button class="platform-pill" data-platform="YouTube Shorts" onclick="togglePlatform(this)">
-            <span class="p-icon">▶</span> YouTube Shorts
-          </button>
-          <button class="platform-pill" data-platform="Instagram Reels" onclick="togglePlatform(this)">
-            <span class="p-icon">📸</span> Instagram Reels
-          </button>
-          <button class="platform-pill" data-platform="Facebook Reels" onclick="togglePlatform(this)">
-            <span class="p-icon">👥</span> Facebook Reels
-          </button>
-          <button class="platform-pill" data-platform="LinkedIn" onclick="togglePlatform(this)">
-            <span class="p-icon">💼</span> LinkedIn
-          </button>
-          <button class="platform-pill" data-platform="X (Twitter)" onclick="togglePlatform(this)">
-            <span class="p-icon">✕</span> X (Twitter)
-          </button>
+          <button class="platform-pill" data-platform="TikTok" onclick="togglePlatform(this)">🎵 TikTok</button>
+          <button class="platform-pill" data-platform="YouTube Shorts" onclick="togglePlatform(this)">▶ YouTube Shorts</button>
+          <button class="platform-pill" data-platform="Instagram Reels" onclick="togglePlatform(this)">📸 Instagram Reels</button>
+          <button class="platform-pill" data-platform="Facebook Reels" onclick="togglePlatform(this)">👥 Facebook Reels</button>
+          <button class="platform-pill" data-platform="LinkedIn" onclick="togglePlatform(this)">💼 LinkedIn</button>
+          <button class="platform-pill" data-platform="X (Twitter)" onclick="togglePlatform(this)">✕ X (Twitter)</button>
         </div>
         <div class="platform-hint">Select all that apply — S.A.M. will tailor the output for each one.</div>
       </div>
@@ -1023,7 +858,7 @@
             oninput="updateChar()"
             maxlength="1000"
           ></textarea>
-          <button class="mic-btn" id="micBtn" onclick="toggleMic()" title="Speak your moment">&#127897;</button>
+          <button class="mic-btn" id="micBtn" onclick="toggleMic()" title="Speak your moment">🎙</button>
         </div>
         <div class="char-hint"><span id="charCount">0</span> / 1000</div>
 
@@ -1042,14 +877,14 @@
         <div class="error-box" id="errBox"></div>
 
         <button class="run-btn" id="runBtn" onclick="runSAM()">
-          Run S.A.M. &rarr;
+          Run S.A.M. →
         </button>
       </div>
 
       <div class="out-card" id="outCard">
         <div class="out-header">
           <div class="out-label">S.A.M. output</div>
-          <button class="new-btn" onclick="resetTool()">&#8592; New moment</button>
+          <button class="new-btn" onclick="resetTool()">← New moment</button>
         </div>
         <div class="out-body" id="outBody"></div>
       </div>
@@ -1058,7 +893,7 @@
   </div>
 
   <footer>
-    <strong>S.A.M.</strong> &mdash; Strategic Assistant for Making &mdash; Built for creators who have real stories to tell.
+    <strong>S.A.M.</strong> — Strategic Assistant for Making — Built for creators who have real stories to tell.
   </footer>
 
 <script>
@@ -1069,16 +904,12 @@
     "Almost there..."
   ];
 
-  function togglePlatform(btn) {
-    btn.classList.toggle('selected');
-  }
+  function togglePlatform(btn) { btn.classList.toggle('selected'); }
 
   function getSelectedPlatforms() {
-    const selected = [];
-    document.querySelectorAll('.platform-pill.selected').forEach(btn => {
-      selected.push(btn.dataset.platform);
-    });
-    return selected;
+    const sel = [];
+    document.querySelectorAll('.platform-pill.selected').forEach(b => sel.push(b.dataset.platform));
+    return sel;
   }
 
   function fillEx(text) {
@@ -1106,7 +937,7 @@
     el.classList.add('show');
   }
 
-  function renderOutput(data, mode) {
+  function renderOutput(data) {
     const body = document.getElementById('outBody');
     let html = '';
 
@@ -1128,12 +959,12 @@
     html += data.pacing_note ? `<div class="blk"><div class="blk-title">How to deliver it</div><div class="blk-text">${data.pacing_note}</div></div>` : '';
     html += data.b_roll ? `<div class="blk"><div class="blk-title">B-roll shots</div>${broll}</div>` : '';
     html += data.cta ? `<div class="blk"><div class="blk-title">Call to action</div><div class="blk-text">${data.cta}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
-    html += data.primary_platform ? `<div class="blk"><div class="blk-title">Primary platform</div><div class="pill">${data.primary_platform}</div><div class="blk-text" style="margin-top:10px;">${data.primary_angle || ''}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
-    html += data.secondary_platform ? `<div class="blk"><div class="blk-title">Secondary platform</div><div class="pill soft">${data.secondary_platform}</div><div class="blk-text" style="margin-top:10px;">${data.secondary_angle || ''}</div></div>` : '';
+    html += data.primary_platform ? `<div class="blk"><div class="blk-title">Primary platform</div><div class="pill">${data.primary_platform}</div><div class="blk-text" style="margin-top:8px;">${data.primary_angle||''}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
+    html += data.secondary_platform ? `<div class="blk"><div class="blk-title">Secondary platform</div><div class="pill soft">${data.secondary_platform}</div><div class="blk-text" style="margin-top:8px;">${data.secondary_angle||''}</div></div>` : '';
     html += data.skip ? `<div class="blk"><div class="blk-title">Skip for now</div><div class="warn-box">${data.skip}</div></div>` : '';
     html += data.repurpose_tip ? `<div class="blk"><div class="blk-title">Repurpose tip</div><div class="success-box">${data.repurpose_tip}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
     html += data.content_warning ? `<div class="blk"><div class="blk-title">Watch out for</div><div class="warn-box">${data.content_warning}</div></div>` : '';
-    html += data.best_platform && !data.primary_platform ? `<div class="blk"><div class="blk-title">Best platform</div><div class="pill">${(platParts[0]||'').trim()}</div><div class="blk-text" style="margin-top:10px;">${(platParts.slice(1).join('—')||'').trim()}</div></div>` : '';
+    html += data.best_platform && !data.primary_platform ? `<div class="blk"><div class="blk-title">Best platform</div><div class="pill">${(platParts[0]||'').trim()}</div><div class="blk-text" style="margin-top:8px;">${(platParts.slice(1).join('—')||'').trim()}</div></div>` : '';
 
     if (data.platform_strategies && Array.isArray(data.platform_strategies)) {
       data.platform_strategies.forEach(function(ps) {
@@ -1148,7 +979,7 @@
     const response = await fetch('/api/sam', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mode: mode, moment: moment, platforms: platforms })
+      body: JSON.stringify({ mode, moment, platforms })
     });
     if (!response.ok) {
       const err = await response.json().catch(() => ({}));
@@ -1160,7 +991,7 @@
   async function runSAM() {
     const text = document.getElementById('inp').value.trim();
     if (!text) {
-      document.getElementById('inp').style.borderColor = 'rgba(200,150,90,0.5)';
+      document.getElementById('inp').style.borderColor = 'var(--gold-border)';
       document.getElementById('inp').focus();
       setTimeout(() => document.getElementById('inp').style.borderColor = '', 1500);
       return;
@@ -1185,10 +1016,9 @@
       ]);
 
       const combined = Object.assign({}, storyData, hookData);
-
       clearInterval(loaderInterval);
       document.getElementById('loader').classList.remove('show');
-      renderOutput(combined, 'full');
+      renderOutput(combined);
       document.getElementById('outCard').classList.add('show');
       document.getElementById('runBtn').disabled = false;
       document.getElementById('outCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1217,7 +1047,7 @@
     recognition.onstart = function() {
       isRecording = true;
       micBtn.classList.add('recording');
-      micBtn.innerHTML = '&#9634;';
+      micBtn.innerHTML = '⏹';
     };
     recognition.onresult = function(e) {
       let t = '';
@@ -1228,12 +1058,12 @@
     recognition.onend = function() {
       isRecording = false;
       micBtn.classList.remove('recording');
-      micBtn.innerHTML = '&#127897;';
+      micBtn.innerHTML = '🎙';
     };
     recognition.onerror = function() {
       isRecording = false;
       micBtn.classList.remove('recording');
-      micBtn.innerHTML = '&#127897;';
+      micBtn.innerHTML = '🎙';
     };
     recognition.start();
   }
