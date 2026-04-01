@@ -463,74 +463,6 @@
 
     .broll-item:last-child { border-bottom: none; }
 
-    /* MIC BUTTON */
-    .mic-btn {
-      position: absolute;
-      bottom: 38px;
-      right: 10px;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      border: 0.5px solid var(--border-strong);
-      background: var(--white);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.15s;
-      font-size: 14px;
-    }
-
-    .mic-btn:hover {
-      border-color: var(--gold);
-      background: rgba(184,147,90,0.06);
-    }
-
-    .mic-btn.recording {
-      border-color: #DC2626;
-      background: #FEF2F2;
-      animation: pulse 1s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.08); }
-    }
-
-    /* COPY BUTTON */
-    .copy-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 11px;
-      color: var(--text-muted);
-      background: var(--bg);
-      border: 0.5px solid var(--border);
-      border-radius: 6px;
-      padding: 4px 9px;
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      transition: all 0.15s;
-      margin-top: 8px;
-    }
-
-    .copy-btn:hover {
-      border-color: var(--gold);
-      color: var(--text);
-    }
-
-    .copy-btn.copied {
-      border-color: #16A34A;
-      color: #16A34A;
-      background: #F0FDF4;
-    }
-
-    .blk-footer {
-      display: flex;
-      justify-content: flex-end;
-      margin-top: 6px;
-    }
-
     /* FOOTER */
     footer {
       text-align: center;
@@ -594,9 +526,7 @@
           placeholder="Tell me what happened. The more real and specific, the better. Don't clean it up — just describe it like you're telling a friend."
           oninput="updateChar()"
           maxlength="1000"
-          style="padding-right: 44px;"
         ></textarea>
-        <button class="mic-btn" id="micBtn" onclick="toggleMic()" title="Speak your moment">&#127897;</button>
         <div class="char-hint"><span id="charCount">0</span> / 1000</div>
       </div>
 
@@ -667,90 +597,6 @@
     document.getElementById('errBox').classList.remove('show');
     document.getElementById('runBtn').disabled = false;
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  // SPEECH TO TEXT
-  let recognition = null;
-  let isRecording = false;
-
-  function toggleMic() {
-    const micBtn = document.getElementById('micBtn');
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-    if (!SpeechRecognition) {
-      alert('Speech recognition is not supported in this browser. Try Chrome or Safari.');
-      return;
-    }
-
-    if (isRecording) {
-      recognition.stop();
-      return;
-    }
-
-    recognition = new SpeechRecognition();
-    recognition.continuous = true;
-    recognition.interimResults = true;
-    recognition.lang = 'en-US';
-
-    recognition.onstart = function() {
-      isRecording = true;
-      micBtn.classList.add('recording');
-      micBtn.title = 'Tap to stop';
-      micBtn.innerHTML = '&#9634;';
-    };
-
-    recognition.onresult = function(event) {
-      let transcript = '';
-      for (let i = 0; i < event.results.length; i++) {
-        transcript += event.results[i][0].transcript;
-      }
-      document.getElementById('inp').value = transcript;
-      updateChar();
-    };
-
-    recognition.onend = function() {
-      isRecording = false;
-      micBtn.classList.remove('recording');
-      micBtn.title = 'Speak your moment';
-      micBtn.innerHTML = '&#127897;';
-    };
-
-    recognition.onerror = function() {
-      isRecording = false;
-      micBtn.classList.remove('recording');
-      micBtn.innerHTML = '&#127897;';
-    };
-
-    recognition.start();
-  }
-
-  // COPY TO CLIPBOARD
-  function copyText(text, btnEl) {
-    navigator.clipboard.writeText(text).then(() => {
-      btnEl.classList.add('copied');
-      btnEl.textContent = 'Copied!';
-      setTimeout(() => {
-        btnEl.classList.remove('copied');
-        btnEl.textContent = 'Copy';
-      }, 2000);
-    }).catch(() => {
-      const ta = document.createElement('textarea');
-      ta.value = text;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-      btnEl.classList.add('copied');
-      btnEl.textContent = 'Copied!';
-      setTimeout(() => {
-        btnEl.classList.remove('copied');
-        btnEl.textContent = 'Copy';
-      }, 2000);
-    });
-  }
-
-  function makeCopyBtn(text) {
-    return \`<div class="blk-footer"><button class="copy-btn" onclick="copyText(\\`\${text.replace(/\`/g, "'")}\\`, this)">Copy</button></div>\`;
   }
 
   function showError(msg) {
@@ -836,10 +682,10 @@ Return this exact JSON:
         `<div class="broll-item">${s.trim()}</div>`).join('');
       const platParts = (data.best_platform || '').split('—');
       html = `
-        <div class="blk"><div class="blk-title">What this is really about</div><div class="blk-text">${data.diagnosis}</div>${makeCopyBtn(data.diagnosis)}</div>
-        <div class="blk"><div class="blk-title">Your hook</div><div class="hook-box">${data.hook}</div>${makeCopyBtn(data.hook)}</div>
+        <div class="blk"><div class="blk-title">What this is really about</div><div class="blk-text">${data.diagnosis}</div></div>
+        <div class="blk"><div class="blk-title">Your hook</div><div class="hook-box">${data.hook}</div></div>
         <div class="blk"><div class="blk-title">Story spine</div>${spine}</div>
-        <div class="blk"><div class="blk-title">Call to action</div><div class="blk-text">${data.cta}</div>${makeCopyBtn(data.cta)}</div>
+        <div class="blk"><div class="blk-title">Call to action</div><div class="blk-text">${data.cta}</div></div>
         <div class="blk"><div class="blk-title">Best platform</div><div class="pill">${(platParts[0]||'').trim()}</div><div class="blk-text" style="margin-top:8px;">${(platParts.slice(1).join('—')||'').trim()}</div></div>
         <div class="blk"><div class="blk-title">Watch out for</div><div class="warn-box">${data.content_warning}</div></div>`;
     }
@@ -847,9 +693,9 @@ Return this exact JSON:
     else if (mode === 'hook') {
       html = `
         <div class="blk"><div class="blk-title">Why this moment has a hook</div><div class="blk-text">${data.diagnosis}</div></div>
-        <div class="blk"><div class="blk-title">Hook 1 — emotion first</div><div class="hook-box">${data.hook_1}</div>${makeCopyBtn(data.hook_1)}</div>
-        <div class="blk"><div class="blk-title">Hook 2 — curiosity first</div><div class="hook-box">${data.hook_2}</div>${makeCopyBtn(data.hook_2)}</div>
-        <div class="blk"><div class="blk-title">Hook 3 — identity first</div><div class="hook-box">${data.hook_3}</div>${makeCopyBtn(data.hook_3)}</div>
+        <div class="blk"><div class="blk-title">Hook 1 — emotion first</div><div class="hook-box">${data.hook_1}</div></div>
+        <div class="blk"><div class="blk-title">Hook 2 — curiosity first</div><div class="hook-box">${data.hook_2}</div></div>
+        <div class="blk"><div class="blk-title">Hook 3 — identity first</div><div class="hook-box">${data.hook_3}</div></div>
         <div class="blk"><div class="blk-title">S.A.M. recommends</div><div class="blk-text">${data.winner}</div></div>
         <div class="blk"><div class="blk-title">What to show on screen</div><div class="blk-text">${data.visual_note}</div></div>`;
     }
@@ -859,8 +705,8 @@ Return this exact JSON:
         `<div class="broll-item">${l.trim()}</div>`).join('');
       html = `
         <div class="blk"><div class="blk-title">The real story</div><div class="blk-text">${data.diagnosis}</div></div>
-        <div class="blk"><div class="blk-title">Hook</div><div class="hook-box">${data.hook}</div>${makeCopyBtn(data.hook)}</div>
-        <div class="blk"><div class="blk-title">Full script</div><div class="script-box">${data.script}</div>${makeCopyBtn(data.script)}</div>
+        <div class="blk"><div class="blk-title">Hook</div><div class="hook-box">${data.hook}</div></div>
+        <div class="blk"><div class="blk-title">Full script</div><div class="script-box">${data.script}</div></div>
         <div class="blk"><div class="blk-title">How to deliver it</div><div class="blk-text">${data.pacing_note}</div></div>
         <div class="blk"><div class="blk-title">B-roll shots</div>${broll}</div>`;
     }
@@ -868,10 +714,10 @@ Return this exact JSON:
     else if (mode === 'platform') {
       html = `
         <div class="blk"><div class="blk-title">Type of content</div><div class="blk-text">${data.diagnosis}</div></div>
-        <div class="blk"><div class="blk-title">Primary platform</div><div class="pill">${data.primary_platform}</div><div class="blk-text" style="margin-top:8px;">${data.primary_angle}</div>${makeCopyBtn(data.primary_angle)}</div>
+        <div class="blk"><div class="blk-title">Primary platform</div><div class="pill">${data.primary_platform}</div><div class="blk-text" style="margin-top:8px;">${data.primary_angle}</div></div>
         <div class="blk"><div class="blk-title">Secondary platform</div><div class="pill soft">${data.secondary_platform}</div><div class="blk-text" style="margin-top:8px;">${data.secondary_angle}</div></div>
         <div class="blk"><div class="blk-title">Skip for now</div><div class="warn-box">${data.skip}</div></div>
-        <div class="blk"><div class="blk-title">Repurpose tip</div><div class="success-box">${data.repurpose_tip}</div>${makeCopyBtn(data.repurpose_tip)}</div>`;
+        <div class="blk"><div class="blk-title">Repurpose tip</div><div class="success-box">${data.repurpose_tip}</div></div>`;
     }
 
     body.innerHTML = html;
