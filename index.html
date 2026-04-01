@@ -750,6 +750,39 @@
     .copy-btn.copied { border-color: #86EFAC; color: #166534; background: #F0FDF4; }
 
 
+    /* SAVE BAR */
+    .save-bar {
+      padding: 1rem 1.75rem 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .save-pdf-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 12px;
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px dashed var(--border-mid);
+      border-radius: var(--radius);
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .save-pdf-btn:hover {
+      background: var(--gold-light);
+      border-color: var(--gold-border);
+      border-style: solid;
+      color: var(--gold);
+    }
+
     /* PDF / PRINT */
     .save-btn {
       display: flex;
@@ -987,16 +1020,18 @@
       <div class="out-card" id="outCard">
         <div class="out-header">
           <div class="out-label">S.A.M. output</div>
-          <div style="display:flex;gap:8px;align-items:center;">
-            <button class="new-btn" onclick="saveAsPDF()">↓ Save PDF</button>
-            <button class="new-btn" onclick="resetTool()">← New moment</button>
-          </div>
+          <button class="new-btn" onclick="resetTool()">← New moment</button>
         </div>
         <div class="out-body" id="outBody">
           <div class="print-header" style="display:none;">
             <h1>S.A.M. — Strategic Assistant for Making</h1>
             <p id="printMoment"></p>
           </div>
+        </div>
+        <div class="save-bar" id="saveBar" style="display:none;">
+          <button class="save-pdf-btn" onclick="saveAsPDF()">
+            ↓ &nbsp;Save output as PDF
+          </button>
         </div>
       </div>
 
@@ -1045,6 +1080,7 @@
 
   function resetTool() {
     document.getElementById('outCard').classList.remove('show');
+    document.getElementById('saveBar').style.display = 'none';
     document.getElementById('inp').value = '';
     document.getElementById('charCount').textContent = '0';
     document.getElementById('errBox').classList.remove('show');
@@ -1141,6 +1177,7 @@
       document.getElementById('loader').classList.remove('show');
       renderOutput(combined);
       document.getElementById('outCard').classList.add('show');
+      document.getElementById('saveBar').style.display = 'block';
       document.getElementById('runBtn').disabled = false;
       document.getElementById('outCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
 
