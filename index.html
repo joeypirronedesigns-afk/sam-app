@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>S.A.M. — Strategic Assistant for Making</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0D0D0D;
+      --white: #FFFFFF;
+      --gold: #B8935A;
+      --gold-light: #E8D5B7;
+      --bg: #F7F6F3;
+      --surface: #FFFFFF;
+      --border: rgba(0,0,0,0.1);
+      --border-strong: rgba(0,0,0,0.2);
+      --text: #0D0D0D;
+      --text-mid: #4A4A4A;
+      --text-muted: #888888;
+      --radius: 10px;
+      --radius-lg: 16px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 56px;
+      background: rgba(247,246,243,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 0.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--black);
+    }
+
+    .nav-logo span { color: var(--gold); }
+
+    .nav-right {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* HERO */
+    .hero {
+      padding: 120px 1.5rem 60px;
+      text-align: center;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 0.5px solid var(--gold-light);
+      background: rgba(184,147,90,0.06);
+      padding: 5px 12px;
+      border-radius: 20px;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 700;
+      line-height: 1.15;
+      color: var(--black);
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--gold);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+    }
+
+    .hero p {
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--text-mid);
+      margin-bottom: 2rem;
+    }
+
+    /* MAIN TOOL */
+    .tool-wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 1.25rem 5rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .step-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .step-label::before {
+      content: attr(data-n);
+      background: var(--black);
+      color: var(--white);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      flex-shrink: 0;
+    }
+
+    /* MODE GRID */
+    .modes {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-bottom: 0;
+    }
+
+    @media (max-width: 480px) { .modes { grid-template-columns: 1fr; } }
+
+    .mode-btn {
+      background: var(--bg);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .mode-btn:hover {
+      border-color: var(--gold);
+      background: rgba(184,147,90,0.04);
+    }
+
+    .mode-btn.active {
+      border-color: var(--gold);
+      background: rgba(184,147,90,0.06);
+    }
+
+    .mode-icon { font-size: 16px; margin-bottom: 5px; display: block; }
+    .mode-title { font-size: 13px; font-weight: 500; color: var(--text); display: block; }
+    .mode-desc { font-size: 11px; color: var(--text-muted); display: block; margin-top: 2px; line-height: 1.4; }
+
+    /* TEXTAREA */
+    .input-wrap { position: relative; }
+
+    textarea {
+      width: 100%;
+      min-height: 110px;
+      padding: 12px 14px;
+      border: 0.5px solid var(--border-strong);
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      background: var(--bg);
+      resize: vertical;
+      line-height: 1.65;
+      transition: border-color 0.15s;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--gold);
+      background: var(--white);
+    }
+
+    textarea::placeholder { color: var(--text-muted); }
+
+    .char-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: right;
+      margin-top: 5px;
+    }
+
+    /* CHIPS */
+    .chips {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .chip {
+      font-size: 11px;
+      padding: 4px 10px;
+      border: 0.5px solid var(--border-strong);
+      border-radius: 20px;
+      cursor: pointer;
+      background: var(--white);
+      color: var(--text-mid);
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.12s;
+    }
+
+    .chip:hover {
+      border-color: var(--gold);
+      color: var(--text);
+      background: rgba(184,147,90,0.05);
+    }
+
+    /* RUN BUTTON */
+    .run-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--black);
+      color: var(--white);
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'Syne', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+
+    .run-btn:hover { opacity: 0.85; }
+    .run-btn:active { transform: scale(0.99); }
+    .run-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    /* LOADING */
+    .loader {
+      display: none;
+      text-align: center;
+      padding: 1.5rem 0 0.5rem;
+    }
+
+    .loader.show { display: block; }
+
+    .loader-dots {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .loader-dots span {
+      width: 6px;
+      height: 6px;
+      background: var(--gold);
+      border-radius: 50%;
+      animation: bounce 1.2s ease-in-out infinite;
+    }
+
+    .loader-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .loader-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0.7); opacity: 0.4; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+
+    .loader-text {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 8px;
+      font-style: italic;
+    }
+
+    /* ERROR */
+    .error-box {
+      display: none;
+      font-size: 13px;
+      color: #991B1B;
+      background: #FEF2F2;
+      border: 0.5px solid #FECACA;
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      margin-top: 1rem;
+      line-height: 1.5;
+    }
+
+    .error-box.show { display: block; }
+
+    /* OUTPUT */
+    .out-card {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: none;
+      animation: fadeUp 0.3s ease;
+    }
+
+    .out-card.show { display: block; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .out-header {
+      padding: 1rem 1.5rem;
+      border-bottom: 0.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .out-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .new-btn {
+      font-size: 12px;
+      color: var(--text-mid);
+      background: var(--bg);
+      border: 0.5px solid var(--border-strong);
+      border-radius: 6px;
+      padding: 5px 12px;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: background 0.1s;
+    }
+
+    .new-btn:hover { background: var(--border); }
+
+    .out-body { padding: 1.5rem; }
+
+    .blk {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .blk:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+
+    .blk-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.6rem;
+    }
+
+    .blk-text {
+      font-size: 14px;
+      line-height: 1.75;
+      color: var(--text);
+    }
+
+    .hook-box {
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.5;
+      padding: 14px 16px;
+      background: var(--bg);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      color: var(--text);
+    }
+
+    .pill {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: var(--black);
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+
+    .pill.soft {
+      background: var(--bg);
+      color: var(--text-mid);
+      border: 0.5px solid var(--border-strong);
+    }
+
+    .warn-box {
+      font-size: 13px;
+      padding: 11px 14px;
+      background: #FFFBEB;
+      border: 0.5px solid #FCD34D;
+      border-radius: var(--radius);
+      color: #92400E;
+      line-height: 1.65;
+    }
+
+    .success-box {
+      font-size: 13px;
+      padding: 11px 14px;
+      background: #F0FDF4;
+      border: 0.5px solid #86EFAC;
+      border-radius: var(--radius);
+      color: #166534;
+      line-height: 1.65;
+    }
+
+    .script-box {
+      font-size: 13px;
+      line-height: 1.8;
+      padding: 14px 16px;
+      background: var(--bg);
+      border-radius: var(--radius);
+      color: var(--text);
+      white-space: pre-wrap;
+    }
+
+    .broll-item {
+      padding: 7px 0;
+      border-bottom: 0.5px solid var(--border);
+      font-size: 13px;
+      color: var(--text-mid);
+      line-height: 1.5;
+    }
+
+    .broll-item:last-child { border-bottom: none; }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 11px;
+      color: var(--text-muted);
+      border-top: 0.5px solid var(--border);
+    }
+
+    footer strong { color: var(--gold); }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-logo">S<span>.</span>A<span>.</span>M<span>.</span></div>
+    <div class="nav-right">Strategic Assistant for Making</div>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-badge">Built for creators</div>
+    <h1>You have the moment.<br/><em>Let's find the story.</em></h1>
+    <p>Tell S.A.M. what happened. Get the hook, the script, the platform strategy — everything you need to turn a real moment into content that actually builds your following.</p>
+  </div>
+
+  <div class="tool-wrap">
+
+    <!-- STEP 1 -->
+    <div class="card">
+      <div class="step-label" data-n="1">Choose your mode</div>
+      <div class="modes">
+        <button class="mode-btn active" data-m="story" onclick="pickMode(this)">
+          <span class="mode-icon">&#9654;</span>
+          <span class="mode-title">Find the story</span>
+          <span class="mode-desc">Turn a real moment into content that connects</span>
+        </button>
+        <button class="mode-btn" data-m="hook" onclick="pickMode(this)">
+          <span class="mode-icon">&#9889;</span>
+          <span class="mode-title">Write the hook</span>
+          <span class="mode-desc">3 hook options for the first 3 seconds</span>
+        </button>
+        <button class="mode-btn" data-m="script" onclick="pickMode(this)">
+          <span class="mode-icon">&#9997;</span>
+          <span class="mode-title">Build the script</span>
+          <span class="mode-desc">A full short-form video script, ready to record</span>
+        </button>
+        <button class="mode-btn" data-m="platform" onclick="pickMode(this)">
+          <span class="mode-icon">&#10137;</span>
+          <span class="mode-title">Pick the platform</span>
+          <span class="mode-desc">Where this belongs and exactly how to post it</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="card">
+      <div class="step-label" data-n="2">Describe your moment</div>
+      <div class="input-wrap">
+        <textarea
+          id="inp"
+          placeholder="Tell me what happened. The more real and specific, the better. Don't clean it up — just describe it like you're telling a friend."
+          oninput="updateChar()"
+          maxlength="1000"
+        ></textarea>
+        <div class="char-hint"><span id="charCount">0</span> / 1000</div>
+      </div>
+
+      <div class="chips">
+        <span style="font-size:11px;color:var(--text-muted);align-self:center;">Try:</span>
+        <button class="chip" onclick="fillEx('My parents flew in from Florida and saw the cottage renovation for the first time. When they looked at the front yard they saw this big white blooming tree and both said wow. I had my camera ready. It was the most emotional moment in 6 months of work.')">Parents see the tree</button>
+        <button class="chip" onclick="fillEx('I discovered termite damage halfway through the renovation. It set me back two weeks and cost more than I planned. I fixed it entirely myself — nobody taught me how.')">Termite setback</button>
+        <button class="chip" onclick="fillEx('I removed an entire chimney by myself from the basement all the way through the roof. I had never done anything like it before. I just figured it out step by step.')">Chimney removal</button>
+      </div>
+
+      <div class="loader" id="loader">
+        <div class="loader-dots"><span></span><span></span><span></span></div>
+        <div class="loader-text" id="loaderText">S.A.M. is thinking...</div>
+      </div>
+
+      <div class="error-box" id="errBox"></div>
+
+      <button class="run-btn" id="runBtn" onclick="runSAM()">
+        Run S.A.M. &rarr;
+      </button>
+    </div>
+
+    <!-- OUTPUT -->
+    <div class="out-card" id="outCard">
+      <div class="out-header">
+        <div class="out-label">S.A.M. output</div>
+        <button class="new-btn" onclick="resetTool()">&larr; New moment</button>
+      </div>
+      <div class="out-body" id="outBody"></div>
+    </div>
+
+  </div>
+
+  <footer>
+    <strong>S.A.M.</strong> &mdash; Strategic Assistant for Making &mdash; Built for creators who have real stories to tell.
+  </footer>
+
+<script>
+  let currentMode = 'story';
+
+  const loaderLines = [
+    "S.A.M. is reading your moment...",
+    "Finding the real story...",
+    "Building your output...",
+    "Almost there..."
+  ];
+
+  function pickMode(btn) {
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentMode = btn.dataset.m;
+  }
+
+  function fillEx(text) {
+    document.getElementById('inp').value = text;
+    updateChar();
+    document.getElementById('inp').focus();
+  }
+
+  function updateChar() {
+    document.getElementById('charCount').textContent = document.getElementById('inp').value.length;
+  }
+
+  function resetTool() {
+    document.getElementById('outCard').classList.remove('show');
+    document.getElementById('inp').value = '';
+    document.getElementById('charCount').textContent = '0';
+    document.getElementById('errBox').classList.remove('show');
+    document.getElementById('runBtn').disabled = false;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('errBox');
+    el.textContent = msg;
+    el.classList.add('show');
+  }
+
+  function getSystemPrompt(mode) {
+    const base = `You are S.A.M. — Strategic Assistant for Making. You are a creative content strategist built specifically for creators who have real life happening around them but struggle to turn those moments into content that builds a following.
+
+Your tone is: sharp, honest, grounded, practical. Never fluffy. Never fake motivational. You speak like a trusted creative partner who has seen a lot of content and knows what actually works.
+
+CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No explanation outside the JSON object.`;
+
+    const prompts = {
+      story: base + `
+
+The creator has described a real moment. Extract the story from it.
+
+Return this exact JSON:
+{
+  "diagnosis": "2-3 sentences. What is the REAL story here — the emotional core a stranger would actually respond to? Be specific. Be honest.",
+  "hook": "The single best opening line for a short-form video. First 3 seconds. Specific, not vague. Make a stranger stop scrolling.",
+  "story_spine": "Three beats separated by ' / ': Setup / Tension / Payoff. Each in one crisp sentence.",
+  "cta": "An identity-based call to action. Not 'like and subscribe'. Something that makes the RIGHT person feel seen and want to follow.",
+  "best_platform": "Start with the platform name then a dash then one sentence on why this moment belongs there first.",
+  "content_warning": "One honest thing that could make this content underperform if they are not careful."
+}`,
+
+      hook: base + `
+
+The creator has described a real moment. Write 3 different hook options.
+
+Return this exact JSON:
+{
+  "diagnosis": "What makes this moment hook-worthy? What is the tension or surprise a stranger would stop for?",
+  "hook_1": "Emotion-first hook. Drop straight into the feeling. No setup.",
+  "hook_2": "Curiosity-first hook. Make them need to know what happens next.",
+  "hook_3": "Identity-first hook. Speaks directly to someone who has been through something similar.",
+  "winner": "Which hook you recommend and exactly why in one sentence.",
+  "visual_note": "What should be on screen during the first 3 seconds to make the hook land visually."
+}`,
+
+      script: base + `
+
+The creator has described a real moment. Write a complete short-form video script.
+
+Return this exact JSON:
+{
+  "diagnosis": "What is this video really about? The emotional truth underneath the surface story.",
+  "hook": "The opening line. First 3 seconds. Stops the scroll.",
+  "script": "The full script as spoken narration. Use line breaks between beats. Keep it under 90 seconds when spoken aloud. No fluff. End with a real CTA.",
+  "pacing_note": "One specific note on how to deliver this — tone, what to slow down on, what to let breathe.",
+  "b_roll": "4 specific shots that should accompany this narration. Each on its own line."
+}`,
+
+      platform: base + `
+
+The creator has described a real moment. Give them a complete platform strategy.
+
+Return this exact JSON:
+{
+  "diagnosis": "What type of content is this — emotional, educational, tension-driven, or identity-based? One sentence.",
+  "primary_platform": "The single best platform name only.",
+  "primary_angle": "How to frame and post it specifically for that platform. Be specific.",
+  "secondary_platform": "Second best platform name only.",
+  "secondary_angle": "How to adapt the content for the secondary platform specifically.",
+  "skip": "Which platform to skip for this specific moment and exactly why.",
+  "repurpose_tip": "One smart specific way to get 2-3 pieces of content from this single moment."
+}`
+    };
+
+    return prompts[mode];
+  }
+
+  function renderOutput(data, mode) {
+    const body = document.getElementById('outBody');
+    let html = '';
+
+    if (mode === 'story') {
+      const spine = (data.story_spine || '').split('/').map(s =>
+        `<div class="broll-item">${s.trim()}</div>`).join('');
+      const platParts = (data.best_platform || '').split('—');
+      html = `
+        <div class="blk"><div class="blk-title">What this is really about</div><div class="blk-text">${data.diagnosis}</div></div>
+        <div class="blk"><div class="blk-title">Your hook</div><div class="hook-box">${data.hook}</div></div>
+        <div class="blk"><div class="blk-title">Story spine</div>${spine}</div>
+        <div class="blk"><div class="blk-title">Call to action</div><div class="blk-text">${data.cta}</div></div>
+        <div class="blk"><div class="blk-title">Best platform</div><div class="pill">${(platParts[0]||'').trim()}</div><div class="blk-text" style="margin-top:8px;">${(platParts.slice(1).join('—')||'').trim()}</div></div>
+        <div class="blk"><div class="blk-title">Watch out for</div><div class="warn-box">${data.content_warning}</div></div>`;
+    }
+
+    else if (mode === 'hook') {
+      html = `
+        <div class="blk"><div class="blk-title">Why this moment has a hook</div><div class="blk-text">${data.diagnosis}</div></div>
+        <div class="blk"><div class="blk-title">Hook 1 — emotion first</div><div class="hook-box">${data.hook_1}</div></div>
+        <div class="blk"><div class="blk-title">Hook 2 — curiosity first</div><div class="hook-box">${data.hook_2}</div></div>
+        <div class="blk"><div class="blk-title">Hook 3 — identity first</div><div class="hook-box">${data.hook_3}</div></div>
+        <div class="blk"><div class="blk-title">S.A.M. recommends</div><div class="blk-text">${data.winner}</div></div>
+        <div class="blk"><div class="blk-title">What to show on screen</div><div class="blk-text">${data.visual_note}</div></div>`;
+    }
+
+    else if (mode === 'script') {
+      const broll = (data.b_roll || '').split('\n').filter(Boolean).map(l =>
+        `<div class="broll-item">${l.trim()}</div>`).join('');
+      html = `
+        <div class="blk"><div class="blk-title">The real story</div><div class="blk-text">${data.diagnosis}</div></div>
+        <div class="blk"><div class="blk-title">Hook</div><div class="hook-box">${data.hook}</div></div>
+        <div class="blk"><div class="blk-title">Full script</div><div class="script-box">${data.script}</div></div>
+        <div class="blk"><div class="blk-title">How to deliver it</div><div class="blk-text">${data.pacing_note}</div></div>
+        <div class="blk"><div class="blk-title">B-roll shots</div>${broll}</div>`;
+    }
+
+    else if (mode === 'platform') {
+      html = `
+        <div class="blk"><div class="blk-title">Type of content</div><div class="blk-text">${data.diagnosis}</div></div>
+        <div class="blk"><div class="blk-title">Primary platform</div><div class="pill">${data.primary_platform}</div><div class="blk-text" style="margin-top:8px;">${data.primary_angle}</div></div>
+        <div class="blk"><div class="blk-title">Secondary platform</div><div class="pill soft">${data.secondary_platform}</div><div class="blk-text" style="margin-top:8px;">${data.secondary_angle}</div></div>
+        <div class="blk"><div class="blk-title">Skip for now</div><div class="warn-box">${data.skip}</div></div>
+        <div class="blk"><div class="blk-title">Repurpose tip</div><div class="success-box">${data.repurpose_tip}</div></div>`;
+    }
+
+    body.innerHTML = html;
+  }
+
+  async function runSAM() {
+    const text = document.getElementById('inp').value.trim();
+    if (!text) {
+      document.getElementById('inp').style.borderColor = 'var(--gold)';
+      document.getElementById('inp').focus();
+      setTimeout(() => document.getElementById('inp').style.borderColor = '', 1500);
+      return;
+    }
+
+    document.getElementById('errBox').classList.remove('show');
+    document.getElementById('runBtn').disabled = true;
+    document.getElementById('loader').classList.add('show');
+    document.getElementById('outCard').classList.remove('show');
+
+    let loaderIdx = 0;
+    const loaderInterval = setInterval(() => {
+      loaderIdx = (loaderIdx + 1) % loaderLines.length;
+      document.getElementById('loaderText').textContent = loaderLines[loaderIdx];
+    }, 1800);
+
+    try {
+      const response = await fetch('/api/sam', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mode: currentMode, moment: text })
+      });
+
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        throw new Error(err.error || `Server error ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      clearInterval(loaderInterval);
+      document.getElementById('loader').classList.remove('show');
+      renderOutput(data, currentMode);
+      document.getElementById('outCard').classList.add('show');
+      document.getElementById('runBtn').disabled = false;
+
+      document.getElementById('outCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    } catch (err) {
+      clearInterval(loaderInterval);
+      document.getElementById('loader').classList.remove('show');
+      showError('Something went wrong: ' + (err.message || 'Please try again.'));
+      document.getElementById('runBtn').disabled = false;
+    }
+  }
+</script>
+
+</body>
+</html>
