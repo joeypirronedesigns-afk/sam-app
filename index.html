@@ -175,16 +175,22 @@
     /* WHAT YOU GET */
     .section-header {
       text-align: center;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.5rem;
     }
 
     .section-header h2 {
       font-family: 'Syne', sans-serif;
-      font-size: 11px;
+      font-size: 20px;
       font-weight: 700;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--text-muted);
+      letter-spacing: -0.01em;
+      color: var(--black);
+      margin-bottom: 0.4rem;
+    }
+
+    .section-header p {
+      font-size: 14px;
+      color: var(--text-mid);
+      font-style: italic;
     }
 
     .outputs-grid {
@@ -200,29 +206,32 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 1.1rem 1.1rem 1.1rem 1.25rem;
+      padding: 1.4rem 1.4rem 1.4rem 1.5rem;
       display: flex;
-      gap: 12px;
+      gap: 14px;
       align-items: flex-start;
-      border-left: 3px solid var(--gold-border);
+      border-left: 4px solid var(--gold-border);
       box-shadow: var(--shadow);
+      transition: box-shadow 0.15s;
     }
 
-    .output-icon { font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+    .output-card:hover { box-shadow: var(--shadow-md); }
+
+    .output-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
 
     .output-title {
       font-family: 'Syne', sans-serif;
-      font-size: 12px;
+      font-size: 15px;
       font-weight: 700;
       color: var(--black);
-      letter-spacing: 0.02em;
-      margin-bottom: 3px;
+      letter-spacing: -0.01em;
+      margin-bottom: 5px;
     }
 
     .output-desc {
-      font-size: 13px;
-      color: var(--text-muted);
-      line-height: 1.5;
+      font-size: 14px;
+      color: var(--text-mid);
+      line-height: 1.55;
     }
 
     /* EXAMPLE CARD */
@@ -770,7 +779,8 @@
     <div class="tool-inner">
 
       <div class="section-header">
-        <h2>Here's what we'll build from your moment</h2>
+        <h2>Here's what S.A.M. builds from your moment</h2>
+        <p>One real moment. Four outputs. Ready to post.</p>
       </div>
 
       <div class="outputs-grid">
