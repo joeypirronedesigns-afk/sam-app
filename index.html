@@ -750,6 +750,61 @@
     .copy-btn.copied { border-color: #86EFAC; color: #166534; background: #F0FDF4; }
 
 
+    /* CONTENT TYPE SELECTOR */
+    .content-type-wrap { margin-bottom: 1.25rem; }
+
+    .content-type-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 8px;
+    }
+
+    .content-type-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: left;
+      box-shadow: var(--shadow);
+      user-select: none;
+    }
+
+    .content-type-btn:hover {
+      border-color: var(--gold-border);
+      background: var(--gold-light);
+    }
+
+    .content-type-btn.selected {
+      background: var(--gold-light);
+      border-color: var(--gold-border);
+      box-shadow: 0 0 0 2px rgba(212,168,83,0.2);
+    }
+
+    .content-type-icon { font-size: 18px; flex-shrink: 0; }
+
+    .content-type-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--black);
+      letter-spacing: 0.01em;
+      line-height: 1.3;
+    }
+
+    .content-type-btn.selected .content-type-label { color: var(--gold); }
+
+    .content-type-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-top: 8px;
+    }
+
     /* SAVE BAR */
     .save-bar {
       padding: 1rem 1.75rem 1.5rem;
@@ -985,6 +1040,42 @@
         <div class="platform-hint">Select all that apply — S.A.M. will tailor the output for each one.</div>
       </div>
 
+
+      <div class="content-type-wrap">
+        <div class="section-label">What are you making?</div>
+        <div class="content-type-grid">
+          <button class="content-type-btn selected" data-type="Short-form video" onclick="selectContentType(this)">
+            <span class="content-type-icon">🎬</span>
+            <span class="content-type-label">Short-form video</span>
+          </button>
+          <button class="content-type-btn" data-type="Long-form YouTube video" onclick="selectContentType(this)">
+            <span class="content-type-icon">▶️</span>
+            <span class="content-type-label">Long-form YouTube</span>
+          </button>
+          <button class="content-type-btn" data-type="LinkedIn text post" onclick="selectContentType(this)">
+            <span class="content-type-icon">💼</span>
+            <span class="content-type-label">LinkedIn post</span>
+          </button>
+          <button class="content-type-btn" data-type="Instagram caption" onclick="selectContentType(this)">
+            <span class="content-type-icon">📸</span>
+            <span class="content-type-label">Instagram caption</span>
+          </button>
+          <button class="content-type-btn" data-type="Podcast intro" onclick="selectContentType(this)">
+            <span class="content-type-icon">🎙️</span>
+            <span class="content-type-label">Podcast intro</span>
+          </button>
+          <button class="content-type-btn" data-type="Email newsletter" onclick="selectContentType(this)">
+            <span class="content-type-icon">✉️</span>
+            <span class="content-type-label">Email newsletter</span>
+          </button>
+          <button class="content-type-btn" data-type="Blog post" onclick="selectContentType(this)">
+            <span class="content-type-icon">✍️</span>
+            <span class="content-type-label">Blog post / Article</span>
+          </button>
+        </div>
+        <div class="content-type-hint">S.A.M. will shape the output specifically for this format.</div>
+      </div>
+
       <div class="input-card">
         <div class="input-card-label">Describe your moment</div>
         <div class="input-wrap">
@@ -1060,6 +1151,16 @@
     window.print();
   }
 
+  function selectContentType(btn) {
+    document.querySelectorAll('.content-type-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+
+  function getContentType() {
+    const selected = document.querySelector('.content-type-btn.selected');
+    return selected ? selected.dataset.type : 'Short-form video';
+  }
+
   function togglePlatform(btn) { btn.classList.toggle('selected'); }
 
   function getSelectedPlatforms() {
@@ -1132,11 +1233,11 @@
     body.innerHTML = html || '<div class="blk-text" style="color:var(--text-muted)">No output returned. Try again.</div>';
   }
 
-  async function callAPI(mode, moment, platforms) {
+  async function callAPI(mode, moment, platforms, contentType) {
     const response = await fetch('/api/sam', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mode, moment, platforms })
+      body: JSON.stringify({ mode, moment, platforms, contentType })
     });
     if (!response.ok) {
       const err = await response.json().catch(() => ({}));
@@ -1167,9 +1268,10 @@
 
     try {
       const platforms = getSelectedPlatforms();
+      const contentType = getContentType();
       const [storyData, hookData] = await Promise.all([
-        callAPI('story', text, platforms),
-        callAPI('hook', text, platforms)
+        callAPI('story', text, platforms, contentType),
+        callAPI('hook', text, platforms, contentType)
       ]);
 
       const combined = Object.assign({}, storyData, hookData);
