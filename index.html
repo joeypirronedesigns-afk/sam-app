@@ -134,12 +134,12 @@
 
     .hero h1 {
       font-family: 'Syne', sans-serif;
-      font-size: clamp(38px, 6vw, 72px);
-      font-weight: 800;
-      line-height: 1.08;
+      font-size: clamp(32px, 5vw, 62px);
+      font-weight: 700;
+      line-height: 1.18;
       color: var(--white);
-      margin-bottom: 1.5rem;
-      letter-spacing: -0.02em;
+      margin-bottom: 1.75rem;
+      letter-spacing: -0.01em;
     }
 
     .hero h1 em {
@@ -147,7 +147,8 @@
       color: var(--gold);
       font-family: 'DM Sans', sans-serif;
       font-weight: 300;
-      letter-spacing: 0;
+      font-size: 0.95em;
+      letter-spacing: 0.01em;
     }
 
     .hero-sub {
@@ -838,6 +839,19 @@
     body.innerHTML = html || '<div class="blk-text" style="color:var(--text-muted)">No output returned. Try again.</div>';
   }
 
+  async function callAPI(mode, moment) {
+    const response = await fetch('/api/sam', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mode: mode, moment: moment })
+    });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.error || 'Server error ' + response.status);
+    }
+    return response.json();
+  }
+
   async function runSAM() {
     const text = document.getElementById('inp').value.trim();
     if (!text) {
@@ -859,22 +873,16 @@
     }, 1800);
 
     try {
-      const response = await fetch('/api/sam', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mode: 'story', moment: text })
-      });
+      const [storyData, hookData] = await Promise.all([
+        callAPI('story', text),
+        callAPI('hook', text)
+      ]);
 
-      if (!response.ok) {
-        const err = await response.json().catch(() => ({}));
-        throw new Error(err.error || `Server error ${response.status}`);
-      }
-
-      const data = await response.json();
+      const combined = Object.assign({}, storyData, hookData);
 
       clearInterval(loaderInterval);
       document.getElementById('loader').classList.remove('show');
-      renderOutput(data, 'story');
+      renderOutput(combined, 'full');
       document.getElementById('outCard').classList.add('show');
       document.getElementById('runBtn').disabled = false;
       document.getElementById('outCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
