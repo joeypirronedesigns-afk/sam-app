@@ -648,6 +648,156 @@
     .copy-btn:hover { border-color: var(--gold-border); color: var(--gold); }
     .copy-btn.copied { border-color: rgba(52,211,153,0.4); color: #6EE7B7; background: rgba(52,211,153,0.06); }
 
+    /* EXAMPLE CARD */
+    .example-wrap {
+      margin-bottom: 1.5rem;
+    }
+
+    .example-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .example-label::after {
+      content: '';
+      flex: 1;
+      height: 0.5px;
+      background: var(--border);
+    }
+
+    .example-card {
+      background: var(--dark-2);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .example-card::before {
+      content: 'SAMPLE OUTPUT';
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      font-family: 'Syne', sans-serif;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+      background: var(--dark-3);
+      border: 0.5px solid var(--border-mid);
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    .example-body {
+      padding: 1.5rem 1.5rem 1.25rem;
+    }
+
+    .example-moment {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-style: italic;
+      line-height: 1.6;
+      padding: 10px 14px;
+      background: var(--dark-3);
+      border-left: 2px solid var(--border-mid);
+      border-radius: 0 6px 6px 0;
+      margin-bottom: 1.25rem;
+    }
+
+    .example-moment strong {
+      color: var(--text-mid);
+      font-style: normal;
+      font-weight: 500;
+    }
+
+    .example-row {
+      margin-bottom: 1.1rem;
+      padding-bottom: 1.1rem;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .example-row:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .example-row-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .example-hook {
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.5;
+      padding: 12px 16px;
+      background: var(--dark);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      color: var(--white);
+    }
+
+    .example-text {
+      font-size: 13px;
+      line-height: 1.75;
+      color: var(--text);
+    }
+
+    .example-spine {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .example-spine-item {
+      font-size: 12px;
+      color: var(--text-mid);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.5;
+    }
+
+    .example-spine-item::before {
+      content: '→';
+      color: var(--gold);
+      flex-shrink: 0;
+    }
+
+    .example-cta-box {
+      font-size: 13px;
+      padding: 10px 14px;
+      background: var(--gold-dim);
+      border: 0.5px solid var(--gold-border);
+      border-radius: var(--radius);
+      color: var(--gold);
+      line-height: 1.6;
+    }
+
+    .example-footer {
+      padding: 0.875rem 1.5rem;
+      border-top: 0.5px solid var(--border);
+      background: var(--dark-3);
+      font-size: 11px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
     /* FOOTER */
     footer {
       text-align: center;
@@ -724,6 +874,45 @@
             <div class="output-title">Platform strategy</div>
             <div class="output-desc">Where this belongs, how to post it, and how to get 3 pieces from one moment</div>
           </div>
+        </div>
+      </div>
+
+
+      <div class="example-wrap">
+        <div class="example-label">Real example — parents see the tree</div>
+        <div class="example-card">
+          <div class="example-body">
+
+            <div class="example-moment">
+              <strong>The moment:</strong> My parents flew in from Florida and saw the cottage renovation for the first time. When they looked at the front yard they saw this big white blooming tree and both said wow. I had my camera ready. It was the most emotional moment in 6 months of work.
+            </div>
+
+            <div class="example-row">
+              <div class="example-row-title">What this is really about</div>
+              <div class="example-text">This isn't a renovation update — it's the first time the people you love saw what you've been building for them. The tree didn't stop them. The reality of what you did for six months did.</div>
+            </div>
+
+            <div class="example-row">
+              <div class="example-row-title">Your hook</div>
+              <div class="example-hook">Six months of work. They'd only ever seen it through a screen. Until today.</div>
+            </div>
+
+            <div class="example-row">
+              <div class="example-row-title">Story spine</div>
+              <div class="example-spine">
+                <div class="example-spine-item">Six months renovating a cottage for my parents — they watched every update from Florida through my videos.</div>
+                <div class="example-spine-item">Today was the first time they'd see it in person — and I had no idea what they'd think.</div>
+                <div class="example-spine-item">They walked to the front yard, saw the blooming tree, and I saw exactly why I've been doing this.</div>
+              </div>
+            </div>
+
+            <div class="example-row">
+              <div class="example-row-title">Call to action</div>
+              <div class="example-cta-box">If you're building something for someone you love — follow. You don't want to miss the ending.</div>
+            </div>
+
+          </div>
+          <div class="example-footer">S.A.M. built this from one real moment. Yours is next.</div>
         </div>
       </div>
 
