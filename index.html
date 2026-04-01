@@ -757,7 +757,7 @@
 
     .creator-context-input {
       width: 100%;
-      padding: 12px 16px;
+      padding: 12px 48px 12px 16px;
       border: 1px solid var(--border-mid);
       border-radius: var(--radius);
       font-family: 'DM Sans', sans-serif;
@@ -1077,13 +1077,17 @@
 
       <div class="creator-context-wrap">
         <div class="section-label">Tell S.A.M. about you <span style="font-weight:400;text-transform:none;letter-spacing:0;font-style:italic;color:var(--text-muted);font-family:'DM Sans',sans-serif;">(optional)</span></div>
-        <input
-          type="text"
-          id="creatorContext"
-          class="creator-context-input"
-          placeholder="e.g. Self-taught renovator documenting a full cottage gut renovation for my parents in Maryland"
-          maxlength="200"
-        />
+        <div class="input-wrap">
+          <input
+            type="text"
+            id="creatorContext"
+            class="creator-context-input"
+            placeholder="e.g. Self-taught renovator documenting a full cottage gut renovation for my parents in Maryland"
+            maxlength="200"
+            style="padding-right: 48px;"
+          />
+          <button class="mic-btn" id="micBtnContext" onclick="toggleMicContext()" title="Speak your creator context" style="bottom:6px;">🎙</button>
+        </div>
         <div class="creator-context-hint">One sentence. S.A.M. uses this to personalize every output for your specific audience.</div>
       </div>
 
@@ -1373,6 +1377,41 @@
       micBtn.innerHTML = '🎙';
     };
     recognition.start();
+  }
+
+  // MIC - CREATOR CONTEXT
+  let recognitionContext = null;
+  let isRecordingContext = false;
+
+  function toggleMicContext() {
+    const micBtn = document.getElementById('micBtnContext');
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) { alert('Try Chrome or Safari for voice input.'); return; }
+    if (isRecordingContext) { recognitionContext.stop(); return; }
+    recognitionContext = new SR();
+    recognitionContext.continuous = false;
+    recognitionContext.interimResults = false;
+    recognitionContext.lang = 'en-US';
+    recognitionContext.onstart = function() {
+      isRecordingContext = true;
+      micBtn.classList.add('recording');
+      micBtn.innerHTML = '⏹';
+    };
+    recognitionContext.onresult = function(e) {
+      let t = e.results[0][0].transcript;
+      document.getElementById('creatorContext').value = t;
+    };
+    recognitionContext.onend = function() {
+      isRecordingContext = false;
+      micBtn.classList.remove('recording');
+      micBtn.innerHTML = '🎙';
+    };
+    recognitionContext.onerror = function() {
+      isRecordingContext = false;
+      micBtn.classList.remove('recording');
+      micBtn.innerHTML = '🎙';
+    };
+    recognitionContext.start();
   }
 
   // COPY
