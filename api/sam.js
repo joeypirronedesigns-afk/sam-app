@@ -1,42 +1,45 @@
 module.exports = async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { mode, moment, platforms } = req.body;
-
-  if (!moment || !mode) {
-    return res.status(400).json({ error: 'Missing mode or moment' });
-  }
+  const { mode, moment, platforms, contentType } = req.body;
+  if (!moment || !mode) return res.status(400).json({ error: 'Missing mode or moment' });
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    return res.status(500).json({ error: 'API key not configured' });
-  }
+  if (!apiKey) return res.status(500).json({ error: 'API key not configured' });
 
   const platformContext = platforms && platforms.length > 0
-    ? 'The creator posts on: ' + platforms.join(', ') + '. Tailor your advice specifically for these platforms.'
-    : 'No specific platforms selected — give general advice.';
+    ? 'The creator posts on: ' + platforms.join(', ') + '.'
+    : '';
 
-  const base = 'You are S.A.M. — Strategic Assistant for Making. You are a creative content strategist for creators who have real life happening around them but struggle to turn moments into content that builds a following. Your tone is sharp, honest, grounded, practical. CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No explanation outside the JSON. ' + platformContext;
+  const formatContext = contentType
+    ? 'Content format: ' + contentType + '. Shape all output specifically for this format.'
+    : 'Content format: Short-form video.';
 
-  const prompts = {
-    story: base + ' The creator described a real moment. Return this exact JSON: {"diagnosis":"2-3 sentences on the real emotional core a stranger would respond to","hook":"single best opening line for short-form video first 3 seconds","story_spine":"Setup sentence / Tension sentence / Payoff sentence","cta":"identity-based call to action not like and subscribe","content_warning":"one honest thing that could make this underperform"}',
-    hook: base + ' The creator described a real moment. Return this exact JSON: {"diagnosis":"what makes this moment hook-worthy","hook_1":"emotion-first hook no setup drop straight into the feeling","hook_2":"curiosity-first hook make them need to know what happens","hook_3":"identity-first hook speaks to someone who has been through something similar","winner":"which hook you recommend and exactly why in one sentence","visual_note":"what to show on screen during first 3 seconds","platform_strategies":' + (platforms && platforms.length > 0 ? '"ARRAY_PLACEHOLDER"' : '[]') + '}',
-    script: base + ' The creator described a real moment. Return this exact JSON: {"diagnosis":"emotional truth underneath the surface story","hook":"opening line first 3 seconds","script":"full spoken narration script under 90 seconds with line breaks between beats ending with CTA","pacing_note":"one specific delivery note","b_roll":"4 specific shots each on its own line"}',
-    platform: base + ' The creator described a real moment. Return this exact JSON: {"diagnosis":"type of content in one sentence","primary_platform":"best platform name only","primary_angle":"how to frame it for that platform specifically","secondary_platform":"second best platform name only","secondary_angle":"how to adapt for secondary platform","skip":"which platform to skip and exactly why","repurpose_tip":"one smart way to get 2-3 pieces from this moment"}'
+  const contentTypePrompts = {
+    'Short-form video': 'Output a hook, story spine, full spoken script under 90 seconds, b-roll shots, and CTA.',
+    'Long-form YouTube video': 'Output a video title, thumbnail concept, intro hook, chapter structure, key talking points, and end screen CTA. Think 8-15 minute video.',
+    'LinkedIn text post': 'Output a strong opening line (no "I" to start), 3-5 short punchy paragraphs, a reflection or question to end on, and 3 relevant hashtags. No emojis.',
+    'Instagram caption': 'Output a hook first line, 3-4 short paragraphs with line breaks, a CTA, and 5 relevant hashtags.',
+    'Podcast intro': 'Output a 60-90 second spoken intro script that hooks the listener, sets up the episode theme, and teases what they will learn or feel.',
+    'Email newsletter': 'Output a subject line, preview text, opening hook, 3 body sections with headers, and a single clear CTA button text.',
+    'Blog post': 'Output an SEO-friendly headline, meta description, intro paragraph, 3-4 section headers with brief summaries, and a conclusion with CTA.'
   };
 
-  let systemPrompt = prompts[mode];
+  const formatInstructions = contentTypePrompts[contentType] || contentTypePrompts['Short-form video'];
+
+  const base = 'You are S.A.M. — Strategic Assistant for Making. You help creators turn real moments into content that builds a following. Be sharp, honest, and specific. ' + platformContext + ' ' + formatContext + ' CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No explanation outside the JSON.';
+
+  const prompts = {
+    story: base + ' ' + formatInstructions + ' Return JSON: {"diagnosis":"2-3 sentences on the real emotional core","hook":"single best opening line","story_spine":"Setup / Tension / Payoff as one string separated by /","cta":"identity-based call to action","content_warning":"one honest risk that could make this underperform"}',
+    hook: base + ' Return JSON with 3 different hook options and platform strategies. {"diagnosis":"what makes this moment hook-worthy","hook_1":"emotion-first hook","hook_2":"curiosity-first hook","hook_3":"identity-first hook","winner":"which hook and exactly why in one sentence","visual_note":"what to show on screen during first 3 seconds","platform_strategies":' + (platforms && platforms.length > 0 ? '[{"platform":"name","strategy":"specific posting advice"}]' : '[]') + '}'
+  };
 
   if (mode === 'hook' && platforms && platforms.length > 0) {
-    const platformStrategiesInstruction = ' Also include a "platform_strategies" array where each item has "platform" and "strategy" fields — one entry per selected platform explaining exactly how to post this specific moment on that platform.';
-    systemPrompt = base + ' The creator described a real moment. Return this exact JSON: {"diagnosis":"what makes this moment hook-worthy","hook_1":"emotion-first hook","hook_2":"curiosity-first hook","hook_3":"identity-first hook","winner":"which hook you recommend and why","visual_note":"what to show on screen during first 3 seconds","platform_strategies":[{"platform":"platform name","strategy":"specific posting strategy for this platform"}]}' + platformStrategiesInstruction;
+    prompts.hook = base + ' Return JSON: {"diagnosis":"what makes this moment hook-worthy","hook_1":"emotion-first hook","hook_2":"curiosity-first hook","hook_3":"identity-first hook","winner":"which hook and why","visual_note":"what to show on screen first 3 seconds","platform_strategies":[{"platform":"platform name","strategy":"specific posting strategy for this moment on this platform"}]}';
   }
 
-  if (!systemPrompt) {
-    return res.status(400).json({ error: 'Invalid mode' });
-  }
+  const systemPrompt = prompts[mode];
+  if (!systemPrompt) return res.status(400).json({ error: 'Invalid mode' });
 
   try {
     const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
@@ -63,7 +66,6 @@ module.exports = async function handler(req, res) {
     const rawText = anthropicData.content?.[0]?.text || '';
     const clean = rawText.replace(/```json|```/g, '').trim();
     const parsed = JSON.parse(clean);
-
     return res.status(200).json(parsed);
 
   } catch (err) {
