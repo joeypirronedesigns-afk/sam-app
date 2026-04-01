@@ -750,6 +750,39 @@
     .copy-btn.copied { border-color: #86EFAC; color: #166534; background: #F0FDF4; }
 
 
+    /* CREATOR CONTEXT */
+    .creator-context-wrap {
+      margin-bottom: 1.25rem;
+    }
+
+    .creator-context-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      background: var(--surface);
+      transition: all 0.15s;
+      box-shadow: var(--shadow);
+    }
+
+    .creator-context-input:focus {
+      outline: none;
+      border-color: var(--gold-border);
+      box-shadow: 0 0 0 3px rgba(160,114,42,0.08);
+    }
+
+    .creator-context-input::placeholder { color: var(--text-muted); font-style: italic; }
+
+    .creator-context-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-top: 6px;
+    }
+
     /* CONTENT TYPE SELECTOR */
     .content-type-wrap { margin-bottom: 1.25rem; }
 
@@ -1041,6 +1074,19 @@
       </div>
 
 
+
+      <div class="creator-context-wrap">
+        <div class="section-label">Tell S.A.M. about you <span style="font-weight:400;text-transform:none;letter-spacing:0;font-style:italic;color:var(--text-muted);font-family:'DM Sans',sans-serif;">(optional)</span></div>
+        <input
+          type="text"
+          id="creatorContext"
+          class="creator-context-input"
+          placeholder="e.g. Self-taught renovator documenting a full cottage gut renovation for my parents in Maryland"
+          maxlength="200"
+        />
+        <div class="creator-context-hint">One sentence. S.A.M. uses this to personalize every output for your specific audience.</div>
+      </div>
+
       <div class="content-type-wrap">
         <div class="section-label">What are you making?</div>
         <div class="content-type-grid">
@@ -1233,11 +1279,11 @@
     body.innerHTML = html || '<div class="blk-text" style="color:var(--text-muted)">No output returned. Try again.</div>';
   }
 
-  async function callAPI(mode, moment, platforms, contentType) {
+  async function callAPI(mode, moment, platforms, contentType, creatorContext) {
     const response = await fetch('/api/sam', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mode, moment, platforms, contentType })
+      body: JSON.stringify({ mode, moment, platforms, contentType, creatorContext })
     });
     if (!response.ok) {
       const err = await response.json().catch(() => ({}));
@@ -1269,9 +1315,10 @@
     try {
       const platforms = getSelectedPlatforms();
       const contentType = getContentType();
+      const creatorContext = document.getElementById('creatorContext').value.trim();
       const [storyData, hookData] = await Promise.all([
-        callAPI('story', text, platforms, contentType),
-        callAPI('hook', text, platforms, contentType)
+        callAPI('story', text, platforms, contentType, creatorContext),
+        callAPI('hook', text, platforms, contentType, creatorContext)
       ]);
 
       const combined = Object.assign({}, storyData, hookData);
