@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,298 +9,65 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* ═══════════════════════════════════════════
+       LIGHT MODE — Warm cream, editorial luxury
+    ═══════════════════════════════════════════ */
     :root {
-      --bg: #F9F7F4;
-      --surface: #FFFFFF;
-      --surface-2: #F3F1ED;
-      --surface-3: #EAE7E2;
-      --black: #1A1816;
-      --text: #1A1816;
-      --text-mid: #5C5550;
-      --text-muted: #9C9490;
-      --gold: #A0722A;
-      --gold-light: #F5ECD9;
-      --gold-border: #D4A853;
-      --border: rgba(0,0,0,0.08);
-      --border-mid: rgba(0,0,0,0.13);
-      --radius: 12px;
-      --radius-lg: 18px;
-      --radius-xl: 24px;
-      --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-      --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
-      --glow: 0 0 20px rgba(212,168,83,0);
+      --bg: #F2EFE9;
+      --bg-2: #EAE6DE;
+      --surface: rgba(255,255,255,0.85);
+      --surface-2: rgba(255,255,255,0.6);
+      --surface-3: rgba(255,255,255,0.4);
+      --surface-glass: rgba(255,255,255,0.7);
+      --text: #18160F;
+      --text-mid: #4A4236;
+      --text-muted: #8C7E6A;
+      --gold: #9A6B1E;
+      --gold-2: #C4892A;
+      --gold-light: rgba(196,137,42,0.1);
+      --gold-border: rgba(196,137,42,0.35);
+      --gold-glow: rgba(196,137,42,0.2);
+      --accent: #C4892A;
+      --border: rgba(0,0,0,0.07);
+      --border-mid: rgba(0,0,0,0.11);
+      --radius: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+      --shadow: 0 4px 20px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.05);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.06);
+      --neon-gold: rgba(196,137,42,0);
     }
 
-    /* ── DARK MODE ─────────────────────────────────────────── */
+    /* ═══════════════════════════════════════════
+       DARK MODE — Full Jarvis. No mercy.
+    ═══════════════════════════════════════════ */
     [data-theme="dark"] {
-      --bg: #0D0C0B;
-      --surface: #161412;
-      --surface-2: #1C1A17;
-      --surface-3: #242118;
-      --black: #F5F0E8;
-      --text: #F0EBE0;
-      --text-mid: #A89880;
-      --text-muted: #6B5E4E;
-      --gold: #D4A853;
-      --gold-light: rgba(212,168,83,0.12);
-      --gold-border: #A0722A;
-      --border: rgba(255,255,255,0.06);
-      --border-mid: rgba(255,255,255,0.1);
-      --shadow: 0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
-      --shadow-md: 0 4px 24px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.4);
-      --glow: 0 0 30px rgba(212,168,83,0.15);
+      --bg: #080707;
+      --bg-2: #0D0C0A;
+      --surface: rgba(22,19,15,0.9);
+      --surface-2: rgba(28,25,18,0.8);
+      --surface-3: rgba(36,32,22,0.7);
+      --surface-glass: rgba(18,16,12,0.75);
+      --text: #F0EAD8;
+      --text-mid: #A89070;
+      --text-muted: #5A4E3A;
+      --gold: #D4A84B;
+      --gold-2: #F0C060;
+      --gold-light: rgba(212,168,75,0.08);
+      --gold-border: rgba(212,168,75,0.25);
+      --gold-glow: rgba(212,168,75,0.35);
+      --accent: #D4A84B;
+      --border: rgba(212,168,75,0.08);
+      --border-mid: rgba(212,168,75,0.15);
+      --radius: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+      --shadow-sm: 0 2px 12px rgba(0,0,0,0.5);
+      --shadow: 0 4px 24px rgba(0,0,0,0.6), 0 0 40px rgba(212,168,75,0.04);
+      --shadow-lg: 0 12px 60px rgba(0,0,0,0.7), 0 0 80px rgba(212,168,75,0.06);
+      --neon-gold: rgba(212,168,75,0.6);
     }
-
-    [data-theme="dark"] body { background: var(--bg); }
-
-    [data-theme="dark"] nav {
-      background: rgba(13,12,11,0.92);
-      border-bottom-color: rgba(255,255,255,0.06);
-    }
-
-    [data-theme="dark"] .out-card,
-    [data-theme="dark"] .ideas-out,
-    [data-theme="dark"] .cal-out {
-      box-shadow: var(--shadow-md), var(--glow);
-    }
-
-    [data-theme="dark"] .hook-box {
-      background: rgba(212,168,83,0.06);
-      border-left-color: var(--gold);
-    }
-
-    [data-theme="dark"] textarea,
-    [data-theme="dark"] .creator-context-input,
-    [data-theme="dark"] .lang-select,
-    [data-theme="dark"] .demo-select {
-      background: var(--surface-2);
-      color: var(--text);
-      border-color: var(--border-mid);
-    }
-
-    [data-theme="dark"] textarea::placeholder,
-    [data-theme="dark"] .creator-context-input::placeholder {
-      color: var(--text-muted);
-    }
-
-    [data-theme="dark"] .run-btn,
-    [data-theme="dark"] .idea-btn,
-    [data-theme="dark"] .calendar-btn {
-      background: var(--gold);
-      color: #0D0C0B;
-    }
-    [data-theme="dark"] .run-btn:hover,
-    [data-theme="dark"] .idea-btn:hover,
-    [data-theme="dark"] .calendar-btn:hover {
-      background: #E8BA5A;
-      box-shadow: 0 0 30px rgba(212,168,83,0.4);
-    }
-
-    [data-theme="dark"] .focus-block {
-      background: #0A0908;
-      border: 1px solid rgba(212,168,83,0.2);
-      box-shadow: 0 0 40px rgba(212,168,83,0.08), inset 0 0 60px rgba(212,168,83,0.03);
-    }
-
-    [data-theme="dark"] .focus-block::before {
-      background: linear-gradient(90deg, var(--gold-border), var(--gold), #F0C040);
-      box-shadow: 0 0 12px rgba(212,168,83,0.6);
-    }
-
-    [data-theme="dark"] .platform-pill.selected {
-      background: rgba(212,168,83,0.15);
-      border-color: var(--gold);
-      box-shadow: 0 0 12px rgba(212,168,83,0.2);
-    }
-
-    [data-theme="dark"] .tone-btn.selected,
-    [data-theme="dark"] .content-type-btn.selected,
-    [data-theme="dark"] .emoji-btn.selected {
-      background: rgba(212,168,83,0.12);
-      border-color: var(--gold);
-      box-shadow: 0 0 10px rgba(212,168,83,0.15);
-    }
-
-    [data-theme="dark"] .mode-tab.active {
-      background: var(--surface-3);
-      box-shadow: 0 0 20px rgba(212,168,83,0.1);
-    }
-
-    [data-theme="dark"] .tip-box {
-      background: rgba(212,168,83,0.06);
-      border-color: rgba(212,168,83,0.2);
-      color: #C8A060;
-    }
-
-    [data-theme="dark"] .warn-box {
-      background: rgba(251,191,36,0.06);
-      border-color: rgba(251,191,36,0.2);
-      color: #D4A853;
-    }
-
-    [data-theme="dark"] .success-box {
-      background: rgba(34,197,94,0.06);
-      border-color: rgba(34,197,94,0.2);
-      color: #4ADE80;
-    }
-
-    [data-theme="dark"] .script-block,
-    [data-theme="dark"] .text-output-box {
-      background: var(--surface-2);
-      border-color: var(--border-mid);
-    }
-
-    [data-theme="dark"] .idea-card,
-    [data-theme="dark"] .cal-day {
-      background: var(--surface-2);
-      border-color: var(--border-mid);
-    }
-
-    [data-theme="dark"] .cal-day-header { background: var(--surface-3); }
-
-    /* HERO CTA dark fix */
-    [data-theme="dark"] .hero-cta {
-      background: var(--gold);
-      color: #0A0908;
-      box-shadow: 0 0 30px rgba(212,168,83,0.4);
-    }
-    [data-theme="dark"] .hero-cta:hover {
-      background: #F0C040;
-      box-shadow: 0 0 50px rgba(212,168,83,0.6);
-      transform: translateY(-2px);
-    }
-
-    /* MODE TABS dark */
-    [data-theme="dark"] .mode-tab { color: var(--text-muted); }
-    [data-theme="dark"] .mode-tab:hover:not(.active) { color: var(--gold); }
-    [data-theme="dark"] .mode-tab.active {
-      background: rgba(212,168,83,0.15);
-      color: var(--gold);
-      border: 1px solid rgba(212,168,83,0.3);
-      box-shadow: 0 0 20px rgba(212,168,83,0.1), inset 0 0 20px rgba(212,168,83,0.05);
-    }
-
-    /* PLATFORM PILLS dark hover */
-    [data-theme="dark"] .platform-pill:hover {
-      border-color: var(--gold);
-      color: var(--gold);
-      background: rgba(212,168,83,0.08);
-    }
-
-    /* CHIP dark */
-    [data-theme="dark"] .chip:hover {
-      background: rgba(212,168,83,0.12);
-      border-color: var(--gold);
-      color: var(--gold);
-    }
-
-    /* SECTION LABELS dark */
-    [data-theme="dark"] .section-label,
-    [data-theme="dark"] .input-card-label {
-      color: var(--gold);
-      letter-spacing: 0.18em;
-    }
-
-    /* BLK TITLE dark */
-    [data-theme="dark"] .blk-title {
-      color: var(--gold);
-      letter-spacing: 0.15em;
-    }
-
-    /* BROLL ITEMS dark */
-    [data-theme="dark"] .broll-item { border-color: rgba(212,168,83,0.1); }
-
-    /* COPY BUTTONS dark */
-    [data-theme="dark"] .copy-btn,
-    [data-theme="dark"] .idea-copy-btn,
-    [data-theme="dark"] .cal-copy-btn {
-      background: rgba(212,168,83,0.06);
-      border-color: rgba(212,168,83,0.2);
-      color: var(--text-muted);
-    }
-    [data-theme="dark"] .copy-btn:hover,
-    [data-theme="dark"] .idea-copy-btn:hover,
-    [data-theme="dark"] .cal-copy-btn:hover {
-      background: rgba(212,168,83,0.15);
-      border-color: var(--gold);
-      color: var(--gold);
-    }
-
-    /* NEW BTN dark */
-    [data-theme="dark"] .new-btn {
-      background: rgba(255,255,255,0.05);
-      border-color: rgba(255,255,255,0.1);
-      color: var(--text-muted);
-    }
-    [data-theme="dark"] .new-btn:hover {
-      background: rgba(212,168,83,0.1);
-      border-color: rgba(212,168,83,0.3);
-      color: var(--gold);
-    }
-
-    /* OUTPUT HEADER dark */
-    [data-theme="dark"] .out-header,
-    [data-theme="dark"] .ideas-header,
-    [data-theme="dark"] .cal-header {
-      background: rgba(212,168,83,0.04);
-      border-bottom-color: rgba(212,168,83,0.1);
-    }
-
-    /* SAVE PDF BTN dark */
-    [data-theme="dark"] .save-pdf-btn {
-      border-color: rgba(212,168,83,0.2);
-      color: var(--text-muted);
-    }
-    [data-theme="dark"] .save-pdf-btn:hover {
-      background: rgba(212,168,83,0.1);
-      border-color: var(--gold);
-      color: var(--gold);
-      border-style: solid;
-    }
-
-    /* SECTION HEADER dark */
-    [data-theme="dark"] .section-header h2 { color: var(--text); }
-    [data-theme="dark"] .section-header p { color: var(--text-muted); }
-
-    /* OUTPUT CARDS dark */
-    [data-theme="dark"] .output-card {
-      background: rgba(212,168,83,0.04);
-      border-color: rgba(212,168,83,0.12);
-      border-left-color: var(--gold);
-    }
-    [data-theme="dark"] .output-title { color: var(--text); }
-
-    /* INPUT CARD dark */
-    [data-theme="dark"] .input-card,
-    [data-theme="dark"] .idea-input-card,
-    [data-theme="dark"] .calendar-input-card {
-      background: var(--surface);
-      border-color: rgba(212,168,83,0.12);
-    }
-
-    /* PILL dark */
-    [data-theme="dark"] .pill {
-      background: var(--gold);
-      color: #0A0908;
-    }
-    [data-theme="dark"] .pill.soft {
-      background: rgba(212,168,83,0.1);
-      color: var(--gold);
-      border-color: rgba(212,168,83,0.3);
-    }
-
-    /* LOADER DOTS dark */
-    [data-theme="dark"] .loader-dots span { background: var(--gold); }
-
-    /* HERO EYEBROW dark */
-    [data-theme="dark"] .hero-eyebrow {
-      background: rgba(212,168,83,0.1);
-      border-color: rgba(212,168,83,0.3);
-      box-shadow: 0 0 20px rgba(212,168,83,0.1);
-    }
-
-    /* FOOTER dark */
-    [data-theme="dark"] footer { border-top-color: rgba(212,168,83,0.1); }
 
     html { scroll-behavior: smooth; }
 
@@ -310,45 +77,230 @@
       color: var(--text);
       min-height: 100vh;
       overflow-x: hidden;
-      font-size: 17px;
+      font-size: 16px;
       line-height: 1.7;
       -webkit-font-smoothing: antialiased;
+      transition: background 0.4s ease, color 0.4s ease;
     }
 
-    /* NAV */
+    /* ── DARK BG ATMOSPHERE ─────────────────── */
+    [data-theme="dark"] body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 15% 20%, rgba(212,168,75,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 85% 80%, rgba(212,168,75,0.05) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 40% at 50% 0%, rgba(212,168,75,0.04) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    [data-theme="dark"] body::after {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(212,168,75,0.4) 30%,
+        rgba(240,192,96,0.8) 50%,
+        rgba(212,168,75,0.4) 70%,
+        transparent 100%);
+      animation: scanline 8s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 9999;
+    }
+    @keyframes scanline {
+      0% { top: -2px; opacity: 0; }
+      2% { opacity: 1; }
+      92% { opacity: 0.5; }
+      100% { top: 100vh; opacity: 0; }
+    }
+
+    /* ── LIGHT BG TEXTURE ──────────────────── */
+    [data-theme="light"] body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 10% 15%, rgba(196,137,42,0.05) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 60% at 90% 85%, rgba(196,137,42,0.04) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* PARTICLE CANVAS */
+    #particle-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+    }
+    [data-theme="dark"] #particle-canvas { opacity: 1; }
+
+    /* EDGE FLARES (dark only) */
+    .edge-flare-left, .edge-flare-right {
+      position: fixed;
+      top: 0; bottom: 0;
+      width: 3px;
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+    [data-theme="dark"] .edge-flare-left,
+    [data-theme="dark"] .edge-flare-right { opacity: 1; }
+
+    .edge-flare-left {
+      left: 0;
+      background: linear-gradient(180deg,
+        transparent 0%,
+        rgba(212,168,75,0.6) 20%,
+        rgba(240,192,96,0.9) 50%,
+        rgba(212,168,75,0.6) 80%,
+        transparent 100%);
+      box-shadow: 0 0 30px 8px rgba(212,168,75,0.3), 0 0 80px 20px rgba(212,168,75,0.15);
+      animation: flareLeft 4s ease-in-out infinite alternate;
+    }
+    .edge-flare-right {
+      right: 0;
+      background: linear-gradient(180deg,
+        transparent 0%,
+        rgba(212,168,75,0.4) 30%,
+        rgba(212,168,75,0.7) 60%,
+        rgba(212,168,75,0.4) 80%,
+        transparent 100%);
+      box-shadow: 0 0 30px 8px rgba(212,168,75,0.25), 0 0 80px 20px rgba(212,168,75,0.1);
+      animation: flareRight 5s ease-in-out infinite alternate;
+    }
+    @keyframes flareLeft {
+      0% { opacity: 0.6; filter: blur(1px); }
+      100% { opacity: 1; filter: blur(0px); box-shadow: 0 0 40px 12px rgba(212,168,75,0.4), 0 0 100px 30px rgba(212,168,75,0.2); }
+    }
+    @keyframes flareRight {
+      0% { opacity: 0.8; filter: blur(2px); }
+      100% { opacity: 0.5; filter: blur(0px); }
+    }
+
+    /* CORNER ACCENT DOTS */
+    .corner-accent {
+      position: fixed;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 12px 4px var(--gold-glow);
+      pointer-events: none;
+      z-index: 3;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+      animation: cornerPulse 3s ease-in-out infinite;
+    }
+    [data-theme="dark"] .corner-accent { opacity: 1; }
+    .corner-accent.tl { top: 2px; left: 2px; }
+    .corner-accent.tr { top: 2px; right: 2px; }
+    .corner-accent.bl { bottom: 2px; left: 2px; }
+    .corner-accent.br { bottom: 2px; right: 2px; }
+    @keyframes cornerPulse {
+      0%, 100% { transform: scale(1); opacity: 0.6; }
+      50% { transform: scale(1.4); opacity: 1; }
+    }
+
+    /* GRID OVERLAY (dark) */
+    [data-theme="dark"] .tool-section::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(212,168,75,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(212,168,75,0.025) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .tool-inner { position: relative; z-index: 2; }
+
+    /* ══ NAV ══════════════════════════════════ */
     nav {
       position: fixed;
       top: 0; left: 0; right: 0;
-      height: 58px;
-      background: rgba(249,247,244,0.92);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
+      height: 62px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-mid);
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 2rem;
       z-index: 100;
+      background: var(--surface-glass);
+      transition: background 0.4s, border-color 0.4s;
+    }
+    [data-theme="dark"] nav {
+      box-shadow: 0 1px 0 rgba(212,168,75,0.1), 0 4px 30px rgba(0,0,0,0.4);
+    }
+    [data-theme="light"] nav {
+      box-shadow: 0 1px 0 rgba(0,0,0,0.04), var(--shadow-sm);
     }
 
     .nav-logo {
       font-family: 'Syne', sans-serif;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 800;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.25em;
       text-transform: uppercase;
-      color: var(--black);
+      color: var(--text);
+      transition: all 0.3s;
+    }
+    .nav-logo span { color: var(--gold); }
+    [data-theme="dark"] .nav-logo {
+      text-shadow: 0 0 20px rgba(212,168,75,0.4);
+    }
+    [data-theme="dark"] .nav-logo span {
+      text-shadow: 0 0 15px rgba(212,168,75,0.8);
     }
 
-    .nav-logo span { color: var(--gold); }
+    .nav-right { display: flex; align-items: center; gap: 14px; }
 
     .nav-tag {
-      font-size: 13px;
+      font-size: 12px;
       color: var(--text-muted);
       font-style: italic;
+      letter-spacing: 0.02em;
     }
 
-    /* HERO */
+    /* THEME TOGGLE */
+    .theme-toggle {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      border: 1px solid var(--border-mid);
+      background: var(--surface-2);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px;
+      position: relative; overflow: hidden;
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      backdrop-filter: blur(8px);
+    }
+    .theme-toggle:hover {
+      border-color: var(--gold-border);
+      background: var(--gold-light);
+      transform: scale(1.1) rotate(12deg);
+      box-shadow: 0 0 20px var(--gold-glow);
+    }
+    .theme-toggle .icon-sun,
+    .theme-toggle .icon-moon {
+      position: absolute;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .icon-moon { opacity: 1; transform: scale(1); }
+    .icon-sun  { opacity: 0; transform: scale(0) rotate(180deg); }
+    [data-theme="dark"] .icon-moon { opacity: 0; transform: scale(0) rotate(-180deg); }
+    [data-theme="dark"] .icon-sun  { opacity: 1; transform: scale(1) rotate(0deg); }
+
+    /* ══ HERO ═════════════════════════════════ */
     .hero {
       min-height: 100vh;
       display: flex;
@@ -357,554 +309,311 @@
       justify-content: center;
       text-align: center;
       padding: 100px 2rem 80px;
+      position: relative;
+      z-index: 2;
     }
 
     .hero-eyebrow {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
+      gap: 8px;
       font-family: 'Syne', sans-serif;
       font-size: 10px;
       font-weight: 700;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--gold);
       background: var(--gold-light);
       border: 1px solid var(--gold-border);
-      padding: 5px 14px;
-      border-radius: 20px;
-      margin-bottom: 2rem;
+      padding: 6px 16px;
+      border-radius: 30px;
+      margin-bottom: 2.5rem;
+      backdrop-filter: blur(8px);
+      transition: all 0.3s;
     }
-
+    [data-theme="dark"] .hero-eyebrow {
+      box-shadow: 0 0 20px rgba(212,168,75,0.15), inset 0 0 20px rgba(212,168,75,0.05);
+    }
     .hero-eyebrow::before {
       content: '';
-      width: 5px;
-      height: 5px;
+      width: 5px; height: 5px;
       border-radius: 50%;
       background: var(--gold);
-      flex-shrink: 0;
+      animation: dotPulse 2s ease-in-out infinite;
+    }
+    @keyframes dotPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
     }
 
     .hero h1 {
       font-family: 'Syne', sans-serif;
-      font-size: clamp(34px, 5vw, 60px);
+      font-size: clamp(38px, 5.5vw, 68px);
       font-weight: 700;
-      line-height: 1.15;
-      color: var(--black);
-      margin-bottom: 1.5rem;
-      letter-spacing: -0.02em;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 1.75rem;
+      letter-spacing: -0.03em;
     }
-
     .hero h1 em {
       font-style: italic;
       color: var(--gold);
       font-family: 'DM Sans', sans-serif;
       font-weight: 300;
-      font-size: 0.95em;
+    }
+    [data-theme="dark"] .hero h1 {
+      text-shadow: 0 0 80px rgba(212,168,75,0.12);
+    }
+    [data-theme="dark"] .hero h1 em {
+      text-shadow: 0 0 40px rgba(212,168,75,0.5);
     }
 
     .hero-sub {
-      font-size: clamp(15px, 2vw, 17px);
-      line-height: 1.75;
+      font-size: clamp(15px, 1.8vw, 17px);
+      line-height: 1.8;
       color: var(--text-mid);
-      max-width: 520px;
-      margin-bottom: 2.5rem;
-      font-weight: 400;
+      max-width: 500px;
+      margin-bottom: 3rem;
     }
 
     .hero-cta {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      background: var(--black);
-      color: #fff;
+      gap: 10px;
       font-family: 'Syne', sans-serif;
       font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
+      font-weight: 800;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
-      padding: 13px 26px;
-      border-radius: 40px;
+      padding: 15px 32px;
+      border-radius: 50px;
       border: none;
       cursor: pointer;
-      transition: all 0.2s;
       text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
     }
-
-    .hero-cta:hover {
+    [data-theme="light"] .hero-cta {
+      background: var(--text);
+      color: #F2EFE9;
+      box-shadow: var(--shadow);
+    }
+    [data-theme="light"] .hero-cta:hover {
       background: var(--gold);
-      transform: translateY(-1px);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px var(--gold-glow);
     }
-
-    /* TOOL SECTION */
-    .tool-section { padding: 0 1.25rem 6rem; }
-
-    .tool-inner {
-      max-width: 720px;
-      margin: 0 auto;
+    [data-theme="dark"] .hero-cta {
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-2) 100%);
+      color: #0A0907;
+      box-shadow: 0 0 30px rgba(212,168,75,0.4), 0 4px 20px rgba(0,0,0,0.3);
     }
-
-    /* WHAT YOU GET */
-    .section-header {
-      text-align: center;
-      margin-bottom: 1.5rem;
+    [data-theme="dark"] .hero-cta:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 0 60px rgba(212,168,75,0.6), 0 8px 30px rgba(0,0,0,0.4);
     }
+    .hero-cta::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.2) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .hero-cta:active::after { opacity: 1; }
 
+    /* ══ TOOL SECTION ════════════════════════ */
+    .tool-section { padding: 0 1.5rem 8rem; }
+
+    .tool-inner { max-width: 740px; margin: 0 auto; }
+
+    /* SECTION HEADER */
+    .section-header { text-align: center; margin-bottom: 2rem; }
     .section-header h2 {
       font-family: 'Syne', sans-serif;
-      font-size: 20px;
+      font-size: 21px;
       font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.5rem;
       letter-spacing: -0.01em;
-      color: var(--black);
-      margin-bottom: 0.4rem;
     }
-
     .section-header p {
-      font-size: 16px;
-      color: var(--text-mid);
+      font-size: 15px;
+      color: var(--text-muted);
       font-style: italic;
     }
 
+    /* ══ GLASS CARD ══════════════════════════ */
+    .glass-card {
+      background: var(--surface);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      transition: all 0.3s;
+    }
+    [data-theme="dark"] .glass-card {
+      border-color: rgba(212,168,75,0.12);
+      box-shadow: var(--shadow), 0 0 0 1px rgba(212,168,75,0.04);
+    }
+    [data-theme="dark"] .glass-card:hover {
+      border-color: rgba(212,168,75,0.2);
+      box-shadow: var(--shadow-lg), 0 0 40px rgba(212,168,75,0.08);
+    }
+
+    /* OUTPUT FEATURE CARDS */
     .outputs-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-      margin-bottom: 1.25rem;
+      gap: 10px;
+      margin-bottom: 1.5rem;
     }
-
     @media (max-width: 520px) { .outputs-grid { grid-template-columns: 1fr; } }
 
     .output-card {
       background: var(--surface);
-      border: 1px solid var(--border);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-mid);
       border-radius: var(--radius-lg);
-      padding: 1.4rem 1.4rem 1.4rem 1.5rem;
+      padding: 1.4rem 1.5rem;
       display: flex;
       gap: 14px;
       align-items: flex-start;
-      border-left: 4px solid var(--gold-border);
-      box-shadow: var(--shadow);
-      transition: box-shadow 0.15s;
+      border-left: 3px solid var(--gold-border);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.25s cubic-bezier(0.34, 1.2, 0.64, 1);
+      cursor: default;
     }
-
-    .output-card:hover { box-shadow: var(--shadow-md); }
-
-    .output-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
-
+    .output-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow);
+      border-left-color: var(--gold);
+    }
+    [data-theme="dark"] .output-card {
+      background: rgba(22,19,14,0.8);
+      border-color: rgba(212,168,75,0.1);
+      border-left-color: rgba(212,168,75,0.3);
+    }
+    [data-theme="dark"] .output-card:hover {
+      border-color: rgba(212,168,75,0.2);
+      border-left-color: var(--gold);
+      box-shadow: var(--shadow), 0 0 30px rgba(212,168,75,0.08);
+    }
+    .output-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
     .output-title {
       font-family: 'Syne', sans-serif;
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 700;
-      color: var(--black);
-      letter-spacing: -0.01em;
-      margin-bottom: 5px;
+      color: var(--text);
+      margin-bottom: 4px;
     }
+    .output-desc { font-size: 13px; color: var(--text-muted); line-height: 1.55; }
 
-    .output-desc {
-      font-size: 15px;
-      color: var(--text-mid);
-      line-height: 1.6;
-    }
-
-    /* MODE TOGGLE */
+    /* ══ MODE TABS ════════════════════════════ */
     .mode-toggle-wrap {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       margin-bottom: 2rem;
       background: var(--surface-2);
+      backdrop-filter: blur(12px);
       border: 1px solid var(--border-mid);
       border-radius: var(--radius-lg);
       padding: 5px;
+      transition: all 0.3s;
+    }
+    [data-theme="dark"] .mode-toggle-wrap {
+      background: rgba(18,15,10,0.6);
+      border-color: rgba(212,168,75,0.1);
     }
 
     .mode-tab {
       flex: 1;
-      padding: 12px 16px;
-      border: none;
+      padding: 12px 14px;
+      border: 1px solid transparent;
       border-radius: var(--radius);
       font-family: 'Syne', sans-serif;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.25s;
       background: transparent;
       color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
     }
-
     .mode-tab.active {
       background: var(--surface);
-      color: var(--black);
-      box-shadow: var(--shadow-md);
+      color: var(--text);
+      border-color: var(--border-mid);
+      box-shadow: var(--shadow-sm);
     }
-
+    [data-theme="dark"] .mode-tab.active {
+      background: rgba(212,168,75,0.1);
+      color: var(--gold);
+      border-color: rgba(212,168,75,0.25);
+      box-shadow: 0 0 20px rgba(212,168,75,0.1), inset 0 0 16px rgba(212,168,75,0.04);
+    }
     .mode-tab:hover:not(.active) { color: var(--text); }
+    [data-theme="dark"] .mode-tab:hover:not(.active) { color: var(--gold); }
 
-    /* IDEA MAKER */
+    /* ══ SECTIONS ═════════════════════════════ */
     .idea-section { display: none; }
     .idea-section.show { display: block; }
     .moment-section { display: block; }
     .moment-section.hide { display: none; }
-
-    .idea-input-card {
-      background: var(--surface);
-      border: 1px solid var(--border-mid);
-      border-radius: var(--radius-xl);
-      padding: 1.75rem;
-      margin-bottom: 1.25rem;
-      box-shadow: var(--shadow-md);
-    }
-
-    .idea-btn {
-      width: 100%;
-      padding: 15px;
-      background: var(--black);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius);
-      font-family: 'Syne', sans-serif;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      cursor: pointer;
-      margin-top: 1.25rem;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .idea-btn:hover { background: var(--gold); transform: translateY(-1px); }
-    .idea-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
-
-    .ideas-out {
-      display: none;
-      background: var(--surface);
-      border: 1px solid var(--border-mid);
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-      box-shadow: var(--shadow-md);
-      animation: fadeUp 0.35s ease;
-    }
-
-    .ideas-out.show { display: block; }
-
-    .ideas-header {
-      padding: 1rem 1.5rem;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface-2);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .ideas-header-label {
-      font-family: 'Syne', sans-serif;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--gold);
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
-
-    .ideas-header-label::before {
-      content: '';
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--gold);
-    }
-
-    .ideas-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 12px; }
-
-    .idea-card {
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1rem 1.25rem;
-      border-left: 3px solid var(--gold-border);
-      position: relative;
-    }
-
-    .idea-num {
-      font-family: 'Syne', sans-serif;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      color: var(--gold);
-      margin-bottom: 4px;
-    }
-
-    .idea-title {
-      font-size: 16px;
-      font-weight: 500;
-      color: var(--black);
-      line-height: 1.45;
-      margin-bottom: 6px;
-    }
-
-    .idea-why {
-      font-size: 13px;
-      color: var(--text-mid);
-      line-height: 1.6;
-    }
-
-    .idea-copy-btn {
-      display: inline-flex;
-      align-items: center;
-      font-size: 10px;
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 5px;
-      padding: 4px 10px;
-      cursor: pointer;
-      transition: all 0.12s;
-      margin-top: 8px;
-      float: right;
-    }
-
-    .idea-copy-btn:hover { border-color: var(--gold-border); color: var(--gold); background: var(--gold-light); }
-    .idea-copy-btn.copied { border-color: #86EFAC; color: #166534; background: #F0FDF4; }
-
-    /* CALENDAR */
     .calendar-section { display: none; }
     .calendar-section.show { display: block; }
 
-    .calendar-input-card {
-      background: var(--surface);
-      border: 1px solid var(--border-mid);
-      border-radius: var(--radius-xl);
-      padding: 1.75rem;
-      margin-bottom: 1.25rem;
-      box-shadow: var(--shadow-md);
-    }
-
-    .calendar-btn {
-      width: 100%;
-      padding: 15px;
-      background: var(--black);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius);
-      font-family: 'Syne', sans-serif;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      cursor: pointer;
-      margin-top: 1.25rem;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .calendar-btn:hover { background: var(--gold); transform: translateY(-1px); }
-    .calendar-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
-
-    .cal-out {
-      display: none;
-      background: var(--surface);
-      border: 1px solid var(--border-mid);
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-      box-shadow: var(--shadow-md);
-      animation: fadeUp 0.35s ease;
-    }
-
-    .cal-out.show { display: block; }
-
-    .cal-header {
-      padding: 1rem 1.5rem;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface-2);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .cal-header-label {
-      font-family: 'Syne', sans-serif;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--gold);
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
-
-    .cal-header-label::before {
-      content: '';
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--gold);
-    }
-
-    .cal-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 10px; }
-
-    .cal-day {
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
-
-    .cal-day-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 16px;
-      background: var(--surface-3);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .cal-day-name {
-      font-family: 'Syne', sans-serif;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--black);
-    }
-
-    .cal-day-platform {
-      font-family: 'Syne', sans-serif;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--gold);
-      background: var(--gold-light);
-      border: 1px solid var(--gold-border);
-      padding: 3px 10px;
-      border-radius: 20px;
-    }
-
-    .cal-day-body { padding: 12px 16px; }
-
-    .cal-post-type {
-      font-size: 11px;
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 5px;
-    }
-
-    .cal-post-content {
-      font-size: 15px;
-      color: var(--black);
-      line-height: 1.55;
-      margin-bottom: 6px;
-    }
-
-    .cal-post-tip {
-      font-size: 12px;
-      color: var(--text-muted);
-      font-style: italic;
-      line-height: 1.5;
-    }
-
-    .cal-copy-btn {
-      display: inline-flex;
-      align-items: center;
-      font-size: 10px;
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 5px;
-      padding: 4px 10px;
-      cursor: pointer;
-      transition: all 0.12s;
-      margin-top: 8px;
-      float: right;
-    }
-
-    .cal-copy-btn:hover { border-color: var(--gold-border); color: var(--gold); background: var(--gold-light); }
-    .cal-copy-btn.copied { border-color: #86EFAC; color: #166534; background: #F0FDF4; }
-
-    /* PLATFORM SELECTOR */
-    .platform-wrap { margin-bottom: 1.25rem; }
-
-    .platform-grid { display: flex; flex-wrap: wrap; gap: 8px; }
-
-    .platform-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-family: 'Syne', sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.03em;
-      padding: 10px 16px;
-      border-radius: 40px;
-      border: 1px solid var(--border-mid);
-      background: var(--surface);
-      color: var(--text-mid);
-      cursor: pointer;
-      transition: all 0.15s;
-      user-select: none;
-      box-shadow: var(--shadow);
-    }
-
-    .platform-pill:hover { border-color: var(--gold-border); color: var(--black); }
-
-    .platform-pill.selected {
-      background: var(--gold-light);
-      border-color: var(--gold-border);
-      color: var(--gold);
-    }
-
-    .platform-hint {
-      font-size: 13px;
-      color: var(--text-muted);
-      font-style: italic;
-      margin-top: 8px;
-    }
-
-    /* INPUT CARD */
+    /* ══ INPUT AREAS ══════════════════════════ */
     .input-card {
-      background: var(--surface);
-      border: 1px solid var(--border-mid);
-      border-radius: var(--radius-xl);
       padding: 1.75rem;
       margin-bottom: 1.25rem;
-      box-shadow: var(--shadow-md);
+    }
+    .idea-input-card, .calendar-input-card {
+      padding: 1.75rem;
+      margin-bottom: 1.25rem;
     }
 
     .input-card-label {
       font-family: 'Syne', sans-serif;
       font-size: 10px;
       font-weight: 700;
-      letter-spacing: 0.16em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--text-muted);
+      color: var(--gold);
+      margin-bottom: 1rem;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .input-card-label::before {
+      content: '';
+      display: inline-block;
+      width: 3px; height: 12px;
+      background: var(--gold);
+      border-radius: 2px;
+    }
+    [data-theme="dark"] .input-card-label {
+      text-shadow: 0 0 12px rgba(212,168,75,0.4);
+    }
+
+    .section-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
       margin-bottom: 0.875rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-label::before {
+      content: '';
+      display: inline-block;
+      width: 3px; height: 12px;
+      background: var(--gold);
+      border-radius: 2px;
     }
 
     .input-wrap { position: relative; }
@@ -912,7 +621,7 @@
     textarea {
       width: 100%;
       min-height: 120px;
-      padding: 14px 48px 14px 14px;
+      padding: 14px 52px 14px 16px;
       border: 1px solid var(--border-mid);
       border-radius: var(--radius);
       font-family: 'DM Sans', sans-serif;
@@ -921,1129 +630,776 @@
       background: var(--surface-2);
       resize: vertical;
       line-height: 1.7;
-      transition: all 0.15s;
+      transition: all 0.2s;
+      backdrop-filter: blur(8px);
     }
-
     textarea:focus {
       outline: none;
-      border-color: var(--gold-border);
+      border-color: var(--gold);
       background: var(--surface);
-      box-shadow: 0 0 0 3px rgba(160,114,42,0.08);
+      box-shadow: 0 0 0 3px var(--gold-light), 0 0 20px var(--gold-glow);
     }
-
     textarea::placeholder { color: var(--text-muted); }
-
-    .char-hint {
-      font-size: 11px;
-      color: var(--text-muted);
-      text-align: right;
-      margin-top: 5px;
+    [data-theme="dark"] textarea {
+      background: rgba(18,15,10,0.7);
+      border-color: rgba(212,168,75,0.12);
+      color: var(--text);
+    }
+    [data-theme="dark"] textarea:focus {
+      border-color: rgba(212,168,75,0.5);
+      background: rgba(22,19,14,0.8);
+      box-shadow: 0 0 0 3px rgba(212,168,75,0.08), 0 0 30px rgba(212,168,75,0.1);
     }
 
-    /* PASTE BUTTON */
+    .char-hint { font-size: 11px; color: var(--text-muted); text-align: right; margin-top: 5px; }
+
+    /* PASTE / MIC BUTTONS */
     .paste-btn {
       position: absolute;
-      bottom: 10px;
-      right: 48px;
-      width: 32px;
-      height: 32px;
+      bottom: 10px; right: 50px;
+      width: 34px; height: 34px;
       border-radius: 50%;
       border: 1px solid var(--border-mid);
       background: var(--surface);
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       font-size: 13px;
-      transition: all 0.15s;
-      box-shadow: var(--shadow);
-      title: "Paste from clipboard";
+      transition: all 0.2s;
+      backdrop-filter: blur(8px);
     }
     .paste-btn:hover { border-color: var(--gold-border); background: var(--gold-light); }
-    .paste-btn.pasted { border-color: #86EFAC; background: #F0FDF4; }
 
-    /* HELPFUL TIP BOX */
-    .tip-box {
-      font-size: 13px;
-      color: #92400E;
-      background: #FFFBEB;
-      border: 1px solid #FCD34D;
-      border-radius: var(--radius);
-      padding: 8px 12px;
-      margin-top: 8px;
-      line-height: 1.55;
-      display: flex;
-      gap: 7px;
-      align-items: flex-start;
-    }
-    .tip-box::before { content: '💡'; flex-shrink: 0; font-size: 13px; }
-
-    /* INLINE EXAMPLE */
-    .inline-example {
-      background: var(--gold-light);
-      border: 1px solid var(--gold-border);
-      border-radius: var(--radius);
-      padding: 10px 14px;
-      margin-top: 10px;
-      font-size: 13px;
-      color: var(--gold);
-      line-height: 1.6;
-    }
-    .inline-example-label {
-      font-family: 'Syne', sans-serif;
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 4px;
-      opacity: 0.8;
-    }
-    .inline-example-text { color: var(--text-mid); font-style: italic; }
-
-    /* IDEAL TIME BADGE */
-    .ideal-time {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-family: 'Syne', sans-serif;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #166534;
-      background: #F0FDF4;
-      border: 1px solid #86EFAC;
-      padding: 3px 10px;
-      border-radius: 20px;
-      margin-top: 6px;
-      display: inline-flex;
-    }
-
-    /* BEST PLATFORM BADGE */
-    .best-platform-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 12px;
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      color: var(--gold);
-      background: var(--gold-light);
-      border: 1px solid var(--gold-border);
-      padding: 3px 10px;
-      border-radius: 20px;
-      margin-top: 6px;
-      display: inline-flex;
-    }
-
-    /* MIC */
     .mic-btn {
       position: absolute;
-      bottom: 10px;
-      right: 10px;
-      width: 32px;
-      height: 32px;
+      bottom: 10px; right: 10px;
+      width: 34px; height: 34px;
       border-radius: 50%;
       border: 1px solid var(--border-mid);
       background: var(--surface);
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       font-size: 14px;
-      transition: all 0.15s;
-      box-shadow: var(--shadow);
-    }
-
-    .mic-btn:hover { border-color: var(--gold-border); background: var(--gold-light); }
-    .mic-btn.recording { border-color: #DC2626; background: #FEF2F2; animation: pulse 1s ease-in-out infinite; }
-    @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.08);} }
-
-    /* CHIPS */
-    .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 1rem; align-items: center; }
-
-    .chips-label { font-size: 13px; color: var(--text-muted); font-style: italic; flex-shrink: 0; }
-
-    .chip {
-      font-size: 14px;
-      padding: 5px 12px;
-      border: 1px solid var(--border-mid);
-      border-radius: 20px;
-      cursor: pointer;
-      background: var(--surface-2);
-      color: var(--text-mid);
-      font-family: 'DM Sans', sans-serif;
-      transition: all 0.12s;
-    }
-
-    .chip:hover { border-color: var(--gold-border); color: var(--gold); background: var(--gold-light); }
-
-    /* RUN BUTTON */
-    .run-btn {
-      width: 100%;
-      padding: 15px;
-      background: var(--black);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius);
-      font-family: 'Syne', sans-serif;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      cursor: pointer;
-      margin-top: 1.25rem;
       transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+      backdrop-filter: blur(8px);
     }
-
-    .run-btn:hover { background: var(--gold); transform: translateY(-1px); }
-    .run-btn:active { transform: scale(0.99); }
-    .run-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
-
-    /* LOADER */
-    .loader { display: none; text-align: center; padding: 1.5rem 0 0.5rem; }
-    .loader.show { display: block; }
-
-    .loader-dots { display: inline-flex; gap: 6px; align-items: center; }
-    .loader-dots span {
-      width: 7px; height: 7px;
-      background: var(--gold);
-      border-radius: 50%;
-      animation: bounce 1.2s ease-in-out infinite;
+    .mic-btn:hover { border-color: var(--gold-border); background: var(--gold-light); }
+    .mic-btn.recording {
+      border-color: #E53E3E;
+      background: rgba(229,62,62,0.1);
+      animation: micPulse 1s ease-in-out infinite;
     }
-    .loader-dots span:nth-child(2) { animation-delay: 0.2s; }
-    .loader-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes micPulse { 0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(229,62,62,0.4);} 50%{transform:scale(1.1);box-shadow:0 0 0 6px rgba(229,62,62,0);} }
 
-    @keyframes bounce {
-      0%, 80%, 100% { transform: scale(0.6); opacity: 0.3; }
-      40% { transform: scale(1); opacity: 1; }
-    }
+    /* ══ PLATFORM PILLS ═══════════════════════ */
+    .platform-wrap { margin-bottom: 1.5rem; }
+    .platform-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .platform-hint { font-size: 12px; color: var(--text-muted); font-style: italic; margin-top: 8px; }
 
-    .loader-text {
-      font-size: 15px;
-      color: var(--text-muted);
-      margin-top: 8px;
-      font-style: italic;
-    }
-
-    /* ERROR */
-    .error-box {
-      display: none;
-      font-size: 13px;
-      color: #991B1B;
-      background: #FEF2F2;
-      border: 1px solid #FECACA;
-      border-radius: var(--radius);
-      padding: 12px 14px;
-      margin-top: 1rem;
-      line-height: 1.5;
-    }
-    .error-box.show { display: block; }
-
-    /* OUTPUT */
-    .out-card {
-      background: var(--surface);
-      border: 1px solid var(--border-mid);
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-      display: none;
-      animation: fadeUp 0.35s ease;
-      box-shadow: var(--shadow-md);
-    }
-
-    .out-card.show { display: block; }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .out-header {
-      padding: 1rem 1.5rem;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: var(--surface-2);
-    }
-
-    .out-label {
-      font-family: 'Syne', sans-serif;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--gold);
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
-
-    .out-label::before {
-      content: '';
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--gold);
-    }
-
-    .new-btn {
-      font-size: 14px;
-      color: var(--text-mid);
-      background: var(--surface);
-      border: 1px solid var(--border-mid);
-      border-radius: 6px;
-      padding: 5px 12px;
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      transition: all 0.12s;
-    }
-
-    .new-btn:hover { background: var(--surface-3); color: var(--black); }
-
-    .out-body { padding: 1.75rem; }
-
-    .blk {
-      margin-bottom: 1.5rem;
-      padding-bottom: 1.5rem;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .blk:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
-
-    .blk-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 0.625rem;
-    }
-
-    .blk-text {
-      font-size: 17px;
-      line-height: 1.85;
-      color: var(--text);
-    }
-
-    .hook-box {
-      font-size: 20px;
-      font-weight: 400;
-      line-height: 1.5;
-      padding: 14px 18px;
-      background: var(--surface-2);
-      border-left: 3px solid var(--gold-border);
-      border-radius: 0 var(--radius) var(--radius) 0;
-      color: var(--black);
-    }
-
-    .pill {
-      display: inline-block;
-      font-family: 'Syne', sans-serif;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 4px 12px;
-      border-radius: 20px;
-      background: var(--black);
-      color: #fff;
-      margin-bottom: 8px;
-    }
-
-    .pill.soft {
-      background: var(--surface-2);
-      color: var(--text-mid);
-      border: 1px solid var(--border-mid);
-    }
-
-    .warn-box {
-      font-size: 16px;
-      padding: 12px 14px;
-      background: #FFFBEB;
-      border: 1px solid #FCD34D;
-      border-radius: var(--radius);
-      color: #92400E;
-      line-height: 1.7;
-    }
-
-    .success-box {
-      font-size: 16px;
-      padding: 12px 14px;
-      background: #F0FDF4;
-      border: 1px solid #86EFAC;
-      border-radius: var(--radius);
-      color: #166534;
-      line-height: 1.7;
-    }
-
-    .script-box {
-      font-size: 14px;
-      line-height: 1.9;
-      padding: 14px 16px;
-      background: var(--surface-2);
-      border-radius: var(--radius);
-      color: var(--text);
-      white-space: pre-wrap;
-      border: 1px solid var(--border);
-    }
-
-    .broll-item {
-      padding: 7px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 16px;
-      color: var(--text-mid);
-      line-height: 1.65;
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-    }
-
-    .broll-item::before { content: '→'; color: var(--gold); flex-shrink: 0; }
-    .broll-item:last-child { border-bottom: none; }
-
-    /* COPY */
-    .copy-btn {
+    .platform-pill {
       display: inline-flex;
       align-items: center;
-      font-size: 10px;
+      gap: 6px;
       font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: 5px;
-      padding: 4px 10px;
-      cursor: pointer;
-      transition: all 0.12s;
-      margin-top: 10px;
-      float: right;
-    }
-
-    .copy-btn:hover { border-color: var(--gold-border); color: var(--gold); background: var(--gold-light); }
-    .copy-btn.copied { border-color: #86EFAC; color: #166534; background: #F0FDF4; }
-
-
-    /* TEXT OUTPUT BOX */
-    .text-output-box {
-      font-size: 16px;
-      line-height: 1.9;
-      padding: 1.25rem 1.5rem;
-      background: var(--surface-2);
-      border-radius: var(--radius);
-      color: var(--black);
-      border: 1px solid var(--border-mid);
-      border-left: 3px solid var(--gold-border);
-      white-space: pre-wrap;
-      font-family: 'DM Sans', sans-serif;
-    }
-
-    /* FULL SCRIPT BLOCK */
-    .script-block {
-      background: var(--surface-2);
-      border: 1px solid var(--border-mid);
-      border-radius: var(--radius);
-      padding: 1.5rem;
-      font-size: 16px;
-      line-height: 2.1;
-      color: var(--black);
-      white-space: pre-wrap;
-      font-family: 'DM Sans', sans-serif;
-      position: relative;
-    }
-
-    .script-block .script-line {
-      display: block;
-      padding: 2px 0;
-    }
-
-    .script-block .script-note {
-      display: block;
       font-size: 12px;
-      color: var(--text-muted);
-      font-style: italic;
-      padding: 4px 0 4px 12px;
-      border-left: 2px solid var(--gold-border);
-      margin: 6px 0;
-    }
-
-    .script-block .script-beat {
-      display: block;
-      font-size: 11px;
-      font-family: 'Syne', sans-serif;
       font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      padding: 9px 16px;
+      border-radius: 50px;
+      border: 1px solid var(--border-mid);
+      background: var(--surface-2);
+      color: var(--text-mid);
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+      backdrop-filter: blur(8px);
+    }
+    .platform-pill:hover { border-color: var(--gold-border); color: var(--text); }
+    .platform-pill.selected {
+      background: var(--gold-light);
+      border-color: var(--gold);
       color: var(--gold);
-      margin: 14px 0 4px;
+    }
+    [data-theme="dark"] .platform-pill.selected {
+      background: rgba(212,168,75,0.12);
+      box-shadow: 0 0 16px rgba(212,168,75,0.15);
     }
 
-    /* CREATOR CONTEXT */
-    .creator-context-wrap {
-      margin-bottom: 1.25rem;
-    }
-
+    /* ══ CREATOR CONTEXT ══════════════════════ */
+    .creator-context-wrap { margin-bottom: 1.5rem; }
     .creator-context-input {
       width: 100%;
-      padding: 12px 48px 12px 16px;
+      padding: 12px 50px 12px 16px;
       border: 1px solid var(--border-mid);
       border-radius: var(--radius);
       font-family: 'DM Sans', sans-serif;
-      font-size: 16px;
+      font-size: 15px;
       color: var(--text);
-      background: var(--surface);
-      transition: all 0.15s;
-      box-shadow: var(--shadow);
+      background: var(--surface-2);
+      transition: all 0.2s;
+      backdrop-filter: blur(8px);
     }
-
     .creator-context-input:focus {
       outline: none;
-      border-color: var(--gold-border);
-      box-shadow: 0 0 0 3px rgba(160,114,42,0.08);
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px var(--gold-light);
     }
-
     .creator-context-input::placeholder { color: var(--text-muted); font-style: italic; }
-
-    .creator-context-hint {
-      font-size: 13px;
-      color: var(--text-muted);
-      font-style: italic;
-      margin-top: 6px;
+    [data-theme="dark"] .creator-context-input {
+      background: rgba(18,15,10,0.6);
+      border-color: rgba(212,168,75,0.1);
     }
+    .creator-context-hint { font-size: 12px; color: var(--text-muted); font-style: italic; margin-top: 6px; }
 
-    /* LANGUAGE SELECTOR */
-    .lang-wrap { margin-bottom: 1.25rem; }
+    /* ══ SELECTS ══════════════════════════════ */
+    .lang-wrap, .demo-wrap { margin-bottom: 1.5rem; }
+    .lang-hint, .demo-hint { font-size: 12px; color: var(--text-muted); font-style: italic; margin-top: 6px; }
 
-    .lang-select {
+    .lang-select, .demo-select {
       width: 100%;
-      padding: 12px 36px 12px 16px;
+      padding: 11px 36px 11px 16px;
       border: 1px solid var(--border-mid);
       border-radius: var(--radius);
       font-family: 'DM Sans', sans-serif;
-      font-size: 16px;
+      font-size: 15px;
       color: var(--text);
-      background: var(--surface);
+      background: var(--surface-2);
       cursor: pointer;
-      transition: all 0.15s;
-      box-shadow: var(--shadow);
+      transition: all 0.2s;
       appearance: none;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239C9490' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right 14px center;
     }
-
-    .lang-select:focus {
+    .lang-select:focus, .demo-select:focus {
       outline: none;
-      border-color: var(--gold-border);
-      box-shadow: 0 0 0 3px rgba(160,114,42,0.08);
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px var(--gold-light);
+    }
+    [data-theme="dark"] .lang-select,
+    [data-theme="dark"] .demo-select {
+      background-color: rgba(18,15,10,0.6);
+      border-color: rgba(212,168,75,0.1);
+      color: var(--text);
     }
 
-    .lang-hint {
-      font-size: 12px;
-      color: var(--text-muted);
-      font-style: italic;
-      margin-top: 6px;
-    }
-
-    /* AUDIENCE DEMOGRAPHICS */
-    .demo-wrap { margin-bottom: 1.25rem; }
-
-    .demo-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-    }
-
+    .demo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
     @media (max-width: 600px) { .demo-grid { grid-template-columns: 1fr; } }
-
     .demo-group { display: flex; flex-direction: column; gap: 6px; }
-
     .demo-group-label {
       font-family: 'Syne', sans-serif;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--text-muted);
     }
+    .demo-select { padding: 10px 12px; padding-right: 36px; font-size: 14px; }
 
-    .demo-select {
-      width: 100%;
-      padding: 10px 14px;
-      border: 1px solid var(--border-mid);
-      border-radius: var(--radius);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
-      color: var(--text);
-      background: var(--surface);
-      cursor: pointer;
-      transition: all 0.15s;
-      box-shadow: var(--shadow);
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239C9490' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
-      padding-right: 36px;
-    }
+    /* ══ EMOJI, TONE, CONTENT TYPE ════════════ */
+    .emoji-wrap, .tone-wrap, .content-type-wrap { margin-bottom: 1.5rem; }
 
-    .demo-select:focus {
-      outline: none;
-      border-color: var(--gold-border);
-      box-shadow: 0 0 0 3px rgba(160,114,42,0.08);
-    }
+    .emoji-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .tone-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    @media (max-width: 520px) { .tone-grid { grid-template-columns: 1fr; } }
+    .content-type-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 8px; }
 
-    .demo-hint {
-      font-size: 12px;
-      color: var(--text-muted);
-      font-style: italic;
-      margin-top: 6px;
-    }
-
-    /* EMOJI TOGGLE */
-    .emoji-wrap { margin-bottom: 1.25rem; }
-
-    .emoji-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-
-    .emoji-btn {
+    .emoji-btn, .tone-btn, .content-type-btn {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px 16px;
-      background: var(--surface);
-      border: 1px solid var(--border-mid);
-      border-radius: var(--radius);
-      cursor: pointer;
-      transition: all 0.15s;
-      font-family: 'Syne', sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text-mid);
-      box-shadow: var(--shadow);
-      user-select: none;
-    }
-
-    .emoji-btn:hover { border-color: var(--gold-border); background: var(--gold-light); }
-
-    .emoji-btn.selected {
-      background: var(--gold-light);
-      border-color: var(--gold-border);
-      color: var(--gold);
-      box-shadow: 0 0 0 2px rgba(212,168,83,0.2);
-    }
-
-    /* TONE SELECTOR */
-    .tone-wrap { margin-bottom: 1.25rem; }
-
-    .tone-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-    }
-
-    @media (max-width: 520px) { .tone-grid { grid-template-columns: 1fr; } }
-
-    .tone-btn {
-      display: flex;
-      align-items: flex-start;
       gap: 10px;
-      padding: 10px 14px;
-      background: var(--surface);
+      padding: 11px 14px;
+      background: var(--surface-2);
       border: 1px solid var(--border-mid);
       border-radius: var(--radius);
       cursor: pointer;
-      transition: all 0.15s;
+      transition: all 0.2s;
       text-align: left;
-      box-shadow: var(--shadow);
       user-select: none;
+      backdrop-filter: blur(8px);
     }
+    .emoji-btn { justify-content: center; }
+    .emoji-btn, .content-type-btn { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; color: var(--text-mid); }
 
-    .tone-btn:hover {
+    .emoji-btn:hover, .tone-btn:hover, .content-type-btn:hover {
       border-color: var(--gold-border);
       background: var(--gold-light);
     }
 
-    .tone-btn.selected {
+    .emoji-btn.selected, .tone-btn.selected, .content-type-btn.selected {
       background: var(--gold-light);
-      border-color: var(--gold-border);
-      box-shadow: 0 0 0 2px rgba(212,168,83,0.2);
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    [data-theme="dark"] .emoji-btn.selected,
+    [data-theme="dark"] .tone-btn.selected,
+    [data-theme="dark"] .content-type-btn.selected {
+      background: rgba(212,168,75,0.1);
+      border-color: rgba(212,168,75,0.4);
+      box-shadow: 0 0 16px rgba(212,168,75,0.12);
     }
 
-    .tone-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
-
+    .tone-icon { font-size: 18px; flex-shrink: 0; }
     .tone-info { display: flex; flex-direction: column; gap: 2px; }
-
-    .tone-label {
-      font-family: 'Syne', sans-serif;
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--black);
-      letter-spacing: 0.01em;
-    }
-
-    .tone-desc {
-      font-size: 13px;
-      color: var(--text-muted);
-      line-height: 1.4;
-    }
-
+    .tone-label { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); }
+    .tone-desc { font-size: 12px; color: var(--text-muted); line-height: 1.3; }
     .tone-btn.selected .tone-label { color: var(--gold); }
 
-    /* CONTENT TYPE SELECTOR */
-    .content-type-wrap { margin-bottom: 1.25rem; }
-
-    .content-type-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 8px;
-    }
-
-    .content-type-btn {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 14px;
-      background: var(--surface);
-      border: 1px solid var(--border-mid);
-      border-radius: var(--radius);
-      cursor: pointer;
-      transition: all 0.15s;
-      text-align: left;
-      box-shadow: var(--shadow);
-      user-select: none;
-    }
-
-    .content-type-btn:hover {
-      border-color: var(--gold-border);
-      background: var(--gold-light);
-    }
-
-    .content-type-btn.selected {
-      background: var(--gold-light);
-      border-color: var(--gold-border);
-      box-shadow: 0 0 0 2px rgba(212,168,83,0.2);
-    }
-
     .content-type-icon { font-size: 18px; flex-shrink: 0; }
-
-    .content-type-label {
-      font-family: 'Syne', sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--black);
-      letter-spacing: 0.01em;
-      line-height: 1.3;
-    }
-
+    .content-type-label { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; color: var(--text); line-height: 1.3; }
     .content-type-btn.selected .content-type-label { color: var(--gold); }
+    .content-type-hint { font-size: 12px; color: var(--text-muted); font-style: italic; margin-top: 8px; }
 
-    .content-type-hint {
-      font-size: 14px;
-      color: var(--text-muted);
-      font-style: italic;
-      margin-top: 8px;
-    }
-
-    /* STOP & FOCUS BLOCK */
-    .focus-block {
-      margin: 1.75rem 1.75rem 0;
-      padding: 1.5rem 1.75rem;
-      background: var(--black);
-      border-radius: var(--radius-lg);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .focus-block::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--gold-border), var(--gold));
-    }
-
-    .focus-block-eyebrow {
-      font-family: 'Syne', sans-serif;
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 0.5rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .focus-block-eyebrow::before {
-      content: '';
-      width: 18px;
-      height: 2px;
-      background: var(--gold);
-      flex-shrink: 0;
-    }
-
-    .focus-block-action {
-      font-family: 'Syne', sans-serif;
-      font-size: 18px;
-      font-weight: 700;
-      color: #fff;
-      line-height: 1.4;
-      letter-spacing: -0.01em;
-    }
-
-    .focus-block-sub {
+    /* ══ CHIPS ════════════════════════════════ */
+    .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 1rem; align-items: center; }
+    .chips-label { font-size: 12px; color: var(--text-muted); font-style: italic; flex-shrink: 0; }
+    .chip {
       font-size: 13px;
-      color: rgba(255,255,255,0.45);
-      margin-top: 0.5rem;
-      font-style: italic;
-      line-height: 1.5;
-    }
-
-    .focus-block-loader {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: rgba(255,255,255,0.4);
-      font-size: 13px;
-      font-style: italic;
-    }
-
-    .focus-block-loader-dots span {
-      background: rgba(255,255,255,0.35);
-    }
-
-    @media print {
-      .focus-block { background: #1A1816 !important; -webkit-print-color-adjust: exact; }
-    }
-
-    /* SAVE BAR */
-    .save-bar {
-      padding: 1rem 1.75rem 1.5rem;
-      border-top: 1px solid var(--border);
-    }
-
-    .save-pdf-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      width: 100%;
-      padding: 12px;
-      background: transparent;
-      color: var(--text-muted);
-      border: 1px dashed var(--border-mid);
-      border-radius: var(--radius);
-      font-family: 'Syne', sans-serif;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
+      padding: 5px 12px;
+      border: 1px solid var(--border-mid);
+      border-radius: 20px;
       cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .save-pdf-btn:hover {
-      background: var(--gold-light);
-      border-color: var(--gold-border);
-      border-style: solid;
-      color: var(--gold);
-    }
-
-    /* PDF / PRINT */
-    .save-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      width: 100%;
-      padding: 13px;
       background: var(--surface-2);
       color: var(--text-mid);
-      border: 1px solid var(--border-mid);
+      transition: all 0.15s;
+      backdrop-filter: blur(6px);
+    }
+    .chip:hover { border-color: var(--gold-border); color: var(--gold); background: var(--gold-light); }
+
+    /* ══ RUN BUTTON ═══════════════════════════ */
+    .run-btn, .idea-btn, .calendar-btn {
+      width: 100%;
+      padding: 16px;
+      border: none;
       border-radius: var(--radius);
       font-family: 'Syne', sans-serif;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       cursor: pointer;
-      margin-top: 10px;
-      transition: all 0.15s;
+      margin-top: 1.5rem;
+      transition: all 0.25s cubic-bezier(0.34, 1.4, 0.64, 1);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      position: relative; overflow: hidden;
     }
-
-    .save-btn:hover {
-      background: var(--gold-light);
-      border-color: var(--gold-border);
-      color: var(--gold);
+    [data-theme="light"] .run-btn,
+    [data-theme="light"] .idea-btn,
+    [data-theme="light"] .calendar-btn {
+      background: var(--text);
+      color: #F2EFE9;
+      box-shadow: var(--shadow);
     }
-
-    @media print {
-      nav, .hero, .tool-section > .tool-inner > .section-header,
-      .outputs-grid, .platform-wrap,
-      .input-card, .out-header, .save-btn, footer,
-      .copy-btn, .cal-copy-btn, .idea-copy-btn,
-      .mode-toggle-wrap, .save-pdf-btn, .run-btn,
-      .idea-btn, .calendar-btn, .new-btn { display: none !important; }
-      .ideas-out, .cal-out { display: block !important; border: none; box-shadow: none; }
-      .idea-card, .cal-day { page-break-inside: avoid; }
-
-      body { background: white; font-size: 13px; }
-
-      .tool-section { padding: 0; }
-
-      .out-card {
-        display: block !important;
-        border: none;
-        box-shadow: none;
-        animation: none;
-      }
-
-      .out-body { padding: 0; }
-
-      .blk {
-        margin-bottom: 1.25rem;
-        padding-bottom: 1.25rem;
-        page-break-inside: avoid;
-      }
-
-      .hook-box {
-        border: 1px solid #ccc;
-        background: #f9f9f9;
-      }
-
-      .warn-box, .success-box {
-        border: 1px solid #ccc;
-        background: #f9f9f9;
-        color: #333;
-      }
-
-      .script-box {
-        border: 1px solid #ccc;
-        background: #f9f9f9;
-      }
-
-      .blk-title { color: #666; }
-      .blk-text { color: #111; }
-
-      .print-header {
-        display: block !important;
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-        border-bottom: 2px solid #D4A853;
-      }
-
-      .print-header h1 {
-        font-size: 20px;
-        font-weight: 700;
-        color: #1A1816;
-        margin-bottom: 4px;
-      }
-
-      .print-header p {
-        font-size: 12px;
-        color: #666;
-      }
+    [data-theme="light"] .run-btn:hover,
+    [data-theme="light"] .idea-btn:hover,
+    [data-theme="light"] .calendar-btn:hover {
+      background: var(--gold);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px var(--gold-glow);
     }
-
-    /* THEME TOGGLE */
-    .theme-toggle {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: 1px solid var(--border-mid);
-      background: var(--surface-2);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-      position: relative;
-      overflow: hidden;
+    [data-theme="dark"] .run-btn,
+    [data-theme="dark"] .idea-btn,
+    [data-theme="dark"] .calendar-btn {
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-2) 100%);
+      color: #0A0907;
+      box-shadow: 0 0 30px rgba(212,168,75,0.35), 0 4px 16px rgba(0,0,0,0.3);
     }
-    .theme-toggle:hover {
-      border-color: var(--gold-border);
-      background: var(--gold-light);
-      transform: scale(1.1) rotate(15deg);
-      box-shadow: 0 0 20px rgba(212,168,83,0.3);
+    [data-theme="dark"] .run-btn:hover,
+    [data-theme="dark"] .idea-btn:hover,
+    [data-theme="dark"] .calendar-btn:hover {
+      transform: translateY(-2px) scale(1.01);
+      box-shadow: 0 0 50px rgba(212,168,75,0.5), 0 8px 24px rgba(0,0,0,0.4);
     }
-    .theme-toggle .icon-sun,
-    .theme-toggle .icon-moon {
-      position: absolute;
-      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-      font-size: 17px;
-    }
-    .theme-toggle .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
-    .theme-toggle .icon-sun  { opacity: 0; transform: scale(0) rotate(180deg); }
-    [data-theme="dark"] .theme-toggle .icon-moon { opacity: 0; transform: scale(0) rotate(-180deg); }
-    [data-theme="dark"] .theme-toggle .icon-sun  { opacity: 1; transform: scale(1) rotate(0deg); }
-    [data-theme="dark"] .theme-toggle { border-color: rgba(212,168,83,0.3); background: rgba(212,168,83,0.08); }
-
-    /* PARTICLE CANVAS */
-    #particle-canvas {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0;
-      transition: opacity 1s ease;
-    }
-    [data-theme="dark"] #particle-canvas { opacity: 1; }
-
-    /* JARVIS SCAN LINE (dark only) */
-    [data-theme="dark"] body::after {
-      content: '';
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(212,168,83,0.6), transparent);
-      animation: scanline 6s ease-in-out infinite;
-      pointer-events: none;
-      z-index: 9999;
-    }
-    @keyframes scanline {
-      0% { top: -2px; opacity: 0; }
-      3% { opacity: 1; }
-      90% { opacity: 0.6; }
-      100% { top: 100vh; opacity: 0; }
-    }
-
-    /* CORNER ACCENTS (dark only) */
-    [data-theme="dark"] .out-card::after,
-    [data-theme="dark"] .ideas-out::after,
-    [data-theme="dark"] .cal-out::after {
-      content: '';
-      position: absolute;
-      bottom: 0; right: 0;
-      width: 40px; height: 40px;
-      border-bottom: 1px solid rgba(212,168,83,0.3);
-      border-right: 1px solid rgba(212,168,83,0.3);
-      pointer-events: none;
-    }
-
-    /* GRADIENT BORDER on output cards (dark) */
-    [data-theme="dark"] .out-card,
-    [data-theme="dark"] .ideas-out,
-    [data-theme="dark"] .cal-out {
-      border-color: rgba(212,168,83,0.15);
-      position: relative;
-    }
-
-    /* GLOW PULSE on output card (dark) */
-    [data-theme="dark"] .out-card.show,
-    [data-theme="dark"] .ideas-out.show,
-    [data-theme="dark"] .cal-out.show {
-      animation: fadeUp 0.35s ease, glowPulse 3s ease-in-out 0.5s;
-    }
-    @keyframes glowPulse {
-      0%, 100% { box-shadow: var(--shadow-md), 0 0 0px rgba(212,168,83,0); }
-      50% { box-shadow: var(--shadow-md), 0 0 50px rgba(212,168,83,0.2); }
-    }
-
-    /* NAV LOGO glow (dark) */
-    [data-theme="dark"] .nav-logo {
-      text-shadow: 0 0 30px rgba(212,168,83,0.5), 0 0 60px rgba(212,168,83,0.2);
-      letter-spacing: 0.28em;
-    }
-    [data-theme="dark"] .nav-logo span {
-      color: var(--gold);
-      text-shadow: 0 0 20px rgba(212,168,83,0.8);
-    }
-
-    /* HERO text glow (dark) */
-    [data-theme="dark"] .hero h1 {
-      text-shadow: 0 0 60px rgba(212,168,83,0.15);
-    }
-    [data-theme="dark"] .hero h1 em {
-      text-shadow: 0 0 30px rgba(212,168,83,0.4);
-    }
-
-    /* GRID line overlay (dark) */
-    [data-theme="dark"] .tool-section::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(212,168,83,0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(212,168,83,0.02) 1px, transparent 1px);
-      background-size: 60px 60px;
-      pointer-events: none;
-      z-index: 0;
-    }
-    .tool-inner { position: relative; z-index: 1; }
-
-    /* BUTTON glow ripple */
-    .run-btn, .idea-btn, .calendar-btn {
-      position: relative;
-      overflow: hidden;
+    .run-btn:active, .idea-btn:active, .calendar-btn:active { transform: scale(0.99); }
+    .run-btn:disabled, .idea-btn:disabled, .calendar-btn:disabled {
+      opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none;
     }
     .run-btn::after, .idea-btn::after, .calendar-btn::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at center, rgba(255,255,255,0.15) 0%, transparent 70%);
-      opacity: 0;
-      transition: opacity 0.3s;
+      background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.2) 0%, transparent 60%);
+      opacity: 0; transition: opacity 0.2s;
     }
     .run-btn:active::after, .idea-btn:active::after, .calendar-btn:active::after { opacity: 1; }
 
-    /* CARD hover lift */
-    .output-card {
-      transition: box-shadow 0.2s, transform 0.2s;
+    /* ══ LOADER ════════════════════════════════ */
+    .loader { display: none; text-align: center; padding: 1.5rem 0 0.5rem; }
+    .loader.show { display: block; }
+    .loader-dots { display: inline-flex; gap: 7px; align-items: center; }
+    .loader-dots span {
+      width: 8px; height: 8px;
+      background: var(--gold);
+      border-radius: 50%;
+      animation: ldBounce 1.2s ease-in-out infinite;
     }
-    .output-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
+    .loader-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .loader-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes ldBounce {
+      0%,80%,100% { transform: scale(0.5); opacity: 0.3; }
+      40% { transform: scale(1); opacity: 1; }
     }
-    [data-theme="dark"] .output-card:hover {
-      box-shadow: var(--shadow-md), 0 0 20px rgba(212,168,83,0.1);
+    [data-theme="dark"] .loader-dots span {
+      box-shadow: 0 0 8px rgba(212,168,75,0.6);
+    }
+    .loader-text { font-size: 14px; color: var(--text-muted); margin-top: 10px; font-style: italic; }
+
+    /* ERROR */
+    .error-box {
+      display: none; font-size: 13px; color: #C53030;
+      background: rgba(197,48,48,0.06); border: 1px solid rgba(197,48,48,0.2);
+      border-radius: var(--radius); padding: 12px 14px; margin-top: 1rem; line-height: 1.5;
+    }
+    .error-box.show { display: block; }
+
+    /* ══ OUTPUT CARD ══════════════════════════ */
+    .out-card {
+      background: var(--surface);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      display: none;
+      animation: fadeUp 0.4s cubic-bezier(0.34, 1.2, 0.64, 1);
+      box-shadow: var(--shadow-lg);
+    }
+    .out-card.show { display: block; }
+    [data-theme="dark"] .out-card {
+      background: rgba(14,12,8,0.9);
+      border-color: rgba(212,168,75,0.15);
+      box-shadow: var(--shadow-lg), 0 0 60px rgba(212,168,75,0.06);
     }
 
-    /* INPUT CARD dark glow on focus */
-    [data-theme="dark"] textarea:focus,
-    [data-theme="dark"] .creator-context-input:focus {
+    /* IDEAS / CALENDAR OUT */
+    .ideas-out, .cal-out {
+      display: none;
+      background: var(--surface);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      animation: fadeUp 0.4s cubic-bezier(0.34, 1.2, 0.64, 1);
+    }
+    .ideas-out.show, .cal-out.show { display: block; }
+    [data-theme="dark"] .ideas-out,
+    [data-theme="dark"] .cal-out {
+      background: rgba(14,12,8,0.9);
+      border-color: rgba(212,168,75,0.15);
+      box-shadow: var(--shadow-lg), 0 0 50px rgba(212,168,75,0.05);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px) scale(0.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .out-header, .ideas-header, .cal-header {
+      padding: 1.1rem 1.6rem;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--surface-3);
+      backdrop-filter: blur(10px);
+    }
+    [data-theme="dark"] .out-header,
+    [data-theme="dark"] .ideas-header,
+    [data-theme="dark"] .cal-header {
+      background: rgba(212,168,75,0.04);
+      border-bottom-color: rgba(212,168,75,0.1);
+    }
+
+    .out-label, .ideas-header-label, .cal-header-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .out-label::before, .ideas-header-label::before, .cal-header-label::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      animation: dotPulse 2s ease-in-out infinite;
+    }
+    [data-theme="dark"] .out-label,
+    [data-theme="dark"] .ideas-header-label,
+    [data-theme="dark"] .cal-header-label {
+      text-shadow: 0 0 12px rgba(212,168,75,0.5);
+    }
+
+    .new-btn {
+      font-size: 13px; color: var(--text-muted);
+      background: var(--surface-2);
+      border: 1px solid var(--border-mid);
+      border-radius: 8px; padding: 5px 14px;
+      cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+    }
+    .new-btn:hover { background: var(--gold-light); border-color: var(--gold-border); color: var(--gold); }
+
+    .out-body { padding: 2rem; }
+    .ideas-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 12px; }
+    .cal-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 10px; }
+
+    /* ══ OUTPUT BLOCKS ════════════════════════ */
+    .blk {
+      margin-bottom: 1.75rem;
+      padding-bottom: 1.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .blk:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    [data-theme="dark"] .blk { border-bottom-color: rgba(212,168,75,0.07); }
+
+    .blk-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.75rem;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .blk-title::before {
+      content: '';
+      width: 3px; height: 12px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      border-radius: 2px;
+    }
+    [data-theme="dark"] .blk-title { text-shadow: 0 0 10px rgba(212,168,75,0.4); }
+
+    .blk-text { font-size: 16px; line-height: 1.85; color: var(--text); }
+
+    .hook-box {
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 1.5;
+      padding: 16px 20px;
+      background: var(--surface-2);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      color: var(--text);
+      backdrop-filter: blur(8px);
+    }
+    [data-theme="dark"] .hook-box {
+      background: rgba(212,168,75,0.05);
+      border-left-color: var(--gold);
+      box-shadow: inset 0 0 30px rgba(212,168,75,0.03);
+    }
+
+    .pill {
+      display: inline-block;
+      font-family: 'Syne', sans-serif;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 5px 14px; border-radius: 20px;
+      background: var(--text); color: var(--bg);
+      margin-bottom: 8px;
+    }
+    [data-theme="dark"] .pill {
+      background: var(--gold); color: #0A0907;
+      box-shadow: 0 0 15px rgba(212,168,75,0.3);
+    }
+    .pill.soft {
+      background: var(--surface-2); color: var(--text-mid);
+      border: 1px solid var(--border-mid);
+    }
+    [data-theme="dark"] .pill.soft {
+      background: rgba(212,168,75,0.08); color: var(--gold);
+      border-color: rgba(212,168,75,0.25);
+    }
+
+    .warn-box {
+      font-size: 15px; padding: 13px 16px;
+      background: rgba(234,179,8,0.06); border: 1px solid rgba(234,179,8,0.2);
+      border-radius: var(--radius); color: #92620A; line-height: 1.7;
+    }
+    [data-theme="dark"] .warn-box { color: #D4A853; }
+
+    .success-box {
+      font-size: 15px; padding: 13px 16px;
+      background: rgba(34,197,94,0.06); border: 1px solid rgba(34,197,94,0.2);
+      border-radius: var(--radius); color: #15803D; line-height: 1.7;
+    }
+    [data-theme="dark"] .success-box { color: #4ADE80; }
+
+    .script-block {
+      background: var(--surface-2);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      font-size: 15px; line-height: 2.1;
+      color: var(--text);
+      white-space: pre-wrap;
+      font-family: 'DM Sans', sans-serif;
+    }
+    [data-theme="dark"] .script-block {
+      background: rgba(12,10,6,0.6);
+      border-color: rgba(212,168,75,0.1);
+    }
+    .script-line { display: block; padding: 2px 0; }
+    .script-note {
+      display: block; font-size: 12px; color: var(--text-muted);
+      font-style: italic; padding: 4px 0 4px 14px;
+      border-left: 2px solid var(--gold-border); margin: 6px 0;
+    }
+    .script-beat {
+      display: block; font-size: 10px;
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--gold); margin: 16px 0 4px;
+    }
+    [data-theme="dark"] .script-beat { text-shadow: 0 0 10px rgba(212,168,75,0.4); }
+
+    .text-output-box {
+      font-size: 15px; line-height: 1.95;
+      padding: 1.5rem;
+      background: var(--surface-2);
+      border-radius: var(--radius);
+      color: var(--text);
+      border: 1px solid var(--border-mid);
+      border-left: 3px solid var(--gold);
+      white-space: pre-wrap;
+      font-family: 'DM Sans', sans-serif;
+    }
+    [data-theme="dark"] .text-output-box {
+      background: rgba(12,10,6,0.6);
+      border-color: rgba(212,168,75,0.1);
+      border-left-color: var(--gold);
+    }
+
+    .broll-item {
+      padding: 8px 0; border-bottom: 1px solid var(--border);
+      font-size: 15px; color: var(--text-mid); line-height: 1.6;
+      display: flex; align-items: flex-start; gap: 12px;
+    }
+    .broll-item::before { content: '→'; color: var(--gold); flex-shrink: 0; }
+    .broll-item:last-child { border-bottom: none; }
+    [data-theme="dark"] .broll-item { border-color: rgba(212,168,75,0.07); }
+
+    /* ══ COPY BUTTON ══════════════════════════ */
+    .copy-btn, .idea-copy-btn, .cal-copy-btn {
+      display: inline-flex; align-items: center;
+      font-size: 10px; font-family: 'Syne', sans-serif;
+      font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-muted);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 6px; padding: 4px 12px;
+      cursor: pointer; transition: all 0.15s;
+      margin-top: 10px; float: right;
+      backdrop-filter: blur(6px);
+    }
+    .copy-btn:hover, .idea-copy-btn:hover, .cal-copy-btn:hover {
+      border-color: var(--gold-border); color: var(--gold); background: var(--gold-light);
+    }
+    .copy-btn.copied, .idea-copy-btn.copied, .cal-copy-btn.copied {
+      border-color: rgba(34,197,94,0.4); color: #15803D; background: rgba(34,197,94,0.06);
+    }
+    [data-theme="dark"] .copy-btn,
+    [data-theme="dark"] .idea-copy-btn,
+    [data-theme="dark"] .cal-copy-btn {
+      background: rgba(212,168,75,0.05);
+      border-color: rgba(212,168,75,0.15);
+    }
+
+    /* ══ IDEA CARDS ═══════════════════════════ */
+    .idea-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.3rem;
+      border-left: 3px solid var(--gold-border);
+      transition: all 0.2s;
+      backdrop-filter: blur(8px);
+    }
+    [data-theme="dark"] .idea-card {
+      background: rgba(18,15,10,0.6);
+      border-color: rgba(212,168,75,0.08);
+      border-left-color: rgba(212,168,75,0.3);
+    }
+    [data-theme="dark"] .idea-card:hover {
+      border-left-color: var(--gold);
+      box-shadow: 0 0 20px rgba(212,168,75,0.06);
+    }
+    .idea-num { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: var(--gold); margin-bottom: 4px; }
+    .idea-title { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.45; margin-bottom: 6px; }
+
+    .tip-box {
+      font-size: 13px; color: #7A5010;
+      background: rgba(196,137,42,0.07);
+      border: 1px solid rgba(196,137,42,0.2);
+      border-radius: var(--radius);
+      padding: 8px 12px; margin-top: 8px; line-height: 1.55;
+      display: flex; gap: 7px; align-items: flex-start;
+    }
+    .tip-box::before { content: '💡'; flex-shrink: 0; font-size: 13px; }
+    [data-theme="dark"] .tip-box { color: #C8A060; background: rgba(212,168,75,0.06); border-color: rgba(212,168,75,0.18); }
+
+    .best-platform-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-family: 'Syne', sans-serif; font-weight: 700;
+      color: var(--gold); background: var(--gold-light);
+      border: 1px solid var(--gold-border);
+      padding: 3px 10px; border-radius: 20px; margin-top: 6px;
+    }
+
+    /* ══ CALENDAR DAYS ════════════════════════ */
+    .cal-day { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    [data-theme="dark"] .cal-day { background: rgba(18,15,10,0.6); border-color: rgba(212,168,75,0.08); }
+
+    .cal-day-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px;
+      background: var(--surface-3);
+      border-bottom: 1px solid var(--border);
+    }
+    [data-theme="dark"] .cal-day-header { background: rgba(212,168,75,0.04); border-bottom-color: rgba(212,168,75,0.08); }
+    .cal-day-name { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text); }
+    .cal-day-platform {
+      font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700;
+      color: var(--gold); background: var(--gold-light);
+      border: 1px solid var(--gold-border);
+      padding: 3px 10px; border-radius: 20px;
+    }
+    .cal-day-body { padding: 12px 16px; }
+    .cal-post-type { font-size: 10px; font-family: 'Syne', sans-serif; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 5px; }
+    .cal-post-content { font-size: 14px; color: var(--text); line-height: 1.55; margin-bottom: 6px; }
+    .cal-post-tip { font-size: 12px; color: var(--text-muted); font-style: italic; line-height: 1.5; }
+
+    .ideal-time {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700;
+      color: #15803D; background: rgba(34,197,94,0.08);
+      border: 1px solid rgba(34,197,94,0.25);
+      padding: 3px 10px; border-radius: 20px; margin-top: 6px;
+    }
+    [data-theme="dark"] .ideal-time { color: #4ADE80; }
+
+    /* ══ STOP & FOCUS BLOCK ═══════════════════ */
+    .focus-block {
+      margin: 1.75rem 1.75rem 0;
+      padding: 1.6rem 2rem;
+      background: #0A0908;
+      border-radius: var(--radius-lg);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(212,168,75,0.15);
+    }
+    .focus-block::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, transparent, var(--gold-border), var(--gold), var(--gold-2), var(--gold), var(--gold-border), transparent);
+      animation: focusBar 4s linear infinite;
+      background-size: 200%;
+    }
+    @keyframes focusBar {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 200% 0%; }
+    }
+    [data-theme="dark"] .focus-block {
+      border-color: rgba(212,168,75,0.2);
+      box-shadow: 0 0 60px rgba(212,168,75,0.08), inset 0 0 80px rgba(212,168,75,0.03);
+    }
+    [data-theme="light"] .focus-block {
+      background: #12100E;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    }
+    .focus-block-eyebrow {
+      font-family: 'Syne', sans-serif;
+      font-size: 9px; font-weight: 700;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.6rem;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .focus-block-eyebrow::before {
+      content: '';
+      width: 24px; height: 2px;
+      background: linear-gradient(to right, var(--gold), transparent);
+      flex-shrink: 0;
+    }
+    .focus-block-action {
+      font-family: 'Syne', sans-serif;
+      font-size: 18px; font-weight: 700;
+      color: #fff; line-height: 1.4;
+      letter-spacing: -0.01em;
+    }
+    .focus-block-sub {
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+      margin-top: 0.6rem;
+      font-style: italic; line-height: 1.5;
+    }
+
+    /* ══ SAVE BAR ═════════════════════════════ */
+    .save-bar { padding: 1.25rem 1.75rem 1.6rem; border-top: 1px solid var(--border); }
+    [data-theme="dark"] .save-bar { border-top-color: rgba(212,168,75,0.07); }
+
+    .save-pdf-btn {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      width: 100%; padding: 12px;
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px dashed var(--border-mid);
+      border-radius: var(--radius);
+      font-family: 'Syne', sans-serif;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .save-pdf-btn:hover {
+      background: var(--gold-light);
       border-color: var(--gold);
-      box-shadow: 0 0 0 3px rgba(212,168,83,0.1), 0 0 20px rgba(212,168,83,0.08);
+      border-style: solid;
+      color: var(--gold);
     }
 
-    /* FOCUS BLOCK action text dark glow */
-    [data-theme="dark"] .focus-block-action {
-      text-shadow: 0 0 20px rgba(255,255,255,0.1);
-    }
-
-    /* FOOTER */
+    /* ══ FOOTER ═══════════════════════════════ */
     footer {
       text-align: center;
       padding: 2.5rem 1rem;
       font-size: 13px;
       color: var(--text-muted);
       border-top: 1px solid var(--border);
+      position: relative; z-index: 2;
+    }
+    footer strong { color: var(--gold); }
+    [data-theme="dark"] footer { border-top-color: rgba(212,168,75,0.08); }
+
+    /* ══ PRINT ════════════════════════════════ */
+    @media print {
+      nav, .hero, .section-header, .outputs-grid, .platform-wrap,
+      .input-card, .out-header, footer,
+      .copy-btn, .cal-copy-btn, .idea-copy-btn,
+      .mode-toggle-wrap, .save-pdf-btn, .run-btn,
+      .idea-btn, .calendar-btn, .new-btn,
+      .edge-flare-left, .edge-flare-right,
+      #particle-canvas, .corner-accent { display: none !important; }
+      .ideas-out, .cal-out { display: block !important; border: none; box-shadow: none; }
+      .out-card { display: block !important; border: none; box-shadow: none; animation: none; }
+      body { background: white; font-size: 13px; }
+      .focus-block { background: #12100E !important; -webkit-print-color-adjust: exact; }
     }
 
-    footer strong { color: var(--gold); }
+    /* ══ MISC HELPERS ═════════════════════════ */
+    .print-header { display: none; }
   </style>
 </head>
 <body>
-
   <canvas id="particle-canvas"></canvas>
+  <div class="edge-flare-left"></div>
+  <div class="edge-flare-right"></div>
+  <div class="corner-accent tl"></div>
+  <div class="corner-accent tr"></div>
+  <div class="corner-accent bl"></div>
+  <div class="corner-accent br"></div>
 
   <nav>
     <div class="nav-logo">S<span>.</span>A<span>.</span>M<span>.</span></div>
-    <div style="display:flex;align-items:center;gap:12px;">
+    <div class="nav-right">
       <div class="nav-tag">Strategic Assistant for Making</div>
       <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark/light mode" aria-label="Toggle theme">
         <span class="icon-moon">🌙</span>
@@ -2069,40 +1425,27 @@
 
       <!-- MODE TOGGLE -->
       <div class="mode-toggle-wrap">
-        <button class="mode-tab active" id="tabMoment" onclick="switchMode('moment')">
-          ✍ Turn a moment into content
-        </button>
-        <button class="mode-tab" id="tabIdeas" onclick="switchMode('ideas')">
-          💡 Get content ideas
-        </button>
-        <button class="mode-tab" id="tabCalendar" onclick="switchMode('calendar')">
-          📅 Posting calendar
-        </button>
+        <button class="mode-tab active" id="tabMoment" onclick="switchMode('moment')">✍ Turn a moment into content</button>
+        <button class="mode-tab" id="tabIdeas" onclick="switchMode('ideas')">💡 Get content ideas</button>
+        <button class="mode-tab" id="tabCalendar" onclick="switchMode('calendar')">📅 Posting calendar</button>
       </div>
 
-      <!-- IDEA MAKER SECTION -->
+      <!-- IDEA MAKER -->
       <div class="idea-section" id="ideaSection">
-        <div class="idea-input-card">
+        <div class="glass-card idea-input-card">
           <div class="input-card-label">Tell S.A.M. about your niche</div>
           <div class="input-wrap">
-            <textarea
-              id="nicheInp"
-              placeholder="e.g. Self-taught DIY renovator documenting a full cottage gut renovation. My audience loves real moments, setbacks, and figuring things out without being an expert."
-              style="min-height:100px;"
-            ></textarea>
-            <button class="paste-btn" onclick="pasteToEl('nicheInp')" title="Paste from clipboard">📋</button>
-            <button class="mic-btn" id="micBtnNiche" onclick="toggleMicNiche()" title="Speak your niche">🎙</button>
+            <textarea id="nicheInp" placeholder="e.g. Self-taught DIY renovator documenting a full cottage gut renovation. My audience loves real moments, setbacks, and figuring things out without being an expert." style="min-height:100px;"></textarea>
+            <button class="paste-btn" onclick="pasteToEl('nicheInp')" title="Paste">📋</button>
+            <button class="mic-btn" id="micBtnNiche" onclick="toggleMicNiche()" title="Speak">🎙</button>
           </div>
           <div class="loader" id="ideaLoader" style="margin-top:1rem;">
             <div class="loader-dots"><span></span><span></span><span></span></div>
             <div class="loader-text" id="ideaLoaderText">S.A.M. is generating your ideas...</div>
           </div>
           <div class="error-box" id="ideaErrBox"></div>
-          <button class="idea-btn" id="ideaBtn" onclick="runIdeas()">
-            Get 10 content ideas →
-          </button>
+          <button class="idea-btn" id="ideaBtn" onclick="runIdeas()">Get 10 content ideas →</button>
         </div>
-
         <div class="ideas-out" id="ideasOut">
           <div class="ideas-header">
             <div class="ideas-header-label">Your content ideas</div>
@@ -2111,7 +1454,7 @@
           <div class="ideas-body" id="ideasBody"></div>
           <div class="focus-block" id="ideaFocusBlock" style="display:none;">
             <div class="focus-block-eyebrow">Stop. Focus. Do this now.</div>
-            <div class="focus-block-action" id="ideaFocusAction"></div>
+            <div class="focus-block-action" id="ideaFocusAction" style="color:rgba(255,255,255,0.35);font-style:italic;font-size:14px;font-weight:400;">S.A.M. is building your focus action...</div>
             <div class="focus-block-sub" id="ideaFocusSub"></div>
           </div>
           <div class="save-bar" id="ideaSaveBar" style="display:none;">
@@ -2120,21 +1463,17 @@
         </div>
       </div>
 
-      <!-- CALENDAR SECTION -->
+      <!-- CALENDAR -->
       <div class="calendar-section" id="calendarSection">
-        <div class="calendar-input-card">
+        <div class="glass-card calendar-input-card">
           <div class="input-card-label">Describe your moment or content idea</div>
           <div class="input-wrap">
-            <textarea
-              id="calInp"
-              placeholder="e.g. My parents flew in and saw the cottage renovation for the first time. They both stopped at the big white blooming tree in the front yard and said wow."
-              style="min-height:100px;"
-            ></textarea>
-            <button class="paste-btn" onclick="pasteToEl('calInp')" title="Paste from clipboard">📋</button>
-            <button class="mic-btn" id="micBtnCal" onclick="toggleMicCal()" title="Speak your moment">🎙</button>
+            <textarea id="calInp" placeholder="e.g. My parents flew in and saw the cottage renovation for the first time. They both stopped at the big white blooming tree in the front yard and said wow." style="min-height:100px;"></textarea>
+            <button class="paste-btn" onclick="pasteToEl('calInp')" title="Paste">📋</button>
+            <button class="mic-btn" id="micBtnCal" onclick="toggleMicCal()" title="Speak">🎙</button>
           </div>
-          <div style="margin-top:1rem;">
-            <div class="section-label" style="margin-bottom:0.5rem;">Which platforms?</div>
+          <div style="margin-top:1.25rem;">
+            <div class="section-label">Which platforms?</div>
             <div class="platform-grid" id="calPlatformGrid">
               <button class="platform-pill" data-platform="TikTok" onclick="toggleCalPlatform(this)">🎵 TikTok</button>
               <button class="platform-pill" data-platform="YouTube Shorts" onclick="toggleCalPlatform(this)">▶ YouTube Shorts</button>
@@ -2149,11 +1488,8 @@
             <div class="loader-text">S.A.M. is building your calendar...</div>
           </div>
           <div class="error-box" id="calErrBox"></div>
-          <button class="calendar-btn" id="calBtn" onclick="runCalendar()">
-            Build my 7-day posting plan →
-          </button>
+          <button class="calendar-btn" id="calBtn" onclick="runCalendar()">Build my 7-day posting plan →</button>
         </div>
-
         <div class="cal-out" id="calOut">
           <div class="cal-header">
             <div class="cal-header-label">Your 7-day posting plan</div>
@@ -2162,7 +1498,7 @@
           <div class="cal-body" id="calBody"></div>
           <div class="focus-block" id="calFocusBlock" style="display:none;">
             <div class="focus-block-eyebrow">Stop. Focus. Do this now.</div>
-            <div class="focus-block-action" id="calFocusAction"></div>
+            <div class="focus-block-action" id="calFocusAction" style="color:rgba(255,255,255,0.35);font-style:italic;font-size:14px;font-weight:400;">S.A.M. is building your focus action...</div>
             <div class="focus-block-sub" id="calFocusSub"></div>
           </div>
           <div class="save-bar" id="calSaveBar" style="display:none;">
@@ -2173,282 +1509,169 @@
 
       <!-- MOMENT SECTION -->
       <div class="moment-section" id="momentSection">
+        <div class="outputs-grid">
+          <div class="output-card"><div class="output-icon">▶</div><div><div class="output-title">The real story</div><div class="output-desc">The emotional core a stranger would actually stop for</div></div></div>
+          <div class="output-card"><div class="output-icon">⚡</div><div><div class="output-title">3 hook options</div><div class="output-desc">The first 3 seconds that stop the scroll</div></div></div>
+          <div class="output-card"><div class="output-icon">✍</div><div><div class="output-title">A full script</div><div class="output-desc">Ready to record — with pacing notes and b-roll</div></div></div>
+          <div class="output-card"><div class="output-icon">→</div><div><div class="output-title">Platform strategy</div><div class="output-desc">Where to post it and how to get 3 pieces from one moment</div></div></div>
+        </div>
 
-      <div class="outputs-grid">
-        <div class="output-card">
-          <div class="output-icon">▶</div>
-          <div>
-            <div class="output-title">The real story</div>
-            <div class="output-desc">The emotional core a stranger would actually stop for</div>
+        <div class="platform-wrap">
+          <div class="section-label">Where do you post?</div>
+          <div class="platform-grid">
+            <button class="platform-pill" data-platform="TikTok" onclick="togglePlatform(this)">🎵 TikTok</button>
+            <button class="platform-pill" data-platform="YouTube Shorts" onclick="togglePlatform(this)">▶ YouTube Shorts</button>
+            <button class="platform-pill" data-platform="Instagram Reels" onclick="togglePlatform(this)">📸 Instagram Reels</button>
+            <button class="platform-pill" data-platform="Facebook Reels" onclick="togglePlatform(this)">👥 Facebook Reels</button>
+            <button class="platform-pill" data-platform="LinkedIn" onclick="togglePlatform(this)">💼 LinkedIn</button>
+            <button class="platform-pill" data-platform="X (Twitter)" onclick="togglePlatform(this)">✕ X (Twitter)</button>
           </div>
+          <div class="platform-hint">Select all that apply — S.A.M. will tailor the output for each one.</div>
         </div>
-        <div class="output-card">
-          <div class="output-icon">⚡</div>
-          <div>
-            <div class="output-title">3 hook options</div>
-            <div class="output-desc">The first 3 seconds that stop the scroll</div>
+
+        <div class="creator-context-wrap">
+          <div class="section-label">Tell S.A.M. about you <span style="font-weight:400;text-transform:none;letter-spacing:0;font-style:italic;color:var(--text-muted);font-family:'DM Sans',sans-serif;">(optional)</span></div>
+          <div class="input-wrap">
+            <input type="text" id="creatorContext" class="creator-context-input" placeholder="e.g. Self-taught renovator documenting a full cottage gut renovation for my parents in Maryland" maxlength="200" style="padding-right: 50px;" />
+            <button class="mic-btn" id="micBtnContext" onclick="toggleMicContext()" style="bottom:6px;">🎙</button>
           </div>
+          <div class="creator-context-hint">One sentence. S.A.M. uses this to personalize every output for your specific audience.</div>
         </div>
-        <div class="output-card">
-          <div class="output-icon">✍</div>
-          <div>
-            <div class="output-title">A full script</div>
-            <div class="output-desc">Ready to record — with pacing notes and b-roll</div>
-          </div>
+
+        <div class="lang-wrap">
+          <div class="section-label">Output language <span style="font-weight:400;text-transform:none;letter-spacing:0;font-style:italic;color:var(--text-muted);font-family:'DM Sans',sans-serif;">(optional)</span></div>
+          <select id="outputLanguage" class="lang-select">
+            <option value="">🌐 English (default)</option>
+            <option value="Spanish">🇪🇸 Spanish — Español</option>
+            <option value="French">🇫🇷 French — Français</option>
+            <option value="Portuguese">🇧🇷 Portuguese — Português</option>
+            <option value="German">🇩🇪 German — Deutsch</option>
+            <option value="Italian">🇮🇹 Italian — Italiano</option>
+            <option value="Dutch">🇳🇱 Dutch — Nederlands</option>
+            <option value="Japanese">🇯🇵 Japanese — 日本語</option>
+            <option value="Korean">🇰🇷 Korean — 한국어</option>
+            <option value="Mandarin Chinese">🇨🇳 Mandarin — 普通话</option>
+            <option value="Arabic">🇸🇦 Arabic — العربية</option>
+            <option value="Hindi">🇮🇳 Hindi — हिन्दी</option>
+          </select>
+          <div class="lang-hint">S.A.M. will write the entire output — hooks, script, and CTAs — in this language.</div>
         </div>
-        <div class="output-card">
-          <div class="output-icon">→</div>
-          <div>
-            <div class="output-title">Platform strategy</div>
-            <div class="output-desc">Where to post it and how to get 3 pieces from one moment</div>
-          </div>
-        </div>
-      </div>
 
-      <div class="platform-wrap">
-        <div class="section-label">Where do you post?</div>
-        <div class="platform-grid">
-          <button class="platform-pill" data-platform="TikTok" onclick="togglePlatform(this)">🎵 TikTok</button>
-          <button class="platform-pill" data-platform="YouTube Shorts" onclick="togglePlatform(this)">▶ YouTube Shorts</button>
-          <button class="platform-pill" data-platform="Instagram Reels" onclick="togglePlatform(this)">📸 Instagram Reels</button>
-          <button class="platform-pill" data-platform="Facebook Reels" onclick="togglePlatform(this)">👥 Facebook Reels</button>
-          <button class="platform-pill" data-platform="LinkedIn" onclick="togglePlatform(this)">💼 LinkedIn</button>
-          <button class="platform-pill" data-platform="X (Twitter)" onclick="togglePlatform(this)">✕ X (Twitter)</button>
-        </div>
-        <div class="platform-hint">Select all that apply — S.A.M. will tailor the output for each one.</div>
-      </div>
-
-
-
-      <div class="creator-context-wrap">
-        <div class="section-label">Tell S.A.M. about you <span style="font-weight:400;text-transform:none;letter-spacing:0;font-style:italic;color:var(--text-muted);font-family:'DM Sans',sans-serif;">(optional)</span></div>
-        <div class="input-wrap">
-          <input
-            type="text"
-            id="creatorContext"
-            class="creator-context-input"
-            placeholder="e.g. Self-taught renovator documenting a full cottage gut renovation for my parents in Maryland"
-            maxlength="200"
-            style="padding-right: 48px;"
-          />
-          <button class="mic-btn" id="micBtnContext" onclick="toggleMicContext()" title="Speak your creator context" style="bottom:6px;">🎙</button>
-        </div>
-        <div class="creator-context-hint">One sentence. S.A.M. uses this to personalize every output for your specific audience.</div>
-      </div>
-
-
-
-
-      <div class="lang-wrap">
-        <div class="section-label">Output language <span style="font-weight:400;text-transform:none;letter-spacing:0;font-style:italic;color:var(--text-muted);font-family:'DM Sans',sans-serif;">(optional)</span></div>
-        <select id="outputLanguage" class="lang-select">
-          <option value="">🌐 English (default)</option>
-          <option value="Spanish">🇪🇸 Spanish — Español</option>
-          <option value="French">🇫🇷 French — Français</option>
-          <option value="Portuguese">🇧🇷 Portuguese — Português</option>
-          <option value="German">🇩🇪 German — Deutsch</option>
-          <option value="Italian">🇮🇹 Italian — Italiano</option>
-          <option value="Dutch">🇳🇱 Dutch — Nederlands</option>
-          <option value="Japanese">🇯🇵 Japanese — 日本語</option>
-          <option value="Korean">🇰🇷 Korean — 한국어</option>
-          <option value="Mandarin Chinese">🇨🇳 Mandarin — 普通话</option>
-          <option value="Arabic">🇸🇦 Arabic — العربية</option>
-          <option value="Hindi">🇮🇳 Hindi — हिन्दी</option>
-        </select>
-        <div class="lang-hint">S.A.M. will write the entire output — hooks, script, and CTAs — in this language.</div>
-      </div>
-
-      <div class="demo-wrap">
-        <div class="section-label">Who's your audience? <span style="font-weight:400;text-transform:none;letter-spacing:0;font-style:italic;color:var(--text-muted);font-family:'DM Sans',sans-serif;">(optional)</span></div>
-        <div class="demo-grid">
-          <div class="demo-group">
-            <label class="demo-group-label">Age group</label>
-            <select id="demoAge" class="demo-select">
-              <option value="">Any age</option>
-              <option value="18-24 year olds">18–24</option>
-              <option value="25-34 year olds">25–34</option>
-              <option value="35-44 year olds">35–44</option>
-              <option value="45-54 year olds">45–54</option>
-              <option value="55-65 year olds">55–65</option>
-              <option value="mixed ages 18-65">Mixed 18–65</option>
-            </select>
-          </div>
-          <div class="demo-group">
-            <label class="demo-group-label">Gender skew</label>
-            <select id="demoGender" class="demo-select">
-              <option value="">Any gender</option>
-              <option value="primarily men">Mostly men</option>
-              <option value="primarily women">Mostly women</option>
-              <option value="mixed men and women">Mixed</option>
-            </select>
-          </div>
-          <div class="demo-group">
-            <label class="demo-group-label">Location</label>
-            <select id="demoLocation" class="demo-select">
-              <option value="">Anywhere</option>
-              <option value="USA">USA</option>
-              <option value="Canada">Canada</option>
-              <option value="UK">UK</option>
-              <option value="Australia">Australia</option>
-              <option value="North America">North America</option>
-              <option value="English-speaking countries">English-speaking</option>
-              <option value="worldwide">Worldwide</option>
-            </select>
-          </div>
-        </div>
-        <div class="demo-hint">S.A.M. will tailor hooks, language, and CTAs for this specific audience.</div>
-      </div>
-
-
-      <div class="emoji-wrap">
-        <div class="section-label">Emojis in your content?</div>
-        <div class="emoji-grid">
-          <button class="emoji-btn" data-emoji="no" onclick="selectEmoji(this)">
-            🚫 No emojis
-          </button>
-          <button class="emoji-btn selected" data-emoji="few" onclick="selectEmoji(this)">
-            ✨ A few emojis
-          </button>
-          <button class="emoji-btn" data-emoji="lots" onclick="selectEmoji(this)">
-            🎉 Lots of emojis
-          </button>
-        </div>
-      </div>
-
-      <div class="tone-wrap">
-        <div class="section-label">What's your tone?</div>
-        <div class="tone-grid">
-          <button class="tone-btn selected" data-tone="Authentic/Natural" onclick="selectTone(this)">
-            <span class="tone-icon">🎯</span>
-            <div class="tone-info">
-              <span class="tone-label">Authentic / Natural</span>
-              <span class="tone-desc">Real, grounded, no fluff</span>
+        <div class="demo-wrap">
+          <div class="section-label">Who's your audience? <span style="font-weight:400;text-transform:none;letter-spacing:0;font-style:italic;color:var(--text-muted);font-family:'DM Sans',sans-serif;">(optional)</span></div>
+          <div class="demo-grid">
+            <div class="demo-group">
+              <label class="demo-group-label">Age group</label>
+              <select id="demoAge" class="demo-select">
+                <option value="">Any age</option>
+                <option value="18-24 year olds">18–24</option>
+                <option value="25-34 year olds">25–34</option>
+                <option value="35-44 year olds">35–44</option>
+                <option value="45-54 year olds">45–54</option>
+                <option value="55-65 year olds">55–65</option>
+                <option value="mixed ages 18-65">Mixed 18–65</option>
+              </select>
             </div>
-          </button>
-          <button class="tone-btn" data-tone="Viral/Hype" onclick="selectTone(this)">
-            <span class="tone-icon">🔥</span>
-            <div class="tone-info">
-              <span class="tone-label">Viral / Hype</span>
-              <span class="tone-desc">High energy, bold, scroll-stopping</span>
+            <div class="demo-group">
+              <label class="demo-group-label">Gender skew</label>
+              <select id="demoGender" class="demo-select">
+                <option value="">Any gender</option>
+                <option value="primarily men">Mostly men</option>
+                <option value="primarily women">Mostly women</option>
+                <option value="mixed men and women">Mixed</option>
+              </select>
             </div>
-          </button>
-          <button class="tone-btn" data-tone="Wise/Mentor" onclick="selectTone(this)">
-            <span class="tone-icon">🧠</span>
-            <div class="tone-info">
-              <span class="tone-label">Wise / Mentor</span>
-              <span class="tone-desc">Thoughtful, teaches, builds trust</span>
+            <div class="demo-group">
+              <label class="demo-group-label">Location</label>
+              <select id="demoLocation" class="demo-select">
+                <option value="">Anywhere</option>
+                <option value="USA">USA</option>
+                <option value="Canada">Canada</option>
+                <option value="UK">UK</option>
+                <option value="Australia">Australia</option>
+                <option value="North America">North America</option>
+                <option value="English-speaking countries">English-speaking</option>
+                <option value="worldwide">Worldwide</option>
+              </select>
             </div>
-          </button>
-          <button class="tone-btn" data-tone="Bubbly/Energetic" onclick="selectTone(this)">
-            <span class="tone-icon">✨</span>
-            <div class="tone-info">
-              <span class="tone-label">Bubbly / Energetic</span>
-              <span class="tone-desc">Fun, warm, uplifting vibes</span>
-            </div>
-          </button>
-        </div>
-      </div>
-
-      <div class="content-type-wrap">
-        <div class="section-label">What are you making?</div>
-        <div class="content-type-grid">
-          <button class="content-type-btn selected" data-type="Short-form video" onclick="selectContentType(this)">
-            <span class="content-type-icon">🎬</span>
-            <span class="content-type-label">Short-form video</span>
-          </button>
-          <button class="content-type-btn" data-type="Long-form YouTube video" onclick="selectContentType(this)">
-            <span class="content-type-icon">▶️</span>
-            <span class="content-type-label">Long-form YouTube</span>
-          </button>
-          <button class="content-type-btn" data-type="LinkedIn text post" onclick="selectContentType(this)">
-            <span class="content-type-icon">💼</span>
-            <span class="content-type-label">LinkedIn post</span>
-          </button>
-          <button class="content-type-btn" data-type="Instagram caption" onclick="selectContentType(this)">
-            <span class="content-type-icon">📸</span>
-            <span class="content-type-label">Instagram caption</span>
-          </button>
-          <button class="content-type-btn" data-type="Podcast intro" onclick="selectContentType(this)">
-            <span class="content-type-icon">🎙️</span>
-            <span class="content-type-label">Podcast intro</span>
-          </button>
-          <button class="content-type-btn" data-type="Email newsletter" onclick="selectContentType(this)">
-            <span class="content-type-icon">✉️</span>
-            <span class="content-type-label">Email newsletter</span>
-          </button>
-          <button class="content-type-btn" data-type="Blog post" onclick="selectContentType(this)">
-            <span class="content-type-icon">✍️</span>
-            <span class="content-type-label">Blog post / Article</span>
-          </button>
-          <button class="content-type-btn" data-type="Text post" onclick="selectContentType(this)">
-            <span class="content-type-icon">💬</span>
-            <span class="content-type-label">Text post</span>
-          </button>
-        </div>
-        <div class="content-type-hint">S.A.M. will shape the output specifically for this format.</div>
-      </div>
-
-      <div class="input-card">
-        <div class="input-card-label">Describe your moment</div>
-        <div class="input-wrap">
-          <textarea
-            id="inp"
-            placeholder="Tell me what happened. The more real and specific, the better. Don't clean it up — just describe it like you're telling a friend."
-            oninput="updateChar()"
-            maxlength="1000"
-          ></textarea>
-          <button class="paste-btn" onclick="pasteToEl('inp')" title="Paste from clipboard">📋</button>
-          <button class="mic-btn" id="micBtn" onclick="toggleMic()" title="Speak your moment">🎙</button>
-        </div>
-        <div class="char-hint"><span id="charCount">0</span> / 1000</div>
-
-        <div class="chips">
-          <span class="chips-label">Try:</span>
-          <button class="chip" onclick="fillEx('My parents flew in from Florida and saw the cottage renovation for the first time. When they looked at the front yard they saw this big white blooming tree and both said wow. I had my camera ready. It was the most emotional moment in 6 months of work.')">Parents see the tree</button>
-          <button class="chip" onclick="fillEx('I discovered termite damage halfway through the renovation. It set me back two weeks and cost more than I planned. I fixed it entirely myself — nobody taught me how.')">Termite setback</button>
-          <button class="chip" onclick="fillEx('I removed an entire chimney by myself from the basement all the way through the roof. I had never done anything like it before. I just figured it out step by step.')">Chimney removal</button>
+          </div>
+          <div class="demo-hint">S.A.M. will tailor hooks, language, and CTAs for this specific audience.</div>
         </div>
 
-        <div class="loader" id="loader">
-          <div class="loader-dots"><span></span><span></span><span></span></div>
-          <div class="loader-text" id="loaderText">S.A.M. is reading your moment...</div>
-        </div>
-
-        <div class="error-box" id="errBox"></div>
-
-        <button class="run-btn" id="runBtn" onclick="runSAM()">
-          Run S.A.M. →
-        </button>
-      </div>
-
-      <div class="out-card" id="outCard">
-        <div class="out-header">
-          <div class="out-label">S.A.M. output</div>
-          <button class="new-btn" onclick="resetTool()">← New moment</button>
-        </div>
-        <div class="out-body" id="outBody">
-          <div class="print-header" style="display:none;">
-            <h1>S.A.M. — Strategic Assistant for Making</h1>
-            <p id="printMoment"></p>
+        <div class="emoji-wrap">
+          <div class="section-label">Emojis in your content?</div>
+          <div class="emoji-grid">
+            <button class="emoji-btn" data-emoji="no" onclick="selectEmoji(this)">🚫 No emojis</button>
+            <button class="emoji-btn selected" data-emoji="few" onclick="selectEmoji(this)">✨ A few emojis</button>
+            <button class="emoji-btn" data-emoji="lots" onclick="selectEmoji(this)">🎉 Lots of emojis</button>
           </div>
         </div>
-        <div class="focus-block" id="focusBlock" style="display:none;">
-          <div class="focus-block-eyebrow">Stop. Focus. Do this now.</div>
-          <div class="focus-block-action" id="focusAction" style="color:rgba(255,255,255,0.4);font-style:italic;font-size:14px;font-weight:400;">
-            S.A.M. is building your focus action...
+
+        <div class="tone-wrap">
+          <div class="section-label">What's your tone?</div>
+          <div class="tone-grid">
+            <button class="tone-btn selected" data-tone="Authentic/Natural" onclick="selectTone(this)"><span class="tone-icon">🎯</span><div class="tone-info"><span class="tone-label">Authentic / Natural</span><span class="tone-desc">Real, grounded, no fluff</span></div></button>
+            <button class="tone-btn" data-tone="Viral/Hype" onclick="selectTone(this)"><span class="tone-icon">🔥</span><div class="tone-info"><span class="tone-label">Viral / Hype</span><span class="tone-desc">High energy, bold, scroll-stopping</span></div></button>
+            <button class="tone-btn" data-tone="Wise/Mentor" onclick="selectTone(this)"><span class="tone-icon">🧠</span><div class="tone-info"><span class="tone-label">Wise / Mentor</span><span class="tone-desc">Thoughtful, teaches, builds trust</span></div></button>
+            <button class="tone-btn" data-tone="Bubbly/Energetic" onclick="selectTone(this)"><span class="tone-icon">✨</span><div class="tone-info"><span class="tone-label">Bubbly / Energetic</span><span class="tone-desc">Fun, warm, uplifting vibes</span></div></button>
           </div>
-          <div class="focus-block-sub" id="focusSub"></div>
         </div>
 
-        <div class="save-bar" id="saveBar" style="display:none;">
-          <button class="save-pdf-btn" onclick="saveAsPDF()">
-            ↓ &nbsp;Save output as PDF
-          </button>
+        <div class="content-type-wrap">
+          <div class="section-label">What are you making?</div>
+          <div class="content-type-grid">
+            <button class="content-type-btn selected" data-type="Short-form video" onclick="selectContentType(this)"><span class="content-type-icon">🎬</span><span class="content-type-label">Short-form video</span></button>
+            <button class="content-type-btn" data-type="Long-form YouTube video" onclick="selectContentType(this)"><span class="content-type-icon">▶️</span><span class="content-type-label">Long-form YouTube</span></button>
+            <button class="content-type-btn" data-type="LinkedIn text post" onclick="selectContentType(this)"><span class="content-type-icon">💼</span><span class="content-type-label">LinkedIn post</span></button>
+            <button class="content-type-btn" data-type="Instagram caption" onclick="selectContentType(this)"><span class="content-type-icon">📸</span><span class="content-type-label">Instagram caption</span></button>
+            <button class="content-type-btn" data-type="Podcast intro" onclick="selectContentType(this)"><span class="content-type-icon">🎙️</span><span class="content-type-label">Podcast intro</span></button>
+            <button class="content-type-btn" data-type="Email newsletter" onclick="selectContentType(this)"><span class="content-type-icon">✉️</span><span class="content-type-label">Email newsletter</span></button>
+            <button class="content-type-btn" data-type="Blog post" onclick="selectContentType(this)"><span class="content-type-icon">✍️</span><span class="content-type-label">Blog post / Article</span></button>
+            <button class="content-type-btn" data-type="Text post" onclick="selectContentType(this)"><span class="content-type-icon">💬</span><span class="content-type-label">Text post</span></button>
+          </div>
+          <div class="content-type-hint">S.A.M. will shape the output specifically for this format.</div>
         </div>
-      </div>
 
+        <div class="glass-card input-card">
+          <div class="input-card-label">Describe your moment</div>
+          <div class="input-wrap">
+            <textarea id="inp" placeholder="Tell me what happened. The more real and specific, the better. Don't clean it up — just describe it like you're telling a friend." oninput="updateChar()" maxlength="1000"></textarea>
+            <button class="paste-btn" onclick="pasteToEl('inp')" title="Paste">📋</button>
+            <button class="mic-btn" id="micBtn" onclick="toggleMic()">🎙</button>
+          </div>
+          <div class="char-hint"><span id="charCount">0</span> / 1000</div>
+          <div class="chips">
+            <span class="chips-label">Try:</span>
+            <button class="chip" onclick="fillEx('My parents flew in from Florida and saw the cottage renovation for the first time. When they looked at the front yard they saw this big white blooming tree and both said wow. I had my camera ready. It was the most emotional moment in 6 months of work.')">Parents see the tree</button>
+            <button class="chip" onclick="fillEx('I discovered termite damage halfway through the renovation. It set me back two weeks and cost more than I planned. I fixed it entirely myself — nobody taught me how.')">Termite setback</button>
+            <button class="chip" onclick="fillEx('I removed an entire chimney by myself from the basement all the way through the roof. I had never done anything like it before. I just figured it out step by step.')">Chimney removal</button>
+          </div>
+          <div class="loader" id="loader">
+            <div class="loader-dots"><span></span><span></span><span></span></div>
+            <div class="loader-text" id="loaderText">S.A.M. is reading your moment...</div>
+          </div>
+          <div class="error-box" id="errBox"></div>
+          <button class="run-btn" id="runBtn" onclick="runSAM()">Run S.A.M. →</button>
+        </div>
+
+        <div class="out-card" id="outCard">
+          <div class="out-header">
+            <div class="out-label">S.A.M. output</div>
+            <button class="new-btn" onclick="resetTool()">← New moment</button>
+          </div>
+          <div class="out-body" id="outBody">
+            <div class="print-header" style="display:none;"><h1>S.A.M. — Strategic Assistant for Making</h1><p id="printMoment"></p></div>
+          </div>
+          <div class="focus-block" id="focusBlock" style="display:none;">
+            <div class="focus-block-eyebrow">Stop. Focus. Do this now.</div>
+            <div class="focus-block-action" id="focusAction" style="color:rgba(255,255,255,0.35);font-style:italic;font-size:14px;font-weight:400;">S.A.M. is building your focus action...</div>
+            <div class="focus-block-sub" id="focusSub"></div>
+          </div>
+          <div class="save-bar" id="saveBar" style="display:none;">
+            <button class="save-pdf-btn" onclick="saveAsPDF()">↓ &nbsp;Save output as PDF</button>
+          </div>
+        </div>
       </div><!-- end moment-section -->
-
     </div>
   </div>
 
@@ -2457,60 +1680,100 @@
   </footer>
 
 <script>
-  // MODE SWITCHING
-  function switchMode(mode) {
-    const momentSection = document.getElementById('momentSection');
-    const ideaSection = document.getElementById('ideaSection');
-    const calendarSection = document.getElementById('calendarSection');
-    const tabMoment = document.getElementById('tabMoment');
-    const tabIdeas = document.getElementById('tabIdeas');
-    const tabCalendar = document.getElementById('tabCalendar');
+  // ── THEME ──────────────────────────────────────────────────────────────────
+  function toggleTheme() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const t = isDark ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+    localStorage.setItem('sam-theme', t);
+  }
+  (function() {
+    const saved = localStorage.getItem('sam-theme');
+    const sys = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.setAttribute('data-theme', saved || (sys ? 'dark' : 'light'));
+  })();
 
-    // hide all
-    momentSection.classList.add('hide');
-    ideaSection.classList.remove('show');
-    calendarSection.classList.remove('show');
-    tabMoment.classList.remove('active');
-    tabIdeas.classList.remove('active');
-    tabCalendar.classList.remove('active');
+  // ── PARTICLES ──────────────────────────────────────────────────────────────
+  (function() {
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, particles = [];
+    const G = 'rgba(212,168,75,';
+    const N = 90;
 
-    if (mode === 'ideas') {
-      ideaSection.classList.add('show');
-      tabIdeas.classList.add('active');
-    } else if (mode === 'calendar') {
-      calendarSection.classList.add('show');
-      tabCalendar.classList.add('active');
-    } else {
-      momentSection.classList.remove('hide');
-      tabMoment.classList.add('active');
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+
+    function P() {
+      this.reset = () => {
+        this.x = Math.random() * W;
+        this.y = Math.random() * H;
+        this.r = Math.random() * 2.5 + 0.4;
+        this.vx = (Math.random() - 0.5) * 0.45;
+        this.vy = (Math.random() - 0.5) * 0.4 - 0.1;
+        this.a = Math.random() * 0.65 + 0.1;
+        this.da = (Math.random() > 0.5 ? 1 : -1) * 0.003;
+      };
+      this.reset();
+      this.y = Math.random() * H; // stagger
     }
+
+    function init() { particles = []; for (let i = 0; i < N; i++) particles.push(new P()); }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      if (document.documentElement.getAttribute('data-theme') !== 'dark') { requestAnimationFrame(draw); return; }
+
+      particles.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        p.a = Math.max(0.05, Math.min(0.7, p.a + p.da));
+        if (p.a <= 0.05 || p.a >= 0.7) p.da *= -1;
+        if (p.y < -10 || p.x < -10 || p.x > W + 10) p.reset();
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = G + p.a + ')';
+        ctx.fill();
+      });
+
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const d = Math.sqrt(dx*dx + dy*dy);
+          if (d < 130) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = G + (0.14 * (1 - d/130)) + ')';
+            ctx.lineWidth = 0.6;
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(draw);
+    }
+    window.addEventListener('resize', resize);
+    resize(); init(); draw();
+  })();
+
+  // ── APP LOGIC (unchanged from v30) ────────────────────────────────────────
+  function switchMode(mode) {
+    document.getElementById('momentSection').classList.toggle('hide', mode !== 'moment');
+    document.getElementById('ideaSection').classList.toggle('show', mode === 'ideas');
+    document.getElementById('calendarSection').classList.toggle('show', mode === 'calendar');
+    document.getElementById('tabMoment').classList.toggle('active', mode === 'moment');
+    document.getElementById('tabIdeas').classList.toggle('active', mode === 'ideas');
+    document.getElementById('tabCalendar').classList.toggle('active', mode === 'calendar');
   }
 
-  // IDEA MAKER
   async function runIdeas() {
     const niche = document.getElementById('nicheInp').value.trim();
-    if (!niche) {
-      document.getElementById('nicheInp').style.borderColor = 'var(--gold-border)';
-      document.getElementById('nicheInp').focus();
-      setTimeout(() => document.getElementById('nicheInp').style.borderColor = '', 1500);
-      return;
-    }
+    if (!niche) { flash('nicheInp'); return; }
     document.getElementById('ideaErrBox').classList.remove('show');
     document.getElementById('ideaBtn').disabled = true;
     document.getElementById('ideaLoader').classList.add('show');
     document.getElementById('ideasOut').classList.remove('show');
-
     try {
-      const tone = getTone();
-      const audienceDemographics = getAudienceDemographics();
-      const outputLanguage = getOutputLanguage();
-      const response = await fetch('/api/sam', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mode: 'ideas', moment: niche, tone, audienceDemographics, outputLanguage, emojiPreference: getEmojiPreference() })
-      });
-      if (!response.ok) throw new Error('Server error ' + response.status);
-      const data = await response.json();
+      const data = await callAPI('ideas', niche, [], '', '', getTone(), getAudienceDemographics(), getOutputLanguage(), getEmojiPreference());
       document.getElementById('ideaLoader').classList.remove('show');
       renderIdeas(data);
       document.getElementById('ideasOut').classList.add('show');
@@ -2519,78 +1782,44 @@
       document.getElementById('ideaBtn').disabled = false;
       document.getElementById('ideasOut').scrollIntoView({ behavior: 'smooth', block: 'start' });
       fetchFocusAction('ideas', niche, data);
-    } catch (err) {
+    } catch(err) {
       document.getElementById('ideaLoader').classList.remove('show');
-      const eb = document.getElementById('ideaErrBox');
-      eb.textContent = 'Something went wrong: ' + (err.message || 'Please try again.');
-      eb.classList.add('show');
+      showErr('ideaErrBox', err.message);
       document.getElementById('ideaBtn').disabled = false;
     }
   }
 
   function renderIdeas(data) {
     const body = document.getElementById('ideasBody');
-    if (!data.ideas || !Array.isArray(data.ideas)) {
-      body.innerHTML = '<div class="blk-text" style="color:var(--text-muted)">No ideas returned. Try again.</div>';
-      return;
-    }
+    if (!data.ideas || !Array.isArray(data.ideas)) { body.innerHTML = '<div style="color:var(--text-muted);padding:1rem;">No ideas returned. Try again.</div>'; return; }
     body.innerHTML = data.ideas.map((idea, i) => `
       <div class="idea-card">
-        <div class="idea-num">IDEA ${i + 1}</div>
+        <div class="idea-num">IDEA ${i+1}</div>
         <div class="idea-title">${idea.title}</div>
         <div class="tip-box">${idea.why}</div>
         ${idea.best_platform ? `<div class="best-platform-badge">📍 Best on: ${idea.best_platform}</div>` : ''}
         <button class="idea-copy-btn" onclick="copyIdeaCard(this)">Copy</button>
-      </div>
-    `).join('');
+      </div>`).join('');
   }
 
   function copyIdeaCard(btn) {
-    const card = btn.closest('.idea-card');
-    const title = card.querySelector('.idea-title').textContent;
-    const why = card.querySelector('.tip-box') ? card.querySelector('.tip-box').textContent : '';
-    const platform = card.querySelector('.best-platform-badge') ? card.querySelector('.best-platform-badge').textContent : '';
-    navigator.clipboard.writeText(title + '\n' + why + (platform ? '\n' + platform : '')).then(() => {
-      btn.textContent = 'Copied!';
-      btn.classList.add('copied');
-      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
-    });
+    const c = btn.closest('.idea-card');
+    const txt = c.querySelector('.idea-title').textContent + '\n' + (c.querySelector('.tip-box')?.textContent||'') + (c.querySelector('.best-platform-badge')?.textContent||'');
+    navigator.clipboard.writeText(txt).then(() => { btn.textContent='Copied!'; btn.classList.add('copied'); setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},2000); });
   }
 
-  // CALENDAR
   function toggleCalPlatform(btn) { btn.classList.toggle('selected'); }
-
-  function getCalPlatforms() {
-    const sel = [];
-    document.querySelectorAll('#calPlatformGrid .platform-pill.selected').forEach(b => sel.push(b.dataset.platform));
-    return sel;
-  }
+  function getCalPlatforms() { return [...document.querySelectorAll('#calPlatformGrid .platform-pill.selected')].map(b=>b.dataset.platform); }
 
   async function runCalendar() {
     const moment = document.getElementById('calInp').value.trim();
-    if (!moment) {
-      document.getElementById('calInp').style.borderColor = 'var(--gold-border)';
-      document.getElementById('calInp').focus();
-      setTimeout(() => document.getElementById('calInp').style.borderColor = '', 1500);
-      return;
-    }
+    if (!moment) { flash('calInp'); return; }
     document.getElementById('calErrBox').classList.remove('show');
     document.getElementById('calBtn').disabled = true;
     document.getElementById('calLoader').classList.add('show');
     document.getElementById('calOut').classList.remove('show');
-
     try {
-      const platforms = getCalPlatforms();
-      const tone = getTone();
-      const audienceDemographics = getAudienceDemographics();
-      const outputLanguage = getOutputLanguage();
-      const response = await fetch('/api/sam', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mode: 'calendar', moment, platforms, tone, audienceDemographics, outputLanguage, emojiPreference: getEmojiPreference() })
-      });
-      if (!response.ok) throw new Error('Server error ' + response.status);
-      const data = await response.json();
+      const data = await callAPI('calendar', moment, getCalPlatforms(), '', '', getTone(), getAudienceDemographics(), getOutputLanguage(), getEmojiPreference());
       document.getElementById('calLoader').classList.remove('show');
       renderCalendar(data);
       document.getElementById('calOut').classList.add('show');
@@ -2599,50 +1828,37 @@
       document.getElementById('calBtn').disabled = false;
       document.getElementById('calOut').scrollIntoView({ behavior: 'smooth', block: 'start' });
       fetchFocusAction('calendar', moment, data);
-    } catch (err) {
+    } catch(err) {
       document.getElementById('calLoader').classList.remove('show');
-      const eb = document.getElementById('calErrBox');
-      eb.textContent = 'Something went wrong: ' + (err.message || 'Please try again.');
-      eb.classList.add('show');
+      showErr('calErrBox', err.message);
       document.getElementById('calBtn').disabled = false;
     }
   }
 
   function renderCalendar(data) {
     const body = document.getElementById('calBody');
-    if (!data.days || !Array.isArray(data.days)) {
-      body.innerHTML = '<div class="blk-text" style="color:var(--text-muted)">No calendar returned. Try again.</div>';
-      return;
-    }
-    const dayNames = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+    if (!data.days || !Array.isArray(data.days)) { body.innerHTML = '<div style="color:var(--text-muted);padding:1rem;">No calendar returned. Try again.</div>'; return; }
+    const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
     body.innerHTML = data.days.map((day, i) => `
       <div class="cal-day">
         <div class="cal-day-header">
-          <div class="cal-day-name">${dayNames[i] || 'Day ' + (i+1)}</div>
-          <div class="cal-day-platform">${day.platform || ''}</div>
+          <div class="cal-day-name">${days[i]||'Day '+(i+1)}</div>
+          <div class="cal-day-platform">${day.platform||''}</div>
         </div>
         <div class="cal-day-body">
-          <div class="cal-post-type">${day.post_type || ''}</div>
-          <div class="cal-post-content">${day.content || ''}</div>
-          <div class="cal-post-tip">${day.tip || ''}</div>
-          ${day.ideal_time ? `<div class="ideal-time">⏰ Best time: ${day.ideal_time}</div>` : ''}
+          <div class="cal-post-type">${day.post_type||''}</div>
+          <div class="cal-post-content">${day.content||''}</div>
+          <div class="cal-post-tip">${day.tip||''}</div>
+          ${day.ideal_time?`<div class="ideal-time">⏰ Best time: ${day.ideal_time}</div>`:''}
           <button class="cal-copy-btn" onclick="copyCalDay(this)">Copy</button>
         </div>
-      </div>
-    `).join('');
+      </div>`).join('');
   }
 
   function copyCalDay(btn) {
-    const body = btn.closest('.cal-day-body');
-    const type = body.querySelector('.cal-post-type').textContent;
-    const cnt = body.querySelector('.cal-post-content').textContent;
-    const tip = body.querySelector('.cal-post-tip').textContent;
-    const time = body.querySelector('.ideal-time') ? body.querySelector('.ideal-time').textContent : '';
-    navigator.clipboard.writeText(type + '\n' + cnt + '\n\n' + tip + (time ? '\n' + time : '')).then(() => {
-      btn.textContent = 'Copied!';
-      btn.classList.add('copied');
-      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
-    });
+    const b = btn.closest('.cal-day-body');
+    const txt = b.querySelector('.cal-post-type').textContent + '\n' + b.querySelector('.cal-post-content').textContent + '\n\n' + b.querySelector('.cal-post-tip').textContent + (b.querySelector('.ideal-time')?.textContent||'');
+    navigator.clipboard.writeText(txt).then(()=>{ btn.textContent='Copied!'; btn.classList.add('copied'); setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},2000); });
   }
 
   function resetCalendar() {
@@ -2651,45 +1867,8 @@
     document.getElementById('calFocusBlock').style.display = 'none';
     document.getElementById('calInp').value = '';
     document.getElementById('calBtn').disabled = false;
-    document.querySelectorAll('#calPlatformGrid .platform-pill').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('#calPlatformGrid .platform-pill').forEach(b=>b.classList.remove('selected'));
   }
-
-  // MIC — CALENDAR
-  let recognitionCal = null;
-  let isRecordingCal = false;
-
-  function toggleMicCal() {
-    const micBtn = document.getElementById('micBtnCal');
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) { alert('Try Chrome or Safari for voice input.'); return; }
-    if (isRecordingCal) { recognitionCal.stop(); return; }
-    recognitionCal = new SR();
-    recognitionCal.continuous = true;
-    recognitionCal.interimResults = true;
-    recognitionCal.lang = 'en-US';
-    recognitionCal.onstart = function() {
-      isRecordingCal = true;
-      micBtn.classList.add('recording');
-      micBtn.innerHTML = '⏹';
-    };
-    recognitionCal.onresult = function(e) {
-      let t = '';
-      for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript;
-      document.getElementById('calInp').value = t;
-    };
-    recognitionCal.onend = function() {
-      isRecordingCal = false;
-      micBtn.classList.remove('recording');
-      micBtn.innerHTML = '🎙';
-    };
-    recognitionCal.onerror = function() {
-      isRecordingCal = false;
-      micBtn.classList.remove('recording');
-      micBtn.innerHTML = '🎙';
-    };
-    recognitionCal.start();
-  }
-
   function resetIdeas() {
     document.getElementById('ideasOut').classList.remove('show');
     document.getElementById('ideaSaveBar').style.display = 'none';
@@ -2698,548 +1877,208 @@
     document.getElementById('ideaBtn').disabled = false;
   }
 
-  // MIC — NICHE
-  let recognitionNiche = null;
-  let isRecordingNiche = false;
-
-  function toggleMicNiche() {
-    const micBtn = document.getElementById('micBtnNiche');
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) { alert('Try Chrome or Safari for voice input.'); return; }
-    if (isRecordingNiche) { recognitionNiche.stop(); return; }
-    recognitionNiche = new SR();
-    recognitionNiche.continuous = true;
-    recognitionNiche.interimResults = true;
-    recognitionNiche.lang = 'en-US';
-    recognitionNiche.onstart = function() {
-      isRecordingNiche = true;
-      micBtn.classList.add('recording');
-      micBtn.innerHTML = '⏹';
-    };
-    recognitionNiche.onresult = function(e) {
-      let t = '';
-      for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript;
-      document.getElementById('nicheInp').value = t;
-    };
-    recognitionNiche.onend = function() {
-      isRecordingNiche = false;
-      micBtn.classList.remove('recording');
-      micBtn.innerHTML = '🎙';
-    };
-    recognitionNiche.onerror = function() {
-      isRecordingNiche = false;
-      micBtn.classList.remove('recording');
-      micBtn.innerHTML = '🎙';
-    };
-    recognitionNiche.start();
-  }
-
-  const loaderLines = [
-    "S.A.M. is reading your moment...",
-    "Finding the real story...",
-    "Building your output...",
-    "Almost there..."
-  ];
-
-  function saveAsPDF() {
-    const moment = document.getElementById('inp').value.trim();
-    const printEl = document.getElementById('printMoment');
-    if (printEl) {
-      const date = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-      printEl.textContent = 'Generated on ' + date + (moment ? ' — "' + moment.substring(0, 120) + (moment.length > 120 ? '...' : '') + '"' : '');
-    }
-    window.print();
-  }
-
-  function selectTone(btn) {
-    document.querySelectorAll('.tone-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-  }
-
-  function getOutputLanguage() {
-    return document.getElementById('outputLanguage').value || '';
-  }
-
-  function getAudienceDemographics() {
-    const age = document.getElementById('demoAge').value;
-    const gender = document.getElementById('demoGender').value;
-    const location = document.getElementById('demoLocation').value;
-    const parts = [age, gender, location].filter(Boolean);
-    return parts.length > 0 ? parts.join(', ') : '';
-  }
-
-  function selectEmoji(btn) {
-    document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-  }
-
-  function getEmojiPreference() {
-    const selected = document.querySelector('.emoji-btn.selected');
-    return selected ? selected.dataset.emoji : 'few';
-  }
-
-  function getTone() {
-    const selected = document.querySelector('.tone-btn.selected');
-    return selected ? selected.dataset.tone : 'Authentic/Natural';
-  }
-
-  function selectContentType(btn) {
-    document.querySelectorAll('.content-type-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-  }
-
-  function getContentType() {
-    const selected = document.querySelector('.content-type-btn.selected');
-    return selected ? selected.dataset.type : 'Short-form video';
-  }
-
-  function togglePlatform(btn) { btn.classList.toggle('selected'); }
-
-  function getSelectedPlatforms() {
-    const sel = [];
-    document.querySelectorAll('.platform-pill.selected').forEach(b => sel.push(b.dataset.platform));
-    return sel;
-  }
-
-  function fillEx(text) {
-    document.getElementById('inp').value = text;
-    updateChar();
-    document.getElementById('inp').focus();
-  }
-
-  function updateChar() {
-    document.getElementById('charCount').textContent = document.getElementById('inp').value.length;
-  }
-
-  function resetTool() {
-    document.getElementById('outCard').classList.remove('show');
-    document.getElementById('saveBar').style.display = 'none';
-    document.getElementById('focusBlock').style.display = 'none';
-    document.getElementById('inp').value = '';
-    document.getElementById('charCount').textContent = '0';
-    document.getElementById('errBox').classList.remove('show');
-    document.getElementById('runBtn').disabled = false;
-    document.getElementById('tool').scrollIntoView({ behavior: 'smooth' });
-  }
-
-  function showError(msg) {
-    const el = document.getElementById('errBox');
-    el.textContent = msg;
-    el.classList.add('show');
-  }
-
-  function renderOutput(data, contentType) {
-    const body = document.getElementById('outBody');
-    let html = '';
-
-    const spine = (data.story_spine || '').split('/').map(s =>
-      `<div class="broll-item">${s.trim()}</div>`).join('');
-    const platParts = (data.best_platform || '').split('—');
-    const broll = (data.b_roll || '').split('\n').filter(Boolean).map(l =>
-      `<div class="broll-item">${l.trim()}</div>`).join('');
-
-    const isReal = (v) => v && typeof v === 'string' && v.trim() !== '' && v.trim().toLowerCase() !== 'undefined' && v.trim().toLowerCase() !== 'n/a';
-
-    html += isReal(data.diagnosis) ? `<div class="blk"><div class="blk-title">What this is really about</div><div class="blk-text">${data.diagnosis}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
-
-    html += isReal(data.hook) ? `<div class="blk"><div class="blk-title">Your hook</div><div class="hook-box">${data.hook}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
-    html += isReal(data.hook_1) ? `<div class="blk"><div class="blk-title">Hook 1 — emotion first</div><div class="hook-box">${data.hook_1}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
-    html += isReal(data.hook_2) ? `<div class="blk"><div class="blk-title">Hook 2 — curiosity first</div><div class="hook-box">${data.hook_2}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
-    html += isReal(data.hook_3) ? `<div class="blk"><div class="blk-title">Hook 3 — identity first</div><div class="hook-box">${data.hook_3}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
-    html += isReal(data.winner) ? `<div class="blk"><div class="blk-title">S.A.M. recommends</div><div class="blk-text">${data.winner}</div></div>` : '';
-    html += isReal(data.visual_note) ? `<div class="blk"><div class="blk-title">What to show on screen</div><div class="blk-text">${data.visual_note}</div></div>` : '';
-    html += isReal(data.story_spine) ? `<div class="blk"><div class="blk-title">Story spine</div>${spine}</div>` : '';
-    if (data.full_script || data.script) {
-      const scriptContent = data.full_script || data.script;
-      const textFormats = ['Text post', 'LinkedIn text post', 'Instagram caption', 'Email newsletter', 'Blog post', 'Blog post / Article'];
-      const isTextFormat = textFormats.some(f => (contentType || '').trim() === f.trim());
-
-      if (isTextFormat) {
-        // Strip any video script markers the model may have included
-        const cleanedText = scriptContent
-          .replace(/\[HOOK\]/gi, '').replace(/\[SETUP\]/gi, '').replace(/\[TENSION\]/gi, '')
-          .replace(/\[PAYOFF\]/gi, '').replace(/\[CTA\]/gi, '').replace(/\[BUILD\]/gi, '')
-          .replace(/\[BREAKTHROUGH\]/gi, '').replace(/\[REALIZATION\]/gi, '').replace(/\[OUTRO\]/gi, '')
-          .replace(/\[INTRO\]/gi, '').replace(/\[BRIDGE\]/gi, '').replace(/\[CONFLICT\]/gi, '')
-          .replace(/\[RESOLUTION\]/gi, '').replace(/\[OPENING\]/gi, '').replace(/\[CLOSING\]/gi, '')
-          .replace(/\[[A-Z ]+\]/g, '')  // catch any other ALL-CAPS bracket labels
-          .replace(/\(pause[^)]*\)/gi, '').replace(/\(slow[^)]*\)/gi, '').replace(/\(look[^)]*\)/gi, '')
-          .replace(/\(smile[^)]*\)/gi, '').replace(/\(gesture[^)]*\)/gi, '').replace(/\(breath[^)]*\)/gi, '')
-          .replace(/\(nod[^)]*\)/gi, '').replace(/\(beat\)/gi, '').replace(/\(emphasis\)/gi, '')
-          .replace(/^\s*[\r\n]/gm, '')  // remove blank lines left by stripped markers
-          .trim();
-        const labelMap = {
-          'Text post': '💬 Your text post — ready to copy',
-          'LinkedIn text post': '💼 Your LinkedIn post — ready to copy',
-          'Instagram caption': '📸 Your Instagram caption — ready to copy',
-          'Email newsletter': '✉️ Your email — ready to send',
-          'Blog post': '✍️ Your blog post — ready to publish'
-        };
-        const label = labelMap[contentType] || '📝 Your post — ready to copy';
-        html += '<div class="blk"><div class="blk-title">' + label + '</div><div class="text-output-box">' + cleanedText.replace(/\n/g, '<br>') + '</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>';
-      } else {
-        // Video/audio formats: script block with beat markers
-        const formattedScript = scriptContent
-          .split('\n')
-          .map(line => {
-            const trimmed = line.trim();
-            if (!trimmed) return '';
-            if (trimmed.match(/^\[.*\]$/) || trimmed.match(/^(HOOK|SETUP|TENSION|PAYOFF|CTA|OUTRO|INTRO|BRIDGE):/i)) {
-              return '<span class="script-beat">' + trimmed + '</span>';
-            }
-            if (trimmed.startsWith('(') && trimmed.endsWith(')')) {
-              return '<span class="script-note">' + trimmed + '</span>';
-            }
-            return '<span class="script-line">' + trimmed + '</span>';
-          })
-          .filter(Boolean)
-          .join('\n');
-        html += '<div class="blk"><div class="blk-title">📋 Full script — word for word</div><div class="script-block">' + formattedScript + '</div><button class="copy-btn" onclick="copyEl(this)">Copy script</button></div>';
-      }
-    }
-    html += isReal(data.pacing_note) ? `<div class="blk"><div class="blk-title">How to deliver it</div><div class="blk-text">${data.pacing_note}</div></div>` : '';
-    html += isReal(data.b_roll) ? `<div class="blk"><div class="blk-title">B-roll shots</div>${broll}</div>` : '';
-    html += isReal(data.cta) ? `<div class="blk"><div class="blk-title">Call to action</div><div class="blk-text">${data.cta}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
-    html += isReal(data.primary_platform) ? `<div class="blk"><div class="blk-title">Primary platform</div><div class="pill">${data.primary_platform}</div><div class="blk-text" style="margin-top:8px;">${data.primary_angle||''}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
-    html += isReal(data.secondary_platform) ? `<div class="blk"><div class="blk-title">Secondary platform</div><div class="pill soft">${data.secondary_platform}</div><div class="blk-text" style="margin-top:8px;">${data.secondary_angle||''}</div></div>` : '';
-    html += isReal(data.skip) ? `<div class="blk"><div class="blk-title">Skip for now</div><div class="warn-box">${data.skip}</div></div>` : '';
-    html += isReal(data.repurpose_tip) ? `<div class="blk"><div class="blk-title">Repurpose tip</div><div class="success-box">${data.repurpose_tip}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
-    html += isReal(data.content_warning) ? `<div class="blk"><div class="blk-title">Watch out for</div><div class="warn-box">${data.content_warning}</div></div>` : '';
-    html += isReal(data.best_platform) && !isReal(data.primary_platform) ? `<div class="blk"><div class="blk-title">Best platform</div><div class="pill">${(platParts[0]||'').trim()}</div><div class="blk-text" style="margin-top:8px;">${(platParts.slice(1).join('—')||'').trim()}</div></div>` : '';
-
-    if (data.platform_strategies && Array.isArray(data.platform_strategies)) {
-      data.platform_strategies.forEach(function(ps) {
-        if (ps && ps.platform && ps.strategy) {
-          html += `<div class="blk"><div class="blk-title">${ps.platform}</div><div class="blk-text">${ps.strategy}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`;
-        }
-      });
-    }
-
-    body.innerHTML = html || '<div class="blk-text" style="color:var(--text-muted)">No output returned. Try again.</div>';
-  }
-
-  async function callAPI(mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage, emojiPreference) {
-    const response = await fetch('/api/sam', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage, emojiPreference })
-    });
-    if (!response.ok) {
-      const err = await response.json().catch(() => ({}));
-      throw new Error(err.error || 'Server error ' + response.status);
-    }
-    return response.json();
-  }
+  const loaderLines = ["S.A.M. is reading your moment...","Finding the real story...","Building your output...","Almost there..."];
+  let loaderInterval;
 
   async function runSAM() {
     const text = document.getElementById('inp').value.trim();
-    if (!text) {
-      document.getElementById('inp').style.borderColor = 'var(--gold-border)';
-      document.getElementById('inp').focus();
-      setTimeout(() => document.getElementById('inp').style.borderColor = '', 1500);
-      return;
-    }
-
+    if (!text) { flash('inp'); return; }
     document.getElementById('errBox').classList.remove('show');
     document.getElementById('runBtn').disabled = true;
     document.getElementById('loader').classList.add('show');
     document.getElementById('outCard').classList.remove('show');
-
-    let loaderIdx = 0;
-    const loaderInterval = setInterval(() => {
-      loaderIdx = (loaderIdx + 1) % loaderLines.length;
-      document.getElementById('loaderText').textContent = loaderLines[loaderIdx];
-    }, 1800);
-
+    let idx = 0;
+    loaderInterval = setInterval(()=>{ idx=(idx+1)%loaderLines.length; document.getElementById('loaderText').textContent=loaderLines[idx]; },1800);
     try {
-      const platforms = getSelectedPlatforms();
-      const contentType = getContentType();
-      const creatorContext = document.getElementById('creatorContext').value.trim();
-      const tone = getTone();
-      const audienceDemographics = getAudienceDemographics();
-      const outputLanguage = getOutputLanguage();
-      const emojiPreference = getEmojiPreference();
-      const [storyData, hookData] = await Promise.all([
-        callAPI('story', text, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage, emojiPreference),
-        callAPI('hook', text, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage, emojiPreference)
+      const ct = getContentType(), ctx2 = document.getElementById('creatorContext').value.trim();
+      const [sd, hd] = await Promise.all([
+        callAPI('story', text, getSelectedPlatforms(), ct, ctx2, getTone(), getAudienceDemographics(), getOutputLanguage(), getEmojiPreference()),
+        callAPI('hook', text, getSelectedPlatforms(), ct, ctx2, getTone(), getAudienceDemographics(), getOutputLanguage(), getEmojiPreference())
       ]);
-
-      const combined = Object.assign({}, storyData, hookData);
       clearInterval(loaderInterval);
       document.getElementById('loader').classList.remove('show');
-      renderOutput(combined, contentType);
+      renderOutput(Object.assign({}, sd, hd), ct);
       document.getElementById('outCard').classList.add('show');
       document.getElementById('saveBar').style.display = 'block';
       document.getElementById('focusBlock').style.display = 'block';
       document.getElementById('runBtn').disabled = false;
       document.getElementById('outCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      fetchFocusAction('moment', text, combined);
-
-    } catch (err) {
+      fetchFocusAction('moment', text, Object.assign({}, sd, hd));
+    } catch(err) {
       clearInterval(loaderInterval);
       document.getElementById('loader').classList.remove('show');
-      showError('Something went wrong: ' + (err.message || 'Please try again.'));
+      showErr('errBox', err.message);
       document.getElementById('runBtn').disabled = false;
     }
   }
 
-  // SPEECH TO TEXT
-  let recognition = null;
-  let isRecording = false;
+  async function callAPI(mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage, emojiPreference) {
+    const r = await fetch('/api/sam', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({mode,moment,platforms,contentType,creatorContext,tone,audienceDemographics,outputLanguage,emojiPreference}) });
+    if (!r.ok) { const e = await r.json().catch(()=>({})); throw new Error(e.error||'Server error '+r.status); }
+    return r.json();
+  }
 
+  async function fetchFocusAction(sourceMode, inputText, outputData) {
+    const aId = sourceMode==='moment'?'focusAction':sourceMode==='ideas'?'ideaFocusAction':'calFocusAction';
+    const sId = sourceMode==='moment'?'focusSub':sourceMode==='ideas'?'ideaFocusSub':'calFocusSub';
+    try {
+      const data = await callAPI('focus', inputText, [], '', '', getTone(), '', '', getEmojiPreference());
+      const el = document.getElementById(aId);
+      if (data.action && el) { el.style.cssText='color:#fff;font-style:normal;font-weight:700;font-size:18px;'; el.textContent=data.action; }
+      const sel = document.getElementById(sId);
+      if (data.sub && sel) sel.textContent = data.sub;
+    } catch(e) {
+      const el = document.getElementById(aId);
+      if (el) { el.style.cssText='color:#fff;font-style:normal;font-weight:700;font-size:16px;'; el.textContent='Pick one thing from the output above and do it in the next 30 minutes.'; }
+    }
+  }
+
+  function isReal(v) { return v && typeof v==='string' && v.trim()!=='' && v.trim().toLowerCase()!=='undefined' && v.trim().toLowerCase()!=='n/a'; }
+
+  function renderOutput(data, contentType) {
+    const body = document.getElementById('outBody');
+    let html = '';
+    const spine = (data.story_spine||'').split('/').map(s=>`<div class="broll-item">${s.trim()}</div>`).join('');
+    const platParts = (data.best_platform||'').split('—');
+    const broll = (data.b_roll||'').split('\n').filter(Boolean).map(l=>`<div class="broll-item">${l.trim()}</div>`).join('');
+
+    if (isReal(data.diagnosis)) html += `<div class="blk"><div class="blk-title">What this is really about</div><div class="blk-text">${data.diagnosis}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`;
+    if (isReal(data.hook)) html += `<div class="blk"><div class="blk-title">Your hook</div><div class="hook-box">${data.hook}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`;
+    if (isReal(data.hook_1)) html += `<div class="blk"><div class="blk-title">Hook 1 — emotion first</div><div class="hook-box">${data.hook_1}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`;
+    if (isReal(data.hook_2)) html += `<div class="blk"><div class="blk-title">Hook 2 — curiosity first</div><div class="hook-box">${data.hook_2}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`;
+    if (isReal(data.hook_3)) html += `<div class="blk"><div class="blk-title">Hook 3 — identity first</div><div class="hook-box">${data.hook_3}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`;
+    if (isReal(data.winner)) html += `<div class="blk"><div class="blk-title">S.A.M. recommends</div><div class="blk-text">${data.winner}</div></div>`;
+    if (isReal(data.visual_note)) html += `<div class="blk"><div class="blk-title">What to show on screen</div><div class="blk-text">${data.visual_note}</div></div>`;
+    if (isReal(data.story_spine)) html += `<div class="blk"><div class="blk-title">Story spine</div>${spine}</div>`;
+
+    if (data.full_script || data.script) {
+      const sc = data.full_script || data.script;
+      const textFmts = ['Text post','LinkedIn text post','Instagram caption','Email newsletter','Blog post','Blog post / Article'];
+      const isTxt = textFmts.some(f=>(contentType||'').trim()===f.trim());
+      if (isTxt) {
+        const clean = sc.replace(/\[HOOK\]/gi,'').replace(/\[SETUP\]/gi,'').replace(/\[TENSION\]/gi,'').replace(/\[PAYOFF\]/gi,'').replace(/\[CTA\]/gi,'').replace(/\[BUILD\]/gi,'').replace(/\[BREAKTHROUGH\]/gi,'').replace(/\[REALIZATION\]/gi,'').replace(/\[OUTRO\]/gi,'').replace(/\[INTRO\]/gi,'').replace(/\[BRIDGE\]/gi,'').replace(/\[CONFLICT\]/gi,'').replace(/\[RESOLUTION\]/gi,'').replace(/\[OPENING\]/gi,'').replace(/\[CLOSING\]/gi,'').replace(/\[[A-Z ]+\]/g,'').replace(/\(pause[^)]*\)/gi,'').replace(/\(slow[^)]*\)/gi,'').replace(/\(look[^)]*\)/gi,'').replace(/\(smile[^)]*\)/gi,'').replace(/\(gesture[^)]*\)/gi,'').replace(/\(breath[^)]*\)/gi,'').replace(/\(nod[^)]*\)/gi,'').replace(/\(beat\)/gi,'').replace(/\(emphasis\)/gi,'').replace(/^\s*[\r\n]/gm,'').trim();
+        const lm = {'Text post':'💬 Your text post — ready to copy','LinkedIn text post':'💼 Your LinkedIn post — ready to copy','Instagram caption':'📸 Your Instagram caption — ready to copy','Email newsletter':'✉️ Your email — ready to send','Blog post':'✍️ Your blog post — ready to publish'};
+        html += `<div class="blk"><div class="blk-title">${lm[contentType]||'📝 Your post — ready to copy'}</div><div class="text-output-box">${clean.replace(/\n/g,'<br>')}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`;
+      } else {
+        const fs = sc.split('\n').map(line=>{const t=line.trim();if(!t)return'';if(t.match(/^\[.*\]$/)||t.match(/^(HOOK|SETUP|TENSION|PAYOFF|CTA|OUTRO|INTRO|BRIDGE):/i))return`<span class="script-beat">${t}</span>`;if(t.startsWith('(')&&t.endsWith(')'))return`<span class="script-note">${t}</span>`;return`<span class="script-line">${t}</span>`;}).filter(Boolean).join('\n');
+        html += `<div class="blk"><div class="blk-title">📋 Full script — word for word</div><div class="script-block">${fs}</div><button class="copy-btn" onclick="copyEl(this)">Copy script</button></div>`;
+      }
+    }
+
+    if (isReal(data.pacing_note)) html += `<div class="blk"><div class="blk-title">How to deliver it</div><div class="blk-text">${data.pacing_note}</div></div>`;
+    if (isReal(data.b_roll)) html += `<div class="blk"><div class="blk-title">B-roll shots</div>${broll}</div>`;
+    if (isReal(data.cta)) html += `<div class="blk"><div class="blk-title">Call to action</div><div class="blk-text">${data.cta}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`;
+    if (isReal(data.primary_platform)) html += `<div class="blk"><div class="blk-title">Primary platform</div><div class="pill">${data.primary_platform}</div><div class="blk-text" style="margin-top:8px;">${data.primary_angle||''}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`;
+    if (isReal(data.secondary_platform)) html += `<div class="blk"><div class="blk-title">Secondary platform</div><div class="pill soft">${data.secondary_platform}</div><div class="blk-text" style="margin-top:8px;">${data.secondary_angle||''}</div></div>`;
+    if (isReal(data.skip)) html += `<div class="blk"><div class="blk-title">Skip for now</div><div class="warn-box">${data.skip}</div></div>`;
+    if (isReal(data.repurpose_tip)) html += `<div class="blk"><div class="blk-title">Repurpose tip</div><div class="success-box">${data.repurpose_tip}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`;
+    if (isReal(data.content_warning)) html += `<div class="blk"><div class="blk-title">Watch out for</div><div class="warn-box">${data.content_warning}</div></div>`;
+    if (isReal(data.best_platform) && !isReal(data.primary_platform)) html += `<div class="blk"><div class="blk-title">Best platform</div><div class="pill">${(platParts[0]||'').trim()}</div><div class="blk-text" style="margin-top:8px;">${(platParts.slice(1).join('—')||'').trim()}</div></div>`;
+    if (data.platform_strategies && Array.isArray(data.platform_strategies)) {
+      data.platform_strategies.forEach(ps=>{ if(ps&&ps.platform&&ps.strategy) html+=`<div class="blk"><div class="blk-title">${ps.platform}</div><div class="blk-text">${ps.strategy}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`; });
+    }
+    body.innerHTML = html || '<div style="color:var(--text-muted)">No output returned. Try again.</div>';
+  }
+
+  // SPEECH
+  let recognition=null,isRecording=false;
   function toggleMic() {
-    const micBtn = document.getElementById('micBtn');
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) { alert('Try Chrome or Safari for voice input.'); return; }
-    if (isRecording) { recognition.stop(); return; }
-    recognition = new SR();
-    recognition.continuous = true;
-    recognition.interimResults = true;
-    recognition.lang = 'en-US';
-    recognition.onstart = function() {
-      isRecording = true;
-      micBtn.classList.add('recording');
-      micBtn.innerHTML = '⏹';
-    };
-    recognition.onresult = function(e) {
-      let t = '';
-      for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript;
-      document.getElementById('inp').value = t;
-      updateChar();
-    };
-    recognition.onend = function() {
-      isRecording = false;
-      micBtn.classList.remove('recording');
-      micBtn.innerHTML = '🎙';
-    };
-    recognition.onerror = function() {
-      isRecording = false;
-      micBtn.classList.remove('recording');
-      micBtn.innerHTML = '🎙';
-    };
+    const btn=document.getElementById('micBtn'),SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){alert('Try Chrome or Safari.');return;}
+    if(isRecording){recognition.stop();return;}
+    recognition=new SR(); recognition.continuous=true; recognition.interimResults=true; recognition.lang='en-US';
+    recognition.onstart=()=>{isRecording=true;btn.classList.add('recording');btn.innerHTML='⏹';};
+    recognition.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;document.getElementById('inp').value=t;updateChar();};
+    recognition.onend=recognition.onerror=()=>{isRecording=false;btn.classList.remove('recording');btn.innerHTML='🎙';};
     recognition.start();
   }
-
-  // MIC - CREATOR CONTEXT
-  let recognitionContext = null;
-  let isRecordingContext = false;
-
+  let recognitionContext=null,isRecordingContext=false;
   function toggleMicContext() {
-    const micBtn = document.getElementById('micBtnContext');
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) { alert('Try Chrome or Safari for voice input.'); return; }
-    if (isRecordingContext) { recognitionContext.stop(); return; }
-    recognitionContext = new SR();
-    recognitionContext.continuous = false;
-    recognitionContext.interimResults = false;
-    recognitionContext.lang = 'en-US';
-    recognitionContext.onstart = function() {
-      isRecordingContext = true;
-      micBtn.classList.add('recording');
-      micBtn.innerHTML = '⏹';
-    };
-    recognitionContext.onresult = function(e) {
-      let t = e.results[0][0].transcript;
-      document.getElementById('creatorContext').value = t;
-    };
-    recognitionContext.onend = function() {
-      isRecordingContext = false;
-      micBtn.classList.remove('recording');
-      micBtn.innerHTML = '🎙';
-    };
-    recognitionContext.onerror = function() {
-      isRecordingContext = false;
-      micBtn.classList.remove('recording');
-      micBtn.innerHTML = '🎙';
-    };
+    const btn=document.getElementById('micBtnContext'),SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){alert('Try Chrome or Safari.');return;}
+    if(isRecordingContext){recognitionContext.stop();return;}
+    recognitionContext=new SR(); recognitionContext.continuous=false; recognitionContext.interimResults=false; recognitionContext.lang='en-US';
+    recognitionContext.onstart=()=>{isRecordingContext=true;btn.classList.add('recording');btn.innerHTML='⏹';};
+    recognitionContext.onresult=e=>{document.getElementById('creatorContext').value=e.results[0][0].transcript;};
+    recognitionContext.onend=recognitionContext.onerror=()=>{isRecordingContext=false;btn.classList.remove('recording');btn.innerHTML='🎙';};
     recognitionContext.start();
   }
+  let recognitionNiche=null,isRecordingNiche=false;
+  function toggleMicNiche() {
+    const btn=document.getElementById('micBtnNiche'),SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){alert('Try Chrome or Safari.');return;}
+    if(isRecordingNiche){recognitionNiche.stop();return;}
+    recognitionNiche=new SR(); recognitionNiche.continuous=true; recognitionNiche.interimResults=true; recognitionNiche.lang='en-US';
+    recognitionNiche.onstart=()=>{isRecordingNiche=true;btn.classList.add('recording');btn.innerHTML='⏹';};
+    recognitionNiche.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;document.getElementById('nicheInp').value=t;};
+    recognitionNiche.onend=recognitionNiche.onerror=()=>{isRecordingNiche=false;btn.classList.remove('recording');btn.innerHTML='🎙';};
+    recognitionNiche.start();
+  }
+  let recognitionCal=null,isRecordingCal=false;
+  function toggleMicCal() {
+    const btn=document.getElementById('micBtnCal'),SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){alert('Try Chrome or Safari.');return;}
+    if(isRecordingCal){recognitionCal.stop();return;}
+    recognitionCal=new SR(); recognitionCal.continuous=true; recognitionCal.interimResults=true; recognitionCal.lang='en-US';
+    recognitionCal.onstart=()=>{isRecordingCal=true;btn.classList.add('recording');btn.innerHTML='⏹';};
+    recognitionCal.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;document.getElementById('calInp').value=t;};
+    recognitionCal.onend=recognitionCal.onerror=()=>{isRecordingCal=false;btn.classList.remove('recording');btn.innerHTML='🎙';};
+    recognitionCal.start();
+  }
 
-  // PASTE
   async function pasteToEl(id) {
     try {
       const text = await navigator.clipboard.readText();
       const el = document.getElementById(id);
       if (el) {
         el.value = text;
-        if (id === 'inp') updateChar();
+        if (id==='inp') updateChar();
         el.focus();
-        // Visual feedback
         const btn = el.parentElement.querySelector('.paste-btn');
-        if (btn) {
-          btn.classList.add('pasted');
-          btn.textContent = '✓';
-          setTimeout(() => { btn.classList.remove('pasted'); btn.textContent = '📋'; }, 1500);
-        }
+        if(btn){btn.classList.add('pasted');btn.textContent='✓';setTimeout(()=>{btn.classList.remove('pasted');btn.textContent='📋';},1500);}
       }
-    } catch(e) {
-      alert('Paste not available — try Ctrl+V / Cmd+V in the field directly.');
-    }
+    } catch(e) { alert('Paste not available — try Ctrl+V / Cmd+V directly.'); }
   }
 
-  // STOP & FOCUS
-  async function fetchFocusAction(sourceMode, inputText, outputData) {
-    const actionElId = sourceMode === 'moment' ? 'focusAction' : sourceMode === 'ideas' ? 'ideaFocusAction' : 'calFocusAction';
-    const subElId = sourceMode === 'moment' ? 'focusSub' : sourceMode === 'ideas' ? 'ideaFocusSub' : 'calFocusSub';
+  function selectTone(btn) { document.querySelectorAll('.tone-btn').forEach(b=>b.classList.remove('selected')); btn.classList.add('selected'); }
+  function selectEmoji(btn) { document.querySelectorAll('.emoji-btn').forEach(b=>b.classList.remove('selected')); btn.classList.add('selected'); }
+  function selectContentType(btn) { document.querySelectorAll('.content-type-btn').forEach(b=>b.classList.remove('selected')); btn.classList.add('selected'); }
+  function togglePlatform(btn) { btn.classList.toggle('selected'); }
+  function getTone() { return document.querySelector('.tone-btn.selected')?.dataset.tone||'Authentic/Natural'; }
+  function getEmojiPreference() { return document.querySelector('.emoji-btn.selected')?.dataset.emoji||'few'; }
+  function getContentType() { return document.querySelector('.content-type-btn.selected')?.dataset.type||'Short-form video'; }
+  function getSelectedPlatforms() { return [...document.querySelectorAll('.platform-pill.selected')].map(b=>b.dataset.platform); }
+  function getOutputLanguage() { return document.getElementById('outputLanguage').value||''; }
+  function getAudienceDemographics() { const a=document.getElementById('demoAge').value,g=document.getElementById('demoGender').value,l=document.getElementById('demoLocation').value; return [a,g,l].filter(Boolean).join(', '); }
+  function fillEx(text) { document.getElementById('inp').value=text; updateChar(); document.getElementById('inp').focus(); }
+  function updateChar() { document.getElementById('charCount').textContent=document.getElementById('inp').value.length; }
+  function flash(id) { const el=document.getElementById(id); el.style.borderColor='var(--gold)'; el.focus(); setTimeout(()=>el.style.borderColor='',1500); }
+  function showErr(id, msg) { const el=document.getElementById(id); el.textContent='Something went wrong: '+(msg||'Please try again.'); el.classList.add('show'); }
 
-    try {
-      const summary = JSON.stringify(outputData).substring(0, 600);
-      const response = await fetch('/api/sam', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          mode: 'focus',
-          moment: inputText,
-          focusSummary: summary,
-          tone: getTone(),
-          emojiPreference: getEmojiPreference()
-        })
-      });
-      if (!response.ok) throw new Error('focus fetch failed');
-      const data = await response.json();
-      const actionEl = document.getElementById(actionElId);
-      const subEl = document.getElementById(subElId);
-      if (data.action) {
-        actionEl.style.color = '#fff';
-        actionEl.style.fontStyle = 'normal';
-        actionEl.style.fontWeight = '700';
-        actionEl.style.fontSize = '18px';
-        actionEl.textContent = data.action;
-      }
-      if (data.sub && subEl) {
-        subEl.textContent = data.sub;
-      }
-    } catch(e) {
-      const actionEl = document.getElementById(actionElId);
-      if (actionEl) {
-        actionEl.style.color = '#fff';
-        actionEl.style.fontStyle = 'normal';
-        actionEl.style.fontWeight = '700';
-        actionEl.style.fontSize = '18px';
-        actionEl.textContent = 'Pick one thing from the output above and do it in the next 30 minutes.';
-      }
-    }
+  function resetTool() {
+    document.getElementById('outCard').classList.remove('show');
+    document.getElementById('saveBar').style.display='none';
+    document.getElementById('focusBlock').style.display='none';
+    document.getElementById('inp').value='';
+    document.getElementById('charCount').textContent='0';
+    document.getElementById('errBox').classList.remove('show');
+    document.getElementById('runBtn').disabled=false;
+    document.getElementById('tool').scrollIntoView({behavior:'smooth'});
   }
 
-  // PRINT — save what's on screen for current mode
-  function printCurrentMode() {
+  function saveAsPDF() {
+    const m=document.getElementById('inp').value.trim();
+    const el=document.getElementById('printMoment');
+    if(el) el.textContent='Generated on '+new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})+(m?' — "'+m.substring(0,120)+(m.length>120?'...':'')+'"':'');
     window.print();
   }
+  function printCurrentMode() { window.print(); }
 
-  // ── THEME TOGGLE ──────────────────────────────────────────────────────────
-  function toggleTheme() {
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    const newTheme = isDark ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('sam-theme', newTheme);
-  }
-
-  // Restore saved theme on load
-  (function() {
-    const saved = localStorage.getItem('sam-theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const theme = saved || (prefersDark ? 'dark' : 'light');
-    document.documentElement.setAttribute('data-theme', theme);
-  })();
-
-  // ── PARTICLE SYSTEM ────────────────────────────────────────────────────────
-  (function() {
-    const canvas = document.getElementById('particle-canvas');
-    const ctx = canvas.getContext('2d');
-    let W, H, particles = [], animId;
-    const GOLD = 'rgba(212,168,83,';
-    const COUNT = 80;
-
-    function resize() {
-      W = canvas.width = window.innerWidth;
-      H = canvas.height = window.innerHeight;
-    }
-
-    function Particle() {
-      this.reset = function() {
-        this.x = Math.random() * W;
-        this.y = Math.random() * H;
-        this.r = Math.random() * 2.2 + 0.5;
-        this.vx = (Math.random() - 0.5) * 0.4;
-        this.vy = (Math.random() - 0.5) * 0.35 - 0.12;
-        this.life = Math.random();
-        this.maxLife = Math.random() * 0.005 + 0.002;
-        this.growing = Math.random() > 0.5;
-        this.alpha = Math.random() * 0.7 + 0.15;
-      };
-      this.reset();
-    }
-
-    function init() {
-      particles = [];
-      for (let i = 0; i < COUNT; i++) {
-        const p = new Particle();
-        p.life = Math.random(); // stagger start
-        particles.push(p);
-      }
-    }
-
-    function draw() {
-      ctx.clearRect(0, 0, W, H);
-      const dark = document.documentElement.getAttribute('data-theme') === 'dark';
-      if (!dark) { animId = requestAnimationFrame(draw); return; }
-
-      particles.forEach(p => {
-        p.x += p.vx;
-        p.y += p.vy;
-        p.life += p.maxLife;
-        if (p.growing) { p.alpha = Math.min(0.6, p.alpha + 0.005); }
-        else { p.alpha = Math.max(0, p.alpha - 0.003); }
-        if (p.life > 1 || p.alpha <= 0 || p.y < -10) p.reset();
-
-        // Draw particle
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = GOLD + p.alpha + ')';
-        ctx.fill();
-      });
-
-      // Draw connection lines between nearby particles
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx*dx + dy*dy);
-          if (dist < 120) {
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = GOLD + (0.12 * (1 - dist/120)) + ')';
-            ctx.lineWidth = 0.6;
-            ctx.stroke();
-          }
-        }
-      }
-
-      animId = requestAnimationFrame(draw);
-    }
-
-    window.addEventListener('resize', () => { resize(); });
-    resize();
-    init();
-    draw();
-  })();
-
-  // COPY
   function copyEl(btn) {
-    const prev = btn.previousElementSibling;
-    const text = prev ? prev.innerText || prev.textContent : '';
-    navigator.clipboard.writeText(text).then(function() {
-      btn.textContent = 'Copied!';
-      btn.classList.add('copied');
-      setTimeout(function() { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
-    }).catch(function() {
-      btn.textContent = 'Copied!';
-      btn.classList.add('copied');
-      setTimeout(function() { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
-    });
+    const prev=btn.previousElementSibling;
+    const text=prev?prev.innerText||prev.textContent:'';
+    navigator.clipboard.writeText(text).then(()=>{btn.textContent='Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},2000);}).catch(()=>{btn.textContent='Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},2000);});
   }
 </script>
-
 </body>
 </html>
