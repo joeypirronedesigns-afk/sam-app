@@ -1235,6 +1235,43 @@
       margin-top: 6px;
     }
 
+    /* EMOJI TOGGLE */
+    .emoji-wrap { margin-bottom: 1.25rem; }
+
+    .emoji-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .emoji-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-mid);
+      box-shadow: var(--shadow);
+      user-select: none;
+    }
+
+    .emoji-btn:hover { border-color: var(--gold-border); background: var(--gold-light); }
+
+    .emoji-btn.selected {
+      background: var(--gold-light);
+      border-color: var(--gold-border);
+      color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(212,168,83,0.2);
+    }
+
     /* TONE SELECTOR */
     .tone-wrap { margin-bottom: 1.25rem; }
 
@@ -1732,6 +1769,19 @@
         <div class="demo-hint">S.A.M. will tailor hooks, language, and CTAs for this specific audience.</div>
       </div>
 
+
+      <div class="emoji-wrap">
+        <div class="section-label">Emojis in your content?</div>
+        <div class="emoji-grid">
+          <button class="emoji-btn selected" data-emoji="yes" onclick="selectEmoji(this)">
+            😊 Yes — use emojis
+          </button>
+          <button class="emoji-btn" data-emoji="no" onclick="selectEmoji(this)">
+            🚫 No emojis please
+          </button>
+        </div>
+      </div>
+
       <div class="tone-wrap">
         <div class="section-label">What's your tone?</div>
         <div class="tone-grid">
@@ -1916,7 +1966,7 @@
       const response = await fetch('/api/sam', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mode: 'ideas', moment: niche, tone, audienceDemographics, outputLanguage })
+        body: JSON.stringify({ mode: 'ideas', moment: niche, tone, audienceDemographics, outputLanguage, emojiPreference: getEmojiPreference() })
       });
       if (!response.ok) throw new Error('Server error ' + response.status);
       const data = await response.json();
@@ -1994,7 +2044,7 @@
       const response = await fetch('/api/sam', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mode: 'calendar', moment, platforms, tone, audienceDemographics, outputLanguage })
+        body: JSON.stringify({ mode: 'calendar', moment, platforms, tone, audienceDemographics, outputLanguage, emojiPreference: getEmojiPreference() })
       });
       if (!response.ok) throw new Error('Server error ' + response.status);
       const data = await response.json();
@@ -2171,6 +2221,16 @@
     return parts.length > 0 ? parts.join(', ') : '';
   }
 
+  function selectEmoji(btn) {
+    document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+
+  function getEmojiPreference() {
+    const selected = document.querySelector('.emoji-btn.selected');
+    return selected ? selected.dataset.emoji : 'yes';
+  }
+
   function getTone() {
     const selected = document.querySelector('.tone-btn.selected');
     return selected ? selected.dataset.tone : 'Authentic/Natural';
@@ -2242,8 +2302,8 @@
     html += data.story_spine ? `<div class="blk"><div class="blk-title">Story spine</div>${spine}</div>` : '';
     if (data.full_script || data.script) {
       const scriptContent = data.full_script || data.script;
-      const textFormats = ['Text post', 'LinkedIn text post', 'Instagram caption', 'Email newsletter', 'Blog post'];
-      const isTextFormat = textFormats.some(f => (contentType || '').toLowerCase().includes(f.toLowerCase().split(' ')[0].toLowerCase()));
+      const textFormats = ['Text post', 'LinkedIn text post', 'Instagram caption', 'Email newsletter', 'Blog post', 'Blog post / Article'];
+      const isTextFormat = textFormats.some(f => (contentType || '').trim() === f.trim());
 
       if (isTextFormat) {
         // Text-based formats: clean readable output box
@@ -2295,11 +2355,11 @@
     body.innerHTML = html || '<div class="blk-text" style="color:var(--text-muted)">No output returned. Try again.</div>';
   }
 
-  async function callAPI(mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage) {
+  async function callAPI(mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage, emojiPreference) {
     const response = await fetch('/api/sam', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage })
+      body: JSON.stringify({ mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage, emojiPreference })
     });
     if (!response.ok) {
       const err = await response.json().catch(() => ({}));
@@ -2335,9 +2395,10 @@
       const tone = getTone();
       const audienceDemographics = getAudienceDemographics();
       const outputLanguage = getOutputLanguage();
+      const emojiPreference = getEmojiPreference();
       const [storyData, hookData] = await Promise.all([
-        callAPI('story', text, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage),
-        callAPI('hook', text, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage)
+        callAPI('story', text, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage, emojiPreference),
+        callAPI('hook', text, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage, emojiPreference)
       ]);
 
       const combined = Object.assign({}, storyData, hookData);
