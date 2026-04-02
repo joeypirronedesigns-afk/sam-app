@@ -234,6 +234,180 @@
       line-height: 1.6;
     }
 
+    /* MODE TOGGLE */
+    .mode-toggle-wrap {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 2rem;
+      background: var(--surface-2);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-lg);
+      padding: 5px;
+    }
+
+    .mode-tab {
+      flex: 1;
+      padding: 12px 16px;
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'Syne', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: transparent;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .mode-tab.active {
+      background: var(--surface);
+      color: var(--black);
+      box-shadow: var(--shadow-md);
+    }
+
+    .mode-tab:hover:not(.active) { color: var(--text); }
+
+    /* IDEA MAKER */
+    .idea-section { display: none; }
+    .idea-section.show { display: block; }
+    .moment-section { display: block; }
+    .moment-section.hide { display: none; }
+
+    .idea-input-card {
+      background: var(--surface);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-xl);
+      padding: 1.75rem;
+      margin-bottom: 1.25rem;
+      box-shadow: var(--shadow-md);
+    }
+
+    .idea-btn {
+      width: 100%;
+      padding: 15px;
+      background: var(--black);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'Syne', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-top: 1.25rem;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .idea-btn:hover { background: var(--gold); transform: translateY(-1px); }
+    .idea-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+    .ideas-out {
+      display: none;
+      background: var(--surface);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      animation: fadeUp 0.35s ease;
+    }
+
+    .ideas-out.show { display: block; }
+
+    .ideas-header {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .ideas-header-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .ideas-header-label::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+    }
+
+    .ideas-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 12px; }
+
+    .idea-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      border-left: 3px solid var(--gold-border);
+      position: relative;
+    }
+
+    .idea-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+
+    .idea-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--black);
+      line-height: 1.45;
+      margin-bottom: 6px;
+    }
+
+    .idea-why {
+      font-size: 13px;
+      color: var(--text-mid);
+      line-height: 1.6;
+    }
+
+    .idea-copy-btn {
+      display: inline-flex;
+      align-items: center;
+      font-size: 10px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: all 0.12s;
+      margin-top: 8px;
+      float: right;
+    }
+
+    .idea-copy-btn:hover { border-color: var(--gold-border); color: var(--gold); background: var(--gold-light); }
+    .idea-copy-btn.copied { border-color: #86EFAC; color: #166534; background: #F0FDF4; }
+
     /* PLATFORM SELECTOR */
     .platform-wrap { margin-bottom: 1.25rem; }
 
@@ -1055,6 +1229,50 @@
         <p>One real moment. Four outputs. Ready to post.</p>
       </div>
 
+      <!-- MODE TOGGLE -->
+      <div class="mode-toggle-wrap">
+        <button class="mode-tab active" id="tabMoment" onclick="switchMode('moment')">
+          ✍ Turn a moment into content
+        </button>
+        <button class="mode-tab" id="tabIdeas" onclick="switchMode('ideas')">
+          💡 Get content ideas
+        </button>
+      </div>
+
+      <!-- IDEA MAKER SECTION -->
+      <div class="idea-section" id="ideaSection">
+        <div class="idea-input-card">
+          <div class="input-card-label">Tell S.A.M. about your niche</div>
+          <div class="input-wrap">
+            <textarea
+              id="nicheInp"
+              placeholder="e.g. Self-taught DIY renovator documenting a full cottage gut renovation. My audience loves real moments, setbacks, and figuring things out without being an expert."
+              style="min-height:100px;"
+            ></textarea>
+            <button class="mic-btn" id="micBtnNiche" onclick="toggleMicNiche()" title="Speak your niche">🎙</button>
+          </div>
+          <div class="loader" id="ideaLoader" style="margin-top:1rem;">
+            <div class="loader-dots"><span></span><span></span><span></span></div>
+            <div class="loader-text" id="ideaLoaderText">S.A.M. is generating your ideas...</div>
+          </div>
+          <div class="error-box" id="ideaErrBox"></div>
+          <button class="idea-btn" id="ideaBtn" onclick="runIdeas()">
+            Get 10 content ideas →
+          </button>
+        </div>
+
+        <div class="ideas-out" id="ideasOut">
+          <div class="ideas-header">
+            <div class="ideas-header-label">Your content ideas</div>
+            <button class="new-btn" onclick="resetIdeas()">← Start over</button>
+          </div>
+          <div class="ideas-body" id="ideasBody"></div>
+        </div>
+      </div>
+
+      <!-- MOMENT SECTION -->
+      <div class="moment-section" id="momentSection">
+
       <div class="outputs-grid">
         <div class="output-card">
           <div class="output-icon">▶</div>
@@ -1299,6 +1517,8 @@
         </div>
       </div>
 
+      </div><!-- end moment-section -->
+
     </div>
   </div>
 
@@ -1307,6 +1527,133 @@
   </footer>
 
 <script>
+  // MODE SWITCHING
+  function switchMode(mode) {
+    const momentSection = document.getElementById('momentSection');
+    const ideaSection = document.getElementById('ideaSection');
+    const tabMoment = document.getElementById('tabMoment');
+    const tabIdeas = document.getElementById('tabIdeas');
+    if (mode === 'ideas') {
+      momentSection.classList.add('hide');
+      ideaSection.classList.add('show');
+      tabMoment.classList.remove('active');
+      tabIdeas.classList.add('active');
+    } else {
+      momentSection.classList.remove('hide');
+      ideaSection.classList.remove('show');
+      tabMoment.classList.add('active');
+      tabIdeas.classList.remove('active');
+    }
+  }
+
+  // IDEA MAKER
+  async function runIdeas() {
+    const niche = document.getElementById('nicheInp').value.trim();
+    if (!niche) {
+      document.getElementById('nicheInp').style.borderColor = 'var(--gold-border)';
+      document.getElementById('nicheInp').focus();
+      setTimeout(() => document.getElementById('nicheInp').style.borderColor = '', 1500);
+      return;
+    }
+    document.getElementById('ideaErrBox').classList.remove('show');
+    document.getElementById('ideaBtn').disabled = true;
+    document.getElementById('ideaLoader').classList.add('show');
+    document.getElementById('ideasOut').classList.remove('show');
+
+    try {
+      const tone = getTone();
+      const audienceDemographics = getAudienceDemographics();
+      const outputLanguage = getOutputLanguage();
+      const response = await fetch('/api/sam', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mode: 'ideas', moment: niche, tone, audienceDemographics, outputLanguage })
+      });
+      if (!response.ok) throw new Error('Server error ' + response.status);
+      const data = await response.json();
+      document.getElementById('ideaLoader').classList.remove('show');
+      renderIdeas(data);
+      document.getElementById('ideasOut').classList.add('show');
+      document.getElementById('ideaBtn').disabled = false;
+      document.getElementById('ideasOut').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (err) {
+      document.getElementById('ideaLoader').classList.remove('show');
+      const eb = document.getElementById('ideaErrBox');
+      eb.textContent = 'Something went wrong: ' + (err.message || 'Please try again.');
+      eb.classList.add('show');
+      document.getElementById('ideaBtn').disabled = false;
+    }
+  }
+
+  function renderIdeas(data) {
+    const body = document.getElementById('ideasBody');
+    if (!data.ideas || !Array.isArray(data.ideas)) {
+      body.innerHTML = '<div class="blk-text" style="color:var(--text-muted)">No ideas returned. Try again.</div>';
+      return;
+    }
+    body.innerHTML = data.ideas.map((idea, i) => `
+      <div class="idea-card">
+        <div class="idea-num">IDEA ${i + 1}</div>
+        <div class="idea-title">${idea.title}</div>
+        <div class="idea-why">${idea.why}</div>
+        <button class="idea-copy-btn" onclick="copyIdeaCard(this)">Copy</button>
+      </div>
+    `).join('');
+  }
+
+  function copyIdeaCard(btn) {
+    const card = btn.closest('.idea-card');
+    const title = card.querySelector('.idea-title').textContent;
+    const why = card.querySelector('.idea-why').textContent;
+    navigator.clipboard.writeText(title + '\n' + why).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  function resetIdeas() {
+    document.getElementById('ideasOut').classList.remove('show');
+    document.getElementById('nicheInp').value = '';
+    document.getElementById('ideaBtn').disabled = false;
+  }
+
+  // MIC — NICHE
+  let recognitionNiche = null;
+  let isRecordingNiche = false;
+
+  function toggleMicNiche() {
+    const micBtn = document.getElementById('micBtnNiche');
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) { alert('Try Chrome or Safari for voice input.'); return; }
+    if (isRecordingNiche) { recognitionNiche.stop(); return; }
+    recognitionNiche = new SR();
+    recognitionNiche.continuous = true;
+    recognitionNiche.interimResults = true;
+    recognitionNiche.lang = 'en-US';
+    recognitionNiche.onstart = function() {
+      isRecordingNiche = true;
+      micBtn.classList.add('recording');
+      micBtn.innerHTML = '⏹';
+    };
+    recognitionNiche.onresult = function(e) {
+      let t = '';
+      for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript;
+      document.getElementById('nicheInp').value = t;
+    };
+    recognitionNiche.onend = function() {
+      isRecordingNiche = false;
+      micBtn.classList.remove('recording');
+      micBtn.innerHTML = '🎙';
+    };
+    recognitionNiche.onerror = function() {
+      isRecordingNiche = false;
+      micBtn.classList.remove('recording');
+      micBtn.innerHTML = '🎙';
+    };
+    recognitionNiche.start();
+  }
+
   const loaderLines = [
     "S.A.M. is reading your moment...",
     "Finding the real story...",
