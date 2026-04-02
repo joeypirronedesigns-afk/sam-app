@@ -1622,6 +1622,187 @@
       text-align: right;
     }
 
+    /* ══ UPLOAD & STRATEGIZE ═════════════════ */
+    .upload-section { display: none; }
+    .upload-section.show { display: block; }
+
+    .upload-hero {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 0 0 1.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+    [data-theme="dark"] .upload-hero { border-bottom-color: rgba(212,168,75,0.08); }
+
+    .upload-hero-icon {
+      font-size: 32px;
+      flex-shrink: 0;
+      line-height: 1;
+      margin-top: 2px;
+    }
+
+    .upload-hero-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+    [data-theme="dark"] .upload-hero-title { text-shadow: 0 0 20px rgba(212,168,75,0.08); }
+
+    .upload-hero-sub {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    .upload-capabilities {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+
+    .upload-cap-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(8px);
+      transition: all 0.2s;
+    }
+    [data-theme="dark"] .upload-cap-item { background: rgba(212,168,75,0.03); border-color: rgba(212,168,75,0.07); }
+
+    .upload-cap-icon { font-size: 18px; flex-shrink: 0; }
+    .upload-cap-text { font-size: 13px; color: var(--text-mid); line-height: 1.4; }
+    .upload-cap-text strong { color: var(--text); font-weight: 600; }
+
+    /* DROP ZONE */
+    .upload-drop-zone {
+      margin-top: 1rem;
+      border: 2px dashed var(--border-mid);
+      border-radius: var(--radius-lg);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.34, 1.2, 0.64, 1);
+      background: var(--surface-2);
+      backdrop-filter: blur(8px);
+      position: relative;
+      min-height: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .upload-drop-zone:hover {
+      border-color: var(--gold);
+      background: var(--gold-light);
+    }
+    [data-theme="dark"] .upload-drop-zone {
+      background: rgba(18,15,10,0.5);
+      border-color: rgba(212,168,75,0.2);
+    }
+    [data-theme="dark"] .upload-drop-zone:hover {
+      border-color: var(--gold);
+      background: rgba(212,168,75,0.06);
+      box-shadow: 0 0 30px rgba(212,168,75,0.08);
+    }
+    .upload-drop-zone.drag-over {
+      border-color: var(--gold);
+      background: var(--gold-light);
+      transform: scale(1.01);
+    }
+    [data-theme="dark"] .upload-drop-zone.drag-over {
+      background: rgba(212,168,75,0.08);
+      box-shadow: 0 0 40px rgba(212,168,75,0.12);
+    }
+    .upload-drop-zone.has-image {
+      border-style: solid;
+      border-color: var(--gold-border);
+      padding: 1rem;
+    }
+
+    .upload-drop-inner { pointer-events: none; }
+
+    .upload-drop-icon {
+      font-size: 28px;
+      margin-bottom: 10px;
+      display: block;
+    }
+    .upload-drop-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-mid);
+      margin-bottom: 5px;
+    }
+    .upload-drop-link { color: var(--gold); text-decoration: underline; }
+    .upload-drop-hint { font-size: 12px; color: var(--text-muted); font-style: italic; }
+
+    /* IMAGE PREVIEW */
+    .upload-preview {
+      position: relative;
+      width: 100%;
+    }
+    .upload-preview img {
+      width: 100%;
+      max-height: 200px;
+      object-fit: contain;
+      border-radius: var(--radius);
+      display: block;
+    }
+    .upload-remove-btn {
+      position: absolute;
+      top: -8px; right: -8px;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: #C53030;
+      color: white;
+      border: 2px solid var(--surface);
+      font-size: 11px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      transition: all 0.15s;
+      z-index: 10;
+    }
+    .upload-remove-btn:hover { background: #9B2C2C; transform: scale(1.1); }
+
+    .upload-preview-label {
+      font-size: 11px;
+      color: var(--gold);
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    /* OUTPUT CARDS for upload results */
+    .upload-result-type {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: var(--gold-light);
+      border: 1px solid var(--gold-border);
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 1.5rem;
+    }
+
     /* ══ PRINT ════════════════════════════════ */
     @media print {
       nav, .hero, .section-header, .outputs-grid, .platform-wrap,
@@ -1683,6 +1864,7 @@
         <button class="mode-tab" id="tabIdeas" onclick="switchMode('ideas')">💡 Get content ideas</button>
         <button class="mode-tab" id="tabCalendar" onclick="switchMode('calendar')">📅 Posting calendar</button>
         <button class="mode-tab" id="tabConcept" onclick="switchMode('concept')">🎬 Video concept</button>
+        <button class="mode-tab" id="tabUpload" onclick="switchMode('upload')">📸 Upload & Strategize</button>
       </div>
 
       <!-- IDEA MAKER -->
@@ -1816,6 +1998,102 @@
             <button class="save-pdf-btn" onclick="printCurrentMode()">↓ &nbsp;Save concept as PDF</button>
           </div>
         </div>
+      </div>
+
+      <!-- UPLOAD & STRATEGIZE SECTION -->
+      <div class="upload-section" id="uploadSection">
+
+        <div class="glass-card idea-input-card">
+
+          <!-- CLEVER HEADER -->
+          <div class="upload-hero">
+            <div class="upload-hero-icon">🧠</div>
+            <div class="upload-hero-text">
+              <div class="upload-hero-title">Tell SAM what you're working on.</div>
+              <div class="upload-hero-sub">Describe an idea in words, drop a screenshot of your analytics, or share a photo from your content — SAM will read it and tell you exactly what to do next.</div>
+            </div>
+          </div>
+
+          <!-- WHAT SAM CAN READ -->
+          <div class="upload-capabilities">
+            <div class="upload-cap-item">
+              <span class="upload-cap-icon">📊</span>
+              <span class="upload-cap-text"><strong>Analytics screenshot</strong> — what's working, what to post next</span>
+            </div>
+            <div class="upload-cap-item">
+              <span class="upload-cap-icon">🖼️</span>
+              <span class="upload-cap-text"><strong>Photo or thumbnail</strong> — strategy, hook ideas, best platform</span>
+            </div>
+            <div class="upload-cap-item">
+              <span class="upload-cap-icon">✍️</span>
+              <span class="upload-cap-text"><strong>Just text</strong> — describe your idea and SAM will strategize</span>
+            </div>
+          </div>
+
+          <!-- TEXT INPUT -->
+          <div class="section-label" style="margin-top:1.5rem;">Describe your idea or add context <span style="font-weight:400;text-transform:none;letter-spacing:0;font-style:italic;color:var(--text-muted);font-family:'DM Sans',sans-serif;">(optional if uploading an image)</span></div>
+          <div class="input-wrap">
+            <textarea id="uploadInp" placeholder="e.g. I want to know what content is working for my renovation account, or — here's a photo from my latest video, help me turn it into a thumbnail strategy..." style="min-height:100px;"></textarea>
+            <button class="paste-btn" onclick="pasteToEl('uploadInp')" title="Paste">📋</button>
+            <button class="mic-btn" id="micBtnUpload" onclick="toggleMicUpload()" title="Speak">🎙</button>
+          </div>
+
+          <!-- IMAGE DROP ZONE -->
+          <div class="upload-drop-zone" id="uploadDropZone" onclick="document.getElementById('uploadFileInput').click()" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+            <input type="file" id="uploadFileInput" accept="image/*" style="display:none;" onchange="handleFileSelect(event)">
+            <div class="upload-drop-inner" id="uploadDropInner">
+              <div class="upload-drop-icon">📎</div>
+              <div class="upload-drop-label">Drop an image here, or <span class="upload-drop-link">browse</span></div>
+              <div class="upload-drop-hint">Analytics screenshots, photos, thumbnails — anything visual</div>
+            </div>
+            <div class="upload-preview" id="uploadPreview" style="display:none;">
+              <img id="uploadPreviewImg" src="" alt="Preview" />
+              <button class="upload-remove-btn" onclick="removeUploadImage(event)" title="Remove image">✕</button>
+              <div class="upload-preview-label" id="uploadPreviewLabel"></div>
+            </div>
+          </div>
+
+          <!-- PLATFORM -->
+          <div style="margin-top:1.25rem;">
+            <div class="section-label">Which platform? <span style="font-weight:400;text-transform:none;letter-spacing:0;font-style:italic;color:var(--text-muted);font-family:'DM Sans',sans-serif;">(optional)</span></div>
+            <div class="platform-grid" id="uploadPlatformGrid">
+              <button class="platform-pill" data-platform="TikTok" onclick="toggleUploadPlatform(this)">🎵 TikTok</button>
+              <button class="platform-pill" data-platform="YouTube" onclick="toggleUploadPlatform(this)">▶ YouTube</button>
+              <button class="platform-pill" data-platform="Instagram" onclick="toggleUploadPlatform(this)">📸 Instagram</button>
+              <button class="platform-pill" data-platform="YouTube Shorts" onclick="toggleUploadPlatform(this)">⚡ YouTube Shorts</button>
+              <button class="platform-pill" data-platform="Facebook" onclick="toggleUploadPlatform(this)">👥 Facebook</button>
+              <button class="platform-pill" data-platform="LinkedIn" onclick="toggleUploadPlatform(this)">💼 LinkedIn</button>
+            </div>
+          </div>
+
+          <div class="loader" id="uploadLoader" style="margin-top:1rem;">
+            <div class="loader-dots"><span></span><span></span><span></span></div>
+            <div class="loader-text" id="uploadLoaderText">SAM is reading your content...</div>
+          </div>
+          <div class="error-box" id="uploadErrBox"></div>
+
+          <button class="idea-btn" id="uploadBtn" onclick="runUpload()">
+            <span id="uploadBtnLabel">Analyse & strategize →</span>
+          </button>
+        </div>
+
+        <!-- OUTPUT -->
+        <div class="concept-out" id="uploadOut">
+          <div class="concept-out-header">
+            <div class="out-label" id="uploadOutLabel">SAM's strategy</div>
+            <button class="new-btn" onclick="resetUpload()">← Start over</button>
+          </div>
+          <div class="concept-out-body" id="uploadBody"></div>
+          <div class="focus-block" id="uploadFocusBlock" style="display:none;">
+            <div class="focus-block-eyebrow">Stop. Focus. Do this now.</div>
+            <div class="focus-block-action" id="uploadFocusAction" style="color:rgba(255,255,255,0.35);font-style:italic;font-size:14px;font-weight:400;">SAM is building your focus action...</div>
+            <div class="focus-block-sub" id="uploadFocusSub"></div>
+          </div>
+          <div class="save-bar" id="uploadSaveBar" style="display:none;">
+            <button class="save-pdf-btn" onclick="printCurrentMode()">↓ &nbsp;Save strategy as PDF</button>
+          </div>
+        </div>
+
       </div>
 
       <!-- MOMENT SECTION -->
@@ -2072,10 +2350,12 @@
     document.getElementById('ideaSection').classList.toggle('show', mode === 'ideas');
     document.getElementById('calendarSection').classList.toggle('show', mode === 'calendar');
     document.getElementById('conceptSection').classList.toggle('show', mode === 'concept');
+    document.getElementById('uploadSection').classList.toggle('show', mode === 'upload');
     document.getElementById('tabMoment').classList.toggle('active', mode === 'moment');
     document.getElementById('tabIdeas').classList.toggle('active', mode === 'ideas');
     document.getElementById('tabCalendar').classList.toggle('active', mode === 'calendar');
     document.getElementById('tabConcept').classList.toggle('active', mode === 'concept');
+    document.getElementById('tabUpload').classList.toggle('active', mode === 'upload');
   }
 
   async function runIdeas() {
@@ -2511,6 +2791,226 @@
     document.getElementById('conceptBtn').disabled = false;
     document.querySelectorAll('#conceptPlatformGrid .platform-pill').forEach(b=>b.classList.remove('selected'));
     document.querySelectorAll('.concept-style-btn').forEach(b=>b.classList.remove('selected'));
+  }
+
+  // ── UPLOAD & STRATEGIZE ───────────────────────────────────────────────
+  let uploadImageBase64 = null;
+  let uploadImageType = null;
+
+  function toggleUploadPlatform(btn) { btn.classList.toggle('selected'); }
+  function getUploadPlatforms() { return [...document.querySelectorAll('#uploadPlatformGrid .platform-pill.selected')].map(b=>b.dataset.platform); }
+
+  function handleDragOver(e) {
+    e.preventDefault();
+    document.getElementById('uploadDropZone').classList.add('drag-over');
+  }
+  function handleDragLeave(e) {
+    document.getElementById('uploadDropZone').classList.remove('drag-over');
+  }
+  function handleDrop(e) {
+    e.preventDefault();
+    document.getElementById('uploadDropZone').classList.remove('drag-over');
+    const file = e.dataTransfer.files?.[0];
+    if (file && file.type.startsWith('image/')) processUploadFile(file);
+  }
+  function handleFileSelect(e) {
+    const file = e.target.files?.[0];
+    if (file) processUploadFile(file);
+  }
+
+  function processUploadFile(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const result = e.target.result;
+      uploadImageBase64 = result.split(',')[1];
+      uploadImageType = file.type;
+      // Show preview
+      const preview = document.getElementById('uploadPreview');
+      const inner = document.getElementById('uploadDropInner');
+      const img = document.getElementById('uploadPreviewImg');
+      const label = document.getElementById('uploadPreviewLabel');
+      img.src = result;
+      label.textContent = '📎 ' + file.name + ' — ready to analyse';
+      preview.style.display = 'block';
+      inner.style.display = 'none';
+      document.getElementById('uploadDropZone').classList.add('has-image');
+      document.getElementById('uploadBtnLabel').textContent = 'Analyse image & strategize →';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function removeUploadImage(e) {
+    e.stopPropagation();
+    uploadImageBase64 = null;
+    uploadImageType = null;
+    document.getElementById('uploadPreview').style.display = 'none';
+    document.getElementById('uploadDropInner').style.display = 'block';
+    document.getElementById('uploadDropZone').classList.remove('has-image');
+    document.getElementById('uploadFileInput').value = '';
+    document.getElementById('uploadBtnLabel').textContent = 'Analyse & strategize →';
+  }
+
+  const uploadLoaderLines = [
+    'SAM is reading your content...',
+    'Identifying what you shared...',
+    'Building your strategy...',
+    'Almost there...'
+  ];
+
+  async function runUpload() {
+    const text = document.getElementById('uploadInp').value.trim();
+    if (!text && !uploadImageBase64) { flash('uploadInp'); return; }
+
+    document.getElementById('uploadErrBox').classList.remove('show');
+    document.getElementById('uploadBtn').disabled = true;
+    document.getElementById('uploadLoader').classList.add('show');
+    document.getElementById('uploadOut').classList.remove('show');
+
+    let lIdx = 0;
+    const lInt = setInterval(() => {
+      lIdx = (lIdx + 1) % uploadLoaderLines.length;
+      document.getElementById('uploadLoaderText').textContent = uploadLoaderLines[lIdx];
+    }, 1800);
+
+    try {
+      const platforms = getUploadPlatforms();
+      const platformStr = platforms.length > 0 ? 'Platforms: ' + platforms.join(', ') + '.' : '';
+      const contextText = text || 'No additional context provided.';
+
+      // Build message content — text + optional image
+      const userContent = uploadImageBase64
+        ? [
+            { type: 'image', source: { type: 'base64', media_type: uploadImageType, data: uploadImageBase64 } },
+            { type: 'text', text: contextText }
+          ]
+        : contextText;
+
+      const systemPrompt = `You are S.A.M. — Strategic Assistant for Making. A creator has shared content with you — either text, an image, or both. ${platformStr}
+
+STEP 1: Identify what was shared. Classify as one of:
+- "analytics" — if the image shows platform analytics, stats, graphs, dashboards, metrics, follower data
+- "photo" — if the image shows a photo, scene, renovation, product, person, event, thumbnail, or any visual content
+- "text_only" — if no image was shared, just text
+
+STEP 2: Based on what was shared, return the appropriate strategy.
+
+IF "analytics": Return JSON: {"type":"analytics","headline":"one punchy sentence on the single biggest insight from this data","whats_working":["specific observation 1","specific observation 2","specific observation 3"],"whats_not":["thing to improve 1","thing to improve 2"],"post_next":["specific content idea to post this week 1","specific content idea 2","specific content idea 3"],"best_time":"optimal posting time based on the data","growth_move":"one bold strategic move to grow based on this data"}
+
+IF "photo": Return JSON: {"type":"photo","what_sam_sees":"one sentence describing what SAM sees in the image","thumbnail_strategy":"specific text overlay suggestion, emotion to convey, crop direction","hook_ideas":["hook idea 1 based on this image","hook idea 2","hook idea 3"],"best_platform":"single best platform for this visual","platform_reason":"one sentence why","content_angle":"the story or angle this image tells that would stop the scroll","caption_starter":"first line of a caption that would work for this image"}
+
+IF "text_only": Return JSON: {"type":"text_only","diagnosis":"what this idea is really about and why it has potential","hook_ideas":["hook 1","hook 2","hook 3"],"best_platform":"single best platform","platform_reason":"one sentence why","content_angle":"the strongest angle to take with this","next_action":"the single most important thing to do with this idea right now"}
+
+CRITICAL: Return ONLY valid JSON. No markdown. No backticks. No preamble.`;
+
+      const r = await fetch('/api/sam', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mode: 'upload',
+          moment: contextText,
+          platforms,
+          imageBase64: uploadImageBase64 || null,
+          imageType: uploadImageType || null,
+          tone: getTone(),
+          emojiPreference: getEmojiPreference()
+        })
+      });
+
+      clearInterval(lInt);
+
+      if (!r.ok) throw new Error('API error ' + r.status);
+      const d = await r.json();
+      const data = d;
+
+      document.getElementById('uploadLoader').classList.remove('show');
+      renderUpload(data);
+      document.getElementById('uploadOut').classList.add('show');
+      document.getElementById('uploadSaveBar').style.display = 'block';
+      document.getElementById('uploadFocusBlock').style.display = 'block';
+      document.getElementById('uploadBtn').disabled = false;
+      document.getElementById('uploadOut').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      // Focus action
+      const focusSummary = JSON.stringify(data).substring(0, 400);
+      try {
+        const fr = await fetch('/api/sam', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ mode:'focus', moment: text || 'Upload & Strategize analysis', focusSummary, tone: getTone(), emojiPreference: getEmojiPreference() }) });
+        const fd = await fr.json();
+        const fEl = document.getElementById('uploadFocusAction');
+        if (fd.action && fEl) { fEl.style.cssText='color:#fff;font-style:normal;font-weight:700;font-size:18px;'; fEl.textContent=fd.action; }
+        const fsEl = document.getElementById('uploadFocusSub');
+        if (fd.sub && fsEl) fsEl.textContent = fd.sub;
+      } catch(e) {
+        const fEl = document.getElementById('uploadFocusAction');
+        if (fEl) { fEl.style.cssText='color:#fff;font-style:normal;font-weight:700;font-size:16px;'; fEl.textContent='Pick one thing from the strategy above and do it in the next 30 minutes.'; }
+      }
+
+    } catch(err) {
+      clearInterval(lInt);
+      document.getElementById('uploadLoader').classList.remove('show');
+      showErr('uploadErrBox', err.message);
+      document.getElementById('uploadBtn').disabled = false;
+    }
+  }
+
+  function renderUpload(data) {
+    const body = document.getElementById('uploadBody');
+    const label = document.getElementById('uploadOutLabel');
+    let html = '';
+
+    if (data.type === 'analytics') {
+      label.textContent = '📊 Analytics breakdown';
+      html += `<div class="upload-result-type">📊 Analytics detected</div>`;
+      if (data.headline) html += `<div class="concept-card"><div class="concept-big-title" style="font-size:20px;">${data.headline}</div></div>`;
+      if (data.whats_working?.length) html += `<div class="concept-card"><div class="concept-card-label">What's working</div><ul class="concept-production-list">${data.whats_working.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
+      if (data.whats_not?.length) html += `<div class="concept-card" style="border-color:rgba(234,179,8,0.2);"><div class="concept-card-label">What to improve</div><ul class="concept-production-list">${data.whats_not.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
+      if (data.post_next?.length) html += `<div class="concept-card" style="border-color:var(--gold-border);background:var(--gold-light);"><div class="concept-card-label">Post this week</div><ul class="concept-production-list">${data.post_next.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
+      if (data.best_time) html += `<div class="concept-card"><div class="concept-card-label">Best time to post</div><div class="concept-card-text">${data.best_time}</div></div>`;
+      if (data.growth_move) html += `<div class="concept-card" style="border:1px solid var(--gold-border);background:var(--gold-light);"><div class="concept-card-label">The bold growth move</div><div class="concept-card-text" style="font-weight:500;">${data.growth_move}</div></div>`;
+
+    } else if (data.type === 'photo') {
+      label.textContent = '🖼️ Visual strategy';
+      html += `<div class="upload-result-type">🖼️ Photo / visual detected</div>`;
+      if (data.what_sam_sees) html += `<div class="concept-card"><div class="concept-card-label">What SAM sees</div><div class="concept-card-text">${data.what_sam_sees}</div></div>`;
+      if (data.thumbnail_strategy) html += `<div class="concept-card" style="border-color:var(--gold-border);background:var(--gold-light);"><div class="concept-card-label">Thumbnail strategy</div><div class="concept-card-text" style="font-weight:500;">${data.thumbnail_strategy}</div></div>`;
+      if (data.hook_ideas?.length) html += `<div class="concept-card"><div class="concept-card-label">Hook ideas from this image</div><ul class="concept-production-list">${data.hook_ideas.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
+      if (data.content_angle) html += `<div class="concept-card"><div class="concept-card-label">Content angle</div><div class="concept-card-text">${data.content_angle}</div></div>`;
+      if (data.caption_starter) html += `<div class="concept-card"><div class="concept-card-label">Caption starter</div><div class="hook-box">${data.caption_starter}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`;
+      if (data.best_platform) html += `<div class="concept-card" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;"><div><div class="concept-card-label" style="margin-bottom:4px;">Best platform</div><div class="concept-platform-pill">${data.best_platform}</div></div>${data.platform_reason?`<div style="font-size:13px;color:var(--text-muted);font-style:italic;max-width:55%;">${data.platform_reason}</div>`:''}</div>`;
+
+    } else {
+      label.textContent = '✍️ Content strategy';
+      html += `<div class="upload-result-type">✍️ Text idea analysed</div>`;
+      if (data.diagnosis) html += `<div class="concept-card"><div class="concept-card-label">What this idea is really about</div><div class="concept-card-text">${data.diagnosis}</div></div>`;
+      if (data.hook_ideas?.length) html += `<div class="concept-card"><div class="concept-card-label">Hook ideas</div><ul class="concept-production-list">${data.hook_ideas.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
+      if (data.content_angle) html += `<div class="concept-card" style="border-color:var(--gold-border);background:var(--gold-light);"><div class="concept-card-label">Strongest angle</div><div class="concept-card-text" style="font-weight:500;">${data.content_angle}</div></div>`;
+      if (data.best_platform) html += `<div class="concept-card" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;"><div><div class="concept-card-label" style="margin-bottom:4px;">Best platform</div><div class="concept-platform-pill">${data.best_platform}</div></div>${data.platform_reason?`<div style="font-size:13px;color:var(--text-muted);font-style:italic;max-width:55%;">${data.platform_reason}</div>`:''}</div>`;
+      if (data.next_action) html += `<div class="concept-card" style="border:1px solid var(--gold-border);background:var(--gold-light);"><div class="concept-card-label">Do this next</div><div class="concept-card-text" style="font-weight:500;">${data.next_action}</div></div>`;
+    }
+
+    body.innerHTML = html || '<div style="color:var(--text-muted);padding:1rem;">No strategy returned. Try again.</div>';
+  }
+
+  function resetUpload() {
+    document.getElementById('uploadOut').classList.remove('show');
+    document.getElementById('uploadSaveBar').style.display = 'none';
+    document.getElementById('uploadFocusBlock').style.display = 'none';
+    document.getElementById('uploadInp').value = '';
+    document.getElementById('uploadBtn').disabled = false;
+    document.getElementById('uploadBtnLabel').textContent = 'Analyse & strategize →';
+    document.querySelectorAll('#uploadPlatformGrid .platform-pill').forEach(b=>b.classList.remove('selected'));
+    removeUploadImage({ stopPropagation: ()=>{} });
+  }
+
+  let recognitionUpload=null, isRecordingUpload=false;
+  function toggleMicUpload() {
+    const btn=document.getElementById('micBtnUpload'), SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){alert('Try Chrome or Safari.');return;}
+    if(isRecordingUpload){recognitionUpload.stop();return;}
+    recognitionUpload=new SR(); recognitionUpload.continuous=true; recognitionUpload.interimResults=true; recognitionUpload.lang='en-US';
+    recognitionUpload.onstart=()=>{isRecordingUpload=true;btn.classList.add('recording');btn.innerHTML='⏹';};
+    recognitionUpload.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;document.getElementById('uploadInp').value=t;};
+    recognitionUpload.onend=recognitionUpload.onerror=()=>{isRecordingUpload=false;btn.classList.remove('recording');btn.innerHTML='🎙';};
+    recognitionUpload.start();
   }
 
   function copyEl(btn) {
