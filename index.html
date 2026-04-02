@@ -696,6 +696,40 @@
       margin-top: 6px;
     }
 
+    /* LANGUAGE SELECTOR */
+    .lang-wrap { margin-bottom: 1.25rem; }
+
+    .lang-select {
+      width: 100%;
+      padding: 12px 36px 12px 16px;
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      color: var(--text);
+      background: var(--surface);
+      cursor: pointer;
+      transition: all 0.15s;
+      box-shadow: var(--shadow);
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239C9490' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+    }
+
+    .lang-select:focus {
+      outline: none;
+      border-color: var(--gold-border);
+      box-shadow: 0 0 0 3px rgba(160,114,42,0.08);
+    }
+
+    .lang-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-top: 6px;
+    }
+
     /* AUDIENCE DEMOGRAPHICS */
     .demo-wrap { margin-bottom: 1.25rem; }
 
@@ -1085,6 +1119,26 @@
 
 
 
+
+      <div class="lang-wrap">
+        <div class="section-label">Output language <span style="font-weight:400;text-transform:none;letter-spacing:0;font-style:italic;color:var(--text-muted);font-family:'DM Sans',sans-serif;">(optional)</span></div>
+        <select id="outputLanguage" class="lang-select">
+          <option value="">🌐 English (default)</option>
+          <option value="Spanish">🇪🇸 Spanish — Español</option>
+          <option value="French">🇫🇷 French — Français</option>
+          <option value="Portuguese">🇧🇷 Portuguese — Português</option>
+          <option value="German">🇩🇪 German — Deutsch</option>
+          <option value="Italian">🇮🇹 Italian — Italiano</option>
+          <option value="Dutch">🇳🇱 Dutch — Nederlands</option>
+          <option value="Japanese">🇯🇵 Japanese — 日本語</option>
+          <option value="Korean">🇰🇷 Korean — 한국어</option>
+          <option value="Mandarin Chinese">🇨🇳 Mandarin — 普通话</option>
+          <option value="Arabic">🇸🇦 Arabic — العربية</option>
+          <option value="Hindi">🇮🇳 Hindi — हिन्दी</option>
+        </select>
+        <div class="lang-hint">S.A.M. will write the entire output — hooks, script, and CTAs — in this language.</div>
+      </div>
+
       <div class="demo-wrap">
         <div class="section-label">Who's your audience? <span style="font-weight:400;text-transform:none;letter-spacing:0;font-style:italic;color:var(--text-muted);font-family:'DM Sans',sans-serif;">(optional)</span></div>
         <div class="demo-grid">
@@ -1275,6 +1329,10 @@
     btn.classList.add('selected');
   }
 
+  function getOutputLanguage() {
+    return document.getElementById('outputLanguage').value || '';
+  }
+
   function getAudienceDemographics() {
     const age = document.getElementById('demoAge').value;
     const gender = document.getElementById('demoGender').value;
@@ -1389,11 +1447,11 @@
     body.innerHTML = html || '<div class="blk-text" style="color:var(--text-muted)">No output returned. Try again.</div>';
   }
 
-  async function callAPI(mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics) {
+  async function callAPI(mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage) {
     const response = await fetch('/api/sam', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics })
+      body: JSON.stringify({ mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage })
     });
     if (!response.ok) {
       const err = await response.json().catch(() => ({}));
@@ -1428,9 +1486,10 @@
       const creatorContext = document.getElementById('creatorContext').value.trim();
       const tone = getTone();
       const audienceDemographics = getAudienceDemographics();
+      const outputLanguage = getOutputLanguage();
       const [storyData, hookData] = await Promise.all([
-        callAPI('story', text, platforms, contentType, creatorContext, tone, audienceDemographics),
-        callAPI('hook', text, platforms, contentType, creatorContext, tone, audienceDemographics)
+        callAPI('story', text, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage),
+        callAPI('hook', text, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage)
       ]);
 
       const combined = Object.assign({}, storyData, hookData);
