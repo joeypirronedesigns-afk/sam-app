@@ -50,6 +50,34 @@ module.exports = async function handler(req, res) {
 
   const base = 'You are S.A.M. — Strategic Assistant for Making. ' + toneContext + ' ' + emojiLine + ' ' + creatorLine + ' ' + audienceLine + ' ' + languageLine + ' ' + platformContext + ' ' + formatContext + ' CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No preamble.';
 
+  // UPLOAD & STRATEGIZE MODE (vision)
+  if (mode === 'upload') {
+    const imageBase64 = req.body.imageBase64 || null;
+    const imageType = req.body.imageType || 'image/jpeg';
+    const uploadPlatforms = req.body.platforms || [];
+    const platStr = uploadPlatforms.length > 0 ? 'Platforms: ' + uploadPlatforms.join(', ') + '.' : '';
+
+    const uploadSystem = 'You are S.A.M. — Strategic Assistant for Making. A creator has shared content with you — either text, an image, or both. ' + platStr + ' STEP 1: Identify what was shared. Classify as one of: "analytics" (platform stats/graphs/dashboards/metrics), "photo" (photo/scene/renovation/thumbnail/visual content), or "text_only" (no image, just text). STEP 2: Return the appropriate JSON strategy. IF analytics: {"type":"analytics","headline":"one punchy sentence on the single biggest insight","whats_working":["observation 1","observation 2","observation 3"],"whats_not":["improve 1","improve 2"],"post_next":["content idea 1","content idea 2","content idea 3"],"best_time":"optimal posting time based on data","growth_move":"one bold strategic move based on this data"} IF photo: {"type":"photo","what_sam_sees":"one sentence on what is in the image","thumbnail_strategy":"specific text overlay, emotion to convey, crop direction","hook_ideas":["hook 1","hook 2","hook 3"],"best_platform":"single best platform","platform_reason":"one sentence why","content_angle":"the story this image tells that stops the scroll","caption_starter":"first line of a caption for this image"} IF text_only: {"type":"text_only","diagnosis":"what this idea is really about and why it has potential","hook_ideas":["hook 1","hook 2","hook 3"],"best_platform":"single best platform","platform_reason":"one sentence why","content_angle":"strongest angle to take","next_action":"single most important thing to do with this idea now"} CRITICAL: Return ONLY valid JSON. No markdown. No backticks. No preamble.';
+
+    const userContent = imageBase64
+      ? [
+          { type: 'image', source: { type: 'base64', media_type: imageType, data: imageBase64 } },
+          { type: 'text', text: moment || 'Analyse this image and provide a strategy.' }
+        ]
+      : moment;
+
+    try {
+      const r = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1500, system: uploadSystem, messages: [{ role: 'user', content: userContent }] })
+      });
+      if (!r.ok) throw new Error('API error ' + r.status);
+      const d = await r.json();
+      return res.status(200).json(JSON.parse(d.content?.[0]?.text?.replace(/```json|```/g, '').trim()));
+    } catch (err) { return res.status(500).json({ error: err.message || 'Something went wrong.' }); }
+  }
+
   // CALENDAR MODE
   if (mode === 'calendar') {
     const platList = platforms && platforms.length > 0
@@ -64,11 +92,8 @@ module.exports = async function handler(req, res) {
       });
       if (!r.ok) throw new Error('API error ' + r.status);
       const d = await r.json();
-      const parsed = JSON.parse(d.content?.[0]?.text?.replace(/```json|```/g, '').trim());
-      return res.status(200).json(parsed);
-    } catch (err) {
-      return res.status(500).json({ error: err.message || 'Something went wrong.' });
-    }
+      return res.status(200).json(JSON.parse(d.content?.[0]?.text?.replace(/```json|```/g, '').trim()));
+    } catch (err) { return res.status(500).json({ error: err.message || 'Something went wrong.' }); }
   }
 
   // IDEAS MODE
@@ -82,11 +107,8 @@ module.exports = async function handler(req, res) {
       });
       if (!r.ok) throw new Error('API error ' + r.status);
       const d = await r.json();
-      const parsed = JSON.parse(d.content?.[0]?.text?.replace(/```json|```/g, '').trim());
-      return res.status(200).json(parsed);
-    } catch (err) {
-      return res.status(500).json({ error: err.message || 'Something went wrong.' });
-    }
+      return res.status(200).json(JSON.parse(d.content?.[0]?.text?.replace(/```json|```/g, '').trim()));
+    } catch (err) { return res.status(500).json({ error: err.message || 'Something went wrong.' }); }
   }
 
   // CONCEPT MODE
@@ -105,9 +127,7 @@ module.exports = async function handler(req, res) {
       if (!r.ok) throw new Error('API error ' + r.status);
       const d = await r.json();
       return res.status(200).json(JSON.parse(d.content?.[0]?.text?.replace(/```json|```/g, '').trim()));
-    } catch (err) {
-      return res.status(500).json({ error: err.message || 'Something went wrong.' });
-    }
+    } catch (err) { return res.status(500).json({ error: err.message || 'Something went wrong.' }); }
   }
 
   // FOCUS MODE
@@ -122,11 +142,8 @@ module.exports = async function handler(req, res) {
       });
       if (!r.ok) throw new Error('API error ' + r.status);
       const d = await r.json();
-      const parsed = JSON.parse(d.content?.[0]?.text?.replace(/```json|```/g, '').trim());
-      return res.status(200).json(parsed);
-    } catch (err) {
-      return res.status(500).json({ action: 'Pick one thing from the output above and do it in the next 30 minutes.', sub: '' });
-    }
+      return res.status(200).json(JSON.parse(d.content?.[0]?.text?.replace(/```json|```/g, '').trim()));
+    } catch (err) { return res.status(500).json({ action: 'Pick one thing from the output above and do it in the next 30 minutes.', sub: '' }); }
   }
 
   // TEXT-BASED FORMAT SCRIPT INSTRUCTIONS
