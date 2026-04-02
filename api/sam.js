@@ -16,8 +16,28 @@ module.exports = async function handler(req, res) {
   const creatorLine = creatorContext
     ? 'About this creator: ' + creatorContext + '.' : '';
 
+  const dialectMap = {
+    'Australia': 'Write in authentic Australian vernacular. Use natural Aussie slang where appropriate: "mate", "reckon", "heaps", "arvo", "no worries", "legend", "keen", "smashed it", "bloody", "deadset". Keep it casual, direct, and genuinely Australian — not a caricature, just natural. Avoid American idioms.',
+    'UK': 'Write in authentic British English. Use natural UK phrasing: "brilliant", "proper", "mate", "sorted", "gutted", "cheers", "having a go", "dead good". Understated, dry humor is welcome. Avoid American idioms.',
+    'Canada': 'Write in Canadian English. Friendly, warm, slightly understated. Natural and conversational. Avoid distinctly American or British idioms.',
+    'USA': 'Write in natural American English. Conversational, direct, and relatable.',
+    'North America': 'Write in natural North American English. Accessible and conversational.',
+    'English-speaking countries': 'Write in clear, accessible English that works across cultures. Avoid region-specific slang.',
+    'worldwide': 'Write in simple, clear, universally accessible English. Avoid idioms or slang that may not translate across cultures.'
+  };
+
+  let dialectNote = '';
+  if (audienceDemographics) {
+    for (const [location, dialect] of Object.entries(dialectMap)) {
+      if (audienceDemographics.includes(location)) {
+        dialectNote = dialect;
+        break;
+      }
+    }
+  }
+
   const audienceLine = audienceDemographics
-    ? 'Target audience: ' + audienceDemographics + '. Write hooks, language, and CTAs that speak directly to this specific group.' : '';
+    ? 'Target audience: ' + audienceDemographics + '. Write hooks, language, and CTAs that speak directly to this specific group. ' + dialectNote : '';
 
   const toneDescriptions = {
     'Authentic/Natural': 'Tone: Authentic and natural. Real, grounded, conversational, no fluff or hype. Speak like a real person talking to a friend.',
