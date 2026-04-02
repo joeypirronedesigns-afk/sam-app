@@ -28,7 +28,135 @@
       --radius-xl: 24px;
       --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
       --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+      --glow: 0 0 20px rgba(212,168,83,0);
     }
+
+    /* ── DARK MODE ─────────────────────────────────────────── */
+    [data-theme="dark"] {
+      --bg: #0D0C0B;
+      --surface: #161412;
+      --surface-2: #1C1A17;
+      --surface-3: #242118;
+      --black: #F5F0E8;
+      --text: #F0EBE0;
+      --text-mid: #A89880;
+      --text-muted: #6B5E4E;
+      --gold: #D4A853;
+      --gold-light: rgba(212,168,83,0.12);
+      --gold-border: #A0722A;
+      --border: rgba(255,255,255,0.06);
+      --border-mid: rgba(255,255,255,0.1);
+      --shadow: 0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+      --shadow-md: 0 4px 24px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.4);
+      --glow: 0 0 30px rgba(212,168,83,0.15);
+    }
+
+    [data-theme="dark"] body { background: var(--bg); }
+
+    [data-theme="dark"] nav {
+      background: rgba(13,12,11,0.92);
+      border-bottom-color: rgba(255,255,255,0.06);
+    }
+
+    [data-theme="dark"] .out-card,
+    [data-theme="dark"] .ideas-out,
+    [data-theme="dark"] .cal-out {
+      box-shadow: var(--shadow-md), var(--glow);
+    }
+
+    [data-theme="dark"] .hook-box {
+      background: rgba(212,168,83,0.06);
+      border-left-color: var(--gold);
+    }
+
+    [data-theme="dark"] textarea,
+    [data-theme="dark"] .creator-context-input,
+    [data-theme="dark"] .lang-select,
+    [data-theme="dark"] .demo-select {
+      background: var(--surface-2);
+      color: var(--text);
+      border-color: var(--border-mid);
+    }
+
+    [data-theme="dark"] textarea::placeholder,
+    [data-theme="dark"] .creator-context-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    [data-theme="dark"] .run-btn,
+    [data-theme="dark"] .idea-btn,
+    [data-theme="dark"] .calendar-btn {
+      background: var(--gold);
+      color: #0D0C0B;
+    }
+    [data-theme="dark"] .run-btn:hover,
+    [data-theme="dark"] .idea-btn:hover,
+    [data-theme="dark"] .calendar-btn:hover {
+      background: #E8BA5A;
+      box-shadow: 0 0 30px rgba(212,168,83,0.4);
+    }
+
+    [data-theme="dark"] .focus-block {
+      background: #0A0908;
+      border: 1px solid rgba(212,168,83,0.2);
+      box-shadow: 0 0 40px rgba(212,168,83,0.08), inset 0 0 60px rgba(212,168,83,0.03);
+    }
+
+    [data-theme="dark"] .focus-block::before {
+      background: linear-gradient(90deg, var(--gold-border), var(--gold), #F0C040);
+      box-shadow: 0 0 12px rgba(212,168,83,0.6);
+    }
+
+    [data-theme="dark"] .platform-pill.selected {
+      background: rgba(212,168,83,0.15);
+      border-color: var(--gold);
+      box-shadow: 0 0 12px rgba(212,168,83,0.2);
+    }
+
+    [data-theme="dark"] .tone-btn.selected,
+    [data-theme="dark"] .content-type-btn.selected,
+    [data-theme="dark"] .emoji-btn.selected {
+      background: rgba(212,168,83,0.12);
+      border-color: var(--gold);
+      box-shadow: 0 0 10px rgba(212,168,83,0.15);
+    }
+
+    [data-theme="dark"] .mode-tab.active {
+      background: var(--surface-3);
+      box-shadow: 0 0 20px rgba(212,168,83,0.1);
+    }
+
+    [data-theme="dark"] .tip-box {
+      background: rgba(212,168,83,0.06);
+      border-color: rgba(212,168,83,0.2);
+      color: #C8A060;
+    }
+
+    [data-theme="dark"] .warn-box {
+      background: rgba(251,191,36,0.06);
+      border-color: rgba(251,191,36,0.2);
+      color: #D4A853;
+    }
+
+    [data-theme="dark"] .success-box {
+      background: rgba(34,197,94,0.06);
+      border-color: rgba(34,197,94,0.2);
+      color: #4ADE80;
+    }
+
+    [data-theme="dark"] .script-block,
+    [data-theme="dark"] .text-output-box {
+      background: var(--surface-2);
+      border-color: var(--border-mid);
+    }
+
+    [data-theme="dark"] .idea-card,
+    [data-theme="dark"] .cal-day {
+      background: var(--surface-2);
+      border-color: var(--border-mid);
+    }
+
+    [data-theme="dark"] .cal-day-header { background: var(--surface-3); }
 
     html { scroll-behavior: smooth; }
 
@@ -1586,6 +1714,148 @@
       }
     }
 
+    /* THEME TOGGLE */
+    .theme-toggle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--border-mid);
+      background: var(--surface-2);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .theme-toggle:hover {
+      border-color: var(--gold-border);
+      background: var(--gold-light);
+      transform: scale(1.1) rotate(15deg);
+      box-shadow: 0 0 20px rgba(212,168,83,0.3);
+    }
+    .theme-toggle .icon-sun,
+    .theme-toggle .icon-moon {
+      position: absolute;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      font-size: 17px;
+    }
+    .theme-toggle .icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+    .theme-toggle .icon-sun  { opacity: 0; transform: scale(0) rotate(180deg); }
+    [data-theme="dark"] .theme-toggle .icon-moon { opacity: 0; transform: scale(0) rotate(-180deg); }
+    [data-theme="dark"] .theme-toggle .icon-sun  { opacity: 1; transform: scale(1) rotate(0deg); }
+    [data-theme="dark"] .theme-toggle { border-color: rgba(212,168,83,0.3); background: rgba(212,168,83,0.08); }
+
+    /* PARTICLE CANVAS */
+    #particle-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    [data-theme="dark"] #particle-canvas { opacity: 1; }
+
+    /* JARVIS SCAN LINE (dark only) */
+    [data-theme="dark"] body::after {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(212,168,83,0.6), transparent);
+      animation: scanline 6s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 9999;
+    }
+    @keyframes scanline {
+      0% { top: -2px; opacity: 0; }
+      5% { opacity: 1; }
+      95% { opacity: 0.4; }
+      100% { top: 100vh; opacity: 0; }
+    }
+
+    /* GLOW PULSE on output card (dark) */
+    [data-theme="dark"] .out-card.show,
+    [data-theme="dark"] .ideas-out.show,
+    [data-theme="dark"] .cal-out.show {
+      animation: fadeUp 0.35s ease, glowPulse 3s ease-in-out 0.5s;
+    }
+    @keyframes glowPulse {
+      0%, 100% { box-shadow: var(--shadow-md), 0 0 0px rgba(212,168,83,0); }
+      50% { box-shadow: var(--shadow-md), 0 0 50px rgba(212,168,83,0.2); }
+    }
+
+    /* NAV LOGO glow (dark) */
+    [data-theme="dark"] .nav-logo {
+      text-shadow: 0 0 20px rgba(212,168,83,0.4);
+      letter-spacing: 0.25em;
+    }
+
+    /* HERO text glow (dark) */
+    [data-theme="dark"] .hero h1 {
+      text-shadow: 0 0 60px rgba(212,168,83,0.15);
+    }
+    [data-theme="dark"] .hero h1 em {
+      text-shadow: 0 0 30px rgba(212,168,83,0.4);
+    }
+
+    /* GRID line overlay (dark) */
+    [data-theme="dark"] .tool-section::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(212,168,83,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(212,168,83,0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .tool-inner { position: relative; z-index: 1; }
+
+    /* BUTTON glow ripple */
+    .run-btn, .idea-btn, .calendar-btn {
+      position: relative;
+      overflow: hidden;
+    }
+    .run-btn::after, .idea-btn::after, .calendar-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.15) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .run-btn:active::after, .idea-btn:active::after, .calendar-btn:active::after { opacity: 1; }
+
+    /* CARD hover lift */
+    .output-card {
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .output-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    [data-theme="dark"] .output-card:hover {
+      box-shadow: var(--shadow-md), 0 0 20px rgba(212,168,83,0.1);
+    }
+
+    /* INPUT CARD dark glow on focus */
+    [data-theme="dark"] textarea:focus,
+    [data-theme="dark"] .creator-context-input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(212,168,83,0.1), 0 0 20px rgba(212,168,83,0.08);
+    }
+
+    /* FOCUS BLOCK action text dark glow */
+    [data-theme="dark"] .focus-block-action {
+      text-shadow: 0 0 20px rgba(255,255,255,0.1);
+    }
+
     /* FOOTER */
     footer {
       text-align: center;
@@ -1600,9 +1870,17 @@
 </head>
 <body>
 
+  <canvas id="particle-canvas"></canvas>
+
   <nav>
     <div class="nav-logo">S<span>.</span>A<span>.</span>M<span>.</span></div>
-    <div class="nav-tag">Strategic Assistant for Making</div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div class="nav-tag">Strategic Assistant for Making</div>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark/light mode" aria-label="Toggle theme">
+        <span class="icon-moon">🌙</span>
+        <span class="icon-sun">☀️</span>
+      </button>
+    </div>
   </nav>
 
   <div class="hero">
@@ -2678,6 +2956,105 @@
   function printCurrentMode() {
     window.print();
   }
+
+  // ── THEME TOGGLE ──────────────────────────────────────────────────────────
+  function toggleTheme() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const newTheme = isDark ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('sam-theme', newTheme);
+  }
+
+  // Restore saved theme on load
+  (function() {
+    const saved = localStorage.getItem('sam-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (prefersDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+  })();
+
+  // ── PARTICLE SYSTEM ────────────────────────────────────────────────────────
+  (function() {
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, particles = [], animId;
+    const GOLD = 'rgba(212,168,83,';
+    const COUNT = 55;
+
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+
+    function Particle() {
+      this.reset = function() {
+        this.x = Math.random() * W;
+        this.y = Math.random() * H;
+        this.r = Math.random() * 1.5 + 0.3;
+        this.vx = (Math.random() - 0.5) * 0.3;
+        this.vy = (Math.random() - 0.5) * 0.3 - 0.1;
+        this.life = Math.random();
+        this.maxLife = Math.random() * 0.006 + 0.002;
+        this.growing = Math.random() > 0.5;
+        this.alpha = Math.random() * 0.5 + 0.1;
+      };
+      this.reset();
+    }
+
+    function init() {
+      particles = [];
+      for (let i = 0; i < COUNT; i++) {
+        const p = new Particle();
+        p.life = Math.random(); // stagger start
+        particles.push(p);
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+      if (!dark) { animId = requestAnimationFrame(draw); return; }
+
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life += p.maxLife;
+        if (p.growing) { p.alpha = Math.min(0.6, p.alpha + 0.005); }
+        else { p.alpha = Math.max(0, p.alpha - 0.003); }
+        if (p.life > 1 || p.alpha <= 0 || p.y < -10) p.reset();
+
+        // Draw particle
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = GOLD + p.alpha + ')';
+        ctx.fill();
+      });
+
+      // Draw connection lines between nearby particles
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < 120) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = GOLD + (0.06 * (1 - dist/120)) + ')';
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+
+      animId = requestAnimationFrame(draw);
+    }
+
+    window.addEventListener('resize', () => { resize(); });
+    resize();
+    init();
+    draw();
+  })();
 
   // COPY
   function copyEl(btn) {
