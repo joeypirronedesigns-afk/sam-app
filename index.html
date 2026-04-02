@@ -696,6 +696,60 @@
       margin-top: 6px;
     }
 
+    /* AUDIENCE DEMOGRAPHICS */
+    .demo-wrap { margin-bottom: 1.25rem; }
+
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 600px) { .demo-grid { grid-template-columns: 1fr; } }
+
+    .demo-group { display: flex; flex-direction: column; gap: 6px; }
+
+    .demo-group-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .demo-select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: var(--text);
+      background: var(--surface);
+      cursor: pointer;
+      transition: all 0.15s;
+      box-shadow: var(--shadow);
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239C9490' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+
+    .demo-select:focus {
+      outline: none;
+      border-color: var(--gold-border);
+      box-shadow: 0 0 0 3px rgba(160,114,42,0.08);
+    }
+
+    .demo-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-top: 6px;
+    }
+
     /* TONE SELECTOR */
     .tone-wrap { margin-bottom: 1.25rem; }
 
@@ -1030,6 +1084,48 @@
       </div>
 
 
+
+      <div class="demo-wrap">
+        <div class="section-label">Who's your audience? <span style="font-weight:400;text-transform:none;letter-spacing:0;font-style:italic;color:var(--text-muted);font-family:'DM Sans',sans-serif;">(optional)</span></div>
+        <div class="demo-grid">
+          <div class="demo-group">
+            <label class="demo-group-label">Age group</label>
+            <select id="demoAge" class="demo-select">
+              <option value="">Any age</option>
+              <option value="18-24 year olds">18–24</option>
+              <option value="25-34 year olds">25–34</option>
+              <option value="35-44 year olds">35–44</option>
+              <option value="45-54 year olds">45–54</option>
+              <option value="55-65 year olds">55–65</option>
+              <option value="mixed ages 18-65">Mixed 18–65</option>
+            </select>
+          </div>
+          <div class="demo-group">
+            <label class="demo-group-label">Gender skew</label>
+            <select id="demoGender" class="demo-select">
+              <option value="">Any gender</option>
+              <option value="primarily men">Mostly men</option>
+              <option value="primarily women">Mostly women</option>
+              <option value="mixed men and women">Mixed</option>
+            </select>
+          </div>
+          <div class="demo-group">
+            <label class="demo-group-label">Location</label>
+            <select id="demoLocation" class="demo-select">
+              <option value="">Anywhere</option>
+              <option value="USA">USA</option>
+              <option value="Canada">Canada</option>
+              <option value="UK">UK</option>
+              <option value="Australia">Australia</option>
+              <option value="North America">North America</option>
+              <option value="English-speaking countries">English-speaking</option>
+              <option value="worldwide">Worldwide</option>
+            </select>
+          </div>
+        </div>
+        <div class="demo-hint">S.A.M. will tailor hooks, language, and CTAs for this specific audience.</div>
+      </div>
+
       <div class="tone-wrap">
         <div class="section-label">What's your tone?</div>
         <div class="tone-grid">
@@ -1179,6 +1275,14 @@
     btn.classList.add('selected');
   }
 
+  function getAudienceDemographics() {
+    const age = document.getElementById('demoAge').value;
+    const gender = document.getElementById('demoGender').value;
+    const location = document.getElementById('demoLocation').value;
+    const parts = [age, gender, location].filter(Boolean);
+    return parts.length > 0 ? parts.join(', ') : '';
+  }
+
   function getTone() {
     const selected = document.querySelector('.tone-btn.selected');
     return selected ? selected.dataset.tone : 'Authentic/Natural';
@@ -1285,11 +1389,11 @@
     body.innerHTML = html || '<div class="blk-text" style="color:var(--text-muted)">No output returned. Try again.</div>';
   }
 
-  async function callAPI(mode, moment, platforms, contentType, creatorContext, tone) {
+  async function callAPI(mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics) {
     const response = await fetch('/api/sam', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mode, moment, platforms, contentType, creatorContext, tone })
+      body: JSON.stringify({ mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics })
     });
     if (!response.ok) {
       const err = await response.json().catch(() => ({}));
@@ -1323,9 +1427,10 @@
       const contentType = getContentType();
       const creatorContext = document.getElementById('creatorContext').value.trim();
       const tone = getTone();
+      const audienceDemographics = getAudienceDemographics();
       const [storyData, hookData] = await Promise.all([
-        callAPI('story', text, platforms, contentType, creatorContext, tone),
-        callAPI('hook', text, platforms, contentType, creatorContext, tone)
+        callAPI('story', text, platforms, contentType, creatorContext, tone, audienceDemographics),
+        callAPI('hook', text, platforms, contentType, creatorContext, tone, audienceDemographics)
       ]);
 
       const combined = Object.assign({}, storyData, hookData);
