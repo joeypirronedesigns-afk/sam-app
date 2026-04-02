@@ -234,133 +234,6 @@
       line-height: 1.55;
     }
 
-    /* EXAMPLE CARD */
-    .example-wrap { margin-bottom: 1.25rem; }
-
-    .section-label {
-      font-family: 'Syne', sans-serif;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 0.75rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .section-label::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-
-    .example-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      position: relative;
-    }
-
-    .example-card::after {
-      content: 'SAMPLE OUTPUT';
-      position: absolute;
-      top: 14px;
-      right: 16px;
-      font-family: 'Syne', sans-serif;
-      font-size: 8px;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      color: var(--text-muted);
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      padding: 3px 8px;
-      border-radius: 4px;
-    }
-
-    .example-body { padding: 1.5rem; }
-
-    .example-moment {
-      font-size: 13px;
-      color: var(--text-muted);
-      font-style: italic;
-      line-height: 1.65;
-      padding: 10px 14px;
-      background: var(--surface-2);
-      border-left: 3px solid var(--border-mid);
-      border-radius: 0 8px 8px 0;
-      margin-bottom: 1.25rem;
-    }
-
-    .example-moment strong { color: var(--text-mid); font-style: normal; font-weight: 500; }
-
-    .example-row {
-      margin-bottom: 1rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .example-row:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
-
-    .example-row-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 0.5rem;
-    }
-
-    .example-hook {
-      font-size: 16px;
-      font-weight: 400;
-      line-height: 1.5;
-      padding: 12px 16px;
-      background: var(--surface-2);
-      border-left: 3px solid var(--gold-border);
-      border-radius: 0 var(--radius) var(--radius) 0;
-      color: var(--black);
-    }
-
-    .example-text { font-size: 14px; line-height: 1.75; color: var(--text); }
-
-    .example-spine { display: flex; flex-direction: column; gap: 6px; }
-
-    .example-spine-item {
-      font-size: 13px;
-      color: var(--text-mid);
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      line-height: 1.5;
-    }
-
-    .example-spine-item::before { content: '→'; color: var(--gold); flex-shrink: 0; }
-
-    .example-cta-box {
-      font-size: 14px;
-      padding: 10px 14px;
-      background: var(--gold-light);
-      border: 1px solid var(--gold-border);
-      border-radius: var(--radius);
-      color: var(--gold);
-      line-height: 1.6;
-    }
-
-    .example-footer {
-      padding: 0.875rem 1.5rem;
-      border-top: 1px solid var(--border);
-      background: var(--surface-2);
-      font-size: 12px;
-      color: var(--text-muted);
-      font-style: italic;
-    }
-
     /* PLATFORM SELECTOR */
     .platform-wrap { margin-bottom: 1.25rem; }
 
@@ -823,6 +696,63 @@
       margin-top: 6px;
     }
 
+    /* TONE SELECTOR */
+    .tone-wrap { margin-bottom: 1.25rem; }
+
+    .tone-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    @media (max-width: 520px) { .tone-grid { grid-template-columns: 1fr; } }
+
+    .tone-btn {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: left;
+      box-shadow: var(--shadow);
+      user-select: none;
+    }
+
+    .tone-btn:hover {
+      border-color: var(--gold-border);
+      background: var(--gold-light);
+    }
+
+    .tone-btn.selected {
+      background: var(--gold-light);
+      border-color: var(--gold-border);
+      box-shadow: 0 0 0 2px rgba(212,168,83,0.2);
+    }
+
+    .tone-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+    .tone-info { display: flex; flex-direction: column; gap: 2px; }
+
+    .tone-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--black);
+      letter-spacing: 0.01em;
+    }
+
+    .tone-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .tone-btn.selected .tone-label { color: var(--gold); }
+
     /* CONTENT TYPE SELECTOR */
     .content-type-wrap { margin-bottom: 1.25rem; }
 
@@ -941,7 +871,7 @@
 
     @media print {
       nav, .hero, .tool-section > .tool-inner > .section-header,
-      .outputs-grid, .example-wrap, .platform-wrap,
+      .outputs-grid, .platform-wrap,
       .input-card, .out-header, .save-btn, footer,
       .copy-btn { display: none !important; }
 
@@ -1068,38 +998,6 @@
         </div>
       </div>
 
-      <div class="example-wrap">
-        <div class="section-label">Real example — parents see the tree</div>
-        <div class="example-card">
-          <div class="example-body">
-            <div class="example-moment">
-              <strong>The moment:</strong> My parents flew in from Florida and saw the cottage renovation for the first time. When they looked at the front yard they saw this big white blooming tree and both said wow. I had my camera ready. It was the most emotional moment in 6 months of work.
-            </div>
-            <div class="example-row">
-              <div class="example-row-title">What this is really about</div>
-              <div class="example-text">This isn't a renovation update — it's the first time the people you love saw what you've been building for them. The tree didn't stop them. The reality of what you did for six months did.</div>
-            </div>
-            <div class="example-row">
-              <div class="example-row-title">Your hook</div>
-              <div class="example-hook">Six months of work. They'd only ever seen it through a screen. Until today.</div>
-            </div>
-            <div class="example-row">
-              <div class="example-row-title">Story spine</div>
-              <div class="example-spine">
-                <div class="example-spine-item">Six months renovating a cottage for my parents — they watched every update from Florida through my videos.</div>
-                <div class="example-spine-item">Today was the first time they'd see it in person — and I had no idea what they'd think.</div>
-                <div class="example-spine-item">They walked to the front yard, saw the blooming tree, and I saw exactly why I've been doing this.</div>
-              </div>
-            </div>
-            <div class="example-row">
-              <div class="example-row-title">Call to action</div>
-              <div class="example-cta-box">If you're building something for someone you love — follow. You don't want to miss the ending.</div>
-            </div>
-          </div>
-          <div class="example-footer">S.A.M. built this from one real moment. Yours is next.</div>
-        </div>
-      </div>
-
       <div class="platform-wrap">
         <div class="section-label">Where do you post?</div>
         <div class="platform-grid">
@@ -1129,6 +1027,41 @@
           <button class="mic-btn" id="micBtnContext" onclick="toggleMicContext()" title="Speak your creator context" style="bottom:6px;">🎙</button>
         </div>
         <div class="creator-context-hint">One sentence. S.A.M. uses this to personalize every output for your specific audience.</div>
+      </div>
+
+
+      <div class="tone-wrap">
+        <div class="section-label">What's your tone?</div>
+        <div class="tone-grid">
+          <button class="tone-btn selected" data-tone="Authentic/Natural" onclick="selectTone(this)">
+            <span class="tone-icon">🎯</span>
+            <div class="tone-info">
+              <span class="tone-label">Authentic / Natural</span>
+              <span class="tone-desc">Real, grounded, no fluff</span>
+            </div>
+          </button>
+          <button class="tone-btn" data-tone="Viral/Hype" onclick="selectTone(this)">
+            <span class="tone-icon">🔥</span>
+            <div class="tone-info">
+              <span class="tone-label">Viral / Hype</span>
+              <span class="tone-desc">High energy, bold, scroll-stopping</span>
+            </div>
+          </button>
+          <button class="tone-btn" data-tone="Wise/Mentor" onclick="selectTone(this)">
+            <span class="tone-icon">🧠</span>
+            <div class="tone-info">
+              <span class="tone-label">Wise / Mentor</span>
+              <span class="tone-desc">Thoughtful, teaches, builds trust</span>
+            </div>
+          </button>
+          <button class="tone-btn" data-tone="Bubbly/Energetic" onclick="selectTone(this)">
+            <span class="tone-icon">✨</span>
+            <div class="tone-info">
+              <span class="tone-label">Bubbly / Energetic</span>
+              <span class="tone-desc">Fun, warm, uplifting vibes</span>
+            </div>
+          </button>
+        </div>
       </div>
 
       <div class="content-type-wrap">
@@ -1241,6 +1174,16 @@
     window.print();
   }
 
+  function selectTone(btn) {
+    document.querySelectorAll('.tone-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+
+  function getTone() {
+    const selected = document.querySelector('.tone-btn.selected');
+    return selected ? selected.dataset.tone : 'Authentic/Natural';
+  }
+
   function selectContentType(btn) {
     document.querySelectorAll('.content-type-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
@@ -1342,11 +1285,11 @@
     body.innerHTML = html || '<div class="blk-text" style="color:var(--text-muted)">No output returned. Try again.</div>';
   }
 
-  async function callAPI(mode, moment, platforms, contentType, creatorContext) {
+  async function callAPI(mode, moment, platforms, contentType, creatorContext, tone) {
     const response = await fetch('/api/sam', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mode, moment, platforms, contentType, creatorContext })
+      body: JSON.stringify({ mode, moment, platforms, contentType, creatorContext, tone })
     });
     if (!response.ok) {
       const err = await response.json().catch(() => ({}));
@@ -1379,9 +1322,10 @@
       const platforms = getSelectedPlatforms();
       const contentType = getContentType();
       const creatorContext = document.getElementById('creatorContext').value.trim();
+      const tone = getTone();
       const [storyData, hookData] = await Promise.all([
-        callAPI('story', text, platforms, contentType, creatorContext),
-        callAPI('hook', text, platforms, contentType, creatorContext)
+        callAPI('story', text, platforms, contentType, creatorContext, tone),
+        callAPI('hook', text, platforms, contentType, creatorContext, tone)
       ]);
 
       const combined = Object.assign({}, storyData, hookData);
