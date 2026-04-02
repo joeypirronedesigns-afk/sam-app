@@ -467,53 +467,62 @@
       box-shadow: var(--shadow-lg), 0 0 40px rgba(212,168,75,0.08);
     }
 
-    /* OUTPUT FEATURE CARDS */
-    .outputs-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-bottom: 1.5rem;
-    }
-    @media (max-width: 520px) { .outputs-grid { grid-template-columns: 1fr; } }
-
-    .output-card {
-      background: var(--surface);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--border-mid);
-      border-radius: var(--radius-lg);
-      padding: 1.4rem 1.5rem;
+    /* FEATURE STRIP — replaces output cards */
+    .feature-strip {
       display: flex;
-      gap: 14px;
-      align-items: flex-start;
-      border-left: 3px solid var(--gold-border);
-      box-shadow: var(--shadow-sm);
-      transition: all 0.25s cubic-bezier(0.34, 1.2, 0.64, 1);
-      cursor: default;
+      flex-direction: column;
+      gap: 0;
+      margin-bottom: 2rem;
+      border-left: 2px solid var(--gold-border);
+      padding-left: 1.25rem;
     }
-    .output-card:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--shadow);
-      border-left-color: var(--gold);
+    [data-theme="dark"] .feature-strip {
+      border-left-color: rgba(212,168,75,0.25);
     }
-    [data-theme="dark"] .output-card {
-      background: rgba(22,19,14,0.8);
-      border-color: rgba(212,168,75,0.1);
-      border-left-color: rgba(212,168,75,0.3);
+
+    .feature-item {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
     }
-    [data-theme="dark"] .output-card:hover {
-      border-color: rgba(212,168,75,0.2);
-      border-left-color: var(--gold);
-      box-shadow: var(--shadow), 0 0 30px rgba(212,168,75,0.08);
+    .feature-item:last-child { border-bottom: none; }
+    [data-theme="dark"] .feature-item { border-color: rgba(212,168,75,0.06); }
+
+    .feature-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--gold);
+      flex-shrink: 0;
+      margin-top: 1px;
+      opacity: 0.7;
     }
-    .output-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
-    .output-title {
+
+    .feature-name {
       font-family: 'Inter', sans-serif;
-      font-size: 16px;
-      font-weight: 700;
+      font-size: 13px;
+      font-weight: 600;
       color: var(--text);
-      margin-bottom: 4px;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
     }
-    .output-desc { font-size: 13px; color: var(--text-muted); line-height: 1.55; }
+
+    .feature-sep {
+      font-size: 12px;
+      color: var(--text-muted);
+      opacity: 0.4;
+      flex-shrink: 0;
+    }
+
+    .feature-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      font-weight: 400;
+    }
 
     /* ══ MODE TABS ════════════════════════════ */
     .mode-toggle-wrap {
@@ -1811,7 +1820,7 @@
 
     /* ══ PRINT ════════════════════════════════ */
     @media print {
-      nav, .hero, .section-header, .outputs-grid, .platform-wrap,
+      nav, .hero, .section-header, .feature-strip, .platform-wrap,
       .input-card, .out-header, footer,
       .copy-btn, .cal-copy-btn, .idea-copy-btn,
       .mode-toggle-wrap, .save-pdf-btn, .run-btn,
@@ -1860,8 +1869,7 @@
     <div class="tool-inner">
 
       <div class="section-header">
-        <h2>Here's what S.A.M. builds from your moment</h2>
-        <p>One real moment. Four outputs. Ready to post.</p>
+        <h2>One moment. Four outputs. Ready to post.</h2>
       </div>
 
       <!-- MODE TOGGLE -->
@@ -2104,11 +2112,31 @@
 
       <!-- MOMENT SECTION -->
       <div class="moment-section" id="momentSection">
-        <div class="outputs-grid">
-          <div class="output-card"><div class="output-icon">▶</div><div><div class="output-title">The real story</div><div class="output-desc">The emotional core a stranger would actually stop for</div></div></div>
-          <div class="output-card"><div class="output-icon">⚡</div><div><div class="output-title">3 hook options</div><div class="output-desc">The first 3 seconds that stop the scroll</div></div></div>
-          <div class="output-card"><div class="output-icon">✍</div><div><div class="output-title">A full script</div><div class="output-desc">Ready to record — with pacing notes and b-roll</div></div></div>
-          <div class="output-card"><div class="output-icon">→</div><div><div class="output-title">Platform strategy</div><div class="output-desc">Where to post it and how to get 3 pieces from one moment</div></div></div>
+        <div class="feature-strip">
+          <div class="feature-item">
+            <span class="feature-dot"></span>
+            <span class="feature-name">The real story</span>
+            <span class="feature-sep">—</span>
+            <span class="feature-desc">The emotional core a stranger would actually stop for</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-dot"></span>
+            <span class="feature-name">3 hooks</span>
+            <span class="feature-sep">—</span>
+            <span class="feature-desc">The first 3 seconds that stop the scroll</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-dot"></span>
+            <span class="feature-name">Full script</span>
+            <span class="feature-sep">—</span>
+            <span class="feature-desc">Word for word, with pacing notes and b-roll cues</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-dot"></span>
+            <span class="feature-name">Platform strategy</span>
+            <span class="feature-sep">—</span>
+            <span class="feature-desc">Where to post and how to get 3 pieces from one moment</span>
+          </div>
         </div>
 
         <div class="platform-wrap">
