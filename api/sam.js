@@ -1,7 +1,7 @@
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage } = req.body;
+  const { mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage, emojiPreference } = req.body;
   if (!moment || !mode) return res.status(400).json({ error: 'Missing mode or moment' });
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -13,6 +13,10 @@ module.exports = async function handler(req, res) {
   const creatorLine = creatorContext ? 'About this creator: ' + creatorContext + '.' : '';
   const languageLine = outputLanguage
     ? 'IMPORTANT: Write the ENTIRE output in ' + outputLanguage + '. Do not use English except inside JSON field names.' : '';
+
+  const emojiLine = emojiPreference === 'no'
+    ? 'IMPORTANT: Do NOT use any emojis anywhere in your output. No emojis in hooks, scripts, captions, CTAs, or tips.'
+    : 'You may use emojis naturally and sparingly where they add energy or emphasis.';
 
   const dialectMap = {
     'Australia': 'Write in authentic Australian vernacular. Use natural Aussie slang: "mate", "reckon", "heaps", "arvo", "no worries", "legend", "keen", "bloody", "deadset". Casual, direct, genuinely Australian.',
@@ -42,15 +46,14 @@ module.exports = async function handler(req, res) {
   };
   const toneContext = toneDescriptions[tone] || toneDescriptions['Authentic/Natural'];
 
-  const base = 'You are S.A.M. — Strategic Assistant for Making. ' + toneContext + ' ' + creatorLine + ' ' + audienceLine + ' ' + languageLine + ' ' + platformContext + ' ' + formatContext + ' CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No preamble.';
+  const base = 'You are S.A.M. — Strategic Assistant for Making. ' + toneContext + ' ' + emojiLine + ' ' + creatorLine + ' ' + audienceLine + ' ' + languageLine + ' ' + platformContext + ' ' + formatContext + ' CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No preamble.';
 
   // CALENDAR MODE
   if (mode === 'calendar') {
     const platList = platforms && platforms.length > 0
       ? platforms
       : ['TikTok', 'Instagram Reels', 'Facebook Reels', 'YouTube Shorts', 'LinkedIn', 'X (Twitter)', 'any platform'];
-    const calPrompt = base + ' A creator described a moment or content idea. Build a strategic 7-day posting plan that maximizes reach from this one piece of content. Rotate across these platforms where possible: ' + platList.join(', ') + '. Vary the format each day. Build momentum. For ideal_time give a specific time like "6:00 PM" and reason like "Tuesday 6PM — highest engagement window for this platform". Return exactly this JSON with exactly 7 items: {"days":[{"platform":"exact platform name from the list","post_type":"format e.g. Short-form video, Text post, Story, Carousel, Behind-the-scenes","content":"specific post description or ready-to-use caption — 2-3 sentences","tip":"one tactical tip for this specific post and platform","ideal_time":"specific day + time + brief reason e.g. Tuesday 6–8 PM — peak scroll time for this platform"}]}';
-
+    const calPrompt = base + ' A creator described a moment or content idea. Build a strategic 7-day posting plan that maximizes reach from this one piece of content. Rotate across these platforms: ' + platList.join(', ') + '. Vary the format each day. Build momentum across the week. Return exactly this JSON with exactly 7 items: {"days":[{"platform":"exact platform name","post_type":"format e.g. Short-form video, Text post, Story, Carousel, Behind-the-scenes","content":"specific ready-to-use post content or caption — 2-3 sentences","tip":"one tactical tip for this post and platform","ideal_time":"specific time + brief reason e.g. Tuesday 6–8 PM — peak scroll time for this platform"}]}';
     try {
       const r = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
@@ -68,7 +71,7 @@ module.exports = async function handler(req, res) {
 
   // IDEAS MODE
   if (mode === 'ideas') {
-    const ideasPrompt = base + ' A creator described their niche. Generate exactly 10 specific, actionable content ideas they could make this week. Each must be concrete and immediately filmable — not generic advice. For best_platform recommend the single best platform for each idea based on content type. Return this exact JSON: {"ideas":[{"title":"specific content idea title","why":"one sentence on why this will perform for their audience","best_platform":"single best platform name e.g. TikTok, YouTube Shorts, Instagram Reels, LinkedIn, Facebook Reels"}]}';
+    const ideasPrompt = base + ' A creator described their niche. Generate exactly 10 specific, actionable content ideas they could make this week. Each must be concrete and immediately filmable or postable — not generic advice. Return this exact JSON: {"ideas":[{"title":"specific content idea title","why":"one sentence on why this will perform for their audience","best_platform":"single best platform name e.g. TikTok, YouTube Shorts, Instagram Reels, LinkedIn, Facebook Reels"}]}';
     try {
       const r = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
@@ -84,23 +87,25 @@ module.exports = async function handler(req, res) {
     }
   }
 
-  // STORY + HOOK MODES
+  // TEXT FORMAT INSTRUCTION — no video beats whatsoever
+  const textPostInstruction = 'Write a complete text post ready to copy and paste. CRITICAL: Do NOT use [BRACKETS], (pacing notes), beat labels, stage directions, or any video/audio directions. Write in clean natural paragraphs only. Hook on the first line, story in short punchy paragraphs, ends with a question or CTA. Pure readable text — nothing a reader would need to remove before posting.';
+
   const contentTypeScriptInstructions = {
-    'Short-form video': 'Write a complete word-for-word spoken script for a 60-90 second short-form video. Beats in [BRACKETS]: [HOOK], [SETUP], [TENSION], [PAYOFF], [CTA]. Pacing notes in (parentheses).',
-    'Long-form YouTube video': 'Write a complete word-for-word script for 8-12 minutes. Label: [INTRO HOOK], [CONTEXT], [MAIN STORY], [KEY LESSONS], [OUTRO CTA].',
-    'LinkedIn text post': 'Write the complete LinkedIn post. Strong opening, short paragraphs, ends with a question. 3 hashtags.',
-    'Instagram caption': 'Write the complete Instagram caption. Hook first, body with line breaks, CTA, 5 hashtags.',
-    'Podcast intro': 'Write a complete 60-90 second spoken intro. Hooks listener, sets theme, teases content.',
-    'Email newsletter': 'Write complete email: SUBJECT LINE, PREVIEW TEXT, full BODY with greeting, 3-4 paragraphs, CTA.',
-    'Blog post': 'Write: SEO HEADLINE, META DESCRIPTION under 160 chars, full INTRO, 3-4 SECTION HEADERS with summaries, CONCLUSION with CTA.',
-    'Text post': 'Write a complete text-only post ready to copy and paste. No images needed. Hook on first line, story in short punchy paragraphs, ends with a question or CTA. Works across Facebook, LinkedIn, X, or any text-based feed.'
+    'Short-form video': 'Write a complete word-for-word spoken script for a 60-90 second short-form video. Beats in [BRACKETS]: [HOOK], [SETUP], [TENSION], [PAYOFF], [CTA]. Pacing notes in (parentheses). Every word speakable out loud.',
+    'Long-form YouTube video': 'Write a complete word-for-word script for 8-12 minutes. Label: [INTRO HOOK], [CONTEXT], [MAIN STORY], [KEY LESSONS], [OUTRO CTA]. B-roll in (parentheses).',
+    'LinkedIn text post': 'Write the complete LinkedIn post as clean readable text. CRITICAL: No [BRACKETS] or (pacing notes). Just text. Strong opening line (no "I" to start), short paragraphs, ends with a question. Include 3 hashtags at the end on their own line.',
+    'Instagram caption': 'Write the complete Instagram caption as clean readable text. CRITICAL: No [BRACKETS] or (pacing notes). Just text. Hook first line, body with line breaks, CTA, then 5 hashtags on their own line.',
+    'Podcast intro': 'Write a complete 60-90 second spoken intro. Hooks listener, sets up theme, teases content. Tone notes in (parentheses) only.',
+    'Email newsletter': 'Write complete email as clean readable text. SUBJECT LINE: on first line. PREVIEW TEXT: on second line. Then body — no [BRACKETS]. Greeting, 3-4 paragraphs, clear CTA.',
+    'Blog post': 'Write as clean readable text. HEADLINE on first line. META DESCRIPTION on second line. Then full intro paragraph, section headers in ALL CAPS, 2-3 sentence summaries under each, conclusion with CTA. No [BRACKETS] in body.',
+    'Text post': textPostInstruction
   };
 
   const scriptInstruction = contentTypeScriptInstructions[contentType] || contentTypeScriptInstructions['Short-form video'];
 
-  const storyPrompt = base + ' ' + scriptInstruction + ' Return this exact JSON: {"diagnosis":"2-3 sentences on what this moment is really about emotionally","hook":"single best opening line","story_spine":"Setup / Tension / Payoff separated by /","full_script":"COMPLETE WORD-FOR-WORD SCRIPT with beat labels in [BRACKETS] and pacing notes in (parentheses)","b_roll":"4 specific b-roll shots each on its own line","pacing_note":"one specific delivery tip","cta":"identity-based call to action","content_warning":"one honest risk"}';
+  const storyPrompt = base + ' ' + scriptInstruction + ' Return this exact JSON: {"diagnosis":"2-3 sentences on what this moment is really about emotionally","hook":"single best opening line","story_spine":"Setup / Tension / Payoff separated by /","full_script":"COMPLETE OUTPUT — for text formats: clean readable paragraphs with NO video directions. For video formats: full script with [BEAT] labels and (pacing notes).","b_roll":"4 specific b-roll shots each on its own line — write n/a for text-only formats","pacing_note":"delivery tip for video — for text formats: one specific writing or posting tip","cta":"identity-based call to action","content_warning":"one honest risk"}';
 
-  const hookPrompt = base + ' Return this exact JSON: {"diagnosis":"what makes this moment hook-worthy for this specific audience and platform","hook_1":"emotion-first hook tailored to selected platforms","hook_2":"curiosity-first hook tailored to selected platforms","hook_3":"identity-first hook tailored to selected platforms","winner":"which hook and exactly why for these platforms","visual_note":"what to show on screen first 3 seconds","platform_strategies":' + (platforms && platforms.length > 0 ? '[{"platform":"exact platform name","strategy":"specific posting strategy tailored to this platform for this exact moment"}]' : '[]') + '}';
+  const hookPrompt = base + ' Return this exact JSON: {"diagnosis":"what makes this moment hook-worthy for this audience and platform","hook_1":"emotion-first hook","hook_2":"curiosity-first hook","hook_3":"identity-first hook","winner":"which hook and exactly why for these platforms","visual_note":"what to show on screen first 3 seconds — for text formats describe the thumbnail or cover image","platform_strategies":' + (platforms && platforms.length > 0 ? '[{"platform":"exact platform name","strategy":"specific posting strategy tailored to this platform for this exact moment"}]' : '[]') + '}';
 
   const systemPrompt = mode === 'story' ? storyPrompt : hookPrompt;
   if (!systemPrompt) return res.status(400).json({ error: 'Invalid mode' });
