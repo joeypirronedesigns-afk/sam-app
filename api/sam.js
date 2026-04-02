@@ -1,7 +1,7 @@
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { mode, moment, platforms, contentType, creatorContext, tone } = req.body;
+  const { mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics } = req.body;
   if (!moment || !mode) return res.status(400).json({ error: 'Missing mode or moment' });
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -14,7 +14,10 @@ module.exports = async function handler(req, res) {
     ? 'Content format: ' + contentType + '. Shape all output specifically for this format.' : '';
 
   const creatorLine = creatorContext
-    ? 'About this creator: ' + creatorContext + '. Use this to make the output specific to their audience, voice, and niche.' : '';
+    ? 'About this creator: ' + creatorContext + '.' : '';
+
+  const audienceLine = audienceDemographics
+    ? 'Target audience: ' + audienceDemographics + '. Write hooks, language, and CTAs that speak directly to this specific group.' : '';
 
   const toneDescriptions = {
     'Authentic/Natural': 'Tone: Authentic and natural. Real, grounded, conversational, no fluff or hype. Speak like a real person talking to a friend.',
@@ -26,22 +29,22 @@ module.exports = async function handler(req, res) {
   const toneContext = toneDescriptions[tone] || toneDescriptions['Authentic/Natural'];
 
   const contentTypeScriptInstructions = {
-    'Short-form video': 'Write a complete word-for-word spoken script for a 60-90 second short-form video. Structure it with clear beats labeled in [BRACKETS]: [HOOK] for the opening line, [SETUP] for context, [TENSION] for the conflict or challenge, [PAYOFF] for the resolution or reveal, [CTA] for the call to action. Include pacing notes in (parentheses) like (pause here) or (show footage of X). Every word should be speakable out loud.',
-    'Long-form YouTube video': 'Write a complete word-for-word script for a 8-12 minute YouTube video. Label each section: [INTRO HOOK], [CONTEXT], [MAIN STORY], [KEY LESSONS], [OUTRO CTA]. Include b-roll suggestions in (parentheses). Make it conversational throughout.',
-    'LinkedIn text post': 'Write the complete LinkedIn post text, ready to copy and paste. Strong opening line, short paragraphs, no fluff, ends with a question or reflection. Include 3 hashtags at the end.',
-    'Instagram caption': 'Write the complete Instagram caption. Hook on first line, storytelling in the body with line breaks, CTA, then 5 relevant hashtags on a new line.',
-    'Podcast intro': 'Write a complete word-for-word podcast intro script, 60-90 seconds when spoken. Hooks the listener immediately, sets up the episode theme, teases what they will learn or feel. Include (tone notes) in parentheses.',
-    'Email newsletter': 'Write the complete email: SUBJECT LINE on first line, PREVIEW TEXT on second line, then the full BODY with greeting, 3-4 paragraphs, and a clear CTA at the end.',
-    'Blog post': 'Write: SEO HEADLINE, META DESCRIPTION (under 160 chars), full INTRO paragraph, 3-4 SECTION HEADERS with 2-3 sentence summaries each, and CONCLUSION with CTA.'
+    'Short-form video': 'Write a complete word-for-word spoken script for a 60-90 second short-form video. Structure with beats in [BRACKETS]: [HOOK], [SETUP], [TENSION], [PAYOFF], [CTA]. Pacing notes in (parentheses). Every word speakable out loud.',
+    'Long-form YouTube video': 'Write a complete word-for-word script for 8-12 minutes. Label: [INTRO HOOK], [CONTEXT], [MAIN STORY], [KEY LESSONS], [OUTRO CTA]. B-roll in (parentheses).',
+    'LinkedIn text post': 'Write the complete LinkedIn post. Strong opening line (no "I" to start), short paragraphs, ends with a question. Include 3 hashtags.',
+    'Instagram caption': 'Write the complete Instagram caption. Hook first line, body with line breaks, CTA, then 5 hashtags.',
+    'Podcast intro': 'Write a complete 60-90 second spoken intro. Hooks listener, sets up theme, teases what they will learn. Tone notes in (parentheses).',
+    'Email newsletter': 'Write the complete email: SUBJECT LINE, PREVIEW TEXT, then full BODY with greeting, 3-4 paragraphs, and clear CTA.',
+    'Blog post': 'Write: SEO HEADLINE, META DESCRIPTION under 160 chars, full INTRO paragraph, 3-4 SECTION HEADERS with summaries, CONCLUSION with CTA.'
   };
 
   const scriptInstruction = contentTypeScriptInstructions[contentType] || contentTypeScriptInstructions['Short-form video'];
 
-  const base = 'You are S.A.M. — Strategic Assistant for Making. You help creators turn real moments into content that builds a following. ' + toneContext + ' ' + creatorLine + ' ' + platformContext + ' ' + formatContext + ' CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No preamble.';
+  const base = 'You are S.A.M. — Strategic Assistant for Making. You help creators turn real moments into content that builds a following. ' + toneContext + ' ' + creatorLine + ' ' + audienceLine + ' ' + platformContext + ' ' + formatContext + ' CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No preamble.';
 
-  const storyPrompt = base + ' The creator described a real moment. ' + scriptInstruction + ' Return this exact JSON: {"diagnosis":"2-3 sentences on what this moment is really about emotionally","hook":"single best opening line","story_spine":"Setup / Tension / Payoff separated by /","full_script":"THE COMPLETE WORD-FOR-WORD SCRIPT with beat labels in [BRACKETS] and pacing notes in (parentheses) — full and complete, ready to read aloud","b_roll":"4 specific b-roll shots each on its own line","pacing_note":"one specific delivery tip","cta":"identity-based call to action","content_warning":"one honest risk"}';
+  const storyPrompt = base + ' ' + scriptInstruction + ' Return this exact JSON: {"diagnosis":"2-3 sentences on what this moment is really about emotionally","hook":"single best opening line","story_spine":"Setup / Tension / Payoff separated by /","full_script":"COMPLETE WORD-FOR-WORD SCRIPT with beat labels in [BRACKETS] and pacing notes in (parentheses) — ready to read aloud","b_roll":"4 specific b-roll shots each on its own line","pacing_note":"one specific delivery tip","cta":"identity-based call to action","content_warning":"one honest risk"}';
 
-  const hookPrompt = base + ' The creator described a real moment. Return this exact JSON: {"diagnosis":"what makes this moment hook-worthy","hook_1":"emotion-first hook","hook_2":"curiosity-first hook","hook_3":"identity-first hook","winner":"which hook and exactly why","visual_note":"what to show on screen first 3 seconds","platform_strategies":' + (platforms && platforms.length > 0 ? '[{"platform":"platform name","strategy":"specific posting strategy for this moment"}]' : '[]') + '}';
+  const hookPrompt = base + ' Return this exact JSON: {"diagnosis":"what makes this moment hook-worthy for this audience","hook_1":"emotion-first hook","hook_2":"curiosity-first hook","hook_3":"identity-first hook","winner":"which hook and exactly why","visual_note":"what to show on screen first 3 seconds","platform_strategies":' + (platforms && platforms.length > 0 ? '[{"platform":"platform name","strategy":"specific posting strategy for this moment on this platform"}]' : '[]') + '}';
 
   const systemPrompt = mode === 'story' ? storyPrompt : hookPrompt;
   if (!systemPrompt) return res.status(400).json({ error: 'Invalid mode' });
