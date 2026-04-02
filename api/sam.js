@@ -37,8 +37,7 @@ module.exports = async function handler(req, res) {
     }
   }
 
-  const audienceLine = audienceDemographics
-    ? 'Target audience: ' + audienceDemographics + '. ' + dialectNote : '';
+  const audienceLine = audienceDemographics ? 'Target audience: ' + audienceDemographics + '. ' + dialectNote : '';
 
   const toneDescriptions = {
     'Authentic/Natural': 'Tone: Authentic and natural. Real, grounded, conversational.',
@@ -50,6 +49,26 @@ module.exports = async function handler(req, res) {
 
   const base = 'You are S.A.M. — Strategic Assistant for Making. ' + toneContext + ' ' + emojiLine + ' ' + creatorLine + ' ' + audienceLine + ' ' + languageLine + ' ' + platformContext + ' ' + formatContext + ' CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No preamble.';
 
+  // FOCUS MODE
+  if (mode === 'focus') {
+    const focusSummary = req.body.focusSummary || '';
+    const focusPrompt = base + ' A creator just used S.A.M. and got their output. Now give them ONE specific action to take in the next 30 minutes — not a list, not options, just one thing. Make it ultra-specific to what they described. Start with a verb. Be direct, confident, almost commanding. No fluff. Return this exact JSON: {"action":"one specific action starting with a verb e.g. Film the reveal moment today — no editing, just hit record and show them the tree","sub":"one sentence on why this specific action right now, not tomorrow"}';
+    try {
+      const r = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 300, system: focusPrompt, messages: [{ role: 'user', content: moment + ' ' + focusSummary }] })
+      });
+      if (!r.ok) throw new Error('API error ' + r.status);
+      const d = await r.json();
+      const parsed = JSON.parse(d.content?.[0]?.text?.replace(/```json|```/g, '').trim());
+      return res.status(200).json(parsed);
+    } catch (err) {
+      return res.status(500).json({ action: 'Pick one thing from the output above and do it in the next 30 minutes.', sub: '' });
+    }
+  }
+
+  // CALENDAR MODE
   if (mode === 'calendar') {
     const platList = platforms && platforms.length > 0 ? platforms : ['TikTok', 'Instagram Reels', 'Facebook Reels', 'YouTube Shorts', 'LinkedIn', 'X (Twitter)', 'any platform'];
     const calPrompt = base + ' A creator described a moment or content idea. Build a strategic 7-day posting plan that maximizes reach from this one piece of content. Rotate across these platforms: ' + platList.join(', ') + '. Vary the format each day. Build momentum across the week. Return exactly this JSON with exactly 7 items: {"days":[{"platform":"exact platform name","post_type":"format e.g. Short-form video, Text post, Story, Carousel, Behind-the-scenes","content":"specific ready-to-use post content or caption — 2-3 sentences","tip":"one tactical tip for this post and platform","ideal_time":"specific time + brief reason e.g. Tuesday 6–8 PM — peak scroll time for this platform"}]}';
@@ -61,6 +80,7 @@ module.exports = async function handler(req, res) {
     } catch (err) { return res.status(500).json({ error: err.message || 'Something went wrong.' }); }
   }
 
+  // IDEAS MODE
   if (mode === 'ideas') {
     const ideasPrompt = base + ' A creator described their niche. Generate exactly 10 specific, actionable content ideas they could make this week. Each must be concrete and immediately filmable or postable — not generic advice. Return this exact JSON: {"ideas":[{"title":"specific content idea title","why":"one sentence on why this will perform for their audience","best_platform":"single best platform name e.g. TikTok, YouTube Shorts, Instagram Reels, LinkedIn, Facebook Reels"}]}';
     try {
@@ -85,9 +105,7 @@ module.exports = async function handler(req, res) {
   };
 
   const scriptInstruction = contentTypeScriptInstructions[contentType] || contentTypeScriptInstructions['Short-form video'];
-
   const storyPrompt = base + ' ' + scriptInstruction + ' Return this exact JSON: {"diagnosis":"2-3 sentences on what this moment is really about emotionally","hook":"single best opening line","story_spine":"Setup / Tension / Payoff separated by /","full_script":"COMPLETE OUTPUT — for text formats: clean paragraphs, no video directions","b_roll":"4 specific b-roll shots each on its own line — write n/a for text-only formats","pacing_note":"delivery tip for video — for text formats: one posting tip","cta":"identity-based call to action","content_warning":"one honest risk"}';
-
   const hookPrompt = base + ' Return this exact JSON: {"diagnosis":"what makes this moment hook-worthy","hook_1":"emotion-first hook","hook_2":"curiosity-first hook","hook_3":"identity-first hook","winner":"which hook and exactly why","visual_note":"what to show on screen first 3 seconds","platform_strategies":' + (platforms && platforms.length > 0 ? '[{"platform":"exact platform name","strategy":"specific posting strategy for this platform and moment"}]' : '[]') + '}';
 
   const systemPrompt = mode === 'story' ? storyPrompt : hookPrompt;
