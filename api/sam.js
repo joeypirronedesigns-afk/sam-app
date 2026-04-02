@@ -9,16 +9,14 @@ module.exports = async function handler(req, res) {
 
   const platformContext = platforms && platforms.length > 0
     ? 'The creator posts on: ' + platforms.join(', ') + '.' : '';
-  const formatContext = contentType
-    ? 'Content format: ' + contentType + '.' : '';
-  const creatorLine = creatorContext
-    ? 'About this creator: ' + creatorContext + '.' : '';
+  const formatContext = contentType ? 'Content format: ' + contentType + '.' : '';
+  const creatorLine = creatorContext ? 'About this creator: ' + creatorContext + '.' : '';
   const languageLine = outputLanguage
     ? 'IMPORTANT: Write the ENTIRE output in ' + outputLanguage + '. Do not use English except inside JSON field names.' : '';
 
   const dialectMap = {
     'Australia': 'Write in authentic Australian vernacular. Use natural Aussie slang: "mate", "reckon", "heaps", "arvo", "no worries", "legend", "keen", "bloody", "deadset". Casual, direct, genuinely Australian.',
-    'UK': 'Write in authentic British English. Use natural UK phrasing: "brilliant", "proper", "sorted", "gutted", "cheers". Understated, dry humor welcome.',
+    'UK': 'Write in authentic British English. Natural UK phrasing: "brilliant", "proper", "sorted", "gutted", "cheers". Understated humor welcome.',
     'Canada': 'Write in Canadian English. Friendly, warm, slightly understated.',
     'USA': 'Write in natural American English. Conversational, direct, relatable.',
     'North America': 'Write in natural North American English.',
@@ -46,9 +44,28 @@ module.exports = async function handler(req, res) {
 
   const base = 'You are S.A.M. — Strategic Assistant for Making. ' + toneContext + ' ' + creatorLine + ' ' + audienceLine + ' ' + languageLine + ' ' + platformContext + ' ' + formatContext + ' CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No preamble.';
 
+  // CALENDAR MODE
+  if (mode === 'calendar') {
+    const platList = platforms && platforms.length > 0 ? platforms : ['TikTok', 'Instagram Reels', 'Facebook Reels', 'YouTube Shorts', 'LinkedIn', 'X (Twitter)', 'any platform'];
+    const calPrompt = base + ' A creator described a moment or content idea. Build a strategic 7-day posting plan that squeezes maximum reach from this one piece of content. Spread posts across different platforms, vary the format each day (raw video, behind-the-scenes, text reflection, follow-up, etc.), and build momentum across the week. Return this exact JSON: {"days":[{"platform":"platform name","post_type":"format type e.g. Short-form video, Text post, Story, Carousel","content":"specific post description or caption ready to use — 2-3 sentences","tip":"one tactical tip for this specific post"}]} — exactly 7 items in the days array.';
+    try {
+      const r = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 2000, system: calPrompt, messages: [{ role: 'user', content: moment }] })
+      });
+      if (!r.ok) throw new Error('API error ' + r.status);
+      const d = await r.json();
+      const parsed = JSON.parse(d.content?.[0]?.text?.replace(/```json|```/g, '').trim());
+      return res.status(200).json(parsed);
+    } catch (err) {
+      return res.status(500).json({ error: err.message || 'Something went wrong.' });
+    }
+  }
+
   // IDEAS MODE
   if (mode === 'ideas') {
-    const ideasPrompt = base + ' A creator described their niche. Generate exactly 10 specific, actionable content ideas they could make this week. Each idea must be concrete and immediately filmable — not generic advice. Return this exact JSON: {"ideas":[{"title":"specific content idea title","why":"one sentence on why this will perform for their audience"}]}';
+    const ideasPrompt = base + ' A creator described their niche. Generate exactly 10 specific, actionable content ideas they could make this week. Each must be concrete and immediately filmable — not generic advice. Return this exact JSON: {"ideas":[{"title":"specific content idea title","why":"one sentence on why this will perform for their audience"}]}';
     try {
       const r = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
@@ -64,12 +81,13 @@ module.exports = async function handler(req, res) {
     }
   }
 
+  // STORY + HOOK MODES
   const contentTypeScriptInstructions = {
     'Short-form video': 'Write a complete word-for-word spoken script for a 60-90 second short-form video. Beats in [BRACKETS]: [HOOK], [SETUP], [TENSION], [PAYOFF], [CTA]. Pacing notes in (parentheses).',
     'Long-form YouTube video': 'Write a complete word-for-word script for 8-12 minutes. Label: [INTRO HOOK], [CONTEXT], [MAIN STORY], [KEY LESSONS], [OUTRO CTA].',
     'LinkedIn text post': 'Write the complete LinkedIn post. Strong opening, short paragraphs, ends with a question. 3 hashtags.',
     'Instagram caption': 'Write the complete Instagram caption. Hook first, body with line breaks, CTA, 5 hashtags.',
-    'Podcast intro': 'Write a complete 60-90 second spoken intro. Hooks listener, sets up theme, teases content.',
+    'Podcast intro': 'Write a complete 60-90 second spoken intro. Hooks listener, sets theme, teases content.',
     'Email newsletter': 'Write complete email: SUBJECT LINE, PREVIEW TEXT, full BODY with greeting, 3-4 paragraphs, CTA.',
     'Blog post': 'Write: SEO HEADLINE, META DESCRIPTION under 160 chars, full INTRO, 3-4 SECTION HEADERS with summaries, CONCLUSION with CTA.'
   };
