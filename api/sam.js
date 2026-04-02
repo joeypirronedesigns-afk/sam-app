@@ -1,7 +1,7 @@
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics } = req.body;
+  const { mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage } = req.body;
   if (!moment || !mode) return res.status(400).json({ error: 'Missing mode or moment' });
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -16,10 +16,13 @@ module.exports = async function handler(req, res) {
   const creatorLine = creatorContext
     ? 'About this creator: ' + creatorContext + '.' : '';
 
+  const languageLine = outputLanguage
+    ? 'IMPORTANT: Write the ENTIRE output — every field, hook, script, CTA, and diagnosis — in ' + outputLanguage + '. Do not use English at all except inside JSON field names.' : '';
+
   const dialectMap = {
     'Australia': 'Write in authentic Australian vernacular. Use natural Aussie slang where appropriate: "mate", "reckon", "heaps", "arvo", "no worries", "legend", "keen", "smashed it", "bloody", "deadset". Keep it casual, direct, and genuinely Australian — not a caricature, just natural. Avoid American idioms.',
     'UK': 'Write in authentic British English. Use natural UK phrasing: "brilliant", "proper", "mate", "sorted", "gutted", "cheers", "having a go", "dead good". Understated, dry humor is welcome. Avoid American idioms.',
-    'Canada': 'Write in Canadian English. Friendly, warm, slightly understated. Natural and conversational. Avoid distinctly American or British idioms.',
+    'Canada': 'Write in Canadian English. Friendly, warm, slightly understated. Natural and conversational.',
     'USA': 'Write in natural American English. Conversational, direct, and relatable.',
     'North America': 'Write in natural North American English. Accessible and conversational.',
     'English-speaking countries': 'Write in clear, accessible English that works across cultures. Avoid region-specific slang.',
@@ -27,7 +30,7 @@ module.exports = async function handler(req, res) {
   };
 
   let dialectNote = '';
-  if (audienceDemographics) {
+  if (audienceDemographics && !outputLanguage) {
     for (const [location, dialect] of Object.entries(dialectMap)) {
       if (audienceDemographics.includes(location)) {
         dialectNote = dialect;
@@ -40,10 +43,10 @@ module.exports = async function handler(req, res) {
     ? 'Target audience: ' + audienceDemographics + '. Write hooks, language, and CTAs that speak directly to this specific group. ' + dialectNote : '';
 
   const toneDescriptions = {
-    'Authentic/Natural': 'Tone: Authentic and natural. Real, grounded, conversational, no fluff or hype. Speak like a real person talking to a friend.',
-    'Viral/Hype': 'Tone: Viral and high energy. Bold, punchy, scroll-stopping. Use power words, urgency, and excitement. Make it impossible to ignore.',
-    'Wise/Mentor': 'Tone: Wise and mentor-like. Thoughtful, measured, insight-driven. Teach something. Build authority and deep trust.',
-    'Bubbly/Energetic': 'Tone: Bubbly and energetic. Warm, fun, uplifting. Full of personality and positive energy. Make people smile.'
+    'Authentic/Natural': 'Tone: Authentic and natural. Real, grounded, conversational, no fluff or hype.',
+    'Viral/Hype': 'Tone: Viral and high energy. Bold, punchy, scroll-stopping. Use power words and urgency.',
+    'Wise/Mentor': 'Tone: Wise and mentor-like. Thoughtful, measured, insight-driven. Build authority and trust.',
+    'Bubbly/Energetic': 'Tone: Bubbly and energetic. Warm, fun, uplifting. Full of personality.'
   };
 
   const toneContext = toneDescriptions[tone] || toneDescriptions['Authentic/Natural'];
@@ -60,11 +63,11 @@ module.exports = async function handler(req, res) {
 
   const scriptInstruction = contentTypeScriptInstructions[contentType] || contentTypeScriptInstructions['Short-form video'];
 
-  const base = 'You are S.A.M. — Strategic Assistant for Making. You help creators turn real moments into content that builds a following. ' + toneContext + ' ' + creatorLine + ' ' + audienceLine + ' ' + platformContext + ' ' + formatContext + ' CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No preamble.';
+  const base = 'You are S.A.M. — Strategic Assistant for Making. You help creators turn real moments into content that builds a following. ' + toneContext + ' ' + creatorLine + ' ' + audienceLine + ' ' + languageLine + ' ' + platformContext + ' ' + formatContext + ' CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No preamble.';
 
   const storyPrompt = base + ' ' + scriptInstruction + ' Return this exact JSON: {"diagnosis":"2-3 sentences on what this moment is really about emotionally","hook":"single best opening line","story_spine":"Setup / Tension / Payoff separated by /","full_script":"COMPLETE WORD-FOR-WORD SCRIPT with beat labels in [BRACKETS] and pacing notes in (parentheses) — ready to read aloud","b_roll":"4 specific b-roll shots each on its own line","pacing_note":"one specific delivery tip","cta":"identity-based call to action","content_warning":"one honest risk"}';
 
-  const hookPrompt = base + ' Return this exact JSON: {"diagnosis":"what makes this moment hook-worthy for this audience","hook_1":"emotion-first hook","hook_2":"curiosity-first hook","hook_3":"identity-first hook","winner":"which hook and exactly why","visual_note":"what to show on screen first 3 seconds","platform_strategies":' + (platforms && platforms.length > 0 ? '[{"platform":"platform name","strategy":"specific posting strategy for this moment on this platform"}]' : '[]') + '}';
+  const hookPrompt = base + ' Return this exact JSON: {"diagnosis":"what makes this moment hook-worthy","hook_1":"emotion-first hook","hook_2":"curiosity-first hook","hook_3":"identity-first hook","winner":"which hook and exactly why","visual_note":"what to show on screen first 3 seconds","platform_strategies":' + (platforms && platforms.length > 0 ? '[{"platform":"platform name","strategy":"specific posting strategy"}]' : '[]') + '}';
 
   const systemPrompt = mode === 'story' ? storyPrompt : hookPrompt;
   if (!systemPrompt) return res.status(400).json({ error: 'Invalid mode' });
