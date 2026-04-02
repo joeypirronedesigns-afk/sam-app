@@ -1987,11 +1987,8 @@
         </div>
         <div class="focus-block" id="focusBlock" style="display:none;">
           <div class="focus-block-eyebrow">Stop. Focus. Do this now.</div>
-          <div class="focus-block-action" id="focusAction">
-            <span class="focus-block-loader">
-              <span class="loader-dots focus-block-loader-dots"><span></span><span></span><span></span></span>
-              S.A.M. is building your focus action...
-            </span>
+          <div class="focus-block-action" id="focusAction" style="color:rgba(255,255,255,0.4);font-style:italic;font-size:14px;font-weight:400;">
+            S.A.M. is building your focus action...
           </div>
           <div class="focus-block-sub" id="focusSub"></div>
         </div>
@@ -2464,7 +2461,9 @@
 
     if (data.platform_strategies && Array.isArray(data.platform_strategies)) {
       data.platform_strategies.forEach(function(ps) {
-        html += `<div class="blk"><div class="blk-title">${ps.platform}</div><div class="blk-text">${ps.strategy}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`;
+        if (ps && ps.platform && ps.strategy) {
+          html += `<div class="blk"><div class="blk-title">${ps.platform}</div><div class="blk-text">${ps.strategy}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`;
+        }
       });
     }
 
@@ -2650,10 +2649,27 @@
       });
       if (!response.ok) throw new Error('focus fetch failed');
       const data = await response.json();
-      document.getElementById(actionElId).textContent = data.action || '';
-      document.getElementById(subElId).textContent = data.sub || '';
+      const actionEl = document.getElementById(actionElId);
+      const subEl = document.getElementById(subElId);
+      if (data.action) {
+        actionEl.style.color = '#fff';
+        actionEl.style.fontStyle = 'normal';
+        actionEl.style.fontWeight = '700';
+        actionEl.style.fontSize = '18px';
+        actionEl.textContent = data.action;
+      }
+      if (data.sub && subEl) {
+        subEl.textContent = data.sub;
+      }
     } catch(e) {
-      document.getElementById(actionElId).textContent = 'Pick one thing from the output above and do it in the next 30 minutes.';
+      const actionEl = document.getElementById(actionElId);
+      if (actionEl) {
+        actionEl.style.color = '#fff';
+        actionEl.style.fontStyle = 'normal';
+        actionEl.style.fontWeight = '700';
+        actionEl.style.fontSize = '18px';
+        actionEl.textContent = 'Pick one thing from the output above and do it in the next 30 minutes.';
+      }
     }
   }
 
