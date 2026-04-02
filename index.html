@@ -408,6 +408,171 @@
     .idea-copy-btn:hover { border-color: var(--gold-border); color: var(--gold); background: var(--gold-light); }
     .idea-copy-btn.copied { border-color: #86EFAC; color: #166534; background: #F0FDF4; }
 
+    /* CALENDAR */
+    .calendar-section { display: none; }
+    .calendar-section.show { display: block; }
+
+    .calendar-input-card {
+      background: var(--surface);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-xl);
+      padding: 1.75rem;
+      margin-bottom: 1.25rem;
+      box-shadow: var(--shadow-md);
+    }
+
+    .calendar-btn {
+      width: 100%;
+      padding: 15px;
+      background: var(--black);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'Syne', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-top: 1.25rem;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .calendar-btn:hover { background: var(--gold); transform: translateY(-1px); }
+    .calendar-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+    .cal-out {
+      display: none;
+      background: var(--surface);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      animation: fadeUp 0.35s ease;
+    }
+
+    .cal-out.show { display: block; }
+
+    .cal-header {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .cal-header-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .cal-header-label::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+    }
+
+    .cal-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 10px; }
+
+    .cal-day {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .cal-day-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: var(--surface-3);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cal-day-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--black);
+    }
+
+    .cal-day-platform {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: var(--gold-light);
+      border: 1px solid var(--gold-border);
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    .cal-day-body { padding: 12px 16px; }
+
+    .cal-post-type {
+      font-size: 11px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+
+    .cal-post-content {
+      font-size: 15px;
+      color: var(--black);
+      line-height: 1.55;
+      margin-bottom: 6px;
+    }
+
+    .cal-post-tip {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-style: italic;
+      line-height: 1.5;
+    }
+
+    .cal-copy-btn {
+      display: inline-flex;
+      align-items: center;
+      font-size: 10px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: all 0.12s;
+      margin-top: 8px;
+      float: right;
+    }
+
+    .cal-copy-btn:hover { border-color: var(--gold-border); color: var(--gold); background: var(--gold-light); }
+    .cal-copy-btn.copied { border-color: #86EFAC; color: #166534; background: #F0FDF4; }
+
     /* PLATFORM SELECTOR */
     .platform-wrap { margin-bottom: 1.25rem; }
 
@@ -1237,6 +1402,9 @@
         <button class="mode-tab" id="tabIdeas" onclick="switchMode('ideas')">
           💡 Get content ideas
         </button>
+        <button class="mode-tab" id="tabCalendar" onclick="switchMode('calendar')">
+          📅 Posting calendar
+        </button>
       </div>
 
       <!-- IDEA MAKER SECTION -->
@@ -1267,6 +1435,48 @@
             <button class="new-btn" onclick="resetIdeas()">← Start over</button>
           </div>
           <div class="ideas-body" id="ideasBody"></div>
+        </div>
+      </div>
+
+      <!-- CALENDAR SECTION -->
+      <div class="calendar-section" id="calendarSection">
+        <div class="calendar-input-card">
+          <div class="input-card-label">Describe your moment or content idea</div>
+          <div class="input-wrap">
+            <textarea
+              id="calInp"
+              placeholder="e.g. My parents flew in and saw the cottage renovation for the first time. They both stopped at the big white blooming tree in the front yard and said wow."
+              style="min-height:100px;"
+            ></textarea>
+            <button class="mic-btn" id="micBtnCal" onclick="toggleMicCal()" title="Speak your moment">🎙</button>
+          </div>
+          <div style="margin-top:1rem;">
+            <div class="section-label" style="margin-bottom:0.5rem;">Which platforms?</div>
+            <div class="platform-grid" id="calPlatformGrid">
+              <button class="platform-pill" data-platform="TikTok" onclick="toggleCalPlatform(this)">🎵 TikTok</button>
+              <button class="platform-pill" data-platform="YouTube Shorts" onclick="toggleCalPlatform(this)">▶ YouTube Shorts</button>
+              <button class="platform-pill" data-platform="Instagram Reels" onclick="toggleCalPlatform(this)">📸 Instagram Reels</button>
+              <button class="platform-pill" data-platform="Facebook Reels" onclick="toggleCalPlatform(this)">👥 Facebook Reels</button>
+              <button class="platform-pill" data-platform="LinkedIn" onclick="toggleCalPlatform(this)">💼 LinkedIn</button>
+              <button class="platform-pill" data-platform="X (Twitter)" onclick="toggleCalPlatform(this)">✕ X (Twitter)</button>
+            </div>
+          </div>
+          <div class="loader" id="calLoader" style="margin-top:1rem;">
+            <div class="loader-dots"><span></span><span></span><span></span></div>
+            <div class="loader-text">S.A.M. is building your calendar...</div>
+          </div>
+          <div class="error-box" id="calErrBox"></div>
+          <button class="calendar-btn" id="calBtn" onclick="runCalendar()">
+            Build my 7-day posting plan →
+          </button>
+        </div>
+
+        <div class="cal-out" id="calOut">
+          <div class="cal-header">
+            <div class="cal-header-label">Your 7-day posting plan</div>
+            <button class="new-btn" onclick="resetCalendar()">← Start over</button>
+          </div>
+          <div class="cal-body" id="calBody"></div>
         </div>
       </div>
 
@@ -1531,18 +1741,28 @@
   function switchMode(mode) {
     const momentSection = document.getElementById('momentSection');
     const ideaSection = document.getElementById('ideaSection');
+    const calendarSection = document.getElementById('calendarSection');
     const tabMoment = document.getElementById('tabMoment');
     const tabIdeas = document.getElementById('tabIdeas');
+    const tabCalendar = document.getElementById('tabCalendar');
+
+    // hide all
+    momentSection.classList.add('hide');
+    ideaSection.classList.remove('show');
+    calendarSection.classList.remove('show');
+    tabMoment.classList.remove('active');
+    tabIdeas.classList.remove('active');
+    tabCalendar.classList.remove('active');
+
     if (mode === 'ideas') {
-      momentSection.classList.add('hide');
       ideaSection.classList.add('show');
-      tabMoment.classList.remove('active');
       tabIdeas.classList.add('active');
+    } else if (mode === 'calendar') {
+      calendarSection.classList.add('show');
+      tabCalendar.classList.add('active');
     } else {
       momentSection.classList.remove('hide');
-      ideaSection.classList.remove('show');
       tabMoment.classList.add('active');
-      tabIdeas.classList.remove('active');
     }
   }
 
@@ -1610,6 +1830,132 @@
       btn.classList.add('copied');
       setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
     });
+  }
+
+  // CALENDAR
+  function toggleCalPlatform(btn) { btn.classList.toggle('selected'); }
+
+  function getCalPlatforms() {
+    const sel = [];
+    document.querySelectorAll('#calPlatformGrid .platform-pill.selected').forEach(b => sel.push(b.dataset.platform));
+    return sel;
+  }
+
+  async function runCalendar() {
+    const moment = document.getElementById('calInp').value.trim();
+    if (!moment) {
+      document.getElementById('calInp').style.borderColor = 'var(--gold-border)';
+      document.getElementById('calInp').focus();
+      setTimeout(() => document.getElementById('calInp').style.borderColor = '', 1500);
+      return;
+    }
+    document.getElementById('calErrBox').classList.remove('show');
+    document.getElementById('calBtn').disabled = true;
+    document.getElementById('calLoader').classList.add('show');
+    document.getElementById('calOut').classList.remove('show');
+
+    try {
+      const platforms = getCalPlatforms();
+      const tone = getTone();
+      const audienceDemographics = getAudienceDemographics();
+      const outputLanguage = getOutputLanguage();
+      const response = await fetch('/api/sam', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mode: 'calendar', moment, platforms, tone, audienceDemographics, outputLanguage })
+      });
+      if (!response.ok) throw new Error('Server error ' + response.status);
+      const data = await response.json();
+      document.getElementById('calLoader').classList.remove('show');
+      renderCalendar(data);
+      document.getElementById('calOut').classList.add('show');
+      document.getElementById('calBtn').disabled = false;
+      document.getElementById('calOut').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (err) {
+      document.getElementById('calLoader').classList.remove('show');
+      const eb = document.getElementById('calErrBox');
+      eb.textContent = 'Something went wrong: ' + (err.message || 'Please try again.');
+      eb.classList.add('show');
+      document.getElementById('calBtn').disabled = false;
+    }
+  }
+
+  function renderCalendar(data) {
+    const body = document.getElementById('calBody');
+    if (!data.days || !Array.isArray(data.days)) {
+      body.innerHTML = '<div class="blk-text" style="color:var(--text-muted)">No calendar returned. Try again.</div>';
+      return;
+    }
+    const dayNames = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+    body.innerHTML = data.days.map((day, i) => `
+      <div class="cal-day">
+        <div class="cal-day-header">
+          <div class="cal-day-name">${dayNames[i] || 'Day ' + (i+1)}</div>
+          <div class="cal-day-platform">${day.platform || ''}</div>
+        </div>
+        <div class="cal-day-body">
+          <div class="cal-post-type">${day.post_type || ''}</div>
+          <div class="cal-post-content">${day.content || ''}</div>
+          <div class="cal-post-tip">${day.tip || ''}</div>
+          <button class="cal-copy-btn" onclick="copyCalDay(this)">Copy</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function copyCalDay(btn) {
+    const body = btn.closest('.cal-day-body');
+    const type = body.querySelector('.cal-post-type').textContent;
+    const content = body.querySelector('.cal-post-content').textContent;
+    const tip = body.querySelector('.cal-post-tip').textContent;
+    navigator.clipboard.writeText(type + '\n' + content + '\n\n' + tip).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  function resetCalendar() {
+    document.getElementById('calOut').classList.remove('show');
+    document.getElementById('calInp').value = '';
+    document.getElementById('calBtn').disabled = false;
+    document.querySelectorAll('#calPlatformGrid .platform-pill').forEach(b => b.classList.remove('selected'));
+  }
+
+  // MIC — CALENDAR
+  let recognitionCal = null;
+  let isRecordingCal = false;
+
+  function toggleMicCal() {
+    const micBtn = document.getElementById('micBtnCal');
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) { alert('Try Chrome or Safari for voice input.'); return; }
+    if (isRecordingCal) { recognitionCal.stop(); return; }
+    recognitionCal = new SR();
+    recognitionCal.continuous = true;
+    recognitionCal.interimResults = true;
+    recognitionCal.lang = 'en-US';
+    recognitionCal.onstart = function() {
+      isRecordingCal = true;
+      micBtn.classList.add('recording');
+      micBtn.innerHTML = '⏹';
+    };
+    recognitionCal.onresult = function(e) {
+      let t = '';
+      for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript;
+      document.getElementById('calInp').value = t;
+    };
+    recognitionCal.onend = function() {
+      isRecordingCal = false;
+      micBtn.classList.remove('recording');
+      micBtn.innerHTML = '🎙';
+    };
+    recognitionCal.onerror = function() {
+      isRecordingCal = false;
+      micBtn.classList.remove('recording');
+      micBtn.innerHTML = '🎙';
+    };
+    recognitionCal.start();
   }
 
   function resetIdeas() {
