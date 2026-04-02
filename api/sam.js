@@ -1,7 +1,7 @@
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { mode, moment, platforms, contentType, creatorContext } = req.body;
+  const { mode, moment, platforms, contentType, creatorContext, tone } = req.body;
   if (!moment || !mode) return res.status(400).json({ error: 'Missing mode or moment' });
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -16,6 +16,15 @@ module.exports = async function handler(req, res) {
   const creatorLine = creatorContext
     ? 'About this creator: ' + creatorContext + '. Use this to make the output specific to their audience, voice, and niche.' : '';
 
+  const toneDescriptions = {
+    'Authentic/Natural': 'Tone: Authentic and natural. Real, grounded, conversational, no fluff or hype. Speak like a real person talking to a friend.',
+    'Viral/Hype': 'Tone: Viral and high energy. Bold, punchy, scroll-stopping. Use power words, urgency, and excitement. Make it impossible to ignore.',
+    'Wise/Mentor': 'Tone: Wise and mentor-like. Thoughtful, measured, insight-driven. Teach something. Build authority and deep trust.',
+    'Bubbly/Energetic': 'Tone: Bubbly and energetic. Warm, fun, uplifting. Full of personality and positive energy. Make people smile.'
+  };
+
+  const toneContext = toneDescriptions[tone] || toneDescriptions['Authentic/Natural'];
+
   const contentTypeScriptInstructions = {
     'Short-form video': 'Write a complete word-for-word spoken script for a 60-90 second short-form video. Structure it with clear beats labeled in [BRACKETS]: [HOOK] for the opening line, [SETUP] for context, [TENSION] for the conflict or challenge, [PAYOFF] for the resolution or reveal, [CTA] for the call to action. Include pacing notes in (parentheses) like (pause here) or (show footage of X). Every word should be speakable out loud.',
     'Long-form YouTube video': 'Write a complete word-for-word script for a 8-12 minute YouTube video. Label each section: [INTRO HOOK], [CONTEXT], [MAIN STORY], [KEY LESSONS], [OUTRO CTA]. Include b-roll suggestions in (parentheses). Make it conversational throughout.',
@@ -28,7 +37,7 @@ module.exports = async function handler(req, res) {
 
   const scriptInstruction = contentTypeScriptInstructions[contentType] || contentTypeScriptInstructions['Short-form video'];
 
-  const base = 'You are S.A.M. — Strategic Assistant for Making. You help creators turn real moments into content that builds a following. Be sharp, honest, and specific. ' + creatorLine + ' ' + platformContext + ' ' + formatContext + ' CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No preamble.';
+  const base = 'You are S.A.M. — Strategic Assistant for Making. You help creators turn real moments into content that builds a following. ' + toneContext + ' ' + creatorLine + ' ' + platformContext + ' ' + formatContext + ' CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No preamble.';
 
   const storyPrompt = base + ' The creator described a real moment. ' + scriptInstruction + ' Return this exact JSON: {"diagnosis":"2-3 sentences on what this moment is really about emotionally","hook":"single best opening line","story_spine":"Setup / Tension / Payoff separated by /","full_script":"THE COMPLETE WORD-FOR-WORD SCRIPT with beat labels in [BRACKETS] and pacing notes in (parentheses) — full and complete, ready to read aloud","b_roll":"4 specific b-roll shots each on its own line","pacing_note":"one specific delivery tip","cta":"identity-based call to action","content_warning":"one honest risk"}';
 
