@@ -1860,6 +1860,120 @@
       margin-bottom: 1.5rem;
     }
 
+    /* ══ VIDEO TOOLKIT ═══════════════════════ */
+    .video-toolkit-block {
+      margin-top: 1rem;
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: var(--surface-2);
+      backdrop-filter: blur(8px);
+    }
+    [data-theme="dark"] .video-toolkit-block {
+      background: rgba(212,168,75,0.04);
+      border-color: rgba(212,168,75,0.2);
+    }
+
+    .video-toolkit-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: var(--gold-light);
+      border-bottom: 1px solid var(--gold-border);
+    }
+    [data-theme="dark"] .video-toolkit-header {
+      background: rgba(212,168,75,0.08);
+    }
+
+    .video-toolkit-icon { font-size: 16px; }
+
+    .video-toolkit-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    [data-theme="dark"] .video-toolkit-label { text-shadow: 0 0 10px rgba(212,168,75,0.3); }
+
+    .video-toolkit-row {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    .video-toolkit-row:last-child { border-bottom: none; }
+    [data-theme="dark"] .video-toolkit-row { border-color: rgba(212,168,75,0.07); }
+
+    .video-toolkit-row-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .video-toolkit-row-value {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.6;
+      padding-right: 70px;
+      font-weight: 400;
+      letter-spacing: -0.005em;
+    }
+
+    .video-toolkit-hashtags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding-right: 70px;
+    }
+
+    .hashtag-pill {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--gold);
+      background: var(--gold-light);
+      border: 1px solid var(--gold-border);
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: -0.01em;
+    }
+    [data-theme="dark"] .hashtag-pill {
+      background: rgba(212,168,75,0.08);
+    }
+
+    .vt-copy-btn {
+      position: absolute;
+      top: 14px; right: 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: var(--surface);
+      border: 1px solid var(--border-mid);
+      border-radius: 6px;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .vt-copy-btn:hover {
+      border-color: var(--gold-border);
+      color: var(--gold);
+      background: var(--gold-light);
+    }
+    .vt-copy-btn.copied {
+      border-color: rgba(34,197,94,0.4);
+      color: #15803D;
+      background: rgba(34,197,94,0.06);
+    }
+
     /* ══ PRINT ════════════════════════════════ */
     @media print {
       nav, .hero, .section-header, .feature-strip, .platform-wrap,
@@ -2590,8 +2704,14 @@
   }
 
   async function fetchFocusAction(sourceMode, inputText, outputData) {
-    const aId = sourceMode==='moment'?'focusAction':sourceMode==='ideas'?'ideaFocusAction':'calFocusAction';
-    const sId = sourceMode==='moment'?'focusSub':sourceMode==='ideas'?'ideaFocusSub':'calFocusSub';
+    const idMap = {
+      moment: ['focusAction','focusSub'],
+      ideas:  ['ideaFocusAction','ideaFocusSub'],
+      calendar: ['calFocusAction','calFocusSub'],
+      concept: ['conceptFocusAction','conceptFocusSub'],
+      upload:  ['uploadFocusAction','uploadFocusSub']
+    };
+    const [aId, sId] = idMap[sourceMode] || ['focusAction','focusSub'];
     try {
       const data = await callAPI('focus', inputText, [], '', '', getTone(), '', '', getEmojiPreference());
       const el = document.getElementById(aId);
@@ -2852,6 +2972,32 @@
         <div class="concept-card-label">The twist nobody sees coming</div>
         <div class="concept-card-text" style="font-weight:500;">${data.twist}</div>
       </div>` : ''}
+
+      ${(isReal(data.video_title) || isReal(data.video_description) || data.video_hashtags?.length) ? `
+      <div class="video-toolkit-block">
+        <div class="video-toolkit-header">
+          <span class="video-toolkit-icon">🎬</span>
+          <span class="video-toolkit-label">Video toolkit — ready to post</span>
+        </div>
+        ${isReal(data.video_title) ? `
+        <div class="video-toolkit-row">
+          <div class="video-toolkit-row-label">Title</div>
+          <div class="video-toolkit-row-value">${data.video_title}</div>
+          <button class="vt-copy-btn" onclick="copyVT(this)">Copy</button>
+        </div>` : ''}
+        ${isReal(data.video_description) ? `
+        <div class="video-toolkit-row">
+          <div class="video-toolkit-row-label">Description</div>
+          <div class="video-toolkit-row-value">${data.video_description}</div>
+          <button class="vt-copy-btn" onclick="copyVT(this)">Copy</button>
+        </div>` : ''}
+        ${data.video_hashtags?.length ? `
+        <div class="video-toolkit-row">
+          <div class="video-toolkit-row-label">Hashtags</div>
+          <div class="video-toolkit-row-value video-toolkit-hashtags">${data.video_hashtags.map(h=>`<span class="hashtag-pill">#${h.replace(/^#/,'')}</span>`).join('')}</div>
+          <button class="vt-copy-btn" onclick="copyVTHashtags(this, ${JSON.stringify(data.video_hashtags).replace(/"/g, '&quot;')})">Copy all</button>
+        </div>` : ''}
+      </div>` : ''}
     `;
 
     // Animate virality bar after render
@@ -3089,6 +3235,23 @@ CRITICAL: Return ONLY valid JSON. No markdown. No backticks. No preamble.`;
     recognitionUpload.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;document.getElementById('uploadInp').value=t;};
     recognitionUpload.onend=recognitionUpload.onerror=()=>{isRecordingUpload=false;btn.classList.remove('recording');btn.innerHTML='🎙';};
     recognitionUpload.start();
+  }
+
+  function copyVT(btn) {
+    const val = btn.closest('.video-toolkit-row').querySelector('.video-toolkit-row-value');
+    const text = val ? (val.innerText || val.textContent) : '';
+    navigator.clipboard.writeText(text.trim()).then(()=>{
+      btn.textContent='Copied!'; btn.classList.add('copied');
+      setTimeout(()=>{ btn.textContent='Copy'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  function copyVTHashtags(btn, hashtags) {
+    const text = hashtags.map(h => '#' + h.replace(/^#/,'')).join(' ');
+    navigator.clipboard.writeText(text).then(()=>{
+      btn.textContent='Copied!'; btn.classList.add('copied');
+      setTimeout(()=>{ btn.textContent='Copy all'; btn.classList.remove('copied'); }, 2000);
+    });
   }
 
   function copyEl(btn) {
