@@ -1060,6 +1060,20 @@
     .copy-btn.copied { border-color: #86EFAC; color: #166534; background: #F0FDF4; }
 
 
+    /* TEXT OUTPUT BOX */
+    .text-output-box {
+      font-size: 16px;
+      line-height: 1.9;
+      padding: 1.25rem 1.5rem;
+      background: var(--surface-2);
+      border-radius: var(--radius);
+      color: var(--black);
+      border: 1px solid var(--border-mid);
+      border-left: 3px solid var(--gold-border);
+      white-space: pre-wrap;
+      font-family: 'DM Sans', sans-serif;
+    }
+
     /* FULL SCRIPT BLOCK */
     .script-block {
       background: var(--surface-2);
@@ -2206,7 +2220,7 @@
     el.classList.add('show');
   }
 
-  function renderOutput(data) {
+  function renderOutput(data, contentType) {
     const body = document.getElementById('outBody');
     let html = '';
 
@@ -2228,23 +2242,39 @@
     html += data.story_spine ? `<div class="blk"><div class="blk-title">Story spine</div>${spine}</div>` : '';
     if (data.full_script || data.script) {
       const scriptContent = data.full_script || data.script;
-      // Format script with beat markers
-      const formattedScript = scriptContent
-        .split('\n')
-        .map(line => {
-          const trimmed = line.trim();
-          if (!trimmed) return '';
-          if (trimmed.match(/^\[.*\]$/) || trimmed.match(/^(HOOK|SETUP|TENSION|PAYOFF|CTA|OUTRO|INTRO|BRIDGE):/i)) {
-            return '<span class="script-beat">' + trimmed + '</span>';
-          }
-          if (trimmed.startsWith('(') && trimmed.endsWith(')')) {
-            return '<span class="script-note">' + trimmed + '</span>';
-          }
-          return '<span class="script-line">' + trimmed + '</span>';
-        })
-        .filter(Boolean)
-        .join('\n');
-      html += '<div class="blk"><div class="blk-title">📋 Full script — word for word</div><div class="script-block">' + formattedScript + '</div><button class="copy-btn" onclick="copyEl(this)">Copy script</button></div>';
+      const textFormats = ['Text post', 'LinkedIn text post', 'Instagram caption', 'Email newsletter', 'Blog post'];
+      const isTextFormat = textFormats.some(f => (contentType || '').toLowerCase().includes(f.toLowerCase().split(' ')[0].toLowerCase()));
+
+      if (isTextFormat) {
+        // Text-based formats: clean readable output box
+        const labelMap = {
+          'Text post': '💬 Your text post — ready to copy',
+          'LinkedIn text post': '💼 Your LinkedIn post — ready to copy',
+          'Instagram caption': '📸 Your Instagram caption — ready to copy',
+          'Email newsletter': '✉️ Your email — ready to send',
+          'Blog post': '✍️ Your blog post — ready to publish'
+        };
+        const label = labelMap[contentType] || '📝 Your post — ready to copy';
+        html += '<div class="blk"><div class="blk-title">' + label + '</div><div class="text-output-box">' + scriptContent.replace(/\n/g, '<br>') + '</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>';
+      } else {
+        // Video/audio formats: script block with beat markers
+        const formattedScript = scriptContent
+          .split('\n')
+          .map(line => {
+            const trimmed = line.trim();
+            if (!trimmed) return '';
+            if (trimmed.match(/^\[.*\]$/) || trimmed.match(/^(HOOK|SETUP|TENSION|PAYOFF|CTA|OUTRO|INTRO|BRIDGE):/i)) {
+              return '<span class="script-beat">' + trimmed + '</span>';
+            }
+            if (trimmed.startsWith('(') && trimmed.endsWith(')')) {
+              return '<span class="script-note">' + trimmed + '</span>';
+            }
+            return '<span class="script-line">' + trimmed + '</span>';
+          })
+          .filter(Boolean)
+          .join('\n');
+        html += '<div class="blk"><div class="blk-title">📋 Full script — word for word</div><div class="script-block">' + formattedScript + '</div><button class="copy-btn" onclick="copyEl(this)">Copy script</button></div>';
+      }
     }
     html += data.pacing_note ? `<div class="blk"><div class="blk-title">How to deliver it</div><div class="blk-text">${data.pacing_note}</div></div>` : '';
     html += data.b_roll ? `<div class="blk"><div class="blk-title">B-roll shots</div>${broll}</div>` : '';
@@ -2313,7 +2343,7 @@
       const combined = Object.assign({}, storyData, hookData);
       clearInterval(loaderInterval);
       document.getElementById('loader').classList.remove('show');
-      renderOutput(combined);
+      renderOutput(combined, contentType);
       document.getElementById('outCard').classList.add('show');
       document.getElementById('saveBar').style.display = 'block';
       document.getElementById('runBtn').disabled = false;
