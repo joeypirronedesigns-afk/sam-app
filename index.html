@@ -750,6 +750,46 @@
     .copy-btn.copied { border-color: #86EFAC; color: #166534; background: #F0FDF4; }
 
 
+    /* FULL SCRIPT BLOCK */
+    .script-block {
+      background: var(--surface-2);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      font-size: 15px;
+      line-height: 2;
+      color: var(--black);
+      white-space: pre-wrap;
+      font-family: 'DM Sans', sans-serif;
+      position: relative;
+    }
+
+    .script-block .script-line {
+      display: block;
+      padding: 2px 0;
+    }
+
+    .script-block .script-note {
+      display: block;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-style: italic;
+      padding: 4px 0 4px 12px;
+      border-left: 2px solid var(--gold-border);
+      margin: 6px 0;
+    }
+
+    .script-block .script-beat {
+      display: block;
+      font-size: 11px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin: 14px 0 4px;
+    }
+
     /* CREATOR CONTEXT */
     .creator-context-wrap {
       margin-bottom: 1.25rem;
@@ -1263,7 +1303,26 @@
     html += data.winner ? `<div class="blk"><div class="blk-title">S.A.M. recommends</div><div class="blk-text">${data.winner}</div></div>` : '';
     html += data.visual_note ? `<div class="blk"><div class="blk-title">What to show on screen</div><div class="blk-text">${data.visual_note}</div></div>` : '';
     html += data.story_spine ? `<div class="blk"><div class="blk-title">Story spine</div>${spine}</div>` : '';
-    html += data.script ? `<div class="blk"><div class="blk-title">Full script</div><div class="script-box">${data.script}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
+    if (data.full_script || data.script) {
+      const scriptContent = data.full_script || data.script;
+      // Format script with beat markers
+      const formattedScript = scriptContent
+        .split('\n')
+        .map(line => {
+          const trimmed = line.trim();
+          if (!trimmed) return '';
+          if (trimmed.match(/^\[.*\]$/) || trimmed.match(/^(HOOK|SETUP|TENSION|PAYOFF|CTA|OUTRO|INTRO|BRIDGE):/i)) {
+            return '<span class="script-beat">' + trimmed + '</span>';
+          }
+          if (trimmed.startsWith('(') && trimmed.endsWith(')')) {
+            return '<span class="script-note">' + trimmed + '</span>';
+          }
+          return '<span class="script-line">' + trimmed + '</span>';
+        })
+        .filter(Boolean)
+        .join('\n');
+      html += '<div class="blk"><div class="blk-title">📋 Full script — word for word</div><div class="script-block">' + formattedScript + '</div><button class="copy-btn" onclick="copyEl(this)">Copy script</button></div>';
+    }
     html += data.pacing_note ? `<div class="blk"><div class="blk-title">How to deliver it</div><div class="blk-text">${data.pacing_note}</div></div>` : '';
     html += data.b_roll ? `<div class="blk"><div class="blk-title">B-roll shots</div>${broll}</div>` : '';
     html += data.cta ? `<div class="blk"><div class="blk-title">Call to action</div><div class="blk-text">${data.cta}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
