@@ -2391,16 +2391,18 @@
     const broll = (data.b_roll || '').split('\n').filter(Boolean).map(l =>
       `<div class="broll-item">${l.trim()}</div>`).join('');
 
-    html += data.diagnosis ? `<div class="blk"><div class="blk-title">What this is really about</div><div class="blk-text">${data.diagnosis}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
+    const isReal = (v) => v && typeof v === 'string' && v.trim() !== '' && v.trim().toLowerCase() !== 'undefined' && v.trim().toLowerCase() !== 'n/a';
+
+    html += isReal(data.diagnosis) ? `<div class="blk"><div class="blk-title">What this is really about</div><div class="blk-text">${data.diagnosis}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
     // Inline example after diagnosis
-    html += '<div class="inline-example"><div class="inline-example-label">Example from Joey\'s renovation</div><div class="inline-example-text">This isn\'t a renovation update — it\'s the first time the people you love saw what you\'ve been building for them. The tree didn\'t stop them. The reality of what you did for six months did.</div></div>';
-    html += data.hook ? `<div class="blk"><div class="blk-title">Your hook</div><div class="hook-box">${data.hook}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button><div class="inline-example" style="margin-top:12px;clear:both;"><div class="inline-example-label">Example</div><div class="inline-example-text">Six months of work. They\'d only ever seen it through a screen. Until today.</div></div></div>` : '';
-    html += data.hook_1 ? `<div class="blk"><div class="blk-title">Hook 1 — emotion first</div><div class="hook-box">${data.hook_1}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
-    html += data.hook_2 ? `<div class="blk"><div class="blk-title">Hook 2 — curiosity first</div><div class="hook-box">${data.hook_2}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
-    html += data.hook_3 ? `<div class="blk"><div class="blk-title">Hook 3 — identity first</div><div class="hook-box">${data.hook_3}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
-    html += data.winner ? `<div class="blk"><div class="blk-title">S.A.M. recommends</div><div class="blk-text">${data.winner}</div></div>` : '';
-    html += data.visual_note ? `<div class="blk"><div class="blk-title">What to show on screen</div><div class="blk-text">${data.visual_note}</div></div>` : '';
-    html += data.story_spine ? `<div class="blk"><div class="blk-title">Story spine</div>${spine}</div>` : '';
+    if (isReal(data.diagnosis)) html += '<div class="inline-example"><div class="inline-example-label">Example from Joey\'s renovation</div><div class="inline-example-text">This isn\'t a renovation update — it\'s the first time the people you love saw what you\'ve been building for them. The tree didn\'t stop them. The reality of what you did for six months did.</div></div>';
+    html += isReal(data.hook) ? `<div class="blk"><div class="blk-title">Your hook</div><div class="hook-box">${data.hook}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button><div class="inline-example" style="margin-top:12px;clear:both;"><div class="inline-example-label">Example</div><div class="inline-example-text">Six months of work. They\'d only ever seen it through a screen. Until today.</div></div></div>` : '';
+    html += isReal(data.hook_1) ? `<div class="blk"><div class="blk-title">Hook 1 — emotion first</div><div class="hook-box">${data.hook_1}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
+    html += isReal(data.hook_2) ? `<div class="blk"><div class="blk-title">Hook 2 — curiosity first</div><div class="hook-box">${data.hook_2}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
+    html += isReal(data.hook_3) ? `<div class="blk"><div class="blk-title">Hook 3 — identity first</div><div class="hook-box">${data.hook_3}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
+    html += isReal(data.winner) ? `<div class="blk"><div class="blk-title">S.A.M. recommends</div><div class="blk-text">${data.winner}</div></div>` : '';
+    html += isReal(data.visual_note) ? `<div class="blk"><div class="blk-title">What to show on screen</div><div class="blk-text">${data.visual_note}</div></div>` : '';
+    html += isReal(data.story_spine) ? `<div class="blk"><div class="blk-title">Story spine</div>${spine}</div>` : '';
     if (data.full_script || data.script) {
       const scriptContent = data.full_script || data.script;
       const textFormats = ['Text post', 'LinkedIn text post', 'Instagram caption', 'Email newsletter', 'Blog post', 'Blog post / Article'];
@@ -2449,15 +2451,15 @@
         html += '<div class="blk"><div class="blk-title">📋 Full script — word for word</div><div class="script-block">' + formattedScript + '</div><button class="copy-btn" onclick="copyEl(this)">Copy script</button></div>';
       }
     }
-    html += data.pacing_note ? `<div class="blk"><div class="blk-title">How to deliver it</div><div class="blk-text">${data.pacing_note}</div></div>` : '';
-    html += data.b_roll ? `<div class="blk"><div class="blk-title">B-roll shots</div>${broll}</div>` : '';
-    html += data.cta ? `<div class="blk"><div class="blk-title">Call to action</div><div class="blk-text">${data.cta}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
-    html += data.primary_platform ? `<div class="blk"><div class="blk-title">Primary platform</div><div class="pill">${data.primary_platform}</div><div class="blk-text" style="margin-top:8px;">${data.primary_angle||''}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
-    html += data.secondary_platform ? `<div class="blk"><div class="blk-title">Secondary platform</div><div class="pill soft">${data.secondary_platform}</div><div class="blk-text" style="margin-top:8px;">${data.secondary_angle||''}</div></div>` : '';
-    html += data.skip ? `<div class="blk"><div class="blk-title">Skip for now</div><div class="warn-box">${data.skip}</div></div>` : '';
-    html += data.repurpose_tip ? `<div class="blk"><div class="blk-title">Repurpose tip</div><div class="success-box">${data.repurpose_tip}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
-    html += data.content_warning ? `<div class="blk"><div class="blk-title">Watch out for</div><div class="warn-box">${data.content_warning}</div></div>` : '';
-    html += data.best_platform && !data.primary_platform ? `<div class="blk"><div class="blk-title">Best platform</div><div class="pill">${(platParts[0]||'').trim()}</div><div class="blk-text" style="margin-top:8px;">${(platParts.slice(1).join('—')||'').trim()}</div></div>` : '';
+    html += isReal(data.pacing_note) ? `<div class="blk"><div class="blk-title">How to deliver it</div><div class="blk-text">${data.pacing_note}</div></div>` : '';
+    html += isReal(data.b_roll) ? `<div class="blk"><div class="blk-title">B-roll shots</div>${broll}</div>` : '';
+    html += isReal(data.cta) ? `<div class="blk"><div class="blk-title">Call to action</div><div class="blk-text">${data.cta}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
+    html += isReal(data.primary_platform) ? `<div class="blk"><div class="blk-title">Primary platform</div><div class="pill">${data.primary_platform}</div><div class="blk-text" style="margin-top:8px;">${data.primary_angle||''}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
+    html += isReal(data.secondary_platform) ? `<div class="blk"><div class="blk-title">Secondary platform</div><div class="pill soft">${data.secondary_platform}</div><div class="blk-text" style="margin-top:8px;">${data.secondary_angle||''}</div></div>` : '';
+    html += isReal(data.skip) ? `<div class="blk"><div class="blk-title">Skip for now</div><div class="warn-box">${data.skip}</div></div>` : '';
+    html += isReal(data.repurpose_tip) ? `<div class="blk"><div class="blk-title">Repurpose tip</div><div class="success-box">${data.repurpose_tip}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
+    html += isReal(data.content_warning) ? `<div class="blk"><div class="blk-title">Watch out for</div><div class="warn-box">${data.content_warning}</div></div>` : '';
+    html += isReal(data.best_platform) && !isReal(data.primary_platform) ? `<div class="blk"><div class="blk-title">Best platform</div><div class="pill">${(platParts[0]||'').trim()}</div><div class="blk-text" style="margin-top:8px;">${(platParts.slice(1).join('—')||'').trim()}</div></div>` : '';
 
     if (data.platform_strategies && Array.isArray(data.platform_strategies)) {
       data.platform_strategies.forEach(function(ps) {
