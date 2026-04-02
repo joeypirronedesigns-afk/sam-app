@@ -158,6 +158,150 @@
 
     [data-theme="dark"] .cal-day-header { background: var(--surface-3); }
 
+    /* HERO CTA dark fix */
+    [data-theme="dark"] .hero-cta {
+      background: var(--gold);
+      color: #0A0908;
+      box-shadow: 0 0 30px rgba(212,168,83,0.4);
+    }
+    [data-theme="dark"] .hero-cta:hover {
+      background: #F0C040;
+      box-shadow: 0 0 50px rgba(212,168,83,0.6);
+      transform: translateY(-2px);
+    }
+
+    /* MODE TABS dark */
+    [data-theme="dark"] .mode-tab { color: var(--text-muted); }
+    [data-theme="dark"] .mode-tab:hover:not(.active) { color: var(--gold); }
+    [data-theme="dark"] .mode-tab.active {
+      background: rgba(212,168,83,0.15);
+      color: var(--gold);
+      border: 1px solid rgba(212,168,83,0.3);
+      box-shadow: 0 0 20px rgba(212,168,83,0.1), inset 0 0 20px rgba(212,168,83,0.05);
+    }
+
+    /* PLATFORM PILLS dark hover */
+    [data-theme="dark"] .platform-pill:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: rgba(212,168,83,0.08);
+    }
+
+    /* CHIP dark */
+    [data-theme="dark"] .chip:hover {
+      background: rgba(212,168,83,0.12);
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    /* SECTION LABELS dark */
+    [data-theme="dark"] .section-label,
+    [data-theme="dark"] .input-card-label {
+      color: var(--gold);
+      letter-spacing: 0.18em;
+    }
+
+    /* BLK TITLE dark */
+    [data-theme="dark"] .blk-title {
+      color: var(--gold);
+      letter-spacing: 0.15em;
+    }
+
+    /* BROLL ITEMS dark */
+    [data-theme="dark"] .broll-item { border-color: rgba(212,168,83,0.1); }
+
+    /* COPY BUTTONS dark */
+    [data-theme="dark"] .copy-btn,
+    [data-theme="dark"] .idea-copy-btn,
+    [data-theme="dark"] .cal-copy-btn {
+      background: rgba(212,168,83,0.06);
+      border-color: rgba(212,168,83,0.2);
+      color: var(--text-muted);
+    }
+    [data-theme="dark"] .copy-btn:hover,
+    [data-theme="dark"] .idea-copy-btn:hover,
+    [data-theme="dark"] .cal-copy-btn:hover {
+      background: rgba(212,168,83,0.15);
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    /* NEW BTN dark */
+    [data-theme="dark"] .new-btn {
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.1);
+      color: var(--text-muted);
+    }
+    [data-theme="dark"] .new-btn:hover {
+      background: rgba(212,168,83,0.1);
+      border-color: rgba(212,168,83,0.3);
+      color: var(--gold);
+    }
+
+    /* OUTPUT HEADER dark */
+    [data-theme="dark"] .out-header,
+    [data-theme="dark"] .ideas-header,
+    [data-theme="dark"] .cal-header {
+      background: rgba(212,168,83,0.04);
+      border-bottom-color: rgba(212,168,83,0.1);
+    }
+
+    /* SAVE PDF BTN dark */
+    [data-theme="dark"] .save-pdf-btn {
+      border-color: rgba(212,168,83,0.2);
+      color: var(--text-muted);
+    }
+    [data-theme="dark"] .save-pdf-btn:hover {
+      background: rgba(212,168,83,0.1);
+      border-color: var(--gold);
+      color: var(--gold);
+      border-style: solid;
+    }
+
+    /* SECTION HEADER dark */
+    [data-theme="dark"] .section-header h2 { color: var(--text); }
+    [data-theme="dark"] .section-header p { color: var(--text-muted); }
+
+    /* OUTPUT CARDS dark */
+    [data-theme="dark"] .output-card {
+      background: rgba(212,168,83,0.04);
+      border-color: rgba(212,168,83,0.12);
+      border-left-color: var(--gold);
+    }
+    [data-theme="dark"] .output-title { color: var(--text); }
+
+    /* INPUT CARD dark */
+    [data-theme="dark"] .input-card,
+    [data-theme="dark"] .idea-input-card,
+    [data-theme="dark"] .calendar-input-card {
+      background: var(--surface);
+      border-color: rgba(212,168,83,0.12);
+    }
+
+    /* PILL dark */
+    [data-theme="dark"] .pill {
+      background: var(--gold);
+      color: #0A0908;
+    }
+    [data-theme="dark"] .pill.soft {
+      background: rgba(212,168,83,0.1);
+      color: var(--gold);
+      border-color: rgba(212,168,83,0.3);
+    }
+
+    /* LOADER DOTS dark */
+    [data-theme="dark"] .loader-dots span { background: var(--gold); }
+
+    /* HERO EYEBROW dark */
+    [data-theme="dark"] .hero-eyebrow {
+      background: rgba(212,168,83,0.1);
+      border-color: rgba(212,168,83,0.3);
+      box-shadow: 0 0 20px rgba(212,168,83,0.1);
+    }
+
+    /* FOOTER dark */
+    [data-theme="dark"] footer { border-top-color: rgba(212,168,83,0.1); }
+
     html { scroll-behavior: smooth; }
 
     body {
@@ -1773,9 +1917,30 @@
     }
     @keyframes scanline {
       0% { top: -2px; opacity: 0; }
-      5% { opacity: 1; }
-      95% { opacity: 0.4; }
+      3% { opacity: 1; }
+      90% { opacity: 0.6; }
       100% { top: 100vh; opacity: 0; }
+    }
+
+    /* CORNER ACCENTS (dark only) */
+    [data-theme="dark"] .out-card::after,
+    [data-theme="dark"] .ideas-out::after,
+    [data-theme="dark"] .cal-out::after {
+      content: '';
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 40px; height: 40px;
+      border-bottom: 1px solid rgba(212,168,83,0.3);
+      border-right: 1px solid rgba(212,168,83,0.3);
+      pointer-events: none;
+    }
+
+    /* GRADIENT BORDER on output cards (dark) */
+    [data-theme="dark"] .out-card,
+    [data-theme="dark"] .ideas-out,
+    [data-theme="dark"] .cal-out {
+      border-color: rgba(212,168,83,0.15);
+      position: relative;
     }
 
     /* GLOW PULSE on output card (dark) */
@@ -1791,8 +1956,12 @@
 
     /* NAV LOGO glow (dark) */
     [data-theme="dark"] .nav-logo {
-      text-shadow: 0 0 20px rgba(212,168,83,0.4);
-      letter-spacing: 0.25em;
+      text-shadow: 0 0 30px rgba(212,168,83,0.5), 0 0 60px rgba(212,168,83,0.2);
+      letter-spacing: 0.28em;
+    }
+    [data-theme="dark"] .nav-logo span {
+      color: var(--gold);
+      text-shadow: 0 0 20px rgba(212,168,83,0.8);
     }
 
     /* HERO text glow (dark) */
@@ -2979,7 +3148,7 @@
     const ctx = canvas.getContext('2d');
     let W, H, particles = [], animId;
     const GOLD = 'rgba(212,168,83,';
-    const COUNT = 55;
+    const COUNT = 80;
 
     function resize() {
       W = canvas.width = window.innerWidth;
@@ -2990,13 +3159,13 @@
       this.reset = function() {
         this.x = Math.random() * W;
         this.y = Math.random() * H;
-        this.r = Math.random() * 1.5 + 0.3;
-        this.vx = (Math.random() - 0.5) * 0.3;
-        this.vy = (Math.random() - 0.5) * 0.3 - 0.1;
+        this.r = Math.random() * 2.2 + 0.5;
+        this.vx = (Math.random() - 0.5) * 0.4;
+        this.vy = (Math.random() - 0.5) * 0.35 - 0.12;
         this.life = Math.random();
-        this.maxLife = Math.random() * 0.006 + 0.002;
+        this.maxLife = Math.random() * 0.005 + 0.002;
         this.growing = Math.random() > 0.5;
-        this.alpha = Math.random() * 0.5 + 0.1;
+        this.alpha = Math.random() * 0.7 + 0.15;
       };
       this.reset();
     }
@@ -3040,8 +3209,8 @@
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = GOLD + (0.06 * (1 - dist/120)) + ')';
-            ctx.lineWidth = 0.5;
+            ctx.strokeStyle = GOLD + (0.12 * (1 - dist/120)) + ')';
+            ctx.lineWidth = 0.6;
             ctx.stroke();
           }
         }
