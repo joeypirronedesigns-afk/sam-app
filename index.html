@@ -1384,6 +1384,79 @@
       margin-top: 8px;
     }
 
+    /* STOP & FOCUS BLOCK */
+    .focus-block {
+      margin: 1.75rem 1.75rem 0;
+      padding: 1.5rem 1.75rem;
+      background: var(--black);
+      border-radius: var(--radius-lg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .focus-block::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--gold-border), var(--gold));
+    }
+
+    .focus-block-eyebrow {
+      font-family: 'Syne', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .focus-block-eyebrow::before {
+      content: '';
+      width: 18px;
+      height: 2px;
+      background: var(--gold);
+      flex-shrink: 0;
+    }
+
+    .focus-block-action {
+      font-family: 'Syne', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.4;
+      letter-spacing: -0.01em;
+    }
+
+    .focus-block-sub {
+      font-size: 13px;
+      color: rgba(255,255,255,0.45);
+      margin-top: 0.5rem;
+      font-style: italic;
+      line-height: 1.5;
+    }
+
+    .focus-block-loader {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.4);
+      font-size: 13px;
+      font-style: italic;
+    }
+
+    .focus-block-loader-dots span {
+      background: rgba(255,255,255,0.35);
+    }
+
+    @media print {
+      .focus-block { background: #1A1816 !important; -webkit-print-color-adjust: exact; }
+    }
+
     /* SAVE BAR */
     .save-bar {
       padding: 1rem 1.75rem 1.5rem;
@@ -1589,6 +1662,11 @@
             <button class="new-btn" onclick="resetIdeas()">← Start over</button>
           </div>
           <div class="ideas-body" id="ideasBody"></div>
+          <div class="focus-block" id="ideaFocusBlock" style="display:none;">
+            <div class="focus-block-eyebrow">Stop. Focus. Do this now.</div>
+            <div class="focus-block-action" id="ideaFocusAction"></div>
+            <div class="focus-block-sub" id="ideaFocusSub"></div>
+          </div>
           <div class="save-bar" id="ideaSaveBar" style="display:none;">
             <button class="save-pdf-btn" onclick="printCurrentMode()">↓ &nbsp;Save ideas as PDF</button>
           </div>
@@ -1635,6 +1713,11 @@
             <button class="new-btn" onclick="resetCalendar()">← Start over</button>
           </div>
           <div class="cal-body" id="calBody"></div>
+          <div class="focus-block" id="calFocusBlock" style="display:none;">
+            <div class="focus-block-eyebrow">Stop. Focus. Do this now.</div>
+            <div class="focus-block-action" id="calFocusAction"></div>
+            <div class="focus-block-sub" id="calFocusSub"></div>
+          </div>
           <div class="save-bar" id="calSaveBar" style="display:none;">
             <button class="save-pdf-btn" onclick="printCurrentMode()">↓ &nbsp;Save calendar as PDF</button>
           </div>
@@ -1902,6 +1985,17 @@
             <p id="printMoment"></p>
           </div>
         </div>
+        <div class="focus-block" id="focusBlock" style="display:none;">
+          <div class="focus-block-eyebrow">Stop. Focus. Do this now.</div>
+          <div class="focus-block-action" id="focusAction">
+            <span class="focus-block-loader">
+              <span class="loader-dots focus-block-loader-dots"><span></span><span></span><span></span></span>
+              S.A.M. is building your focus action...
+            </span>
+          </div>
+          <div class="focus-block-sub" id="focusSub"></div>
+        </div>
+
         <div class="save-bar" id="saveBar" style="display:none;">
           <button class="save-pdf-btn" onclick="saveAsPDF()">
             ↓ &nbsp;Save output as PDF
@@ -1977,8 +2071,10 @@
       renderIdeas(data);
       document.getElementById('ideasOut').classList.add('show');
       document.getElementById('ideaSaveBar').style.display = 'block';
+      document.getElementById('ideaFocusBlock').style.display = 'block';
       document.getElementById('ideaBtn').disabled = false;
       document.getElementById('ideasOut').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      fetchFocusAction('ideas', niche, data);
     } catch (err) {
       document.getElementById('ideaLoader').classList.remove('show');
       const eb = document.getElementById('ideaErrBox');
@@ -2055,8 +2151,10 @@
       renderCalendar(data);
       document.getElementById('calOut').classList.add('show');
       document.getElementById('calSaveBar').style.display = 'block';
+      document.getElementById('calFocusBlock').style.display = 'block';
       document.getElementById('calBtn').disabled = false;
       document.getElementById('calOut').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      fetchFocusAction('calendar', moment, data);
     } catch (err) {
       document.getElementById('calLoader').classList.remove('show');
       const eb = document.getElementById('calErrBox');
@@ -2106,6 +2204,7 @@
   function resetCalendar() {
     document.getElementById('calOut').classList.remove('show');
     document.getElementById('calSaveBar').style.display = 'none';
+    document.getElementById('calFocusBlock').style.display = 'none';
     document.getElementById('calInp').value = '';
     document.getElementById('calBtn').disabled = false;
     document.querySelectorAll('#calPlatformGrid .platform-pill').forEach(b => b.classList.remove('selected'));
@@ -2150,6 +2249,7 @@
   function resetIdeas() {
     document.getElementById('ideasOut').classList.remove('show');
     document.getElementById('ideaSaveBar').style.display = 'none';
+    document.getElementById('ideaFocusBlock').style.display = 'none';
     document.getElementById('nicheInp').value = '';
     document.getElementById('ideaBtn').disabled = false;
   }
@@ -2270,6 +2370,7 @@
   function resetTool() {
     document.getElementById('outCard').classList.remove('show');
     document.getElementById('saveBar').style.display = 'none';
+    document.getElementById('focusBlock').style.display = 'none';
     document.getElementById('inp').value = '';
     document.getElementById('charCount').textContent = '0';
     document.getElementById('errBox').classList.remove('show');
@@ -2422,8 +2523,10 @@
       renderOutput(combined, contentType);
       document.getElementById('outCard').classList.add('show');
       document.getElementById('saveBar').style.display = 'block';
+      document.getElementById('focusBlock').style.display = 'block';
       document.getElementById('runBtn').disabled = false;
       document.getElementById('outCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      fetchFocusAction('moment', text, combined);
 
     } catch (err) {
       clearInterval(loaderInterval);
@@ -2524,6 +2627,33 @@
       }
     } catch(e) {
       alert('Paste not available — try Ctrl+V / Cmd+V in the field directly.');
+    }
+  }
+
+  // STOP & FOCUS
+  async function fetchFocusAction(sourceMode, inputText, outputData) {
+    const actionElId = sourceMode === 'moment' ? 'focusAction' : sourceMode === 'ideas' ? 'ideaFocusAction' : 'calFocusAction';
+    const subElId = sourceMode === 'moment' ? 'focusSub' : sourceMode === 'ideas' ? 'ideaFocusSub' : 'calFocusSub';
+
+    try {
+      const summary = JSON.stringify(outputData).substring(0, 600);
+      const response = await fetch('/api/sam', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mode: 'focus',
+          moment: inputText,
+          focusSummary: summary,
+          tone: getTone(),
+          emojiPreference: getEmojiPreference()
+        })
+      });
+      if (!response.ok) throw new Error('focus fetch failed');
+      const data = await response.json();
+      document.getElementById(actionElId).textContent = data.action || '';
+      document.getElementById(subElId).textContent = data.sub || '';
+    } catch(e) {
+      document.getElementById(actionElId).textContent = 'Pick one thing from the output above and do it in the next 30 minutes.';
     }
   }
 
