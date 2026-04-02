@@ -2394,9 +2394,8 @@
     const isReal = (v) => v && typeof v === 'string' && v.trim() !== '' && v.trim().toLowerCase() !== 'undefined' && v.trim().toLowerCase() !== 'n/a';
 
     html += isReal(data.diagnosis) ? `<div class="blk"><div class="blk-title">What this is really about</div><div class="blk-text">${data.diagnosis}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
-    // Inline example after diagnosis
-    if (isReal(data.diagnosis)) html += '<div class="inline-example"><div class="inline-example-label">Example from Joey\'s renovation</div><div class="inline-example-text">This isn\'t a renovation update — it\'s the first time the people you love saw what you\'ve been building for them. The tree didn\'t stop them. The reality of what you did for six months did.</div></div>';
-    html += isReal(data.hook) ? `<div class="blk"><div class="blk-title">Your hook</div><div class="hook-box">${data.hook}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button><div class="inline-example" style="margin-top:12px;clear:both;"><div class="inline-example-label">Example</div><div class="inline-example-text">Six months of work. They\'d only ever seen it through a screen. Until today.</div></div></div>` : '';
+
+    html += isReal(data.hook) ? `<div class="blk"><div class="blk-title">Your hook</div><div class="hook-box">${data.hook}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
     html += isReal(data.hook_1) ? `<div class="blk"><div class="blk-title">Hook 1 — emotion first</div><div class="hook-box">${data.hook_1}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
     html += isReal(data.hook_2) ? `<div class="blk"><div class="blk-title">Hook 2 — curiosity first</div><div class="hook-box">${data.hook_2}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
     html += isReal(data.hook_3) ? `<div class="blk"><div class="blk-title">Hook 3 — identity first</div><div class="hook-box">${data.hook_3}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>` : '';
