@@ -1369,6 +1369,259 @@
     footer strong { color: var(--gold); }
     [data-theme="dark"] footer { border-top-color: rgba(212,168,75,0.08); }
 
+    /* ══ CONCEPT SECTION ═════════════════════ */
+    .concept-section { display: none; }
+    .concept-section.show { display: block; }
+
+    .concept-style-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 0.5rem;
+    }
+    @media (max-width: 560px) { .concept-style-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .concept-style-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: var(--surface-2);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-mid);
+      user-select: none;
+      backdrop-filter: blur(8px);
+    }
+    .concept-style-btn:hover {
+      border-color: var(--gold-border);
+      background: var(--gold-light);
+      color: var(--text);
+    }
+    .concept-style-btn.selected {
+      background: var(--gold-light);
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    [data-theme="dark"] .concept-style-btn.selected {
+      background: rgba(212,168,75,0.1);
+      border-color: rgba(212,168,75,0.4);
+      box-shadow: 0 0 14px rgba(212,168,75,0.12);
+    }
+
+    .concept-out {
+      display: none;
+      background: var(--surface);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      animation: fadeUp 0.4s cubic-bezier(0.34, 1.2, 0.64, 1);
+    }
+    .concept-out.show { display: block; }
+    [data-theme="dark"] .concept-out {
+      background: rgba(14,12,8,0.9);
+      border-color: rgba(212,168,75,0.15);
+      box-shadow: var(--shadow-lg), 0 0 60px rgba(212,168,75,0.06);
+    }
+
+    .concept-out-header {
+      padding: 1.1rem 1.6rem;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--surface-3);
+      backdrop-filter: blur(10px);
+    }
+    [data-theme="dark"] .concept-out-header {
+      background: rgba(212,168,75,0.04);
+      border-bottom-color: rgba(212,168,75,0.1);
+    }
+
+    .concept-out-body { padding: 2rem; }
+
+    /* BIG CONCEPT TITLE */
+    .concept-title-block {
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+    [data-theme="dark"] .concept-title-block { border-bottom-color: rgba(212,168,75,0.07); }
+
+    .concept-title-eyebrow {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.75rem;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .concept-title-eyebrow::before {
+      content: '';
+      width: 3px; height: 12px;
+      background: var(--gold);
+      border-radius: 2px;
+    }
+
+    .concept-big-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(22px, 3vw, 30px);
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+    }
+    [data-theme="dark"] .concept-big-title {
+      text-shadow: 0 0 40px rgba(212,168,75,0.1);
+    }
+
+    .concept-format-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: var(--gold-light);
+      border: 1px solid var(--gold-border);
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    .concept-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.4rem 1.6rem;
+      margin-bottom: 1rem;
+      transition: all 0.2s;
+      backdrop-filter: blur(8px);
+    }
+    [data-theme="dark"] .concept-card {
+      background: rgba(18,15,10,0.6);
+      border-color: rgba(212,168,75,0.08);
+    }
+    [data-theme="dark"] .concept-card:hover {
+      border-color: rgba(212,168,75,0.15);
+      box-shadow: 0 0 20px rgba(212,168,75,0.04);
+    }
+
+    .concept-card-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.6rem;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .concept-card-label::before {
+      content: '';
+      width: 3px; height: 10px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      border-radius: 2px;
+    }
+    [data-theme="dark"] .concept-card-label { text-shadow: 0 0 10px rgba(212,168,75,0.3); }
+
+    .concept-card-text {
+      font-size: 15px;
+      line-height: 1.8;
+      color: var(--text);
+    }
+
+    .concept-production-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .concept-production-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--text-mid);
+      line-height: 1.6;
+    }
+    .concept-production-list li::before {
+      content: '▸';
+      color: var(--gold);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .concept-platform-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--gold);
+      color: #0A0907;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-top: 4px;
+    }
+    [data-theme="light"] .concept-platform-pill {
+      background: var(--text);
+      color: var(--bg);
+    }
+
+    .concept-virality-meter {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .concept-virality-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    .concept-virality-bar {
+      flex: 1;
+      height: 6px;
+      background: var(--border-mid);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .concept-virality-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: linear-gradient(90deg, var(--gold-border), var(--gold), var(--gold-2));
+      transition: width 1s cubic-bezier(0.34, 1.2, 0.64, 1);
+    }
+    [data-theme="dark"] .concept-virality-fill {
+      box-shadow: 0 0 8px rgba(212,168,75,0.5);
+    }
+    .concept-virality-score {
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--gold);
+      flex-shrink: 0;
+      min-width: 30px;
+      text-align: right;
+    }
+
     /* ══ PRINT ════════════════════════════════ */
     @media print {
       nav, .hero, .section-header, .outputs-grid, .platform-wrap,
@@ -1377,7 +1630,8 @@
       .mode-toggle-wrap, .save-pdf-btn, .run-btn,
       .idea-btn, .calendar-btn, .new-btn,
       .edge-flare-left, .edge-flare-right,
-      #particle-canvas, .corner-accent { display: none !important; }
+      #particle-canvas, .corner-accent,
+      .concept-out-header, .glass-card { display: none !important; }
       .ideas-out, .cal-out { display: block !important; border: none; box-shadow: none; }
       .out-card { display: block !important; border: none; box-shadow: none; animation: none; }
       body { background: white; font-size: 13px; }
@@ -1428,6 +1682,7 @@
         <button class="mode-tab active" id="tabMoment" onclick="switchMode('moment')">✍ Turn a moment into content</button>
         <button class="mode-tab" id="tabIdeas" onclick="switchMode('ideas')">💡 Get content ideas</button>
         <button class="mode-tab" id="tabCalendar" onclick="switchMode('calendar')">📅 Posting calendar</button>
+        <button class="mode-tab" id="tabConcept" onclick="switchMode('concept')">🎬 Video concept</button>
       </div>
 
       <!-- IDEA MAKER -->
@@ -1503,6 +1758,62 @@
           </div>
           <div class="save-bar" id="calSaveBar" style="display:none;">
             <button class="save-pdf-btn" onclick="printCurrentMode()">↓ &nbsp;Save calendar as PDF</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIDEO CONCEPT SECTION -->
+      <div class="concept-section" id="conceptSection">
+        <div class="glass-card idea-input-card">
+          <div class="input-card-label">Describe your niche or a specific idea</div>
+          <div class="input-wrap">
+            <textarea id="conceptInp" placeholder="e.g. Self-taught DIY renovator documenting a full cottage gut renovation. I want a concept nobody has seen before — something that would stop the scroll and make people share it." style="min-height:110px;"></textarea>
+            <button class="paste-btn" onclick="pasteToEl('conceptInp')" title="Paste">📋</button>
+            <button class="mic-btn" id="micBtnConcept" onclick="toggleMicConcept()" title="Speak">🎙</button>
+          </div>
+          <div style="margin-top:1.25rem;">
+            <div class="section-label">What platform is this for?</div>
+            <div class="platform-grid" id="conceptPlatformGrid">
+              <button class="platform-pill" data-platform="TikTok" onclick="toggleConceptPlatform(this)">🎵 TikTok</button>
+              <button class="platform-pill" data-platform="YouTube" onclick="toggleConceptPlatform(this)">▶ YouTube</button>
+              <button class="platform-pill" data-platform="Instagram Reels" onclick="toggleConceptPlatform(this)">📸 Instagram Reels</button>
+              <button class="platform-pill" data-platform="YouTube Shorts" onclick="toggleConceptPlatform(this)">⚡ YouTube Shorts</button>
+              <button class="platform-pill" data-platform="Facebook" onclick="toggleConceptPlatform(this)">👥 Facebook</button>
+              <button class="platform-pill" data-platform="LinkedIn" onclick="toggleConceptPlatform(this)">💼 LinkedIn</button>
+            </div>
+          </div>
+          <div style="margin-top:1.25rem;">
+            <div class="section-label">Concept style <span style="font-weight:400;text-transform:none;letter-spacing:0;font-style:italic;color:var(--text-muted);font-family:'DM Sans',sans-serif;">(optional)</span></div>
+            <div class="concept-style-grid">
+              <button class="concept-style-btn" data-style="Surprise / Reveal" onclick="selectConceptStyle(this)">😲 Surprise / Reveal</button>
+              <button class="concept-style-btn" data-style="Challenge / Experiment" onclick="selectConceptStyle(this)">🧪 Challenge / Experiment</button>
+              <button class="concept-style-btn" data-style="Transformation" onclick="selectConceptStyle(this)">✨ Transformation</button>
+              <button class="concept-style-btn" data-style="Story / Documentary" onclick="selectConceptStyle(this)">🎥 Story / Documentary</button>
+              <button class="concept-style-btn" data-style="Tutorial with a Twist" onclick="selectConceptStyle(this)">🔄 Tutorial with a Twist</button>
+              <button class="concept-style-btn" data-style="Day in the Life" onclick="selectConceptStyle(this)">📅 Day in the Life</button>
+            </div>
+          </div>
+          <div class="loader" id="conceptLoader" style="margin-top:1rem;">
+            <div class="loader-dots"><span></span><span></span><span></span></div>
+            <div class="loader-text" id="conceptLoaderText">S.A.M. is building your concept...</div>
+          </div>
+          <div class="error-box" id="conceptErrBox"></div>
+          <button class="idea-btn" id="conceptBtn" onclick="runConcept()">Generate video concept →</button>
+        </div>
+
+        <div class="concept-out" id="conceptOut">
+          <div class="concept-out-header">
+            <div class="out-label">Your video concept</div>
+            <button class="new-btn" onclick="resetConcept()">← Start over</button>
+          </div>
+          <div class="concept-out-body" id="conceptBody"></div>
+          <div class="focus-block" id="conceptFocusBlock" style="display:none;">
+            <div class="focus-block-eyebrow">Stop. Focus. Do this now.</div>
+            <div class="focus-block-action" id="conceptFocusAction" style="color:rgba(255,255,255,0.35);font-style:italic;font-size:14px;font-weight:400;">S.A.M. is building your focus action...</div>
+            <div class="focus-block-sub" id="conceptFocusSub"></div>
+          </div>
+          <div class="save-bar" id="conceptSaveBar" style="display:none;">
+            <button class="save-pdf-btn" onclick="printCurrentMode()">↓ &nbsp;Save concept as PDF</button>
           </div>
         </div>
       </div>
@@ -1760,9 +2071,11 @@
     document.getElementById('momentSection').classList.toggle('hide', mode !== 'moment');
     document.getElementById('ideaSection').classList.toggle('show', mode === 'ideas');
     document.getElementById('calendarSection').classList.toggle('show', mode === 'calendar');
+    document.getElementById('conceptSection').classList.toggle('show', mode === 'concept');
     document.getElementById('tabMoment').classList.toggle('active', mode === 'moment');
     document.getElementById('tabIdeas').classList.toggle('active', mode === 'ideas');
     document.getElementById('tabCalendar').classList.toggle('active', mode === 'calendar');
+    document.getElementById('tabConcept').classList.toggle('active', mode === 'concept');
   }
 
   async function runIdeas() {
@@ -2073,6 +2386,132 @@
     window.print();
   }
   function printCurrentMode() { window.print(); }
+
+  // ── VIDEO CONCEPT ──────────────────────────────────────────────────────
+  function toggleConceptPlatform(btn) { btn.classList.toggle('selected'); }
+  function getConceptPlatforms() { return [...document.querySelectorAll('#conceptPlatformGrid .platform-pill.selected')].map(b=>b.dataset.platform); }
+  function selectConceptStyle(btn) { document.querySelectorAll('.concept-style-btn').forEach(b=>b.classList.remove('selected')); btn.classList.add('selected'); }
+  function getConceptStyle() { return document.querySelector('.concept-style-btn.selected')?.dataset.style || ''; }
+
+  let recognitionConcept=null, isRecordingConcept=false;
+  function toggleMicConcept() {
+    const btn=document.getElementById('micBtnConcept'), SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){alert('Try Chrome or Safari.');return;}
+    if(isRecordingConcept){recognitionConcept.stop();return;}
+    recognitionConcept=new SR(); recognitionConcept.continuous=true; recognitionConcept.interimResults=true; recognitionConcept.lang='en-US';
+    recognitionConcept.onstart=()=>{isRecordingConcept=true;btn.classList.add('recording');btn.innerHTML='⏹';};
+    recognitionConcept.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;document.getElementById('conceptInp').value=t;};
+    recognitionConcept.onend=recognitionConcept.onerror=()=>{isRecordingConcept=false;btn.classList.remove('recording');btn.innerHTML='🎙';};
+    recognitionConcept.start();
+  }
+
+  async function runConcept() {
+    const niche = document.getElementById('conceptInp').value.trim();
+    if (!niche) { flash('conceptInp'); return; }
+    document.getElementById('conceptErrBox').classList.remove('show');
+    document.getElementById('conceptBtn').disabled = true;
+    document.getElementById('conceptLoader').classList.add('show');
+    document.getElementById('conceptOut').classList.remove('show');
+    try {
+      const data = await callAPI('concept', niche, getConceptPlatforms(), getConceptStyle(), '', getTone(), getAudienceDemographics(), getOutputLanguage(), getEmojiPreference());
+      document.getElementById('conceptLoader').classList.remove('show');
+      renderConcept(data);
+      document.getElementById('conceptOut').classList.add('show');
+      document.getElementById('conceptSaveBar').style.display = 'block';
+      document.getElementById('conceptFocusBlock').style.display = 'block';
+      document.getElementById('conceptBtn').disabled = false;
+      document.getElementById('conceptOut').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      fetchFocusAction('concept', niche, data);
+    } catch(err) {
+      document.getElementById('conceptLoader').classList.remove('show');
+      showErr('conceptErrBox', err.message);
+      document.getElementById('conceptBtn').disabled = false;
+    }
+  }
+
+  function renderConcept(data) {
+    const body = document.getElementById('conceptBody');
+    if (!data || !data.title) {
+      body.innerHTML = '<div style="color:var(--text-muted);padding:1rem;">No concept returned. Try again.</div>';
+      return;
+    }
+
+    const viralityPct = Math.min(100, Math.max(30, (data.virality_score || 75)));
+
+    let prodItems = '';
+    if (data.production_notes && Array.isArray(data.production_notes)) {
+      prodItems = data.production_notes.map(n => `<li>${n}</li>`).join('');
+    } else if (typeof data.production_notes === 'string') {
+      prodItems = data.production_notes.split('\n').filter(Boolean).map(n => `<li>${n.replace(/^[-•▸→]\s*/,'')}</li>`).join('');
+    }
+
+    body.innerHTML = `
+      <div class="concept-title-block">
+        <div class="concept-title-eyebrow">Your video concept</div>
+        <div class="concept-big-title">${data.title}</div>
+        ${data.format ? `<div class="concept-format-badge">🎬 ${data.format}</div>` : ''}
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-card-label">The premise</div>
+        <div class="concept-card-text">${data.premise || ''}</div>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-card-label">Why this concept works</div>
+        <div class="concept-card-text">${data.why_it_works || ''}</div>
+        <div class="concept-virality-meter">
+          <span class="concept-virality-label">Scroll-stop potential</span>
+          <div class="concept-virality-bar"><div class="concept-virality-fill" style="width:0%" id="viralityFill"></div></div>
+          <span class="concept-virality-score">${viralityPct}%</span>
+        </div>
+      </div>
+
+      ${prodItems ? `
+      <div class="concept-card">
+        <div class="concept-card-label">How to film it</div>
+        <ul class="concept-production-list">${prodItems}</ul>
+      </div>` : ''}
+
+      ${isReal(data.hook_line) ? `
+      <div class="concept-card">
+        <div class="concept-card-label">Opening hook line</div>
+        <div class="hook-box">${data.hook_line}</div>
+        <button class="copy-btn" onclick="copyEl(this)" style="margin-top:8px;">Copy hook</button>
+      </div>` : ''}
+
+      ${isReal(data.best_platform) ? `
+      <div class="concept-card" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+        <div>
+          <div class="concept-card-label" style="margin-bottom:4px;">Best platform for this concept</div>
+          <div class="concept-platform-pill">${data.best_platform}</div>
+        </div>
+        ${isReal(data.platform_reason) ? `<div style="font-size:13px;color:var(--text-muted);max-width:55%;font-style:italic;">${data.platform_reason}</div>` : ''}
+      </div>` : ''}
+
+      ${isReal(data.twist) ? `
+      <div class="concept-card" style="border:1px solid var(--gold-border);background:var(--gold-light);">
+        <div class="concept-card-label">The twist nobody sees coming</div>
+        <div class="concept-card-text" style="font-weight:500;">${data.twist}</div>
+      </div>` : ''}
+    `;
+
+    // Animate virality bar after render
+    setTimeout(() => {
+      const fill = document.getElementById('viralityFill');
+      if (fill) fill.style.width = viralityPct + '%';
+    }, 200);
+  }
+
+  function resetConcept() {
+    document.getElementById('conceptOut').classList.remove('show');
+    document.getElementById('conceptSaveBar').style.display = 'none';
+    document.getElementById('conceptFocusBlock').style.display = 'none';
+    document.getElementById('conceptInp').value = '';
+    document.getElementById('conceptBtn').disabled = false;
+    document.querySelectorAll('#conceptPlatformGrid .platform-pill').forEach(b=>b.classList.remove('selected'));
+    document.querySelectorAll('.concept-style-btn').forEach(b=>b.classList.remove('selected'));
+  }
 
   function copyEl(btn) {
     const prev=btn.previousElementSibling;
