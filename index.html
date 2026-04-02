@@ -1240,7 +1240,7 @@
 
     .emoji-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 8px;
     }
 
@@ -1773,11 +1773,14 @@
       <div class="emoji-wrap">
         <div class="section-label">Emojis in your content?</div>
         <div class="emoji-grid">
-          <button class="emoji-btn selected" data-emoji="yes" onclick="selectEmoji(this)">
-            😊 Yes — use emojis
-          </button>
           <button class="emoji-btn" data-emoji="no" onclick="selectEmoji(this)">
-            🚫 No emojis please
+            🚫 No emojis
+          </button>
+          <button class="emoji-btn selected" data-emoji="few" onclick="selectEmoji(this)">
+            ✨ A few emojis
+          </button>
+          <button class="emoji-btn" data-emoji="lots" onclick="selectEmoji(this)">
+            🎉 Lots of emojis
           </button>
         </div>
       </div>
@@ -2228,7 +2231,7 @@
 
   function getEmojiPreference() {
     const selected = document.querySelector('.emoji-btn.selected');
-    return selected ? selected.dataset.emoji : 'yes';
+    return selected ? selected.dataset.emoji : 'few';
   }
 
   function getTone() {
@@ -2306,7 +2309,19 @@
       const isTextFormat = textFormats.some(f => (contentType || '').trim() === f.trim());
 
       if (isTextFormat) {
-        // Text-based formats: clean readable output box
+        // Strip any video script markers the model may have included
+        const cleanedText = scriptContent
+          .replace(/\[HOOK\]/gi, '').replace(/\[SETUP\]/gi, '').replace(/\[TENSION\]/gi, '')
+          .replace(/\[PAYOFF\]/gi, '').replace(/\[CTA\]/gi, '').replace(/\[BUILD\]/gi, '')
+          .replace(/\[BREAKTHROUGH\]/gi, '').replace(/\[REALIZATION\]/gi, '').replace(/\[OUTRO\]/gi, '')
+          .replace(/\[INTRO\]/gi, '').replace(/\[BRIDGE\]/gi, '').replace(/\[CONFLICT\]/gi, '')
+          .replace(/\[RESOLUTION\]/gi, '').replace(/\[OPENING\]/gi, '').replace(/\[CLOSING\]/gi, '')
+          .replace(/\[[A-Z ]+\]/g, '')  // catch any other ALL-CAPS bracket labels
+          .replace(/\(pause[^)]*\)/gi, '').replace(/\(slow[^)]*\)/gi, '').replace(/\(look[^)]*\)/gi, '')
+          .replace(/\(smile[^)]*\)/gi, '').replace(/\(gesture[^)]*\)/gi, '').replace(/\(breath[^)]*\)/gi, '')
+          .replace(/\(nod[^)]*\)/gi, '').replace(/\(beat\)/gi, '').replace(/\(emphasis\)/gi, '')
+          .replace(/^\s*[\r\n]/gm, '')  // remove blank lines left by stripped markers
+          .trim();
         const labelMap = {
           'Text post': '💬 Your text post — ready to copy',
           'LinkedIn text post': '💼 Your LinkedIn post — ready to copy',
@@ -2315,7 +2330,7 @@
           'Blog post': '✍️ Your blog post — ready to publish'
         };
         const label = labelMap[contentType] || '📝 Your post — ready to copy';
-        html += '<div class="blk"><div class="blk-title">' + label + '</div><div class="text-output-box">' + scriptContent.replace(/\n/g, '<br>') + '</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>';
+        html += '<div class="blk"><div class="blk-title">' + label + '</div><div class="text-output-box">' + cleanedText.replace(/\n/g, '<br>') + '</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>';
       } else {
         // Video/audio formats: script block with beat markers
         const formattedScript = scriptContent
