@@ -2522,108 +2522,223 @@ async function pasteToEl(id) {
 
 
 // ── THUMBNAIL CANVAS + DOWNLOAD ──────────────────────────────────────────────
-function renderThumbnailCanvases(headline, subtext, accentColor, imgSrc, id169, id916, contentType, templateName) {
+function renderThumbnailCanvases(headline, subtext, accentColor, imgSrc, id169, id916, contentType, templateName, isBold) {
   const c169 = (id169 || 'thumb169') + 'canvas';
   const c916 = (id916 || 'thumb916') + 'canvas';
-  // Use full resolution for both display and download
-  drawThumb(c169, 1280, 720, headline, subtext, accentColor, imgSrc, contentType, templateName);
-  drawThumb(c916, 1080, 1920, headline, subtext, accentColor, imgSrc, contentType, templateName);
+  drawThumb(c169, 1280, 720, headline, subtext, accentColor, imgSrc, contentType, templateName, isBold);
+  drawThumb(c916, 1080, 1920, headline, subtext, accentColor, imgSrc, contentType, templateName, isBold);
 }
 
 // ── THUMBNAIL TEMPLATE ENGINE ────────────────────────────────────────────────
-// isPortrait = h > w (9:16), else landscape (16:9)
+
+// Color palettes — varied, premium
+const PALETTES = [
+  { name: 'fire',     accent: '#FF4500', text: '#FFFFFF', bg: 'rgba(0,0,0,0.82)' },
+  { name: 'electric', accent: '#00D4FF', text: '#FFFFFF', bg: 'rgba(0,10,20,0.85)' },
+  { name: 'gold',     accent: '#FFD700', text: '#000000', bg: 'rgba(0,0,0,0.85)' },
+  { name: 'neon',     accent: '#39FF14', text: '#FFFFFF', bg: 'rgba(0,0,0,0.88)' },
+  { name: 'purple',   accent: '#A855F7', text: '#FFFFFF', bg: 'rgba(10,0,20,0.85)' },
+  { name: 'coral',    accent: '#FF6B6B', text: '#FFFFFF', bg: 'rgba(0,0,0,0.82)' },
+  { name: 'ice',      accent: '#FFFFFF', text: '#000000', bg: 'rgba(0,20,40,0.88)' },
+  { name: 'amber',    accent: '#F59E0B', text: '#000000', bg: 'rgba(0,0,0,0.85)' },
+];
+
+function getPalette(accentColor, templateName) {
+  // If SAM returned a specific color, build palette from it
+  if (accentColor && accentColor !== '#FF4500' && accentColor !== '#F472B6') {
+    const isLight = isLightColor(accentColor);
+    return { accent: accentColor, text: '#FFFFFF', bg: 'rgba(0,0,0,0.85)' };
+  }
+  // Otherwise rotate through premium palettes based on template
+  const keys = Object.keys(THUMB_TEMPLATES);
+  const idx = keys.indexOf(templateName) || 0;
+  return PALETTES[idx % PALETTES.length];
+}
+
+function isLightColor(hex) {
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return (r*299 + g*587 + b*114) / 1000 > 128;
+}
+
+function drawBg(ctx, w, h, imgSrc, callback) {
+  if (imgSrc && imgSrc.startsWith('data:')) {
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.max(w/img.width, h/img.height);
+      ctx.drawImage(img, (w-img.width*scale)/2, (h-img.height*scale)/2, img.width*scale, img.height*scale);
+      callback();
+    };
+    img.src = imgSrc;
+  } else {
+    ctx.fillStyle = '#1a1a1a'; ctx.fillRect(0,0,w,h);
+    callback();
+  }
+}
+
+function fitText(ctx, text, maxW, startFs, minFs) {
+  let fs = startFs;
+  ctx.font = `900 ${fs}px Arial Black, sans-serif`;
+  while (ctx.measureText(text).width > maxW && fs > minFs) {
+    fs -= 2;
+    ctx.font = `900 ${fs}px Arial Black, sans-serif`;
+  }
+  return fs;
+}
+
+function smartWrap(ctx, text, maxW, startFs, minFs, maxLines) {
+  // Try to fit on fewer lines by reducing font size
+  const words = text.split(' ');
+  let fs = startFs;
+  let lines = [];
+  for (let attempt = 0; attempt < 8; attempt++) {
+    ctx.font = `900 ${fs}px Arial Black, sans-serif`;
+    lines = [];
+    let cur = '';
+    for (const w of words) {
+      const test = cur ? cur+' '+w : w;
+      if (ctx.measureText(test).width > maxW && cur) { lines.push(cur); cur = w; }
+      else cur = test;
+    }
+    if (cur) lines.push(cur);
+    if (lines.length <= maxLines || fs <= minFs) break;
+    fs = Math.max(minFs, fs - 4);
+  }
+  return { lines, fs };
+}
 
 const THUMB_TEMPLATES = {
 
+  // SAFE TEMPLATES
+
   cinematic: {
-    render: (ctx, w, h, hl, sub, ac) => {
-      const p = h > w; // portrait mode
-      const topH = h * 0.13;
-      const botH = p ? h * 0.25 : h * 0.3;
+    safe: true,
+    render: (ctx, w, h, hl, sub, palette) => {
+      const p = h > w;
+      const fs = p ? h*0.072 : h*0.095;
+      const minFs = p ? h*0.05 : h*0.065;
+      const maxW = w * 0.9;
+      const { lines, fs: actualFs } = smartWrap(ctx, hl.toUpperCase(), maxW, fs, minFs, p?4:3);
+      const botH = actualFs * 1.2 * lines.length + (sub ? actualFs*0.7 : 0) + h*0.06;
       // Top bar
-      ctx.fillStyle = 'rgba(0,0,0,0.92)';
-      ctx.fillRect(0, 0, w, topH);
-      ctx.fillStyle = 'rgba(255,255,255,0.3)';
-      ctx.font = `600 ${topH*0.38}px Arial`;
-      ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
-      ctx.fillText('DOCUMENTARY SERIES', w*0.04, topH*0.5);
+      ctx.fillStyle = 'rgba(0,0,0,0.9)'; ctx.fillRect(0, 0, w, h*0.13);
+      ctx.fillStyle = palette.accent; ctx.fillRect(0, 0, w, h*0.018);
+      ctx.fillStyle = 'rgba(255,255,255,0.35)';
+      ctx.font = `600 ${h*0.038}px Arial`; ctx.textBaseline='middle'; ctx.textAlign='left';
+      ctx.fillText('CREATOR DOCUMENTARY', w*0.04, h*0.065);
       // Bottom bar
-      ctx.fillStyle = 'rgba(0,0,0,0.9)';
-      ctx.fillRect(0, h - botH, w, botH);
-      ctx.fillStyle = ac; ctx.fillRect(0, h - botH, w, h*0.015);
-      const fs = Math.round(p ? h*0.075 : h*0.1);
-      ctx.font = `900 ${fs}px Arial Black, sans-serif`;
-      ctx.textBaseline = 'top'; ctx.shadowColor='rgba(0,0,0,1)'; ctx.shadowBlur=8;
-      const lines = wrapText(ctx, hl.toUpperCase(), w*0.9, fs);
+      ctx.fillStyle = 'rgba(0,0,0,0.92)'; ctx.fillRect(0, h-botH, w, botH);
+      ctx.fillStyle = palette.accent; ctx.fillRect(0, h-botH, w, h*0.018);
+      ctx.font = `900 ${actualFs}px Arial Black, sans-serif`;
+      ctx.shadowColor='rgba(0,0,0,1)'; ctx.shadowBlur=6;
       lines.forEach((ln, i) => {
-        ctx.fillStyle = i === lines.length-1 ? ac : '#fff';
-        ctx.fillText(ln, w*0.04, h - botH + h*0.03 + i*fs*1.1);
+        ctx.fillStyle = i === lines.length-1 ? palette.accent : '#fff';
+        ctx.textBaseline='top'; ctx.textAlign='left';
+        ctx.fillText(ln, w*0.04, h-botH+h*0.035 + i*actualFs*1.2);
       });
       if (sub) {
-        ctx.font = `700 ${Math.round(fs*0.5)}px Arial`; ctx.fillStyle='rgba(255,255,255,0.55)';
-        ctx.fillText(sub.toUpperCase(), w*0.04, h - botH + h*0.03 + lines.length*fs*1.1 + fs*0.2);
+        ctx.font=`700 ${actualFs*0.48}px Arial`; ctx.fillStyle='rgba(255,255,255,0.6)';
+        ctx.fillText(sub.toUpperCase(), w*0.04, h-botH+h*0.035+lines.length*actualFs*1.2+actualFs*0.1);
       }
       ctx.shadowBlur=0;
     }
   },
 
-  stackedBoxes: {
-    render: (ctx, w, h, hl, sub, ac) => {
+  newsFlash: {
+    safe: true,
+    render: (ctx, w, h, hl, sub, palette) => {
       const p = h > w;
-      const words = hl.toUpperCase().split(' ');
-      const mid = Math.ceil(words.length/3);
-      const chunks = [words.slice(0,mid).join(' '), words.slice(mid,mid*2).join(' '), words.slice(mid*2).join(' ')].filter(Boolean);
-      const colors = ['#ffffff', ac, '#111111'];
-      const textColors = ['#111111', '#ffffff', '#ffffff'];
-      const bh = p ? h*0.13 : h*0.17;
-      const bw = p ? w*0.85 : w*0.52;
-      const startY = p ? h*0.3 : h*0.3;
-      const startX = p ? w*0.075 : w*0.04;
-      const gap = h*0.012;
-      chunks.slice(0,3).forEach((chunk, i) => {
-        ctx.fillStyle = colors[i];
-        ctx.fillRect(startX, startY + i*(bh+gap), bw, bh);
-        const fs = i===1 ? Math.round(bh*0.62) : Math.round(bh*0.48);
-        ctx.font = `900 ${fs}px Arial Black, sans-serif`;
-        ctx.fillStyle = textColors[i]; ctx.textBaseline='middle'; ctx.textAlign='left';
-        ctx.shadowColor='rgba(0,0,0,0.4)'; ctx.shadowBlur=3;
-        const txt = trimToFit(ctx, chunk, bw*0.88);
-        ctx.fillText(txt, startX + bw*0.05, startY + i*(bh+gap) + bh/2);
-      });
-      ctx.shadowBlur=0; ctx.textAlign='left';
+      const panelW = p ? w : w*0.55;
+      ctx.fillStyle = 'rgba(0,0,15,0.92)'; ctx.fillRect(0, 0, panelW, h);
+      ctx.fillStyle = palette.accent; ctx.fillRect(0, 0, panelW, h*0.022);
+      // Badge
+      const bh=h*0.075; const bx=w*0.04; const by=h*0.05; const bw=p?w*0.35:w*0.28;
+      ctx.fillStyle = palette.accent;
+      ctx.beginPath(); ctx.roundRect(bx,by,bw,bh,h*0.025); ctx.fill();
+      ctx.font=`800 ${bh*0.5}px Arial`; ctx.fillStyle=isLightColor(palette.accent)?'#000':'#fff';
+      ctx.textBaseline='middle'; ctx.textAlign='center';
+      ctx.fillText('BREAKING NEWS', bx+bw/2, by+bh/2);
+      // Headline
+      const fs = p ? h*0.088 : h*0.1;
+      const maxW = p ? w*0.9 : w*0.5;
+      const { lines, fs: aFs } = smartWrap(ctx, hl.toUpperCase(), maxW, fs, h*0.055, 4);
+      ctx.font=`900 ${aFs}px Arial Black`; ctx.fillStyle='#fff';
+      ctx.textBaseline='top'; ctx.textAlign='left'; ctx.shadowColor='rgba(0,0,0,0.9)'; ctx.shadowBlur=5;
+      lines.forEach((ln,i) => ctx.fillText(ln, w*0.04, h*0.17+i*aFs*1.15));
+      ctx.strokeStyle=palette.accent; ctx.lineWidth=2; ctx.shadowBlur=0;
+      const divY = h*0.17+lines.length*aFs*1.15+aFs*0.25;
+      ctx.beginPath(); ctx.moveTo(w*0.04,divY); ctx.lineTo(p?w*0.92:w*0.5,divY); ctx.stroke();
+      if (sub) {
+        ctx.font=`600 ${aFs*0.52}px Arial`; ctx.fillStyle='rgba(255,255,255,0.6)';
+        ctx.fillText(sub.toUpperCase(), w*0.04, divY+h*0.02);
+      }
     }
   },
 
+  splitPanel: {
+    safe: true,
+    render: (ctx, w, h, hl, sub, palette) => {
+      const p = h > w;
+      const panelW = p ? w : w*0.5;
+      // Gradient panel
+      const grad = ctx.createLinearGradient(0,0,p?0:panelW,p?h*0.7:0);
+      grad.addColorStop(0, 'rgba(0,0,0,0.95)');
+      grad.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle=grad; ctx.fillRect(0,0,p?w:panelW,h);
+      // Accent left border
+      ctx.fillStyle=palette.accent; ctx.fillRect(0, 0, Math.round(h*0.025), h);
+      // Headline
+      const fs = p ? h*0.085 : h*0.1;
+      const maxW = p ? w*0.85 : w*0.44;
+      const { lines, fs: aFs } = smartWrap(ctx, hl.toUpperCase(), maxW, fs, h*0.055, 4);
+      const totalH = lines.length * aFs * 1.15;
+      const startY = p ? h*0.35 : (h-totalH)/2;
+      const startX = w*0.06;
+      ctx.shadowColor='rgba(0,0,0,1)'; ctx.shadowBlur=8;
+      lines.forEach((ln, i) => {
+        ctx.font=`900 ${aFs}px Arial Black`; 
+        ctx.fillStyle = i===0 ? palette.accent : '#fff';
+        ctx.textBaseline='top'; ctx.textAlign='left';
+        ctx.fillText(ln, startX, startY + i*aFs*1.15);
+      });
+      if (sub) {
+        ctx.font=`700 ${aFs*0.5}px Arial`; ctx.fillStyle='rgba(255,255,255,0.65)';
+        ctx.fillText(sub.toUpperCase(), startX, startY+totalH+aFs*0.3);
+      }
+      ctx.shadowBlur=0;
+    }
+  },
+
+  // BOLD TEMPLATES
+
   giantWord: {
-    render: (ctx, w, h, hl, sub, ac) => {
+    safe: false,
+    render: (ctx, w, h, hl, sub, palette) => {
       const p = h > w;
       const words = hl.toUpperCase().split(' ');
       const bigWord = words[0];
       const rest = words.slice(1).join(' ');
-      // Left-to-right gradient overlay
-      const grad = ctx.createLinearGradient(0,0,w*(p?1:0.65),0);
-      grad.addColorStop(0,'rgba(0,0,0,0.82)'); grad.addColorStop(1,'rgba(0,0,0,0)');
+      const grad = ctx.createLinearGradient(0,0,p?0:w*0.7,p?h*0.5:0);
+      grad.addColorStop(0,'rgba(0,0,0,0.88)'); grad.addColorStop(1,'rgba(0,0,0,0)');
       ctx.fillStyle=grad; ctx.fillRect(0,0,w,h);
-      ctx.shadowColor='rgba(0,0,0,1)'; ctx.shadowBlur=16;
-      ctx.textBaseline='top'; ctx.textAlign='left';
-      // Giant word — scale to fit width
-      let bigFs = Math.round(p ? h*0.28 : h*0.42);
-      ctx.font = `900 ${bigFs}px Arial Black, sans-serif`;
-      while (ctx.measureText(bigWord).width > w*0.85 && bigFs > 40) {
-        bigFs -= 4; ctx.font = `900 ${bigFs}px Arial Black, sans-serif`;
-      }
-      ctx.fillStyle=ac;
-      ctx.fillText(bigWord, w*0.04, p ? h*0.18 : h*0.1);
+      ctx.shadowColor='rgba(0,0,0,1)'; ctx.shadowBlur=20;
+      // Giant word — auto-size to fit
+      const maxGiantW = p ? w*0.9 : w*0.85;
+      const giantFs = fitText(ctx, bigWord, maxGiantW, p?h*0.3:h*0.44, p?h*0.15:h*0.2);
+      ctx.font=`900 ${giantFs}px Arial Black, sans-serif`;
+      ctx.fillStyle=palette.accent; ctx.textBaseline='top'; ctx.textAlign='left';
+      const giantY = p ? h*0.12 : h*0.08;
+      ctx.fillText(bigWord, w*0.04, giantY);
       if (rest) {
-        const restFs = Math.round(p ? h*0.075 : h*0.1);
-        ctx.font = `900 ${restFs}px Arial Black, sans-serif`;
-        ctx.fillStyle='#fff';
-        const lines = wrapText(ctx, rest, w*0.85, restFs);
-        const startY = p ? h*0.18+bigFs*1.05 : h*0.1+bigFs*1.05;
-        lines.forEach((ln,i) => ctx.fillText(ln, w*0.04, startY + i*restFs*1.2));
+        const restFs = Math.round(p ? h*0.082 : h*0.1);
+        const maxW = p ? w*0.9 : w*0.85;
+        const { lines, fs: aFs } = smartWrap(ctx, rest, maxW, restFs, h*0.05, 3);
+        ctx.font=`900 ${aFs}px Arial Black`; ctx.fillStyle='#fff';
+        lines.forEach((ln,i) => ctx.fillText(ln, w*0.04, giantY+giantFs*1.05+i*aFs*1.2));
         if (sub) {
-          ctx.font=`700 ${Math.round(restFs*0.6)}px Arial`; ctx.fillStyle='rgba(255,255,255,0.55)';
-          ctx.fillText(sub.toUpperCase(), w*0.04, startY + lines.length*restFs*1.2 + restFs*0.3);
+          ctx.font=`700 ${aFs*0.6}px Arial`; ctx.fillStyle=palette.accent;
+          ctx.fillText(sub.toUpperCase(), w*0.04, giantY+giantFs*1.05+lines.length*aFs*1.2+aFs*0.3);
         }
       }
       ctx.shadowBlur=0;
@@ -2631,145 +2746,119 @@ const THUMB_TEMPLATES = {
   },
 
   diagonalSlash: {
-    render: (ctx, w, h, hl, sub, ac) => {
+    safe: false,
+    render: (ctx, w, h, hl, sub, palette) => {
       const p = h > w;
-      const panelW = p ? w*0.78 : w*0.62;
-      const slantX = p ? w*0.82 : w*0.45;
+      const slantRatio = p ? 0.72 : 0.58;
       ctx.save();
       ctx.beginPath();
-      ctx.moveTo(0,0); ctx.lineTo(panelW,0); ctx.lineTo(slantX,h); ctx.lineTo(0,h);
-      ctx.closePath(); ctx.fillStyle='rgba(0,0,0,0.80)'; ctx.fill(); ctx.restore();
-      // Slash accent line
-      ctx.strokeStyle=ac; ctx.lineWidth=Math.round(h*0.015);
-      ctx.beginPath(); ctx.moveTo(panelW+h*0.01,0); ctx.lineTo(slantX+h*0.01,h); ctx.stroke();
-      ctx.shadowColor='rgba(0,0,0,1)'; ctx.shadowBlur=10;
-      const maxTW = p ? w*0.7 : w*0.5;
-      const fs = Math.round(p ? h*0.085 : h*0.12);
-      ctx.font=`900 ${fs}px Arial Black, sans-serif`;
-      ctx.textBaseline='top'; ctx.textAlign='left';
-      const lines = wrapText(ctx, hl.toUpperCase(), maxTW, fs);
-      const totalH = lines.length * fs * 1.15;
-      const startY = (h - totalH) / 2;
-      lines.forEach((ln,i) => {
-        ctx.fillStyle = i%2===0 ? '#fff' : ac;
-        ctx.fillText(ln, w*0.04, startY + i*fs*1.15);
+      ctx.moveTo(0,0); ctx.lineTo(w*slantRatio,0); ctx.lineTo(w*(slantRatio-0.15),h); ctx.lineTo(0,h);
+      ctx.closePath(); ctx.fillStyle='rgba(0,0,0,0.82)'; ctx.fill(); ctx.restore();
+      ctx.strokeStyle=palette.accent; ctx.lineWidth=Math.round(h*0.018);
+      ctx.shadowColor=palette.accent; ctx.shadowBlur=10;
+      ctx.beginPath(); ctx.moveTo(w*slantRatio+2,0); ctx.lineTo(w*(slantRatio-0.15)+2,h); ctx.stroke();
+      ctx.shadowBlur=0;
+      const maxW = p ? w*(slantRatio-0.08) : w*(slantRatio-0.1);
+      const fs = p ? h*0.085 : h*0.11;
+      const { lines, fs: aFs } = smartWrap(ctx, hl.toUpperCase(), maxW, fs, h*0.055, 4);
+      const totalH = lines.length * aFs * 1.15;
+      const startY = (h-totalH)/2 - aFs*0.3;
+      ctx.shadowColor='rgba(0,0,0,1)'; ctx.shadowBlur=8;
+      lines.forEach((ln, i) => {
+        ctx.font=`900 ${aFs}px Arial Black`;
+        ctx.fillStyle = i%2===0 ? '#fff' : palette.accent;
+        ctx.textBaseline='top'; ctx.textAlign='left';
+        ctx.fillText(ln, w*0.04, startY+i*aFs*1.15);
       });
       if (sub) {
-        ctx.font=`700 ${Math.round(fs*0.5)}px Arial`; ctx.fillStyle='rgba(255,255,255,0.6)';
-        ctx.fillText(sub.toUpperCase(), w*0.04, startY+totalH+fs*0.3);
+        ctx.font=`700 ${aFs*0.52}px Arial`; ctx.fillStyle='rgba(255,255,255,0.65)';
+        ctx.fillText(sub.toUpperCase(), w*0.04, startY+totalH+aFs*0.2);
       }
       ctx.shadowBlur=0;
     }
   },
 
-  beforeAfter: {
-    render: (ctx, w, h, hl, sub, ac) => {
-      // Split line
-      ctx.fillStyle='#000'; ctx.fillRect(w*0.485,0,w*0.03,h);
-      ctx.strokeStyle=ac; ctx.lineWidth=3; ctx.setLineDash([h*0.04,h*0.03]);
-      ctx.beginPath(); ctx.moveTo(w*0.5,0); ctx.lineTo(w*0.5,h); ctx.stroke();
-      ctx.setLineDash([]);
-      const labelFs = Math.round(h*0.055);
-      ctx.font=`700 ${labelFs}px Arial`; ctx.textBaseline='top'; ctx.textAlign='center';
-      ctx.shadowColor='rgba(0,0,0,0.9)'; ctx.shadowBlur=8;
-      ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.fillText('BEFORE', w*0.25, h*0.05);
-      ctx.fillStyle=ac; ctx.fillText('AFTER', w*0.75, h*0.05);
-      // VS badge
-      const badgeR = Math.round(h*0.08);
-      ctx.fillStyle=ac; ctx.shadowBlur=0;
-      ctx.beginPath(); ctx.arc(w*0.5,h*0.5,badgeR,0,Math.PI*2); ctx.fill();
-      ctx.font=`900 ${Math.round(badgeR*0.9)}px Arial Black`; ctx.fillStyle='#000';
-      ctx.textBaseline='middle'; ctx.fillText('VS',w*0.5,h*0.5);
-      // Bottom bar
-      ctx.fillStyle='rgba(0,0,0,0.88)'; ctx.fillRect(0,h*0.76,w,h*0.24);
-      const fs = Math.round(h*0.085);
-      ctx.font=`900 ${fs}px Arial Black`; ctx.fillStyle='#fff';
-      ctx.textBaseline='middle'; ctx.textAlign='left'; ctx.shadowBlur=0;
-      const txt = trimToFit(ctx, hl.toUpperCase(), w*0.9);
-      ctx.fillText(txt, w*0.04, h*0.88);
-    }
-  },
-
   cornerBurst: {
-    render: (ctx, w, h, hl, sub, ac) => {
+    safe: false,
+    render: (ctx, w, h, hl, sub, palette) => {
       const p = h > w;
-      // Corner triangle
-      ctx.fillStyle=ac;
+      ctx.fillStyle=palette.accent;
       ctx.beginPath();
-      ctx.moveTo(w,0); ctx.lineTo(w,h*(p?0.32:0.45)); ctx.lineTo(w*(p?0.45:0.55),0);
+      ctx.moveTo(w,0); ctx.lineTo(w,h*(p?0.28:0.42)); ctx.lineTo(w*(p?0.5:0.6),0);
       ctx.closePath(); ctx.fill();
-      ctx.save(); ctx.translate(w*0.88,h*(p?0.07:0.1)); ctx.rotate(Math.PI/6);
-      ctx.font=`900 ${Math.round(h*(p?0.048:0.065))}px Arial Black`;
-      ctx.fillStyle='#000'; ctx.textBaseline='middle'; ctx.textAlign='center';
-      ctx.fillText('WOW', 0, 0); ctx.restore();
-      // Dark left overlay
-      const grad=ctx.createLinearGradient(0,0,w*(p?1:0.7),0);
-      grad.addColorStop(0,'rgba(0,0,0,0.85)'); grad.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.save(); ctx.translate(w*0.87,h*(p?0.065:0.09)); ctx.rotate(0.5);
+      const bFs = Math.round(h*(p?0.045:0.06));
+      ctx.font=`900 ${bFs}px Arial Black`; ctx.fillStyle=isLightColor(palette.accent)?'#000':'#fff';
+      ctx.textBaseline='middle'; ctx.textAlign='center'; ctx.fillText('MUST SEE',0,0); ctx.restore();
+      const grad=ctx.createLinearGradient(0,0,p?0:w*0.65,p?h*0.5:0);
+      grad.addColorStop(0,'rgba(0,0,0,0.88)'); grad.addColorStop(1,'rgba(0,0,0,0)');
       ctx.fillStyle=grad; ctx.fillRect(0,0,w,h);
-      ctx.shadowColor='rgba(0,0,0,1)'; ctx.shadowBlur=15;
       const words=hl.toUpperCase().split(' ');
-      const bigPart=words[0]; const rest=words.slice(1).join(' ');
-      let bigFs=Math.round(p?h*0.32:h*0.46);
-      ctx.font=`900 ${bigFs}px Arial Black`;
-      while(ctx.measureText(bigPart).width>w*(p?0.8:0.75)&&bigFs>30){bigFs-=4;ctx.font=`900 ${bigFs}px Arial Black`;}
-      ctx.fillStyle=ac; ctx.textBaseline='top'; ctx.textAlign='left';
-      ctx.fillText(bigPart, w*0.04, p?h*0.12:h*0.1);
-      if(rest){
-        const rfs=Math.round(p?h*0.075:h*0.09);
-        ctx.font=`900 ${rfs}px Arial Black`; ctx.fillStyle='#fff';
-        const lines=wrapText(ctx,rest,w*(p?0.8:0.75),rfs);
-        lines.forEach((ln,i)=>ctx.fillText(ln,w*0.04,p?h*0.12+bigFs*1.05+i*rfs*1.2:h*0.1+bigFs*1.05+i*rfs*1.2));
+      const bigWord=words[0]; const rest=words.slice(1).join(' ');
+      const maxGW = p ? w*0.88 : w*0.78;
+      const gFs = fitText(ctx, bigWord, maxGW, p?h*0.28:h*0.42, p?h*0.14:h*0.2);
+      ctx.font=`900 ${gFs}px Arial Black`;
+      ctx.fillStyle=palette.accent; ctx.textBaseline='top'; ctx.textAlign='left';
+      ctx.shadowColor='rgba(0,0,0,1)'; ctx.shadowBlur=18;
+      ctx.fillText(bigWord, w*0.04, p?h*0.11:h*0.08);
+      if (rest) {
+        const rFs = Math.round(p?h*0.08:h*0.095);
+        const { lines, fs: aFs } = smartWrap(ctx, rest, p?w*0.82:w*0.72, rFs, h*0.05, 3);
+        ctx.font=`900 ${aFs}px Arial Black`; ctx.fillStyle='#fff';
+        lines.forEach((ln,i)=>ctx.fillText(ln,w*0.04,p?h*0.11+gFs*1.08+i*aFs*1.2:h*0.08+gFs*1.08+i*aFs*1.2));
+        if(sub){ctx.font=`700 ${aFs*0.58}px Arial`;ctx.fillStyle=palette.accent;
+          ctx.fillText(sub.toUpperCase(),w*0.04,p?h*0.11+gFs*1.08+lines.length*aFs*1.2+aFs*0.3:h*0.08+gFs*1.08+lines.length*aFs*1.2+aFs*0.3);}
       }
       ctx.shadowBlur=0; ctx.textAlign='left';
     }
   },
 
-  emojiAnchor: {
-    render: (ctx, w, h, hl, sub, ac) => {
+  stackedBoxes: {
+    safe: false,
+    render: (ctx, w, h, hl, sub, palette) => {
       const p = h > w;
-      const grad=ctx.createLinearGradient(0,0,p?0:w*0.7,p?h*0.6:0);
-      grad.addColorStop(0,'rgba(0,0,0,0.85)'); grad.addColorStop(1,'rgba(0,0,0,0)');
-      ctx.fillStyle=grad; ctx.fillRect(0,0,w,h);
-      const emojiFs = Math.round(p ? h*0.12 : h*0.16);
-      ctx.font=`${emojiFs}px serif`; ctx.textBaseline='top'; ctx.textAlign='left';
-      ctx.fillText('🏚️➡️🏡', w*0.03, p?h*0.08:h*0.08);
-      const fs=Math.round(p?h*0.09:h*0.12);
-      ctx.font=`900 ${fs}px Arial Black`; ctx.shadowColor='rgba(0,0,0,1)'; ctx.shadowBlur=10;
-      const maxW = p ? w*0.88 : w*0.6;
-      const lines=wrapText(ctx,hl.toUpperCase(),maxW,fs);
-      const startY = p ? h*0.08+emojiFs*1.2 : h*0.08+emojiFs*1.2;
-      lines.forEach((ln,i)=>{ctx.fillStyle=i%2===0?'#fff':ac; ctx.fillText(ln,w*0.03,startY+i*fs*1.2);});
-      if(sub){ctx.font=`700 ${Math.round(fs*0.55)}px Arial`;ctx.fillStyle='rgba(255,255,255,0.6)';ctx.fillText(sub.toUpperCase(),w*0.03,startY+lines.length*fs*1.2+fs*0.3);}
-      ctx.shadowBlur=0;
-    }
-  },
-
-  newsFlash: {
-    render: (ctx, w, h, hl, sub, ac) => {
-      const p = h > w;
-      const panelW = p ? w : w*0.54;
-      ctx.fillStyle='rgba(0,0,12,0.9)'; ctx.fillRect(0,0,panelW,h);
-      ctx.fillStyle=ac; ctx.fillRect(0,0,panelW,h*0.022);
-      // Category badge
-      const bh=h*0.08; const bw=w*(p?0.38:0.26); const by=h*0.055; const bx=w*0.04; const br=h*0.03;
-      ctx.fillStyle=ac;
-      ctx.beginPath(); ctx.roundRect(bx,by,bw,bh,br); ctx.fill();
-      ctx.font=`700 ${Math.round(bh*0.52)}px Arial`; ctx.fillStyle='#000';
-      ctx.textBaseline='middle'; ctx.textAlign='center'; ctx.fillText('BREAKING',bx+bw/2,by+bh/2);
-      const fs=Math.round(p?h*0.1:h*0.115);
-      ctx.font=`900 ${fs}px Arial Black`; ctx.fillStyle='#fff';
-      ctx.textBaseline='top'; ctx.textAlign='left'; ctx.shadowColor='rgba(0,0,0,0.8)'; ctx.shadowBlur=6;
-      const maxW = p ? w*0.9 : w*0.48;
-      const lines=wrapText(ctx,hl.toUpperCase(),maxW,fs);
-      lines.forEach((ln,i)=>ctx.fillText(ln,w*0.04,h*0.18+i*fs*1.1));
-      ctx.strokeStyle=ac; ctx.lineWidth=2; ctx.shadowBlur=0;
-      const divY=h*0.18+lines.length*fs*1.1+fs*0.3;
-      ctx.beginPath(); ctx.moveTo(w*0.04,divY); ctx.lineTo((p?w*0.92:w*0.48),divY); ctx.stroke();
-      if(sub){ctx.font=`600 ${Math.round(fs*0.55)}px Arial`;ctx.fillStyle='rgba(255,255,255,0.55)';ctx.fillText(sub.toUpperCase(),w*0.04,divY+h*0.02);}
+      const words = hl.toUpperCase().split(' ');
+      const third = Math.ceil(words.length/3);
+      const chunks = [words.slice(0,third).join(' '), words.slice(third,third*2).join(' '), words.slice(third*2).join(' ')].filter(c=>c.trim());
+      const bh = p ? h*0.14 : h*0.18;
+      const bw = p ? w*0.82 : w*0.56;
+      const startX = p ? w*0.09 : w*0.04;
+      const gap = h*0.014;
+      const totalBoxH = chunks.length * bh + (chunks.length-1)*gap;
+      const startY = p ? h*0.28 : (h-totalBoxH)/2;
+      const colors = ['#fff', palette.accent, '#111'];
+      const txColors = ['#111', isLightColor(palette.accent)?'#000':'#fff', '#fff'];
+      ctx.shadowColor='rgba(0,0,0,0.5)'; ctx.shadowBlur=8;
+      chunks.slice(0,3).forEach((chunk, i) => {
+        ctx.fillStyle=colors[i]; ctx.fillRect(startX, startY+i*(bh+gap), bw, bh);
+        const fs = fitText(ctx, chunk, bw*0.88, i===1?bh*0.62:bh*0.5, bh*0.25);
+        ctx.font=`900 ${fs}px Arial Black`; ctx.fillStyle=txColors[i];
+        ctx.textBaseline='middle'; ctx.textAlign='left';
+        ctx.fillText(chunk, startX+bw*0.05, startY+i*(bh+gap)+bh/2);
+      });
+      ctx.shadowBlur=0; ctx.textAlign='left';
     }
   }
 
 };
+
+function pickTemplate(contentType, isBold) {
+  const ct = (contentType||'').toLowerCase();
+  const safePool = ['cinematic','newsFlash','splitPanel'];
+  const boldPool = ['giantWord','diagonalSlash','cornerBurst','stackedBoxes'];
+  const pool = isBold ? boldPool : safePool;
+  // Content-based matching
+  if (!isBold) {
+    if (ct.includes('emotional')||ct.includes('family')||ct.includes('moment')) return 'cinematic';
+    if (ct.includes('breaking')||ct.includes('news')||ct.includes('announce')) return 'newsFlash';
+    return 'splitPanel';
+  } else {
+    if (ct.includes('personal')||ct.includes('story')) return 'giantWord';
+    if (ct.includes('tutorial')||ct.includes('transform')) return 'diagonalSlash';
+    if (ct.includes('number')||ct.includes('cost')||ct.includes('achieve')) return 'stackedBoxes';
+    return 'cornerBurst';
+  }
+}
 
 function wrapText(ctx, text, maxW, fs) {
   const words = text.split(' ');
@@ -2805,19 +2894,28 @@ function pickTemplate(contentType) {
   return all[Math.floor(Date.now()/10000) % all.length];
 }
 
-function drawThumb(canvasId, w, h, headline, subtext, accentColor, imgSrc, contentType, templateName) {
+function drawThumb(canvasId, w, h, headline, subtext, accentColor, imgSrc, contentType, templateName, isBold) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
   canvas.width = w;
   canvas.height = h;
   const ctx = canvas.getContext('2d');
 
-  const tplKey = templateName || pickTemplate(contentType || '');
+  const tplKey = templateName || pickTemplate(contentType || '', isBold || false);
   const tpl = THUMB_TEMPLATES[tplKey] || THUMB_TEMPLATES.cinematic;
+  const palette = getPalette(accentColor, tplKey);
 
   const finish = () => {
     ctx.save();
-    tpl.render(ctx, w, h, headline || 'YOUR STORY', subtext || '', accentColor || '#F472B6');
+    try {
+      tpl.render(ctx, w, h, headline || 'YOUR STORY', subtext || '', palette);
+    } catch(e) {
+      // Fallback render if template fails
+      ctx.fillStyle='rgba(0,0,0,0.8)'; ctx.fillRect(0,0,w,h);
+      ctx.font=`900 ${Math.round(h*0.1)}px Arial Black`; ctx.fillStyle='#fff';
+      ctx.textBaseline='middle'; ctx.textAlign='center';
+      ctx.fillText((headline||'').toUpperCase().slice(0,20), w/2, h/2);
+    }
     ctx.restore();
   };
 
@@ -2825,10 +2923,10 @@ function drawThumb(canvasId, w, h, headline, subtext, accentColor, imgSrc, conte
     const img = new Image();
     img.onload = () => {
       const scale = Math.max(w/img.width, h/img.height);
-      const sw = img.width*scale; const sh = img.height*scale;
-      ctx.drawImage(img, (w-sw)/2, (h-sh)/2, sw, sh);
+      ctx.drawImage(img, (w-img.width*scale)/2, (h-img.height*scale)/2, img.width*scale, img.height*scale);
       finish();
     };
+    img.onerror = () => { ctx.fillStyle='#1a1a1a'; ctx.fillRect(0,0,w,h); finish(); };
     img.src = imgSrc;
   } else {
     const bg = ctx.createLinearGradient(0,0,w,h);
@@ -2950,10 +3048,10 @@ function renderLens(data) {
 
       setTimeout(() => {
         if (hl2) {
-          renderThumbnailCanvases(hl1, sub1, ac, imgSrc, 'thumb169s', 'thumb916s', ct, safeKey);
-          renderThumbnailCanvases(hl2, sub2, ac, imgSrc, 'thumb169b', 'thumb916b', ct, boldKey);
+          renderThumbnailCanvases(hl1, sub1, ac, imgSrc, 'thumb169s', 'thumb916s', ct, null, false);
+          renderThumbnailCanvases(hl2, sub2, ac, imgSrc, 'thumb169b', 'thumb916b', ct, null, true);
         } else {
-          renderThumbnailCanvases(hl1, sub1, ac, imgSrc, 'thumb169', 'thumb916', ct);
+          renderThumbnailCanvases(hl1, sub1, ac, imgSrc, 'thumb169', 'thumb916', ct, null, false);
         }
       }, 400);
     }
