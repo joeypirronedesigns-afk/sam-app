@@ -111,7 +111,7 @@ module.exports = async function handler(req, res) {
       const r = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: maxTokens, system, messages: [{ role: 'user', content: userContent }] }),
+        body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: maxTokens, system, messages: [{ role: 'user', content: userContent }] }),
         signal: controller.signal
       });
       clearTimeout(timeout);
@@ -214,7 +214,6 @@ module.exports = async function handler(req, res) {
 
     const scriptInstruction = scriptInstructions[contentType] || scriptInstructions['Short-form video'];
 
-    // Build per-platform strategy instruction
     const platStrategyInstruction = platforms && platforms.length > 0
       ? 'For platform_strategies, write a tailored caption + hashtags for EACH selected platform, strictly following that platforms character limits and hashtag rules as specified above.'
       : '';
