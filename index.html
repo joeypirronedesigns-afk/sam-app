@@ -3170,20 +3170,17 @@
     loaderInterval = setInterval(()=>{ idx=(idx+1)%loaderLines.length; document.getElementById('loaderText').textContent=loaderLines[idx]; },1800);
     try {
       const ct = getContentType(), ctx2 = document.getElementById('creatorContext').value.trim();
-      const [sd, hd] = await Promise.all([
-        callAPI('story', text, getSelectedPlatforms(), ct, ctx2, getTone(), getAudienceDemographics(), getOutputLanguage(), getEmojiPreference()),
-        callAPI('hook', text, getSelectedPlatforms(), ct, ctx2, getTone(), getAudienceDemographics(), getOutputLanguage(), getEmojiPreference())
-      ]);
+      const data = await callAPI('pulse', text, getSelectedPlatforms(), ct, ctx2, getTone(), getAudienceDemographics(), getOutputLanguage(), getEmojiPreference());
       clearInterval(loaderInterval);
       document.getElementById('loader').classList.remove('show');
-      renderOutput(Object.assign({}, sd, hd), ct);
+      renderOutput(data, ct);
       document.getElementById('outCard').classList.add('show');
       document.getElementById('saveBar').style.display = 'block';
       document.getElementById('focusBlock').style.display = 'block';
       document.getElementById('runBtn').disabled = false;
       document.getElementById('outCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
       buildDock('moment', 'momentDockGrid', 'momentDock');
-      fetchFocusAction('moment', text, Object.assign({}, sd, hd));
+      fetchFocusAction('moment', text, data);
     } catch(err) {
       clearInterval(loaderInterval);
       document.getElementById('loader').classList.remove('show');
