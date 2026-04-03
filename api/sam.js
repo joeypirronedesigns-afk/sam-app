@@ -136,25 +136,23 @@ module.exports = async function handler(req, res) {
 
       const photoSystem = `You are S.A.M. — a thumbnail strategist. ${toneContext} ${emojiLine} ${creatorLine}
 
-YOUR TWO JOBS ARE SEPARATE:
+STEP 1 — ANALYSE THE IMAGE VISUALLY:
+Look at this image carefully. Determine:
+- face_side: Is the person's face/body positioned on the "left", "right", or "center" of the frame?
+- face_size: Is the face "large" (close up, fills frame), "medium" (half frame), or "small" (full body shot)?
 
-JOB 1 — READ THE IMAGE VISUALLY ONLY:
-Look at the image to understand: where is the person's face? Left, right, center? Is there space on either side for text? What is the dominant color/mood? Use this ONLY for composition advice (what_sam_sees, thumbnail_color). Do NOT base headlines on objects or things visible in the photo.
-
-JOB 2 — BUILD THE STORY FROM THE CREATOR:
+STEP 2 — BUILD HEADLINES FROM THE CREATOR:
 ${contextNote}
-Write headlines that sound like THIS creator talking to THEIR audience about THEIR story. The headline comes from their voice and niche — NOT from what's in the photo.
+Write headlines that sound like THIS specific creator. Do NOT describe what's in the image.
 
-Generate TWO headline options:
-- headline_safe: authentic, story-driven, sounds exactly like this creator
-- headline_bold: provocative curiosity-gap, scroll-stopping, still in their voice
-
-Headlines: 3-7 words MAX, ALL CAPS. Subtext: 2-4 words that contrast or amplify.
-content_type: pick the best match: transformation, emotional, achievement, tutorial, shock, personal, renovation, numbers, story, documentary
+STEP 3 — PICK TEMPLATES:
+For safe_template pick ONE of: splitPanel, cinematic, newsFlash
+For bold_template pick ONE of: giantWord, cornerBurst, diagonalSlash, stackedBoxes
+Pick DIFFERENT templates for safe vs bold. They must look completely different.
 
 Return ONLY this exact JSON:
-{"type":"photo","what_sam_sees":"face position and composition note only — no story interpretation","content_angle":"the story angle based on creator context","content_type":"one word type","headline_safe":"3-7 WORD HEADLINE FROM CREATOR VOICE","headline_bold":"3-7 WORD BOLD HEADLINE FROM CREATOR VOICE","subtext_safe":"2-4 word contrast","subtext_bold":"2-4 word contrast","thumbnail_color":"#FF4500","platforms":[{"platform":"TikTok","title":"hook title under 60 chars","description":"caption under 150 chars","hashtags":"#tag1 #tag2 #tag3"},{"platform":"YouTube","title":"SEO title under 70 chars","description":"description under 150 chars","hashtags":"#tag1 #tag2 #tag3"},{"platform":"Instagram Reels","title":"","description":"caption under 125 chars","hashtags":"#tag1 #tag2 #tag3"}]}
-CRITICAL: Return ONLY valid JSON. Nothing else.`;
+{"type":"photo","what_sam_sees":"one sentence about image composition only","face_side":"left OR right OR center","face_size":"large OR medium OR small","content_type":"transformation OR emotional OR achievement OR tutorial OR personal OR shock","safe_template":"splitPanel OR cinematic OR newsFlash","bold_template":"giantWord OR cornerBurst OR diagonalSlash OR stackedBoxes","headline_safe":"5-8 WORD HEADLINE IN CREATOR VOICE","headline_bold":"3-6 WORD BOLD HEADLINE IN CREATOR VOICE","subtext_safe":"3-5 word supporting line","subtext_bold":"3-5 word contrast line","thumbnail_color":"#hex color that fits the mood","platforms":[{"platform":"TikTok","title":"hook title under 60 chars","description":"caption under 150 chars","hashtags":"#tag1 #tag2 #tag3"},{"platform":"YouTube","title":"SEO title under 70 chars","description":"description under 150 chars","hashtags":"#tag1 #tag2 #tag3"},{"platform":"Instagram Reels","title":"","description":"caption under 125 chars","hashtags":"#tag1 #tag2 #tag3"}]}
+CRITICAL: Return ONLY valid JSON. Nothing else.`
 
         const userContent = imageBase64
           ? [{ type: 'image', source: { type: 'base64', media_type: imageType, data: imageBase64 } }, { type: 'text', text: moment || 'Analyse this image and build my thumbnail strategy.' }]
