@@ -111,7 +111,7 @@ module.exports = async function handler(req, res) {
       const r = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: maxTokens, system, messages: [{ role: 'user', content: userContent }] }),
+        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: maxTokens, system, messages: [{ role: 'user', content: userContent }] }),
         signal: controller.signal
       });
       clearTimeout(timeout);
@@ -218,15 +218,27 @@ module.exports = async function handler(req, res) {
       ? 'For platform_strategies, write a tailored caption + hashtags for EACH selected platform, strictly following that platforms character limits and hashtag rules as specified above.'
       : '';
 
-    const storyPrompt = base + ' ' + scriptInstruction + ' Return: {"diagnosis":"2-3 sentences on what this moment is really about emotionally","hook":"single best opening line","story_spine":"Setup / Tension / Payoff separated by /","full_script":"COMPLETE OUTPUT as specified","b_roll":"4 specific b-roll shots each on own line","pacing_note":"one specific delivery tip","cta":"identity-based call to action","content_warning":"one honest risk — one sentence describing what could go wrong or feel off","content_fix":"the exact rewritten line or section that fixes the risk — ready to use, not advice"}';
-
+    // Combine story + hook into ONE call to stay under Vercel's 30s timeout
     const allPlatList = platforms && platforms.length > 0 ? platforms : ['TikTok', 'YouTube Shorts', 'YouTube', 'Instagram Reels', 'Facebook Reels', 'LinkedIn', 'X (Twitter)'];
-    const hookPrompt = base + ' ' + platStrategyInstruction + ' ALWAYS generate platform_strategies for ALL of these platforms: ' + allPlatList.join(', ') + '. Return: {"diagnosis":"what makes this hook-worthy","hook_1":"emotion-first hook","hook_2":"curiosity-first hook","hook_3":"identity-first hook","winner":"which hook and why","visual_note":"what to show on screen first 3 seconds","platform_strategies":[{"platform":"exact platform name","strategy":"specific posting strategy","caption":"ready-to-post caption respecting that platforms exact character limit","hashtags":"hashtags following that platforms rules"}]}';
+    const combinedPrompt = base + ' ' + scriptInstruction + ' ' + platStrategyInstruction +
+      ' Return ONE JSON object with ALL of these fields: ' +
+      '{"diagnosis":"2-3 sentences on what this moment is really about emotionally",' +
+      '"hook":"single best opening line",' +
+      '"hook_1":"emotion-first hook",' +
+      '"hook_2":"curiosity-first hook",' +
+      '"hook_3":"identity-first hook",' +
+      '"winner":"which hook and why",' +
+      '"visual_note":"what to show on screen in first 3 seconds",' +
+      '"story_spine":"Setup / Tension / Payoff separated by /",' +
+      '"full_script":"COMPLETE OUTPUT as specified",' +
+      '"b_roll":["b-roll shot 1","b-roll shot 2","b-roll shot 3","b-roll shot 4"],' +
+      '"pacing_note":"one specific delivery tip",' +
+      '"cta":"identity-based call to action",' +
+      '"content_warning":"one honest risk",' +
+      '"content_fix":"the exact rewritten line that fixes the risk",' +
+      '"platform_strategies":[{"platform":"exact platform name from ' + allPlatList.join(', ') + '","strategy":"specific posting strategy","caption":"ready-to-post caption respecting that platforms exact character limit","hashtags":"hashtags following that platforms rules"}]}';
 
-    const systemPrompt = mode === 'story' ? storyPrompt : hookPrompt;
-    if (!systemPrompt) return res.status(400).json({ error: 'Invalid mode' });
-
-    const parsed = await callAnthropic(systemPrompt, moment, 1600);
+    const parsed = await callAnthropic(combinedPrompt, moment, 2200);
     return res.status(200).json(parsed);
 
   } catch (err) {
