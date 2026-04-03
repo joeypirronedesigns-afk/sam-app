@@ -3343,7 +3343,7 @@
       return;
     }
 
-    const viralityPct = Math.min(100, Math.max(30, (data.virality_score || 75)));
+    const viralityPct = 100;
 
     let prodItems = '';
     if (data.production_notes && Array.isArray(data.production_notes)) {
@@ -3370,7 +3370,7 @@
         <div class="concept-virality-meter">
           <span class="concept-virality-label">Scroll-stop potential</span>
           <div class="concept-virality-bar"><div class="concept-virality-fill" style="width:0%" id="viralityFill"></div></div>
-          <span class="concept-virality-score">${viralityPct}%</span>
+          <span class="concept-virality-score" style="color:var(--gold);">100%</span>
         </div>
       </div>
 
@@ -3625,7 +3625,48 @@ CRITICAL: Return ONLY valid JSON. No markdown. No backticks. No preamble.`;
       label.textContent = '🖼️ Visual strategy';
       html += `<div class="upload-result-type">🖼️ Photo / visual detected</div>`;
       if (data.what_sam_sees) html += `<div class="concept-card"><div class="concept-card-label">What SAM sees</div><div class="concept-card-text">${data.what_sam_sees}</div></div>`;
-      if (data.thumbnail_strategy) html += `<div class="concept-card" style="border-color:var(--gold-border);background:var(--gold-light);"><div class="concept-card-label">Thumbnail strategy</div><div class="concept-card-text" style="font-weight:500;">${data.thumbnail_strategy}</div></div>`;
+
+      // ── THUMBNAIL MOCKUP ──────────────────────────────────────────
+      if (data.thumbnail_headline) {
+        const accentColor = data.thumbnail_color || '#E53E3E';
+        const emotion = data.thumbnail_emotion || '';
+        html += `
+        <div class="concept-card" style="padding:0;overflow:hidden;border-color:var(--gold-border);">
+          <div style="padding:12px 16px 10px;background:var(--gold-light);border-bottom:1px solid var(--gold-border);">
+            <div class="concept-card-label" style="margin:0;">Thumbnail mockup — SAM's vision</div>
+          </div>
+          <div style="padding:16px;">
+            <div class="thumbnail-mockup" style="
+              position:relative;
+              width:100%;
+              aspect-ratio:16/9;
+              background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 50%,#0d0d0d 100%);
+              border-radius:10px;
+              overflow:hidden;
+              display:flex;
+              align-items:flex-end;
+              justify-content:flex-start;
+              padding:18px 20px;
+              box-shadow:0 8px 32px rgba(0,0,0,0.4);
+            ">
+              <!-- Accent bar top -->
+              <div style="position:absolute;top:0;left:0;right:0;height:5px;background:${accentColor};"></div>
+              <!-- Gradient overlay -->
+              <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,rgba(0,0,0,0.2) 55%,transparent 100%);"></div>
+              <!-- Emotion badge -->
+              ${emotion ? `<div style="position:absolute;top:14px;right:14px;background:${accentColor};color:#fff;font-family:'Inter',sans-serif;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:5px 11px;border-radius:4px;text-transform:uppercase;">${emotion}</div>` : ''}
+              <!-- Text content -->
+              <div style="position:relative;z-index:2;">
+                <div style="font-family:'Inter',sans-serif;font-size:clamp(18px,3.5vw,28px);font-weight:900;color:#fff;line-height:1.1;letter-spacing:-0.02em;text-transform:uppercase;text-shadow:0 2px 12px rgba(0,0,0,0.8);margin-bottom:6px;">${data.thumbnail_headline}</div>
+                ${data.thumbnail_subtext ? `<div style="font-family:'Inter',sans-serif;font-size:clamp(11px,1.8vw,15px);font-weight:600;color:${accentColor};letter-spacing:0.04em;text-transform:uppercase;">${data.thumbnail_subtext}</div>` : ''}
+              </div>
+            </div>
+            <div style="margin-top:10px;font-size:12px;color:var(--text-muted);font-style:italic;line-height:1.5;">${data.thumbnail_strategy || ''}</div>
+            <button class="copy-btn" style="margin-top:8px;" onclick="copyThumbnailText(this, '${(data.thumbnail_headline||'').replace(/'/g,"\'")}', '${(data.thumbnail_subtext||'').replace(/'/g,"\'")}')">Copy text</button>
+          </div>
+        </div>`;
+      }
+
       if (data.hook_ideas?.length) html += `<div class="concept-card"><div class="concept-card-label">Hook ideas from this image</div><ul class="concept-production-list">${data.hook_ideas.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
       if (data.content_angle) html += `<div class="concept-card"><div class="concept-card-label">Content angle</div><div class="concept-card-text">${data.content_angle}</div></div>`;
       if (data.caption_starter) html += `<div class="concept-card"><div class="concept-card-label">Caption starter</div><div class="hook-box">${data.caption_starter}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`;
@@ -3665,6 +3706,14 @@ CRITICAL: Return ONLY valid JSON. No markdown. No backticks. No preamble.`;
     recognitionUpload.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;document.getElementById('uploadInp').value=t;};
     recognitionUpload.onend=recognitionUpload.onerror=()=>{isRecordingUpload=false;btn.classList.remove('recording');btn.innerHTML='🎙';};
     recognitionUpload.start();
+  }
+
+  function copyThumbnailText(btn, headline, subtext) {
+    const text = subtext ? headline + '\n' + subtext : headline;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copied!'; btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy text'; btn.classList.remove('copied'); }, 2000);
+    });
   }
 
   function copyVT(btn) {
