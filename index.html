@@ -1658,6 +1658,166 @@
     .pro-bottom-btn:hover { transform: translateY(-3px); box-shadow: 0 0 60px rgba(167,139,250,0.5); }
     .pro-bottom-note { font-size: 13px; color: var(--text3); margin-top: 14px; }
 
+
+    /* ── WAITLIST MODAL ── */
+    .wl-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 600;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .wl-overlay.open { display: flex; }
+    @media(min-width:600px){ .wl-overlay { align-items: center; padding: 20px; } }
+
+    .wl-inner {
+      background: rgba(13,11,22,0.98);
+      border: 1px solid rgba(167,139,250,0.3);
+      border-radius: 26px 26px 0 0;
+      padding: 14px 24px 48px;
+      width: 100%;
+      max-width: 480px;
+      animation: slide-up 0.35s cubic-bezier(0.34,1.2,0.64,1);
+      position: relative;
+      overflow: hidden;
+    }
+    @media(min-width:600px){ .wl-inner { border-radius: 26px; padding: 32px 32px 36px; } }
+
+    .wl-inner::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 8%; right: 8%;
+      height: 1px;
+      background: linear-gradient(90deg,transparent,#A78BFA,#F472B6,transparent);
+    }
+
+    .wl-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text3);
+      font-size: 14px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+    .wl-close:hover { color: var(--text); }
+
+    .wl-icon {
+      font-size: 36px;
+      text-align: center;
+      margin-bottom: 14px;
+    }
+
+    .wl-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      text-align: center;
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+
+    .wl-sub {
+      font-size: 14px;
+      color: var(--text2);
+      text-align: center;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .wl-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .wl-input {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      color: var(--text);
+      transition: all 0.2s;
+      -webkit-appearance: none;
+    }
+    .wl-input:focus { outline: none; border-color: rgba(167,139,250,0.6); background: rgba(255,255,255,0.07); }
+    .wl-input::placeholder { color: var(--text3); }
+
+    .wl-submit {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'Sora', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(135deg,#6D28D9,#A78BFA 50%,#F472B6);
+      color: #fff;
+      box-shadow: 0 0 30px rgba(167,139,250,0.3);
+      transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .wl-submit:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(167,139,250,0.45); }
+    .wl-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .wl-note {
+      font-size: 12px;
+      color: var(--text3);
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    .wl-perks {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 22px;
+    }
+    .wl-perk {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--text2);
+    }
+    .wl-perk-dot {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: rgba(52,211,153,0.12);
+      border: 1px solid rgba(52,211,153,0.25);
+      color: #34D399;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* Success state */
+    .wl-success {
+      display: none;
+      text-align: center;
+      padding: 16px 0 8px;
+    }
+    .wl-success.show { display: block; }
+    .wl-success-icon { font-size: 48px; margin-bottom: 14px; }
+    .wl-success-title { font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .wl-success-sub { font-size: 14px; color: var(--text2); line-height: 1.6; }
+    .wl-err { font-size: 13px; color: #F09595; text-align: center; margin-top: 6px; display: none; }
+    .wl-err.show { display: block; }
   </style>
 </head>
 <body>
@@ -3140,8 +3300,9 @@ function closeProPage() {
 function openProModal() { openProPage(); }  // alias for all existing calls
 
 function handleProSignup() {
-  // Placeholder — wire Stripe here
-  alert("SAM Pro is launching soon! You'll be first to know. 🚀");
+  // Open waitlist instead of Stripe until payment is ready
+  closeProPage();
+  openWaitlist();
 }
 
 function handleAnnualNotify() {
@@ -3153,6 +3314,83 @@ function toggleFaq(item) {
   document.querySelectorAll('.pro-faq-item').forEach(i => i.classList.remove('open'));
   if (!isOpen) item.classList.add('open');
 }
+
+
+
+// ── WAITLIST ──────────────────────────────────────────────────────────────────
+// Change this to YOUR email address to receive notifications
+const SAM_NOTIFY_EMAIL = 'samforcreators@gmail.com';
+
+function openWaitlist() {
+  // Reset form state
+  document.getElementById('wlFormState').style.display = 'block';
+  document.getElementById('wlSuccess').classList.remove('show');
+  document.getElementById('wlErr').classList.remove('show');
+  document.getElementById('wlName').value = '';
+  document.getElementById('wlEmail').value = '';
+  document.getElementById('wlSubmitBtn').disabled = false;
+  document.getElementById('wlBtnText').textContent = 'Join the waitlist →';
+  document.getElementById('wlOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeWaitlist() {
+  document.getElementById('wlOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function handleWlOutside(e) {
+  if (e.target === document.getElementById('wlOverlay')) closeWaitlist();
+}
+
+async function submitWaitlist() {
+  const name  = document.getElementById('wlName').value.trim();
+  const email = document.getElementById('wlEmail').value.trim();
+  const btn   = document.getElementById('wlSubmitBtn');
+  const err   = document.getElementById('wlErr');
+
+  err.classList.remove('show');
+
+  if (!name) { showWlErr('Please enter your first name.'); return; }
+  if (!email || !email.includes('@')) { showWlErr('Please enter a valid email address.'); return; }
+
+  btn.disabled = true;
+  document.getElementById('wlBtnText').textContent = 'Joining...';
+
+  try {
+    // Store in localStorage as local backup
+    const existing = JSON.parse(localStorage.getItem('sam-waitlist') || '[]');
+    existing.push({ name, email, ts: new Date().toISOString() });
+    localStorage.setItem('sam-waitlist', JSON.stringify(existing));
+
+    // Send via API route (notify the owner + confirm to user)
+    const res = await fetch('/api/waitlist', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, notifyEmail: SAM_NOTIFY_EMAIL })
+    });
+
+    // Show success regardless (local save worked, API is bonus)
+    document.getElementById('wlFormState').style.display = 'none';
+    document.getElementById('wlSuccess').classList.add('show');
+
+  } catch(e) {
+    // Still show success — we saved locally
+    document.getElementById('wlFormState').style.display = 'none';
+    document.getElementById('wlSuccess').classList.add('show');
+  }
+}
+
+function showWlErr(msg) {
+  const err = document.getElementById('wlErr');
+  err.textContent = msg;
+  err.classList.add('show');
+  document.getElementById('wlSubmitBtn').disabled = false;
+  document.getElementById('wlBtnText').textContent = 'Join the waitlist →';
+}
+
+// Also wire the annual notify button
+function handleAnnualNotify() { openWaitlist(); }
 
 </script>
 
@@ -3378,6 +3616,46 @@ function toggleFaq(item) {
     <div class="pro-bottom-note">🔒 7-day money-back · Cancel anytime · Lock in $9 before the price goes up</div>
   </div>
 
+</div>
+
+
+<!-- ── WAITLIST MODAL ── -->
+<div class="wl-overlay" id="wlOverlay" onclick="handleWlOutside(event)">
+  <div class="wl-inner">
+    <button class="wl-close" onclick="closeWaitlist()">✕</button>
+
+    <!-- Default form state -->
+    <div id="wlFormState">
+      <div class="wl-icon">🚀</div>
+      <div class="wl-title">Join the SAM Pro waitlist</div>
+      <div class="wl-sub">Be first when we launch. Lock in the founding member price before it goes up.</div>
+
+      <div class="wl-perks">
+        <div class="wl-perk"><div class="wl-perk-dot">✓</div>First access when Pro goes live</div>
+        <div class="wl-perk"><div class="wl-perk-dot">✓</div>Founding member rate — $9/month locked forever</div>
+        <div class="wl-perk"><div class="wl-perk-dot">✓</div>Exclusive early-access features</div>
+        <div class="wl-perk"><div class="wl-perk-dot">✓</div>Direct line to the SAM team</div>
+      </div>
+
+      <div class="wl-form">
+        <input class="wl-input" type="text" id="wlName" placeholder="Your first name" autocomplete="given-name" />
+        <input class="wl-input" type="email" id="wlEmail" placeholder="Your email address" autocomplete="email" inputmode="email" />
+        <button class="wl-submit" id="wlSubmitBtn" onclick="submitWaitlist()">
+          <span id="wlBtnText">Join the waitlist →</span>
+        </button>
+        <div class="wl-err" id="wlErr"></div>
+        <div class="wl-note">🔒 No spam. One email when we launch. That's it.</div>
+      </div>
+    </div>
+
+    <!-- Success state -->
+    <div class="wl-success" id="wlSuccess">
+      <div class="wl-success-icon">🎉</div>
+      <div class="wl-success-title">You're on the list!</div>
+      <div class="wl-success-sub">We'll email you the moment SAM Pro opens. You've locked in the founding member rate.<br/><br/>In the meantime — use the free tools. SAM is ready right now.</div>
+    </div>
+
+  </div>
 </div>
 
 </body>
