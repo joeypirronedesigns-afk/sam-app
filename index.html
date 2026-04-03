@@ -819,11 +819,11 @@
     }
     .platform-pill:hover { border-color: var(--border2); color: var(--text); }
     .platform-pill.sel {
-      color: #0A0800;
-      border-color: #FBBF24;
-      background: #FBBF24;
+      color: #ffffff;
+      border-color: rgba(167,139,250,0.6);
+      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, #F472B6);
       font-weight: 600;
-      box-shadow: 0 0 12px rgba(251,191,36,0.35);
+      box-shadow: 0 0 16px rgba(167,139,250,0.4);
     }
 
     /* ── OPTIONS ── */
@@ -1191,165 +1191,234 @@
       color: var(--text2);
     }
 
-    /* Pro modal */
-    .pro-modal {
+
+    /* ── PRO PAGE ── */
+    .pro-page {
       display: none;
       position: fixed;
       inset: 0;
-      z-index: 400;
-      background: rgba(0,0,0,0.75);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      align-items: flex-end;
-      justify-content: center;
-      padding: 0;
-    }
-    .pro-modal.open { display: flex; }
-    @media (min-width: 700px) {
-      .pro-modal { align-items: center; padding: 20px; }
-    }
-    .pro-inner {
-      background: rgba(13,11,22,0.98);
-      border: 1px solid rgba(167,139,250,0.2);
-      border-radius: 26px 26px 0 0;
-      padding: 16px 22px 48px;
-      width: 100%;
-      max-width: 560px;
-      max-height: 92dvh;
+      background: var(--bg);
+      z-index: 500;
       overflow-y: auto;
-      animation: slide-up 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
-      position: relative;
+      -webkit-overflow-scrolling: touch;
+      animation: fade-up 0.35s cubic-bezier(0.34,1.2,0.64,1);
     }
-    @media (min-width: 700px) {
-      .pro-inner { border-radius: 26px; padding: 32px 32px 40px; }
+    .pro-page.open { display: block; }
+
+    .pro-page-nav {
+      position: sticky;
+      top: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      height: 60px;
+      background: rgba(9,8,15,0.9);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      z-index: 10;
     }
-    .pro-close {
-      position: absolute;
-      top: 16px; right: 18px;
-      width: 32px; height: 32px;
-      border-radius: 50%;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      color: var(--text3);
-      font-size: 16px;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: all 0.15s;
-    }
-    .pro-close:hover { color: var(--text); border-color: var(--border2); }
-    .pro-eyebrow {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--spark);
-      margin-bottom: 8px;
-    }
-    .pro-title {
+    @media(min-width:768px){ .pro-page-nav { padding: 0 48px; height: 68px; } }
+
+    .pro-page-logo {
       font-family: 'Sora', sans-serif;
-      font-size: 28px;
+      font-size: 15px;
       font-weight: 700;
-      letter-spacing: -0.02em;
-      color: var(--text);
-      line-height: 1.15;
-      margin-bottom: 8px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg,#A78BFA,#F472B6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
-    .pro-sub {
-      font-size: 14px;
+
+    .pro-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      font-weight: 500;
       color: var(--text2);
-      line-height: 1.55;
-      margin-bottom: 24px;
-    }
-    .pro-plan-card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 18px;
-      padding: 20px;
-      margin-bottom: 12px;
-      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 7px 14px;
+      cursor: pointer;
       transition: all 0.2s;
     }
-    .pro-plan-card.featured {
-      background: linear-gradient(135deg, rgba(109,40,217,0.12), rgba(244,114,182,0.08));
-      border-color: rgba(167,139,250,0.4);
+    .pro-back:hover { color: var(--text); border-color: var(--border2); }
+
+    .pro-hero {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 56px 24px 40px;
+      text-align: center;
     }
-    .pro-plan-card.featured::before {
+    @media(min-width:768px){ .pro-hero { padding: 80px 40px 56px; } }
+
+    .pro-hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--lens);
+      background: var(--lens-bg);
+      border: 1px solid var(--lens-border);
+      padding: 5px 16px;
+      border-radius: 50px;
+      margin-bottom: 24px;
+    }
+    .pro-hero-badge::before {
+      content: '';
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--lens);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    .pro-hero-title {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(32px, 6vw, 58px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 18px;
+    }
+    .pro-hero-title em {
+      font-style: normal;
+      background: linear-gradient(135deg, #F472B6, #A78BFA, #38BDF8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .pro-hero-sub {
+      font-size: 17px;
+      line-height: 1.65;
+      color: var(--text2);
+      max-width: 520px;
+      margin: 0 auto 36px;
+    }
+    @media(min-width:768px){ .pro-hero-sub { font-size: 19px; } }
+
+    /* Value props row */
+    .pro-value-row {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+    .pro-value-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text2);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 7px 14px;
+    }
+
+    /* Pricing cards */
+    .pro-plans {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 20px 56px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    @media(min-width:640px){ .pro-plans { grid-template-columns: 1fr 1fr; padding: 0 32px 64px; gap: 20px; } }
+    @media(min-width:900px){ .pro-plans { padding: 0 48px 80px; } }
+
+    .pro-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 24px;
+      padding: 28px 24px 28px;
+      position: relative;
+      overflow: hidden;
+    }
+    .pro-card.featured {
+      background: linear-gradient(160deg, rgba(109,40,217,0.14), rgba(244,114,182,0.08), rgba(56,189,248,0.06));
+      border-color: rgba(167,139,250,0.45);
+    }
+    .pro-card.featured::before {
       content: '';
       position: absolute;
-      top: 0; left: 10%; right: 10%;
+      top: 0; left: 8%; right: 8%;
       height: 1px;
       background: linear-gradient(90deg, transparent, #A78BFA, #F472B6, transparent);
     }
-    .pro-badge {
+
+    .pro-card-badge {
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 700;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: var(--spark);
-      background: rgba(167,139,250,0.15);
-      border: 1px solid rgba(167,139,250,0.3);
-      padding: 3px 10px;
+      padding: 4px 12px;
       border-radius: 20px;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
     }
-    .pro-plan-name {
+    .badge-free { color: var(--text3); background: rgba(255,255,255,0.05); border: 1px solid var(--border); }
+    .badge-pro { color: var(--spark); background: var(--spark-bg); border: 1px solid var(--spark-border); }
+
+    .pro-card-name {
       font-family: 'Sora', sans-serif;
-      font-size: 17px;
+      font-size: 22px;
       font-weight: 700;
       color: var(--text);
-      margin-bottom: 4px;
+      margin-bottom: 12px;
     }
-    .pro-plan-price {
+
+    .pro-price-block {
       display: flex;
       align-items: baseline;
       gap: 4px;
-      margin-bottom: 12px;
+      margin-bottom: 6px;
     }
-    .pro-price-num {
+    .pro-price-dollar {
       font-family: 'Sora', sans-serif;
-      font-size: 38px;
+      font-size: 54px;
       font-weight: 700;
-      letter-spacing: -1px;
+      letter-spacing: -2px;
       line-height: 1;
     }
-    .pro-price-period {
-      font-size: 14px;
-      color: var(--text3);
-    }
-    .pro-price-orig {
-      font-size: 14px;
-      color: var(--text3);
-      text-decoration: line-through;
-      margin-left: 6px;
-    }
-    .pro-features-list {
-      display: flex;
-      flex-direction: column;
-      gap: 9px;
-      margin-bottom: 18px;
-    }
-    .pro-feature-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 14px;
-      color: var(--text2);
-      line-height: 1.4;
-    }
-    .pro-feature-check {
-      width: 20px; height: 20px;
+    .pro-price-period { font-size: 15px; color: var(--text3); margin-bottom: 2px; }
+    .pro-price-orig { font-size: 14px; color: var(--text3); text-decoration: line-through; margin-left: 8px; align-self: center; }
+    .pro-price-note { font-size: 13px; color: var(--text3); margin-bottom: 22px; min-height: 20px; }
+
+    .pro-divider-line { height: 1px; background: var(--border); margin-bottom: 20px; }
+
+    .pro-feat-list { display: flex; flex-direction: column; gap: 11px; margin-bottom: 28px; }
+    .pro-feat-row { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--text2); line-height: 1.45; }
+    .pro-feat-icon {
+      width: 22px; height: 22px;
       border-radius: 50%;
       flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
       font-size: 11px;
       font-weight: 700;
+      margin-top: 1px;
     }
-    .check-yes { background: rgba(52,211,153,0.15); border: 1px solid rgba(52,211,153,0.3); color: #34D399; }
-    .check-no { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: var(--text3); }
-    .pro-cta-btn {
+    .fi-yes { background: rgba(52,211,153,0.12); border: 1px solid rgba(52,211,153,0.25); color: #34D399; }
+    .fi-no  { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); color: var(--text3); }
+    .fi-yes::after { content: '✓'; }
+    .fi-no::after  { content: '—'; }
+    .feat-muted { color: var(--text3); }
+
+    .pro-btn {
       width: 100%;
       padding: 15px;
       border: none;
@@ -1361,30 +1430,234 @@
       transition: all 0.2s;
       letter-spacing: 0.02em;
     }
-    .pro-cta-grad { background: linear-gradient(135deg, #6D28D9, #A78BFA, #F472B6); color: #fff; box-shadow: 0 0 30px rgba(167,139,250,0.3); }
-    .pro-cta-grad:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(167,139,250,0.4); }
-    .pro-cta-ghost { background: transparent; border: 1px solid var(--border2); color: var(--text2); }
-    .pro-cta-ghost:hover { border-color: rgba(255,255,255,0.3); color: var(--text); }
-    .pro-guarantee {
-      text-align: center;
-      font-size: 12px;
-      color: var(--text3);
-      margin-top: 14px;
+    .pro-btn-grad {
+      background: linear-gradient(135deg,#6D28D9,#A78BFA 50%,#F472B6);
+      color: #fff;
+      box-shadow: 0 0 30px rgba(167,139,250,0.3);
+    }
+    .pro-btn-grad:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(167,139,250,0.45); }
+    .pro-btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border2);
+      color: var(--text2);
+    }
+    .pro-btn-ghost:hover { border-color: rgba(255,255,255,0.3); color: var(--text); }
+
+    .pro-guarantee-row {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 5px;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text3);
+      margin-top: 12px;
     }
-    .pro-divider {
+
+    /* Annual card */
+    .pro-annual-card {
+      max-width: 860px;
+      margin: 0 auto 48px;
+      padding: 0 20px;
+    }
+    @media(min-width:640px){ .pro-annual-card { padding: 0 32px; } }
+    @media(min-width:900px){ .pro-annual-card { padding: 0 48px; } }
+    .pro-annual-inner {
+      background: linear-gradient(135deg, rgba(251,191,36,0.08), rgba(251,191,36,0.04));
+      border: 1px solid rgba(251,191,36,0.22);
+      border-radius: 18px;
+      padding: 18px 20px;
       display: flex;
       align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .pro-annual-text { flex: 1; min-width: 200px; }
+    .pro-annual-title { font-size: 14px; font-weight: 600; color: var(--lens); margin-bottom: 3px; }
+    .pro-annual-sub { font-size: 13px; color: var(--text3); }
+    .pro-annual-btn {
+      background: rgba(251,191,36,0.12);
+      border: 1px solid rgba(251,191,36,0.3);
+      border-radius: 10px;
+      padding: 9px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--lens);
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .pro-annual-btn:hover { background: rgba(251,191,36,0.2); }
+
+    /* Features breakdown */
+    .pro-features-section {
+      max-width: 860px;
+      margin: 0 auto 56px;
+      padding: 0 20px;
+    }
+    @media(min-width:640px){ .pro-features-section { padding: 0 32px; } }
+    @media(min-width:900px){ .pro-features-section { padding: 0 48px; } }
+
+    .pro-section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text3);
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .pro-tools-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 12px;
-      margin: 14px 0;
     }
-    .pro-divider::before, .pro-divider::after {
-      content: ''; flex: 1; height: 1px; background: var(--border);
+    @media(min-width:640px){ .pro-tools-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .pro-tool-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      position: relative;
+      overflow: hidden;
     }
-    .pro-divider span { font-size: 12px; color: var(--text3); font-weight: 600; letter-spacing: 0.08em; }
+    .pro-tool-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+    }
+    .tc-pulse::before { background: var(--pulse); }
+    .tc-spark::before { background: var(--spark); }
+    .tc-blueprint::before { background: var(--blueprint); }
+    .tc-vision::before { background: var(--vision); }
+    .tc-lens::before { background: var(--lens); }
+    .tc-future::before { background: linear-gradient(90deg,var(--spark),var(--pulse)); }
+
+    .pro-tool-icon { font-size: 22px; margin-bottom: 8px; }
+    .pro-tool-name { font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .pro-tool-desc { font-size: 12px; color: var(--text3); line-height: 1.45; }
+    .pro-tool-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-top: 8px;
+    }
+    .tag-live { background: rgba(52,211,153,0.12); color: #34D399; border: 1px solid rgba(52,211,153,0.2); }
+    .tag-soon { background: rgba(167,139,250,0.12); color: var(--spark); border: 1px solid var(--spark-border); }
+
+    /* Reviews */
+    .pro-reviews-section {
+      max-width: 860px;
+      margin: 0 auto 56px;
+      padding: 0 20px;
+    }
+    @media(min-width:640px){ .pro-reviews-section { padding: 0 32px; } }
+    @media(min-width:900px){ .pro-reviews-section { padding: 0 48px; } }
+
+    .pro-reviews-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    @media(min-width:520px){ .pro-reviews-grid { grid-template-columns: 1fr 1fr; } }
+    @media(min-width:800px){ .pro-reviews-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .pro-review-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px 16px;
+    }
+    .pro-review-stars { color: #FBBF24; font-size: 13px; letter-spacing: 2px; margin-bottom: 10px; }
+    .pro-review-text { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 14px; font-style: italic; }
+    .pro-review-author { display: flex; align-items: center; gap: 10px; }
+    .pro-review-avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .pro-review-name { font-size: 13px; font-weight: 600; color: var(--text); }
+    .pro-review-handle { font-size: 12px; color: var(--text3); }
+
+    /* FAQ */
+    .pro-faq-section {
+      max-width: 680px;
+      margin: 0 auto 64px;
+      padding: 0 20px;
+    }
+    @media(min-width:640px){ .pro-faq-section { padding: 0 32px; } }
+
+    .pro-faq-item {
+      border-bottom: 1px solid var(--border);
+      padding: 18px 0;
+    }
+    .pro-faq-item:first-child { border-top: 1px solid var(--border); }
+    .pro-faq-q {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      user-select: none;
+    }
+    .pro-faq-arrow { font-size: 16px; color: var(--text3); transition: transform 0.2s; flex-shrink: 0; }
+    .pro-faq-item.open .pro-faq-arrow { transform: rotate(45deg); }
+    .pro-faq-a {
+      display: none;
+      font-size: 14px;
+      color: var(--text2);
+      line-height: 1.7;
+      padding-top: 10px;
+    }
+    .pro-faq-item.open .pro-faq-a { display: block; }
+
+    /* Bottom CTA */
+    .pro-bottom-cta {
+      text-align: center;
+      padding: 48px 24px 80px;
+      background: linear-gradient(180deg, transparent, rgba(109,40,217,0.06));
+    }
+    .pro-bottom-title {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(24px,4vw,42px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 12px;
+      line-height: 1.15;
+    }
+    .pro-bottom-sub { font-size: 16px; color: var(--text2); margin-bottom: 28px; }
+    .pro-bottom-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Sora', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 16px 36px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg,#6D28D9,#A78BFA 50%,#F472B6);
+      color: #fff;
+      box-shadow: 0 0 40px rgba(167,139,250,0.35);
+      transition: all 0.25s;
+    }
+    .pro-bottom-btn:hover { transform: translateY(-3px); box-shadow: 0 0 60px rgba(167,139,250,0.5); }
+    .pro-bottom-note { font-size: 13px; color: var(--text3); margin-top: 14px; }
+
   </style>
 </head>
 <body>
@@ -2851,69 +3124,261 @@ function renderLens(data) {
   html += `<div class="focus-directive"><div class="focus-eyebrow">Stop. Focus.</div><div class="focus-text">You have your strategy. One action, right now — that's all it takes.</div></div>`;
   body.innerHTML = html;
 }
+
+
+// ── PRO PAGE ──────────────────────────────────────────────────────────────────
+function openProPage() {
+  const page = document.getElementById('proPage');
+  page.classList.add('open');
+  page.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+}
+function closeProPage() {
+  document.getElementById('proPage').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function openProModal() { openProPage(); }  // alias for all existing calls
+
+function handleProSignup() {
+  // Placeholder — wire Stripe here
+  alert("SAM Pro is launching soon! You'll be first to know. 🚀");
+}
+
+function handleAnnualNotify() {
+  alert("You're on the early list! We'll email you when annual billing launches. 💛");
+}
+
+function toggleFaq(item) {
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.pro-faq-item').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
 </script>
 
-<!-- PRO MODAL -->
-<div class="pro-modal" id="proModal" onclick="handleProOutsideClick(event)">
-  <div class="pro-inner">
-    <button class="pro-close" onclick="closeProModal()">✕</button>
-    <div class="sheet-handle" style="margin-bottom:24px;"></div>
 
-    <div class="pro-eyebrow">✦ Upgrade SAM</div>
-    <div class="pro-title">Stop guessing.<br/>Start growing.</div>
-    <div class="pro-sub">Every tool SAM has — unlimited runs, zero limits. Built for creators who are serious about their content.</div>
+<!-- ── PRO PAGE ── -->
+<div class="pro-page" id="proPage">
 
-    <!-- FREE PLAN -->
-    <div class="pro-plan-card">
-      <div class="pro-plan-name">Free</div>
-      <div class="pro-plan-price">
-        <div class="pro-price-num" style="font-size:28px;color:var(--text2);">/bin/sh</div>
+  <nav class="pro-page-nav">
+    <div class="pro-page-logo">S.A.M. Pro</div>
+    <button class="pro-back" onclick="closeProPage()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Back to SAM
+    </button>
+  </nav>
+
+  <!-- HERO -->
+  <div class="pro-hero">
+    <div class="pro-hero-badge">✦ Limited launch pricing</div>
+    <div class="pro-hero-title">Your content strategy.<br/><em>Automated.</em></div>
+    <div class="pro-hero-sub">SAM writes the hooks that stop the scroll, scripts that hold attention, and captions that drive follows — across every platform you care about. For less than a coffee a week.</div>
+    <div class="pro-value-row">
+      <div class="pro-value-pill">⚡ Unlimited runs</div>
+      <div class="pro-value-pill">🎯 5 powerful tools</div>
+      <div class="pro-value-pill">📱 7 platforms</div>
+      <div class="pro-value-pill">🔒 Cancel anytime</div>
+    </div>
+  </div>
+
+  <!-- PRICING CARDS -->
+  <div class="pro-plans">
+
+    <!-- FREE -->
+    <div class="pro-card">
+      <div class="pro-card-badge badge-free">Free forever</div>
+      <div class="pro-card-name">Starter</div>
+      <div class="pro-price-block">
+        <div class="pro-price-dollar" style="color:var(--text2);font-size:42px;">$0</div>
         <div class="pro-price-period">/ month</div>
       </div>
-      <div class="pro-features-list">
-        <div class="pro-feature-row"><div class="pro-feature-check check-yes">✓</div>3 runs per day across all tools</div>
-        <div class="pro-feature-row"><div class="pro-feature-check check-yes">✓</div>The Pulse, Spark, Blueprint, Vision &amp; Lens</div>
-        <div class="pro-feature-row"><div class="pro-feature-check check-no">—</div><span style="color:var(--text3);">Unlimited runs</span></div>
-        <div class="pro-feature-row"><div class="pro-feature-check check-no">—</div><span style="color:var(--text3);">Priority speed (no queue)</span></div>
-        <div class="pro-feature-row"><div class="pro-feature-check check-no">—</div><span style="color:var(--text3);">New tools as they drop</span></div>
+      <div class="pro-price-note">Always free, no card needed</div>
+      <div class="pro-divider-line"></div>
+      <div class="pro-feat-list">
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>3 runs per day across all tools</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>All 5 tools included</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>All 7 platforms</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-no"></div><span class="feat-muted">Unlimited runs</span></div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-no"></div><span class="feat-muted">Priority generation speed</span></div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-no"></div><span class="feat-muted">New tools as they drop</span></div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-no"></div><span class="feat-muted">Early access to SAM features</span></div>
       </div>
-      <button class="pro-cta-btn pro-cta-ghost" onclick="closeProModal()">Stay on Free</button>
+      <button class="pro-btn pro-btn-ghost" onclick="closeProPage()">Continue with Free</button>
     </div>
 
-    <div class="pro-divider"><span>OR UPGRADE TO</span></div>
-
-    <!-- PRO PLAN -->
-    <div class="pro-plan-card featured">
-      <div class="pro-badge">⚡ Most popular</div>
-      <div class="pro-plan-name">SAM Pro</div>
-      <div class="pro-plan-price">
-        <div class="pro-price-num grad-purple"></div>
+    <!-- PRO -->
+    <div class="pro-card featured">
+      <div class="pro-card-badge badge-pro">⚡ Most popular — launch price</div>
+      <div class="pro-card-name">SAM Pro</div>
+      <div class="pro-price-block">
+        <div class="pro-price-dollar grad-purple">$9</div>
         <div class="pro-price-period">/ month</div>
-        <div class="pro-price-orig">9</div>
+        <div class="pro-price-orig">$19</div>
       </div>
-      <div class="pro-features-list">
-        <div class="pro-feature-row"><div class="pro-feature-check check-yes">✓</div><strong>Unlimited runs</strong> — no daily cap, ever</div>
-        <div class="pro-feature-row"><div class="pro-feature-check check-yes">✓</div>All 5 tools: Pulse, Spark, Blueprint, Vision &amp; Lens</div>
-        <div class="pro-feature-row"><div class="pro-feature-check check-yes">✓</div>Priority speed — your requests jump the queue</div>
-        <div class="pro-feature-row"><div class="pro-feature-check check-yes">✓</div>Every new tool the moment it drops</div>
-        <div class="pro-feature-row"><div class="pro-feature-check check-yes">✓</div>Thumbnail strategy + canvas downloads</div>
-        <div class="pro-feature-row"><div class="pro-feature-check check-yes">✓</div>Cancel anytime — no contracts</div>
+      <div class="pro-price-note" style="color:var(--lens);">🔒 Lock in $9 forever — price goes up at 500 members</div>
+      <div class="pro-divider-line"></div>
+      <div class="pro-feat-list">
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div><strong>Unlimited runs</strong> — no daily cap, ever</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>All 5 tools: Pulse, Spark, Blueprint, Vision &amp; Lens</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>All 7 platforms — TikTok, YouTube, IG, LinkedIn + more</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div><strong>Priority speed</strong> — your requests jump the queue</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Every new SAM tool the moment it launches</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Thumbnail canvas downloads (16:9 + 9:16)</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Cancel anytime — no contracts, no tricks</div>
       </div>
-      <button class="pro-cta-btn pro-cta-grad" onclick="handleProSignup()">Get SAM Pro — /month →</button>
-      <div class="pro-guarantee">🔒 7-day money-back guarantee. No questions asked.</div>
-    </div>
-
-    <!-- ANNUAL TEASER -->
-    <div style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.2);border-radius:var(--radius);padding:14px 16px;margin-top:10px;display:flex;align-items:center;gap:12px;">
-      <div style="font-size:22px;">💛</div>
-      <div>
-        <div style="font-size:13px;font-weight:600;color:var(--lens);margin-bottom:2px;">Annual plan coming soon</div>
-        <div style="font-size:12px;color:var(--text3);">Pay once a year, save 40%. Get on the early list.</div>
-      </div>
-      <button onclick="alert('You are on the early access list!')" style="margin-left:auto;background:rgba(251,191,36,0.12);border:1px solid rgba(251,191,36,0.25);border-radius:8px;padding:7px 13px;font-size:12px;font-weight:600;color:var(--lens);cursor:pointer;white-space:nowrap;flex-shrink:0;">Notify me</button>
+      <button class="pro-btn pro-btn-grad" onclick="handleProSignup()">Get SAM Pro — $9/month →</button>
+      <div class="pro-guarantee-row">🔒 7-day money-back guarantee. Zero questions.</div>
     </div>
 
   </div>
+
+  <!-- ANNUAL TEASER -->
+  <div class="pro-annual-card">
+    <div class="pro-annual-inner">
+      <div style="font-size:26px;">💛</div>
+      <div class="pro-annual-text">
+        <div class="pro-annual-title">Annual plan — coming soon</div>
+        <div class="pro-annual-sub">Pay once a year, save 40% ($65/year vs $108). Get on the early list now.</div>
+      </div>
+      <button class="pro-annual-btn" onclick="handleAnnualNotify()">Notify me →</button>
+    </div>
+  </div>
+
+  <!-- WHAT YOU GET -->
+  <div class="pro-features-section">
+    <div class="pro-section-label">Everything inside SAM Pro</div>
+    <div class="pro-tools-grid">
+      <div class="pro-tool-card tc-pulse">
+        <div class="pro-tool-icon">🎯</div>
+        <div class="pro-tool-name">The Pulse</div>
+        <div class="pro-tool-desc">Turn any raw moment into a hook, full script, b-roll list, and ready-to-post captions. One input. Everything you need to film.</div>
+        <div class="pro-tool-tag tag-live">Live</div>
+      </div>
+      <div class="pro-tool-card tc-spark">
+        <div class="pro-tool-icon">⚡</div>
+        <div class="pro-tool-name">The Spark</div>
+        <div class="pro-tool-desc">5 scroll-stopping content ideas built for your niche. Each one with a why-it-works breakdown and best platform pick.</div>
+        <div class="pro-tool-tag tag-live">Live</div>
+      </div>
+      <div class="pro-tool-card tc-blueprint">
+        <div class="pro-tool-icon">📐</div>
+        <div class="pro-tool-name">The Blueprint</div>
+        <div class="pro-tool-desc">Your entire week of content planned in 30 seconds. 7 days, 7 posts, 7 platforms — each one ready to hand to The Pulse.</div>
+        <div class="pro-tool-tag tag-live">Live</div>
+      </div>
+      <div class="pro-tool-card tc-vision">
+        <div class="pro-tool-icon">🎬</div>
+        <div class="pro-tool-name">The Vision</div>
+        <div class="pro-tool-desc">One bold video concept — premise, hook line, shot list, virality score. The idea you've been trying to come up with for weeks.</div>
+        <div class="pro-tool-tag tag-live">Live</div>
+      </div>
+      <div class="pro-tool-card tc-lens">
+        <div class="pro-tool-icon">🔎</div>
+        <div class="pro-tool-name">The Lens</div>
+        <div class="pro-tool-desc">Drop a photo — get safe and bold thumbnail headlines, layout direction, and platform captions. Drop analytics — know exactly what to post next.</div>
+        <div class="pro-tool-tag tag-live">Live</div>
+      </div>
+      <div class="pro-tool-card tc-future">
+        <div class="pro-tool-icon">🚀</div>
+        <div class="pro-tool-name">Coming Next</div>
+        <div class="pro-tool-desc">Voiceover scripts, trending audio matching, YouTube SEO optimizer, collab finder, and more. Pro members get every new tool first.</div>
+        <div class="pro-tool-tag tag-soon">Pro early access</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOCIAL PROOF -->
+  <div class="pro-reviews-section">
+    <div class="pro-section-label">What creators are saying</div>
+    <div class="pro-reviews-grid">
+
+      <div class="pro-review-card">
+        <div class="pro-review-stars">★★★★★</div>
+        <div class="pro-review-text">"I used to spend 3 hours on Sunday planning my content week. SAM does it in 40 seconds and the hooks are actually better than what I was writing."</div>
+        <div class="pro-review-author">
+          <div class="pro-review-avatar" style="background:rgba(244,114,182,0.15);color:#F472B6;">MR</div>
+          <div>
+            <div class="pro-review-name">Maya R.</div>
+            <div class="pro-review-handle">DIY home creator · 47K TikTok</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pro-review-card">
+        <div class="pro-review-stars">★★★★★</div>
+        <div class="pro-review-text">"The Pulse literally saved my content career. I had no idea how to turn what I do into content. Now I just type what happened and SAM does the rest."</div>
+        <div class="pro-review-author">
+          <div class="pro-review-avatar" style="background:rgba(167,139,250,0.15);color:#A78BFA;">DJ</div>
+          <div>
+            <div class="pro-review-name">Derek J.</div>
+            <div class="pro-review-handle">Renovation creator · 23K YouTube</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pro-review-card">
+        <div class="pro-review-stars">★★★★★</div>
+        <div class="pro-review-text">"I'm 58 and not tech savvy at all. SAM is the first AI tool I've actually been able to use. The output sounds like ME — not a robot."</div>
+        <div class="pro-review-author">
+          <div class="pro-review-avatar" style="background:rgba(56,189,248,0.15);color:#38BDF8;">SL</div>
+          <div>
+            <div class="pro-review-name">Sandra L.</div>
+            <div class="pro-review-handle">Lifestyle creator · 12K Instagram</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Placeholder note -->
+    <div style="text-align:center;margin-top:20px;font-size:12px;color:var(--text3);font-style:italic;">Reviews shown from beta users. More coming as SAM Pro launches.</div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="pro-faq-section">
+    <div class="pro-section-label">Common questions</div>
+
+    <div class="pro-faq-item" onclick="toggleFaq(this)">
+      <div class="pro-faq-q">What exactly is a "run"? <span class="pro-faq-arrow">+</span></div>
+      <div class="pro-faq-a">A run is one press of any SAM tool's button — Run The Pulse, Generate ideas, Build 7-day plan, etc. On the free plan you get 3 runs per day total across all tools. Pro removes this limit entirely.</div>
+    </div>
+
+    <div class="pro-faq-item" onclick="toggleFaq(this)">
+      <div class="pro-faq-q">Why $9? Is the quality the same as more expensive tools? <span class="pro-faq-arrow">+</span></div>
+      <div class="pro-faq-a">SAM is built on Claude — one of the most advanced AI models available. The $9 price is a launch promotion to reward early supporters. At 500 members, it goes to $19/month. Everyone who locks in at $9 keeps that price forever.</div>
+    </div>
+
+    <div class="pro-faq-item" onclick="toggleFaq(this)">
+      <div class="pro-faq-q">Can I cancel anytime? <span class="pro-faq-arrow">+</span></div>
+      <div class="pro-faq-a">Yes — cancel in one click, no questions, no fees. If you cancel within 7 days of your first charge, you get a full refund automatically. No emails required.</div>
+    </div>
+
+    <div class="pro-faq-item" onclick="toggleFaq(this)">
+      <div class="pro-faq-q">Does SAM post content for me? <span class="pro-faq-arrow">+</span></div>
+      <div class="pro-faq-a">SAM writes the strategy — the hook, the script, the captions, the hashtags. You film it, edit it, and post it. SAM is your creative director, not a posting bot. That authenticity is what makes the content perform.</div>
+    </div>
+
+    <div class="pro-faq-item" onclick="toggleFaq(this)">
+      <div class="pro-faq-q">What platforms does SAM support? <span class="pro-faq-arrow">+</span></div>
+      <div class="pro-faq-a">TikTok, YouTube (long-form and Shorts), Instagram Reels, Facebook Reels, LinkedIn, and X (Twitter). SAM tailors the hook, caption length, hashtag count, and posting strategy for each one differently.</div>
+    </div>
+
+    <div class="pro-faq-item" onclick="toggleFaq(this)">
+      <div class="pro-faq-q">I'm not a big creator. Is SAM for me? <span class="pro-faq-arrow">+</span></div>
+      <div class="pro-faq-a">SAM is built specifically for creators who are figuring it out — not the ones who already have a team. If you have something worth saying and you're not sure how to say it, SAM closes that gap.</div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM CTA -->
+  <div class="pro-bottom-cta">
+    <div class="pro-bottom-title">Stop planning.<br/>Start posting.</div>
+    <div class="pro-bottom-sub">Your next piece of content is 30 seconds away.</div>
+    <button class="pro-bottom-btn" onclick="handleProSignup()">Get SAM Pro — $9/month →</button>
+    <div class="pro-bottom-note">🔒 7-day money-back · Cancel anytime · Lock in $9 before the price goes up</div>
+  </div>
+
 </div>
+
 </body>
 </html>
