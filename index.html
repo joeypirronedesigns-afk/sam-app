@@ -3113,7 +3113,7 @@ function renderLens(data) {
 
     // VISUAL REFERENCE — clearly framed as reference only
     const imgSrc = window._lensImgSrc || document.getElementById('previewImg')?.src || '';
-    const bgStyle = imgSrc ? \`background-image:url('\${imgSrc}');background-size:cover;background-position:center;\` : 'background:linear-gradient(135deg,#111,#1c1c1c);';
+    const bgStyle = imgSrc ? 'background-image:url("'+imgSrc+'");background-size:cover;background-position:center;' : 'background:linear-gradient(135deg,#111,#1c1c1c);';
 
     html += `<div class="out-block">
       <div class="out-block-title" style="color:var(--lens);">● Visual reference <span style="font-size:10px;font-weight:400;color:var(--text3);text-transform:none;letter-spacing:0;">(layout blueprint — finish in Canva or CapCut)</span></div>
