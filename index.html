@@ -1602,7 +1602,13 @@
             <button class="reset-btn" onclick="resetTool('lens')">← Start over</button>
           </div>
           <div class="output-body" id="lensBody"></div>
-          <div class="save-bar"><button class="save-btn" onclick="window.print()">↓ Save as PDF</button></div>
+          <div class="save-bar" style="display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:12px;color:var(--text3);text-align:center;padding:4px 0;">These are layout blueprints. Take the headline and composition into your design tool to finish.</div>
+        <div style="display:flex;gap:8px;">
+          <button class="save-btn" style="flex:1;" onclick="openCanva()">🎨 Finish in Canva →</button>
+          <button class="save-btn" style="flex:1;" onclick="window.print()">↓ Save PDF</button>
+        </div>
+      </div>
         </div>
       </div></div>
 
@@ -2530,6 +2536,14 @@ function renderThumbnailCanvases(headline, subtext, accentColor, imgSrc, id169, 
 }
 
 
+
+function openCanva() {
+  // Get current headlines from canvas data
+  const hl = window._currentLensHeadline || '';
+  const sub = window._currentLensSubtext || '';
+  const text = encodeURIComponent((hl + (sub ? ' — ' + sub : '')).slice(0, 200));
+  window.open('https://www.canva.com/create/youtube-thumbnails/', '_blank');
+}
 function copyOverlayBtn(btn) {
   const raw = btn.getAttribute('data-copy') || '';
   const parts = raw.split('|||');
@@ -3030,6 +3044,9 @@ function renderLens(data) {
     const hasDual = data.headline_safe || data.headline_bold;
     const hl1 = data.headline_safe || data.thumbnail_headline || '';
     const hl2 = data.headline_bold || '';
+    // Store for Canva deep-link
+    window._currentLensHeadline = hl1;
+    window._currentLensSubtext = data.subtext_safe || data.thumbnail_subtext || '';
     const sub1 = data.subtext_safe || data.thumbnail_subtext || '';
     const sub2 = data.subtext_bold || data.thumbnail_subtext || '';
     const ac = data.thumbnail_color || '#F472B6';
@@ -3043,23 +3060,24 @@ function renderLens(data) {
           <div style="position:relative;width:${w};aspect-ratio:${aspect};border-radius:10px;overflow:hidden;cursor:pointer;" onclick="downloadCanvas('${id}canvas','${filename}')" title="Tap to download">
             <canvas id="${id}canvas" style="width:100%;height:100%;display:block;border-radius:10px;"></canvas>
             <div style="position:absolute;top:8px;right:8px;z-index:3;background:rgba(0,0,0,0.6);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;color:#fff;pointer-events:none;">↓ Download</div>
+            <div style="position:absolute;top:8px;left:8px;z-index:3;background:rgba(167,139,250,0.7);border-radius:4px;padding:2px 7px;font-size:9px;font-weight:700;color:#fff;letter-spacing:0.08em;pointer-events:none;">CONCEPT</div>
           </div>
           <button class="copy-btn" style="float:none;margin-top:6px;" data-copy="${hl}|||${sub}" onclick="copyOverlayBtn(this)">Copy overlay</button>
         </div>`;
 
       html += `<div class="concept-card out-block" style="padding:0;overflow:hidden;border-color:var(--lens-border);">
         <div style="padding:12px 16px;background:var(--lens-bg);border-bottom:1px solid var(--lens-border);">
-          <div class="concept-card-label" style="color:var(--lens);margin:0;">Thumbnail mockups — tap to download</div>
+          <div class="concept-card-label" style="color:var(--lens);margin:0;">Thumbnail concepts — layout &amp; text strategy</div>
         </div>
         <div style="padding:16px;display:flex;flex-direction:column;gap:20px;">
 
           ${hl2 ? `<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start;">
             <div>
-              <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(52,211,153,0.8);margin-bottom:6px;">✓ Safe option</div>
+              <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(52,211,153,0.8);margin-bottom:6px;">✓ Clean layout — use in Canva or CapCut</div>
               ${makeThumb('thumb169s', hl1, sub1, '16:9', 'thumbnail-safe-16x9.png', '100%', '16/9')}
             </div>
             <div>
-              <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(244,114,182,0.8);margin-bottom:6px;">⚡ Bold option</div>
+              <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(244,114,182,0.8);margin-bottom:6px;">⚡ Bold layout — use in Canva or CapCut</div>
               ${makeThumb('thumb169b', hl2, sub2, '16:9', 'thumbnail-bold-16x9.png', '100%', '16/9')}
             </div>
           </div>
