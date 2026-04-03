@@ -1,224 +1,3745 @@
-module.exports = async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>S.A.M. — Strategic Assistant for Making</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  const { mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage, emojiPreference } = req.body;
-  if (!moment || !mode) return res.status(400).json({ error: 'Missing mode or moment' });
-
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) return res.status(500).json({ error: 'API key not configured' });
-
-  // ── ACCURATE PLATFORM SPECS ──────────────────────────────────────────────
-  const PLATFORM_SPECS = {
-    'TikTok': {
-      caption_limit: 2200, title: false,
-      hashtag_rule: '3-5 hashtags, included in caption limit',
-      caption_note: 'Hook must be in first line — algorithm judges first 1-2 seconds. Caption up to 2,200 chars.',
-      video_note: 'Vertical 9:16, 15s–10min. Under 60s performs best for new accounts.'
-    },
-    'YouTube Shorts': {
-      caption_limit: 100, title_limit: 100, title: true,
-      hashtag_rule: 'First 3 hashtags appear above the video title in the Shorts feed',
-      caption_note: 'Description only shows ~100 chars in Shorts feed. Title up to 100 chars is critical.',
-      video_note: 'Vertical 9:16, under 60 seconds. Title is the primary discovery hook.'
-    },
-    'YouTube': {
-      caption_limit: 5000, title_limit: 100, title: true,
-      hashtag_rule: 'Up to 15 hashtags; first 3 appear above the video title. Put key ones in description.',
-      caption_note: 'Title up to 100 chars. Description up to 5,000 chars — first 2-3 lines show before "Show more". Front-load keywords.',
-      video_note: 'Horizontal 16:9 standard. Search-optimised title is critical for discovery.'
-    },
-    'Instagram Reels': {
-      caption_limit: 2200, title: false,
-      hashtag_rule: 'Up to 30 hashtags allowed; 3-5 focused niche hashtags perform better than 30 generic ones',
-      caption_note: 'Caption up to 2,200 chars but only ~125 chars show before "more". First line is critical. Hashtags go at the end or in first comment.',
-      video_note: 'Vertical 9:16, 3s–90s. Reels get pushed to non-followers more than any other IG format.'
-    },
-    'Facebook Reels': {
-      caption_limit: 477, title: false,
-      hashtag_rule: '2-3 hashtags max — Facebook algorithm does not boost posts with many hashtags',
-      caption_note: 'Only ~477 chars show before truncation. Keep captions punchy. 2-3 hashtags maximum.',
-      video_note: 'Vertical 9:16, under 60s optimal. Facebook Reels reach non-followers — hook in first 3 seconds critical.'
-    },
-    'LinkedIn': {
-      caption_limit: 3000, title: false,
-      hashtag_rule: '3-5 hashtags placed at the end of the post',
-      caption_note: 'Up to 3,000 chars. First ~210 chars show before "see more" — make them count. Professional but personal tone works best.',
-      video_note: 'Square 1:1 or vertical 4:5 performs best. Native video gets 5x more reach than links. Add captions — 85% watch without sound.'
-    },
-    'X (Twitter)': {
-      caption_limit: 280, title: false,
-      hashtag_rule: '1-2 hashtags max — they count toward 280 character limit',
-      caption_note: 'Hard 280 character limit including hashtags and links (links count as 23 chars). Every word counts.',
-      video_note: 'Landscape 16:9 or square 1:1. Under 2:20 length. Captions auto-generated but check them.'
+    /* ═══════════════════════════════════════════
+       LIGHT MODE — Warm cream, editorial luxury
+    ═══════════════════════════════════════════ */
+    :root {
+      --bg: #F2EFE9;
+      --bg-2: #EAE6DE;
+      --surface: rgba(255,255,255,0.85);
+      --surface-2: rgba(255,255,255,0.6);
+      --surface-3: rgba(255,255,255,0.4);
+      --surface-glass: rgba(255,255,255,0.7);
+      --text: #18160F;
+      --text-mid: #4A4236;
+      --text-muted: #8C7E6A;
+      --gold: #9A6B1E;
+      --gold-2: #C4892A;
+      --gold-light: rgba(196,137,42,0.1);
+      --gold-border: rgba(196,137,42,0.35);
+      --gold-glow: rgba(196,137,42,0.2);
+      --accent: #C4892A;
+      --border: rgba(0,0,0,0.07);
+      --border-mid: rgba(0,0,0,0.11);
+      --radius: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+      --shadow: 0 4px 20px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.05);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.06);
+      --neon-gold: rgba(196,137,42,0);
     }
-  };
 
-  const getPlatformContext = (platList) => {
-    if (!platList || platList.length === 0) return '';
-    return platList.map(p => {
-      const spec = PLATFORM_SPECS[p];
-      if (!spec) return p + ': standard short-form video platform.';
-      return p + ': ' + spec.caption_note + ' ' + spec.hashtag_rule + '. ' + spec.video_note;
-    }).join(' | ');
-  };
-
-  const platformContext = platforms && platforms.length > 0
-    ? 'PLATFORM SPECS — follow these exactly: ' + getPlatformContext(platforms) : '';
-  const formatContext = contentType ? 'Content format: ' + contentType + '.' : '';
-  const creatorLine = creatorContext ? 'About this creator: ' + creatorContext + '.' : '';
-  const languageLine = outputLanguage
-    ? 'IMPORTANT: Write the ENTIRE output in ' + outputLanguage + '. Do not use English except inside JSON field names.' : '';
-
-  const emojiLine = emojiPreference === 'no'
-    ? 'IMPORTANT: Do NOT use any emojis. Zero.'
-    : emojiPreference === 'lots'
-    ? 'Use emojis freely and expressively throughout.'
-    : 'Use emojis sparingly — maximum 1-2 per section.';
-
-  const dialectMap = {
-    'Australia': 'Write in authentic Australian vernacular.',
-    'UK': 'Write in authentic British English.',
-    'Canada': 'Write in Canadian English.',
-    'USA': 'Write in natural American English.',
-    'North America': 'Write in natural North American English.',
-    'English-speaking countries': 'Write in clear, accessible English.',
-    'worldwide': 'Write in simple, clear, universally accessible English.'
-  };
-
-  let dialectNote = '';
-  if (audienceDemographics && !outputLanguage) {
-    for (const [location, dialect] of Object.entries(dialectMap)) {
-      if (audienceDemographics.includes(location)) { dialectNote = dialect; break; }
+    /* ═══════════════════════════════════════════
+       DARK MODE — Full Jarvis. No mercy.
+    ═══════════════════════════════════════════ */
+    [data-theme="dark"] {
+      --bg: #080707;
+      --bg-2: #0D0C0A;
+      --surface: rgba(22,19,15,0.9);
+      --surface-2: rgba(28,25,18,0.8);
+      --surface-3: rgba(36,32,22,0.7);
+      --surface-glass: rgba(18,16,12,0.75);
+      --text: #F0EAD8;
+      --text-mid: #A89070;
+      --text-muted: #5A4E3A;
+      --gold: #D4A84B;
+      --gold-2: #F0C060;
+      --gold-light: rgba(212,168,75,0.08);
+      --gold-border: rgba(212,168,75,0.25);
+      --gold-glow: rgba(212,168,75,0.35);
+      --accent: #D4A84B;
+      --border: rgba(212,168,75,0.08);
+      --border-mid: rgba(212,168,75,0.15);
+      --radius: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+      --shadow-sm: 0 2px 12px rgba(0,0,0,0.5);
+      --shadow: 0 4px 24px rgba(0,0,0,0.6), 0 0 40px rgba(212,168,75,0.04);
+      --shadow-lg: 0 12px 60px rgba(0,0,0,0.7), 0 0 80px rgba(212,168,75,0.06);
+      --neon-gold: rgba(212,168,75,0.6);
     }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.4s ease, color 0.4s ease;
+    }
+
+    /* ── DARK BG ATMOSPHERE ─────────────────── */
+    [data-theme="dark"] body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 15% 20%, rgba(212,168,75,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 85% 80%, rgba(212,168,75,0.05) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 40% at 50% 0%, rgba(212,168,75,0.04) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    [data-theme="dark"] body::after {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(212,168,75,0.4) 30%,
+        rgba(240,192,96,0.8) 50%,
+        rgba(212,168,75,0.4) 70%,
+        transparent 100%);
+      animation: scanline 8s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 9999;
+    }
+    @keyframes scanline {
+      0% { top: -2px; opacity: 0; }
+      2% { opacity: 1; }
+      92% { opacity: 0.5; }
+      100% { top: 100vh; opacity: 0; }
+    }
+
+    /* ── LIGHT BG TEXTURE ──────────────────── */
+    [data-theme="light"] body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 10% 15%, rgba(196,137,42,0.05) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 60% at 90% 85%, rgba(196,137,42,0.04) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* PARTICLE CANVAS */
+    #particle-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+    }
+    [data-theme="dark"] #particle-canvas { opacity: 1; }
+
+    /* EDGE FLARES (dark only) */
+    .edge-flare-left, .edge-flare-right {
+      position: fixed;
+      top: 0; bottom: 0;
+      width: 3px;
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+    [data-theme="dark"] .edge-flare-left,
+    [data-theme="dark"] .edge-flare-right { opacity: 1; }
+
+    .edge-flare-left {
+      left: 0;
+      background: linear-gradient(180deg,
+        transparent 0%,
+        rgba(212,168,75,0.6) 20%,
+        rgba(240,192,96,0.9) 50%,
+        rgba(212,168,75,0.6) 80%,
+        transparent 100%);
+      box-shadow: 0 0 30px 8px rgba(212,168,75,0.3), 0 0 80px 20px rgba(212,168,75,0.15);
+      animation: flareLeft 4s ease-in-out infinite alternate;
+    }
+    .edge-flare-right {
+      right: 0;
+      background: linear-gradient(180deg,
+        transparent 0%,
+        rgba(212,168,75,0.4) 30%,
+        rgba(212,168,75,0.7) 60%,
+        rgba(212,168,75,0.4) 80%,
+        transparent 100%);
+      box-shadow: 0 0 30px 8px rgba(212,168,75,0.25), 0 0 80px 20px rgba(212,168,75,0.1);
+      animation: flareRight 5s ease-in-out infinite alternate;
+    }
+    @keyframes flareLeft {
+      0% { opacity: 0.6; filter: blur(1px); }
+      100% { opacity: 1; filter: blur(0px); box-shadow: 0 0 40px 12px rgba(212,168,75,0.4), 0 0 100px 30px rgba(212,168,75,0.2); }
+    }
+    @keyframes flareRight {
+      0% { opacity: 0.8; filter: blur(2px); }
+      100% { opacity: 0.5; filter: blur(0px); }
+    }
+
+    /* CORNER ACCENT DOTS */
+    .corner-accent {
+      position: fixed;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 12px 4px var(--gold-glow);
+      pointer-events: none;
+      z-index: 3;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+      animation: cornerPulse 3s ease-in-out infinite;
+    }
+    [data-theme="dark"] .corner-accent { opacity: 1; }
+    .corner-accent.tl { top: 2px; left: 2px; }
+    .corner-accent.tr { top: 2px; right: 2px; }
+    .corner-accent.bl { bottom: 2px; left: 2px; }
+    .corner-accent.br { bottom: 2px; right: 2px; }
+    @keyframes cornerPulse {
+      0%, 100% { transform: scale(1); opacity: 0.6; }
+      50% { transform: scale(1.4); opacity: 1; }
+    }
+
+    /* GRID OVERLAY (dark) */
+    [data-theme="dark"] .tool-section::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(212,168,75,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(212,168,75,0.025) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .tool-inner { position: relative; z-index: 2; }
+
+    /* ══ NAV ══════════════════════════════════ */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 62px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-mid);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      z-index: 100;
+      background: var(--surface-glass);
+      transition: background 0.4s, border-color 0.4s;
+    }
+    [data-theme="dark"] nav {
+      box-shadow: 0 1px 0 rgba(212,168,75,0.1), 0 4px 30px rgba(0,0,0,0.4);
+    }
+    [data-theme="light"] nav {
+      box-shadow: 0 1px 0 rgba(0,0,0,0.04), var(--shadow-sm);
+    }
+
+    .nav-logo {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text);
+      transition: all 0.3s;
+    }
+    .nav-logo span { color: var(--gold); }
+    [data-theme="dark"] .nav-logo {
+      text-shadow: 0 0 20px rgba(212,168,75,0.4);
+    }
+    [data-theme="dark"] .nav-logo span {
+      text-shadow: 0 0 15px rgba(212,168,75,0.8);
+    }
+
+    .nav-right { display: flex; align-items: center; gap: 14px; }
+
+    .nav-tag {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-style: normal;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+    }
+
+    /* THEME TOGGLE */
+    .theme-toggle {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      border: 1px solid var(--border-mid);
+      background: var(--surface-2);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px;
+      position: relative; overflow: hidden;
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      backdrop-filter: blur(8px);
+    }
+    .theme-toggle:hover {
+      border-color: var(--gold-border);
+      background: var(--gold-light);
+      transform: scale(1.1) rotate(12deg);
+      box-shadow: 0 0 20px var(--gold-glow);
+    }
+    .theme-toggle .icon-sun,
+    .theme-toggle .icon-moon {
+      position: absolute;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .icon-moon { opacity: 1; transform: scale(1); }
+    .icon-sun  { opacity: 0; transform: scale(0) rotate(180deg); }
+    [data-theme="dark"] .icon-moon { opacity: 0; transform: scale(0) rotate(-180deg); }
+    [data-theme="dark"] .icon-sun  { opacity: 1; transform: scale(1) rotate(0deg); }
+
+    /* ══ HERO ═════════════════════════════════ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 100px 2rem 80px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: var(--gold-light);
+      border: 1px solid var(--gold-border);
+      padding: 6px 16px;
+      border-radius: 30px;
+      margin-bottom: 2.5rem;
+      backdrop-filter: blur(8px);
+      transition: all 0.3s;
+    }
+    [data-theme="dark"] .hero-eyebrow {
+      box-shadow: 0 0 20px rgba(212,168,75,0.15), inset 0 0 20px rgba(212,168,75,0.05);
+    }
+    .hero-eyebrow::before {
+      content: '';
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--gold);
+      animation: dotPulse 2s ease-in-out infinite;
+    }
+    @keyframes dotPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
+    }
+
+    .hero h1 {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(38px, 5.5vw, 68px);
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 1.75rem;
+      letter-spacing: -0.03em;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--gold);
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+    }
+    [data-theme="dark"] .hero h1 {
+      text-shadow: 0 0 80px rgba(212,168,75,0.12);
+    }
+    [data-theme="dark"] .hero h1 em {
+      text-shadow: 0 0 40px rgba(212,168,75,0.5);
+    }
+
+    .hero-sub {
+      font-size: clamp(14px, 1.6vw, 16px);
+      line-height: 1.7;
+      color: var(--text-mid);
+      max-width: 480px;
+      margin-bottom: 3rem;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 15px 32px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    [data-theme="light"] .hero-cta {
+      background: var(--text);
+      color: #F2EFE9;
+      box-shadow: var(--shadow);
+    }
+    [data-theme="light"] .hero-cta:hover {
+      background: var(--gold);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px var(--gold-glow);
+    }
+    [data-theme="dark"] .hero-cta {
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-2) 100%);
+      color: #0A0907;
+      box-shadow: 0 0 30px rgba(212,168,75,0.4), 0 4px 20px rgba(0,0,0,0.3);
+    }
+    [data-theme="dark"] .hero-cta:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 0 60px rgba(212,168,75,0.6), 0 8px 30px rgba(0,0,0,0.4);
+    }
+    .hero-cta::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.2) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .hero-cta:active::after { opacity: 1; }
+
+    /* ══ TOOL SECTION ════════════════════════ */
+    .tool-section { padding: 0 1.5rem 8rem; }
+
+    .tool-inner { max-width: 740px; margin: 0 auto; }
+
+    /* SECTION HEADER */
+    .section-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .section-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+    .section-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 1px;
+      background: var(--gold);
+      opacity: 0.5;
+    }
+    .section-eyebrow::after {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 1px;
+      background: var(--gold);
+      opacity: 0.5;
+    }
+
+    .section-header h2 {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(22px, 3.2vw, 32px);
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1rem;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+    }
+    [data-theme="dark"] .section-header h2 {
+      text-shadow: 0 0 60px rgba(212,168,75,0.08);
+    }
+
+    .section-header p {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 400;
+      line-height: 1.75;
+      max-width: 480px;
+      margin: 0 auto;
+      letter-spacing: -0.005em;
+    }
+
+    /* ══ GLASS CARD ══════════════════════════ */
+    .glass-card {
+      background: var(--surface);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      transition: all 0.3s;
+    }
+    [data-theme="dark"] .glass-card {
+      border-color: rgba(212,168,75,0.12);
+      box-shadow: var(--shadow), 0 0 0 1px rgba(212,168,75,0.04);
+    }
+    [data-theme="dark"] .glass-card:hover {
+      border-color: rgba(212,168,75,0.2);
+      box-shadow: var(--shadow-lg), 0 0 40px rgba(212,168,75,0.08);
+    }
+
+    /* FEATURE STRIP — replaces output cards */
+    .feature-strip {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-bottom: 2rem;
+      border-left: 2px solid var(--gold-border);
+      padding-left: 1.25rem;
+    }
+    [data-theme="dark"] .feature-strip {
+      border-left-color: rgba(212,168,75,0.25);
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .feature-item:last-child { border-bottom: none; }
+    [data-theme="dark"] .feature-item { border-color: rgba(212,168,75,0.06); }
+
+    .feature-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--gold);
+      flex-shrink: 0;
+      margin-top: 1px;
+      opacity: 0.7;
+    }
+
+    .feature-name {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+    }
+
+    .feature-sep {
+      font-size: 12px;
+      color: var(--text-muted);
+      opacity: 0.4;
+      flex-shrink: 0;
+    }
+
+    .feature-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      font-weight: 400;
+    }
+
+    /* ══ MODE TABS ════════════════════════════ */
+    .mode-toggle-wrap {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 2rem;
+      background: var(--surface-2);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-lg);
+      padding: 5px;
+      transition: all 0.3s;
+    }
+    [data-theme="dark"] .mode-toggle-wrap {
+      background: rgba(18,15,10,0.6);
+      border-color: rgba(212,168,75,0.1);
+    }
+
+    .mode-tab {
+      flex: 1;
+      padding: 12px 14px;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.25s;
+      background: transparent;
+      color: var(--text-muted);
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .mode-tab.active {
+      background: var(--surface);
+      color: var(--text);
+      border-color: var(--border-mid);
+      box-shadow: var(--shadow-sm);
+    }
+    [data-theme="dark"] .mode-tab.active {
+      background: rgba(212,168,75,0.1);
+      color: var(--gold);
+      border-color: rgba(212,168,75,0.25);
+      box-shadow: 0 0 20px rgba(212,168,75,0.1), inset 0 0 16px rgba(212,168,75,0.04);
+    }
+    .mode-tab:hover:not(.active) { color: var(--text); }
+    [data-theme="dark"] .mode-tab:hover:not(.active) { color: var(--gold); }
+
+    /* ══ SECTIONS ═════════════════════════════ */
+    .idea-section { display: none; }
+    .idea-section.show { display: block; }
+    .moment-section { display: block; }
+    .moment-section.hide { display: none; }
+    .calendar-section { display: none; }
+    .calendar-section.show { display: block; }
+
+    /* ══ INPUT AREAS ══════════════════════════ */
+    .input-card {
+      padding: 1.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .idea-input-card, .calendar-input-card {
+      padding: 1.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .input-card-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .input-card-label::before {
+      content: '';
+      display: inline-block;
+      width: 3px; height: 12px;
+      background: var(--gold);
+      border-radius: 2px;
+    }
+    [data-theme="dark"] .input-card-label {
+      text-shadow: 0 0 12px rgba(212,168,75,0.4);
+    }
+
+    .section-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.875rem;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-label::before {
+      content: '';
+      display: inline-block;
+      width: 3px; height: 12px;
+      background: var(--gold);
+      border-radius: 2px;
+    }
+
+    .input-wrap { position: relative; }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 14px 52px 14px 16px;
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      color: var(--text);
+      background: var(--surface-2);
+      resize: vertical;
+      line-height: 1.7;
+      transition: all 0.2s;
+      backdrop-filter: blur(8px);
+    }
+    textarea:focus {
+      outline: none;
+      border-color: var(--gold);
+      background: var(--surface);
+      box-shadow: 0 0 0 3px var(--gold-light), 0 0 20px var(--gold-glow);
+    }
+    textarea::placeholder { color: var(--text-muted); }
+    [data-theme="dark"] textarea {
+      background: rgba(18,15,10,0.7);
+      border-color: rgba(212,168,75,0.12);
+      color: var(--text);
+    }
+    [data-theme="dark"] textarea:focus {
+      border-color: rgba(212,168,75,0.5);
+      background: rgba(22,19,14,0.8);
+      box-shadow: 0 0 0 3px rgba(212,168,75,0.08), 0 0 30px rgba(212,168,75,0.1);
+    }
+
+    .char-hint { font-size: 11px; color: var(--text-muted); text-align: right; margin-top: 5px; }
+
+    /* PASTE / MIC BUTTONS */
+    .paste-btn {
+      position: absolute;
+      bottom: 10px; right: 50px;
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      border: 1px solid var(--border-mid);
+      background: var(--surface);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+      transition: all 0.2s;
+      backdrop-filter: blur(8px);
+    }
+    .paste-btn:hover { border-color: var(--gold-border); background: var(--gold-light); }
+
+    .mic-btn {
+      position: absolute;
+      bottom: 10px; right: 10px;
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      border: 1px solid var(--border-mid);
+      background: var(--surface);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      transition: all 0.2s;
+      backdrop-filter: blur(8px);
+    }
+    .mic-btn:hover { border-color: var(--gold-border); background: var(--gold-light); }
+    .mic-btn.recording {
+      border-color: #E53E3E;
+      background: rgba(229,62,62,0.1);
+      animation: micPulse 1s ease-in-out infinite;
+    }
+    @keyframes micPulse { 0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(229,62,62,0.4);} 50%{transform:scale(1.1);box-shadow:0 0 0 6px rgba(229,62,62,0);} }
+
+    /* ══ PLATFORM PILLS ═══════════════════════ */
+    .platform-wrap { margin-bottom: 1.5rem; }
+    .platform-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .platform-hint { font-size: 12px; color: var(--text-muted); font-style: italic; margin-top: 8px; }
+
+    .platform-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      padding: 9px 16px;
+      border-radius: 50px;
+      border: 1px solid var(--border-mid);
+      background: var(--surface-2);
+      color: var(--text-mid);
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+      backdrop-filter: blur(8px);
+    }
+    .platform-pill:hover { border-color: var(--gold-border); color: var(--text); }
+    .platform-pill.selected {
+      background: var(--gold-light);
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    [data-theme="dark"] .platform-pill.selected {
+      background: rgba(212,168,75,0.12);
+      box-shadow: 0 0 16px rgba(212,168,75,0.15);
+    }
+
+    /* ══ CREATOR CONTEXT ══════════════════════ */
+    .creator-context-wrap { margin-bottom: 1.5rem; }
+    .creator-context-input {
+      width: 100%;
+      padding: 12px 50px 12px 16px;
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      color: var(--text);
+      background: var(--surface-2);
+      transition: all 0.2s;
+      backdrop-filter: blur(8px);
+    }
+    .creator-context-input:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px var(--gold-light);
+    }
+    .creator-context-input::placeholder { color: var(--text-muted); font-style: italic; }
+    [data-theme="dark"] .creator-context-input {
+      background: rgba(18,15,10,0.6);
+      border-color: rgba(212,168,75,0.1);
+    }
+    .creator-context-hint { font-size: 12px; color: var(--text-muted); font-style: italic; margin-top: 6px; }
+
+    /* ══ SELECTS ══════════════════════════════ */
+    .lang-wrap, .demo-wrap { margin-bottom: 1.5rem; }
+    .lang-hint, .demo-hint { font-size: 12px; color: var(--text-muted); font-style: italic; margin-top: 6px; }
+
+    .lang-select, .demo-select {
+      width: 100%;
+      padding: 11px 36px 11px 16px;
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      color: var(--text);
+      background: var(--surface-2);
+      cursor: pointer;
+      transition: all 0.2s;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239C9490' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+    }
+    .lang-select:focus, .demo-select:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px var(--gold-light);
+    }
+    [data-theme="dark"] .lang-select,
+    [data-theme="dark"] .demo-select {
+      background-color: rgba(18,15,10,0.6);
+      border-color: rgba(212,168,75,0.1);
+      color: var(--text);
+    }
+
+    .demo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    @media (max-width: 600px) { .demo-grid { grid-template-columns: 1fr; } }
+    .demo-group { display: flex; flex-direction: column; gap: 6px; }
+    .demo-group-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .demo-select { padding: 10px 12px; padding-right: 36px; font-size: 14px; }
+
+    /* ══ EMOJI, TONE, CONTENT TYPE ════════════ */
+    .emoji-wrap, .tone-wrap, .content-type-wrap { margin-bottom: 1.5rem; }
+
+    .emoji-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .tone-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    @media (max-width: 520px) { .tone-grid { grid-template-columns: 1fr; } }
+    .content-type-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 8px; }
+
+    .emoji-btn, .tone-btn, .content-type-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      background: var(--surface-2);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+      user-select: none;
+      backdrop-filter: blur(8px);
+    }
+    .emoji-btn { justify-content: center; }
+    .emoji-btn, .content-type-btn { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; color: var(--text-mid); }
+
+    .emoji-btn:hover, .tone-btn:hover, .content-type-btn:hover {
+      border-color: var(--gold-border);
+      background: var(--gold-light);
+    }
+
+    .emoji-btn.selected, .tone-btn.selected, .content-type-btn.selected {
+      background: var(--gold-light);
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    [data-theme="dark"] .emoji-btn.selected,
+    [data-theme="dark"] .tone-btn.selected,
+    [data-theme="dark"] .content-type-btn.selected {
+      background: rgba(212,168,75,0.1);
+      border-color: rgba(212,168,75,0.4);
+      box-shadow: 0 0 16px rgba(212,168,75,0.12);
+    }
+
+    .tone-icon { font-size: 18px; flex-shrink: 0; }
+    .tone-info { display: flex; flex-direction: column; gap: 2px; }
+    .tone-label { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); }
+    .tone-desc { font-size: 12px; color: var(--text-muted); line-height: 1.3; }
+    .tone-btn.selected .tone-label { color: var(--gold); }
+
+    .content-type-icon { font-size: 18px; flex-shrink: 0; }
+    .content-type-label { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; color: var(--text); line-height: 1.3; }
+    .content-type-btn.selected .content-type-label { color: var(--gold); }
+    .content-type-hint { font-size: 12px; color: var(--text-muted); font-style: italic; margin-top: 8px; }
+
+    /* ══ CHIPS ════════════════════════════════ */
+    .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 1rem; align-items: center; }
+    .chips-label { font-size: 12px; color: var(--text-muted); font-style: italic; flex-shrink: 0; }
+    .chip {
+      font-size: 13px;
+      padding: 5px 12px;
+      border: 1px solid var(--border-mid);
+      border-radius: 20px;
+      cursor: pointer;
+      background: var(--surface-2);
+      color: var(--text-mid);
+      transition: all 0.15s;
+      backdrop-filter: blur(6px);
+    }
+    .chip:hover { border-color: var(--gold-border); color: var(--gold); background: var(--gold-light); }
+
+    /* ══ RUN BUTTON ═══════════════════════════ */
+    .run-btn, .idea-btn, .calendar-btn {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-top: 1.5rem;
+      transition: all 0.25s cubic-bezier(0.34, 1.4, 0.64, 1);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      position: relative; overflow: hidden;
+    }
+    [data-theme="light"] .run-btn,
+    [data-theme="light"] .idea-btn,
+    [data-theme="light"] .calendar-btn {
+      background: var(--text);
+      color: #F2EFE9;
+      box-shadow: var(--shadow);
+    }
+    [data-theme="light"] .run-btn:hover,
+    [data-theme="light"] .idea-btn:hover,
+    [data-theme="light"] .calendar-btn:hover {
+      background: var(--gold);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px var(--gold-glow);
+    }
+    [data-theme="dark"] .run-btn,
+    [data-theme="dark"] .idea-btn,
+    [data-theme="dark"] .calendar-btn {
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-2) 100%);
+      color: #0A0907;
+      box-shadow: 0 0 30px rgba(212,168,75,0.35), 0 4px 16px rgba(0,0,0,0.3);
+    }
+    [data-theme="dark"] .run-btn:hover,
+    [data-theme="dark"] .idea-btn:hover,
+    [data-theme="dark"] .calendar-btn:hover {
+      transform: translateY(-2px) scale(1.01);
+      box-shadow: 0 0 50px rgba(212,168,75,0.5), 0 8px 24px rgba(0,0,0,0.4);
+    }
+    .run-btn:active, .idea-btn:active, .calendar-btn:active { transform: scale(0.99); }
+    .run-btn:disabled, .idea-btn:disabled, .calendar-btn:disabled {
+      opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none;
+    }
+    .run-btn::after, .idea-btn::after, .calendar-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.2) 0%, transparent 60%);
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .run-btn:active::after, .idea-btn:active::after, .calendar-btn:active::after { opacity: 1; }
+
+    /* ══ LOADER ════════════════════════════════ */
+    .loader { display: none; text-align: center; padding: 1.5rem 0 0.5rem; }
+    .loader.show { display: block; }
+    .loader-dots { display: inline-flex; gap: 7px; align-items: center; }
+    .loader-dots span {
+      width: 8px; height: 8px;
+      background: var(--gold);
+      border-radius: 50%;
+      animation: ldBounce 1.2s ease-in-out infinite;
+    }
+    .loader-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .loader-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes ldBounce {
+      0%,80%,100% { transform: scale(0.5); opacity: 0.3; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+    [data-theme="dark"] .loader-dots span {
+      box-shadow: 0 0 8px rgba(212,168,75,0.6);
+    }
+    .loader-text { font-size: 14px; color: var(--text-muted); margin-top: 10px; font-style: italic; }
+
+    /* ERROR */
+    .error-box {
+      display: none; font-size: 13px; color: #C53030;
+      background: rgba(197,48,48,0.06); border: 1px solid rgba(197,48,48,0.2);
+      border-radius: var(--radius); padding: 12px 14px; margin-top: 1rem; line-height: 1.5;
+    }
+    .error-box.show { display: block; }
+
+    /* ══ OUTPUT CARD ══════════════════════════ */
+    .out-card {
+      background: var(--surface);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      display: none;
+      animation: fadeUp 0.4s cubic-bezier(0.34, 1.2, 0.64, 1);
+      box-shadow: var(--shadow-lg);
+    }
+    .out-card.show { display: block; }
+    [data-theme="dark"] .out-card {
+      background: rgba(14,12,8,0.9);
+      border-color: rgba(212,168,75,0.15);
+      box-shadow: var(--shadow-lg), 0 0 60px rgba(212,168,75,0.06);
+    }
+
+    /* IDEAS / CALENDAR OUT */
+    .ideas-out, .cal-out {
+      display: none;
+      background: var(--surface);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      animation: fadeUp 0.4s cubic-bezier(0.34, 1.2, 0.64, 1);
+    }
+    .ideas-out.show, .cal-out.show { display: block; }
+    [data-theme="dark"] .ideas-out,
+    [data-theme="dark"] .cal-out {
+      background: rgba(14,12,8,0.9);
+      border-color: rgba(212,168,75,0.15);
+      box-shadow: var(--shadow-lg), 0 0 50px rgba(212,168,75,0.05);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px) scale(0.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .out-header, .ideas-header, .cal-header {
+      padding: 1.1rem 1.6rem;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--surface-3);
+      backdrop-filter: blur(10px);
+    }
+    [data-theme="dark"] .out-header,
+    [data-theme="dark"] .ideas-header,
+    [data-theme="dark"] .cal-header {
+      background: rgba(212,168,75,0.04);
+      border-bottom-color: rgba(212,168,75,0.1);
+    }
+
+    .out-label, .ideas-header-label, .cal-header-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .out-label::before, .ideas-header-label::before, .cal-header-label::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      animation: dotPulse 2s ease-in-out infinite;
+    }
+    [data-theme="dark"] .out-label,
+    [data-theme="dark"] .ideas-header-label,
+    [data-theme="dark"] .cal-header-label {
+      text-shadow: 0 0 12px rgba(212,168,75,0.5);
+    }
+
+    .new-btn {
+      font-size: 13px; color: var(--text-muted);
+      background: var(--surface-2);
+      border: 1px solid var(--border-mid);
+      border-radius: 8px; padding: 5px 14px;
+      cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.15s;
+    }
+    .new-btn:hover { background: var(--gold-light); border-color: var(--gold-border); color: var(--gold); }
+
+    .out-body { padding: 2rem; }
+    .ideas-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 12px; }
+    .cal-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 10px; }
+
+    /* ══ OUTPUT BLOCKS ════════════════════════ */
+    .blk {
+      margin-bottom: 1.75rem;
+      padding-bottom: 1.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .blk:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    [data-theme="dark"] .blk { border-bottom-color: rgba(212,168,75,0.07); }
+
+    .blk-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.75rem;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .blk-title::before {
+      content: '';
+      width: 3px; height: 12px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      border-radius: 2px;
+    }
+    [data-theme="dark"] .blk-title { text-shadow: 0 0 10px rgba(212,168,75,0.4); }
+
+    .blk-text { font-size: 15px; line-height: 1.75; color: var(--text); font-weight: 400; letter-spacing: -0.01em; }
+
+    .hook-box {
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 1.5;
+      padding: 16px 20px;
+      background: var(--surface-2);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      color: var(--text);
+      backdrop-filter: blur(8px);
+      letter-spacing: -0.02em;
+      font-family: 'Inter', sans-serif;
+    }
+    [data-theme="dark"] .hook-box {
+      background: rgba(212,168,75,0.05);
+      border-left-color: var(--gold);
+      box-shadow: inset 0 0 30px rgba(212,168,75,0.03);
+    }
+
+    .pill {
+      display: inline-block;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 5px 14px; border-radius: 20px;
+      background: var(--text); color: var(--bg);
+      margin-bottom: 8px;
+    }
+    [data-theme="dark"] .pill {
+      background: var(--gold); color: #0A0907;
+      box-shadow: 0 0 15px rgba(212,168,75,0.3);
+    }
+    .pill.soft {
+      background: var(--surface-2); color: var(--text-mid);
+      border: 1px solid var(--border-mid);
+    }
+    [data-theme="dark"] .pill.soft {
+      background: rgba(212,168,75,0.08); color: var(--gold);
+      border-color: rgba(212,168,75,0.25);
+    }
+
+    .warn-box {
+      font-size: 15px; padding: 13px 16px;
+      background: rgba(234,179,8,0.06); border: 1px solid rgba(234,179,8,0.2);
+      border-radius: var(--radius); color: #92620A; line-height: 1.7;
+    }
+    [data-theme="dark"] .warn-box { color: #D4A853; }
+
+    .fix-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #15803D;
+      margin-bottom: 6px;
+      margin-top: 2px;
+    }
+    [data-theme="dark"] .fix-label { color: #4ADE80; }
+
+    .fix-box {
+      font-size: 15px;
+      line-height: 1.75;
+      padding: 13px 16px;
+      background: rgba(34,197,94,0.06);
+      border: 1px solid rgba(34,197,94,0.25);
+      border-left: 3px solid #22C55E;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      color: var(--text);
+      font-weight: 400;
+    }
+    [data-theme="dark"] .fix-box {
+      background: rgba(34,197,94,0.05);
+      border-color: rgba(34,197,94,0.2);
+      border-left-color: #4ADE80;
+    }
+
+    .success-box {
+      font-size: 15px; padding: 13px 16px;
+      background: rgba(34,197,94,0.06); border: 1px solid rgba(34,197,94,0.2);
+      border-radius: var(--radius); color: #15803D; line-height: 1.7;
+    }
+    [data-theme="dark"] .success-box { color: #4ADE80; }
+
+    .script-block {
+      background: var(--surface-2);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      font-size: 15px; line-height: 2.1;
+      color: var(--text);
+      white-space: pre-wrap;
+      font-family: 'Inter', sans-serif;
+    }
+    [data-theme="dark"] .script-block {
+      background: rgba(12,10,6,0.6);
+      border-color: rgba(212,168,75,0.1);
+    }
+    .script-line { display: block; padding: 2px 0; }
+    .script-note {
+      display: block; font-size: 12px; color: var(--text-muted);
+      font-style: italic; padding: 4px 0 4px 14px;
+      border-left: 2px solid var(--gold-border); margin: 6px 0;
+    }
+    .script-beat {
+      display: block; font-size: 10px;
+      font-family: 'Inter', sans-serif; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--gold); margin: 16px 0 4px;
+    }
+    [data-theme="dark"] .script-beat { text-shadow: 0 0 10px rgba(212,168,75,0.4); }
+
+    .text-output-box {
+      font-size: 15px; line-height: 1.95;
+      padding: 1.5rem;
+      background: var(--surface-2);
+      border-radius: var(--radius);
+      color: var(--text);
+      border: 1px solid var(--border-mid);
+      border-left: 3px solid var(--gold);
+      white-space: pre-wrap;
+      font-family: 'Inter', sans-serif;
+    }
+    [data-theme="dark"] .text-output-box {
+      background: rgba(12,10,6,0.6);
+      border-color: rgba(212,168,75,0.1);
+      border-left-color: var(--gold);
+    }
+
+    .broll-item {
+      padding: 8px 0; border-bottom: 1px solid var(--border);
+      font-size: 15px; color: var(--text-mid); line-height: 1.6;
+      display: flex; align-items: flex-start; gap: 12px;
+    }
+    .broll-item::before { content: '→'; color: var(--gold); flex-shrink: 0; }
+    .broll-item:last-child { border-bottom: none; }
+    [data-theme="dark"] .broll-item { border-color: rgba(212,168,75,0.07); }
+
+    /* ══ COPY BUTTON ══════════════════════════ */
+    .copy-btn, .idea-copy-btn, .cal-copy-btn {
+      display: inline-flex; align-items: center;
+      font-size: 10px; font-family: 'Inter', sans-serif;
+      font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-muted);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 6px; padding: 4px 12px;
+      cursor: pointer; transition: all 0.15s;
+      margin-top: 10px; float: right;
+      backdrop-filter: blur(6px);
+    }
+    .copy-btn:hover, .idea-copy-btn:hover, .cal-copy-btn:hover {
+      border-color: var(--gold-border); color: var(--gold); background: var(--gold-light);
+    }
+    .copy-btn.copied, .idea-copy-btn.copied, .cal-copy-btn.copied {
+      border-color: rgba(34,197,94,0.4); color: #15803D; background: rgba(34,197,94,0.06);
+    }
+    [data-theme="dark"] .copy-btn,
+    [data-theme="dark"] .idea-copy-btn,
+    [data-theme="dark"] .cal-copy-btn {
+      background: rgba(212,168,75,0.05);
+      border-color: rgba(212,168,75,0.15);
+    }
+
+    /* ══ IDEA CARDS ═══════════════════════════ */
+    .idea-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.3rem;
+      border-left: 3px solid var(--gold-border);
+      transition: all 0.2s;
+      backdrop-filter: blur(8px);
+    }
+    [data-theme="dark"] .idea-card {
+      background: rgba(18,15,10,0.6);
+      border-color: rgba(212,168,75,0.08);
+      border-left-color: rgba(212,168,75,0.3);
+    }
+    [data-theme="dark"] .idea-card:hover {
+      border-left-color: var(--gold);
+      box-shadow: 0 0 20px rgba(212,168,75,0.06);
+    }
+    .idea-num { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: var(--gold); margin-bottom: 4px; }
+    .idea-title { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.45; margin-bottom: 6px; }
+
+    .tip-box {
+      font-size: 13px; color: #7A5010;
+      background: rgba(196,137,42,0.07);
+      border: 1px solid rgba(196,137,42,0.2);
+      border-radius: var(--radius);
+      padding: 8px 12px; margin-top: 8px; line-height: 1.55;
+      display: flex; gap: 7px; align-items: flex-start;
+    }
+    .tip-box::before { content: '💡'; flex-shrink: 0; font-size: 13px; }
+    [data-theme="dark"] .tip-box { color: #C8A060; background: rgba(212,168,75,0.06); border-color: rgba(212,168,75,0.18); }
+
+    .best-platform-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-family: 'Inter', sans-serif; font-weight: 700;
+      color: var(--gold); background: var(--gold-light);
+      border: 1px solid var(--gold-border);
+      padding: 3px 10px; border-radius: 20px; margin-top: 6px;
+    }
+
+    /* ══ CALENDAR DAYS ════════════════════════ */
+    .cal-day { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    [data-theme="dark"] .cal-day { background: rgba(18,15,10,0.6); border-color: rgba(212,168,75,0.08); }
+
+    .cal-day-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px;
+      background: var(--surface-3);
+      border-bottom: 1px solid var(--border);
+    }
+    [data-theme="dark"] .cal-day-header { background: rgba(212,168,75,0.04); border-bottom-color: rgba(212,168,75,0.08); }
+    .cal-day-name { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text); }
+    .cal-day-platform {
+      font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 700;
+      color: var(--gold); background: var(--gold-light);
+      border: 1px solid var(--gold-border);
+      padding: 3px 10px; border-radius: 20px;
+    }
+    .cal-day-body { padding: 12px 16px; }
+    .cal-post-type { font-size: 10px; font-family: 'Inter', sans-serif; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 5px; }
+    .cal-post-content { font-size: 14px; color: var(--text); line-height: 1.55; margin-bottom: 6px; }
+    .cal-post-tip { font-size: 12px; color: var(--text-muted); font-style: italic; line-height: 1.5; }
+
+    .ideal-time {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 700;
+      color: #15803D; background: rgba(34,197,94,0.08);
+      border: 1px solid rgba(34,197,94,0.25);
+      padding: 3px 10px; border-radius: 20px; margin-top: 6px;
+    }
+    [data-theme="dark"] .ideal-time { color: #4ADE80; }
+
+    /* ══ STOP & FOCUS BLOCK ═══════════════════ */
+    .focus-block {
+      margin: 1.75rem 1.75rem 0;
+      padding: 1.6rem 2rem;
+      background: #0A0908;
+      border-radius: var(--radius-lg);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(212,168,75,0.15);
+    }
+    .focus-block::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, transparent, var(--gold-border), var(--gold), var(--gold-2), var(--gold), var(--gold-border), transparent);
+      animation: focusBar 4s linear infinite;
+      background-size: 200%;
+    }
+    @keyframes focusBar {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 200% 0%; }
+    }
+    [data-theme="dark"] .focus-block {
+      border-color: rgba(212,168,75,0.2);
+      box-shadow: 0 0 60px rgba(212,168,75,0.08), inset 0 0 80px rgba(212,168,75,0.03);
+    }
+    [data-theme="light"] .focus-block {
+      background: #12100E;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    }
+    .focus-block-eyebrow {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px; font-weight: 700;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.6rem;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .focus-block-eyebrow::before {
+      content: '';
+      width: 24px; height: 2px;
+      background: linear-gradient(to right, var(--gold), transparent);
+      flex-shrink: 0;
+    }
+    .focus-block-action {
+      font-family: 'Inter', sans-serif;
+      font-size: 18px; font-weight: 700;
+      color: #fff; line-height: 1.4;
+      letter-spacing: -0.01em;
+    }
+    .focus-block-sub {
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+      margin-top: 0.6rem;
+      font-style: italic; line-height: 1.5;
+    }
+
+    /* ══ SAVE BAR ═════════════════════════════ */
+    .save-bar { padding: 1.25rem 1.75rem 1.6rem; border-top: 1px solid var(--border); }
+    [data-theme="dark"] .save-bar { border-top-color: rgba(212,168,75,0.07); }
+
+    .save-pdf-btn {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      width: 100%; padding: 12px;
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px dashed var(--border-mid);
+      border-radius: var(--radius);
+      font-family: 'Inter', sans-serif;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .save-pdf-btn:hover {
+      background: var(--gold-light);
+      border-color: var(--gold);
+      border-style: solid;
+      color: var(--gold);
+    }
+
+    /* ══ FOOTER ═══════════════════════════════ */
+    footer {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      font-size: 13px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      position: relative; z-index: 2;
+    }
+    footer strong { color: var(--gold); }
+    [data-theme="dark"] footer { border-top-color: rgba(212,168,75,0.08); }
+
+    /* ══ CONCEPT SECTION ═════════════════════ */
+    .concept-section { display: none; }
+    .concept-section.show { display: block; }
+
+    .concept-style-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 0.5rem;
+    }
+    @media (max-width: 560px) { .concept-style-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .concept-style-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: var(--surface-2);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-mid);
+      user-select: none;
+      backdrop-filter: blur(8px);
+    }
+    .concept-style-btn:hover {
+      border-color: var(--gold-border);
+      background: var(--gold-light);
+      color: var(--text);
+    }
+    .concept-style-btn.selected {
+      background: var(--gold-light);
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    [data-theme="dark"] .concept-style-btn.selected {
+      background: rgba(212,168,75,0.1);
+      border-color: rgba(212,168,75,0.4);
+      box-shadow: 0 0 14px rgba(212,168,75,0.12);
+    }
+
+    .concept-out {
+      display: none;
+      background: var(--surface);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      animation: fadeUp 0.4s cubic-bezier(0.34, 1.2, 0.64, 1);
+    }
+    .concept-out.show { display: block; }
+    [data-theme="dark"] .concept-out {
+      background: rgba(14,12,8,0.9);
+      border-color: rgba(212,168,75,0.15);
+      box-shadow: var(--shadow-lg), 0 0 60px rgba(212,168,75,0.06);
+    }
+
+    .concept-out-header {
+      padding: 1.1rem 1.6rem;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--surface-3);
+      backdrop-filter: blur(10px);
+    }
+    [data-theme="dark"] .concept-out-header {
+      background: rgba(212,168,75,0.04);
+      border-bottom-color: rgba(212,168,75,0.1);
+    }
+
+    .concept-out-body { padding: 2rem; }
+
+    /* BIG CONCEPT TITLE */
+    .concept-title-block {
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+    [data-theme="dark"] .concept-title-block { border-bottom-color: rgba(212,168,75,0.07); }
+
+    .concept-title-eyebrow {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.75rem;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .concept-title-eyebrow::before {
+      content: '';
+      width: 3px; height: 12px;
+      background: var(--gold);
+      border-radius: 2px;
+    }
+
+    .concept-big-title {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(22px, 3vw, 30px);
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+    }
+    [data-theme="dark"] .concept-big-title {
+      text-shadow: 0 0 40px rgba(212,168,75,0.1);
+    }
+
+    .concept-format-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: var(--gold-light);
+      border: 1px solid var(--gold-border);
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    .concept-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.4rem 1.6rem;
+      margin-bottom: 1rem;
+      transition: all 0.2s;
+      backdrop-filter: blur(8px);
+    }
+    [data-theme="dark"] .concept-card {
+      background: rgba(18,15,10,0.6);
+      border-color: rgba(212,168,75,0.08);
+    }
+    [data-theme="dark"] .concept-card:hover {
+      border-color: rgba(212,168,75,0.15);
+      box-shadow: 0 0 20px rgba(212,168,75,0.04);
+    }
+
+    .concept-card-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.6rem;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .concept-card-label::before {
+      content: '';
+      width: 3px; height: 10px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      border-radius: 2px;
+    }
+    [data-theme="dark"] .concept-card-label { text-shadow: 0 0 10px rgba(212,168,75,0.3); }
+
+    .concept-card-text {
+      font-size: 15px;
+      line-height: 1.8;
+      color: var(--text);
+    }
+
+    .concept-production-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .concept-production-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--text-mid);
+      line-height: 1.6;
+    }
+    .concept-production-list li::before {
+      content: '▸';
+      color: var(--gold);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .concept-platform-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--gold);
+      color: #0A0907;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-top: 4px;
+    }
+    [data-theme="light"] .concept-platform-pill {
+      background: var(--text);
+      color: var(--bg);
+    }
+
+    .concept-virality-meter {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .concept-virality-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    .concept-virality-bar {
+      flex: 1;
+      height: 6px;
+      background: var(--border-mid);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .concept-virality-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: linear-gradient(90deg, var(--gold-border), var(--gold), var(--gold-2));
+      transition: width 1s cubic-bezier(0.34, 1.2, 0.64, 1);
+    }
+    [data-theme="dark"] .concept-virality-fill {
+      box-shadow: 0 0 8px rgba(212,168,75,0.5);
+    }
+    .concept-virality-score {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--gold);
+      flex-shrink: 0;
+      min-width: 30px;
+      text-align: right;
+    }
+
+    /* ══ UPLOAD & STRATEGIZE ═════════════════ */
+    .upload-section { display: none; }
+    .upload-section.show { display: block; }
+
+    .upload-hero {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 0 0 1.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+    [data-theme="dark"] .upload-hero { border-bottom-color: rgba(212,168,75,0.08); }
+
+    .upload-hero-icon {
+      font-size: 32px;
+      flex-shrink: 0;
+      line-height: 1;
+      margin-top: 2px;
+    }
+
+    .upload-hero-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+    [data-theme="dark"] .upload-hero-title { text-shadow: 0 0 20px rgba(212,168,75,0.08); }
+
+    .upload-hero-sub {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    .upload-capabilities {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+
+    .upload-cap-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(8px);
+      transition: all 0.2s;
+    }
+    [data-theme="dark"] .upload-cap-item { background: rgba(212,168,75,0.03); border-color: rgba(212,168,75,0.07); }
+
+    .upload-cap-icon { font-size: 18px; flex-shrink: 0; }
+    .upload-cap-text { font-size: 13px; color: var(--text-mid); line-height: 1.4; }
+    .upload-cap-text strong { color: var(--text); font-weight: 600; }
+
+    /* DROP ZONE */
+    .upload-drop-zone {
+      margin-top: 1rem;
+      border: 2px dashed var(--border-mid);
+      border-radius: var(--radius-lg);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.34, 1.2, 0.64, 1);
+      background: var(--surface-2);
+      backdrop-filter: blur(8px);
+      position: relative;
+      min-height: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .upload-drop-zone:hover {
+      border-color: var(--gold);
+      background: var(--gold-light);
+    }
+    [data-theme="dark"] .upload-drop-zone {
+      background: rgba(18,15,10,0.5);
+      border-color: rgba(212,168,75,0.2);
+    }
+    [data-theme="dark"] .upload-drop-zone:hover {
+      border-color: var(--gold);
+      background: rgba(212,168,75,0.06);
+      box-shadow: 0 0 30px rgba(212,168,75,0.08);
+    }
+    .upload-drop-zone.drag-over {
+      border-color: var(--gold);
+      background: var(--gold-light);
+      transform: scale(1.01);
+    }
+    [data-theme="dark"] .upload-drop-zone.drag-over {
+      background: rgba(212,168,75,0.08);
+      box-shadow: 0 0 40px rgba(212,168,75,0.12);
+    }
+    .upload-drop-zone.has-image {
+      border-style: solid;
+      border-color: var(--gold-border);
+      padding: 1rem;
+    }
+
+    .upload-drop-inner { pointer-events: none; }
+
+    .upload-drop-icon {
+      font-size: 28px;
+      margin-bottom: 10px;
+      display: block;
+    }
+    .upload-drop-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-mid);
+      margin-bottom: 5px;
+    }
+    .upload-drop-link { color: var(--gold); text-decoration: underline; }
+    .upload-drop-hint { font-size: 12px; color: var(--text-muted); font-style: italic; }
+
+    /* IMAGE PREVIEW */
+    .upload-preview {
+      position: relative;
+      width: 100%;
+    }
+    .upload-preview img {
+      width: 100%;
+      max-height: 200px;
+      object-fit: contain;
+      border-radius: var(--radius);
+      display: block;
+    }
+    .upload-remove-btn {
+      position: absolute;
+      top: -8px; right: -8px;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: #C53030;
+      color: white;
+      border: 2px solid var(--surface);
+      font-size: 11px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      transition: all 0.15s;
+      z-index: 10;
+    }
+    .upload-remove-btn:hover { background: #9B2C2C; transform: scale(1.1); }
+
+    .upload-preview-label {
+      font-size: 11px;
+      color: var(--gold);
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    /* OUTPUT CARDS for upload results */
+    .upload-result-type {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: var(--gold-light);
+      border: 1px solid var(--gold-border);
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ══ VIDEO TOOLKIT ═══════════════════════ */
+    .video-toolkit-block {
+      margin-top: 1rem;
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: var(--surface-2);
+      backdrop-filter: blur(8px);
+    }
+    [data-theme="dark"] .video-toolkit-block {
+      background: rgba(212,168,75,0.04);
+      border-color: rgba(212,168,75,0.2);
+    }
+
+    .video-toolkit-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: var(--gold-light);
+      border-bottom: 1px solid var(--gold-border);
+    }
+    [data-theme="dark"] .video-toolkit-header {
+      background: rgba(212,168,75,0.08);
+    }
+
+    .video-toolkit-icon { font-size: 16px; }
+
+    .video-toolkit-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    [data-theme="dark"] .video-toolkit-label { text-shadow: 0 0 10px rgba(212,168,75,0.3); }
+
+    .video-toolkit-row {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    .video-toolkit-row:last-child { border-bottom: none; }
+    [data-theme="dark"] .video-toolkit-row { border-color: rgba(212,168,75,0.07); }
+
+    .video-toolkit-row-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .video-toolkit-row-value {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.6;
+      padding-right: 70px;
+      font-weight: 400;
+      letter-spacing: -0.005em;
+    }
+
+    .video-toolkit-hashtags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding-right: 70px;
+    }
+
+    .hashtag-pill {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--gold);
+      background: var(--gold-light);
+      border: 1px solid var(--gold-border);
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: -0.01em;
+    }
+    [data-theme="dark"] .hashtag-pill {
+      background: rgba(212,168,75,0.08);
+    }
+
+    .vt-copy-btn {
+      position: absolute;
+      top: 14px; right: 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: var(--surface);
+      border: 1px solid var(--border-mid);
+      border-radius: 6px;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .vt-copy-btn:hover {
+      border-color: var(--gold-border);
+      color: var(--gold);
+      background: var(--gold-light);
+    }
+    .vt-copy-btn.copied {
+      border-color: rgba(34,197,94,0.4);
+      color: #15803D;
+      background: rgba(34,197,94,0.06);
+    }
+
+    /* ══ SAM HOME GRID ════════════════════════ */
+    .sam-home {
+      margin-bottom: 2rem;
+    }
+
+    .sam-home-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 600px) {
+      .sam-home-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    @media (max-width: 380px) {
+      .sam-home-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .sam-icon-btn {
+      background: var(--surface);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-lg);
+      padding: 1rem 0.5rem 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.34, 1.2, 0.64, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      backdrop-filter: blur(12px);
+      position: relative;
+      overflow: hidden;
+    }
+    .sam-icon-btn:hover {
+      transform: translateY(-3px) scale(1.02);
+      border-color: var(--gold-border);
+      box-shadow: var(--shadow);
+    }
+    .sam-icon-btn:active {
+      transform: scale(0.97);
+    }
+    [data-theme="dark"] .sam-icon-btn {
+      border-color: rgba(212,168,75,0.12);
+    }
+    [data-theme="dark"] .sam-icon-btn:hover {
+      border-color: rgba(212,168,75,0.3);
+      box-shadow: var(--shadow), 0 0 20px rgba(212,168,75,0.08);
+    }
+
+    .sam-icon-face {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+    .sam-icon-btn:hover .sam-icon-face {
+      transform: scale(1.08);
+    }
+    [data-theme="dark"] .sam-icon-face {
+      opacity: 0.88;
+    }
+
+    .sam-icon-name {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      text-align: center;
+    }
+
+    .sam-icon-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      font-weight: 400;
+      color: var(--text-muted);
+      text-align: center;
+      letter-spacing: 0.01em;
+      line-height: 1.3;
+    }
+
+    /* ══ TOOL WRAPPER ═══════════════════════ */
+    .sam-tool-wrap {
+      animation: fadeUp 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
+    }
+
+    .sam-back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--surface-2);
+      border: 1px solid var(--border-mid);
+      border-radius: 50px;
+      padding: 6px 14px;
+      cursor: pointer;
+      margin-bottom: 1.5rem;
+      transition: all 0.2s;
+      letter-spacing: 0.01em;
+    }
+    .sam-back-btn:hover {
+      color: var(--gold);
+      border-color: var(--gold-border);
+      background: var(--gold-light);
+    }
+
+    .sam-tool-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .sam-tool-title {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(20px, 2.8vw, 26px);
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+    [data-theme="dark"] .sam-tool-title {
+      text-shadow: 0 0 40px rgba(212,168,75,0.1);
+    }
+
+    .sam-tool-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    /* ══ BOTTOM TOOL DOCK ════════════════════ */
+    .tool-dock {
+      margin: 1.75rem 1.75rem 0;
+      padding: 1.25rem 1.5rem 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+    [data-theme="dark"] .tool-dock {
+      border-top-color: rgba(212,168,75,0.08);
+    }
+
+    .tool-dock-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .tool-dock-grid {
+      display: flex;
+      flex-direction: row;
+      gap: 8px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 4px;
+    }
+    .tool-dock-grid::-webkit-scrollbar { display: none; }
+
+    .tool-dock-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      background: var(--surface-2);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.34, 1.2, 0.64, 1);
+      text-align: left;
+      backdrop-filter: blur(8px);
+      flex-shrink: 0;
+      min-width: 170px;
+    }
+    .tool-dock-btn:hover {
+      border-color: var(--gold-border);
+      background: var(--gold-light);
+      transform: translateY(-1px);
+    }
+    .tool-dock-btn:active { transform: scale(0.98); }
+    [data-theme="dark"] .tool-dock-btn {
+      background: rgba(18,15,10,0.5);
+      border-color: rgba(212,168,75,0.1);
+    }
+    [data-theme="dark"] .tool-dock-btn:hover {
+      border-color: rgba(212,168,75,0.3);
+      background: rgba(212,168,75,0.06);
+    }
+
+    .tool-dock-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .tool-dock-info {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      min-width: 0;
+    }
+
+    .tool-dock-name {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tool-dock-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ══ PRINT ════════════════════════════════ */
+    @media print {
+      nav, .hero, .section-header, .feature-strip, .platform-wrap,
+      .input-card, .out-header, footer,
+      .copy-btn, .cal-copy-btn, .idea-copy-btn,
+      .mode-toggle-wrap, .save-pdf-btn, .run-btn,
+      .idea-btn, .calendar-btn, .new-btn,
+      .edge-flare-left, .edge-flare-right,
+      #particle-canvas, .corner-accent,
+      .concept-out-header, .glass-card { display: none !important; }
+      .ideas-out, .cal-out { display: block !important; border: none; box-shadow: none; }
+      .out-card { display: block !important; border: none; box-shadow: none; animation: none; }
+      body { background: white; font-size: 13px; }
+      .focus-block { background: #12100E !important; -webkit-print-color-adjust: exact; }
+    }
+
+    /* ══ MISC HELPERS ═════════════════════════ */
+    .print-header { display: none; }
+  </style>
+</head>
+<body>
+  <canvas id="particle-canvas"></canvas>
+  <div class="edge-flare-left"></div>
+  <div class="edge-flare-right"></div>
+  <div class="corner-accent tl"></div>
+  <div class="corner-accent tr"></div>
+  <div class="corner-accent bl"></div>
+  <div class="corner-accent br"></div>
+
+  <nav>
+    <div class="nav-logo">S<span>.</span>A<span>.</span>M<span>.</span></div>
+    <div class="nav-right">
+      <div class="nav-tag">Strategic Assistant for Making</div>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark/light mode" aria-label="Toggle theme">
+        <span class="icon-moon">🌙</span>
+        <span class="icon-sun">☀️</span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-eyebrow">Built for creators</div>
+    <h1>You have the moment.<br/><em>Let's find the story.</em></h1>
+    <p class="hero-sub">Tell S.A.M. what happened. Get the hook, the script, the platform strategy — everything you need to turn a real moment into content that builds your following.</p>
+    <a href="#tool" class="hero-cta">Start now ↓</a>
+  </div>
+
+  <div class="tool-section" id="tool">
+    <div class="tool-inner">
+
+      <div class="section-header">
+        <div class="section-eyebrow">5 tools. 1 creative brain.</div>
+        <h2>Every content tool you need,<br/>finally in one place.</h2>
+        <p>Turn real moments into scripts. Generate ideas on demand. Plan your week, build video concepts, and read your analytics — all without switching apps, all powered by AI that actually understands creators.</p>
+      </div>
+
+      <!-- SAM HOME GRID -->
+      <div class="sam-home" id="samHome">
+        <div class="sam-home-grid">
+          <button class="sam-icon-btn" onclick="openTool('moment')">
+            <div class="sam-icon-face" style="background:#FAC775;">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M6 8h16M6 13h10M6 18h12" stroke="#633806" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="sam-icon-name">The Pulse</div>
+            <div class="sam-icon-sub">Moment → Content</div>
+          </button>
+          <button class="sam-icon-btn" onclick="openTool('ideas')">
+            <div class="sam-icon-face" style="background:#9FE1CB;">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 5v2M14 21v2M5 14H3M25 14h-2M7.8 7.8L6.4 6.4M21.6 21.6l-1.4-1.4M7.8 20.2l-1.4 1.4M21.6 6.4l-1.4 1.4M14 9a5 5 0 100 10 5 5 0 000-10z" stroke="#085041" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </div>
+            <div class="sam-icon-name">The Spark</div>
+            <div class="sam-icon-sub">Idea Generator</div>
+          </button>
+          <button class="sam-icon-btn" onclick="openTool('calendar')">
+            <div class="sam-icon-face" style="background:#CECBF6;">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="5" y="7" width="18" height="16" rx="2" stroke="#26215C" stroke-width="1.8"/><path d="M5 12h18M10 5v4M18 5v4" stroke="#26215C" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="17" r="1" fill="#26215C"/><circle cx="14" cy="17" r="1" fill="#26215C"/><circle cx="18" cy="17" r="1" fill="#26215C"/></svg>
+            </div>
+            <div class="sam-icon-name">The Blueprint</div>
+            <div class="sam-icon-sub">Posting Calendar</div>
+          </button>
+          <button class="sam-icon-btn" onclick="openTool('concept')">
+            <div class="sam-icon-face" style="background:#F5C4B3;">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><polygon points="11,8 22,14 11,20" fill="#4A1B0C"/><rect x="6" y="8" width="2.5" height="12" rx="1" fill="#4A1B0C"/></svg>
+            </div>
+            <div class="sam-icon-name">The Vision</div>
+            <div class="sam-icon-sub">Video Concept</div>
+          </button>
+          <button class="sam-icon-btn" onclick="openTool('upload')">
+            <div class="sam-icon-face" style="background:#B5D4F4;">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="13" r="5" stroke="#042C53" stroke-width="1.8"/><circle cx="14" cy="13" r="2" fill="#042C53"/><path d="M14 4v3M14 19v3M4 13H7M21 13h3M6.6 6.6l2.1 2.1M19.3 19.3l2.1 2.1M6.6 19.4l2.1-2.1M19.3 6.7l2.1-2.1" stroke="#042C53" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <div class="sam-icon-name">The Lens</div>
+            <div class="sam-icon-sub">Upload & Analyse</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- TOOL WRAPPER (hidden until icon tapped) -->
+      <div class="sam-tool-wrap" id="samToolWrap" style="display:none;">
+        <button class="sam-back-btn" id="samBackBtn" onclick="closeToolBack()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span id="samBackLabel">Back</span>
+        </button>
+        <div class="sam-tool-header" id="samToolHeader"></div>
+
+      <!-- IDEA MAKER -->
+      <div class="idea-section" id="ideaSection">
+        <div class="glass-card idea-input-card">
+          <div class="input-card-label">Tell S.A.M. about your niche</div>
+          <div class="input-wrap">
+            <textarea id="nicheInp" placeholder="e.g. Self-taught DIY renovator documenting a full cottage gut renovation. My audience loves real moments, setbacks, and figuring things out without being an expert." style="min-height:100px;"></textarea>
+            <button class="paste-btn" onclick="pasteToEl('nicheInp')" title="Paste">📋</button>
+            <button class="mic-btn" id="micBtnNiche" onclick="toggleMicNiche()" title="Speak">🎙</button>
+          </div>
+          <div class="loader" id="ideaLoader" style="margin-top:1rem;">
+            <div class="loader-dots"><span></span><span></span><span></span></div>
+            <div class="loader-text" id="ideaLoaderText">S.A.M. is generating your ideas...</div>
+          </div>
+          <div class="error-box" id="ideaErrBox"></div>
+          <button class="idea-btn" id="ideaBtn" onclick="runIdeas()">Get 10 content ideas →</button>
+        </div>
+        <div class="ideas-out" id="ideasOut">
+          <div class="ideas-header">
+            <div class="ideas-header-label">Your content ideas</div>
+            <button class="new-btn" onclick="resetIdeas()">← Start over</button>
+          </div>
+          <div class="ideas-body" id="ideasBody"></div>
+          <div class="focus-block" id="ideaFocusBlock" style="display:none;">
+            <div class="focus-block-eyebrow">Stop. Focus. Do this now.</div>
+            <div class="focus-block-action" id="ideaFocusAction" style="color:rgba(255,255,255,0.35);font-style:italic;font-size:14px;font-weight:400;">S.A.M. is building your focus action...</div>
+            <div class="focus-block-sub" id="ideaFocusSub"></div>
+          </div>
+          <div class="tool-dock" id="ideaDock" style="display:none;">
+            <div class="tool-dock-label">Open another tool</div>
+            <div class="tool-dock-grid" id="ideaDockGrid"></div>
+          </div>
+          <div class="save-bar" id="ideaSaveBar" style="display:none;">
+            <button class="save-pdf-btn" onclick="printCurrentMode()">↓ &nbsp;Save ideas as PDF</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CALENDAR -->
+      <div class="calendar-section" id="calendarSection">
+        <div class="glass-card calendar-input-card">
+          <div class="input-card-label">Describe your moment or content idea</div>
+          <div class="input-wrap">
+            <textarea id="calInp" placeholder="e.g. My parents flew in and saw the cottage renovation for the first time. They both stopped at the big white blooming tree in the front yard and said wow." style="min-height:100px;"></textarea>
+            <button class="paste-btn" onclick="pasteToEl('calInp')" title="Paste">📋</button>
+            <button class="mic-btn" id="micBtnCal" onclick="toggleMicCal()" title="Speak">🎙</button>
+          </div>
+          <div style="margin-top:1.25rem;">
+            <div class="section-label">Which platforms?</div>
+            <div class="platform-grid" id="calPlatformGrid">
+              <button class="platform-pill" data-platform="TikTok" onclick="toggleCalPlatform(this)">🎵 TikTok</button>
+              <button class="platform-pill" data-platform="YouTube Shorts" onclick="toggleCalPlatform(this)">▶ YouTube Shorts</button>
+              <button class="platform-pill" data-platform="YouTube" onclick="toggleCalPlatform(this)">▶ YouTube</button>
+              <button class="platform-pill" data-platform="Instagram Reels" onclick="toggleCalPlatform(this)">📸 Instagram Reels</button>
+              <button class="platform-pill" data-platform="Facebook Reels" onclick="toggleCalPlatform(this)">👥 Facebook Reels</button>
+              <button class="platform-pill" data-platform="LinkedIn" onclick="toggleCalPlatform(this)">💼 LinkedIn</button>
+              <button class="platform-pill" data-platform="X (Twitter)" onclick="toggleCalPlatform(this)">✕ X (Twitter)</button>
+            </div>
+          </div>
+          <div class="loader" id="calLoader" style="margin-top:1rem;">
+            <div class="loader-dots"><span></span><span></span><span></span></div>
+            <div class="loader-text">S.A.M. is building your calendar...</div>
+          </div>
+          <div class="error-box" id="calErrBox"></div>
+          <button class="calendar-btn" id="calBtn" onclick="runCalendar()">Build my 7-day posting plan →</button>
+        </div>
+        <div class="cal-out" id="calOut">
+          <div class="cal-header">
+            <div class="cal-header-label">Your 7-day posting plan</div>
+            <button class="new-btn" onclick="resetCalendar()">← Start over</button>
+          </div>
+          <div class="cal-body" id="calBody"></div>
+          <div class="focus-block" id="calFocusBlock" style="display:none;">
+            <div class="focus-block-eyebrow">Stop. Focus. Do this now.</div>
+            <div class="focus-block-action" id="calFocusAction" style="color:rgba(255,255,255,0.35);font-style:italic;font-size:14px;font-weight:400;">S.A.M. is building your focus action...</div>
+            <div class="focus-block-sub" id="calFocusSub"></div>
+          </div>
+          <div class="tool-dock" id="calDock" style="display:none;">
+            <div class="tool-dock-label">Open another tool</div>
+            <div class="tool-dock-grid" id="calDockGrid"></div>
+          </div>
+          <div class="save-bar" id="calSaveBar" style="display:none;">
+            <button class="save-pdf-btn" onclick="printCurrentMode()">↓ &nbsp;Save calendar as PDF</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIDEO CONCEPT SECTION -->
+      <div class="concept-section" id="conceptSection">
+        <div class="glass-card idea-input-card">
+          <div class="input-card-label">Describe your niche or a specific idea</div>
+          <div class="input-wrap">
+            <textarea id="conceptInp" placeholder="e.g. Self-taught DIY renovator documenting a full cottage gut renovation. I want a concept nobody has seen before — something that would stop the scroll and make people share it." style="min-height:110px;"></textarea>
+            <button class="paste-btn" onclick="pasteToEl('conceptInp')" title="Paste">📋</button>
+            <button class="mic-btn" id="micBtnConcept" onclick="toggleMicConcept()" title="Speak">🎙</button>
+          </div>
+          <div style="margin-top:1.25rem;">
+            <div class="section-label">What platform is this for?</div>
+            <div class="platform-grid" id="conceptPlatformGrid">
+              <button class="platform-pill" data-platform="TikTok" onclick="toggleConceptPlatform(this)">🎵 TikTok</button>
+              <button class="platform-pill" data-platform="YouTube Shorts" onclick="toggleConceptPlatform(this)">▶ YouTube Shorts</button>
+              <button class="platform-pill" data-platform="YouTube" onclick="toggleConceptPlatform(this)">▶ YouTube</button>
+              <button class="platform-pill" data-platform="Instagram Reels" onclick="toggleConceptPlatform(this)">📸 Instagram Reels</button>
+              <button class="platform-pill" data-platform="Facebook Reels" onclick="toggleConceptPlatform(this)">👥 Facebook Reels</button>
+              <button class="platform-pill" data-platform="LinkedIn" onclick="toggleConceptPlatform(this)">💼 LinkedIn</button>
+              <button class="platform-pill" data-platform="X (Twitter)" onclick="toggleConceptPlatform(this)">✕ X (Twitter)</button>
+            </div>
+          </div>
+          <div style="margin-top:1.25rem;">
+            <div class="section-label">Concept style <span style="font-weight:400;text-transform:none;letter-spacing:0;font-style:italic;color:var(--text-muted);font-family:'Inter',sans-serif;">(optional)</span></div>
+            <div class="concept-style-grid">
+              <button class="concept-style-btn" data-style="Surprise / Reveal" onclick="selectConceptStyle(this)">😲 Surprise / Reveal</button>
+              <button class="concept-style-btn" data-style="Challenge / Experiment" onclick="selectConceptStyle(this)">🧪 Challenge / Experiment</button>
+              <button class="concept-style-btn" data-style="Transformation" onclick="selectConceptStyle(this)">✨ Transformation</button>
+              <button class="concept-style-btn" data-style="Story / Documentary" onclick="selectConceptStyle(this)">🎥 Story / Documentary</button>
+              <button class="concept-style-btn" data-style="Tutorial with a Twist" onclick="selectConceptStyle(this)">🔄 Tutorial with a Twist</button>
+              <button class="concept-style-btn" data-style="Day in the Life" onclick="selectConceptStyle(this)">📅 Day in the Life</button>
+            </div>
+          </div>
+          <div class="loader" id="conceptLoader" style="margin-top:1rem;">
+            <div class="loader-dots"><span></span><span></span><span></span></div>
+            <div class="loader-text" id="conceptLoaderText">S.A.M. is building your concept...</div>
+          </div>
+          <div class="error-box" id="conceptErrBox"></div>
+          <button class="idea-btn" id="conceptBtn" onclick="runConcept()">Generate video concept →</button>
+        </div>
+
+        <div class="concept-out" id="conceptOut">
+          <div class="concept-out-header">
+            <div class="out-label">Your video concept</div>
+            <button class="new-btn" onclick="resetConcept()">← Start over</button>
+          </div>
+          <div class="concept-out-body" id="conceptBody"></div>
+          <div class="focus-block" id="conceptFocusBlock" style="display:none;">
+            <div class="focus-block-eyebrow">Stop. Focus. Do this now.</div>
+            <div class="focus-block-action" id="conceptFocusAction" style="color:rgba(255,255,255,0.35);font-style:italic;font-size:14px;font-weight:400;">S.A.M. is building your focus action...</div>
+            <div class="focus-block-sub" id="conceptFocusSub"></div>
+          </div>
+          <div class="tool-dock" id="conceptDock" style="display:none;">
+            <div class="tool-dock-label">Open another tool</div>
+            <div class="tool-dock-grid" id="conceptDockGrid"></div>
+          </div>
+          <div class="save-bar" id="conceptSaveBar" style="display:none;">
+            <button class="save-pdf-btn" onclick="printCurrentMode()">↓ &nbsp;Save concept as PDF</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- UPLOAD & STRATEGIZE SECTION -->
+      <div class="upload-section" id="uploadSection">
+
+        <div class="glass-card idea-input-card">
+
+          <!-- CLEVER HEADER -->
+          <div class="upload-hero">
+            <div class="upload-hero-icon">🧠</div>
+            <div class="upload-hero-text">
+              <div class="upload-hero-title">Tell SAM what you're working on.</div>
+              <div class="upload-hero-sub">Describe an idea in words, drop a screenshot of your analytics, or share a photo from your content — SAM will read it and tell you exactly what to do next.</div>
+            </div>
+          </div>
+
+          <!-- WHAT SAM CAN READ -->
+          <div class="upload-capabilities">
+            <div class="upload-cap-item">
+              <span class="upload-cap-icon">📊</span>
+              <span class="upload-cap-text"><strong>Analytics screenshot</strong> — what's working, what to post next</span>
+            </div>
+            <div class="upload-cap-item">
+              <span class="upload-cap-icon">🖼️</span>
+              <span class="upload-cap-text"><strong>Photo or thumbnail</strong> — strategy, hook ideas, best platform</span>
+            </div>
+            <div class="upload-cap-item">
+              <span class="upload-cap-icon">✍️</span>
+              <span class="upload-cap-text"><strong>Just text</strong> — describe your idea and SAM will strategize</span>
+            </div>
+          </div>
+
+          <!-- TEXT INPUT -->
+          <div class="section-label" style="margin-top:1.5rem;">Describe your idea or add context <span style="font-weight:400;text-transform:none;letter-spacing:0;font-style:italic;color:var(--text-muted);font-family:'Inter',sans-serif;">(optional if uploading an image)</span></div>
+          <div class="input-wrap">
+            <textarea id="uploadInp" placeholder="e.g. I want to know what content is working for my renovation account, or — here's a photo from my latest video, help me turn it into a thumbnail strategy..." style="min-height:100px;"></textarea>
+            <button class="paste-btn" onclick="pasteToEl('uploadInp')" title="Paste">📋</button>
+            <button class="mic-btn" id="micBtnUpload" onclick="toggleMicUpload()" title="Speak">🎙</button>
+          </div>
+
+          <!-- IMAGE DROP ZONE -->
+          <div class="upload-drop-zone" id="uploadDropZone" onclick="document.getElementById('uploadFileInput').click()" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+            <input type="file" id="uploadFileInput" accept="image/*" style="display:none;" onchange="handleFileSelect(event)">
+            <div class="upload-drop-inner" id="uploadDropInner">
+              <div class="upload-drop-icon">📎</div>
+              <div class="upload-drop-label">Drop an image here, or <span class="upload-drop-link">browse</span></div>
+              <div class="upload-drop-hint">Analytics screenshots, photos, thumbnails — anything visual</div>
+            </div>
+            <div class="upload-preview" id="uploadPreview" style="display:none;">
+              <img id="uploadPreviewImg" src="" alt="Preview" />
+              <button class="upload-remove-btn" onclick="removeUploadImage(event)" title="Remove image">✕</button>
+              <div class="upload-preview-label" id="uploadPreviewLabel"></div>
+            </div>
+          </div>
+
+          <!-- PLATFORM -->
+          <div style="margin-top:1.25rem;">
+            <div class="section-label">Which platform? <span style="font-weight:400;text-transform:none;letter-spacing:0;font-style:italic;color:var(--text-muted);font-family:'Inter',sans-serif;">(optional)</span></div>
+            <div class="platform-grid" id="uploadPlatformGrid">
+              <button class="platform-pill" data-platform="TikTok" onclick="toggleUploadPlatform(this)">🎵 TikTok</button>
+              <button class="platform-pill" data-platform="YouTube Shorts" onclick="toggleUploadPlatform(this)">▶ YouTube Shorts</button>
+              <button class="platform-pill" data-platform="YouTube" onclick="toggleUploadPlatform(this)">▶ YouTube</button>
+              <button class="platform-pill" data-platform="Instagram Reels" onclick="toggleUploadPlatform(this)">📸 Instagram Reels</button>
+              <button class="platform-pill" data-platform="Facebook Reels" onclick="toggleUploadPlatform(this)">👥 Facebook Reels</button>
+              <button class="platform-pill" data-platform="LinkedIn" onclick="toggleUploadPlatform(this)">💼 LinkedIn</button>
+              <button class="platform-pill" data-platform="X (Twitter)" onclick="toggleUploadPlatform(this)">✕ X (Twitter)</button>
+            </div>
+          </div>
+
+          <div class="loader" id="uploadLoader" style="margin-top:1rem;">
+            <div class="loader-dots"><span></span><span></span><span></span></div>
+            <div class="loader-text" id="uploadLoaderText">SAM is reading your content...</div>
+          </div>
+          <div class="error-box" id="uploadErrBox"></div>
+
+          <button class="idea-btn" id="uploadBtn" onclick="runUpload()">
+            <span id="uploadBtnLabel">Analyse & strategize →</span>
+          </button>
+        </div>
+
+        <!-- OUTPUT -->
+        <div class="concept-out" id="uploadOut">
+          <div class="concept-out-header">
+            <div class="out-label" id="uploadOutLabel">SAM's strategy</div>
+            <button class="new-btn" onclick="resetUpload()">← Start over</button>
+          </div>
+          <div class="concept-out-body" id="uploadBody"></div>
+          <div class="focus-block" id="uploadFocusBlock" style="display:none;">
+            <div class="focus-block-eyebrow">Stop. Focus. Do this now.</div>
+            <div class="focus-block-action" id="uploadFocusAction" style="color:rgba(255,255,255,0.35);font-style:italic;font-size:14px;font-weight:400;">SAM is building your focus action...</div>
+            <div class="focus-block-sub" id="uploadFocusSub"></div>
+          </div>
+          <div class="tool-dock" id="uploadDock" style="display:none;">
+            <div class="tool-dock-label">Open another tool</div>
+            <div class="tool-dock-grid" id="uploadDockGrid"></div>
+          </div>
+          <div class="save-bar" id="uploadSaveBar" style="display:none;">
+            <button class="save-pdf-btn" onclick="printCurrentMode()">↓ &nbsp;Save strategy as PDF</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- MOMENT SECTION -->
+      <div class="moment-section" id="momentSection">
+        <div class="feature-strip">
+          <div class="feature-item">
+            <span class="feature-dot"></span>
+            <span class="feature-name">The real story</span>
+            <span class="feature-sep">—</span>
+            <span class="feature-desc">The emotional core a stranger would actually stop for</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-dot"></span>
+            <span class="feature-name">3 hooks</span>
+            <span class="feature-sep">—</span>
+            <span class="feature-desc">The first 3 seconds that stop the scroll</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-dot"></span>
+            <span class="feature-name">Full script</span>
+            <span class="feature-sep">—</span>
+            <span class="feature-desc">Word for word, with pacing notes and b-roll cues</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-dot"></span>
+            <span class="feature-name">Platform strategy</span>
+            <span class="feature-sep">—</span>
+            <span class="feature-desc">Where to post and how to get 3 pieces from one moment</span>
+          </div>
+        </div>
+
+        <div class="platform-wrap">
+          <div class="section-label">Where do you post?</div>
+          <div class="platform-grid">
+            <button class="platform-pill" data-platform="TikTok" onclick="togglePlatform(this)">🎵 TikTok</button>
+            <button class="platform-pill" data-platform="YouTube Shorts" onclick="togglePlatform(this)">▶ YouTube Shorts</button>
+            <button class="platform-pill" data-platform="YouTube" onclick="togglePlatform(this)">▶ YouTube</button>
+            <button class="platform-pill" data-platform="Instagram Reels" onclick="togglePlatform(this)">📸 Instagram Reels</button>
+            <button class="platform-pill" data-platform="Facebook Reels" onclick="togglePlatform(this)">👥 Facebook Reels</button>
+            <button class="platform-pill" data-platform="LinkedIn" onclick="togglePlatform(this)">💼 LinkedIn</button>
+            <button class="platform-pill" data-platform="X (Twitter)" onclick="togglePlatform(this)">✕ X (Twitter)</button>
+          </div>
+          <div class="platform-hint">Select all that apply — S.A.M. will tailor the output for each one.</div>
+        </div>
+
+        <div class="creator-context-wrap">
+          <div class="section-label">Tell S.A.M. about you <span style="font-weight:400;text-transform:none;letter-spacing:0;font-style:italic;color:var(--text-muted);font-family:'Inter',sans-serif;">(optional)</span></div>
+          <div class="input-wrap">
+            <input type="text" id="creatorContext" class="creator-context-input" placeholder="e.g. Self-taught renovator documenting a full cottage gut renovation for my parents in Maryland" maxlength="200" style="padding-right: 50px;" />
+            <button class="mic-btn" id="micBtnContext" onclick="toggleMicContext()" style="bottom:6px;">🎙</button>
+          </div>
+          <div class="creator-context-hint">One sentence. S.A.M. uses this to personalize every output for your specific audience.</div>
+        </div>
+
+        <div class="lang-wrap">
+          <div class="section-label">Output language <span style="font-weight:400;text-transform:none;letter-spacing:0;font-style:italic;color:var(--text-muted);font-family:'Inter',sans-serif;">(optional)</span></div>
+          <select id="outputLanguage" class="lang-select">
+            <option value="">🌐 English (default)</option>
+            <option value="Spanish">🇪🇸 Spanish — Español</option>
+            <option value="French">🇫🇷 French — Français</option>
+            <option value="Portuguese">🇧🇷 Portuguese — Português</option>
+            <option value="German">🇩🇪 German — Deutsch</option>
+            <option value="Italian">🇮🇹 Italian — Italiano</option>
+            <option value="Dutch">🇳🇱 Dutch — Nederlands</option>
+            <option value="Japanese">🇯🇵 Japanese — 日本語</option>
+            <option value="Korean">🇰🇷 Korean — 한국어</option>
+            <option value="Mandarin Chinese">🇨🇳 Mandarin — 普通话</option>
+            <option value="Arabic">🇸🇦 Arabic — العربية</option>
+            <option value="Hindi">🇮🇳 Hindi — हिन्दी</option>
+          </select>
+          <div class="lang-hint">S.A.M. will write the entire output — hooks, script, and CTAs — in this language.</div>
+        </div>
+
+        <div class="demo-wrap">
+          <div class="section-label">Who's your audience? <span style="font-weight:400;text-transform:none;letter-spacing:0;font-style:italic;color:var(--text-muted);font-family:'Inter',sans-serif;">(optional)</span></div>
+          <div class="demo-grid">
+            <div class="demo-group">
+              <label class="demo-group-label">Age group</label>
+              <select id="demoAge" class="demo-select">
+                <option value="">Any age</option>
+                <option value="18-24 year olds">18–24</option>
+                <option value="25-34 year olds">25–34</option>
+                <option value="35-44 year olds">35–44</option>
+                <option value="45-54 year olds">45–54</option>
+                <option value="55-65 year olds">55–65</option>
+                <option value="mixed ages 18-65">Mixed 18–65</option>
+              </select>
+            </div>
+            <div class="demo-group">
+              <label class="demo-group-label">Gender skew</label>
+              <select id="demoGender" class="demo-select">
+                <option value="">Any gender</option>
+                <option value="primarily men">Mostly men</option>
+                <option value="primarily women">Mostly women</option>
+                <option value="mixed men and women">Mixed</option>
+              </select>
+            </div>
+            <div class="demo-group">
+              <label class="demo-group-label">Location</label>
+              <select id="demoLocation" class="demo-select">
+                <option value="">Anywhere</option>
+                <option value="USA">USA</option>
+                <option value="Canada">Canada</option>
+                <option value="UK">UK</option>
+                <option value="Australia">Australia</option>
+                <option value="North America">North America</option>
+                <option value="English-speaking countries">English-speaking</option>
+                <option value="worldwide">Worldwide</option>
+              </select>
+            </div>
+          </div>
+          <div class="demo-hint">S.A.M. will tailor hooks, language, and CTAs for this specific audience.</div>
+        </div>
+
+        <div class="emoji-wrap">
+          <div class="section-label">Emojis in your content?</div>
+          <div class="emoji-grid">
+            <button class="emoji-btn" data-emoji="no" onclick="selectEmoji(this)">🚫 No emojis</button>
+            <button class="emoji-btn selected" data-emoji="few" onclick="selectEmoji(this)">✨ A few emojis</button>
+            <button class="emoji-btn" data-emoji="lots" onclick="selectEmoji(this)">🎉 Lots of emojis</button>
+          </div>
+        </div>
+
+        <div class="tone-wrap">
+          <div class="section-label">What's your tone?</div>
+          <div class="tone-grid">
+            <button class="tone-btn selected" data-tone="Authentic/Natural" onclick="selectTone(this)"><span class="tone-icon">🎯</span><div class="tone-info"><span class="tone-label">Authentic / Natural</span><span class="tone-desc">Real, grounded, no fluff</span></div></button>
+            <button class="tone-btn" data-tone="Viral/Hype" onclick="selectTone(this)"><span class="tone-icon">🔥</span><div class="tone-info"><span class="tone-label">Viral / Hype</span><span class="tone-desc">High energy, bold, scroll-stopping</span></div></button>
+            <button class="tone-btn" data-tone="Wise/Mentor" onclick="selectTone(this)"><span class="tone-icon">🧠</span><div class="tone-info"><span class="tone-label">Wise / Mentor</span><span class="tone-desc">Thoughtful, teaches, builds trust</span></div></button>
+            <button class="tone-btn" data-tone="Bubbly/Energetic" onclick="selectTone(this)"><span class="tone-icon">✨</span><div class="tone-info"><span class="tone-label">Bubbly / Energetic</span><span class="tone-desc">Fun, warm, uplifting vibes</span></div></button>
+          </div>
+        </div>
+
+        <div class="content-type-wrap">
+          <div class="section-label">What are you making?</div>
+          <div class="content-type-grid">
+            <button class="content-type-btn selected" data-type="Short-form video" onclick="selectContentType(this)"><span class="content-type-icon">🎬</span><span class="content-type-label">Short-form video</span></button>
+            <button class="content-type-btn" data-type="Long-form YouTube video" onclick="selectContentType(this)"><span class="content-type-icon">▶️</span><span class="content-type-label">Long-form YouTube</span></button>
+            <button class="content-type-btn" data-type="LinkedIn text post" onclick="selectContentType(this)"><span class="content-type-icon">💼</span><span class="content-type-label">LinkedIn post</span></button>
+            <button class="content-type-btn" data-type="Instagram caption" onclick="selectContentType(this)"><span class="content-type-icon">📸</span><span class="content-type-label">Instagram caption</span></button>
+            <button class="content-type-btn" data-type="Podcast intro" onclick="selectContentType(this)"><span class="content-type-icon">🎙️</span><span class="content-type-label">Podcast intro</span></button>
+            <button class="content-type-btn" data-type="Email newsletter" onclick="selectContentType(this)"><span class="content-type-icon">✉️</span><span class="content-type-label">Email newsletter</span></button>
+            <button class="content-type-btn" data-type="Blog post" onclick="selectContentType(this)"><span class="content-type-icon">✍️</span><span class="content-type-label">Blog post / Article</span></button>
+            <button class="content-type-btn" data-type="Text post" onclick="selectContentType(this)"><span class="content-type-icon">💬</span><span class="content-type-label">Text post</span></button>
+          </div>
+          <div class="content-type-hint">S.A.M. will shape the output specifically for this format.</div>
+        </div>
+
+        <div class="glass-card input-card">
+          <div class="input-card-label">Describe your moment</div>
+          <div class="input-wrap">
+            <textarea id="inp" placeholder="Tell me what happened. The more real and specific, the better. Don't clean it up — just describe it like you're telling a friend." oninput="updateChar()" maxlength="1000"></textarea>
+            <button class="paste-btn" onclick="pasteToEl('inp')" title="Paste">📋</button>
+            <button class="mic-btn" id="micBtn" onclick="toggleMic()">🎙</button>
+          </div>
+          <div class="char-hint"><span id="charCount">0</span> / 1000</div>
+          <div class="chips">
+            <span class="chips-label">Try:</span>
+            <button class="chip" onclick="fillEx('My parents flew in from Florida and saw the cottage renovation for the first time. When they looked at the front yard they saw this big white blooming tree and both said wow. I had my camera ready. It was the most emotional moment in 6 months of work.')">Parents see the tree</button>
+            <button class="chip" onclick="fillEx('I discovered termite damage halfway through the renovation. It set me back two weeks and cost more than I planned. I fixed it entirely myself — nobody taught me how.')">Termite setback</button>
+            <button class="chip" onclick="fillEx('I removed an entire chimney by myself from the basement all the way through the roof. I had never done anything like it before. I just figured it out step by step.')">Chimney removal</button>
+          </div>
+          <div class="loader" id="loader">
+            <div class="loader-dots"><span></span><span></span><span></span></div>
+            <div class="loader-text" id="loaderText">S.A.M. is reading your moment...</div>
+          </div>
+          <div class="error-box" id="errBox"></div>
+          <button class="run-btn" id="runBtn" onclick="runSAM()">Run S.A.M. →</button>
+        </div>
+
+        <div class="out-card" id="outCard">
+          <div class="out-header">
+            <div class="out-label">S.A.M. output</div>
+            <button class="new-btn" onclick="resetTool()">← New moment</button>
+          </div>
+          <div class="out-body" id="outBody">
+            <div class="print-header" style="display:none;"><h1>S.A.M. — Strategic Assistant for Making</h1><p id="printMoment"></p></div>
+          </div>
+          <div class="focus-block" id="focusBlock" style="display:none;">
+            <div class="focus-block-eyebrow">Stop. Focus. Do this now.</div>
+            <div class="focus-block-action" id="focusAction" style="color:rgba(255,255,255,0.35);font-style:italic;font-size:14px;font-weight:400;">S.A.M. is building your focus action...</div>
+            <div class="focus-block-sub" id="focusSub"></div>
+          </div>
+          <div class="tool-dock" id="momentDock" style="display:none;">
+            <div class="tool-dock-label">Open another tool</div>
+            <div class="tool-dock-grid" id="momentDockGrid"></div>
+          </div>
+          <div class="save-bar" id="saveBar" style="display:none;">
+            <button class="save-pdf-btn" onclick="saveAsPDF()">↓ &nbsp;Save output as PDF</button>
+          </div>
+        </div>
+      </div><!-- end moment-section -->
+      </div><!-- end sam-tool-wrap -->
+    </div>
+  </div>
+
+  <footer>
+    <strong>S.A.M.</strong> — Strategic Assistant for Making — Built for creators who have real stories to tell.
+  </footer>
+
+<script>
+  // ── THEME ──────────────────────────────────────────────────────────────────
+  function toggleTheme() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const t = isDark ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+    localStorage.setItem('sam-theme', t);
   }
+  (function() {
+    const saved = localStorage.getItem('sam-theme');
+    const sys = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.setAttribute('data-theme', saved || (sys ? 'dark' : 'light'));
+  })();
 
-  const audienceLine = audienceDemographics ? 'Target audience: ' + audienceDemographics + '. ' + dialectNote : '';
+  // ── PARTICLES ──────────────────────────────────────────────────────────────
+  (function() {
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, particles = [];
+    const G = 'rgba(212,168,75,';
+    const N = 90;
 
-  const toneDescriptions = {
-    'Authentic/Natural': 'Tone: Authentic and natural. Real, grounded, conversational.',
-    'Viral/Hype': 'Tone: Viral and high energy. Bold, punchy, scroll-stopping.',
-    'Wise/Mentor': 'Tone: Wise and mentor-like. Thoughtful, insight-driven, builds trust.',
-    'Bubbly/Energetic': 'Tone: Bubbly and energetic. Warm, fun, uplifting.'
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+
+    function P() {
+      this.reset = () => {
+        this.x = Math.random() * W;
+        this.y = Math.random() * H;
+        this.r = Math.random() * 2.5 + 0.4;
+        this.vx = (Math.random() - 0.5) * 0.45;
+        this.vy = (Math.random() - 0.5) * 0.4 - 0.1;
+        this.a = Math.random() * 0.65 + 0.1;
+        this.da = (Math.random() > 0.5 ? 1 : -1) * 0.003;
+      };
+      this.reset();
+      this.y = Math.random() * H; // stagger
+    }
+
+    function init() { particles = []; for (let i = 0; i < N; i++) particles.push(new P()); }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      if (document.documentElement.getAttribute('data-theme') !== 'dark') { requestAnimationFrame(draw); return; }
+
+      particles.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        p.a = Math.max(0.05, Math.min(0.7, p.a + p.da));
+        if (p.a <= 0.05 || p.a >= 0.7) p.da *= -1;
+        if (p.y < -10 || p.x < -10 || p.x > W + 10) p.reset();
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = G + p.a + ')';
+        ctx.fill();
+      });
+
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const d = Math.sqrt(dx*dx + dy*dy);
+          if (d < 130) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = G + (0.14 * (1 - d/130)) + ')';
+            ctx.lineWidth = 0.6;
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(draw);
+    }
+    window.addEventListener('resize', resize);
+    resize(); init(); draw();
+  })();
+
+  // ── APP LOGIC (unchanged from v30) ────────────────────────────────────────
+  // ── SAM TOOL IDENTITIES ─────────────────────────────────────────────────
+  const SAM_TOOLS = {
+    moment:   { name: 'The Pulse',     desc: 'Turn a real moment into content', color: '#FAC775', section: 'momentSection' },
+    ideas:    { name: 'The Spark',     desc: 'Generate content ideas on demand', color: '#9FE1CB', section: 'ideaSection' },
+    calendar: { name: 'The Blueprint', desc: 'Build your 7-day posting plan', color: '#CECBF6', section: 'calendarSection' },
+    concept:  { name: 'The Vision',    desc: 'Generate a unique video concept', color: '#F5C4B3', section: 'conceptSection' },
+    upload:   { name: 'The Lens',      desc: 'Analyse and strategize your content', color: '#B5D4F4', section: 'uploadSection' },
   };
-  const toneContext = toneDescriptions[tone] || toneDescriptions['Authentic/Natural'];
 
-  const base = 'You are S.A.M. — Strategic Assistant for Making. ' + toneContext + ' ' + emojiLine + ' ' + creatorLine + ' ' + audienceLine + ' ' + languageLine + ' ' + platformContext + ' ' + formatContext + ' CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No preamble.';
+  let currentTool = null;
 
-  const callAnthropic = async (system, userContent, maxTokens) => {
-    const r = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: maxTokens, system, messages: [{ role: 'user', content: userContent }] })
+  function openTool(mode) {
+    const tool = SAM_TOOLS[mode];
+    if (!tool) return;
+    currentTool = mode;
+
+    // Hide home, show tool wrapper
+    document.getElementById('samHome').style.display = 'none';
+    document.getElementById('samToolWrap').style.display = 'block';
+
+    // Back button label
+    document.getElementById('samBackLabel').textContent = 'All tools';
+
+    // Tool header
+    document.getElementById('samToolHeader').innerHTML =
+      '<div class="sam-tool-title">' + tool.name + '</div>' +
+      '<div class="sam-tool-desc">' + tool.desc + '</div>';
+
+    // Show correct section
+    ['momentSection','ideaSection','calendarSection','conceptSection','uploadSection'].forEach(id => {
+      const el = document.getElementById(id);
+      if (id === tool.section) {
+        el.classList.remove('hide');
+        if (id !== 'momentSection') el.classList.add('show');
+      } else {
+        el.classList.add('hide');
+        el.classList.remove('show');
+        if (id === 'momentSection') el.classList.add('hide');
+      }
     });
-    if (!r.ok) throw new Error('Anthropic API error ' + r.status);
-    const d = await r.json();
-    const text = d.content && d.content[0] && d.content[0].text;
-    if (!text) throw new Error('Empty response from API');
-    return JSON.parse(text.replace(/```json|```/g, '').trim());
+
+    // Auto-fill moment into this tool if available
+    autoFillMoment(mode);
+
+    // Scroll to top of tool
+    document.getElementById('samToolWrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function closeToolBack() {
+    currentTool = null;
+    document.getElementById('samToolWrap').style.display = 'none';
+    document.getElementById('samHome').style.display = 'block';
+
+    // Hide all sections cleanly
+    ['momentSection','ideaSection','calendarSection','conceptSection','uploadSection'].forEach(id => {
+      const el = document.getElementById(id);
+      el.classList.remove('show','hide');
+    });
+
+    document.getElementById('samHome').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Keep legacy switchMode for any internal calls
+  function switchMode(mode) { openTool(mode); }
+
+  // ── AUTO-FILL MOMENT ─────────────────────────────────────────────────────
+  let globalMoment = '';
+
+  function autoFillMoment(mode) {
+    if (!globalMoment) return;
+    const fillMap = {
+      ideas:    'nicheInp',
+      calendar: 'calInp',
+      concept:  'conceptInp',
+      upload:   'uploadInp',
+    };
+    const targetId = fillMap[mode];
+    if (targetId) {
+      const el = document.getElementById(targetId);
+      if (el && !el.value.trim()) {
+        el.value = globalMoment;
+      }
+    }
+  }
+
+  async function runIdeas() {
+    const niche = document.getElementById('nicheInp').value.trim();
+    if (!niche) { flash('nicheInp'); return; }
+    document.getElementById('ideaErrBox').classList.remove('show');
+    document.getElementById('ideaBtn').disabled = true;
+    document.getElementById('ideaLoader').classList.add('show');
+    document.getElementById('ideasOut').classList.remove('show');
+    try {
+      const data = await callAPI('ideas', niche, [], '', '', getTone(), getAudienceDemographics(), getOutputLanguage(), getEmojiPreference());
+      document.getElementById('ideaLoader').classList.remove('show');
+      renderIdeas(data);
+      document.getElementById('ideasOut').classList.add('show');
+      document.getElementById('ideaSaveBar').style.display = 'block';
+      document.getElementById('ideaFocusBlock').style.display = 'block';
+      document.getElementById('ideaBtn').disabled = false;
+      document.getElementById('ideasOut').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      buildDock('ideas', 'ideaDockGrid', 'ideaDock');
+      fetchFocusAction('ideas', niche, data);
+    } catch(err) {
+      document.getElementById('ideaLoader').classList.remove('show');
+      showErr('ideaErrBox', err.message);
+      document.getElementById('ideaBtn').disabled = false;
+    }
+  }
+
+  function renderIdeas(data) {
+    const body = document.getElementById('ideasBody');
+    if (!data.ideas || !Array.isArray(data.ideas)) { body.innerHTML = '<div style="color:var(--text-muted);padding:1rem;">No ideas returned. Try again.</div>'; return; }
+    body.innerHTML = data.ideas.map((idea, i) => `
+      <div class="idea-card">
+        <div class="idea-num">IDEA ${i+1}</div>
+        <div class="idea-title">${idea.title}</div>
+        <div class="tip-box">${idea.why}</div>
+        ${idea.best_platform ? `<div class="best-platform-badge">📍 Best on: ${idea.best_platform}</div>` : ''}
+        <button class="idea-copy-btn" onclick="copyIdeaCard(this)">Copy</button>
+      </div>`).join('');
+  }
+
+  function copyIdeaCard(btn) {
+    const c = btn.closest('.idea-card');
+    const txt = c.querySelector('.idea-title').textContent + '\n' + (c.querySelector('.tip-box')?.textContent||'') + (c.querySelector('.best-platform-badge')?.textContent||'');
+    navigator.clipboard.writeText(txt).then(() => { btn.textContent='Copied!'; btn.classList.add('copied'); setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},2000); });
+  }
+
+  function toggleCalPlatform(btn) { btn.classList.toggle('selected'); }
+  function getCalPlatforms() { return [...document.querySelectorAll('#calPlatformGrid .platform-pill.selected')].map(b=>b.dataset.platform); }
+
+  async function runCalendar() {
+    const moment = document.getElementById('calInp').value.trim();
+    if (!moment) { flash('calInp'); return; }
+    document.getElementById('calErrBox').classList.remove('show');
+    document.getElementById('calBtn').disabled = true;
+    document.getElementById('calLoader').classList.add('show');
+    document.getElementById('calOut').classList.remove('show');
+    try {
+      const data = await callAPI('calendar', moment, getCalPlatforms(), '', '', getTone(), getAudienceDemographics(), getOutputLanguage(), getEmojiPreference());
+      document.getElementById('calLoader').classList.remove('show');
+      renderCalendar(data);
+      document.getElementById('calOut').classList.add('show');
+      document.getElementById('calSaveBar').style.display = 'block';
+      document.getElementById('calFocusBlock').style.display = 'block';
+      document.getElementById('calBtn').disabled = false;
+      document.getElementById('calOut').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      buildDock('calendar', 'calDockGrid', 'calDock');
+      fetchFocusAction('calendar', moment, data);
+    } catch(err) {
+      document.getElementById('calLoader').classList.remove('show');
+      showErr('calErrBox', err.message);
+      document.getElementById('calBtn').disabled = false;
+    }
+  }
+
+  function renderCalendar(data) {
+    const body = document.getElementById('calBody');
+    if (!data.days || !Array.isArray(data.days)) { body.innerHTML = '<div style="color:var(--text-muted);padding:1rem;">No calendar returned. Try again.</div>'; return; }
+    const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+    body.innerHTML = data.days.map((day, i) => `
+      <div class="cal-day">
+        <div class="cal-day-header">
+          <div class="cal-day-name">${days[i]||'Day '+(i+1)}</div>
+          <div class="cal-day-platform">${day.platform||''}</div>
+        </div>
+        <div class="cal-day-body">
+          <div class="cal-post-type">${day.post_type||''}</div>
+          <div class="cal-post-content">${day.content||''}</div>
+          <div class="cal-post-tip">${day.tip||''}</div>
+          ${day.ideal_time?`<div class="ideal-time">⏰ Best time: ${day.ideal_time}</div>`:''}
+          <button class="cal-copy-btn" onclick="copyCalDay(this)">Copy</button>
+        </div>
+      </div>`).join('');
+  }
+
+  function copyCalDay(btn) {
+    const b = btn.closest('.cal-day-body');
+    const txt = b.querySelector('.cal-post-type').textContent + '\n' + b.querySelector('.cal-post-content').textContent + '\n\n' + b.querySelector('.cal-post-tip').textContent + (b.querySelector('.ideal-time')?.textContent||'');
+    navigator.clipboard.writeText(txt).then(()=>{ btn.textContent='Copied!'; btn.classList.add('copied'); setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},2000); });
+  }
+
+  function resetCalendar() {
+    document.getElementById('calOut').classList.remove('show');
+    document.getElementById('calSaveBar').style.display = 'none';
+    document.getElementById('calFocusBlock').style.display = 'none';
+    document.getElementById('calInp').value = '';
+    document.getElementById('calBtn').disabled = false;
+    document.querySelectorAll('#calPlatformGrid .platform-pill').forEach(b=>b.classList.remove('selected'));
+  }
+  function resetIdeas() {
+    document.getElementById('ideasOut').classList.remove('show');
+    document.getElementById('ideaSaveBar').style.display = 'none';
+    document.getElementById('ideaFocusBlock').style.display = 'none';
+    document.getElementById('nicheInp').value = '';
+    document.getElementById('ideaBtn').disabled = false;
+  }
+
+  const loaderLines = ["S.A.M. is reading your moment...","Finding the real story...","Building your output...","Almost there..."];
+  let loaderInterval;
+
+  async function runSAM() {
+    const text = document.getElementById('inp').value.trim();
+    if (!text) { flash('inp'); return; }
+    // Store globally for auto-fill
+    globalMoment = text;
+    document.getElementById('errBox').classList.remove('show');
+    document.getElementById('runBtn').disabled = true;
+    document.getElementById('loader').classList.add('show');
+    document.getElementById('outCard').classList.remove('show');
+    let idx = 0;
+    loaderInterval = setInterval(()=>{ idx=(idx+1)%loaderLines.length; document.getElementById('loaderText').textContent=loaderLines[idx]; },1800);
+    try {
+      const ct = getContentType(), ctx2 = document.getElementById('creatorContext').value.trim();
+      const [sd, hd] = await Promise.all([
+        callAPI('story', text, getSelectedPlatforms(), ct, ctx2, getTone(), getAudienceDemographics(), getOutputLanguage(), getEmojiPreference()),
+        callAPI('hook', text, getSelectedPlatforms(), ct, ctx2, getTone(), getAudienceDemographics(), getOutputLanguage(), getEmojiPreference())
+      ]);
+      clearInterval(loaderInterval);
+      document.getElementById('loader').classList.remove('show');
+      renderOutput(Object.assign({}, sd, hd), ct);
+      document.getElementById('outCard').classList.add('show');
+      document.getElementById('saveBar').style.display = 'block';
+      document.getElementById('focusBlock').style.display = 'block';
+      document.getElementById('runBtn').disabled = false;
+      document.getElementById('outCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      buildDock('moment', 'momentDockGrid', 'momentDock');
+      fetchFocusAction('moment', text, Object.assign({}, sd, hd));
+    } catch(err) {
+      clearInterval(loaderInterval);
+      document.getElementById('loader').classList.remove('show');
+      showErr('errBox', err.message);
+      document.getElementById('runBtn').disabled = false;
+    }
+  }
+
+  async function callAPI(mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage, emojiPreference) {
+    const r = await fetch('/api/sam', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({mode,moment,platforms,contentType,creatorContext,tone,audienceDemographics,outputLanguage,emojiPreference}) });
+    if (!r.ok) { const e = await r.json().catch(()=>({})); throw new Error(e.error||'Server error '+r.status); }
+    return r.json();
+  }
+
+  async function fetchFocusAction(sourceMode, inputText, outputData) {
+    const idMap = {
+      moment: ['focusAction','focusSub'],
+      ideas:  ['ideaFocusAction','ideaFocusSub'],
+      calendar: ['calFocusAction','calFocusSub'],
+      concept: ['conceptFocusAction','conceptFocusSub'],
+      upload:  ['uploadFocusAction','uploadFocusSub']
+    };
+    const [aId, sId] = idMap[sourceMode] || ['focusAction','focusSub'];
+    try {
+      const data = await callAPI('focus', inputText, [], '', '', getTone(), '', '', getEmojiPreference());
+      const el = document.getElementById(aId);
+      if (data.action && el) { el.style.cssText='color:#fff;font-style:normal;font-weight:700;font-size:18px;'; el.textContent=data.action; }
+      const sel = document.getElementById(sId);
+      if (data.sub && sel) sel.textContent = data.sub;
+    } catch(e) {
+      const el = document.getElementById(aId);
+      if (el) { el.style.cssText='color:#fff;font-style:normal;font-weight:700;font-size:16px;'; el.textContent='Pick one thing from the output above and do it in the next 30 minutes.'; }
+    }
+  }
+
+  function isReal(v) { return v && typeof v==='string' && v.trim()!=='' && v.trim().toLowerCase()!=='undefined' && v.trim().toLowerCase()!=='n/a'; }
+
+  function renderOutput(data, contentType) {
+    const body = document.getElementById('outBody');
+    let html = '';
+    const spine = (data.story_spine||'').split('/').map(s=>`<div class="broll-item">${s.trim()}</div>`).join('');
+    const platParts = (data.best_platform||'').split('—');
+    const broll = (data.b_roll||'').split('\n').filter(Boolean).map(l=>`<div class="broll-item">${l.trim()}</div>`).join('');
+
+    if (isReal(data.diagnosis)) html += `<div class="blk"><div class="blk-title">What this is really about</div><div class="blk-text">${data.diagnosis}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`;
+    if (isReal(data.hook)) html += `<div class="blk"><div class="blk-title">Your hook</div><div class="hook-box">${data.hook}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`;
+    if (isReal(data.hook_1)) html += `<div class="blk"><div class="blk-title">Hook 1 — emotion first</div><div class="hook-box">${data.hook_1}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`;
+    if (isReal(data.hook_2)) html += `<div class="blk"><div class="blk-title">Hook 2 — curiosity first</div><div class="hook-box">${data.hook_2}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`;
+    if (isReal(data.hook_3)) html += `<div class="blk"><div class="blk-title">Hook 3 — identity first</div><div class="hook-box">${data.hook_3}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`;
+    if (isReal(data.winner)) html += `<div class="blk"><div class="blk-title">S.A.M. recommends</div><div class="blk-text">${data.winner}</div></div>`;
+    if (isReal(data.visual_note)) html += `<div class="blk"><div class="blk-title">What to show on screen</div><div class="blk-text">${data.visual_note}</div></div>`;
+    if (isReal(data.story_spine)) html += `<div class="blk"><div class="blk-title">Story spine</div>${spine}</div>`;
+
+    if (data.full_script || data.script) {
+      const sc = data.full_script || data.script;
+      const textFmts = ['Text post','LinkedIn text post','Instagram caption','Email newsletter','Blog post','Blog post / Article'];
+      const isTxt = textFmts.some(f=>(contentType||'').trim()===f.trim());
+      if (isTxt) {
+        const clean = sc.replace(/\[HOOK\]/gi,'').replace(/\[SETUP\]/gi,'').replace(/\[TENSION\]/gi,'').replace(/\[PAYOFF\]/gi,'').replace(/\[CTA\]/gi,'').replace(/\[BUILD\]/gi,'').replace(/\[BREAKTHROUGH\]/gi,'').replace(/\[REALIZATION\]/gi,'').replace(/\[OUTRO\]/gi,'').replace(/\[INTRO\]/gi,'').replace(/\[BRIDGE\]/gi,'').replace(/\[CONFLICT\]/gi,'').replace(/\[RESOLUTION\]/gi,'').replace(/\[OPENING\]/gi,'').replace(/\[CLOSING\]/gi,'').replace(/\[[A-Z ]+\]/g,'').replace(/\(pause[^)]*\)/gi,'').replace(/\(slow[^)]*\)/gi,'').replace(/\(look[^)]*\)/gi,'').replace(/\(smile[^)]*\)/gi,'').replace(/\(gesture[^)]*\)/gi,'').replace(/\(breath[^)]*\)/gi,'').replace(/\(nod[^)]*\)/gi,'').replace(/\(beat\)/gi,'').replace(/\(emphasis\)/gi,'').replace(/^\s*[\r\n]/gm,'').trim();
+        const lm = {'Text post':'💬 Your text post — ready to copy','LinkedIn text post':'💼 Your LinkedIn post — ready to copy','Instagram caption':'📸 Your Instagram caption — ready to copy','Email newsletter':'✉️ Your email — ready to send','Blog post':'✍️ Your blog post — ready to publish'};
+        html += `<div class="blk"><div class="blk-title">${lm[contentType]||'📝 Your post — ready to copy'}</div><div class="text-output-box">${clean.replace(/\n/g,'<br>')}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`;
+      } else {
+        const fs = sc.split('\n').map(line=>{const t=line.trim();if(!t)return'';if(t.match(/^\[.*\]$/)||t.match(/^(HOOK|SETUP|TENSION|PAYOFF|CTA|OUTRO|INTRO|BRIDGE):/i))return`<span class="script-beat">${t}</span>`;if(t.startsWith('(')&&t.endsWith(')'))return`<span class="script-note">${t}</span>`;return`<span class="script-line">${t}</span>`;}).filter(Boolean).join('\n');
+        html += `<div class="blk"><div class="blk-title">📋 Full script — word for word</div><div class="script-block">${fs}</div><button class="copy-btn" onclick="copyEl(this)">Copy script</button></div>`;
+      }
+    }
+
+    if (isReal(data.pacing_note)) html += `<div class="blk"><div class="blk-title">How to deliver it</div><div class="blk-text">${data.pacing_note}</div></div>`;
+    if (isReal(data.b_roll)) html += `<div class="blk"><div class="blk-title">B-roll shots</div>${broll}</div>`;
+    if (isReal(data.cta)) html += `<div class="blk"><div class="blk-title">Call to action</div><div class="blk-text">${data.cta}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`;
+    if (isReal(data.primary_platform)) html += `<div class="blk"><div class="blk-title">Primary platform</div><div class="pill">${data.primary_platform}</div><div class="blk-text" style="margin-top:8px;">${data.primary_angle||''}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`;
+    if (isReal(data.secondary_platform)) html += `<div class="blk"><div class="blk-title">Secondary platform</div><div class="pill soft">${data.secondary_platform}</div><div class="blk-text" style="margin-top:8px;">${data.secondary_angle||''}</div></div>`;
+    if (isReal(data.skip)) html += `<div class="blk"><div class="blk-title">Skip for now</div><div class="warn-box">${data.skip}</div></div>`;
+    if (isReal(data.repurpose_tip)) html += `<div class="blk"><div class="blk-title">Repurpose tip</div><div class="success-box">${data.repurpose_tip}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`;
+    if (isReal(data.content_warning)) {
+      html += `<div class="blk">
+        <div class="blk-title">Watch out for — SAM fixed it</div>
+        <div class="warn-box" style="margin-bottom:10px;">${data.content_warning}</div>
+        ${isReal(data.content_fix) ? `
+        <div class="fix-label">✦ Fixed version — ready to use</div>
+        <div class="fix-box">${data.content_fix}</div>
+        <button class="copy-btn" onclick="copyEl(this)">Copy fix</button>
+        ` : ''}
+      </div>`;
+    }
+    if (isReal(data.best_platform) && !isReal(data.primary_platform)) html += `<div class="blk"><div class="blk-title">Best platform</div><div class="pill">${(platParts[0]||'').trim()}</div><div class="blk-text" style="margin-top:8px;">${(platParts.slice(1).join('—')||'').trim()}</div></div>`;
+    if (data.platform_strategies && Array.isArray(data.platform_strategies)) {
+      data.platform_strategies.forEach(ps => {
+        if (ps && ps.platform) {
+          let psHtml = `<div class="blk"><div class="blk-title">${ps.platform}</div>`;
+          if (ps.strategy) psHtml += `<div class="blk-text" style="margin-bottom:10px;">${ps.strategy}</div>`;
+          if (ps.caption) psHtml += `<div class="text-output-box" style="font-size:14px;margin-bottom:8px;">${ps.caption}</div><button class="copy-btn" onclick="copyEl(this)">Copy caption</button>`;
+          if (ps.hashtags) psHtml += `<div class="blk-text" style="margin-top:10px;font-size:13px;color:var(--text-muted);">${ps.hashtags}</div>`;
+          psHtml += `</div>`;
+          html += psHtml;
+        }
+      });
+    }
+    body.innerHTML = html || '<div style="color:var(--text-muted)">No output returned. Try again.</div>';
+  }
+
+  // SPEECH
+  let recognition=null,isRecording=false;
+  function toggleMic() {
+    const btn=document.getElementById('micBtn'),SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){alert('Try Chrome or Safari.');return;}
+    if(isRecording){recognition.stop();return;}
+    recognition=new SR(); recognition.continuous=true; recognition.interimResults=true; recognition.lang='en-US';
+    recognition.onstart=()=>{isRecording=true;btn.classList.add('recording');btn.innerHTML='⏹';};
+    recognition.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;document.getElementById('inp').value=t;updateChar();};
+    recognition.onend=recognition.onerror=()=>{isRecording=false;btn.classList.remove('recording');btn.innerHTML='🎙';};
+    recognition.start();
+  }
+  let recognitionContext=null,isRecordingContext=false;
+  function toggleMicContext() {
+    const btn=document.getElementById('micBtnContext'),SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){alert('Try Chrome or Safari.');return;}
+    if(isRecordingContext){recognitionContext.stop();return;}
+    recognitionContext=new SR(); recognitionContext.continuous=false; recognitionContext.interimResults=false; recognitionContext.lang='en-US';
+    recognitionContext.onstart=()=>{isRecordingContext=true;btn.classList.add('recording');btn.innerHTML='⏹';};
+    recognitionContext.onresult=e=>{document.getElementById('creatorContext').value=e.results[0][0].transcript;};
+    recognitionContext.onend=recognitionContext.onerror=()=>{isRecordingContext=false;btn.classList.remove('recording');btn.innerHTML='🎙';};
+    recognitionContext.start();
+  }
+  let recognitionNiche=null,isRecordingNiche=false;
+  function toggleMicNiche() {
+    const btn=document.getElementById('micBtnNiche'),SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){alert('Try Chrome or Safari.');return;}
+    if(isRecordingNiche){recognitionNiche.stop();return;}
+    recognitionNiche=new SR(); recognitionNiche.continuous=true; recognitionNiche.interimResults=true; recognitionNiche.lang='en-US';
+    recognitionNiche.onstart=()=>{isRecordingNiche=true;btn.classList.add('recording');btn.innerHTML='⏹';};
+    recognitionNiche.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;document.getElementById('nicheInp').value=t;};
+    recognitionNiche.onend=recognitionNiche.onerror=()=>{isRecordingNiche=false;btn.classList.remove('recording');btn.innerHTML='🎙';};
+    recognitionNiche.start();
+  }
+  let recognitionCal=null,isRecordingCal=false;
+  function toggleMicCal() {
+    const btn=document.getElementById('micBtnCal'),SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){alert('Try Chrome or Safari.');return;}
+    if(isRecordingCal){recognitionCal.stop();return;}
+    recognitionCal=new SR(); recognitionCal.continuous=true; recognitionCal.interimResults=true; recognitionCal.lang='en-US';
+    recognitionCal.onstart=()=>{isRecordingCal=true;btn.classList.add('recording');btn.innerHTML='⏹';};
+    recognitionCal.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;document.getElementById('calInp').value=t;};
+    recognitionCal.onend=recognitionCal.onerror=()=>{isRecordingCal=false;btn.classList.remove('recording');btn.innerHTML='🎙';};
+    recognitionCal.start();
+  }
+
+  async function pasteToEl(id) {
+    try {
+      const text = await navigator.clipboard.readText();
+      const el = document.getElementById(id);
+      if (el) {
+        el.value = text;
+        if (id==='inp') updateChar();
+        el.focus();
+        const btn = el.parentElement.querySelector('.paste-btn');
+        if(btn){btn.classList.add('pasted');btn.textContent='✓';setTimeout(()=>{btn.classList.remove('pasted');btn.textContent='📋';},1500);}
+      }
+    } catch(e) { alert('Paste not available — try Ctrl+V / Cmd+V directly.'); }
+  }
+
+  function selectTone(btn) { document.querySelectorAll('.tone-btn').forEach(b=>b.classList.remove('selected')); btn.classList.add('selected'); }
+  function selectEmoji(btn) { document.querySelectorAll('.emoji-btn').forEach(b=>b.classList.remove('selected')); btn.classList.add('selected'); }
+  function selectContentType(btn) { document.querySelectorAll('.content-type-btn').forEach(b=>b.classList.remove('selected')); btn.classList.add('selected'); }
+  function togglePlatform(btn) { btn.classList.toggle('selected'); }
+  function getTone() { return document.querySelector('.tone-btn.selected')?.dataset.tone||'Authentic/Natural'; }
+  function getEmojiPreference() { return document.querySelector('.emoji-btn.selected')?.dataset.emoji||'few'; }
+  function getContentType() { return document.querySelector('.content-type-btn.selected')?.dataset.type||'Short-form video'; }
+  function getSelectedPlatforms() { return [...document.querySelectorAll('.platform-pill.selected')].map(b=>b.dataset.platform); }
+  function getOutputLanguage() { return document.getElementById('outputLanguage').value||''; }
+  function getAudienceDemographics() { const a=document.getElementById('demoAge').value,g=document.getElementById('demoGender').value,l=document.getElementById('demoLocation').value; return [a,g,l].filter(Boolean).join(', '); }
+  function fillEx(text) { document.getElementById('inp').value=text; updateChar(); document.getElementById('inp').focus(); }
+  function updateChar() { document.getElementById('charCount').textContent=document.getElementById('inp').value.length; }
+  function flash(id) { const el=document.getElementById(id); el.style.borderColor='var(--gold)'; el.focus(); setTimeout(()=>el.style.borderColor='',1500); }
+  function showErr(id, msg) { const el=document.getElementById(id); el.textContent='Something went wrong: '+(msg||'Please try again.'); el.classList.add('show'); }
+
+  function resetTool() {
+    document.getElementById('outCard').classList.remove('show');
+    document.getElementById('saveBar').style.display='none';
+    document.getElementById('focusBlock').style.display='none';
+    document.getElementById('momentDock').style.display='none';
+    document.getElementById('inp').value='';
+    document.getElementById('charCount').textContent='0';
+    document.getElementById('errBox').classList.remove('show');
+    document.getElementById('runBtn').disabled=false;
+    document.getElementById('tool').scrollIntoView({behavior:'smooth'});
+  }
+
+  function saveAsPDF() {
+    const m=document.getElementById('inp').value.trim();
+    const el=document.getElementById('printMoment');
+    if(el) el.textContent='Generated on '+new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})+(m?' — "'+m.substring(0,120)+(m.length>120?'...':'')+'"':'');
+    window.print();
+  }
+  function printCurrentMode() { window.print(); }
+
+  // ── VIDEO CONCEPT ──────────────────────────────────────────────────────
+  function toggleConceptPlatform(btn) { btn.classList.toggle('selected'); }
+  function getConceptPlatforms() { return [...document.querySelectorAll('#conceptPlatformGrid .platform-pill.selected')].map(b=>b.dataset.platform); }
+  function selectConceptStyle(btn) { document.querySelectorAll('.concept-style-btn').forEach(b=>b.classList.remove('selected')); btn.classList.add('selected'); }
+  function getConceptStyle() { return document.querySelector('.concept-style-btn.selected')?.dataset.style || ''; }
+
+  let recognitionConcept=null, isRecordingConcept=false;
+  function toggleMicConcept() {
+    const btn=document.getElementById('micBtnConcept'), SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){alert('Try Chrome or Safari.');return;}
+    if(isRecordingConcept){recognitionConcept.stop();return;}
+    recognitionConcept=new SR(); recognitionConcept.continuous=true; recognitionConcept.interimResults=true; recognitionConcept.lang='en-US';
+    recognitionConcept.onstart=()=>{isRecordingConcept=true;btn.classList.add('recording');btn.innerHTML='⏹';};
+    recognitionConcept.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;document.getElementById('conceptInp').value=t;};
+    recognitionConcept.onend=recognitionConcept.onerror=()=>{isRecordingConcept=false;btn.classList.remove('recording');btn.innerHTML='🎙';};
+    recognitionConcept.start();
+  }
+
+  async function runConcept() {
+    const niche = document.getElementById('conceptInp').value.trim();
+    if (!niche) { flash('conceptInp'); return; }
+    document.getElementById('conceptErrBox').classList.remove('show');
+    document.getElementById('conceptBtn').disabled = true;
+    document.getElementById('conceptLoader').classList.add('show');
+    document.getElementById('conceptOut').classList.remove('show');
+    try {
+      const data = await callAPI('concept', niche, getConceptPlatforms(), getConceptStyle(), '', getTone(), getAudienceDemographics(), getOutputLanguage(), getEmojiPreference());
+      document.getElementById('conceptLoader').classList.remove('show');
+      renderConcept(data);
+      document.getElementById('conceptOut').classList.add('show');
+      document.getElementById('conceptSaveBar').style.display = 'block';
+      document.getElementById('conceptFocusBlock').style.display = 'block';
+      document.getElementById('conceptBtn').disabled = false;
+      document.getElementById('conceptOut').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      buildDock('concept', 'conceptDockGrid', 'conceptDock');
+      fetchFocusAction('concept', niche, data);
+    } catch(err) {
+      document.getElementById('conceptLoader').classList.remove('show');
+      showErr('conceptErrBox', err.message);
+      document.getElementById('conceptBtn').disabled = false;
+    }
+  }
+
+  function renderConcept(data) {
+    const body = document.getElementById('conceptBody');
+    if (!data || !data.title) {
+      body.innerHTML = '<div style="color:var(--text-muted);padding:1rem;">No concept returned. Try again.</div>';
+      return;
+    }
+
+    const viralityPct = 100;
+
+    let prodItems = '';
+    if (data.production_notes && Array.isArray(data.production_notes)) {
+      prodItems = data.production_notes.map(n => `<li>${n}</li>`).join('');
+    } else if (typeof data.production_notes === 'string') {
+      prodItems = data.production_notes.split('\n').filter(Boolean).map(n => `<li>${n.replace(/^[-•▸→]\s*/,'')}</li>`).join('');
+    }
+
+    body.innerHTML = `
+      <div class="concept-title-block">
+        <div class="concept-title-eyebrow">Your video concept</div>
+        <div class="concept-big-title">${data.title}</div>
+        ${data.format ? `<div class="concept-format-badge">🎬 ${data.format}</div>` : ''}
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-card-label">The premise</div>
+        <div class="concept-card-text">${data.premise || ''}</div>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-card-label">Why this concept works</div>
+        <div class="concept-card-text">${data.why_it_works || ''}</div>
+        <div class="concept-virality-meter">
+          <span class="concept-virality-label">Scroll-stop potential</span>
+          <div class="concept-virality-bar"><div class="concept-virality-fill" style="width:0%" id="viralityFill"></div></div>
+          <span class="concept-virality-score" style="color:var(--gold);">100%</span>
+        </div>
+      </div>
+
+      ${prodItems ? `
+      <div class="concept-card">
+        <div class="concept-card-label">How to film it</div>
+        <ul class="concept-production-list">${prodItems}</ul>
+      </div>` : ''}
+
+      ${isReal(data.hook_line) ? `
+      <div class="concept-card">
+        <div class="concept-card-label">Opening hook line</div>
+        <div class="hook-box">${data.hook_line}</div>
+        <button class="copy-btn" onclick="copyEl(this)" style="margin-top:8px;">Copy hook</button>
+      </div>` : ''}
+
+      ${isReal(data.best_platform) ? `
+      <div class="concept-card" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+        <div>
+          <div class="concept-card-label" style="margin-bottom:4px;">Best platform for this concept</div>
+          <div class="concept-platform-pill">${data.best_platform}</div>
+        </div>
+        ${isReal(data.platform_reason) ? `<div style="font-size:13px;color:var(--text-muted);max-width:55%;font-style:italic;">${data.platform_reason}</div>` : ''}
+      </div>` : ''}
+
+      ${isReal(data.twist) ? `
+      <div class="concept-card" style="border:1px solid var(--gold-border);background:var(--gold-light);">
+        <div class="concept-card-label">The twist nobody sees coming</div>
+        <div class="concept-card-text" style="font-weight:500;">${data.twist}</div>
+      </div>` : ''}
+
+      ${(isReal(data.video_title) || isReal(data.video_description) || data.video_hashtags?.length) ? `
+      <div class="video-toolkit-block">
+        <div class="video-toolkit-header">
+          <span class="video-toolkit-icon">🎬</span>
+          <span class="video-toolkit-label">Video toolkit — ready to post</span>
+        </div>
+        ${isReal(data.video_title) ? `
+        <div class="video-toolkit-row">
+          <div class="video-toolkit-row-label">Title</div>
+          <div class="video-toolkit-row-value">${data.video_title}</div>
+          <button class="vt-copy-btn" onclick="copyVT(this)">Copy</button>
+        </div>` : ''}
+        ${isReal(data.video_description) ? `
+        <div class="video-toolkit-row">
+          <div class="video-toolkit-row-label">Description</div>
+          <div class="video-toolkit-row-value">${data.video_description}</div>
+          <button class="vt-copy-btn" onclick="copyVT(this)">Copy</button>
+        </div>` : ''}
+        ${data.video_hashtags?.length ? `
+        <div class="video-toolkit-row">
+          <div class="video-toolkit-row-label">Hashtags</div>
+          <div class="video-toolkit-row-value video-toolkit-hashtags">${data.video_hashtags.map(h=>`<span class="hashtag-pill">#${h.replace(/^#/,'')}</span>`).join('')}</div>
+          <button class="vt-copy-btn" onclick="copyVTHashtags(this, ${JSON.stringify(data.video_hashtags).replace(/"/g, '&quot;')})">Copy all</button>
+        </div>` : ''}
+      </div>` : ''}
+    `;
+
+    // Animate virality bar after render
+    setTimeout(() => {
+      const fill = document.getElementById('viralityFill');
+      if (fill) fill.style.width = viralityPct + '%';
+    }, 200);
+  }
+
+  function resetConcept() {
+    document.getElementById('conceptOut').classList.remove('show');
+    document.getElementById('conceptSaveBar').style.display = 'none';
+    document.getElementById('conceptFocusBlock').style.display = 'none';
+    document.getElementById('conceptInp').value = '';
+    document.getElementById('conceptBtn').disabled = false;
+    document.querySelectorAll('#conceptPlatformGrid .platform-pill').forEach(b=>b.classList.remove('selected'));
+    document.querySelectorAll('.concept-style-btn').forEach(b=>b.classList.remove('selected'));
+  }
+
+  // ── UPLOAD & STRATEGIZE ───────────────────────────────────────────────
+  let uploadImageBase64 = null;
+  let uploadImageType = null;
+
+  function toggleUploadPlatform(btn) { btn.classList.toggle('selected'); }
+  function getUploadPlatforms() { return [...document.querySelectorAll('#uploadPlatformGrid .platform-pill.selected')].map(b=>b.dataset.platform); }
+
+  function handleDragOver(e) {
+    e.preventDefault();
+    document.getElementById('uploadDropZone').classList.add('drag-over');
+  }
+  function handleDragLeave(e) {
+    document.getElementById('uploadDropZone').classList.remove('drag-over');
+  }
+  function handleDrop(e) {
+    e.preventDefault();
+    document.getElementById('uploadDropZone').classList.remove('drag-over');
+    const file = e.dataTransfer.files?.[0];
+    if (file && file.type.startsWith('image/')) processUploadFile(file);
+  }
+  function handleFileSelect(e) {
+    const file = e.target.files?.[0];
+    if (file) processUploadFile(file);
+  }
+
+  function processUploadFile(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const result = e.target.result;
+      uploadImageBase64 = result.split(',')[1];
+      uploadImageType = file.type;
+      // Show preview
+      const preview = document.getElementById('uploadPreview');
+      const inner = document.getElementById('uploadDropInner');
+      const img = document.getElementById('uploadPreviewImg');
+      const label = document.getElementById('uploadPreviewLabel');
+      img.src = result;
+      label.textContent = '📎 ' + file.name + ' — ready to analyse';
+      preview.style.display = 'block';
+      inner.style.display = 'none';
+      document.getElementById('uploadDropZone').classList.add('has-image');
+      document.getElementById('uploadBtnLabel').textContent = 'Analyse image & strategize →';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function removeUploadImage(e) {
+    e.stopPropagation();
+    uploadImageBase64 = null;
+    uploadImageType = null;
+    document.getElementById('uploadPreview').style.display = 'none';
+    document.getElementById('uploadDropInner').style.display = 'block';
+    document.getElementById('uploadDropZone').classList.remove('has-image');
+    document.getElementById('uploadFileInput').value = '';
+    document.getElementById('uploadBtnLabel').textContent = 'Analyse & strategize →';
+  }
+
+  const uploadLoaderLines = [
+    'SAM is reading your content...',
+    'Identifying what you shared...',
+    'Building your strategy...',
+    'Almost there...'
+  ];
+
+  async function runUpload() {
+    const text = document.getElementById('uploadInp').value.trim();
+    if (!text && !uploadImageBase64) { flash('uploadInp'); return; }
+
+    document.getElementById('uploadErrBox').classList.remove('show');
+    document.getElementById('uploadBtn').disabled = true;
+    document.getElementById('uploadLoader').classList.add('show');
+    document.getElementById('uploadOut').classList.remove('show');
+
+    let lIdx = 0;
+    const lInt = setInterval(() => {
+      lIdx = (lIdx + 1) % uploadLoaderLines.length;
+      document.getElementById('uploadLoaderText').textContent = uploadLoaderLines[lIdx];
+    }, 1800);
+
+    try {
+      const platforms = getUploadPlatforms();
+      const platformStr = platforms.length > 0 ? 'Platforms: ' + platforms.join(', ') + '.' : '';
+      const contextText = text || 'No additional context provided.';
+
+      // Build message content — text + optional image
+      const userContent = uploadImageBase64
+        ? [
+            { type: 'image', source: { type: 'base64', media_type: uploadImageType, data: uploadImageBase64 } },
+            { type: 'text', text: contextText }
+          ]
+        : contextText;
+
+      const systemPrompt = `You are S.A.M. — Strategic Assistant for Making. A creator has shared content with you — either text, an image, or both. ${platformStr}
+
+STEP 1: Identify what was shared. Classify as one of:
+- "analytics" — if the image shows platform analytics, stats, graphs, dashboards, metrics, follower data
+- "photo" — if the image shows a photo, scene, renovation, product, person, event, thumbnail, or any visual content
+- "text_only" — if no image was shared, just text
+
+STEP 2: Based on what was shared, return the appropriate strategy.
+
+IF "analytics": Return JSON: {"type":"analytics","headline":"one punchy sentence on the single biggest insight from this data","whats_working":["specific observation 1","specific observation 2","specific observation 3"],"whats_not":["thing to improve 1","thing to improve 2"],"post_next":["specific content idea to post this week 1","specific content idea 2","specific content idea 3"],"best_time":"optimal posting time based on the data","growth_move":"one bold strategic move to grow based on this data"}
+
+IF "photo": Return JSON: {"type":"photo","what_sam_sees":"one sentence describing what SAM sees in the image","thumbnail_strategy":"specific text overlay suggestion, emotion to convey, crop direction","hook_ideas":["hook idea 1 based on this image","hook idea 2","hook idea 3"],"best_platform":"single best platform for this visual","platform_reason":"one sentence why","content_angle":"the story or angle this image tells that would stop the scroll","caption_starter":"first line of a caption that would work for this image"}
+
+IF "text_only": Return JSON: {"type":"text_only","diagnosis":"what this idea is really about and why it has potential","hook_ideas":["hook 1","hook 2","hook 3"],"best_platform":"single best platform","platform_reason":"one sentence why","content_angle":"the strongest angle to take with this","next_action":"the single most important thing to do with this idea right now"}
+
+CRITICAL: Return ONLY valid JSON. No markdown. No backticks. No preamble.`;
+
+      const r = await fetch('/api/sam', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mode: 'upload',
+          moment: contextText,
+          platforms,
+          imageBase64: uploadImageBase64 || null,
+          imageType: uploadImageType || null,
+          tone: getTone(),
+          emojiPreference: getEmojiPreference()
+        })
+      });
+
+      clearInterval(lInt);
+
+      if (!r.ok) throw new Error('API error ' + r.status);
+      const d = await r.json();
+      const data = d;
+
+      document.getElementById('uploadLoader').classList.remove('show');
+      renderUpload(data);
+      document.getElementById('uploadOut').classList.add('show');
+      document.getElementById('uploadSaveBar').style.display = 'block';
+      document.getElementById('uploadFocusBlock').style.display = 'block';
+      document.getElementById('uploadBtn').disabled = false;
+      document.getElementById('uploadOut').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      buildDock('upload', 'uploadDockGrid', 'uploadDock');
+
+      // Focus action
+      const focusSummary = JSON.stringify(data).substring(0, 400);
+      try {
+        const fr = await fetch('/api/sam', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ mode:'focus', moment: text || 'Upload & Strategize analysis', focusSummary, tone: getTone(), emojiPreference: getEmojiPreference() }) });
+        const fd = await fr.json();
+        const fEl = document.getElementById('uploadFocusAction');
+        if (fd.action && fEl) { fEl.style.cssText='color:#fff;font-style:normal;font-weight:700;font-size:18px;'; fEl.textContent=fd.action; }
+        const fsEl = document.getElementById('uploadFocusSub');
+        if (fd.sub && fsEl) fsEl.textContent = fd.sub;
+      } catch(e) {
+        const fEl = document.getElementById('uploadFocusAction');
+        if (fEl) { fEl.style.cssText='color:#fff;font-style:normal;font-weight:700;font-size:16px;'; fEl.textContent='Pick one thing from the strategy above and do it in the next 30 minutes.'; }
+      }
+
+    } catch(err) {
+      clearInterval(lInt);
+      document.getElementById('uploadLoader').classList.remove('show');
+      showErr('uploadErrBox', err.message);
+      document.getElementById('uploadBtn').disabled = false;
+    }
+  }
+
+  function renderUpload(data) {
+    const body = document.getElementById('uploadBody');
+    const label = document.getElementById('uploadOutLabel');
+    let html = '';
+
+    if (data.type === 'analytics') {
+      label.textContent = '📊 Analytics breakdown';
+      html += `<div class="upload-result-type">📊 Analytics detected</div>`;
+      if (data.headline) html += `<div class="concept-card"><div class="concept-big-title" style="font-size:20px;">${data.headline}</div></div>`;
+      if (data.whats_working?.length) html += `<div class="concept-card"><div class="concept-card-label">What's working</div><ul class="concept-production-list">${data.whats_working.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
+      if (data.whats_not?.length) html += `<div class="concept-card" style="border-color:rgba(234,179,8,0.2);"><div class="concept-card-label">What to improve</div><ul class="concept-production-list">${data.whats_not.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
+      if (data.post_next?.length) html += `<div class="concept-card" style="border-color:var(--gold-border);background:var(--gold-light);"><div class="concept-card-label">Post this week</div><ul class="concept-production-list">${data.post_next.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
+      if (data.best_time) html += `<div class="concept-card"><div class="concept-card-label">Best time to post</div><div class="concept-card-text">${data.best_time}</div></div>`;
+      if (data.growth_move) html += `<div class="concept-card" style="border:1px solid var(--gold-border);background:var(--gold-light);"><div class="concept-card-label">The bold growth move</div><div class="concept-card-text" style="font-weight:500;">${data.growth_move}</div></div>`;
+
+    } else if (data.type === 'photo') {
+      label.textContent = '🖼️ Visual strategy';
+      html += `<div class="upload-result-type">🖼️ Photo / visual detected</div>`;
+      if (data.what_sam_sees) html += `<div class="concept-card"><div class="concept-card-label">What SAM sees</div><div class="concept-card-text">${data.what_sam_sees}</div></div>`;
+      if (data.thumbnail_strategy) html += `<div class="concept-card" style="border-color:var(--gold-border);background:var(--gold-light);"><div class="concept-card-label">Thumbnail strategy</div><div class="concept-card-text" style="font-weight:500;">${data.thumbnail_strategy}</div></div>`;
+      if (data.hook_ideas?.length) html += `<div class="concept-card"><div class="concept-card-label">Hook ideas from this image</div><ul class="concept-production-list">${data.hook_ideas.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
+      if (data.content_angle) html += `<div class="concept-card"><div class="concept-card-label">Content angle</div><div class="concept-card-text">${data.content_angle}</div></div>`;
+      if (data.caption_starter) html += `<div class="concept-card"><div class="concept-card-label">Caption starter</div><div class="hook-box">${data.caption_starter}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`;
+      if (data.best_platform) html += `<div class="concept-card" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;"><div><div class="concept-card-label" style="margin-bottom:4px;">Best platform</div><div class="concept-platform-pill">${data.best_platform}</div></div>${data.platform_reason?`<div style="font-size:13px;color:var(--text-muted);font-style:italic;max-width:55%;">${data.platform_reason}</div>`:''}</div>`;
+
+    } else {
+      label.textContent = '✍️ Content strategy';
+      html += `<div class="upload-result-type">✍️ Text idea analysed</div>`;
+      if (data.diagnosis) html += `<div class="concept-card"><div class="concept-card-label">What this idea is really about</div><div class="concept-card-text">${data.diagnosis}</div></div>`;
+      if (data.hook_ideas?.length) html += `<div class="concept-card"><div class="concept-card-label">Hook ideas</div><ul class="concept-production-list">${data.hook_ideas.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
+      if (data.content_angle) html += `<div class="concept-card" style="border-color:var(--gold-border);background:var(--gold-light);"><div class="concept-card-label">Strongest angle</div><div class="concept-card-text" style="font-weight:500;">${data.content_angle}</div></div>`;
+      if (data.best_platform) html += `<div class="concept-card" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;"><div><div class="concept-card-label" style="margin-bottom:4px;">Best platform</div><div class="concept-platform-pill">${data.best_platform}</div></div>${data.platform_reason?`<div style="font-size:13px;color:var(--text-muted);font-style:italic;max-width:55%;">${data.platform_reason}</div>`:''}</div>`;
+      if (data.next_action) html += `<div class="concept-card" style="border:1px solid var(--gold-border);background:var(--gold-light);"><div class="concept-card-label">Do this next</div><div class="concept-card-text" style="font-weight:500;">${data.next_action}</div></div>`;
+    }
+
+    body.innerHTML = html || '<div style="color:var(--text-muted);padding:1rem;">No strategy returned. Try again.</div>';
+  }
+
+  function resetUpload() {
+    document.getElementById('uploadOut').classList.remove('show');
+    document.getElementById('uploadSaveBar').style.display = 'none';
+    document.getElementById('uploadFocusBlock').style.display = 'none';
+    document.getElementById('uploadInp').value = '';
+    document.getElementById('uploadBtn').disabled = false;
+    document.getElementById('uploadBtnLabel').textContent = 'Analyse & strategize →';
+    document.querySelectorAll('#uploadPlatformGrid .platform-pill').forEach(b=>b.classList.remove('selected'));
+    removeUploadImage({ stopPropagation: ()=>{} });
+  }
+
+  let recognitionUpload=null, isRecordingUpload=false;
+  function toggleMicUpload() {
+    const btn=document.getElementById('micBtnUpload'), SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){alert('Try Chrome or Safari.');return;}
+    if(isRecordingUpload){recognitionUpload.stop();return;}
+    recognitionUpload=new SR(); recognitionUpload.continuous=true; recognitionUpload.interimResults=true; recognitionUpload.lang='en-US';
+    recognitionUpload.onstart=()=>{isRecordingUpload=true;btn.classList.add('recording');btn.innerHTML='⏹';};
+    recognitionUpload.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;document.getElementById('uploadInp').value=t;};
+    recognitionUpload.onend=recognitionUpload.onerror=()=>{isRecordingUpload=false;btn.classList.remove('recording');btn.innerHTML='🎙';};
+    recognitionUpload.start();
+  }
+
+  function copyVT(btn) {
+    const val = btn.closest('.video-toolkit-row').querySelector('.video-toolkit-row-value');
+    const text = val ? (val.innerText || val.textContent) : '';
+    navigator.clipboard.writeText(text.trim()).then(()=>{
+      btn.textContent='Copied!'; btn.classList.add('copied');
+      setTimeout(()=>{ btn.textContent='Copy'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  function copyVTHashtags(btn, hashtags) {
+    const text = hashtags.map(h => '#' + h.replace(/^#/,'')).join(' ');
+    navigator.clipboard.writeText(text).then(()=>{
+      btn.textContent='Copied!'; btn.classList.add('copied');
+      setTimeout(()=>{ btn.textContent='Copy all'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  // ── BOTTOM TOOL DOCK ────────────────────────────────────────────────────
+  const DOCK_ICONS = {
+    moment:   { bg: '#FAC775', svg: '<svg width="16" height="16" viewBox="0 0 28 28" fill="none"><path d="M6 8h16M6 13h10M6 18h12" stroke="#633806" stroke-width="2.2" stroke-linecap="round"/></svg>' },
+    ideas:    { bg: '#9FE1CB', svg: '<svg width="16" height="16" viewBox="0 0 28 28" fill="none"><path d="M14 5v2M14 21v2M5 14H3M25 14h-2M14 9a5 5 0 100 10 5 5 0 000-10z" stroke="#085041" stroke-width="2" stroke-linecap="round"/></svg>' },
+    calendar: { bg: '#CECBF6', svg: '<svg width="16" height="16" viewBox="0 0 28 28" fill="none"><rect x="5" y="7" width="18" height="16" rx="2" stroke="#26215C" stroke-width="2"/><path d="M5 12h18M10 5v4M18 5v4" stroke="#26215C" stroke-width="2" stroke-linecap="round"/></svg>' },
+    concept:  { bg: '#F5C4B3', svg: '<svg width="16" height="16" viewBox="0 0 28 28" fill="none"><polygon points="11,8 22,14 11,20" fill="#4A1B0C"/><rect x="6" y="8" width="2.5" height="12" rx="1" fill="#4A1B0C"/></svg>' },
+    upload:   { bg: '#B5D4F4', svg: '<svg width="16" height="16" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="13" r="5" stroke="#042C53" stroke-width="2"/><circle cx="14" cy="13" r="2" fill="#042C53"/><path d="M14 4v3M14 19v3M4 13H7M21 13h3" stroke="#042C53" stroke-width="1.8" stroke-linecap="round"/></svg>' },
   };
 
-  try {
-
-    // ── CALENDAR ──────────────────────────────────────────────────────────
-    if (mode === 'calendar') {
-      const platList = platforms && platforms.length > 0 ? platforms : ['TikTok', 'Instagram Reels', 'YouTube Shorts', 'LinkedIn'];
-      const prompt = base + ' Build a strategic 7-day posting plan. Rotate across: ' + platList.join(', ') + '. For each day, write caption/content that respects that platform exact character limits and hashtag rules as specified above. Return exactly: {"days":[{"platform":"platform name","post_type":"format","content":"ready-to-post caption respecting that platforms character limit","tip":"one tactical tip specific to that platform","ideal_time":"specific time + brief reason"}]}';
-      const parsed = await callAnthropic(prompt, moment, 2200);
-      return res.status(200).json(parsed);
-    }
-
-    // ── IDEAS ─────────────────────────────────────────────────────────────
-    if (mode === 'ideas') {
-      const prompt = base + ' Generate exactly 10 specific, actionable content ideas for this week. Return: {"ideas":[{"title":"specific idea title","why":"one sentence why this performs","best_platform":"single best platform name e.g. TikTok, YouTube Shorts, Instagram Reels, LinkedIn, Facebook Reels, YouTube"}]}';
-      const parsed = await callAnthropic(prompt, moment, 2000);
-      return res.status(200).json(parsed);
-    }
-
-    // ── UPLOAD & STRATEGIZE ───────────────────────────────────────────────
-    if (mode === 'upload') {
-      const imageBase64 = req.body.imageBase64 || null;
-      const imageType = req.body.imageType || 'image/jpeg';
-      const uploadPlatforms = req.body.platforms || [];
-      const platStr = uploadPlatforms.length > 0
-        ? 'Target platforms: ' + uploadPlatforms.join(', ') + '. Platform specs: ' + getPlatformContext(uploadPlatforms)
-        : '';
-
-      const uploadSystem = [
-        'You are S.A.M. — Strategic Assistant for Making.',
-        'A creator has shared content — text, an image, or both.',
-        platStr,
-        'STEP 1: Classify what was shared: analytics (platform stats/graphs/dashboards), photo (any image or visual), or text_only (no image).',
-        'STEP 2: Return the matching JSON. No markdown. No backticks.',
-        'IF analytics: {"type":"analytics","headline":"biggest insight in one sentence","whats_working":["obs 1","obs 2","obs 3"],"whats_not":["improve 1","improve 2"],"post_next":["specific content idea 1","idea 2","idea 3"],"best_time":"optimal posting time","growth_move":"one bold strategic move"}',
-        'IF photo: {"type":"photo","what_sam_sees":"one sentence on what is in the image","thumbnail_strategy":"text overlay, emotion, crop direction","hook_ideas":["hook 1","hook 2","hook 3"],"best_platform":"single best platform","platform_reason":"one sentence why","content_angle":"the scroll-stopping angle","caption_starter":"first line of a caption"}',
-        'IF text_only: {"type":"text_only","diagnosis":"what this idea is really about and why it has potential","hook_ideas":["hook 1","hook 2","hook 3"],"best_platform":"single best platform","platform_reason":"one sentence why","content_angle":"strongest angle to take","next_action":"single most important thing to do now"}',
-        'CRITICAL: Return ONLY valid JSON. Nothing else.'
-      ].join(' ');
-
-      const userContent = imageBase64
-        ? [
-            { type: 'image', source: { type: 'base64', media_type: imageType, data: imageBase64 } },
-            { type: 'text', text: moment || 'Analyse this and provide a strategy.' }
-          ]
-        : moment;
-
-      const parsed = await callAnthropic(uploadSystem, userContent, 1800);
-      return res.status(200).json(parsed);
-    }
-
-    // ── CONCEPT ───────────────────────────────────────────────────────────
-    if (mode === 'concept') {
-      const conceptStyle = req.body.contentType || '';
-      const conceptPlatforms = req.body.platforms || [];
-      const platStr = conceptPlatforms.length > 0
-        ? 'Target platform(s): ' + conceptPlatforms.join(', ') + '. Platform specs: ' + getPlatformContext(conceptPlatforms)
-        : '';
-      const styleStr = conceptStyle ? 'Concept style: ' + conceptStyle + '.' : '';
-      const prompt = base + ' ' + platStr + ' ' + styleStr + ' Generate ONE bold, unique video concept. Think like a top creative director at a viral studio. Make the concept genuinely scroll-stopping — not safe, not average. Push it until it deserves 100% virality. The video_title, video_description, and video_hashtags MUST strictly follow the target platform character limits and hashtag rules. If multiple platforms, use the most restrictive limits. Return: {"title":"Short punchy concept title 6-10 words","format":"format type e.g. Reverse Reveal","premise":"2-3 sentences on exactly what the video IS","why_it_works":"2 sentences on the psychology of why it stops scrolls","production_notes":["filming note 1","filming note 2","filming note 3","filming note 4"],"hook_line":"exact first sentence to say on camera","best_platform":"single best platform","platform_reason":"one sentence why","twist":"the unexpected angle that makes this truly memorable","virality_score":100,"video_title":"SEO-optimised title respecting platform char limit","video_description":"description respecting platform char limit with keywords and CTA","video_hashtags":["hashtag1","hashtag2","hashtag3","hashtag4","hashtag5","hashtag6","hashtag7","hashtag8"]}';
-      const parsed = await callAnthropic(prompt, moment, 1800);
-      return res.status(200).json(parsed);
-    }
-
-    // ── FOCUS ─────────────────────────────────────────────────────────────
-    if (mode === 'focus') {
-      const focusSummary = req.body.focusSummary || '';
-      const prompt = base + ' Give ONE specific action for the next 30 minutes. Start with a verb. Be direct. Return: {"action":"one specific action starting with a verb","sub":"one sentence on why right now not tomorrow"}';
-      const parsed = await callAnthropic(prompt, moment + ' ' + focusSummary, 300);
-      return res.status(200).json(parsed);
-    }
-
-    // ── STORY + HOOK (moment → content mode) ─────────────────────────────
-    const textPostInstruction = 'Write a complete text post. No [BRACKETS] or (pacing notes). Clean paragraphs only. Hook first line, story in short punchy paragraphs, ends with question or CTA.';
-
-    const scriptInstructions = {
-      'Short-form video': 'Write a complete word-for-word spoken script for 60-90 seconds. Beats in [BRACKETS]: [HOOK],[SETUP],[TENSION],[PAYOFF],[CTA]. Pacing notes in (parentheses).',
-      'Long-form YouTube video': 'Write a complete word-for-word script for 8-12 minutes. Label: [INTRO HOOK],[CONTEXT],[MAIN STORY],[KEY LESSONS],[OUTRO CTA].',
-      'LinkedIn text post': 'Write the complete LinkedIn post. No [BRACKETS]. Strong opening line, short paragraphs, ends with question. Include 3 hashtags at end.',
-      'Instagram caption': 'Write the complete Instagram caption. No [BRACKETS]. Hook first line (125 chars max before truncation), body with line breaks, CTA, then 5 focused hashtags.',
-      'Podcast intro': 'Write a complete 60-90 second spoken intro.',
-      'Email newsletter': 'Write complete email: SUBJECT LINE first, PREVIEW TEXT second, then full BODY. No [BRACKETS] in body.',
-      'Blog post': 'Write: SEO HEADLINE, META DESCRIPTION under 160 chars, INTRO, 3-4 SECTION HEADERS with summaries, CONCLUSION with CTA.',
-      'Text post': textPostInstruction
-    };
-
-    const scriptInstruction = scriptInstructions[contentType] || scriptInstructions['Short-form video'];
-
-    // Build per-platform strategy instruction
-    const platStrategyInstruction = platforms && platforms.length > 0
-      ? 'For platform_strategies, write a tailored caption + hashtags for EACH selected platform, strictly following that platforms character limits and hashtag rules as specified above.'
-      : '';
-
-    const storyPrompt = base + ' ' + scriptInstruction + ' Return: {"diagnosis":"2-3 sentences on what this moment is really about emotionally","hook":"single best opening line","story_spine":"Setup / Tension / Payoff separated by /","full_script":"COMPLETE OUTPUT as specified","b_roll":"4 specific b-roll shots each on own line","pacing_note":"one specific delivery tip","cta":"identity-based call to action","content_warning":"one honest risk — one sentence describing what could go wrong or feel off","content_fix":"the exact rewritten line or section that fixes the risk — ready to use, not advice"}';
-
-    const hookPrompt = base + ' ' + platStrategyInstruction + ' Return: {"diagnosis":"what makes this hook-worthy","hook_1":"emotion-first hook","hook_2":"curiosity-first hook","hook_3":"identity-first hook","winner":"which hook and why","visual_note":"what to show on screen first 3 seconds","platform_strategies":' + (platforms && platforms.length > 0 ? '[{"platform":"exact platform name","strategy":"specific posting strategy","caption":"ready-to-post caption respecting that platforms exact character limit","hashtags":"hashtags following that platforms rules"}]' : '[]') + '}';
-
-    const systemPrompt = mode === 'story' ? storyPrompt : hookPrompt;
-    if (!systemPrompt) return res.status(400).json({ error: 'Invalid mode' });
-
-    const parsed = await callAnthropic(systemPrompt, moment, 2200);
-    return res.status(200).json(parsed);
-
-  } catch (err) {
-    return res.status(500).json({ error: err.message || 'Something went wrong.' });
+  function buildDock(activeTool, gridId, dockId) {
+    const grid = document.getElementById(gridId);
+    const dock = document.getElementById(dockId);
+    if (!grid || !dock) return;
+    const others = Object.keys(SAM_TOOLS).filter(k => k !== activeTool);
+    grid.innerHTML = others.map(mode => {
+      const t = SAM_TOOLS[mode];
+      const ic = DOCK_ICONS[mode];
+      return `<button class="tool-dock-btn" onclick="openTool('${mode}')">
+        <div class="tool-dock-icon" style="background:${ic.bg};">${ic.svg}</div>
+        <div class="tool-dock-info">
+          <div class="tool-dock-name">${t.name}</div>
+          <div class="tool-dock-sub">${t.desc}</div>
+        </div>
+      </button>`;
+    }).join('');
+    dock.style.display = 'block';
   }
-};
+
+  // ── SAM VOICE INTRO ─────────────────────────────────────────────────────
+  (function() {
+    if (localStorage.getItem('sam-intro-played')) return;
+    // Small delay so page settles first
+    setTimeout(() => {
+      if (!window.speechSynthesis) return;
+      const msg = new SpeechSynthesisUtterance(
+        "Hi, I'm SAM. I turn your real moments into content that builds your following."
+      );
+      msg.rate = 0.92;
+      msg.pitch = 1.05;
+      msg.volume = 0.85;
+      // Prefer a natural-sounding voice if available
+      const voices = window.speechSynthesis.getVoices();
+      const preferred = voices.find(v =>
+        /samantha|karen|moira|serena|victoria|ava|allison/i.test(v.name)
+      ) || voices.find(v => v.lang === 'en-US' && v.localService) || voices[0];
+      if (preferred) msg.voice = preferred;
+      window.speechSynthesis.speak(msg);
+      localStorage.setItem('sam-intro-played', '1');
+    }, 800);
+  })();
+
+  function copyEl(btn) {
+    const prev=btn.previousElementSibling;
+    const text=prev?prev.innerText||prev.textContent:'';
+    navigator.clipboard.writeText(text).then(()=>{btn.textContent='Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},2000);}).catch(()=>{btn.textContent='Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},2000);});
+  }
+</script>
+</body>
+</html>
