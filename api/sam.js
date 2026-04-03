@@ -74,18 +74,24 @@ module.exports = async function handler(req, res) {
         } catch (_) {}
       }
     }
-    const clean = full.replace(/```json[\s\S]*?```/g, m => m.slice(7, -3)).replace(/```/g, '').replace(/^json\s*/i, '').trim();
+    // Clean and parse
+    let clean = full.trim();
+    // Strip markdown code fences
+    clean = clean.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim();
+    // Extract first complete JSON object
+    const firstBrace = clean.indexOf('{');
+    const lastBrace = clean.lastIndexOf('}');
+    if (firstBrace !== -1 && lastBrace !== -1) {
+      clean = clean.slice(firstBrace, lastBrace + 1);
+    }
     let parsed;
-    try { parsed = JSON.parse(clean); }
-    catch (e) {
-      // Try to extract JSON from the string
-      const match = clean.match(/\{[\s\S]*\}/);
-      if (match) {
-        try { parsed = JSON.parse(match[0]); }
-        catch(e2) { throw new Error('JSON parse failed: ' + e.message); }
-      } else {
-        throw new Error('JSON parse failed: ' + e.message);
-      }
+    try {
+      parsed = JSON.parse(clean);
+    } catch(e) {
+      // Send error through stream so frontend shows it properly
+      res.write('data: ' + JSON.stringify({ error: 'SAM had trouble formatting the response. Please try again.' }) + '\n\n');
+      res.end();
+      return;
     }
     res.write('data: ' + JSON.stringify({ done: true, result: parsed }) + '\n\n');
     res.end();
