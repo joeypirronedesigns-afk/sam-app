@@ -2380,155 +2380,48 @@ function removeImg(e) {
 const lensLines = ['SAM is reading your content...','Identifying what you shared...','Building your strategy...','Almost there...'];
 let lensInterval;
 
-async function runLens() {
+async function runLens(mode) {
+  const isAnalytics = mode === 'analytics';
+  const imgB64 = isAnalytics ? uploadImgB64_2 : uploadImgB64;
+  const imgType = isAnalytics ? uploadImgType_2 : uploadImgType;
   const text = document.getElementById('lensInp').value.trim();
-  if (!text && !uploadImgB64 && currentUploadType !== 'text_only') { flash('lensInp'); return; }
-  document.getElementById('lensErr').classList.remove('show');
-  document.getElementById('lensBtn').disabled = true;
-  document.getElementById('lensLoader').classList.add('show');
+  const errId = isAnalytics ? 'lensErr2' : 'lensErr';
+  const btnId = isAnalytics ? 'lensBtn2' : 'lensBtn';
+  const loaderId = isAnalytics ? 'lensLoader2' : 'lensLoader';
+
+  if (!imgB64) {
+    const zoneId = isAnalytics ? 'dropZoneAnalytics' : 'dropZone';
+    const zone = document.getElementById(zoneId);
+    if (zone) { zone.style.borderColor = isAnalytics ? 'var(--blueprint)' : 'var(--lens)'; setTimeout(() => zone.style.borderColor = '', 1500); }
+    return;
+  }
+
+  document.getElementById(errId).classList.remove('show');
+  document.getElementById(btnId).disabled = true;
+  document.getElementById(loaderId).classList.add('show');
   document.getElementById('lensOutput').classList.remove('show');
+
   let li = 0;
-  lensInterval = setInterval(() => { li=(li+1)%lensLines.length; document.getElementById('lensLoaderText').textContent=lensLines[li]; }, 1800);
+  lensInterval = setInterval(() => { li=(li+1)%lensLines.length; }, 1800);
+
   try {
-    const platforms = getSelPills('lensPlatforms');
-    const forceType = currentUploadType;
-    const data = await callAPI({ ...getBase(), mode:'upload', moment:text||'Analyse this.', platforms, imageBase64:uploadImgB64||null, imageType:uploadImgType||null, forceType });
+    const data = await callAPI({ ...getBase(), mode:'upload', moment:text||'Analyse this image.', platforms:[], imageBase64:imgB64, imageType:imgType||'image/jpeg', forceType:mode });
     clearInterval(lensInterval);
-    document.getElementById('lensLoader').classList.remove('show');
+    document.getElementById(loaderId).classList.remove('show');
     renderLens(data);
-    // Override type if user explicitly chose text_only tab
-    if (forceType === 'text_only' && data.type !== 'text_only') {
-      data.type = 'text_only';
-      if (!data.diagnosis) data.diagnosis = data.headline || data.what_sam_sees || 'SAM analysed your idea.';
-      if (!data.hook_ideas) data.hook_ideas = data.post_next || [];
-      if (!data.content_angle) data.content_angle = data.growth_move || '';
-      if (!data.next_action) data.next_action = data.post_next?.[0] || '';
-    }
     document.getElementById('lensOutput').classList.add('show');
-    document.getElementById('lensBtn').disabled = false;
+    document.getElementById(btnId).disabled = false;
     document.getElementById('lensOutput').scrollIntoView({ behavior:'smooth', block:'start' });
   } catch(err) {
     clearInterval(lensInterval);
     document.getElementById('lensLoader').classList.remove('show');
-    showErr('lensErr', err.message);
-    document.getElementById('lensBtn').disabled = false;
+    document.getElementById('lensLoader2').classList.remove('show');
+    showErr(errId, err.message);
+    document.getElementById(btnId).disabled = false;
   }
 }
 
-function renderLens(data) {
-  const body = document.getElementById('lensBody');
-  const label = document.getElementById('lensOutLabel');
-  let html = '';
 
-  if (data.type === 'analytics') {
-    label.textContent = '📊 Analytics breakdown';
-    html += `<div class="upload-result-badge">📊 Analytics detected</div>`;
-    if (data.headline) html += `<div class="concept-card out-block"><div class="concept-title-big" style="font-size:18px;">${data.headline}</div></div>`;
-    if (data.whats_working?.length) html += `<div class="concept-card out-block"><div class="concept-card-label">What's working</div><ul class="prod-list">${data.whats_working.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
-    if (data.whats_not?.length) html += `<div class="concept-card out-block" style="border-color:rgba(251,191,36,0.2);"><div class="concept-card-label">What to improve</div><ul class="prod-list">${data.whats_not.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
-    if (data.post_next?.length) html += `<div class="concept-card out-block" style="border-color:var(--lens-border);background:var(--lens-bg);"><div class="concept-card-label" style="color:var(--lens);">Post this week</div><ul class="prod-list">${data.post_next.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
-    if (data.growth_move) html += `<div class="concept-card out-block" style="border-color:var(--lens-border);background:var(--lens-bg);"><div class="concept-card-label" style="color:var(--lens);">Bold growth move</div><div class="concept-card-text">${data.growth_move}</div></div>`;
-
-  } else if (data.type === 'photo') {
-    label.textContent = '🖼️ Visual strategy';
-    html += `<div class="upload-result-badge">🖼️ Photo detected</div>`;
-    if (data.what_sam_sees) html += `<div class="concept-card out-block"><div class="concept-card-label">What SAM sees</div><div class="concept-card-text">${data.what_sam_sees}</div></div>`;
-    if (data.content_angle) html += `<div class="concept-card out-block" style="border-color:var(--lens-border);background:var(--lens-bg);"><div class="concept-card-label" style="color:var(--lens);">Content angle</div><div class="concept-card-text" style="font-weight:500;">${data.content_angle}</div></div>`;
-
-    if (data.thumbnail_headline) {
-      const ac = data.thumbnail_color || '#E53E3E';
-      const hl = data.thumbnail_headline || '';
-      const sub = data.thumbnail_subtext || '';
-      html += `<div class="concept-card out-block" style="padding:0;overflow:hidden;border-color:var(--lens-border);">
-        <div style="padding:12px 16px;background:var(--lens-bg);border-bottom:1px solid var(--lens-border);"><div class="concept-card-label" style="color:var(--lens);margin:0;">Thumbnail mockup</div></div>
-        <div style="padding:16px;">
-          <div style="position:relative;width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,#111,#1c1c1c);border-radius:10px;overflow:hidden;margin-bottom:12px;">
-            <div style="position:absolute;top:0;left:0;right:0;height:4px;background:${ac};z-index:2;"></div>
-            <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.9) 0%,transparent 60%);z-index:1;"></div>
-            <div style="position:absolute;bottom:14px;left:16px;right:16px;z-index:3;">
-              <div style="font-family:'Sora',sans-serif;font-size:clamp(14px,3vw,22px);font-weight:800;color:#fff;line-height:1.1;text-transform:uppercase;text-shadow:0 2px 10px rgba(0,0,0,0.9);margin-bottom:4px;">${hl}</div>
-              ${sub ? `<div style="font-size:clamp(10px,1.5vw,13px);font-weight:700;color:${ac};letter-spacing:0.06em;text-transform:uppercase;">${sub}</div>` : ''}
-            </div>
-          </div>
-          <button class="copy-btn" style="float:none;" onclick="copyText(this,'${escQ(hl + (sub?'\\n'+sub:''))}')">Copy text overlay</button>
-        </div>
-      </div>`;
-    }
-
-    if (data.platforms && Array.isArray(data.platforms) && data.platforms.length) {
-      html += `<div class="out-block"><div class="out-block-title" style="color:var(--lens);">● Ready to post</div>`;
-      data.platforms.forEach(p => {
-        if (!p || !p.platform) return;
-        html += `<div class="platform-strategy">
-          <div class="ps-header">
-            <div class="ps-name">${p.platform}</div>
-            <button class="copy-btn" style="float:none;margin:0;" onclick="copyText(this,'${escQ((p.description||'')+'\\n'+(p.hashtags||''))}')">Copy</button>
-          </div>
-          <div class="ps-body">
-            ${p.title ? `<div class="out-text" style="font-size:13px;font-weight:600;margin-bottom:6px;">${p.title}</div>` : ''}
-            ${p.description ? `<div class="ps-caption">${p.description}</div>` : ''}
-            ${p.hashtags ? `<div class="ps-hashtags">${p.hashtags}</div>` : ''}
-          </div>
-        </div>`;
-      });
-      html += `</div>`;
-    }
-
-  } else {
-    label.textContent = '✍️ Content strategy';
-    html += `<div class="upload-result-badge">✍️ Idea analysed</div>`;
-    if (data.diagnosis) html += `<div class="concept-card out-block"><div class="concept-card-label">What this idea is really about</div><div class="concept-card-text">${data.diagnosis}</div></div>`;
-    if (data.hook_ideas?.length) html += `<div class="concept-card out-block"><div class="concept-card-label">Hook ideas</div><ul class="prod-list">${data.hook_ideas.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
-    if (data.content_angle) html += `<div class="concept-card out-block" style="border-color:var(--lens-border);background:var(--lens-bg);"><div class="concept-card-label" style="color:var(--lens);">Strongest angle</div><div class="concept-card-text" style="font-weight:500;">${data.content_angle}</div></div>`;
-    if (data.next_action) html += `<div class="concept-card out-block" style="border-color:var(--lens-border);background:var(--lens-bg);"><div class="concept-card-label" style="color:var(--lens);">Do this next</div><div class="concept-card-text" style="font-weight:500;">${data.next_action}</div></div>`;
-
-    // Cross-tool actions for text_only
-    html += `<div class="out-block">
-      <div class="out-block-title" style="color:var(--lens);">● Take action</div>
-      <button class="cross-tool-btn" onclick="sendToPulse('${escQ((data.diagnosis||'') + ' ' + (data.content_angle||''))}')">
-        <div class="cross-tool-left">
-          <div class="cross-tool-icon" style="background:var(--pulse-bg);border:1px solid var(--pulse-border);">📝</div>
-          <div class="cross-tool-text">Write the full script in The Pulse</div>
-        </div>
-        <div class="cross-tool-arrow">→</div>
-      </button>
-      <button class="cross-tool-btn" onclick="sendToVision('${escQ((data.diagnosis||'') + ' ' + (data.content_angle||''))}')">
-        <div class="cross-tool-left">
-          <div class="cross-tool-icon" style="background:var(--vision-bg);border:1px solid var(--vision-border);">▶</div>
-          <div class="cross-tool-text">Build a video concept in The Vision</div>
-        </div>
-        <div class="cross-tool-arrow">→</div>
-      </button>
-    </div>`;
-
-    if (data.diagnosis) {
-      html += `<div class="out-block" style="display:none;">
-        <button class="cross-tool-btn" onclick="sendToPulse('${escQ(data.diagnosis)}')">
-          <div class="cross-tool-left">
-            <div class="cross-tool-icon" style="background:var(--pulse-bg);border:1px solid var(--pulse-border);">📝</div>
-            <div class="cross-tool-text">Turn this into a full script in The Pulse</div>
-          </div>
-          <div class="cross-tool-arrow">→</div>
-        </button>
-      </div>`;
-    }
-  }
-
-  html += `<div class="focus-directive">
-    <div class="focus-eyebrow">Stop. Focus.</div>
-    <div class="focus-text">You have your strategy. One action, right now — that's all it takes.</div>
-  </div>`;
-
-  body.innerHTML = html;
-}
-
-
-
-function handleSetupOutsideClick(e) {
-  if (e.target === document.getElementById('setupModal')) {
-    document.getElementById('setupModal').classList.remove('open');
-  }
-}
 async function pasteToEl(id) {
   try {
     const text = await navigator.clipboard.readText();
