@@ -2522,9 +2522,11 @@ async function pasteToEl(id) {
 
 
 // ── THUMBNAIL CANVAS + DOWNLOAD ──────────────────────────────────────────────
-function renderThumbnailCanvases(headline, subtext, accentColor, imgSrc) {
-  drawThumb('thumb169canvas', 1280, 720, headline, subtext, accentColor, imgSrc);
-  drawThumb('thumb916canvas', 1080, 1920, headline, subtext, accentColor, imgSrc);
+function renderThumbnailCanvases(headline, subtext, accentColor, imgSrc, id169, id916) {
+  const c169 = (id169 || 'thumb169') + 'canvas';
+  const c916 = (id916 || 'thumb916') + 'canvas';
+  drawThumb(c169, 1280, 720, headline, subtext, accentColor, imgSrc);
+  drawThumb(c916, 1080, 1920, headline, subtext, accentColor, imgSrc);
 }
 
 function drawThumb(canvasId, w, h, headline, subtext, accentColor, imgSrc) {
@@ -2647,50 +2649,68 @@ function renderLens(data) {
     if (data.what_sam_sees) html += `<div class="concept-card out-block"><div class="concept-card-label">What SAM sees</div><div class="concept-card-text">${data.what_sam_sees}</div></div>`;
     if (data.content_angle) html += `<div class="concept-card out-block" style="border-color:var(--lens-border);background:var(--lens-bg);"><div class="concept-card-label" style="color:var(--lens);">Content angle</div><div class="concept-card-text" style="font-weight:500;">${data.content_angle}</div></div>`;
 
-    if (data.thumbnail_headline) {
-      const ac = data.thumbnail_color || '#F472B6';
-      const hl = data.thumbnail_headline || '';
-      const sub = data.thumbnail_subtext || '';
-      const imgSrc = window._lensImgSrc || document.getElementById('previewImg')?.src || '';
-      const bgStyle = imgSrc ? `background-image:url('${imgSrc}');background-size:cover;background-position:center;` : 'background:linear-gradient(135deg,#111,#1c1c1c);';
+    // Handle both new dual-headline format and legacy single headline
+    const hasDual = data.headline_safe || data.headline_bold;
+    const hl1 = data.headline_safe || data.thumbnail_headline || '';
+    const hl2 = data.headline_bold || '';
+    const sub1 = data.subtext_safe || data.thumbnail_subtext || '';
+    const sub2 = data.subtext_bold || data.thumbnail_subtext || '';
+    const ac = data.thumbnail_color || '#F472B6';
+    const imgSrc = window._lensImgSrc || document.getElementById('previewImg')?.src || '';
+    const bgStyle = imgSrc ? `background-image:url('${imgSrc}');background-size:cover;background-position:center;` : 'background:linear-gradient(135deg,#111,#1c1c1c);';
+
+    if (hl1 || hl2) {
+      const makeThumb = (id, hl, sub, label, filename, w, aspect) => `
+        <div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;">${label}</div>
+          <div id="${id}" style="position:relative;width:${w};aspect-ratio:${aspect};${bgStyle}border-radius:10px;overflow:hidden;cursor:pointer;" onclick="downloadCanvas('${id}canvas','${filename}')" title="Tap to download">
+            <canvas id="${id}canvas" style="display:none;"></canvas>
+            <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.88) 0%,rgba(0,0,0,0.15) 55%,transparent 100%);z-index:1;"></div>
+            <div style="position:absolute;top:8px;right:8px;z-index:3;background:rgba(0,0,0,0.55);border-radius:6px;padding:4px 8px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.85);">↓ Download</div>
+            <div style="position:absolute;bottom:12px;left:12px;right:12px;z-index:3;">
+              <div style="font-family:'Sora',sans-serif;font-size:clamp(13px,3.2vw,24px);font-weight:800;color:#fff;line-height:1.1;text-transform:uppercase;text-shadow:0 2px 14px rgba(0,0,0,1);margin-bottom:4px;">${hl}</div>
+              ${sub ? `<div style="font-size:clamp(10px,1.6vw,13px);font-weight:700;color:${ac};letter-spacing:0.08em;text-transform:uppercase;text-shadow:0 1px 8px rgba(0,0,0,1);">${sub}</div>` : ''}
+            </div>
+            <div style="position:absolute;top:0;left:0;right:0;height:5px;background:${ac};z-index:2;"></div>
+          </div>
+          <button class="copy-btn" style="float:none;margin-top:6px;" onclick="copyText(this,'${hl}${sub?'\n'+sub:''}')">Copy overlay</button>
+        </div>`;
 
       html += `<div class="concept-card out-block" style="padding:0;overflow:hidden;border-color:var(--lens-border);">
         <div style="padding:12px 16px;background:var(--lens-bg);border-bottom:1px solid var(--lens-border);">
           <div class="concept-card-label" style="color:var(--lens);margin:0;">Thumbnail mockups — tap to download</div>
         </div>
-        <div style="padding:16px;display:flex;flex-direction:column;gap:16px;">
-          <div>
-            <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;">📐 16:9 — YouTube / Facebook</div>
-            <div id="thumb169" style="position:relative;width:100%;aspect-ratio:16/9;${bgStyle}border-radius:10px;overflow:hidden;cursor:pointer;" onclick="downloadCanvas('thumb169canvas','thumbnail-16x9.png')" title="Tap to download">
-              <canvas id="thumb169canvas" style="display:none;"></canvas>
-              <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.88) 0%,rgba(0,0,0,0.2) 55%,transparent 100%);z-index:1;"></div>
-              <div style="position:absolute;top:10px;right:10px;z-index:3;background:rgba(0,0,0,0.5);border-radius:6px;padding:4px 8px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.8);">↓ Download</div>
-              <div style="position:absolute;bottom:14px;left:16px;right:16px;z-index:3;">
-                <div style="font-family:'Sora',sans-serif;font-size:clamp(14px,3.5vw,26px);font-weight:800;color:#fff;line-height:1.1;text-transform:uppercase;text-shadow:0 2px 12px rgba(0,0,0,0.95);margin-bottom:5px;">${hl}</div>
-                ${sub ? `<div style="font-size:clamp(10px,1.8vw,14px);font-weight:700;color:${ac};letter-spacing:0.08em;text-transform:uppercase;text-shadow:0 1px 6px rgba(0,0,0,0.9);">${sub}</div>` : ''}
-              </div>
-              <div style="position:absolute;top:0;left:0;right:0;height:5px;background:${ac};z-index:2;"></div>
+        <div style="padding:16px;display:flex;flex-direction:column;gap:20px;">
+
+          ${hl2 ? `<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start;">
+            <div>
+              <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(52,211,153,0.8);margin-bottom:6px;">✓ Safe option</div>
+              ${makeThumb('thumb169s', hl1, sub1, '16:9', 'thumbnail-safe-16x9.png', '100%', '16/9')}
+            </div>
+            <div>
+              <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(244,114,182,0.8);margin-bottom:6px;">⚡ Bold option</div>
+              ${makeThumb('thumb169b', hl2, sub2, '16:9', 'thumbnail-bold-16x9.png', '100%', '16/9')}
             </div>
           </div>
-          <div>
-            <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;">📱 9:16 — TikTok / Reels / Shorts</div>
-            <div style="display:flex;justify-content:center;">
-              <div id="thumb916" style="position:relative;width:55%;aspect-ratio:9/16;${bgStyle}border-radius:10px;overflow:hidden;cursor:pointer;" onclick="downloadCanvas('thumb916canvas','thumbnail-9x16.png')" title="Tap to download">
-                <canvas id="thumb916canvas" style="display:none;"></canvas>
-                <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.9) 0%,rgba(0,0,0,0.15) 50%,transparent 100%);z-index:1;"></div>
-                <div style="position:absolute;top:10px;right:10px;z-index:3;background:rgba(0,0,0,0.5);border-radius:6px;padding:4px 8px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.8);">↓ Download</div>
-                <div style="position:absolute;bottom:20px;left:14px;right:14px;z-index:3;">
-                  <div style="font-family:'Sora',sans-serif;font-size:clamp(16px,4vw,28px);font-weight:800;color:#fff;line-height:1.15;text-transform:uppercase;text-shadow:0 2px 12px rgba(0,0,0,0.95);margin-bottom:6px;">${hl}</div>
-                  ${sub ? `<div style="font-size:clamp(11px,2vw,15px);font-weight:700;color:${ac};letter-spacing:0.06em;text-transform:uppercase;text-shadow:0 1px 6px rgba(0,0,0,0.9);">${sub}</div>` : ''}
-                </div>
-                <div style="position:absolute;top:0;left:0;right:0;height:5px;background:${ac};z-index:2;"></div>
-              </div>
-            </div>
-          </div>
-          <button class="copy-btn" style="float:none;" onclick="copyText(this,'${escQ(hl + (sub?'\n'+sub:''))}')">Copy text overlay</button>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start;">
+            <div>${makeThumb('thumb916s', hl1, sub1, '9:16 TikTok/Reels', 'thumbnail-safe-9x16.png', '100%', '9/16')}</div>
+            <div>${makeThumb('thumb916b', hl2, sub2, '9:16 TikTok/Reels', 'thumbnail-bold-9x16.png', '100%', '9/16')}</div>
+          </div>` :
+          `${makeThumb('thumb169', hl1, sub1, '📐 16:9 — YouTube / Facebook', 'thumbnail-16x9.png', '100%', '16/9')}
+          <div style="display:flex;justify-content:center;">${makeThumb('thumb916', hl1, sub1, '📱 9:16 — TikTok / Reels', 'thumbnail-9x16.png', '55%', '9/16')}</div>`}
+
         </div>
       </div>`;
-      setTimeout(() => renderThumbnailCanvases('${escQ(hl)}', '${escQ(sub)}', '${escQ(ac)}', '${escQ(imgSrc)}'), 300);
+
+      setTimeout(() => {
+        if (hl2) {
+          renderThumbnailCanvases(hl1, sub1, ac, imgSrc, 'thumb169s', 'thumb916s');
+          renderThumbnailCanvases(hl2, sub2, ac, imgSrc, 'thumb169b', 'thumb916b');
+        } else {
+          renderThumbnailCanvases(hl1, sub1, ac, imgSrc, 'thumb169', 'thumb916');
+        }
+      }, 400);
     }
 
     if (data.platforms?.length) {
