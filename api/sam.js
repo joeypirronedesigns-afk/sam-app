@@ -41,13 +41,16 @@ module.exports = async function handler(req, res) {
   const base = `You are S.A.M. — Strategic Assistant for Making. ${toneContext} ${emojiLine} ${creatorLine} ${languageLine} ${platformContext} ${formatContext} CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No explanation.`;
 
   const streamCall = async (system, userContent, maxTokens) => {
+    console.log('streamCall - maxTokens:', maxTokens, '- model: claude-sonnet-4-6');
     const r = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
       body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: maxTokens, stream: true, system, messages: [{ role: 'user', content: userContent }] })
     });
+    console.log('Anthropic response status:', r.status);
     if (!r.ok) {
       const e = await r.text().catch(() => '');
+      console.error('Anthropic error:', r.status, e.slice(0, 300));
       throw new Error('Anthropic error ' + r.status + (e ? ': ' + e.slice(0, 200) : ''));
     }
     res.setHeader('Content-Type', 'text/event-stream');
@@ -125,6 +128,7 @@ module.exports = async function handler(req, res) {
       const forceType = req.body.forceType || null;
 
       // PHOTO mode — focused output, lean JSON
+      console.log('UPLOAD MODE - forceType:', forceType, '- hasImage:', !!imageBase64, '- imageSize:', imageBase64 ? Math.round(imageBase64.length/1024) + 'KB' : '0');
       if (forceType === 'photo' || (!forceType && imageBase64)) {
         const photoSystem = `You are S.A.M. ${toneContext} ${emojiLine} ${creatorLine} Analyse this image and return thumbnail strategy. Return ONLY this exact JSON with NO extra fields:
 {"type":"photo","what_sam_sees":"one sentence describing the image","content_angle":"the scroll-stopping story angle in one sentence","thumbnail_headline":"BOLD 3-6 WORD TEXT OVERLAY IN CAPS","thumbnail_subtext":"2-4 word supporting line or empty string","thumbnail_color":"#FF4500","platforms":[{"platform":"TikTok","title":"hook title under 60 chars","description":"caption under 150 chars","hashtags":"#tag1 #tag2 #tag3"},{"platform":"YouTube","title":"SEO title under 70 chars","description":"description under 150 chars","hashtags":"#tag1 #tag2 #tag3"},{"platform":"Instagram Reels","title":"","description":"caption under 125 chars","hashtags":"#tag1 #tag2 #tag3"}]}
