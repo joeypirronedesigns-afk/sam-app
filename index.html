@@ -1974,6 +1974,145 @@
       background: rgba(34,197,94,0.06);
     }
 
+    /* ══ SAM HOME GRID ════════════════════════ */
+    .sam-home {
+      margin-bottom: 2rem;
+    }
+
+    .sam-home-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 600px) {
+      .sam-home-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    @media (max-width: 380px) {
+      .sam-home-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .sam-icon-btn {
+      background: var(--surface);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-lg);
+      padding: 1rem 0.5rem 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.34, 1.2, 0.64, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      backdrop-filter: blur(12px);
+      position: relative;
+      overflow: hidden;
+    }
+    .sam-icon-btn:hover {
+      transform: translateY(-3px) scale(1.02);
+      border-color: var(--gold-border);
+      box-shadow: var(--shadow);
+    }
+    .sam-icon-btn:active {
+      transform: scale(0.97);
+    }
+    [data-theme="dark"] .sam-icon-btn {
+      border-color: rgba(212,168,75,0.12);
+    }
+    [data-theme="dark"] .sam-icon-btn:hover {
+      border-color: rgba(212,168,75,0.3);
+      box-shadow: var(--shadow), 0 0 20px rgba(212,168,75,0.08);
+    }
+
+    .sam-icon-face {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+    .sam-icon-btn:hover .sam-icon-face {
+      transform: scale(1.08);
+    }
+    [data-theme="dark"] .sam-icon-face {
+      opacity: 0.88;
+    }
+
+    .sam-icon-name {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      text-align: center;
+    }
+
+    .sam-icon-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      font-weight: 400;
+      color: var(--text-muted);
+      text-align: center;
+      letter-spacing: 0.01em;
+      line-height: 1.3;
+    }
+
+    /* ══ TOOL WRAPPER ═══════════════════════ */
+    .sam-tool-wrap {
+      animation: fadeUp 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
+    }
+
+    .sam-back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--surface-2);
+      border: 1px solid var(--border-mid);
+      border-radius: 50px;
+      padding: 6px 14px;
+      cursor: pointer;
+      margin-bottom: 1.5rem;
+      transition: all 0.2s;
+      letter-spacing: 0.01em;
+    }
+    .sam-back-btn:hover {
+      color: var(--gold);
+      border-color: var(--gold-border);
+      background: var(--gold-light);
+    }
+
+    .sam-tool-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .sam-tool-title {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(20px, 2.8vw, 26px);
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+    [data-theme="dark"] .sam-tool-title {
+      text-shadow: 0 0 40px rgba(212,168,75,0.1);
+    }
+
+    .sam-tool-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
     /* ══ PRINT ════════════════════════════════ */
     @media print {
       nav, .hero, .section-header, .feature-strip, .platform-wrap,
@@ -2030,14 +2169,54 @@
         <p>Turn real moments into scripts. Generate ideas on demand. Plan your week, build video concepts, and read your analytics — all without switching apps, all powered by AI that actually understands creators.</p>
       </div>
 
-      <!-- MODE TOGGLE -->
-      <div class="mode-toggle-wrap">
-        <button class="mode-tab active" id="tabMoment" onclick="switchMode('moment')">✍ Turn a moment into content</button>
-        <button class="mode-tab" id="tabIdeas" onclick="switchMode('ideas')">💡 Get content ideas</button>
-        <button class="mode-tab" id="tabCalendar" onclick="switchMode('calendar')">📅 Posting calendar</button>
-        <button class="mode-tab" id="tabConcept" onclick="switchMode('concept')">🎬 Video concept</button>
-        <button class="mode-tab" id="tabUpload" onclick="switchMode('upload')">📸 Upload & Strategize</button>
+      <!-- SAM HOME GRID -->
+      <div class="sam-home" id="samHome">
+        <div class="sam-home-grid">
+          <button class="sam-icon-btn" onclick="openTool('moment')">
+            <div class="sam-icon-face" style="background:#FAC775;">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M6 8h16M6 13h10M6 18h12" stroke="#633806" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="sam-icon-name">The Pulse</div>
+            <div class="sam-icon-sub">Moment → Content</div>
+          </button>
+          <button class="sam-icon-btn" onclick="openTool('ideas')">
+            <div class="sam-icon-face" style="background:#9FE1CB;">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 5v2M14 21v2M5 14H3M25 14h-2M7.8 7.8L6.4 6.4M21.6 21.6l-1.4-1.4M7.8 20.2l-1.4 1.4M21.6 6.4l-1.4 1.4M14 9a5 5 0 100 10 5 5 0 000-10z" stroke="#085041" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </div>
+            <div class="sam-icon-name">The Spark</div>
+            <div class="sam-icon-sub">Idea Generator</div>
+          </button>
+          <button class="sam-icon-btn" onclick="openTool('calendar')">
+            <div class="sam-icon-face" style="background:#CECBF6;">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="5" y="7" width="18" height="16" rx="2" stroke="#26215C" stroke-width="1.8"/><path d="M5 12h18M10 5v4M18 5v4" stroke="#26215C" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="17" r="1" fill="#26215C"/><circle cx="14" cy="17" r="1" fill="#26215C"/><circle cx="18" cy="17" r="1" fill="#26215C"/></svg>
+            </div>
+            <div class="sam-icon-name">The Blueprint</div>
+            <div class="sam-icon-sub">Posting Calendar</div>
+          </button>
+          <button class="sam-icon-btn" onclick="openTool('concept')">
+            <div class="sam-icon-face" style="background:#F5C4B3;">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><polygon points="11,8 22,14 11,20" fill="#4A1B0C"/><rect x="6" y="8" width="2.5" height="12" rx="1" fill="#4A1B0C"/></svg>
+            </div>
+            <div class="sam-icon-name">The Vision</div>
+            <div class="sam-icon-sub">Video Concept</div>
+          </button>
+          <button class="sam-icon-btn" onclick="openTool('upload')">
+            <div class="sam-icon-face" style="background:#B5D4F4;">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="13" r="5" stroke="#042C53" stroke-width="1.8"/><circle cx="14" cy="13" r="2" fill="#042C53"/><path d="M14 4v3M14 19v3M4 13H7M21 13h3M6.6 6.6l2.1 2.1M19.3 19.3l2.1 2.1M6.6 19.4l2.1-2.1M19.3 6.7l2.1-2.1" stroke="#042C53" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <div class="sam-icon-name">The Lens</div>
+            <div class="sam-icon-sub">Upload & Analyse</div>
+          </button>
+        </div>
       </div>
+
+      <!-- TOOL WRAPPER (hidden until icon tapped) -->
+      <div class="sam-tool-wrap" id="samToolWrap" style="display:none;">
+        <button class="sam-back-btn" id="samBackBtn" onclick="closeToolBack()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span id="samBackLabel">Back</span>
+        </button>
+        <div class="sam-tool-header" id="samToolHeader"></div>
 
       <!-- IDEA MAKER -->
       <div class="idea-section" id="ideaSection">
@@ -2457,6 +2636,7 @@
           </div>
         </div>
       </div><!-- end moment-section -->
+      </div><!-- end sam-tool-wrap -->
     </div>
   </div>
 
@@ -2541,17 +2721,89 @@
   })();
 
   // ── APP LOGIC (unchanged from v30) ────────────────────────────────────────
-  function switchMode(mode) {
-    document.getElementById('momentSection').classList.toggle('hide', mode !== 'moment');
-    document.getElementById('ideaSection').classList.toggle('show', mode === 'ideas');
-    document.getElementById('calendarSection').classList.toggle('show', mode === 'calendar');
-    document.getElementById('conceptSection').classList.toggle('show', mode === 'concept');
-    document.getElementById('uploadSection').classList.toggle('show', mode === 'upload');
-    document.getElementById('tabMoment').classList.toggle('active', mode === 'moment');
-    document.getElementById('tabIdeas').classList.toggle('active', mode === 'ideas');
-    document.getElementById('tabCalendar').classList.toggle('active', mode === 'calendar');
-    document.getElementById('tabConcept').classList.toggle('active', mode === 'concept');
-    document.getElementById('tabUpload').classList.toggle('active', mode === 'upload');
+  // ── SAM TOOL IDENTITIES ─────────────────────────────────────────────────
+  const SAM_TOOLS = {
+    moment:   { name: 'The Pulse',     desc: 'Turn a real moment into content', color: '#FAC775', section: 'momentSection' },
+    ideas:    { name: 'The Spark',     desc: 'Generate content ideas on demand', color: '#9FE1CB', section: 'ideaSection' },
+    calendar: { name: 'The Blueprint', desc: 'Build your 7-day posting plan', color: '#CECBF6', section: 'calendarSection' },
+    concept:  { name: 'The Vision',    desc: 'Generate a unique video concept', color: '#F5C4B3', section: 'conceptSection' },
+    upload:   { name: 'The Lens',      desc: 'Analyse and strategize your content', color: '#B5D4F4', section: 'uploadSection' },
+  };
+
+  let currentTool = null;
+
+  function openTool(mode) {
+    const tool = SAM_TOOLS[mode];
+    if (!tool) return;
+    currentTool = mode;
+
+    // Hide home, show tool wrapper
+    document.getElementById('samHome').style.display = 'none';
+    document.getElementById('samToolWrap').style.display = 'block';
+
+    // Back button label
+    document.getElementById('samBackLabel').textContent = 'All tools';
+
+    // Tool header
+    document.getElementById('samToolHeader').innerHTML =
+      '<div class="sam-tool-title">' + tool.name + '</div>' +
+      '<div class="sam-tool-desc">' + tool.desc + '</div>';
+
+    // Show correct section
+    ['momentSection','ideaSection','calendarSection','conceptSection','uploadSection'].forEach(id => {
+      const el = document.getElementById(id);
+      if (id === tool.section) {
+        el.classList.remove('hide');
+        if (id !== 'momentSection') el.classList.add('show');
+      } else {
+        el.classList.add('hide');
+        el.classList.remove('show');
+        if (id === 'momentSection') el.classList.add('hide');
+      }
+    });
+
+    // Auto-fill moment into this tool if available
+    autoFillMoment(mode);
+
+    // Scroll to top of tool
+    document.getElementById('samToolWrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function closeToolBack() {
+    currentTool = null;
+    document.getElementById('samToolWrap').style.display = 'none';
+    document.getElementById('samHome').style.display = 'block';
+
+    // Hide all sections cleanly
+    ['momentSection','ideaSection','calendarSection','conceptSection','uploadSection'].forEach(id => {
+      const el = document.getElementById(id);
+      el.classList.remove('show','hide');
+    });
+
+    document.getElementById('samHome').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Keep legacy switchMode for any internal calls
+  function switchMode(mode) { openTool(mode); }
+
+  // ── AUTO-FILL MOMENT ─────────────────────────────────────────────────────
+  let globalMoment = '';
+
+  function autoFillMoment(mode) {
+    if (!globalMoment) return;
+    const fillMap = {
+      ideas:    'nicheInp',
+      calendar: 'calInp',
+      concept:  'conceptInp',
+      upload:   'uploadInp',
+    };
+    const targetId = fillMap[mode];
+    if (targetId) {
+      const el = document.getElementById(targetId);
+      if (el && !el.value.trim()) {
+        el.value = globalMoment;
+      }
+    }
   }
 
   async function runIdeas() {
@@ -2672,6 +2924,8 @@
   async function runSAM() {
     const text = document.getElementById('inp').value.trim();
     if (!text) { flash('inp'); return; }
+    // Store globally for auto-fill
+    globalMoment = text;
     document.getElementById('errBox').classList.remove('show');
     document.getElementById('runBtn').disabled = true;
     document.getElementById('loader').classList.add('show');
@@ -3266,6 +3520,29 @@ CRITICAL: Return ONLY valid JSON. No markdown. No backticks. No preamble.`;
       setTimeout(()=>{ btn.textContent='Copy all'; btn.classList.remove('copied'); }, 2000);
     });
   }
+
+  // ── SAM VOICE INTRO ─────────────────────────────────────────────────────
+  (function() {
+    if (localStorage.getItem('sam-intro-played')) return;
+    // Small delay so page settles first
+    setTimeout(() => {
+      if (!window.speechSynthesis) return;
+      const msg = new SpeechSynthesisUtterance(
+        "Hi, I'm SAM. I turn your real moments into content that builds your following."
+      );
+      msg.rate = 0.92;
+      msg.pitch = 1.05;
+      msg.volume = 0.85;
+      // Prefer a natural-sounding voice if available
+      const voices = window.speechSynthesis.getVoices();
+      const preferred = voices.find(v =>
+        /samantha|karen|moira|serena|victoria|ava|allison/i.test(v.name)
+      ) || voices.find(v => v.lang === 'en-US' && v.localService) || voices[0];
+      if (preferred) msg.voice = preferred;
+      window.speechSynthesis.speak(msg);
+      localStorage.setItem('sam-intro-played', '1');
+    }, 800);
+  })();
 
   function copyEl(btn) {
     const prev=btn.previousElementSibling;
