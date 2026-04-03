@@ -1422,6 +1422,9 @@
           <button class="reset-btn" onclick="resetTool('blueprint')">← Start over</button>
         </div>
         <div id="blueprintBody" style="border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius-xl) var(--radius-xl);padding:16px;background:rgba(18,14,28,0.8);"></div>
+        <div style="border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius-xl) var(--radius-xl);padding:14px 16px 18px;background:rgba(18,14,28,0.8);">
+          <button class="save-btn" onclick="window.print()">↓ Save calendar as PDF</button>
+        </div>
       </div>
     </div>
 
@@ -2115,6 +2118,14 @@ function sendToPulse(ideaTitle) {
   }, 300);
 }
 
+function sendToVision(ideaTitle) {
+  openTool('vision');
+  setTimeout(() => {
+    document.getElementById('visionInp').value = ideaTitle;
+    document.getElementById('visionInp').focus();
+  }, 300);
+}
+
 // ── THE BLUEPRINT ────────────────────────────────────────────────────────────
 async function runBlueprint() {
   const moment = document.getElementById('blueprintInp').value.trim();
@@ -2150,7 +2161,10 @@ function renderBlueprint(data) {
       <div class="cal-day-body">
         <div class="cal-post-type">${day.post_type||''}</div>
         <div class="cal-post-content">${day.content||''}</div>
-        <button class="cal-make-btn" onclick="sendToPulse('${escQ(day.content||'')}')">Make this →</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">
+          <button class="cal-make-btn" onclick="sendToPulse('${escQ(day.content||'')}')">📝 Write script →</button>
+          <button class="cal-make-btn" style="background:var(--vision-bg);border-color:var(--vision-border);color:var(--vision);" onclick="sendToVision('${escQ(day.content||'')}')">▶ Build concept →</button>
+        </div>
       </div>
     </div>`).join('');
 }
@@ -2298,10 +2312,19 @@ async function runLens() {
   lensInterval = setInterval(() => { li=(li+1)%lensLines.length; document.getElementById('lensLoaderText').textContent=lensLines[li]; }, 1800);
   try {
     const platforms = getSelPills('lensPlatforms');
-    const data = await callAPI({ ...getBase(), mode:'upload', moment:text||'Analyse this.', platforms, imageBase64:uploadImgB64||null, imageType:uploadImgType||null });
+    const forceType = currentUploadType;
+    const data = await callAPI({ ...getBase(), mode:'upload', moment:text||'Analyse this.', platforms, imageBase64:uploadImgB64||null, imageType:uploadImgType||null, forceType });
     clearInterval(lensInterval);
     document.getElementById('lensLoader').classList.remove('show');
     renderLens(data);
+    // Override type if user explicitly chose text_only tab
+    if (forceType === 'text_only' && data.type !== 'text_only') {
+      data.type = 'text_only';
+      if (!data.diagnosis) data.diagnosis = data.headline || data.what_sam_sees || 'SAM analysed your idea.';
+      if (!data.hook_ideas) data.hook_ideas = data.post_next || [];
+      if (!data.content_angle) data.content_angle = data.growth_move || '';
+      if (!data.next_action) data.next_action = data.post_next?.[0] || '';
+    }
     document.getElementById('lensOutput').classList.add('show');
     document.getElementById('lensBtn').disabled = false;
     document.getElementById('lensOutput').scrollIntoView({ behavior:'smooth', block:'start' });
@@ -2380,8 +2403,27 @@ function renderLens(data) {
     if (data.content_angle) html += `<div class="concept-card out-block" style="border-color:var(--lens-border);background:var(--lens-bg);"><div class="concept-card-label" style="color:var(--lens);">Strongest angle</div><div class="concept-card-text" style="font-weight:500;">${data.content_angle}</div></div>`;
     if (data.next_action) html += `<div class="concept-card out-block" style="border-color:var(--lens-border);background:var(--lens-bg);"><div class="concept-card-label" style="color:var(--lens);">Do this next</div><div class="concept-card-text" style="font-weight:500;">${data.next_action}</div></div>`;
 
+    // Cross-tool actions for text_only
+    html += `<div class="out-block">
+      <div class="out-block-title" style="color:var(--lens);">● Take action</div>
+      <button class="cross-tool-btn" onclick="sendToPulse('${escQ((data.diagnosis||'') + ' ' + (data.content_angle||''))}')">
+        <div class="cross-tool-left">
+          <div class="cross-tool-icon" style="background:var(--pulse-bg);border:1px solid var(--pulse-border);">📝</div>
+          <div class="cross-tool-text">Write the full script in The Pulse</div>
+        </div>
+        <div class="cross-tool-arrow">→</div>
+      </button>
+      <button class="cross-tool-btn" onclick="sendToVision('${escQ((data.diagnosis||'') + ' ' + (data.content_angle||''))}')">
+        <div class="cross-tool-left">
+          <div class="cross-tool-icon" style="background:var(--vision-bg);border:1px solid var(--vision-border);">▶</div>
+          <div class="cross-tool-text">Build a video concept in The Vision</div>
+        </div>
+        <div class="cross-tool-arrow">→</div>
+      </button>
+    </div>`;
+
     if (data.diagnosis) {
-      html += `<div class="out-block">
+      html += `<div class="out-block" style="display:none;">
         <button class="cross-tool-btn" onclick="sendToPulse('${escQ(data.diagnosis)}')">
           <div class="cross-tool-left">
             <div class="cross-tool-icon" style="background:var(--pulse-bg);border:1px solid var(--pulse-border);">📝</div>
