@@ -2529,6 +2529,25 @@ function renderThumbnailCanvases(headline, subtext, accentColor, imgSrc, id169, 
   drawThumb(c916, 1080, 1920, headline, subtext, accentColor, imgSrc, contentType, templateName, isBold, textSide);
 }
 
+
+function copyOverlayBtn(btn) {
+  const raw = btn.getAttribute('data-copy') || '';
+  const parts = raw.split('|||');
+  const text = parts[0] + (parts[1] ? '\n' + parts[1] : '');
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+  }).catch(() => {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy overlay', 2000);
+  });
+}
 // ── THUMBNAIL TEMPLATE ENGINE ────────────────────────────────────────────────
 
 // Color palettes — varied, premium
@@ -2848,25 +2867,26 @@ const THUMB_TEMPLATES = {
       const words=hl.toUpperCase().split(' ');
       const third=Math.ceil(words.length/3);
       const chunks=[words.slice(0,third).join(' '),words.slice(third,third*2).join(' '),words.slice(third*2).join(' ')].filter(c=>c.trim());
-      const bh=p?h*0.13:h*0.17;
-      const bw=p?w*0.84:w*0.54;
-      const gap=h*0.013;
+      const bh=p?h*0.13:h*0.16;
+      const bw=p?w*0.82:w*0.48;
+      const gap=h*0.012;
       const totalBoxH=chunks.length*(bh+gap)-gap;
-      const startY=p?h*0.3:(h-totalBoxH)/2;
-      const startX=textLeft?w*0.04:w*(1-(p?0.88:0.58));
-      const colors=['#fff',palette.accent,'#111'];
-      const txColors=['#111',isLightColor(palette.accent)?'#000':'#fff','#fff'];
-      ctx.shadowColor='rgba(0,0,0,0.6)'; ctx.shadowBlur=8;
-      // Dark overlay behind boxes
-      const pad=h*0.04;
-      ctx.fillStyle='rgba(0,0,0,0.5)';
-      ctx.fillRect(startX-pad, startY-pad, bw+pad*2, totalBoxH+pad*2);
+      // Position at bottom if portrait, or on text side if landscape
+      const startY = p ? h*0.65 : (h-totalBoxH)/2;
+      const startX = p ? (w-bw)/2 : (textLeft ? w*0.04 : w-bw-w*0.04);
+      // Gradient darkening behind text area
+      const gradX = p ? 0 : (textLeft ? 0 : w);
+      const grad = ctx.createLinearGradient(gradX, p?h*0.55:0, p?0:(!textLeft?w*0.45:w*0.55), p?h:0);
+      grad.addColorStop(0,'rgba(0,0,0,0.75)'); grad.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle=grad; ctx.fillRect(0,0,w,h);
+      const colors=['#fff',palette.accent,'#111111'];
+      const txColors=['#000',isLightColor(palette.accent)?'#000':'#fff','#fff'];
       chunks.slice(0,3).forEach((chunk,i)=>{
-        ctx.fillStyle=colors[i]; ctx.shadowBlur=0;
+        ctx.fillStyle=colors[i]; ctx.shadowColor='rgba(0,0,0,0.4)'; ctx.shadowBlur=4;
         ctx.fillRect(startX,startY+i*(bh+gap),bw,bh);
-        const fs=fitText(ctx,chunk,bw*0.9,i===1?bh*0.62:bh*0.5,bh*0.28);
+        const fs=fitText(ctx,chunk,bw*0.9,i===1?bh*0.6:bh*0.48,bh*0.26);
         ctx.font=`900 ${fs}px Arial Black`; ctx.fillStyle=txColors[i];
-        ctx.textBaseline='middle'; ctx.textAlign='left';
+        ctx.shadowBlur=0; ctx.textBaseline='middle'; ctx.textAlign='left';
         ctx.fillText(chunk,startX+bw*0.05,startY+i*(bh+gap)+bh/2);
       });
       ctx.textAlign='left';
@@ -3024,7 +3044,7 @@ function renderLens(data) {
             <canvas id="${id}canvas" style="width:100%;height:100%;display:block;border-radius:10px;"></canvas>
             <div style="position:absolute;top:8px;right:8px;z-index:3;background:rgba(0,0,0,0.6);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;color:#fff;pointer-events:none;">↓ Download</div>
           </div>
-          <button class="copy-btn" style="float:none;margin-top:6px;" onclick="copyText(this,'${hl}${sub?'\n'+sub:''}')">Copy overlay</button>
+          <button class="copy-btn" style="float:none;margin-top:6px;" data-copy="${hl}|||${sub}" onclick="copyOverlayBtn(this)">Copy overlay</button>
         </div>`;
 
       html += `<div class="concept-card out-block" style="padding:0;overflow:hidden;border-color:var(--lens-border);">
