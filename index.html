@@ -3192,7 +3192,7 @@
   async function callAPI(mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage, emojiPreference) {
     const r = await fetch('/api/sam', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({mode,moment,platforms,contentType,creatorContext,tone,audienceDemographics,outputLanguage,emojiPreference}) });
     if (!r.ok) { const e = await r.json().catch(()=>({})); throw new Error(e.error||'Server error '+r.status); }
-    return readStream(r);
+    return r.json();
   }
 
   async function readStream(r) {
