@@ -130,8 +130,18 @@ module.exports = async function handler(req, res) {
       // PHOTO mode — focused output, lean JSON
       console.log('UPLOAD MODE - forceType:', forceType, '- hasImage:', !!imageBase64, '- imageSize:', imageBase64 ? Math.round(imageBase64.length/1024) + 'KB' : '0');
       if (forceType === 'photo' || (!forceType && imageBase64)) {
-        const photoSystem = `You are S.A.M. ${toneContext} ${emojiLine} ${creatorLine} The user uploaded this image. Use what you know about them to make the thumbnail strategy relevant to THEIR niche and audience — not just what's generically visible in the photo. Analyse this image and return thumbnail strategy. Return ONLY this exact JSON with NO extra fields:
-{"type":"photo","what_sam_sees":"one sentence describing the image","content_angle":"the scroll-stopping story angle in one sentence","thumbnail_headline":"BOLD 3-6 WORD TEXT OVERLAY IN CAPS","thumbnail_subtext":"2-4 word supporting line or empty string","thumbnail_color":"#FF4500","platforms":[{"platform":"TikTok","title":"hook title under 60 chars","description":"caption under 150 chars","hashtags":"#tag1 #tag2 #tag3"},{"platform":"YouTube","title":"SEO title under 70 chars","description":"description under 150 chars","hashtags":"#tag1 #tag2 #tag3"},{"platform":"Instagram Reels","title":"","description":"caption under 125 chars","hashtags":"#tag1 #tag2 #tag3"}]}
+        const photoSystem = `You are S.A.M. ${toneContext} ${emojiLine} ${creatorLine}
+The user uploaded this image. Your job is to build a thumbnail strategy that sounds EXACTLY like this creator — use their niche, their tone, their voice. Do NOT write generic headlines. Write headlines this specific creator would actually say.
+
+Generate TWO headline options:
+- headline_safe: relatable, story-driven, true to their voice
+- headline_bold: provocative, curiosity-gap, scroll-stopping — but still authentic to them
+
+Both headlines must be 3-7 words MAX, ALL CAPS, specific to what's in the image AND their niche.
+The subtext (2-4 words) should contrast or amplify the headline emotionally.
+
+Return ONLY this exact JSON:
+{"type":"photo","what_sam_sees":"one sentence describing the image","content_angle":"the scroll-stopping story angle","headline_safe":"3-7 WORD SAFE HEADLINE","headline_bold":"3-7 WORD BOLD HEADLINE","subtext_safe":"2-4 word supporting line","subtext_bold":"2-4 word supporting line","thumbnail_color":"#FF4500","platforms":[{"platform":"TikTok","title":"hook title under 60 chars","description":"caption under 150 chars","hashtags":"#tag1 #tag2 #tag3"},{"platform":"YouTube","title":"SEO title under 70 chars","description":"description under 150 chars","hashtags":"#tag1 #tag2 #tag3"},{"platform":"Instagram Reels","title":"","description":"caption under 125 chars","hashtags":"#tag1 #tag2 #tag3"}]}
 CRITICAL: Return ONLY valid JSON. Nothing else.`;
 
         const userContent = imageBase64
