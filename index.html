@@ -2525,6 +2525,7 @@ async function pasteToEl(id) {
 function renderThumbnailCanvases(headline, subtext, accentColor, imgSrc, id169, id916, contentType, templateName) {
   const c169 = (id169 || 'thumb169') + 'canvas';
   const c916 = (id916 || 'thumb916') + 'canvas';
+  // Use full resolution for both display and download
   drawThumb(c169, 1280, 720, headline, subtext, accentColor, imgSrc, contentType, templateName);
   drawThumb(c916, 1080, 1920, headline, subtext, accentColor, imgSrc, contentType, templateName);
 }
@@ -2845,10 +2846,13 @@ function drawThumb(canvasId, w, h, headline, subtext, accentColor, imgSrc, conte
 function downloadCanvas(canvasId, filename) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
-  const link = document.createElement('a');
-  link.download = filename;
-  link.href = canvas.toDataURL('image/png');
-  link.click();
+  // Wait a frame to ensure canvas is fully rendered
+  requestAnimationFrame(() => {
+    const link = document.createElement('a');
+    link.download = filename;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
 }
 
 
@@ -2892,15 +2896,9 @@ function renderLens(data) {
       const makeThumb = (id, hl, sub, label, filename, w, aspect) => `
         <div>
           <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;">${label}</div>
-          <div id="${id}" style="position:relative;width:${w};aspect-ratio:${aspect};${bgStyle}border-radius:10px;overflow:hidden;cursor:pointer;" onclick="downloadCanvas('${id}canvas','${filename}')" title="Tap to download">
-            <canvas id="${id}canvas" style="display:none;"></canvas>
-            <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.88) 0%,rgba(0,0,0,0.15) 55%,transparent 100%);z-index:1;"></div>
-            <div style="position:absolute;top:8px;right:8px;z-index:3;background:rgba(0,0,0,0.55);border-radius:6px;padding:4px 8px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.85);">↓ Download</div>
-            <div style="position:absolute;bottom:12px;left:12px;right:12px;z-index:3;">
-              <div style="font-family:'Sora',sans-serif;font-size:clamp(13px,3.2vw,24px);font-weight:800;color:#fff;line-height:1.1;text-transform:uppercase;text-shadow:0 2px 14px rgba(0,0,0,1);margin-bottom:4px;">${hl}</div>
-              ${sub ? `<div style="font-size:clamp(10px,1.6vw,13px);font-weight:700;color:${ac};letter-spacing:0.08em;text-transform:uppercase;text-shadow:0 1px 8px rgba(0,0,0,1);">${sub}</div>` : ''}
-            </div>
-            <div style="position:absolute;top:0;left:0;right:0;height:5px;background:${ac};z-index:2;"></div>
+          <div style="position:relative;width:${w};aspect-ratio:${aspect};border-radius:10px;overflow:hidden;cursor:pointer;" onclick="downloadCanvas('${id}canvas','${filename}')" title="Tap to download">
+            <canvas id="${id}canvas" style="width:100%;height:100%;display:block;border-radius:10px;"></canvas>
+            <div style="position:absolute;top:8px;right:8px;z-index:3;background:rgba(0,0,0,0.6);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;color:#fff;pointer-events:none;">↓ Download</div>
           </div>
           <button class="copy-btn" style="float:none;margin-top:6px;" onclick="copyText(this,'${hl}${sub?'\n'+sub:''}')">Copy overlay</button>
         </div>`;
