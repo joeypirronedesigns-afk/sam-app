@@ -2432,53 +2432,64 @@ let lensInterval;
 async function runLens(mode) {
   const isAnalytics = mode === 'analytics';
   const imgB64 = isAnalytics ? uploadImgB64_2 : uploadImgB64;
-  const imgType = isAnalytics ? uploadImgType_2 : uploadImgType;
-  const text = document.getElementById('lensInp').value.trim();
-  const errId = isAnalytics ? 'lensErr2' : 'lensErr';
-  const btnId = isAnalytics ? 'lensBtn2' : 'lensBtn';
-  const loaderId = isAnalytics ? 'lensLoader2' : 'lensLoader';
+  const imgType = isAnalytics ? (uploadImgType_2||'image/jpeg') : (uploadImgType||'image/jpeg');
+  const text = document.getElementById('lensInp')?.value?.trim() || '';
 
+  // Guard — must have image
   if (!imgB64) {
-    const zoneId = isAnalytics ? 'dropZoneAnalytics' : 'dropZone';
-    const zone = document.getElementById(zoneId);
-    if (zone) { zone.style.borderColor = isAnalytics ? 'var(--blueprint)' : 'var(--lens)'; setTimeout(() => zone.style.borderColor = '', 1500); }
+    alert('Please drop an image first.');
     return;
   }
 
-  document.getElementById(errId).classList.remove('show');
-  document.getElementById(btnId).disabled = true;
-  document.getElementById(loaderId).classList.add('show');
-  document.getElementById('lensOutput').classList.remove('show');
+  // Show loader
+  const loader = document.getElementById(isAnalytics ? 'lensLoader2' : 'lensLoader');
+  const btn = document.getElementById(isAnalytics ? 'lensBtn2' : 'lensBtn');
+  const errBox = document.getElementById(isAnalytics ? 'lensErr2' : 'lensErr');
+  if (loader) loader.classList.add('show');
+  if (btn) btn.disabled = true;
+  if (errBox) errBox.classList.remove('show');
+  document.getElementById('lensOutput')?.classList.remove('show');
 
+  // Rotate loader text
+  const msgs = isAnalytics
+    ? ['Reading your analytics...','Finding patterns...','Building strategy...','Almost done...']
+    : ['Reading your image...','Building thumbnails...','Crafting captions...','Almost done...'];
   let li = 0;
-  const loaderTextEl = document.getElementById(isAnalytics ? 'lensLoaderText2' : 'lensLoaderText');
-  const loaderMsgs = isAnalytics 
-    ? ['SAM is reading your analytics...','Finding what works...','Building your strategy...','Almost there...']
-    : ['SAM is reading your image...','Analysing the visual...','Building your thumbnails...','Almost there...'];
-  lensInterval = setInterval(() => { 
-    li = (li+1) % loaderMsgs.length; 
-    if (loaderTextEl) loaderTextEl.textContent = loaderMsgs[li];
-  }, 1800);
+  const textEl = document.getElementById(isAnalytics ? 'lensLoaderText2' : 'lensLoaderText');
+  const interval = setInterval(() => { li=(li+1)%msgs.length; if(textEl) textEl.textContent = msgs[li]; }, 1800);
 
   try {
-    console.log('runLens: mode='+mode+' imgB64 length='+(imgB64?imgB64.length:0)+' imgType='+imgType);
-    const payload = { ...getBase(), mode:'upload', moment:text||'Analyse this image.', platforms:[], imageBase64:imgB64, imageType:imgType||'image/jpeg', forceType:mode };
-    console.log('runLens: sending payload, forceType='+payload.forceType+' hasImage='+!!payload.imageBase64);
+    const payload = {
+      ...getBase(),
+      mode: 'upload',
+      moment: text || 'Analyse this image.',
+      platforms: [],
+      imageBase64: imgB64,
+      imageType: imgType,
+      forceType: mode
+    };
+
     const data = await callAPI(payload);
-    console.log('runLens: got data back:', JSON.stringify(data).slice(0,200));
-    clearInterval(lensInterval);
-    document.getElementById(loaderId).classList.remove('show');
+    clearInterval(interval);
+    if (loader) loader.classList.remove('show');
+    if (btn) btn.disabled = false;
+
+    if (!data || typeof data !== 'object') {
+      alert('SAM returned an unexpected response. Please try again.');
+      return;
+    }
+
     renderLens(data);
-    document.getElementById('lensOutput').classList.add('show');
-    document.getElementById(btnId).disabled = false;
-    document.getElementById('lensOutput').scrollIntoView({ behavior:'smooth', block:'start' });
+    document.getElementById('lensOutput')?.classList.add('show');
+    document.getElementById('lensOutput')?.scrollIntoView({ behavior:'smooth', block:'start' });
+
   } catch(err) {
-    clearInterval(lensInterval);
-    document.getElementById('lensLoader').classList.remove('show');
-    document.getElementById('lensLoader2').classList.remove('show');
-    console.error('runLens error:', err.message);
-    showErr(errId, err.message);
-    document.getElementById(btnId).disabled = false;
+    clearInterval(interval);
+    if (loader) loader.classList.remove('show');
+    if (btn) btn.disabled = false;
+    const msg = err.message || 'Something went wrong.';
+    if (errBox) { errBox.textContent = msg; errBox.classList.add('show'); }
+    else alert('Error: ' + msg);
   }
 }
 
