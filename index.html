@@ -2543,16 +2543,28 @@ const PALETTES = [
   { name: 'amber',    accent: '#F59E0B', text: '#000000', bg: 'rgba(0,0,0,0.85)' },
 ];
 
-function getPalette(accentColor, templateName) {
-  // If SAM returned a specific color, build palette from it
-  if (accentColor && accentColor !== '#FF4500' && accentColor !== '#F472B6') {
-    const isLight = isLightColor(accentColor);
+function getPalette(accentColor, templateName, isBold) {
+  // Safe templates get cool/premium colors
+  const safePalettes = [
+    { accent: '#00D4FF', text: '#FFFFFF', bg: 'rgba(0,10,20,0.88)' }, // electric blue
+    { accent: '#A855F7', text: '#FFFFFF', bg: 'rgba(10,0,20,0.88)' }, // purple
+    { accent: '#10B981', text: '#FFFFFF', bg: 'rgba(0,15,10,0.88)' }, // emerald
+  ];
+  // Bold templates get hot/aggressive colors  
+  const boldPalettes = [
+    { accent: '#FF4500', text: '#FFFFFF', bg: 'rgba(0,0,0,0.85)' },   // fire orange
+    { accent: '#FFD700', text: '#000000', bg: 'rgba(0,0,0,0.88)' },   // gold
+    { accent: '#FF6B6B', text: '#FFFFFF', bg: 'rgba(0,0,0,0.85)' },   // coral red
+    { accent: '#39FF14', text: '#000000', bg: 'rgba(0,0,0,0.92)' },   // neon green
+  ];
+  // Use SAM's color if it's specific enough
+  if (accentColor && accentColor !== '#FF4500' && accentColor !== '#F472B6' && accentColor !== '#FF6500') {
     return { accent: accentColor, text: '#FFFFFF', bg: 'rgba(0,0,0,0.85)' };
   }
-  // Otherwise rotate through premium palettes based on template
-  const keys = Object.keys(THUMB_TEMPLATES);
-  const idx = keys.indexOf(templateName) || 0;
-  return PALETTES[idx % PALETTES.length];
+  // Pick from palette pool based on template name hash for consistency
+  const hash = templateName.split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+  if (isBold) return boldPalettes[hash % boldPalettes.length];
+  return safePalettes[hash % safePalettes.length];
 }
 
 function isLightColor(hex) {
@@ -2626,7 +2638,7 @@ const THUMB_TEMPLATES = {
       ctx.fillStyle = palette.accent; ctx.fillRect(0, 0, w, h*0.018);
       ctx.fillStyle = 'rgba(255,255,255,0.35)';
       ctx.font = `600 ${h*0.038}px Arial`; ctx.textBaseline='middle'; ctx.textAlign='left';
-      ctx.fillText('CREATOR DOCUMENTARY', w*0.04, h*0.065);
+      // No static label — keep it clean
       // Bottom bar
       ctx.fillStyle = 'rgba(0,0,0,0.92)'; ctx.fillRect(0, h-botH, w, botH);
       ctx.fillStyle = palette.accent; ctx.fillRect(0, h-botH, w, h*0.018);
@@ -2844,19 +2856,17 @@ const THUMB_TEMPLATES = {
 
 function pickTemplate(contentType, isBold) {
   const ct = (contentType||'').toLowerCase();
-  const safePool = ['cinematic','newsFlash','splitPanel'];
-  const boldPool = ['giantWord','diagonalSlash','cornerBurst','stackedBoxes'];
-  const pool = isBold ? boldPool : safePool;
-  // Content-based matching
   if (!isBold) {
-    if (ct.includes('emotional')||ct.includes('family')||ct.includes('moment')) return 'cinematic';
-    if (ct.includes('breaking')||ct.includes('news')||ct.includes('announce')) return 'newsFlash';
-    return 'splitPanel';
+    // Safe = clean, readable, trust-building layouts
+    if (ct.includes('emotional')||ct.includes('family')||ct.includes('moment')||ct.includes('documentary')) return 'cinematic';
+    if (ct.includes('news')||ct.includes('break')||ct.includes('announce')||ct.includes('reveal')) return 'newsFlash';
+    return 'splitPanel'; // default safe
   } else {
-    if (ct.includes('personal')||ct.includes('story')) return 'giantWord';
-    if (ct.includes('tutorial')||ct.includes('transform')) return 'diagonalSlash';
-    if (ct.includes('number')||ct.includes('cost')||ct.includes('achieve')) return 'stackedBoxes';
-    return 'cornerBurst';
+    // Bold = aggressive, high contrast, scroll-stopping
+    if (ct.includes('personal')||ct.includes('story')||ct.includes('journey')) return 'giantWord';
+    if (ct.includes('tutorial')||ct.includes('transform')||ct.includes('how')) return 'diagonalSlash';
+    if (ct.includes('numbers')||ct.includes('cost')||ct.includes('money')||ct.includes('achieve')) return 'stackedBoxes';
+    return 'cornerBurst'; // default bold
   }
 }
 
@@ -2903,7 +2913,7 @@ function drawThumb(canvasId, w, h, headline, subtext, accentColor, imgSrc, conte
 
   const tplKey = templateName || pickTemplate(contentType || '', isBold || false);
   const tpl = THUMB_TEMPLATES[tplKey] || THUMB_TEMPLATES.cinematic;
-  const palette = getPalette(accentColor, tplKey);
+  const palette = getPalette(accentColor, tplKey, isBold||false);
 
   const finish = () => {
     ctx.save();
