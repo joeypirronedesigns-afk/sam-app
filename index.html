@@ -1579,7 +1579,7 @@
             <div class="preview-label" id="previewLabel2"></div>
           </div>
         </div>
-        <div class="loader" id="lensLoader2"><div class="loader-dots"><span style="background:var(--blueprint)"></span><span style="background:var(--blueprint)"></span><span style="background:var(--blueprint)"></span></div><div class="loader-text">SAM is reading your analytics...</div></div>
+        <div class="loader" id="lensLoader2"><div class="loader-dots"><span style="background:var(--blueprint)"></span><span style="background:var(--blueprint)"></span><span style="background:var(--blueprint)"></span></div><div class="loader-text" id="lensLoaderText2">SAM is reading your analytics...</div></div>
         <div class="err-box" id="lensErr2"></div>
         <button class="run-btn run-blueprint" id="lensBtn2" onclick="runLens('analytics')" style="margin-top:14px;">Read my analytics →</button>
       </div>
@@ -2451,7 +2451,14 @@ async function runLens(mode) {
   document.getElementById('lensOutput').classList.remove('show');
 
   let li = 0;
-  lensInterval = setInterval(() => { li=(li+1)%lensLines.length; }, 1800);
+  const loaderTextEl = document.getElementById(isAnalytics ? 'lensLoaderText2' : 'lensLoaderText');
+  const loaderMsgs = isAnalytics 
+    ? ['SAM is reading your analytics...','Finding what works...','Building your strategy...','Almost there...']
+    : ['SAM is reading your image...','Analysing the visual...','Building your thumbnails...','Almost there...'];
+  lensInterval = setInterval(() => { 
+    li = (li+1) % loaderMsgs.length; 
+    if (loaderTextEl) loaderTextEl.textContent = loaderMsgs[li];
+  }, 1800);
 
   try {
     console.log('runLens: mode='+mode+' imgB64 length='+(imgB64?imgB64.length:0)+' imgType='+imgType);
