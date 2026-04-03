@@ -135,7 +135,7 @@ module.exports = async function handler(req, res) {
 
     // ── CALENDAR ──────────────────────────────────────────────────────────
     if (mode === 'calendar') {
-      const platList = platforms && platforms.length > 0 ? platforms : ['TikTok', 'Instagram Reels', 'YouTube Shorts', 'LinkedIn'];
+      const platList = platforms && platforms.length > 0 ? platforms : ['TikTok', 'YouTube Shorts', 'YouTube', 'Instagram Reels', 'Facebook Reels', 'LinkedIn', 'X (Twitter)'];
       const prompt = base + ' Build a concise 7-day posting plan. Keep each day short and punchy. Rotate across: ' + platList.join(', ') + '. For each day, write caption/content that respects that platform exact character limits and hashtag rules as specified above. Return exactly: {"days":[{"platform":"platform name","post_type":"format","content":"ready-to-post caption respecting that platforms character limit","tip":"one tactical tip specific to that platform","ideal_time":"specific time + brief reason"}]}';
       const parsed = await callAnthropic(prompt, moment, 1400);
       return res.status(200).json(parsed);
@@ -143,7 +143,8 @@ module.exports = async function handler(req, res) {
 
     // ── IDEAS ─────────────────────────────────────────────────────────────
     if (mode === 'ideas') {
-      const prompt = base + ' Generate exactly 10 specific, actionable content ideas for this week. Return: {"ideas":[{"title":"specific idea title","why":"one sentence why this performs","best_platform":"single best platform name e.g. TikTok, YouTube Shorts, Instagram Reels, LinkedIn, Facebook Reels, YouTube"}]}';
+      const ideasPlatforms = platforms && platforms.length > 0 ? platforms : ['TikTok', 'YouTube Shorts', 'YouTube', 'Instagram Reels', 'Facebook Reels', 'LinkedIn', 'X (Twitter)'];
+      const prompt = base + ' Generate exactly 10 specific, actionable content ideas for this week. Spread ideas across these platforms: ' + ideasPlatforms.join(', ') + '. Return: {"ideas":[{"title":"specific idea title","why":"one sentence why this performs","best_platform":"single best platform name from the list"}]}';
       const parsed = await callAnthropic(prompt, moment, 1400);
       return res.status(200).json(parsed);
     }
@@ -152,10 +153,8 @@ module.exports = async function handler(req, res) {
     if (mode === 'upload') {
       const imageBase64 = req.body.imageBase64 || null;
       const imageType = req.body.imageType || 'image/jpeg';
-      const uploadPlatforms = req.body.platforms || [];
-      const platStr = uploadPlatforms.length > 0
-        ? 'Target platforms: ' + uploadPlatforms.join(', ') + '. Platform specs: ' + getPlatformContext(uploadPlatforms)
-        : '';
+      const uploadPlatforms = req.body.platforms && req.body.platforms.length > 0 ? req.body.platforms : ['TikTok', 'YouTube Shorts', 'YouTube', 'Instagram Reels', 'Facebook Reels', 'LinkedIn', 'X (Twitter)'];
+      const platStr = 'Target platforms: ' + uploadPlatforms.join(', ') + '. Platform specs: ' + getPlatformContext(uploadPlatforms);
 
       const uploadSystem = [
         'You are S.A.M. — Strategic Assistant for Making.',
@@ -164,7 +163,7 @@ module.exports = async function handler(req, res) {
         'STEP 1: Classify what was shared: analytics (platform stats/graphs/dashboards), photo (any image or visual), or text_only (no image).',
         'STEP 2: Return the matching JSON. No markdown. No backticks.',
         'IF analytics: {"type":"analytics","headline":"biggest insight in one sentence","whats_working":["obs 1","obs 2","obs 3"],"whats_not":["improve 1","improve 2"],"post_next":["specific content idea 1","idea 2","idea 3"],"best_time":"optimal posting time","growth_move":"one bold strategic move"}',
-        'IF photo: {"type":"photo","what_sam_sees":"one sentence on what is in the image","content_angle":"the scroll-stopping story angle this image tells","thumbnail_strategy":"specific crop direction and composition advice","thumbnail_headline":"bold 3-6 word text overlay — ALL CAPS, punchy","thumbnail_subtext":"optional 2-4 word supporting line","thumbnail_emotion":"one word emotion — e.g. SHOCKED, PROUD, DETERMINED","thumbnail_color":"accent hex color that pops e.g. #FF4500","platforms":[{"platform":"TikTok","title":"hook-first title under 100 chars","description":"caption under 2200 chars, hook first line","hashtags":"3-5 hashtags"},{"platform":"YouTube Shorts","title":"SEO title under 100 chars","description":"description under 100 chars","hashtags":"3 hashtags above title"},{"platform":"Instagram Reels","title":"","description":"caption under 2200 chars, hook first","hashtags":"3-5 focused hashtags"},{"platform":"LinkedIn","title":"","description":"post under 3000 chars, professional but personal","hashtags":"3-5 hashtags at end"}]}',
+        'IF photo: ALWAYS return all 7 platforms regardless of what was selected. {"type":"photo","what_sam_sees":"one sentence on what is in the image","content_angle":"the scroll-stopping story angle this image tells","thumbnail_strategy":"specific crop direction and composition advice","thumbnail_headline":"bold 3-6 word text overlay — ALL CAPS, punchy","thumbnail_subtext":"optional 2-4 word supporting line","thumbnail_emotion":"one word emotion — e.g. SHOCKED, PROUD, DETERMINED","thumbnail_color":"accent hex color that pops e.g. #FF4500","platforms":[{"platform":"TikTok","title":"hook-first title under 100 chars","description":"caption under 2200 chars, hook first line, no hashtags in description","hashtags":"3-5 hashtags"},{"platform":"YouTube Shorts","title":"SEO title under 100 chars","description":"description under 100 chars","hashtags":"3 hashtags"},{"platform":"YouTube","title":"SEO title under 100 chars","description":"description 150-300 chars, keywords front-loaded","hashtags":"5-8 hashtags"},{"platform":"Instagram Reels","title":"","description":"caption under 2200 chars, hook first line","hashtags":"3-5 focused hashtags"},{"platform":"Facebook Reels","title":"","description":"punchy caption under 477 chars","hashtags":"2-3 hashtags max"},{"platform":"LinkedIn","title":"","description":"post under 3000 chars, professional but personal, hook first line","hashtags":"3-5 hashtags at end"},{"platform":"X (Twitter)","title":"","description":"under 240 chars including hashtags","hashtags":"1-2 hashtags only"}]}',
         'IF text_only: {"type":"text_only","diagnosis":"what this idea is really about and why it has potential","hook_ideas":["hook 1","hook 2","hook 3"],"best_platform":"single best platform","platform_reason":"one sentence why","content_angle":"strongest angle to take","next_action":"single most important thing to do now"}',
         'CRITICAL: Return ONLY valid JSON. Nothing else.'
       ].join(' ');
@@ -183,10 +182,8 @@ module.exports = async function handler(req, res) {
     // ── CONCEPT ───────────────────────────────────────────────────────────
     if (mode === 'concept') {
       const conceptStyle = req.body.contentType || '';
-      const conceptPlatforms = req.body.platforms || [];
-      const platStr = conceptPlatforms.length > 0
-        ? 'Target platform(s): ' + conceptPlatforms.join(', ') + '. Platform specs: ' + getPlatformContext(conceptPlatforms)
-        : '';
+      const conceptPlatforms = req.body.platforms && req.body.platforms.length > 0 ? req.body.platforms : ['TikTok', 'YouTube Shorts', 'YouTube', 'Instagram Reels', 'Facebook Reels', 'LinkedIn', 'X (Twitter)'];
+      const platStr = 'Target platform(s): ' + conceptPlatforms.join(', ') + '. Platform specs: ' + getPlatformContext(conceptPlatforms);
       const styleStr = conceptStyle ? 'Concept style: ' + conceptStyle + '.' : '';
       const prompt = base + ' ' + platStr + ' ' + styleStr + ' Generate ONE bold, unique video concept. Think like a top creative director at a viral studio. Make the concept genuinely scroll-stopping — not safe, not average. Push it until it deserves 100% virality. The video_title, video_description, and video_hashtags MUST strictly follow the target platform character limits and hashtag rules. If multiple platforms, use the most restrictive limits. Return: {"title":"Short punchy concept title 6-10 words","format":"format type e.g. Reverse Reveal","premise":"2-3 sentences on exactly what the video IS","why_it_works":"2 sentences on the psychology of why it stops scrolls","production_notes":["filming note 1","filming note 2","filming note 3","filming note 4"],"hook_line":"exact first sentence to say on camera","best_platform":"single best platform","platform_reason":"one sentence why","twist":"the unexpected angle that makes this truly memorable","virality_score":100,"video_title":"SEO-optimised title respecting platform char limit","video_description":"description respecting platform char limit with keywords and CTA","video_hashtags":["hashtag1","hashtag2","hashtag3","hashtag4","hashtag5","hashtag6","hashtag7","hashtag8"]}';
       const parsed = await callAnthropic(prompt, moment, 1800);
@@ -224,7 +221,8 @@ module.exports = async function handler(req, res) {
 
     const storyPrompt = base + ' ' + scriptInstruction + ' Return: {"diagnosis":"2-3 sentences on what this moment is really about emotionally","hook":"single best opening line","story_spine":"Setup / Tension / Payoff separated by /","full_script":"COMPLETE OUTPUT as specified","b_roll":"4 specific b-roll shots each on own line","pacing_note":"one specific delivery tip","cta":"identity-based call to action","content_warning":"one honest risk — one sentence describing what could go wrong or feel off","content_fix":"the exact rewritten line or section that fixes the risk — ready to use, not advice"}';
 
-    const hookPrompt = base + ' ' + platStrategyInstruction + ' Return: {"diagnosis":"what makes this hook-worthy","hook_1":"emotion-first hook","hook_2":"curiosity-first hook","hook_3":"identity-first hook","winner":"which hook and why","visual_note":"what to show on screen first 3 seconds","platform_strategies":' + (platforms && platforms.length > 0 ? '[{"platform":"exact platform name","strategy":"specific posting strategy","caption":"ready-to-post caption respecting that platforms exact character limit","hashtags":"hashtags following that platforms rules"}]' : '[]') + '}';
+    const allPlatList = platforms && platforms.length > 0 ? platforms : ['TikTok', 'YouTube Shorts', 'YouTube', 'Instagram Reels', 'Facebook Reels', 'LinkedIn', 'X (Twitter)'];
+    const hookPrompt = base + ' ' + platStrategyInstruction + ' ALWAYS generate platform_strategies for ALL of these platforms: ' + allPlatList.join(', ') + '. Return: {"diagnosis":"what makes this hook-worthy","hook_1":"emotion-first hook","hook_2":"curiosity-first hook","hook_3":"identity-first hook","winner":"which hook and why","visual_note":"what to show on screen first 3 seconds","platform_strategies":[{"platform":"exact platform name","strategy":"specific posting strategy","caption":"ready-to-post caption respecting that platforms exact character limit","hashtags":"hashtags following that platforms rules"}]}';
 
     const systemPrompt = mode === 'story' ? storyPrompt : hookPrompt;
     if (!systemPrompt) return res.status(400).json({ error: 'Invalid mode' });
