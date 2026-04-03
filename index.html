@@ -1737,6 +1737,8 @@ let currentTool = null;
 let pendingTool = null;
 let uploadImgB64 = null;
 let uploadImgType = null;
+let uploadImgB64_2 = null;
+let uploadImgType_2 = null;
 let currentUploadType = 'photo';
 let activeMic = null;
 
@@ -2370,11 +2372,54 @@ function processFile(file) {
 function removeImg(e) {
   e.stopPropagation();
   uploadImgB64 = null; uploadImgType = null;
+  window._lensImgSrc = null;
   document.getElementById('dropPreview').style.display = 'none';
   document.getElementById('dropInner').style.display = 'flex';
   document.getElementById('dropZone').classList.remove('has-image');
   document.getElementById('lensFile').value = '';
-  document.getElementById('lensBtnLabel').textContent = 'Analyse & strategize →';
+}
+
+function handleDragOver2(e) { e.preventDefault(); const z = document.getElementById('dropZoneAnalytics'); if(z) z.style.borderColor = 'var(--blueprint)'; }
+function handleDragLeave2() { const z = document.getElementById('dropZoneAnalytics'); if(z) z.style.borderColor = ''; }
+function handleDrop2(e) {
+  e.preventDefault();
+  const z = document.getElementById('dropZoneAnalytics'); if(z) z.style.borderColor = '';
+  const file = e.dataTransfer.files?.[0];
+  if (file && file.type.startsWith('image/')) processFile2(file);
+}
+function handleFile2(e) { const file = e.target.files?.[0]; if (file) processFile2(file); }
+
+function processFile2(file) {
+  const img = new Image();
+  const objectUrl = URL.createObjectURL(file);
+  img.onload = function() {
+    const MAX = 800;
+    let w = img.width, h = img.height;
+    if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+    if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; }
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+    const compressed = canvas.toDataURL('image/jpeg', 0.55);
+    uploadImgB64_2 = compressed.split(',')[1];
+    uploadImgType_2 = 'image/jpeg';
+    document.getElementById('previewImg2').src = compressed;
+    document.getElementById('previewLabel2').textContent = '📎 ' + file.name;
+    document.getElementById('dropPreview2').style.display = 'block';
+    document.getElementById('dropInner2').style.display = 'none';
+    document.getElementById('dropZoneAnalytics').classList.add('has-image');
+    URL.revokeObjectURL(objectUrl);
+  };
+  img.src = objectUrl;
+}
+
+function removeImg2(e) {
+  e.stopPropagation();
+  uploadImgB64_2 = null; uploadImgType_2 = null;
+  document.getElementById('dropPreview2').style.display = 'none';
+  document.getElementById('dropInner2').style.display = 'flex';
+  document.getElementById('dropZoneAnalytics').classList.remove('has-image');
+  document.getElementById('lensFileAnalytics').value = '';
 }
 
 const lensLines = ['SAM is reading your content...','Identifying what you shared...','Building your strategy...','Almost there...'];
