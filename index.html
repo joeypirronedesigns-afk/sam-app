@@ -1929,6 +1929,7 @@ async function readStream(r) {
   let buffer = '';
   let result = null;
   let streamError = null;
+  let accumulated = '';
 
   while (true) {
     const { done, value } = await reader.read();
@@ -1943,15 +1944,27 @@ async function readStream(r) {
       try {
         const evt = JSON.parse(raw);
         if (evt.error) { streamError = evt.error; continue; }
-        if (evt.done && evt.result) { result = evt.result; }
+        if (evt.done && evt.result) { result = evt.result; return result; }
+        if (evt.t) { accumulated += evt.t; }
       } catch(e) { /* partial chunk, skip */ }
     }
   }
 
   if (result) return result;
-  if (streamError) throw new Error(streamError);
 
-  // Last resort: try to parse any JSON we accumulated from 't' events
+  // Server sent text chunks but no done event — try parsing accumulated text
+  if (accumulated) {
+    const clean = accumulated.replace(/```json/g,'').replace(/```/g,'').trim();
+    const first = clean.indexOf('{');
+    const last = clean.lastIndexOf('}');
+    if (first !== -1 && last !== -1) {
+      try {
+        return JSON.parse(clean.slice(first, last + 1));
+      } catch(e) {}
+    }
+  }
+
+  if (streamError) throw new Error(streamError);
   throw new Error('No result received — please try again.');
 }
 
