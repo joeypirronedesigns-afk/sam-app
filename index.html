@@ -1897,9 +1897,18 @@ function toggleMicFor(inputId, btnId) {
 
 // ── STREAMING ────────────────────────────────────────────────────────────────
 async function callAPI(body) {
-  const r = await fetch('/api/sam', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-  if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.error || 'Server error ' + r.status); }
-  return readStream(r);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 58000);
+  try {
+    const r = await fetch('/api/sam', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: controller.signal });
+    clearTimeout(timeout);
+    if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.error || 'Server error ' + r.status); }
+    return readStream(r);
+  } catch(e) {
+    clearTimeout(timeout);
+    if (e.name === 'AbortError') throw new Error('Request timed out — try again or use a smaller image.');
+    throw e;
+  }
 }
 
 async function readStream(r) {
@@ -2294,18 +2303,30 @@ function handleDrop(e) {
 function handleFile(e) { const file = e.target.files?.[0]; if (file) processFile(file); }
 
 function processFile(file) {
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    uploadImgB64 = e.target.result.split(',')[1];
-    uploadImgType = file.type;
-    document.getElementById('previewImg').src = e.target.result;
+  const img = new Image();
+  const objectUrl = URL.createObjectURL(file);
+  img.onload = function() {
+    // Resize to max 1200px wide to keep tokens low
+    const MAX = 1200;
+    let w = img.width, h = img.height;
+    if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, w, h);
+    const compressed = canvas.toDataURL('image/jpeg', 0.82);
+    uploadImgB64 = compressed.split(',')[1];
+    uploadImgType = 'image/jpeg';
+    // Store full data URL for thumbnail rendering
+    window._lensImgSrc = compressed;
+    document.getElementById('previewImg').src = compressed;
     document.getElementById('previewLabel').textContent = '📎 ' + file.name;
     document.getElementById('dropPreview').style.display = 'block';
     document.getElementById('dropInner').style.display = 'none';
     document.getElementById('dropZone').classList.add('has-image');
-    document.getElementById('lensBtnLabel').textContent = 'Analyse image →';
+    URL.revokeObjectURL(objectUrl);
   };
-  reader.readAsDataURL(file);
+  img.src = objectUrl;
 }
 
 function removeImg(e) {
