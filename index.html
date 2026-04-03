@@ -3226,8 +3226,8 @@
     let html = '';
     const spine = (data.story_spine||'').split('/').map(s=>`<div class="broll-item">${s.trim()}</div>`).join('');
     const platParts = (data.best_platform||'').split('—');
-    const broll = (data.b_roll||'').split('\n').filter(Boolean).map(l=>`<div class="broll-item">${l.trim()}</div>`).join('');
-
+    const brollArr = Array.isArray(data.b_roll) ? data.b_roll : (data.b_roll||'').split('\n').filter(Boolean);
+const broll = brollArr.map(l=>`<div class="broll-item">${l.trim()}</div>`).join('');
     if (isReal(data.diagnosis)) html += `<div class="blk"><div class="blk-title">What this is really about</div><div class="blk-text">${data.diagnosis}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`;
     if (isReal(data.hook)) html += `<div class="blk"><div class="blk-title">Your hook</div><div class="hook-box">${data.hook}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`;
     if (isReal(data.hook_1)) html += `<div class="blk"><div class="blk-title">Hook 1 — emotion first</div><div class="hook-box">${data.hook_1}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`;
