@@ -96,7 +96,6 @@ module.exports = async function handler(req, res) {
   const toneContext = toneDescriptions[tone] || toneDescriptions['Authentic/Natural'];
   const base = 'You are S.A.M. — Strategic Assistant for Making. ' + toneContext + ' ' + emojiLine + ' ' + creatorLine + ' ' + audienceLine + ' ' + languageLine + ' ' + platformContext + ' ' + formatContext + ' CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No preamble.';
 
-  // ── STREAM helper — sends SSE chunks, ends with { done, result } ──────────
   const streamCall = async (system, userContent, maxTokens) => {
     const r = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -156,25 +155,33 @@ module.exports = async function handler(req, res) {
     // ── IDEAS ───────────────────────────────────────────────────────────────
     if (mode === 'ideas') {
       const platList = platforms && platforms.length > 0 ? platforms : ['TikTok','YouTube Shorts','YouTube','Instagram Reels','Facebook Reels','LinkedIn','X (Twitter)'];
-      const prompt = base + ' Generate exactly 10 specific, actionable content ideas for this week across: ' + platList.join(', ') + '. Return: {"ideas":[{"title":"specific idea title","why":"one sentence why this performs","best_platform":"single best platform name"}]}';
-      return await streamCall(prompt, moment, 1400);
+      const prompt = base + ' Generate exactly 5 specific, high-quality, actionable content ideas for this week across: ' + platList.join(', ') + '. Quality over quantity — make each one genuinely compelling. Return: {"ideas":[{"title":"specific idea title","why":"one sentence why this performs","best_platform":"single best platform name"}]}';
+      return await streamCall(prompt, moment, 800);
     }
 
     // ── UPLOAD ──────────────────────────────────────────────────────────────
     if (mode === 'upload') {
       const imageBase64 = req.body.imageBase64 || null;
       const imageType = req.body.imageType || 'image/jpeg';
+      const forceType = req.body.forceType || null;
       const uploadPlatforms = req.body.platforms && req.body.platforms.length > 0 ? req.body.platforms : ['TikTok','YouTube Shorts','YouTube','Instagram Reels','Facebook Reels','LinkedIn','X (Twitter)'];
       const platStr = 'Target platforms: ' + uploadPlatforms.join(', ') + '. Platform specs: ' + getPlatformContext(uploadPlatforms);
+
+      const forceTypeInstruction = forceType
+        ? `IMPORTANT: The user has explicitly selected "${forceType}" as the content type. You MUST classify this as "${forceType}" regardless of what the content looks like.`
+        : 'STEP 1: If an image is present, classify as analytics or photo — NEVER text_only. text_only is ONLY for when no image exists.';
+
       const uploadSystem = [
-        'You are S.A.M. — Strategic Assistant for Making.', platStr,
-        'STEP 1: Classify based on whether an IMAGE is present. If an image exists, classify as analytics or photo — NEVER text_only. text_only is ONLY for when no image was provided at all. Any accompanying text is just context.',
-        'STEP 2: Return matching JSON. No markdown. No backticks.',
-        'IF analytics: {"type":"analytics","headline":"biggest insight","whats_working":["obs 1","obs 2","obs 3"],"whats_not":["improve 1","improve 2"],"post_next":["idea 1","idea 2","idea 3"],"best_time":"optimal posting time","growth_move":"one bold strategic move"}',
-        'IF photo: {"type":"photo","what_sam_sees":"one sentence","content_angle":"scroll-stopping angle","thumbnail_strategy":"crop advice","thumbnail_headline":"ALL CAPS 3-6 words","thumbnail_subtext":"optional 2-4 words","thumbnail_emotion":"one word","thumbnail_color":"hex e.g. #FF4500","platforms":[{"platform":"TikTok","title":"hook title under 100 chars","description":"caption under 2200 chars","hashtags":"3-5 hashtags"},{"platform":"YouTube Shorts","title":"SEO title under 100 chars","description":"under 100 chars","hashtags":"3 hashtags"},{"platform":"YouTube","title":"SEO title under 100 chars","description":"150-300 chars","hashtags":"5-8 hashtags"},{"platform":"Instagram Reels","title":"","description":"caption under 2200 chars","hashtags":"3-5 hashtags"},{"platform":"Facebook Reels","title":"","description":"under 477 chars","hashtags":"2-3 hashtags"},{"platform":"LinkedIn","title":"","description":"under 3000 chars","hashtags":"3-5 hashtags"},{"platform":"X (Twitter)","title":"","description":"under 240 chars","hashtags":"1-2 hashtags"}]}',
-        'IF text_only: {"type":"text_only","diagnosis":"what this idea is about","hook_ideas":["hook 1","hook 2","hook 3"],"best_platform":"single best platform","platform_reason":"why","content_angle":"strongest angle","next_action":"most important next step"}',
-        'CRITICAL: Return ONLY valid JSON.'
+        'You are S.A.M. — Strategic Assistant for Making.',
+        platStr,
+        forceTypeInstruction,
+        'Return the matching JSON based on the type. No markdown. No backticks.',
+        'IF analytics: {"type":"analytics","headline":"biggest insight in one sentence","whats_working":["obs 1","obs 2","obs 3"],"whats_not":["improve 1","improve 2"],"post_next":["specific content idea 1","idea 2","idea 3"],"best_time":"optimal posting time","growth_move":"one bold strategic move"}',
+        'IF photo: {"type":"photo","what_sam_sees":"one sentence on what is in the image","content_angle":"the scroll-stopping story angle","thumbnail_strategy":"specific crop direction and composition advice","thumbnail_headline":"bold 3-6 word text overlay — ALL CAPS","thumbnail_subtext":"optional 2-4 word supporting line","thumbnail_emotion":"one word emotion","thumbnail_color":"accent hex color e.g. #FF4500","platforms":[{"platform":"TikTok","title":"hook title under 100 chars","description":"caption under 2200 chars","hashtags":"3-5 hashtags"},{"platform":"YouTube Shorts","title":"SEO title under 100 chars","description":"under 100 chars","hashtags":"3 hashtags"},{"platform":"YouTube","title":"SEO title under 100 chars","description":"150-300 chars","hashtags":"5-8 hashtags"},{"platform":"Instagram Reels","title":"","description":"caption under 2200 chars","hashtags":"3-5 hashtags"},{"platform":"Facebook Reels","title":"","description":"under 477 chars","hashtags":"2-3 hashtags"},{"platform":"LinkedIn","title":"","description":"under 3000 chars","hashtags":"3-5 hashtags"},{"platform":"X (Twitter)","title":"","description":"under 240 chars","hashtags":"1-2 hashtags"}]}',
+        'IF text_only: {"type":"text_only","diagnosis":"what this idea is really about and why it has potential — 2-3 sentences","hook_ideas":["compelling hook 1","hook 2","hook 3"],"best_platform":"single best platform","platform_reason":"one sentence why","content_angle":"the strongest angle to take with this idea","next_action":"the single most important thing to do with this idea right now"}',
+        'CRITICAL: Return ONLY valid JSON. Nothing else.'
       ].join(' ');
+
       const userContent = imageBase64
         ? [{ type: 'image', source: { type: 'base64', media_type: imageType, data: imageBase64 } }, { type: 'text', text: moment || 'Analyse this.' }]
         : moment;
@@ -187,7 +194,7 @@ module.exports = async function handler(req, res) {
       const conceptPlatforms = req.body.platforms && req.body.platforms.length > 0 ? req.body.platforms : ['TikTok','YouTube Shorts','YouTube','Instagram Reels','Facebook Reels','LinkedIn','X (Twitter)'];
       const platStr = 'Target platform(s): ' + conceptPlatforms.join(', ') + '. ' + getPlatformContext(conceptPlatforms);
       const styleStr = conceptStyle ? 'Concept style: ' + conceptStyle + '.' : '';
-      const prompt = base + ' ' + platStr + ' ' + styleStr + ' Generate ONE bold scroll-stopping video concept. Return: {"title":"6-10 word title","format":"format type","premise":"2-3 sentences","why_it_works":"2 sentences","production_notes":["note 1","note 2","note 3","note 4"],"hook_line":"exact first sentence","best_platform":"single platform","platform_reason":"one sentence why","twist":"unexpected angle","virality_score":100,"video_title":"SEO title","video_description":"description with CTA","video_hashtags":["tag1","tag2","tag3","tag4","tag5"]}';
+      const prompt = base + ' ' + platStr + ' ' + styleStr + ' Generate ONE bold scroll-stopping video concept. Make it genuinely unique — push it until it deserves a high virality score. Assign a real virality_score between 60-100 based on how strong the concept actually is. Return: {"title":"6-10 word title","format":"format type","premise":"2-3 sentences","why_it_works":"2 sentences","production_notes":["note 1","note 2","note 3","note 4"],"hook_line":"exact first sentence","best_platform":"single platform","platform_reason":"one sentence why","twist":"unexpected angle","virality_score":85,"video_title":"SEO title","video_description":"description with CTA","video_hashtags":["tag1","tag2","tag3","tag4","tag5"]}';
       return await streamCall(prompt, moment, 1800);
     }
 
@@ -215,7 +222,7 @@ module.exports = async function handler(req, res) {
     const platStrategyInstruction = 'Write a tailored caption + hashtags for EACH of these platforms, respecting their character limits: ' + allPlatList.join(', ') + '.';
 
     const pulsePrompt = base + ' ' + scriptInstruction + ' ' + platStrategyInstruction +
-      ' Return ONE JSON object: {"diagnosis":"2-3 sentences on the emotional core","hook":"single best opening line","hook_1":"emotion-first hook","hook_2":"curiosity-first hook","hook_3":"identity-first hook","winner":"which hook and why","visual_note":"what to show on screen first 3 seconds","story_spine":"Setup / Tension / Payoff","full_script":"COMPLETE script as specified","b_roll":["shot 1","shot 2","shot 3","shot 4"],"pacing_note":"one delivery tip","cta":"identity-based call to action","content_warning":"one honest risk","content_fix":"exact rewritten line that fixes the risk","platform_strategies":[{"platform":"platform name","strategy":"posting strategy","caption":"ready-to-post caption","hashtags":"hashtags"}]}';
+      ' Return ONE JSON object with the single BEST hook SAM can write — do not give options, just the strongest one: {"diagnosis":"2-3 sentences on the emotional core","hook":"the single best opening line — SAM\'s top pick","visual_note":"what to show on screen first 3 seconds","full_script":"COMPLETE script as specified","b_roll":["shot 1","shot 2","shot 3","shot 4"],"pacing_note":"one delivery tip","cta":"identity-based call to action","platform_strategies":[{"platform":"platform name","strategy":"posting strategy","caption":"ready-to-post caption","hashtags":"hashtags"}]}';
 
     return await streamCall(pulsePrompt, moment, 2400);
 
