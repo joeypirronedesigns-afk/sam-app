@@ -1174,6 +1174,35 @@
     }
     [data-theme="dark"] .warn-box { color: #D4A853; }
 
+    .fix-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #15803D;
+      margin-bottom: 6px;
+      margin-top: 2px;
+    }
+    [data-theme="dark"] .fix-label { color: #4ADE80; }
+
+    .fix-box {
+      font-size: 15px;
+      line-height: 1.75;
+      padding: 13px 16px;
+      background: rgba(34,197,94,0.06);
+      border: 1px solid rgba(34,197,94,0.25);
+      border-left: 3px solid #22C55E;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      color: var(--text);
+      font-weight: 400;
+    }
+    [data-theme="dark"] .fix-box {
+      background: rgba(34,197,94,0.05);
+      border-color: rgba(34,197,94,0.2);
+      border-left-color: #4ADE80;
+    }
+
     .success-box {
       font-size: 15px; padding: 13px 16px;
       background: rgba(34,197,94,0.06); border: 1px solid rgba(34,197,94,0.2);
@@ -3021,7 +3050,17 @@
     if (isReal(data.secondary_platform)) html += `<div class="blk"><div class="blk-title">Secondary platform</div><div class="pill soft">${data.secondary_platform}</div><div class="blk-text" style="margin-top:8px;">${data.secondary_angle||''}</div></div>`;
     if (isReal(data.skip)) html += `<div class="blk"><div class="blk-title">Skip for now</div><div class="warn-box">${data.skip}</div></div>`;
     if (isReal(data.repurpose_tip)) html += `<div class="blk"><div class="blk-title">Repurpose tip</div><div class="success-box">${data.repurpose_tip}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`;
-    if (isReal(data.content_warning)) html += `<div class="blk"><div class="blk-title">Watch out for</div><div class="warn-box">${data.content_warning}</div></div>`;
+    if (isReal(data.content_warning)) {
+      html += `<div class="blk">
+        <div class="blk-title">Watch out for — SAM fixed it</div>
+        <div class="warn-box" style="margin-bottom:10px;">${data.content_warning}</div>
+        ${isReal(data.content_fix) ? `
+        <div class="fix-label">✦ Fixed version — ready to use</div>
+        <div class="fix-box">${data.content_fix}</div>
+        <button class="copy-btn" onclick="copyEl(this)">Copy fix</button>
+        ` : ''}
+      </div>`;
+    }
     if (isReal(data.best_platform) && !isReal(data.primary_platform)) html += `<div class="blk"><div class="blk-title">Best platform</div><div class="pill">${(platParts[0]||'').trim()}</div><div class="blk-text" style="margin-top:8px;">${(platParts.slice(1).join('—')||'').trim()}</div></div>`;
     if (data.platform_strategies && Array.isArray(data.platform_strategies)) {
       data.platform_strategies.forEach(ps => {
