@@ -1923,6 +1923,9 @@ async function readStream(r) {
   const reader = r.body.getReader();
   const decoder = new TextDecoder();
   let buffer = '';
+  let result = null;
+  let streamError = null;
+
   while (true) {
     const { done, value } = await reader.read();
     if (done) break;
@@ -1931,14 +1934,21 @@ async function readStream(r) {
     buffer = lines.pop();
     for (const line of lines) {
       if (!line.startsWith('data: ')) continue;
+      const raw = line.slice(6).trim();
+      if (!raw) continue;
       try {
-        const evt = JSON.parse(line.slice(6));
-        if (evt.error) throw new Error(evt.error);
-        if (evt.done && evt.result) return evt.result;
-      } catch(e) { if (e.message && !e.message.includes('JSON')) throw e; }
+        const evt = JSON.parse(raw);
+        if (evt.error) { streamError = evt.error; continue; }
+        if (evt.done && evt.result) { result = evt.result; }
+      } catch(e) { /* partial chunk, skip */ }
     }
   }
-  throw new Error('Stream ended without a result');
+
+  if (result) return result;
+  if (streamError) throw new Error(streamError);
+
+  // Last resort: try to parse any JSON we accumulated from 't' events
+  throw new Error('No result received — please try again.');
 }
 
 function getBase() {
