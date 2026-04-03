@@ -7,7 +7,6 @@ module.exports = async function handler(req, res) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'API key not configured' });
 
-  // ── ACCURATE PLATFORM SPECS ──────────────────────────────────────────────
   const PLATFORM_SPECS = {
     'TikTok': {
       caption_limit: 2200, title: false,
@@ -68,11 +67,8 @@ module.exports = async function handler(req, res) {
   const creatorLine = creatorContext ? 'About this creator: ' + creatorContext + '.' : '';
   const languageLine = outputLanguage
     ? 'IMPORTANT: Write the ENTIRE output in ' + outputLanguage + '. Do not use English except inside JSON field names.' : '';
-
-  const emojiLine = emojiPreference === 'no'
-    ? 'IMPORTANT: Do NOT use any emojis. Zero.'
-    : emojiPreference === 'lots'
-    ? 'Use emojis freely and expressively throughout.'
+  const emojiLine = emojiPreference === 'no' ? 'IMPORTANT: Do NOT use any emojis. Zero.'
+    : emojiPreference === 'lots' ? 'Use emojis freely and expressively throughout.'
     : 'Use emojis sparingly — maximum 1-2 per section.';
 
   const dialectMap = {
@@ -84,16 +80,13 @@ module.exports = async function handler(req, res) {
     'English-speaking countries': 'Write in clear, accessible English.',
     'worldwide': 'Write in simple, clear, universally accessible English.'
   };
-
   let dialectNote = '';
   if (audienceDemographics && !outputLanguage) {
     for (const [location, dialect] of Object.entries(dialectMap)) {
       if (audienceDemographics.includes(location)) { dialectNote = dialect; break; }
     }
   }
-
   const audienceLine = audienceDemographics ? 'Target audience: ' + audienceDemographics + '. ' + dialectNote : '';
-
   const toneDescriptions = {
     'Authentic/Natural': 'Tone: Authentic and natural. Real, grounded, conversational.',
     'Viral/Hype': 'Tone: Viral and high energy. Bold, punchy, scroll-stopping.',
@@ -101,147 +94,132 @@ module.exports = async function handler(req, res) {
     'Bubbly/Energetic': 'Tone: Bubbly and energetic. Warm, fun, uplifting.'
   };
   const toneContext = toneDescriptions[tone] || toneDescriptions['Authentic/Natural'];
-
   const base = 'You are S.A.M. — Strategic Assistant for Making. ' + toneContext + ' ' + emojiLine + ' ' + creatorLine + ' ' + audienceLine + ' ' + languageLine + ' ' + platformContext + ' ' + formatContext + ' CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No preamble.';
 
-  const callAnthropic = async (system, userContent, maxTokens) => {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 25000);
-    try {
-      const r = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: maxTokens, system, messages: [{ role: 'user', content: userContent }] }),
-        signal: controller.signal
-      });
-      clearTimeout(timeout);
-      if (!r.ok) {
-        const errBody = await r.text().catch(() => '');
-        throw new Error('Anthropic API error ' + r.status + (errBody ? ': ' + errBody.slice(0, 200) : ''));
-      }
-      const d = await r.json();
-      const text = d.content && d.content[0] && d.content[0].text;
-      if (!text) throw new Error('Empty response from API');
-      const clean = text.replace(/```json[\s\S]*?```/g, m => m.slice(7, -3)).replace(/```/g, "").replace(/^json\s*/i, "").trim();
-      return JSON.parse(clean);
-    } catch (e) {
-      clearTimeout(timeout);
-      if (e.name === 'AbortError') throw new Error('Request timed out — try a shorter moment description');
-      throw e;
+  // ── STREAM helper — sends SSE chunks, ends with { done, result } ──────────
+  const streamCall = async (system, userContent, maxTokens) => {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: maxTokens, stream: true, system, messages: [{ role: 'user', content: userContent }] })
+    });
+    if (!r.ok) {
+      const e = await r.text().catch(() => '');
+      throw new Error('Anthropic error ' + r.status + (e ? ': ' + e.slice(0, 200) : ''));
     }
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('X-Accel-Buffering', 'no');
+
+    const reader = r.body.getReader();
+    const decoder = new TextDecoder();
+    let full = '';
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      for (const line of decoder.decode(value, { stream: true }).split('\n')) {
+        if (!line.startsWith('data: ')) continue;
+        const raw = line.slice(6).trim();
+        if (raw === '[DONE]') continue;
+        try {
+          const evt = JSON.parse(raw);
+          if (evt.type === 'content_block_delta' && evt.delta?.text) {
+            full += evt.delta.text;
+            res.write('data: ' + JSON.stringify({ t: evt.delta.text }) + '\n\n');
+          }
+        } catch (_) {}
+      }
+    }
+    const clean = full.replace(/```json[\s\S]*?```/g, m => m.slice(7, -3)).replace(/```/g, '').replace(/^json\s*/i, '').trim();
+    let parsed;
+    try { parsed = JSON.parse(clean); }
+    catch (e) { throw new Error('JSON parse failed: ' + e.message); }
+    res.write('data: ' + JSON.stringify({ done: true, result: parsed }) + '\n\n');
+    res.end();
+  };
+
+  const errOut = (msg) => {
+    if (res.headersSent) { res.write('data: ' + JSON.stringify({ error: msg }) + '\n\n'); res.end(); }
+    else res.status(500).json({ error: msg });
   };
 
   try {
 
-    // ── CALENDAR ──────────────────────────────────────────────────────────
+    // ── CALENDAR ────────────────────────────────────────────────────────────
     if (mode === 'calendar') {
-      const platList = platforms && platforms.length > 0 ? platforms : ['TikTok', 'YouTube Shorts', 'YouTube', 'Instagram Reels', 'Facebook Reels', 'LinkedIn', 'X (Twitter)'];
-      const prompt = base + ' Build a concise 7-day posting plan. Keep each day short and punchy. Rotate across: ' + platList.join(', ') + '. For each day, write caption/content that respects that platform exact character limits and hashtag rules as specified above. Return exactly: {"days":[{"platform":"platform name","post_type":"format","content":"ready-to-post caption respecting that platforms character limit","tip":"one tactical tip specific to that platform","ideal_time":"specific time + brief reason"}]}';
-      const parsed = await callAnthropic(prompt, moment, 1400);
-      return res.status(200).json(parsed);
+      const platList = platforms && platforms.length > 0 ? platforms : ['TikTok','YouTube Shorts','YouTube','Instagram Reels','Facebook Reels','LinkedIn','X (Twitter)'];
+      const prompt = base + ' Build a concise 7-day posting plan. Keep each day short and punchy. Rotate across: ' + platList.join(', ') + '. Return exactly: {"days":[{"platform":"platform name","post_type":"format","content":"ready-to-post caption respecting that platforms character limit","tip":"one tactical tip","ideal_time":"specific time + brief reason"}]}';
+      return await streamCall(prompt, moment, 1400);
     }
 
-    // ── IDEAS ─────────────────────────────────────────────────────────────
+    // ── IDEAS ───────────────────────────────────────────────────────────────
     if (mode === 'ideas') {
-      const ideasPlatforms = platforms && platforms.length > 0 ? platforms : ['TikTok', 'YouTube Shorts', 'YouTube', 'Instagram Reels', 'Facebook Reels', 'LinkedIn', 'X (Twitter)'];
-      const prompt = base + ' Generate exactly 10 specific, actionable content ideas for this week. Spread ideas across these platforms: ' + ideasPlatforms.join(', ') + '. Return: {"ideas":[{"title":"specific idea title","why":"one sentence why this performs","best_platform":"single best platform name from the list"}]}';
-      const parsed = await callAnthropic(prompt, moment, 1400);
-      return res.status(200).json(parsed);
+      const platList = platforms && platforms.length > 0 ? platforms : ['TikTok','YouTube Shorts','YouTube','Instagram Reels','Facebook Reels','LinkedIn','X (Twitter)'];
+      const prompt = base + ' Generate exactly 10 specific, actionable content ideas for this week across: ' + platList.join(', ') + '. Return: {"ideas":[{"title":"specific idea title","why":"one sentence why this performs","best_platform":"single best platform name"}]}';
+      return await streamCall(prompt, moment, 1400);
     }
 
-    // ── UPLOAD & STRATEGIZE ───────────────────────────────────────────────
+    // ── UPLOAD ──────────────────────────────────────────────────────────────
     if (mode === 'upload') {
       const imageBase64 = req.body.imageBase64 || null;
       const imageType = req.body.imageType || 'image/jpeg';
-      const uploadPlatforms = req.body.platforms && req.body.platforms.length > 0 ? req.body.platforms : ['TikTok', 'YouTube Shorts', 'YouTube', 'Instagram Reels', 'Facebook Reels', 'LinkedIn', 'X (Twitter)'];
+      const uploadPlatforms = req.body.platforms && req.body.platforms.length > 0 ? req.body.platforms : ['TikTok','YouTube Shorts','YouTube','Instagram Reels','Facebook Reels','LinkedIn','X (Twitter)'];
       const platStr = 'Target platforms: ' + uploadPlatforms.join(', ') + '. Platform specs: ' + getPlatformContext(uploadPlatforms);
-
       const uploadSystem = [
-        'You are S.A.M. — Strategic Assistant for Making.',
-        'A creator has shared content — text, an image, or both.',
-        platStr,
-        'STEP 1: Classify what was shared: analytics (platform stats/graphs/dashboards), photo (any image or visual), or text_only (no image).',
-        'STEP 2: Return the matching JSON. No markdown. No backticks.',
-        'IF analytics: {"type":"analytics","headline":"biggest insight in one sentence","whats_working":["obs 1","obs 2","obs 3"],"whats_not":["improve 1","improve 2"],"post_next":["specific content idea 1","idea 2","idea 3"],"best_time":"optimal posting time","growth_move":"one bold strategic move"}',
-        'IF photo: ALWAYS return all 7 platforms regardless of what was selected. {"type":"photo","what_sam_sees":"one sentence on what is in the image","content_angle":"the scroll-stopping story angle this image tells","thumbnail_strategy":"specific crop direction and composition advice","thumbnail_headline":"bold 3-6 word text overlay — ALL CAPS, punchy","thumbnail_subtext":"optional 2-4 word supporting line","thumbnail_emotion":"one word emotion — e.g. SHOCKED, PROUD, DETERMINED","thumbnail_color":"accent hex color that pops e.g. #FF4500","platforms":[{"platform":"TikTok","title":"hook-first title under 100 chars","description":"caption under 2200 chars, hook first line, no hashtags in description","hashtags":"3-5 hashtags"},{"platform":"YouTube Shorts","title":"SEO title under 100 chars","description":"description under 100 chars","hashtags":"3 hashtags"},{"platform":"YouTube","title":"SEO title under 100 chars","description":"description 150-300 chars, keywords front-loaded","hashtags":"5-8 hashtags"},{"platform":"Instagram Reels","title":"","description":"caption under 2200 chars, hook first line","hashtags":"3-5 focused hashtags"},{"platform":"Facebook Reels","title":"","description":"punchy caption under 477 chars","hashtags":"2-3 hashtags max"},{"platform":"LinkedIn","title":"","description":"post under 3000 chars, professional but personal, hook first line","hashtags":"3-5 hashtags at end"},{"platform":"X (Twitter)","title":"","description":"under 240 chars including hashtags","hashtags":"1-2 hashtags only"}]}',
-        'IF text_only: {"type":"text_only","diagnosis":"what this idea is really about and why it has potential","hook_ideas":["hook 1","hook 2","hook 3"],"best_platform":"single best platform","platform_reason":"one sentence why","content_angle":"strongest angle to take","next_action":"single most important thing to do now"}',
-        'CRITICAL: Return ONLY valid JSON. Nothing else.'
+        'You are S.A.M. — Strategic Assistant for Making.', platStr,
+        'STEP 1: Classify: analytics, photo, or text_only.',
+        'STEP 2: Return matching JSON. No markdown. No backticks.',
+        'IF analytics: {"type":"analytics","headline":"biggest insight","whats_working":["obs 1","obs 2","obs 3"],"whats_not":["improve 1","improve 2"],"post_next":["idea 1","idea 2","idea 3"],"best_time":"optimal posting time","growth_move":"one bold strategic move"}',
+        'IF photo: {"type":"photo","what_sam_sees":"one sentence","content_angle":"scroll-stopping angle","thumbnail_strategy":"crop advice","thumbnail_headline":"ALL CAPS 3-6 words","thumbnail_subtext":"optional 2-4 words","thumbnail_emotion":"one word","thumbnail_color":"hex e.g. #FF4500","platforms":[{"platform":"TikTok","title":"hook title under 100 chars","description":"caption under 2200 chars","hashtags":"3-5 hashtags"},{"platform":"YouTube Shorts","title":"SEO title under 100 chars","description":"under 100 chars","hashtags":"3 hashtags"},{"platform":"YouTube","title":"SEO title under 100 chars","description":"150-300 chars","hashtags":"5-8 hashtags"},{"platform":"Instagram Reels","title":"","description":"caption under 2200 chars","hashtags":"3-5 hashtags"},{"platform":"Facebook Reels","title":"","description":"under 477 chars","hashtags":"2-3 hashtags"},{"platform":"LinkedIn","title":"","description":"under 3000 chars","hashtags":"3-5 hashtags"},{"platform":"X (Twitter)","title":"","description":"under 240 chars","hashtags":"1-2 hashtags"}]}',
+        'IF text_only: {"type":"text_only","diagnosis":"what this idea is about","hook_ideas":["hook 1","hook 2","hook 3"],"best_platform":"single best platform","platform_reason":"why","content_angle":"strongest angle","next_action":"most important next step"}',
+        'CRITICAL: Return ONLY valid JSON.'
       ].join(' ');
-
       const userContent = imageBase64
-        ? [
-            { type: 'image', source: { type: 'base64', media_type: imageType, data: imageBase64 } },
-            { type: 'text', text: moment || 'Analyse this and provide a strategy.' }
-          ]
+        ? [{ type: 'image', source: { type: 'base64', media_type: imageType, data: imageBase64 } }, { type: 'text', text: moment || 'Analyse this.' }]
         : moment;
-
-      const parsed = await callAnthropic(uploadSystem, userContent, 1800);
-      return res.status(200).json(parsed);
+      return await streamCall(uploadSystem, userContent, 1800);
     }
 
-    // ── CONCEPT ───────────────────────────────────────────────────────────
+    // ── CONCEPT ─────────────────────────────────────────────────────────────
     if (mode === 'concept') {
       const conceptStyle = req.body.contentType || '';
-      const conceptPlatforms = req.body.platforms && req.body.platforms.length > 0 ? req.body.platforms : ['TikTok', 'YouTube Shorts', 'YouTube', 'Instagram Reels', 'Facebook Reels', 'LinkedIn', 'X (Twitter)'];
-      const platStr = 'Target platform(s): ' + conceptPlatforms.join(', ') + '. Platform specs: ' + getPlatformContext(conceptPlatforms);
+      const conceptPlatforms = req.body.platforms && req.body.platforms.length > 0 ? req.body.platforms : ['TikTok','YouTube Shorts','YouTube','Instagram Reels','Facebook Reels','LinkedIn','X (Twitter)'];
+      const platStr = 'Target platform(s): ' + conceptPlatforms.join(', ') + '. ' + getPlatformContext(conceptPlatforms);
       const styleStr = conceptStyle ? 'Concept style: ' + conceptStyle + '.' : '';
-      const prompt = base + ' ' + platStr + ' ' + styleStr + ' Generate ONE bold, unique video concept. Think like a top creative director at a viral studio. Make the concept genuinely scroll-stopping — not safe, not average. Push it until it deserves 100% virality. The video_title, video_description, and video_hashtags MUST strictly follow the target platform character limits and hashtag rules. If multiple platforms, use the most restrictive limits. Return: {"title":"Short punchy concept title 6-10 words","format":"format type e.g. Reverse Reveal","premise":"2-3 sentences on exactly what the video IS","why_it_works":"2 sentences on the psychology of why it stops scrolls","production_notes":["filming note 1","filming note 2","filming note 3","filming note 4"],"hook_line":"exact first sentence to say on camera","best_platform":"single best platform","platform_reason":"one sentence why","twist":"the unexpected angle that makes this truly memorable","virality_score":100,"video_title":"SEO-optimised title respecting platform char limit","video_description":"description respecting platform char limit with keywords and CTA","video_hashtags":["hashtag1","hashtag2","hashtag3","hashtag4","hashtag5","hashtag6","hashtag7","hashtag8"]}';
-      const parsed = await callAnthropic(prompt, moment, 1800);
-      return res.status(200).json(parsed);
+      const prompt = base + ' ' + platStr + ' ' + styleStr + ' Generate ONE bold scroll-stopping video concept. Return: {"title":"6-10 word title","format":"format type","premise":"2-3 sentences","why_it_works":"2 sentences","production_notes":["note 1","note 2","note 3","note 4"],"hook_line":"exact first sentence","best_platform":"single platform","platform_reason":"one sentence why","twist":"unexpected angle","virality_score":100,"video_title":"SEO title","video_description":"description with CTA","video_hashtags":["tag1","tag2","tag3","tag4","tag5"]}';
+      return await streamCall(prompt, moment, 1800);
     }
 
-    // ── FOCUS ─────────────────────────────────────────────────────────────
+    // ── FOCUS ────────────────────────────────────────────────────────────────
     if (mode === 'focus') {
       const focusSummary = req.body.focusSummary || '';
-      const prompt = base + ' Give ONE specific action for the next 30 minutes. Start with a verb. Be direct. Return: {"action":"one specific action starting with a verb","sub":"one sentence on why right now not tomorrow"}';
-      const parsed = await callAnthropic(prompt, moment + ' ' + focusSummary, 300);
-      return res.status(200).json(parsed);
+      const prompt = base + ' Give ONE specific action for the next 30 minutes. Start with a verb. Return: {"action":"one specific action","sub":"one sentence why now"}';
+      return await streamCall(prompt, moment + ' ' + focusSummary, 300);
     }
 
-    // ── STORY + HOOK (moment → content mode) ─────────────────────────────
-    const textPostInstruction = 'Write a complete text post. No [BRACKETS] or (pacing notes). Clean paragraphs only. Hook first line, story in short punchy paragraphs, ends with question or CTA.';
-
+    // ── THE PULSE (moment → content) ─────────────────────────────────────────
+    const textPostInstruction = 'Write a complete text post. No [BRACKETS] or (pacing notes). Clean paragraphs only. Hook first line, short punchy paragraphs, ends with question or CTA.';
     const scriptInstructions = {
       'Short-form video': 'Write a complete word-for-word spoken script for 60-90 seconds. Beats in [BRACKETS]: [HOOK],[SETUP],[TENSION],[PAYOFF],[CTA]. Pacing notes in (parentheses).',
       'Long-form YouTube video': 'Write a complete word-for-word script for 8-12 minutes. Label: [INTRO HOOK],[CONTEXT],[MAIN STORY],[KEY LESSONS],[OUTRO CTA].',
       'LinkedIn text post': 'Write the complete LinkedIn post. No [BRACKETS]. Strong opening line, short paragraphs, ends with question. Include 3 hashtags at end.',
-      'Instagram caption': 'Write the complete Instagram caption. No [BRACKETS]. Hook first line (125 chars max before truncation), body with line breaks, CTA, then 5 focused hashtags.',
+      'Instagram caption': 'Write the complete Instagram caption. No [BRACKETS]. Hook first line (125 chars max), body with line breaks, CTA, then 5 focused hashtags.',
       'Podcast intro': 'Write a complete 60-90 second spoken intro.',
-      'Email newsletter': 'Write complete email: SUBJECT LINE first, PREVIEW TEXT second, then full BODY. No [BRACKETS] in body.',
+      'Email newsletter': 'Write complete email: SUBJECT LINE first, PREVIEW TEXT second, then full BODY.',
       'Blog post': 'Write: SEO HEADLINE, META DESCRIPTION under 160 chars, INTRO, 3-4 SECTION HEADERS with summaries, CONCLUSION with CTA.',
       'Text post': textPostInstruction
     };
-
     const scriptInstruction = scriptInstructions[contentType] || scriptInstructions['Short-form video'];
+    const allPlatList = platforms && platforms.length > 0 ? platforms : ['TikTok','YouTube Shorts','YouTube','Instagram Reels','Facebook Reels','LinkedIn','X (Twitter)'];
+    const platStrategyInstruction = 'Write a tailored caption + hashtags for EACH of these platforms, respecting their character limits: ' + allPlatList.join(', ') + '.';
 
-    const platStrategyInstruction = platforms && platforms.length > 0
-      ? 'For platform_strategies, write a tailored caption + hashtags for EACH selected platform, strictly following that platforms character limits and hashtag rules as specified above.'
-      : '';
+    const pulsePrompt = base + ' ' + scriptInstruction + ' ' + platStrategyInstruction +
+      ' Return ONE JSON object: {"diagnosis":"2-3 sentences on the emotional core","hook":"single best opening line","hook_1":"emotion-first hook","hook_2":"curiosity-first hook","hook_3":"identity-first hook","winner":"which hook and why","visual_note":"what to show on screen first 3 seconds","story_spine":"Setup / Tension / Payoff","full_script":"COMPLETE script as specified","b_roll":["shot 1","shot 2","shot 3","shot 4"],"pacing_note":"one delivery tip","cta":"identity-based call to action","content_warning":"one honest risk","content_fix":"exact rewritten line that fixes the risk","platform_strategies":[{"platform":"platform name","strategy":"posting strategy","caption":"ready-to-post caption","hashtags":"hashtags"}]}';
 
-    // Combine story + hook into ONE call to stay under Vercel's 30s timeout
-    const allPlatList = platforms && platforms.length > 0 ? platforms : ['TikTok', 'YouTube Shorts', 'YouTube', 'Instagram Reels', 'Facebook Reels', 'LinkedIn', 'X (Twitter)'];
-    const combinedPrompt = base + ' ' + scriptInstruction + ' ' + platStrategyInstruction +
-      ' Return ONE JSON object with ALL of these fields: ' +
-      '{"diagnosis":"2-3 sentences on what this moment is really about emotionally",' +
-      '"hook":"single best opening line",' +
-      '"hook_1":"emotion-first hook",' +
-      '"hook_2":"curiosity-first hook",' +
-      '"hook_3":"identity-first hook",' +
-      '"winner":"which hook and why",' +
-      '"visual_note":"what to show on screen in first 3 seconds",' +
-      '"story_spine":"Setup / Tension / Payoff separated by /",' +
-      '"full_script":"COMPLETE OUTPUT as specified",' +
-      '"b_roll":["b-roll shot 1","b-roll shot 2","b-roll shot 3","b-roll shot 4"],' +
-      '"pacing_note":"one specific delivery tip",' +
-      '"cta":"identity-based call to action",' +
-      '"content_warning":"one honest risk",' +
-      '"content_fix":"the exact rewritten line that fixes the risk",' +
-      '"platform_strategies":[{"platform":"exact platform name from ' + allPlatList.join(', ') + '","strategy":"specific posting strategy","caption":"ready-to-post caption respecting that platforms exact character limit","hashtags":"hashtags following that platforms rules"}]}';
-
-    const parsed = await callAnthropic(combinedPrompt, moment, 2200);
-    return res.status(200).json(parsed);
+    return await streamCall(pulsePrompt, moment, 2400);
 
   } catch (err) {
-    return res.status(500).json({ error: err.message || 'Something went wrong.' });
+    errOut(err.message || 'Something went wrong.');
   }
 };
