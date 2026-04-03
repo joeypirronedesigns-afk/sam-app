@@ -1908,7 +1908,11 @@ async function callAPI(body) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 58000);
   try {
-    const r = await fetch('/api/sam', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: controller.signal });
+    const bodyStr = JSON.stringify(body);
+    const bodySizeKB = Math.round(bodyStr.length / 1024);
+    console.log('Request body size: ~' + bodySizeKB + 'KB');
+    if (bodySizeKB > 3500) throw new Error('Image too large (' + bodySizeKB + 'KB). Please use a smaller image.');
+    const r = await fetch('/api/sam', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: bodyStr, signal: controller.signal });
     clearTimeout(timeout);
     if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.error || 'Server error ' + r.status); }
     return readStream(r);
@@ -2325,18 +2329,21 @@ function processFile(file) {
   const objectUrl = URL.createObjectURL(file);
   img.onload = function() {
     // Resize to max 1200px wide to keep tokens low
-    const MAX = 1200;
+    const MAX = 800;
     let w = img.width, h = img.height;
     if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+    if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; }
     const canvas = document.createElement('canvas');
     canvas.width = w; canvas.height = h;
     const ctx = canvas.getContext('2d');
     ctx.drawImage(img, 0, 0, w, h);
-    const compressed = canvas.toDataURL('image/jpeg', 0.82);
+    // Store high quality version for thumbnail rendering BEFORE compressing for API
+    window._lensImgSrc = canvas.toDataURL('image/jpeg', 0.9);
+    const compressed = canvas.toDataURL('image/jpeg', 0.55);
+    const sizeKB = Math.round(compressed.length * 0.75 / 1024);
+    console.log('Image compressed to ~' + sizeKB + 'KB');
     uploadImgB64 = compressed.split(',')[1];
     uploadImgType = 'image/jpeg';
-    // Store full data URL for thumbnail rendering
-    window._lensImgSrc = compressed;
     document.getElementById('previewImg').src = compressed;
     document.getElementById('previewLabel').textContent = '📎 ' + file.name;
     document.getElementById('dropPreview').style.display = 'block';
