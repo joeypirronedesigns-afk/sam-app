@@ -130,7 +130,7 @@ module.exports = async function handler(req, res) {
       // PHOTO mode — focused output, lean JSON
       console.log('UPLOAD MODE - forceType:', forceType, '- hasImage:', !!imageBase64, '- imageSize:', imageBase64 ? Math.round(imageBase64.length/1024) + 'KB' : '0');
       if (forceType === 'photo' || (!forceType && imageBase64)) {
-        const photoSystem = `You are S.A.M. ${toneContext} ${emojiLine} ${creatorLine} Analyse this image and return thumbnail strategy. Return ONLY this exact JSON with NO extra fields:
+        const photoSystem = `You are S.A.M. ${toneContext} ${emojiLine} ${creatorLine} The user uploaded this image. Use what you know about them to make the thumbnail strategy relevant to THEIR niche and audience — not just what's generically visible in the photo. Analyse this image and return thumbnail strategy. Return ONLY this exact JSON with NO extra fields:
 {"type":"photo","what_sam_sees":"one sentence describing the image","content_angle":"the scroll-stopping story angle in one sentence","thumbnail_headline":"BOLD 3-6 WORD TEXT OVERLAY IN CAPS","thumbnail_subtext":"2-4 word supporting line or empty string","thumbnail_color":"#FF4500","platforms":[{"platform":"TikTok","title":"hook title under 60 chars","description":"caption under 150 chars","hashtags":"#tag1 #tag2 #tag3"},{"platform":"YouTube","title":"SEO title under 70 chars","description":"description under 150 chars","hashtags":"#tag1 #tag2 #tag3"},{"platform":"Instagram Reels","title":"","description":"caption under 125 chars","hashtags":"#tag1 #tag2 #tag3"}]}
 CRITICAL: Return ONLY valid JSON. Nothing else.`;
 
@@ -142,7 +142,7 @@ CRITICAL: Return ONLY valid JSON. Nothing else.`;
 
       // ANALYTICS mode
       if (forceType === 'analytics') {
-        const analyticsSystem = `You are S.A.M. ${toneContext} ${emojiLine} ${creatorLine} Analyse this analytics screenshot. Return ONLY this exact JSON:
+        const analyticsSystem = `You are S.A.M. ${toneContext} ${emojiLine} ${creatorLine} Analyse this analytics screenshot. Use what you know about the creator's niche to make recommendations specific to their content type — not generic advice. Return ONLY this exact JSON:
 {"type":"analytics","headline":"biggest insight in one punchy sentence","whats_working":["observation 1","observation 2","observation 3"],"whats_not":["area to improve 1","area to improve 2"],"post_next":["specific content idea 1","specific content idea 2","specific content idea 3"],"growth_move":"one bold strategic move to make right now"}
 CRITICAL: Return ONLY valid JSON. Nothing else.`;
 
