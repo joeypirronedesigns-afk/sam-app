@@ -2522,93 +2522,322 @@ async function pasteToEl(id) {
 
 
 // ── THUMBNAIL CANVAS + DOWNLOAD ──────────────────────────────────────────────
-function renderThumbnailCanvases(headline, subtext, accentColor, imgSrc, id169, id916) {
+function renderThumbnailCanvases(headline, subtext, accentColor, imgSrc, id169, id916, contentType, templateName) {
   const c169 = (id169 || 'thumb169') + 'canvas';
   const c916 = (id916 || 'thumb916') + 'canvas';
-  drawThumb(c169, 1280, 720, headline, subtext, accentColor, imgSrc);
-  drawThumb(c916, 1080, 1920, headline, subtext, accentColor, imgSrc);
+  drawThumb(c169, 1280, 720, headline, subtext, accentColor, imgSrc, contentType, templateName);
+  drawThumb(c916, 1080, 1920, headline, subtext, accentColor, imgSrc, contentType, templateName);
 }
 
-function drawThumb(canvasId, w, h, headline, subtext, accentColor, imgSrc) {
+// ── THUMBNAIL TEMPLATE ENGINE ────────────────────────────────────────────────
+const THUMB_TEMPLATES = {
+  cinematic: {
+    name: 'Cinematic',
+    types: ['emotional','milestone','documentary','personal'],
+    render: (ctx, w, h, hl, sub, ac) => {
+      // Top black bar
+      ctx.fillStyle = 'rgba(0,0,0,0.92)';
+      ctx.fillRect(0, 0, w, h * 0.14);
+      ctx.fillStyle = 'rgba(255,255,255,0.35)';
+      ctx.font = `600 ${h*0.045}px Arial`;
+      ctx.textBaseline = 'middle';
+      ctx.fillText('DOCUMENTARY SERIES', w * 0.04, h * 0.07);
+      // Bottom bar
+      ctx.fillStyle = 'rgba(0,0,0,0.88)';
+      ctx.fillRect(0, h * 0.72, w, h * 0.28);
+      const fs = Math.round(h * 0.12);
+      ctx.font = `900 ${fs}px Arial Black, sans-serif`;
+      ctx.textBaseline = 'top';
+      const lines = wrapText(ctx, hl.toUpperCase(), w * 0.88, fs);
+      lines.forEach((ln, i) => {
+        ctx.fillStyle = i === lines.length - 1 ? ac : '#ffffff';
+        ctx.shadowColor = 'rgba(0,0,0,1)'; ctx.shadowBlur = 8;
+        ctx.fillText(ln, w * 0.04, h * 0.74 + i * fs * 1.1);
+      });
+      ctx.shadowBlur = 0;
+    }
+  },
+  stackedBoxes: {
+    name: 'Stacked Boxes',
+    types: ['achievement','numbers','cost','renovation'],
+    render: (ctx, w, h, hl, sub, ac) => {
+      const words = hl.toUpperCase().split(' ');
+      const chunks = [words.slice(0,2).join(' '), words.slice(2,4).join(' '), words.slice(4).join(' ')].filter(Boolean);
+      const colors = ['#ffffff', ac, '#000000'];
+      const textColors = ['#000000', '#ffffff', '#ffffff'];
+      const bh = h * 0.18;
+      const bw = w * 0.52;
+      const startY = h * 0.35;
+      chunks.slice(0,3).forEach((chunk, i) => {
+        ctx.fillStyle = colors[i];
+        ctx.fillRect(w * 0.04, startY + i * (bh + h*0.015), bw, bh);
+        const fs = i === 1 ? Math.round(bh * 0.65) : Math.round(bh * 0.5);
+        ctx.font = `900 ${fs}px Arial Black, sans-serif`;
+        ctx.fillStyle = textColors[i];
+        ctx.textBaseline = 'middle';
+        ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 4;
+        ctx.fillText(chunk, w * 0.07, startY + i * (bh + h*0.015) + bh/2);
+      });
+      ctx.shadowBlur = 0;
+    }
+  },
+  giantWord: {
+    name: 'Giant Word',
+    types: ['shock','curiosity','personal','story'],
+    render: (ctx, w, h, hl, sub, ac) => {
+      const words = hl.toUpperCase().split(' ');
+      const bigWord = words[0];
+      const rest = words.slice(1).join(' ');
+      ctx.shadowColor = 'rgba(0,0,0,1)'; ctx.shadowBlur = 12;
+      // Giant first word
+      const bigFs = Math.round(h * 0.42);
+      ctx.font = `900 ${bigFs}px Arial Black, sans-serif`;
+      ctx.fillStyle = ac;
+      ctx.textBaseline = 'top';
+      ctx.fillText(bigWord, w * 0.04, h * 0.12);
+      // Rest of headline
+      if (rest) {
+        const restFs = Math.round(h * 0.1);
+        ctx.font = `900 ${restFs}px Arial Black, sans-serif`;
+        ctx.fillStyle = '#ffffff';
+        const lines = wrapText(ctx, rest, w * 0.88, restFs);
+        lines.forEach((ln, i) => ctx.fillText(ln, w * 0.04, h * 0.6 + i * restFs * 1.2));
+      }
+      if (sub) {
+        const subFs = Math.round(h * 0.07);
+        ctx.font = `700 ${subFs}px Arial, sans-serif`;
+        ctx.fillStyle = 'rgba(255,255,255,0.65)';
+        ctx.fillText(sub.toUpperCase(), w * 0.04, h * 0.82);
+      }
+      ctx.shadowBlur = 0;
+    }
+  },
+  diagonalSlash: {
+    name: 'Diagonal Slash',
+    types: ['tutorial','howto','transformation','before-after'],
+    render: (ctx, w, h, hl, sub, ac) => {
+      // Dark left panel via diagonal clip
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(0, 0); ctx.lineTo(w * 0.62, 0);
+      ctx.lineTo(w * 0.45, h); ctx.lineTo(0, h);
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(0,0,0,0.78)';
+      ctx.fill();
+      ctx.restore();
+      // Slash line
+      ctx.strokeStyle = ac; ctx.lineWidth = Math.round(h * 0.018);
+      ctx.beginPath(); ctx.moveTo(w * 0.63, 0); ctx.lineTo(w * 0.46, h); ctx.stroke();
+      // Text
+      ctx.shadowColor = 'rgba(0,0,0,1)'; ctx.shadowBlur = 10;
+      const fs = Math.round(h * 0.12);
+      ctx.font = `900 ${fs}px Arial Black, sans-serif`;
+      ctx.textBaseline = 'top';
+      const lines = wrapText(ctx, hl.toUpperCase(), w * 0.55, fs);
+      const totalH = lines.length * fs * 1.15;
+      const startY = (h - totalH) / 2;
+      lines.forEach((ln, i) => {
+        ctx.fillStyle = i % 2 === 0 ? '#ffffff' : ac;
+        ctx.fillText(ln, w * 0.04, startY + i * fs * 1.15);
+      });
+      if (sub) {
+        ctx.font = `700 ${Math.round(fs*0.5)}px Arial, sans-serif`;
+        ctx.fillStyle = 'rgba(255,255,255,0.6)';
+        ctx.fillText(sub.toUpperCase(), w * 0.04, startY + totalH + fs * 0.3);
+      }
+      ctx.shadowBlur = 0;
+    }
+  },
+  beforeAfter: {
+    name: 'Before / After',
+    types: ['transformation','renovation','makeover','reveal'],
+    render: (ctx, w, h, hl, sub, ac) => {
+      // Split line
+      ctx.fillStyle = '#000'; ctx.fillRect(w*0.485, 0, w*0.03, h);
+      ctx.strokeStyle = ac; ctx.lineWidth = 3;
+      ctx.setLineDash([h*0.04, h*0.03]);
+      ctx.beginPath(); ctx.moveTo(w*0.5, 0); ctx.lineTo(w*0.5, h); ctx.stroke();
+      ctx.setLineDash([]);
+      // Before / After labels
+      ctx.font = `700 ${Math.round(h*0.06)}px Arial, sans-serif`;
+      ctx.textBaseline = 'top'; ctx.textAlign = 'center';
+      ctx.fillStyle = 'rgba(255,255,255,0.5)';
+      ctx.shadowColor = 'rgba(0,0,0,0.9)'; ctx.shadowBlur = 8;
+      ctx.fillText('BEFORE', w * 0.25, h * 0.05);
+      ctx.fillStyle = ac;
+      ctx.fillText('AFTER', w * 0.75, h * 0.05);
+      // VS badge
+      ctx.fillStyle = ac;
+      ctx.beginPath(); ctx.arc(w*0.5, h*0.5, h*0.09, 0, Math.PI*2); ctx.fill();
+      ctx.font = `900 ${Math.round(h*0.1)}px Arial Black, sans-serif`;
+      ctx.fillStyle = '#000'; ctx.textBaseline = 'middle';
+      ctx.fillText('VS', w*0.5, h*0.5);
+      // Bottom headline
+      ctx.fillStyle = 'rgba(0,0,0,0.85)';
+      ctx.fillRect(0, h*0.76, w, h*0.24);
+      ctx.font = `900 ${Math.round(h*0.1)}px Arial Black, sans-serif`;
+      ctx.fillStyle = '#ffffff'; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+      ctx.shadowBlur = 0;
+      ctx.fillText(hl.toUpperCase().slice(0,28), w*0.04, h*0.88);
+    }
+  },
+  cornerBurst: {
+    name: 'Corner Burst',
+    types: ['achievement','numbers','shocking','results'],
+    render: (ctx, w, h, hl, sub, ac) => {
+      // Corner triangle
+      ctx.fillStyle = ac;
+      ctx.beginPath(); ctx.moveTo(w,0); ctx.lineTo(w, h*0.45); ctx.lineTo(w*0.55,0); ctx.closePath(); ctx.fill();
+      ctx.save(); ctx.translate(w*0.85, h*0.1); ctx.rotate(Math.PI/6);
+      ctx.font = `900 ${Math.round(h*0.065)}px Arial Black, sans-serif`;
+      ctx.fillStyle = '#000'; ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
+      ctx.fillText('SHOCKING', 0, 0); ctx.restore();
+      // Dark left overlay
+      const grad = ctx.createLinearGradient(0,0,w*0.7,0);
+      grad.addColorStop(0,'rgba(0,0,0,0.85)'); grad.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle = grad; ctx.fillRect(0,0,w,h);
+      // Giant number or first word
+      const words = hl.toUpperCase().split(' ');
+      const bigPart = words[0];
+      const rest = words.slice(1).join(' ');
+      ctx.shadowColor = 'rgba(0,0,0,1)'; ctx.shadowBlur = 15;
+      ctx.font = `900 ${Math.round(h*0.48)}px Arial Black, sans-serif`;
+      ctx.fillStyle = ac; ctx.textBaseline = 'top'; ctx.textAlign = 'left';
+      ctx.fillText(bigPart, w*0.04, h*0.1);
+      if (rest) {
+        ctx.font = `900 ${Math.round(h*0.1)}px Arial Black, sans-serif`;
+        ctx.fillStyle = '#fff';
+        ctx.fillText(rest, w*0.04, h*0.65);
+      }
+      if (sub) {
+        ctx.font = `700 ${Math.round(h*0.07)}px Arial, sans-serif`;
+        ctx.fillStyle = 'rgba(255,255,255,0.55)';
+        ctx.fillText(sub.toUpperCase(), w*0.04, h*0.79);
+      }
+      ctx.shadowBlur = 0; ctx.textAlign = 'left';
+    }
+  },
+  emojiAnchor: {
+    name: 'Emoji Story',
+    types: ['personal','family','emotional','story'],
+    render: (ctx, w, h, hl, sub, ac) => {
+      const grad = ctx.createLinearGradient(0,0,w*0.65,0);
+      grad.addColorStop(0,'rgba(0,0,0,0.82)'); grad.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle = grad; ctx.fillRect(0,0,w,h);
+      // Emoji row (drawn as text)
+      ctx.font = `${Math.round(h*0.18)}px serif`;
+      ctx.textBaseline = 'top'; ctx.textAlign = 'left';
+      ctx.fillText('🏚️➡️🏡', w*0.03, h*0.08);
+      // Headline split
+      const fs = Math.round(h * 0.12);
+      ctx.font = `900 ${fs}px Arial Black, sans-serif`;
+      ctx.shadowColor='rgba(0,0,0,1)'; ctx.shadowBlur=10;
+      const lines = wrapText(ctx, hl.toUpperCase(), w*0.55, fs);
+      lines.forEach((ln, i) => {
+        ctx.fillStyle = i % 2 === 0 ? '#ffffff' : ac;
+        ctx.fillText(ln, w*0.03, h*0.36 + i*fs*1.2);
+      });
+      if (sub) {
+        ctx.font = `700 ${Math.round(fs*0.55)}px Arial, sans-serif`;
+        ctx.fillStyle = 'rgba(255,255,255,0.6)';
+        ctx.fillText(sub.toUpperCase(), w*0.03, h*0.75);
+      }
+      ctx.shadowBlur=0;
+    }
+  },
+  newsFlash: {
+    name: 'News Flash',
+    types: ['breaking','announcement','reveal','update'],
+    render: (ctx, w, h, hl, sub, ac) => {
+      // Left text panel
+      ctx.fillStyle = 'rgba(0,0,12,0.9)';
+      ctx.fillRect(0, 0, w*0.54, h);
+      // Accent top bar
+      ctx.fillStyle = ac;
+      ctx.fillRect(0, 0, w*0.54, h*0.025);
+      // Category pill
+      ctx.fillStyle = ac;
+      ctx.beginPath(); const pr=h*0.035; const px=w*0.04; const py=h*0.06;
+      const pw=w*0.22; const ph=h*0.08;
+      ctx.roundRect(px,py,pw,ph,pr); ctx.fill();
+      ctx.font = `700 ${Math.round(ph*0.55)}px Arial, sans-serif`;
+      ctx.fillStyle = '#000'; ctx.textBaseline='middle'; ctx.textAlign='center';
+      ctx.fillText('BREAKING', px+pw/2, py+ph/2);
+      // Headline
+      const fs = Math.round(h*0.115);
+      ctx.font = `900 ${fs}px Arial Black, sans-serif`;
+      ctx.fillStyle='#fff'; ctx.textBaseline='top'; ctx.textAlign='left';
+      ctx.shadowColor='rgba(0,0,0,0.8)'; ctx.shadowBlur=6;
+      const lines = wrapText(ctx, hl.toUpperCase(), w*0.48, fs);
+      lines.forEach((ln,i) => ctx.fillText(ln, w*0.04, h*0.2+i*fs*1.1));
+      // Divider line
+      ctx.strokeStyle=ac; ctx.lineWidth=2; ctx.shadowBlur=0;
+      ctx.beginPath(); ctx.moveTo(w*0.04,h*0.72); ctx.lineTo(w*0.48,h*0.72); ctx.stroke();
+      if (sub) {
+        ctx.font=`600 ${Math.round(h*0.065)}px Arial, sans-serif`;
+        ctx.fillStyle='rgba(255,255,255,0.55)';
+        ctx.fillText(sub.toUpperCase(), w*0.04, h*0.76);
+      }
+    }
+  }
+};
+
+function wrapText(ctx, text, maxW, fs) {
+  const words = text.split(' ');
+  const lines = [];
+  let cur = '';
+  for (const w of words) {
+    const test = cur ? cur+' '+w : w;
+    if (ctx.measureText(test).width > maxW && cur) { lines.push(cur); cur = w; }
+    else cur = test;
+  }
+  if (cur) lines.push(cur);
+  return lines;
+}
+
+function pickTemplate(contentType) {
+  const ct = (contentType||'').toLowerCase();
+  if (ct.includes('transform') || ct.includes('renovati') || ct.includes('makeover')) return 'beforeAfter';
+  if (ct.includes('emotional') || ct.includes('family') || ct.includes('parent') || ct.includes('moment')) return 'cinematic';
+  if (ct.includes('tutorial') || ct.includes('how') || ct.includes('slash')) return 'diagonalSlash';
+  if (ct.includes('number') || ct.includes('cost') || ct.includes('$') || ct.includes('spent')) return 'stackedBoxes';
+  if (ct.includes('shock') || ct.includes('reveal') || ct.includes('secret')) return 'cornerBurst';
+  if (ct.includes('news') || ct.includes('breaking') || ct.includes('announc')) return 'newsFlash';
+  if (ct.includes('personal') || ct.includes('story') || ct.includes('journey')) return 'emojiAnchor';
+  // Rotate through all templates for generic content
+  const all = Object.keys(THUMB_TEMPLATES);
+  return all[Math.floor(Date.now()/10000) % all.length];
+}
+
+function drawThumb(canvasId, w, h, headline, subtext, accentColor, imgSrc, contentType, templateName) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
   canvas.width = w;
   canvas.height = h;
   const ctx = canvas.getContext('2d');
 
+  const tplKey = templateName || pickTemplate(contentType || '');
+  const tpl = THUMB_TEMPLATES[tplKey] || THUMB_TEMPLATES.cinematic;
+
   const finish = () => {
-    // Gradient overlay
-    const grad = ctx.createLinearGradient(0, h * 0.35, 0, h);
-    grad.addColorStop(0, 'rgba(0,0,0,0)');
-    grad.addColorStop(0.5, 'rgba(0,0,0,0.55)');
-    grad.addColorStop(1, 'rgba(0,0,0,0.92)');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, w, h);
-
-    // Accent bar top
-    ctx.fillStyle = accentColor;
-    ctx.fillRect(0, 0, w, h * 0.008);
-
-    // Headline
-    const fontSize = Math.round(h * (h > w ? 0.065 : 0.075));
-    ctx.font = `800 ${fontSize}px 'Sora', 'Arial Black', sans-serif`;
-    ctx.fillStyle = '#ffffff';
-    ctx.shadowColor = 'rgba(0,0,0,0.95)';
-    ctx.shadowBlur = 18;
-    ctx.textBaseline = 'bottom';
-
-    const maxW = w * 0.88;
-    const words = headline.toUpperCase().split(' ');
-    const lines = [];
-    let cur = '';
-    for (const word of words) {
-      const test = cur ? cur + ' ' + word : word;
-      if (ctx.measureText(test).width > maxW && cur) {
-        lines.push(cur);
-        cur = word;
-      } else { cur = test; }
-    }
-    if (cur) lines.push(cur);
-
-    const lineH = fontSize * 1.15;
-    const totalH = lines.length * lineH + (subtext ? fontSize * 0.65 : 0);
-    let y = h - h * 0.065 - totalH + lineH;
-
-    for (const line of lines) {
-      ctx.fillText(line, w * 0.06, y);
-      y += lineH;
-    }
-
-    // Subtext
-    if (subtext) {
-      const subSize = Math.round(fontSize * 0.52);
-      ctx.font = `700 ${subSize}px 'Sora', 'Arial Black', sans-serif`;
-      ctx.fillStyle = accentColor;
-      ctx.shadowBlur = 10;
-      ctx.fillText(subtext.toUpperCase(), w * 0.06, y + subSize * 0.3);
-    }
-    ctx.shadowBlur = 0;
+    ctx.save();
+    tpl.render(ctx, w, h, headline || 'YOUR STORY', subtext || '', accentColor || '#F472B6');
+    ctx.restore();
   };
 
   if (imgSrc && imgSrc.startsWith('data:')) {
     const img = new Image();
     img.onload = () => {
-      // Cover crop
-      const scale = Math.max(w / img.width, h / img.height);
-      const sw = img.width * scale;
-      const sh = img.height * scale;
-      const sx = (w - sw) / 2;
-      const sy = (h - sh) / 2;
-      ctx.drawImage(img, sx, sy, sw, sh);
+      const scale = Math.max(w/img.width, h/img.height);
+      const sw = img.width*scale; const sh = img.height*scale;
+      ctx.drawImage(img, (w-sw)/2, (h-sh)/2, sw, sh);
       finish();
     };
     img.src = imgSrc;
   } else {
-    const bg = ctx.createLinearGradient(0, 0, w, h);
-    bg.addColorStop(0, '#111111');
-    bg.addColorStop(1, '#1c1c1c');
-    ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, w, h);
+    const bg = ctx.createLinearGradient(0,0,w,h);
+    bg.addColorStop(0,'#111'); bg.addColorStop(1,'#1c1c1c');
+    ctx.fillStyle=bg; ctx.fillRect(0,0,w,h);
     finish();
   }
 }
@@ -2703,12 +2932,13 @@ function renderLens(data) {
         </div>
       </div>`;
 
+      const ct = data.content_type || data.content_angle || '';
       setTimeout(() => {
         if (hl2) {
-          renderThumbnailCanvases(hl1, sub1, ac, imgSrc, 'thumb169s', 'thumb916s');
-          renderThumbnailCanvases(hl2, sub2, ac, imgSrc, 'thumb169b', 'thumb916b');
+          renderThumbnailCanvases(hl1, sub1, ac, imgSrc, 'thumb169s', 'thumb916s', ct);
+          renderThumbnailCanvases(hl2, sub2, ac, imgSrc, 'thumb169b', 'thumb916b', ct, 'giantWord');
         } else {
-          renderThumbnailCanvases(hl1, sub1, ac, imgSrc, 'thumb169', 'thumb916');
+          renderThumbnailCanvases(hl1, sub1, ac, imgSrc, 'thumb169', 'thumb916', ct);
         }
       }, 400);
     }
