@@ -412,12 +412,16 @@
       border: none;
       font-family: 'Sora', sans-serif;
       font-size: 15px;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       transition: all 0.2s;
       margin-bottom: 12px;
       letter-spacing: 0.02em;
+      color: #ffffff !important;
+      text-shadow: none;
+      opacity: 1 !important;
     }
+    .sheet-open-btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
 
     .sheet-cancel {
       text-align: center;
@@ -1582,14 +1586,18 @@
 </div>
 
 <!-- SETUP MODAL -->
-<div class="setup-modal" id="setupModal">
+<div class="setup-modal" id="setupModal" onclick="handleSetupOutsideClick(event)">
   <div class="setup-inner">
     <div class="sheet-handle"></div>
     <div class="setup-title">About you</div>
     <div class="setup-sub">SAM uses this to personalize every output. Fill it in once, it's saved forever.</div>
     <div class="setup-field">
       <div class="setup-field-label">Your niche / what you create</div>
-      <textarea id="setupNiche" placeholder="e.g. Self-taught DIY renovator documenting a full cottage gut renovation for my parents in Maryland" style="min-height:80px;"></textarea>
+      <div class="input-wrap">
+        <textarea id="setupNiche" placeholder="e.g. Self-taught DIY renovator documenting a full cottage gut renovation for my parents in Maryland" style="min-height:80px;padding-right:94px;"></textarea>
+        <button class="paste-btn" onclick="pasteToEl('setupNiche')" title="Paste">📋</button>
+        <button class="mic-btn" id="micSetup" onclick="toggleMicFor('setupNiche','micSetup')">🎙</button>
+      </div>
     </div>
     <div class="setup-field">
       <div class="setup-field-label">Your tone</div>
@@ -1747,6 +1755,7 @@ function previewTool(tool) {
       <div class="sheet-feature-text">${f}</div>
     </div>`).join('');
   document.getElementById('sheetOpenBtn').style.background = `linear-gradient(135deg, ${t.color}99, ${t.color})`;
+  document.getElementById('sheetOpenBtn').style.color = '#ffffff';
   document.getElementById('sheetOpenBtn').textContent = `Open ${t.name} →`;
 
   overlay.classList.add('open');
@@ -2397,6 +2406,12 @@ function renderLens(data) {
 }
 
 
+
+function handleSetupOutsideClick(e) {
+  if (e.target === document.getElementById('setupModal')) {
+    document.getElementById('setupModal').classList.remove('open');
+  }
+}
 async function pasteToEl(id) {
   try {
     const text = await navigator.clipboard.readText();
@@ -2413,11 +2428,8 @@ async function pasteToEl(id) {
 
 // ── INIT ─────────────────────────────────────────────────────────────────────
 (function init() {
-  const s = getSetup();
-  if (!s.niche) {
-    // First time — open setup after a small delay
-    setTimeout(() => openSetup(), 1200);
-  }
+  // About me is always optional — never block tool access
+  // Setup can be accessed via the "About me" button in nav anytime
 })();
 </script>
 </body>
