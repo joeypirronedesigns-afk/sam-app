@@ -2163,15 +2163,15 @@
     }
 
     .tool-dock-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      display: flex;
+      flex-direction: row;
       gap: 8px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 4px;
     }
-    @media (max-width: 520px) {
-      .tool-dock-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
+    .tool-dock-grid::-webkit-scrollbar { display: none; }
 
     .tool-dock-btn {
       display: flex;
@@ -2185,6 +2185,8 @@
       transition: all 0.2s cubic-bezier(0.34, 1.2, 0.64, 1);
       text-align: left;
       backdrop-filter: blur(8px);
+      flex-shrink: 0;
+      min-width: 170px;
     }
     .tool-dock-btn:hover {
       border-color: var(--gold-border);
