@@ -2608,6 +2608,111 @@ function downloadCanvas(canvasId, filename) {
   link.click();
 }
 
+
+function renderLens(data) {
+  const body = document.getElementById('lensBody');
+  const label = document.getElementById('lensOutLabel');
+  if (!body) return;
+  let html = '';
+
+  if (data.type === 'analytics') {
+    if (label) label.textContent = 'Analytics breakdown';
+    html += `<div class="upload-result-badge">📊 Analytics detected</div>`;
+    if (data.headline) html += `<div class="out-block"><div class="concept-title-big" style="font-size:18px;">${data.headline}</div></div>`;
+    if (data.whats_working?.length) html += `<div class="concept-card out-block"><div class="concept-card-label">What's working</div><ul class="prod-list">${data.whats_working.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
+    if (data.whats_not?.length) html += `<div class="concept-card out-block" style="border-color:rgba(251,191,36,0.2);"><div class="concept-card-label">What to improve</div><ul class="prod-list">${data.whats_not.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
+    if (data.post_next?.length) html += `<div class="concept-card out-block" style="border-color:var(--lens-border);background:var(--lens-bg);"><div class="concept-card-label" style="color:var(--lens);">Post this week</div><ul class="prod-list">${data.post_next.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
+    if (data.growth_move) html += `<div class="concept-card" style="border-color:var(--lens-border);background:var(--lens-bg);"><div class="concept-card-label" style="color:var(--lens);">Bold growth move</div><div class="concept-card-text">${data.growth_move}</div></div>`;
+
+  } else if (data.type === 'photo') {
+    if (label) label.textContent = 'Visual strategy';
+    html += `<div class="upload-result-badge">🖼️ Photo analysed</div>`;
+    if (data.what_sam_sees) html += `<div class="concept-card out-block"><div class="concept-card-label">What SAM sees</div><div class="concept-card-text">${data.what_sam_sees}</div></div>`;
+    if (data.content_angle) html += `<div class="concept-card out-block" style="border-color:var(--lens-border);background:var(--lens-bg);"><div class="concept-card-label" style="color:var(--lens);">Content angle</div><div class="concept-card-text" style="font-weight:500;">${data.content_angle}</div></div>`;
+
+    if (data.thumbnail_headline) {
+      const ac = data.thumbnail_color || '#F472B6';
+      const hl = data.thumbnail_headline || '';
+      const sub = data.thumbnail_subtext || '';
+      const imgSrc = window._lensImgSrc || document.getElementById('previewImg')?.src || '';
+      const bgStyle = imgSrc ? `background-image:url('${imgSrc}');background-size:cover;background-position:center;` : 'background:linear-gradient(135deg,#111,#1c1c1c);';
+
+      html += `<div class="concept-card out-block" style="padding:0;overflow:hidden;border-color:var(--lens-border);">
+        <div style="padding:12px 16px;background:var(--lens-bg);border-bottom:1px solid var(--lens-border);">
+          <div class="concept-card-label" style="color:var(--lens);margin:0;">Thumbnail mockups — tap to download</div>
+        </div>
+        <div style="padding:16px;display:flex;flex-direction:column;gap:16px;">
+          <div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;">📐 16:9 — YouTube / Facebook</div>
+            <div id="thumb169" style="position:relative;width:100%;aspect-ratio:16/9;${bgStyle}border-radius:10px;overflow:hidden;cursor:pointer;" onclick="downloadCanvas('thumb169canvas','thumbnail-16x9.png')" title="Tap to download">
+              <canvas id="thumb169canvas" style="display:none;"></canvas>
+              <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.88) 0%,rgba(0,0,0,0.2) 55%,transparent 100%);z-index:1;"></div>
+              <div style="position:absolute;top:10px;right:10px;z-index:3;background:rgba(0,0,0,0.5);border-radius:6px;padding:4px 8px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.8);">↓ Download</div>
+              <div style="position:absolute;bottom:14px;left:16px;right:16px;z-index:3;">
+                <div style="font-family:'Sora',sans-serif;font-size:clamp(14px,3.5vw,26px);font-weight:800;color:#fff;line-height:1.1;text-transform:uppercase;text-shadow:0 2px 12px rgba(0,0,0,0.95);margin-bottom:5px;">${hl}</div>
+                ${sub ? `<div style="font-size:clamp(10px,1.8vw,14px);font-weight:700;color:${ac};letter-spacing:0.08em;text-transform:uppercase;text-shadow:0 1px 6px rgba(0,0,0,0.9);">${sub}</div>` : ''}
+              </div>
+              <div style="position:absolute;top:0;left:0;right:0;height:5px;background:${ac};z-index:2;"></div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;">📱 9:16 — TikTok / Reels / Shorts</div>
+            <div style="display:flex;justify-content:center;">
+              <div id="thumb916" style="position:relative;width:55%;aspect-ratio:9/16;${bgStyle}border-radius:10px;overflow:hidden;cursor:pointer;" onclick="downloadCanvas('thumb916canvas','thumbnail-9x16.png')" title="Tap to download">
+                <canvas id="thumb916canvas" style="display:none;"></canvas>
+                <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.9) 0%,rgba(0,0,0,0.15) 50%,transparent 100%);z-index:1;"></div>
+                <div style="position:absolute;top:10px;right:10px;z-index:3;background:rgba(0,0,0,0.5);border-radius:6px;padding:4px 8px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.8);">↓ Download</div>
+                <div style="position:absolute;bottom:20px;left:14px;right:14px;z-index:3;">
+                  <div style="font-family:'Sora',sans-serif;font-size:clamp(16px,4vw,28px);font-weight:800;color:#fff;line-height:1.15;text-transform:uppercase;text-shadow:0 2px 12px rgba(0,0,0,0.95);margin-bottom:6px;">${hl}</div>
+                  ${sub ? `<div style="font-size:clamp(11px,2vw,15px);font-weight:700;color:${ac};letter-spacing:0.06em;text-transform:uppercase;text-shadow:0 1px 6px rgba(0,0,0,0.9);">${sub}</div>` : ''}
+                </div>
+                <div style="position:absolute;top:0;left:0;right:0;height:5px;background:${ac};z-index:2;"></div>
+              </div>
+            </div>
+          </div>
+          <button class="copy-btn" style="float:none;" onclick="copyText(this,'${escQ(hl + (sub?'\n'+sub:''))}')">Copy text overlay</button>
+        </div>
+      </div>`;
+      setTimeout(() => renderThumbnailCanvases('${escQ(hl)}', '${escQ(sub)}', '${escQ(ac)}', '${escQ(imgSrc)}'), 300);
+    }
+
+    if (data.platforms?.length) {
+      html += `<div class="out-block"><div class="out-block-title" style="color:var(--lens);">● Platform captions</div>`;
+      data.platforms.forEach(p => {
+        if (!p?.platform) return;
+        html += `<div class="platform-strategy">
+          <div class="ps-header"><div class="ps-name">${p.platform}</div>
+          <button class="copy-btn" style="float:none;margin:0;" onclick="copyText(this,'${escQ((p.title||'')+'\n'+(p.description||'')+'\n'+(p.hashtags||''))}')">Copy</button></div>
+          <div class="ps-body">
+            ${p.title ? `<div style="font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text);">${p.title}</div>` : ''}
+            ${p.description ? `<div class="ps-caption">${p.description}</div>` : ''}
+            ${p.hashtags ? `<div class="ps-hashtags">${p.hashtags}</div>` : ''}
+          </div>
+        </div>`;
+      });
+      html += `</div>`;
+    }
+
+  } else {
+    if (label) label.textContent = 'Content strategy';
+    html += `<div class="upload-result-badge">✍️ Idea analysed</div>`;
+    if (data.diagnosis) html += `<div class="concept-card out-block"><div class="concept-card-label">What this idea is really about</div><div class="concept-card-text">${data.diagnosis}</div></div>`;
+    if (data.hook_ideas?.length) html += `<div class="concept-card out-block"><div class="concept-card-label">Hook ideas</div><ul class="prod-list">${data.hook_ideas.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
+    if (data.content_angle) html += `<div class="concept-card out-block" style="border-color:var(--lens-border);background:var(--lens-bg);"><div class="concept-card-label" style="color:var(--lens);">Strongest angle</div><div class="concept-card-text" style="font-weight:500;">${data.content_angle}</div></div>`;
+    if (data.next_action) html += `<div class="concept-card" style="border-color:var(--lens-border);background:var(--lens-bg);"><div class="concept-card-label" style="color:var(--lens);">Do this next</div><div class="concept-card-text" style="font-weight:500;">${data.next_action}</div></div>`;
+    html += `<div class="out-block" style="margin-top:12px;">
+      <button class="cross-tool-btn" onclick="sendToPulse('${escQ((data.diagnosis||'') + ' ' + (data.content_angle||''))}')">
+        <div class="cross-tool-left"><div class="cross-tool-icon" style="background:var(--pulse-bg);border:1px solid var(--pulse-border);">📝</div>
+        <div class="cross-tool-text">Write the full script in The Pulse</div></div>
+        <div class="cross-tool-arrow">→</div>
+      </button>
+    </div>`;
+  }
+
+  html += `<div class="focus-directive"><div class="focus-eyebrow">Stop. Focus.</div><div class="focus-text">You have your strategy. One action, right now — that's all it takes.</div></div>`;
+  body.innerHTML = html;
+}
+
 // ── INIT ─────────────────────────────────────────────────────────────────────
 (function init() {
   // About me is always optional — never block tool access
