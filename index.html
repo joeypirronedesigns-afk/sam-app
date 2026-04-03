@@ -3018,9 +3018,7 @@ function renderLens(data) {
   const label = document.getElementById('lensOutLabel');
   if (!body) return;
 
-  // DEBUG — show raw data so we can see what's coming back
-  body.innerHTML = '<div style="background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.3);border-radius:12px;padding:14px;font-size:12px;color:var(--text2);word-break:break-all;white-space:pre-wrap;margin-bottom:12px;"><strong style="color:var(--spark);">DEBUG — raw data:</strong>\n' + JSON.stringify(data, null, 2).slice(0, 800) + '</div>';
-  document.getElementById('lensOutput')?.classList.add('show');
+
 
   let html = '';
 
@@ -3161,10 +3159,6 @@ function renderLens(data) {
       renderThumbnailCanvases(hl1, sub1, ac, imgSrc, 'thumb169s', 'thumb916s', data.content_type||'', safeTemplate, false, textSide);
       renderThumbnailCanvases(hl2||hl1, sub2||sub1, ac, imgSrc, 'thumb169b', 'thumb916b', data.content_type||'', boldTemplate, true, textSide);
     }, 300);
-
-    // Handle both new dual-headline format and legacy single headline
-
-    }
 
     if (data.platforms?.length) {
       html += `<div class="out-block"><div class="out-block-title" style="color:var(--lens);">● Platform captions</div>`;
