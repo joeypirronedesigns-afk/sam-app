@@ -322,7 +322,11 @@
 
     .bottom-sheet {
       position: fixed;
-      bottom: 0; left: 0; right: 0;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 600px;
       background: rgba(18,14,28,0.97);
       border: 1px solid var(--border2);
       border-bottom: none;
@@ -330,11 +334,6 @@
       z-index: 201;
       padding: 12px 24px 40px;
       animation: slide-up 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
-      max-width: 600px;
-      margin: 0 auto;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100%;
       backdrop-filter: blur(30px);
       -webkit-backdrop-filter: blur(30px);
     }
@@ -1765,8 +1764,9 @@ function closeSheet() {
 }
 
 function openToolFromSheet() {
+  const tool = pendingTool;
   closeSheet();
-  if (pendingTool) openTool(pendingTool);
+  if (tool) openTool(tool);
 }
 
 function openTool(tool) {
