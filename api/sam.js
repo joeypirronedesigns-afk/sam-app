@@ -122,7 +122,7 @@ module.exports = async function handler(req, res) {
       const d = await r.json();
       const text = d.content && d.content[0] && d.content[0].text;
       if (!text) throw new Error('Empty response from API');
-      const clean = text.replace(/```json[\s\S]*?```/g, m => m.slice(7, -3)).replace(/```/g, '').trim();
+      const clean = text.replace(/```json[\s\S]*?```/g, m => m.slice(7, -3)).replace(/```/g, "").replace(/^json\s*/i, "").trim();
       return JSON.parse(clean);
     } catch (e) {
       clearTimeout(timeout);
