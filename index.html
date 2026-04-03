@@ -3626,43 +3626,74 @@ CRITICAL: Return ONLY valid JSON. No markdown. No backticks. No preamble.`;
       html += `<div class="upload-result-type">🖼️ Photo / visual detected</div>`;
       if (data.what_sam_sees) html += `<div class="concept-card"><div class="concept-card-label">What SAM sees</div><div class="concept-card-text">${data.what_sam_sees}</div></div>`;
 
-      // ── THUMBNAIL MOCKUP ──────────────────────────────────────────
+      // ── THUMBNAIL MOCKUPS (horizontal + vertical) ─────────────────
       if (data.thumbnail_headline) {
-        const accentColor = data.thumbnail_color || '#E53E3E';
-        const emotion = data.thumbnail_emotion || '';
+        const ac = data.thumbnail_color || '#E53E3E';
+        const em = data.thumbnail_emotion || '';
+        const hl = data.thumbnail_headline || '';
+        const sub = data.thumbnail_subtext || '';
+        const strat = data.thumbnail_strategy || '';
+
+        const gradientH = `linear-gradient(to top,rgba(0,0,0,0.9) 0%,rgba(0,0,0,0.3) 50%,rgba(0,0,0,0.1) 100%)`;
+        const gradientV = `linear-gradient(to top,rgba(0,0,0,0.95) 0%,rgba(0,0,0,0.5) 40%,rgba(0,0,0,0.15) 100%)`;
+
+        const emotionBadge = em ? `<div style="position:absolute;top:10px;right:10px;background:${ac};color:#fff;font-family:'Inter',sans-serif;font-size:9px;font-weight:800;letter-spacing:0.1em;padding:4px 9px;border-radius:4px;text-transform:uppercase;z-index:3;">${em}</div>` : '';
+
+        // Horizontal 16:9
+        const hThumb = `
+          <div>
+            <div style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:7px;">16:9 — YouTube / Long-form</div>
+            <div style="position:relative;width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,#111 0%,#1c1c1c 100%);border-radius:10px;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,0.4);">
+              <div style="position:absolute;top:0;left:0;right:0;height:4px;background:${ac};z-index:2;"></div>
+              <div style="position:absolute;inset:0;background:${gradientH};z-index:1;"></div>
+              ${emotionBadge}
+              <div style="position:absolute;bottom:14px;left:16px;right:16px;z-index:3;">
+                <div style="font-family:'Inter',sans-serif;font-size:clamp(16px,3vw,24px);font-weight:900;color:#fff;line-height:1.1;letter-spacing:-0.02em;text-transform:uppercase;text-shadow:0 2px 10px rgba(0,0,0,0.9);margin-bottom:5px;">${hl}</div>
+                ${sub ? `<div style="font-family:'Inter',sans-serif;font-size:clamp(10px,1.6vw,13px);font-weight:700;color:${ac};letter-spacing:0.06em;text-transform:uppercase;">${sub}</div>` : ''}
+              </div>
+            </div>
+          </div>`;
+
+        // Vertical 9:16
+        const vThumb = `
+          <div>
+            <div style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:7px;">9:16 — TikTok / Reels / Shorts</div>
+            <div style="position:relative;width:100%;aspect-ratio:9/16;background:linear-gradient(160deg,#111 0%,#1c1c1c 100%);border-radius:10px;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,0.4);">
+              <div style="position:absolute;top:0;left:0;right:0;height:4px;background:${ac};z-index:2;"></div>
+              <div style="position:absolute;inset:0;background:${gradientV};z-index:1;"></div>
+              ${emotionBadge}
+              <!-- Account handle placeholder -->
+              <div style="position:absolute;bottom:60px;left:12px;right:50px;z-index:3;">
+                <div style="font-family:'Inter',sans-serif;font-size:clamp(18px,4vw,26px);font-weight:900;color:#fff;line-height:1.1;letter-spacing:-0.02em;text-transform:uppercase;text-shadow:0 2px 10px rgba(0,0,0,0.9);margin-bottom:6px;">${hl}</div>
+                ${sub ? `<div style="font-family:'Inter',sans-serif;font-size:clamp(11px,2vw,14px);font-weight:700;color:${ac};letter-spacing:0.06em;text-transform:uppercase;">${sub}</div>` : ''}
+              </div>
+              <!-- TikTok-style right sidebar icons -->
+              <div style="position:absolute;bottom:60px;right:10px;z-index:3;display:flex;flex-direction:column;align-items:center;gap:14px;">
+                <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </div>
+                <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>`;
+
         html += `
         <div class="concept-card" style="padding:0;overflow:hidden;border-color:var(--gold-border);">
           <div style="padding:12px 16px 10px;background:var(--gold-light);border-bottom:1px solid var(--gold-border);">
-            <div class="concept-card-label" style="margin:0;">Thumbnail mockup — SAM's vision</div>
+            <div class="concept-card-label" style="margin:0;">Thumbnail mockups — SAM's vision</div>
           </div>
           <div style="padding:16px;">
-            <div class="thumbnail-mockup" style="
-              position:relative;
-              width:100%;
-              aspect-ratio:16/9;
-              background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 50%,#0d0d0d 100%);
-              border-radius:10px;
-              overflow:hidden;
-              display:flex;
-              align-items:flex-end;
-              justify-content:flex-start;
-              padding:18px 20px;
-              box-shadow:0 8px 32px rgba(0,0,0,0.4);
-            ">
-              <!-- Accent bar top -->
-              <div style="position:absolute;top:0;left:0;right:0;height:5px;background:${accentColor};"></div>
-              <!-- Gradient overlay -->
-              <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,rgba(0,0,0,0.2) 55%,transparent 100%);"></div>
-              <!-- Emotion badge -->
-              ${emotion ? `<div style="position:absolute;top:14px;right:14px;background:${accentColor};color:#fff;font-family:'Inter',sans-serif;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:5px 11px;border-radius:4px;text-transform:uppercase;">${emotion}</div>` : ''}
-              <!-- Text content -->
-              <div style="position:relative;z-index:2;">
-                <div style="font-family:'Inter',sans-serif;font-size:clamp(18px,3.5vw,28px);font-weight:900;color:#fff;line-height:1.1;letter-spacing:-0.02em;text-transform:uppercase;text-shadow:0 2px 12px rgba(0,0,0,0.8);margin-bottom:6px;">${data.thumbnail_headline}</div>
-                ${data.thumbnail_subtext ? `<div style="font-family:'Inter',sans-serif;font-size:clamp(11px,1.8vw,15px);font-weight:600;color:${accentColor};letter-spacing:0.04em;text-transform:uppercase;">${data.thumbnail_subtext}</div>` : ''}
-              </div>
+            <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:14px;align-items:start;">
+              ${hThumb}
+              ${vThumb}
             </div>
-            <div style="margin-top:10px;font-size:12px;color:var(--text-muted);font-style:italic;line-height:1.5;">${data.thumbnail_strategy || ''}</div>
-            <button class="copy-btn" style="margin-top:8px;" onclick="copyThumbnailText(this, '${(data.thumbnail_headline||'').replace(/'/g,"\'")}', '${(data.thumbnail_subtext||'').replace(/'/g,"\'")}')">Copy text</button>
+            <div style="margin-top:12px;font-size:12px;color:var(--text-muted);font-style:italic;line-height:1.5;">${strat}</div>
+            <button class="copy-btn" style="margin-top:8px;" onclick="copyThumbnailText(this, '${hl.replace(/'/g,"\'")}', '${sub.replace(/'/g,"\'")}')">Copy text</button>
           </div>
         </div>`;
       }
