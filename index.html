@@ -2933,10 +2933,32 @@ function renderLens(data) {
       </div>`;
 
       const ct = data.content_type || data.content_angle || '';
+
+      // Safe templates — clean, readable, professional
+      const safeTemplates = ['cinematic','newsFlash','stackedBoxes','beforeAfter'];
+      // Bold templates — aggressive, high contrast, scroll-stopping
+      const boldTemplates = ['giantWord','cornerBurst','diagonalSlash','emojiAnchor'];
+
+      // Pick based on content type, but keep safe/bold separation
+      const safeKey = (() => {
+        const c = ct.toLowerCase();
+        if (c.includes('transform') || c.includes('renovati') || c.includes('before')) return 'beforeAfter';
+        if (c.includes('emotional') || c.includes('family') || c.includes('moment')) return 'cinematic';
+        if (c.includes('numbers') || c.includes('cost') || c.includes('achievement')) return 'stackedBoxes';
+        return 'newsFlash';
+      })();
+      const boldKey = (() => {
+        const c = ct.toLowerCase();
+        if (c.includes('personal') || c.includes('story') || c.includes('family')) return 'emojiAnchor';
+        if (c.includes('numbers') || c.includes('achievement')) return 'cornerBurst';
+        if (c.includes('tutorial') || c.includes('transform')) return 'diagonalSlash';
+        return 'giantWord';
+      })();
+
       setTimeout(() => {
         if (hl2) {
-          renderThumbnailCanvases(hl1, sub1, ac, imgSrc, 'thumb169s', 'thumb916s', ct);
-          renderThumbnailCanvases(hl2, sub2, ac, imgSrc, 'thumb169b', 'thumb916b', ct, 'giantWord');
+          renderThumbnailCanvases(hl1, sub1, ac, imgSrc, 'thumb169s', 'thumb916s', ct, safeKey);
+          renderThumbnailCanvases(hl2, sub2, ac, imgSrc, 'thumb169b', 'thumb916b', ct, boldKey);
         } else {
           renderThumbnailCanvases(hl1, sub1, ac, imgSrc, 'thumb169', 'thumb916', ct);
         }
