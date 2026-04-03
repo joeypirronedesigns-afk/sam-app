@@ -1,6 +1,3 @@
-// Tell Vercel to allow up to 30s for this function
-module.exports.config = { maxDuration: 30 };
-
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
@@ -139,15 +136,15 @@ module.exports = async function handler(req, res) {
     // ── CALENDAR ──────────────────────────────────────────────────────────
     if (mode === 'calendar') {
       const platList = platforms && platforms.length > 0 ? platforms : ['TikTok', 'Instagram Reels', 'YouTube Shorts', 'LinkedIn'];
-      const prompt = base + ' Build a strategic 7-day posting plan. Rotate across: ' + platList.join(', ') + '. For each day, write caption/content that respects that platform exact character limits and hashtag rules as specified above. Return exactly: {"days":[{"platform":"platform name","post_type":"format","content":"ready-to-post caption respecting that platforms character limit","tip":"one tactical tip specific to that platform","ideal_time":"specific time + brief reason"}]}';
-      const parsed = await callAnthropic(prompt, moment, 2200);
+      const prompt = base + ' Build a concise 7-day posting plan. Keep each day short and punchy. Rotate across: ' + platList.join(', ') + '. For each day, write caption/content that respects that platform exact character limits and hashtag rules as specified above. Return exactly: {"days":[{"platform":"platform name","post_type":"format","content":"ready-to-post caption respecting that platforms character limit","tip":"one tactical tip specific to that platform","ideal_time":"specific time + brief reason"}]}';
+      const parsed = await callAnthropic(prompt, moment, 1400);
       return res.status(200).json(parsed);
     }
 
     // ── IDEAS ─────────────────────────────────────────────────────────────
     if (mode === 'ideas') {
       const prompt = base + ' Generate exactly 10 specific, actionable content ideas for this week. Return: {"ideas":[{"title":"specific idea title","why":"one sentence why this performs","best_platform":"single best platform name e.g. TikTok, YouTube Shorts, Instagram Reels, LinkedIn, Facebook Reels, YouTube"}]}';
-      const parsed = await callAnthropic(prompt, moment, 2000);
+      const parsed = await callAnthropic(prompt, moment, 1400);
       return res.status(200).json(parsed);
     }
 
@@ -232,7 +229,7 @@ module.exports = async function handler(req, res) {
     const systemPrompt = mode === 'story' ? storyPrompt : hookPrompt;
     if (!systemPrompt) return res.status(400).json({ error: 'Invalid mode' });
 
-    const parsed = await callAnthropic(systemPrompt, moment, 2200);
+    const parsed = await callAnthropic(systemPrompt, moment, 1600);
     return res.status(200).json(parsed);
 
   } catch (err) {
