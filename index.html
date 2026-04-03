@@ -1493,75 +1493,98 @@
         </div>
         <div class="tool-header-title">The Lens</div>
       </div>
-      <div class="glass">
-        <div class="field-label"><span class="field-label-accent" style="background:var(--lens);"></span>What are you sharing?</div>
-        <div class="upload-tabs">
-          <button class="upload-tab sel" data-t="photo" onclick="selectUploadTab(this)">
-            <span class="upload-tab-icon">🖼️</span>
-            <span class="upload-tab-label">Photo or thumbnail</span>
-          </button>
-          <button class="upload-tab" data-t="analytics" onclick="selectUploadTab(this)">
-            <span class="upload-tab-icon">📊</span>
-            <span class="upload-tab-label">Analytics screenshot</span>
-          </button>
-          <button class="upload-tab" data-t="text_only" onclick="selectUploadTab(this)">
-            <span class="upload-tab-icon">✍️</span>
-            <span class="upload-tab-label">Text idea only</span>
-          </button>
-        </div>
 
-        <div id="lensImageZone">
-          <div class="drop-zone" id="dropZone" onclick="document.getElementById('lensFile').click()" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
-            <input type="file" id="lensFile" accept="image/*" style="display:none;" onchange="handleFile(event)">
-            <div id="dropInner">
-              <div class="drop-icon">📎</div>
-              <div class="drop-label">Drop an image or <span class="drop-link">browse</span></div>
-              <div class="drop-hint">Screenshots, photos, thumbnails</div>
-            </div>
-            <div id="dropPreview" style="display:none;position:relative;width:100%;">
-              <img class="preview-img" id="previewImg" src="" alt="" />
-              <button class="remove-btn" onclick="removeImg(event)">✕</button>
-              <div class="preview-label" id="previewLabel"></div>
-            </div>
+      <!-- MODE A: PHOTO -->
+      <div class="glass" style="border-color:var(--lens-border);">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div style="width:38px;height:38px;border-radius:11px;background:var(--lens-bg);border:1px solid var(--lens-border);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🖼️</div>
+          <div>
+            <div style="font-size:15px;font-weight:600;color:var(--text);">Drop a photo or thumbnail</div>
+            <div style="font-size:13px;color:var(--text2);margin-top:2px;">SAM builds your thumbnail strategy and platform content</div>
           </div>
         </div>
-
-        <div style="margin-top:14px;">
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
+          <span style="font-size:12px;font-weight:500;padding:4px 10px;border-radius:20px;background:var(--lens-bg);border:1px solid var(--lens-border);color:var(--lens);">📐 16:9 YouTube thumbnail</span>
+          <span style="font-size:12px;font-weight:500;padding:4px 10px;border-radius:20px;background:var(--lens-bg);border:1px solid var(--lens-border);color:var(--lens);">📱 9:16 TikTok &amp; Reels frame</span>
+          <span style="font-size:12px;font-weight:500;padding:4px 10px;border-radius:20px;background:var(--lens-bg);border:1px solid var(--lens-border);color:var(--lens);">✍️ Text overlay ideas</span>
+          <span style="font-size:12px;font-weight:500;padding:4px 10px;border-radius:20px;background:var(--lens-bg);border:1px solid var(--lens-border);color:var(--lens);">🎯 Hook ideas</span>
+          <span style="font-size:12px;font-weight:500;padding:4px 10px;border-radius:20px;background:var(--lens-bg);border:1px solid var(--lens-border);color:var(--lens);">📋 Platform captions</span>
+        </div>
+        <div class="drop-zone" id="dropZone" onclick="document.getElementById('lensFile').click()" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+          <input type="file" id="lensFile" accept="image/*" style="display:none;" onchange="handleFile(event)">
+          <div id="dropInner">
+            <div class="drop-icon">📎</div>
+            <div class="drop-label">Drop a photo or <span class="drop-link">browse</span></div>
+            <div class="drop-hint">Photos, thumbnails, screenshots</div>
+          </div>
+          <div id="dropPreview" style="display:none;position:relative;width:100%;">
+            <img class="preview-img" id="previewImg" src="" alt="" />
+            <button class="remove-btn" onclick="removeImg(event)">✕</button>
+            <div class="preview-label" id="previewLabel"></div>
+          </div>
+        </div>
+        <div style="margin-top:12px;">
           <div class="field-label"><span class="field-label-accent" style="background:var(--lens);"></span>Add context <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3);font-size:12px;">(optional)</span></div>
           <div class="input-wrap">
-            <textarea id="lensInp" placeholder="Add any context, questions, or goals for this analysis..." style="min-height:80px;"></textarea>
+            <textarea id="lensInp" placeholder="e.g. This is from my renovation series — help me build a thumbnail that stops the scroll..." style="min-height:70px;padding-right:94px;"></textarea>
             <button class="paste-btn" onclick="pasteToEl('lensInp')" title="Paste">📋</button>
-          <button class="mic-btn" id="micLens" onclick="toggleMicFor('lensInp','micLens')">🎙</button>
+            <button class="mic-btn" id="micLens" onclick="toggleMicFor('lensInp','micLens')">🎙</button>
           </div>
         </div>
-
-        <div style="margin-top:14px;">
-          <div class="field-label"><span class="field-label-accent" style="background:var(--lens);"></span>Platform <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3);font-size:12px;">(optional)</span></div>
-          <div class="platform-grid" id="lensPlatforms">
-            <button class="platform-pill" data-p="TikTok" onclick="togglePill(this,'lensPlatforms')">🎵 TikTok</button>
-            <button class="platform-pill" data-p="YouTube Shorts" onclick="togglePill(this,'lensPlatforms')">▶ YT Shorts</button>
-            <button class="platform-pill" data-p="YouTube" onclick="togglePill(this,'lensPlatforms')">▶ YouTube</button>
-            <button class="platform-pill" data-p="Instagram Reels" onclick="togglePill(this,'lensPlatforms')">📸 Reels</button>
-            <button class="platform-pill" data-p="Facebook Reels" onclick="togglePill(this,'lensPlatforms')">👥 Facebook</button>
-            <button class="platform-pill" data-p="LinkedIn" onclick="togglePill(this,'lensPlatforms')">💼 LinkedIn</button>
-          </div>
-        </div>
-
-        <div class="loader" id="lensLoader"><div class="loader-dots"><span style="background:var(--lens)"></span><span style="background:var(--lens)"></span><span style="background:var(--lens)"></span></div><div class="loader-text" id="lensLoaderText">SAM is reading your content...</div></div>
+        <div class="loader" id="lensLoader"><div class="loader-dots"><span style="background:var(--lens)"></span><span style="background:var(--lens)"></span><span style="background:var(--lens)"></span></div><div class="loader-text" id="lensLoaderText">SAM is reading your image...</div></div>
         <div class="err-box" id="lensErr"></div>
-        <button class="run-btn run-lens" id="lensBtn" onclick="runLens()"><span id="lensBtnLabel">Analyse & strategize →</span></button>
+        <button class="run-btn run-lens" id="lensBtn" onclick="runLens('photo')" style="margin-top:14px;">Analyse image →</button>
       </div>
-      <div class="output-wrap" id="lensOutput">
-        <div class="output-card">
-          <div class="output-header">
-            <div class="output-label" id="lensOutLabel" style="color:var(--lens);">SAM's strategy</div>
-            <button class="reset-btn" onclick="resetTool('lens')">← Start over</button>
+
+      <!-- OR DIVIDER -->
+      <div style="display:flex;align-items:center;gap:12px;margin:4px 0;">
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <div style="font-size:12px;color:var(--text3);font-weight:600;letter-spacing:0.08em;">OR</div>
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+      </div>
+
+      <!-- MODE B: ANALYTICS -->
+      <div class="glass">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div style="width:38px;height:38px;border-radius:11px;background:var(--blueprint-bg);border:1px solid var(--blueprint-border);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">📊</div>
+          <div>
+            <div style="font-size:15px;font-weight:600;color:var(--text);">Drop an analytics screenshot</div>
+            <div style="font-size:13px;color:var(--text2);margin-top:2px;">SAM reads your numbers and tells you exactly what to post next</div>
           </div>
-          <div class="output-body" id="lensBody"></div>
-          <div class="save-bar"><button class="save-btn" onclick="window.print()">↓ Save as PDF</button></div>
         </div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
+          <span style="font-size:12px;font-weight:500;padding:4px 10px;border-radius:20px;background:var(--blueprint-bg);border:1px solid var(--blueprint-border);color:var(--blueprint);">📈 What's working</span>
+          <span style="font-size:12px;font-weight:500;padding:4px 10px;border-radius:20px;background:var(--blueprint-bg);border:1px solid var(--blueprint-border);color:var(--blueprint);">⚠️ What to fix</span>
+          <span style="font-size:12px;font-weight:500;padding:4px 10px;border-radius:20px;background:var(--blueprint-bg);border:1px solid var(--blueprint-border);color:var(--blueprint);">📅 3 posts to make this week</span>
+          <span style="font-size:12px;font-weight:500;padding:4px 10px;border-radius:20px;background:var(--blueprint-bg);border:1px solid var(--blueprint-border);color:var(--blueprint);">🚀 Bold growth move</span>
+        </div>
+        <div class="drop-zone" id="dropZoneAnalytics" onclick="document.getElementById('lensFileAnalytics').click()" ondragover="handleDragOver2(event)" ondragleave="handleDragLeave2(event)" ondrop="handleDrop2(event)">
+          <input type="file" id="lensFileAnalytics" accept="image/*" style="display:none;" onchange="handleFile2(event)">
+          <div id="dropInner2">
+            <div class="drop-icon">📊</div>
+            <div class="drop-label">Drop your analytics or <span class="drop-link">browse</span></div>
+            <div class="drop-hint">TikTok, YouTube, Instagram analytics</div>
+          </div>
+          <div id="dropPreview2" style="display:none;position:relative;width:100%;">
+            <img class="preview-img" id="previewImg2" src="" alt="" />
+            <button class="remove-btn" onclick="removeImg2(event)">✕</button>
+            <div class="preview-label" id="previewLabel2"></div>
+          </div>
+        </div>
+        <div class="loader" id="lensLoader2"><div class="loader-dots"><span style="background:var(--blueprint)"></span><span style="background:var(--blueprint)"></span><span style="background:var(--blueprint)"></span></div><div class="loader-text">SAM is reading your analytics...</div></div>
+        <div class="err-box" id="lensErr2"></div>
+        <button class="run-btn run-blueprint" id="lensBtn2" onclick="runLens('analytics')" style="margin-top:14px;">Read my analytics →</button>
       </div>
-    </div>
+
+      <!-- REDIRECT: text ideas → The Pulse -->
+      <div style="background:var(--pulse-bg);border:1px solid var(--pulse-border);border-radius:var(--radius);padding:14px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <div style="font-size:22px;flex-shrink:0;">💡</div>
+        <div style="flex:1;min-width:180px;">
+          <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px;">Have a content idea instead?</div>
+          <div style="font-size:13px;color:var(--text2);">The Pulse builds a full script, hook and platform strategy from any idea.</div>
+        </div>
+        <button onclick="goHome();setTimeout(()=>previewTool('pulse'),150)" style="background:var(--pulse-bg);border:1px solid var(--pulse-border);border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;color:var(--pulse);cursor:pointer;white-space:nowrap;">Use The Pulse →</button>
+      </div></div>
 
   </div><!-- end tool-section -->
 </main>
@@ -1846,6 +1869,10 @@ function resetTool(tool) {
   const inputs = { pulse: 'pulseInp', spark: 'sparkInp', blueprint: 'blueprintInp', vision: 'visionInp', lens: 'lensInp' };
   if (inputs[tool]) document.getElementById(inputs[tool]).value = '';
   if (tool === 'pulse') updateChar('pulseInp','pulseChar');
+  if (tool === 'lens') {
+    removeImg({ stopPropagation: ()=>{} });
+    removeImg2({ stopPropagation: ()=>{} });
+  }
   document.getElementById(tool + 'Btn').disabled = false;
 }
 
@@ -2254,14 +2281,7 @@ function renderVision(data) {
 }
 
 // ── THE LENS ────────────────────────────────────────────────────────────────
-function selectUploadTab(btn) {
-  document.querySelectorAll('.upload-tab').forEach(t => t.classList.remove('sel'));
-  btn.classList.add('sel');
-  currentUploadType = btn.dataset.t;
-  const imgZone = document.getElementById('lensImageZone');
-  imgZone.style.display = currentUploadType === 'text_only' ? 'none' : 'block';
-  document.getElementById('lensBtnLabel').textContent = currentUploadType === 'text_only' ? 'Analyse idea →' : 'Analyse & strategize →';
-}
+function selectUploadTab(btn) { /* removed — no longer using tabs */ }
 
 function handleDragOver(e) { e.preventDefault(); document.getElementById('dropZone').style.borderColor = 'var(--lens)'; }
 function handleDragLeave() { document.getElementById('dropZone').style.borderColor = ''; }
@@ -2462,6 +2482,106 @@ async function pasteToEl(id) {
       if (btn) { btn.textContent = '✓'; setTimeout(() => btn.textContent = '📋', 1500); }
     }
   } catch(e) { alert('Paste: use Ctrl+V / Cmd+V directly.'); }
+}
+
+
+// ── THUMBNAIL CANVAS + DOWNLOAD ──────────────────────────────────────────────
+function renderThumbnailCanvases(headline, subtext, accentColor, imgSrc) {
+  drawThumb('thumb169canvas', 1280, 720, headline, subtext, accentColor, imgSrc);
+  drawThumb('thumb916canvas', 1080, 1920, headline, subtext, accentColor, imgSrc);
+}
+
+function drawThumb(canvasId, w, h, headline, subtext, accentColor, imgSrc) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d');
+
+  const finish = () => {
+    // Gradient overlay
+    const grad = ctx.createLinearGradient(0, h * 0.35, 0, h);
+    grad.addColorStop(0, 'rgba(0,0,0,0)');
+    grad.addColorStop(0.5, 'rgba(0,0,0,0.55)');
+    grad.addColorStop(1, 'rgba(0,0,0,0.92)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+
+    // Accent bar top
+    ctx.fillStyle = accentColor;
+    ctx.fillRect(0, 0, w, h * 0.008);
+
+    // Headline
+    const fontSize = Math.round(h * (h > w ? 0.065 : 0.075));
+    ctx.font = `800 ${fontSize}px 'Sora', 'Arial Black', sans-serif`;
+    ctx.fillStyle = '#ffffff';
+    ctx.shadowColor = 'rgba(0,0,0,0.95)';
+    ctx.shadowBlur = 18;
+    ctx.textBaseline = 'bottom';
+
+    const maxW = w * 0.88;
+    const words = headline.toUpperCase().split(' ');
+    const lines = [];
+    let cur = '';
+    for (const word of words) {
+      const test = cur ? cur + ' ' + word : word;
+      if (ctx.measureText(test).width > maxW && cur) {
+        lines.push(cur);
+        cur = word;
+      } else { cur = test; }
+    }
+    if (cur) lines.push(cur);
+
+    const lineH = fontSize * 1.15;
+    const totalH = lines.length * lineH + (subtext ? fontSize * 0.65 : 0);
+    let y = h - h * 0.065 - totalH + lineH;
+
+    for (const line of lines) {
+      ctx.fillText(line, w * 0.06, y);
+      y += lineH;
+    }
+
+    // Subtext
+    if (subtext) {
+      const subSize = Math.round(fontSize * 0.52);
+      ctx.font = `700 ${subSize}px 'Sora', 'Arial Black', sans-serif`;
+      ctx.fillStyle = accentColor;
+      ctx.shadowBlur = 10;
+      ctx.fillText(subtext.toUpperCase(), w * 0.06, y + subSize * 0.3);
+    }
+    ctx.shadowBlur = 0;
+  };
+
+  if (imgSrc && imgSrc.startsWith('data:')) {
+    const img = new Image();
+    img.onload = () => {
+      // Cover crop
+      const scale = Math.max(w / img.width, h / img.height);
+      const sw = img.width * scale;
+      const sh = img.height * scale;
+      const sx = (w - sw) / 2;
+      const sy = (h - sh) / 2;
+      ctx.drawImage(img, sx, sy, sw, sh);
+      finish();
+    };
+    img.src = imgSrc;
+  } else {
+    const bg = ctx.createLinearGradient(0, 0, w, h);
+    bg.addColorStop(0, '#111111');
+    bg.addColorStop(1, '#1c1c1c');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, w, h);
+    finish();
+  }
+}
+
+function downloadCanvas(canvasId, filename) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const link = document.createElement('a');
+  link.download = filename;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
 }
 
 // ── INIT ─────────────────────────────────────────────────────────────────────
