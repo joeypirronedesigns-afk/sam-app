@@ -1932,6 +1932,7 @@ async function readStream(r) {
   let result = null;
   let streamError = null;
   let accumulated = '';
+  let rawLines = [];
 
   while (true) {
     const { done, value } = await reader.read();
@@ -1940,6 +1941,7 @@ async function readStream(r) {
     const lines = buffer.split('\n');
     buffer = lines.pop();
     for (const line of lines) {
+      rawLines.push(line);
       if (!line.startsWith('data: ')) continue;
       const raw = line.slice(6).trim();
       if (!raw) continue;
@@ -1948,26 +1950,28 @@ async function readStream(r) {
         if (evt.error) { streamError = evt.error; continue; }
         if (evt.done && evt.result) { result = evt.result; return result; }
         if (evt.t) { accumulated += evt.t; }
-      } catch(e) { /* partial chunk, skip */ }
+      } catch(e) {}
     }
   }
 
   if (result) return result;
 
-  // Server sent text chunks but no done event — try parsing accumulated text
   if (accumulated) {
     const clean = accumulated.replace(/```json/g,'').replace(/```/g,'').trim();
     const first = clean.indexOf('{');
     const last = clean.lastIndexOf('}');
     if (first !== -1 && last !== -1) {
-      try {
-        return JSON.parse(clean.slice(first, last + 1));
-      } catch(e) {}
+      try { return JSON.parse(clean.slice(first, last + 1)); } catch(e) {}
     }
+    // Show what we actually got on screen
+    throw new Error('SAM responded but output could not be parsed. Raw: ' + accumulated.slice(0,300));
   }
 
   if (streamError) throw new Error(streamError);
-  throw new Error('No result received — please try again.');
+  
+  // Show raw lines for diagnosis
+  const preview = rawLines.slice(0,5).join(' | ').slice(0,200);
+  throw new Error('Stream empty. Lines received: ' + rawLines.length + '. Preview: ' + preview);
 }
 
 function getBase() {
@@ -2450,7 +2454,11 @@ async function runLens(mode) {
   lensInterval = setInterval(() => { li=(li+1)%lensLines.length; }, 1800);
 
   try {
-    const data = await callAPI({ ...getBase(), mode:'upload', moment:text||'Analyse this image.', platforms:[], imageBase64:imgB64, imageType:imgType||'image/jpeg', forceType:mode });
+    console.log('runLens: mode='+mode+' imgB64 length='+(imgB64?imgB64.length:0)+' imgType='+imgType);
+    const payload = { ...getBase(), mode:'upload', moment:text||'Analyse this image.', platforms:[], imageBase64:imgB64, imageType:imgType||'image/jpeg', forceType:mode };
+    console.log('runLens: sending payload, forceType='+payload.forceType+' hasImage='+!!payload.imageBase64);
+    const data = await callAPI(payload);
+    console.log('runLens: got data back:', JSON.stringify(data).slice(0,200));
     clearInterval(lensInterval);
     document.getElementById(loaderId).classList.remove('show');
     renderLens(data);
@@ -2461,6 +2469,7 @@ async function runLens(mode) {
     clearInterval(lensInterval);
     document.getElementById('lensLoader').classList.remove('show');
     document.getElementById('lensLoader2').classList.remove('show');
+    console.error('runLens error:', err.message);
     showErr(errId, err.message);
     document.getElementById(btnId).disabled = false;
   }
