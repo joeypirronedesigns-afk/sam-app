@@ -7,50 +7,65 @@ module.exports = async function handler(req, res) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'API key not configured' });
 
+  // ── WHAT SAM ACTUALLY DOES (honest capabilities) ──────────────────────────
+  // SAM writes: scripts, hooks, captions, hashtags, content strategies, ideas,
+  //             posting calendars, video concepts, thumbnail strategy
+  // SAM does NOT: make videos, edit footage, post content, design graphics,
+  //               guarantee results, replace the creator's voice or presence
+  // Every output helps the CREATOR make better content — SAM is the strategy
+  // brain, the creator is still the one who films, edits and shows up.
+  // ──────────────────────────────────────────────────────────────────────────
+
   const PLATFORM_SPECS = {
-    'TikTok': { caption_limit: 2200, hashtag_rule: '3-5 hashtags', caption_note: 'Hook in first line. Up to 2200 chars.', video_note: 'Vertical 9:16, under 60s.' },
-    'YouTube Shorts': { caption_limit: 100, title: true, hashtag_rule: 'First 3 hashtags above title', caption_note: 'Title up to 100 chars is critical.', video_note: 'Vertical 9:16, under 60s.' },
-    'YouTube': { caption_limit: 5000, title: true, hashtag_rule: 'Up to 15 hashtags; first 3 above title', caption_note: 'Title up to 100 chars. Front-load keywords.', video_note: 'Horizontal 16:9.' },
-    'Instagram Reels': { caption_limit: 2200, hashtag_rule: '3-5 focused hashtags', caption_note: 'First 125 chars critical. Hashtags at end.', video_note: 'Vertical 9:16, 3s-90s.' },
-    'Facebook Reels': { caption_limit: 477, hashtag_rule: '2-3 hashtags max', caption_note: 'Under 477 chars. 2-3 hashtags max.', video_note: 'Vertical 9:16, under 60s.' },
-    'LinkedIn': { caption_limit: 3000, hashtag_rule: '3-5 hashtags at end', caption_note: 'Up to 3000 chars. First 210 chars critical.', video_note: 'Square 1:1 or vertical 4:5.' },
-    'X (Twitter)': { caption_limit: 280, hashtag_rule: '1-2 hashtags max', caption_note: 'Hard 280 char limit.', video_note: 'Under 2:20 length.' }
+    'TikTok':           { limit: 2200, hashtags: '3-5 hashtags', note: 'Hook in first line. First 1-2 seconds decide everything. Under 60s performs best.' },
+    'YouTube Shorts':   { limit: 100,  hashtags: '3 hashtags above title', note: 'Title up to 100 chars is the primary discovery hook. Vertical 9:16, under 60s.' },
+    'YouTube':          { limit: 5000, hashtags: '5-8 hashtags, first 3 appear above title', note: 'Title up to 100 chars. First 2-3 lines of description show before "more". Front-load keywords.' },
+    'Instagram Reels':  { limit: 2200, hashtags: '3-5 focused hashtags', note: 'First 125 chars critical. Reels reach non-followers more than any other IG format.' },
+    'Facebook Reels':   { limit: 477,  hashtags: '2-3 hashtags max', note: 'Under 477 chars. Hook in first 3 seconds.' },
+    'LinkedIn':         { limit: 3000, hashtags: '3-5 hashtags at end', note: 'First 210 chars show before "see more". Professional but personal works best.' },
+    'X (Twitter)':      { limit: 280,  hashtags: '1-2 hashtags max', note: 'Hard 280 char limit including hashtags. Links count as 23 chars.' }
   };
 
   const getPlatformContext = (platList) => {
-    if (!platList || platList.length === 0) return '';
+    if (!platList || !platList.length) return '';
     return platList.map(p => {
-      const spec = PLATFORM_SPECS[p];
-      if (!spec) return p;
-      return `${p}: ${spec.caption_note} ${spec.hashtag_rule}.`;
+      const s = PLATFORM_SPECS[p]; if (!s) return p;
+      return `${p}: ${s.note} Character limit: ${s.limit}. Hashtags: ${s.hashtags}.`;
     }).join(' | ');
   };
 
-  const platformContext = platforms && platforms.length > 0 ? 'PLATFORM SPECS: ' + getPlatformContext(platforms) : '';
-  const formatContext = contentType ? 'Content format: ' + contentType + '.' : '';
-  const creatorLine = creatorContext ? 'About this creator: ' + creatorContext + '.' : '';
-  const languageLine = outputLanguage ? 'Write ENTIRE output in ' + outputLanguage + '.' : '';
-  const emojiLine = emojiPreference === 'no' ? 'NO emojis.' : emojiPreference === 'lots' ? 'Use emojis freely.' : 'Max 1-2 emojis per section.';
   const toneMap = {
-    'Authentic/Natural': 'Tone: Authentic, real, conversational.',
-    'Viral/Hype': 'Tone: Viral, bold, punchy.',
-    'Wise/Mentor': 'Tone: Wise, thoughtful, mentor-like.',
-    'Bubbly/Energetic': 'Tone: Bubbly, warm, energetic.'
+    'Authentic/Natural': 'Write in an authentic, real, conversational tone — like a real person talking, not a marketer.',
+    'Viral/Hype':        'Write in a bold, punchy, high-energy tone — scroll-stopping but not fake.',
+    'Wise/Mentor':       'Write in a wise, thoughtful, mentor-like tone — insight-driven, builds trust.',
+    'Bubbly/Energetic':  'Write in a warm, bubbly, energetic tone — fun and uplifting.'
   };
   const toneContext = toneMap[tone] || toneMap['Authentic/Natural'];
-  const base = `You are S.A.M. — Strategic Assistant for Making. ${toneContext} ${emojiLine} ${creatorLine} ${languageLine} ${platformContext} ${formatContext} CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No explanation.`;
+
+  const emojiMap = { no: 'Use zero emojis.', few: 'Use 1-2 emojis maximum, only where they add genuine meaning.', lots: 'Use emojis freely and expressively.' };
+  const emojiLine = emojiMap[emojiPreference] || emojiMap['few'];
+
+  const creatorLine = creatorContext
+    ? `CREATOR CONTEXT: ${creatorContext} — Use this to make every output specific to this creator's story, niche, audience and voice. Never write generic content when you have this context.`
+    : 'No creator context provided — write in a clear, relatable creator voice.';
+
+  const languageLine = outputLanguage ? `Write the ENTIRE output in ${outputLanguage}. JSON field names stay in English.` : '';
+  const platformContext = platforms && platforms.length > 0 ? `PLATFORM SPECS (follow exactly): ${getPlatformContext(platforms)}` : '';
+  const formatContext = contentType ? `Content format requested: ${contentType}.` : '';
+
+  // HONEST SAM IDENTITY — what SAM is and isn't
+  const samIdentity = `You are S.A.M. — Strategic Assistant for Making. You are an AI content strategist that helps creators write better scripts, hooks, captions, strategies and content plans. You give creators the words, the structure and the strategy — they bring the camera, the personality and the story. Never claim SAM makes videos, posts content, or does anything the creator still needs to do themselves. Be honest about what you've produced: scripts to be read, captions to be posted, strategies to be executed.`;
+
+  const base = `${samIdentity} ${toneContext} ${emojiLine} ${creatorLine} ${languageLine} ${platformContext} ${formatContext} CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No explanation outside the JSON.`;
 
   const streamCall = async (system, userContent, maxTokens) => {
-    console.log('streamCall - maxTokens:', maxTokens, '- model: claude-sonnet-4-6');
     const r = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
       body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: maxTokens, stream: true, system, messages: [{ role: 'user', content: userContent }] })
     });
-    console.log('Anthropic response status:', r.status);
     if (!r.ok) {
       const e = await r.text().catch(() => '');
-      console.error('Anthropic error:', r.status, e.slice(0, 300));
       throw new Error('Anthropic error ' + r.status + (e ? ': ' + e.slice(0, 200) : ''));
     }
     res.setHeader('Content-Type', 'text/event-stream');
@@ -77,24 +92,16 @@ module.exports = async function handler(req, res) {
         } catch (_) {}
       }
     }
-    // Clean and parse
-    let clean = full.trim();
-    // Strip markdown code fences
-    clean = clean.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim();
-    // Extract first complete JSON object
-    const firstBrace = clean.indexOf('{');
-    const lastBrace = clean.lastIndexOf('}');
-    if (firstBrace !== -1 && lastBrace !== -1) {
-      clean = clean.slice(firstBrace, lastBrace + 1);
-    }
+    let clean = full.trim()
+      .replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim();
+    const first = clean.indexOf('{');
+    const last = clean.lastIndexOf('}');
+    if (first !== -1 && last !== -1) clean = clean.slice(first, last + 1);
     let parsed;
-    try {
-      parsed = JSON.parse(clean);
-    } catch(e) {
-      // Send error through stream so frontend shows it properly
+    try { parsed = JSON.parse(clean); }
+    catch (e) {
       res.write('data: ' + JSON.stringify({ error: 'SAM had trouble formatting the response. Please try again.' }) + '\n\n');
-      res.end();
-      return;
+      res.end(); return;
     }
     res.write('data: ' + JSON.stringify({ done: true, result: parsed }) + '\n\n');
     res.end();
@@ -109,61 +116,75 @@ module.exports = async function handler(req, res) {
 
     // ── CALENDAR ─────────────────────────────────────────────────────────────
     if (mode === 'calendar') {
-      const platList = platforms && platforms.length > 0 ? platforms : ['TikTok','YouTube Shorts','Instagram Reels','Facebook Reels'];
-      const prompt = base + ' Build a 7-day posting plan. Rotate across: ' + platList.join(', ') + '. Return ONLY: {"days":[{"platform":"name","post_type":"format","content":"ready-to-post caption"}]}';
+      const platList = platforms && platforms.length > 0 ? platforms : ['TikTok', 'Instagram Reels', 'YouTube Shorts'];
+      const prompt = `${base}
+Build a 7-day content posting plan. Each day gives the creator a specific, actionable content idea with a ready-to-post caption.
+Be honest: these are CAPTION and CONTENT IDEAS for the creator to execute — not finished videos.
+Rotate across: ${platList.join(', ')}.
+Each caption must respect that platform's character limit exactly.
+Return ONLY: {"days":[{"platform":"platform name","post_type":"Reel OR Short OR Post OR Video","content":"ready-to-post caption respecting character limit with hashtags"}]}`;
       return await streamCall(prompt, moment, 1600);
     }
 
     // ── IDEAS ─────────────────────────────────────────────────────────────────
     if (mode === 'ideas') {
-      const platList = platforms && platforms.length > 0 ? platforms : ['TikTok','YouTube Shorts','Instagram Reels'];
-      const prompt = base + ' Generate exactly 5 specific content ideas. Return ONLY: {"ideas":[{"title":"idea title","why":"one sentence why this performs","best_platform":"single platform name"}]}';
+      const platList = platforms && platforms.length > 0 ? platforms : ['TikTok', 'Instagram Reels', 'YouTube'];
+      const prompt = `${base}
+Generate exactly 5 specific, compelling content ideas this creator could actually make.
+These are IDEAS for the creator to execute — not finished content.
+Make each idea specific to their niche, not generic. Each should feel like something only THEY could make.
+For each idea: title should be the actual video/post concept, why should explain the specific audience insight, best_platform should name one platform.
+Return ONLY: {"ideas":[{"title":"specific content idea","why":"one sentence on why this resonates with their specific audience","best_platform":"single platform name"}]}`;
       return await streamCall(prompt, moment, 900);
     }
 
-    // ── UPLOAD (image analysis) ───────────────────────────────────────────────
+    // ── UPLOAD (photo or analytics) ──────────────────────────────────────────
     if (mode === 'upload') {
       const imageBase64 = req.body.imageBase64 || null;
       const imageType = req.body.imageType || 'image/jpeg';
       const forceType = req.body.forceType || null;
 
-      // PHOTO mode — focused output, lean JSON
-      console.log('UPLOAD MODE - forceType:', forceType, '- hasImage:', !!imageBase64, '- imageSize:', imageBase64 ? Math.round(imageBase64.length/1024) + 'KB' : '0');
       if (forceType === 'photo' || (!forceType && imageBase64)) {
-        const contextNote = moment && moment !== 'Analyse this image.' 
-        ? `The creator described this moment as: "${moment}". This description is the PRIMARY source for headlines — prioritize it above everything else.`
-        : `No context was provided. Use the creator's niche and voice below to invent the most compelling angle.`;
+        const contextNote = moment && moment !== 'Analyse this image.'
+          ? `The creator described this moment: "${moment}". This description is the PRIMARY source for headlines — write headlines that reflect what THEY said, not what you see in the photo.`
+          : `No context provided. Use the creator context to write headlines that reflect their niche and voice.`;
 
-      const photoSystem = `You are S.A.M. — a thumbnail strategist. ${toneContext} ${emojiLine} ${creatorLine}
+        const photoSystem = `${samIdentity} ${toneContext} ${emojiLine} ${creatorLine}
 
-STEP 1 — ANALYSE THE IMAGE VISUALLY:
-Look at this image carefully. Determine:
-- face_side: Is the person's face/body positioned on the "left", "right", or "center" of the frame?
-- face_size: Is the face "large" (close up, fills frame), "medium" (half frame), or "small" (full body shot)?
+YOUR TWO JOBS:
 
-STEP 2 — BUILD HEADLINES FROM THE CREATOR:
+JOB 1 — READ THE IMAGE FOR COMPOSITION ONLY:
+Look at where the face/body is positioned. Is it on the left, right, or center?
+How large is the face in the frame — large (close up), medium, or small (full body)?
+Use this ONLY for face_side, face_size fields. Do NOT base headlines on objects in the photo.
+
+JOB 2 — WRITE STRATEGY FROM THE CREATOR'S VOICE:
 ${contextNote}
-Write headlines that sound like THIS specific creator. Do NOT describe what's in the image.
+Headlines must sound like THIS creator talking to THEIR audience.
+Be honest: these are thumbnail TEXT IDEAS and CAPTION SUGGESTIONS — not finished designs.
+The creator will take these into Canva, CapCut or their design tool.
 
-STEP 3 — PICK TEMPLATES:
-For safe_template pick ONE of: splitPanel, cinematic, newsFlash
-For bold_template pick ONE of: giantWord, cornerBurst, diagonalSlash, stackedBoxes
-Pick DIFFERENT templates for safe vs bold. They must look completely different.
+safe_template: pick one of: splitPanel, cinematic, newsFlash
+bold_template: pick a DIFFERENT one of: giantWord, cornerBurst, diagonalSlash, stackedBoxes
+They must be different from each other.
 
-Return ONLY this exact JSON:
-{"type":"photo","what_sam_sees":"one sentence about image composition only","face_side":"left OR right OR center","face_size":"large OR medium OR small","content_type":"transformation OR emotional OR achievement OR tutorial OR personal OR shock","safe_template":"splitPanel OR cinematic OR newsFlash","bold_template":"giantWord OR cornerBurst OR diagonalSlash OR stackedBoxes","headline_safe":"5-8 WORD HEADLINE IN CREATOR VOICE","headline_bold":"3-6 WORD BOLD HEADLINE IN CREATOR VOICE","subtext_safe":"3-5 word supporting line","subtext_bold":"3-5 word contrast line","thumbnail_color":"#hex color that fits the mood","platforms":[{"platform":"TikTok","title":"hook title under 60 chars","description":"caption under 150 chars","hashtags":"#tag1 #tag2 #tag3"},{"platform":"YouTube","title":"SEO title under 70 chars","description":"description under 150 chars","hashtags":"#tag1 #tag2 #tag3"},{"platform":"Instagram Reels","title":"","description":"caption under 125 chars","hashtags":"#tag1 #tag2 #tag3"}]}
-CRITICAL: Return ONLY valid JSON. Nothing else.`
+Return ONLY this JSON:
+{"type":"photo","what_sam_sees":"face position and composition only — no story interpretation","face_side":"left OR right OR center","face_size":"large OR medium OR small","content_type":"transformation OR emotional OR achievement OR tutorial OR personal OR shock OR renovation","content_angle":"the story angle based on creator context — one sentence","safe_template":"splitPanel OR cinematic OR newsFlash","bold_template":"giantWord OR cornerBurst OR diagonalSlash OR stackedBoxes","headline_safe":"5-8 WORD HEADLINE IN CREATOR VOICE","headline_bold":"3-6 WORD BOLD HEADLINE IN CREATOR VOICE","subtext_safe":"3-5 word supporting line","subtext_bold":"3-5 word contrast line","thumbnail_color":"#hexcolor that fits the mood and content","platforms":[{"platform":"TikTok","title":"hook title under 60 chars","description":"caption under 150 chars — honest about what the content actually is","hashtags":"#tag1 #tag2 #tag3"},{"platform":"YouTube","title":"SEO title under 70 chars","description":"description under 150 chars","hashtags":"#tag1 #tag2 #tag3"},{"platform":"Instagram Reels","title":"","description":"caption under 125 chars","hashtags":"#tag1 #tag2 #tag3"}]}
+CRITICAL: Return ONLY valid JSON. Nothing else.`;
 
         const userContent = imageBase64
-          ? [{ type: 'image', source: { type: 'base64', media_type: imageType, data: imageBase64 } }, { type: 'text', text: moment || 'Analyse this image and build my thumbnail strategy.' }]
+          ? [{ type: 'image', source: { type: 'base64', media_type: imageType, data: imageBase64 } }, { type: 'text', text: moment || 'Analyse this image.' }]
           : moment;
-        return await streamCall(photoSystem, userContent, 1200);
+        return await streamCall(photoSystem, userContent, 1400);
       }
 
-      // ANALYTICS mode
       if (forceType === 'analytics') {
-        const analyticsSystem = `You are S.A.M. ${toneContext} ${emojiLine} ${creatorLine} Analyse this analytics screenshot. Use what you know about the creator's niche to make recommendations specific to their content type — not generic advice. Return ONLY this exact JSON:
-{"type":"analytics","headline":"biggest insight in one punchy sentence","whats_working":["observation 1","observation 2","observation 3"],"whats_not":["area to improve 1","area to improve 2"],"post_next":["specific content idea 1","specific content idea 2","specific content idea 3"],"growth_move":"one bold strategic move to make right now"}
+        const analyticsSystem = `${samIdentity} ${toneContext} ${emojiLine} ${creatorLine}
+Analyse this analytics screenshot. Give honest, specific, actionable insights.
+Be direct about what the numbers actually mean — what's working, what isn't, and exactly what to do next.
+Make recommendations specific to this creator's niche, not generic advice.
+Return ONLY this JSON:
+{"type":"analytics","headline":"the single biggest insight in one punchy sentence","whats_working":["specific observation 1","specific observation 2","specific observation 3"],"whats_not":["specific area to improve 1","specific area to improve 2"],"post_next":["specific content idea 1 based on what's working","specific content idea 2","specific content idea 3"],"growth_move":"one bold, specific strategic move to make this week"}
 CRITICAL: Return ONLY valid JSON. Nothing else.`;
 
         const userContent = imageBase64
@@ -172,36 +193,57 @@ CRITICAL: Return ONLY valid JSON. Nothing else.`;
         return await streamCall(analyticsSystem, userContent, 900);
       }
 
-      // TEXT ONLY fallback
-      const textSystem = base + ' Analyse this content idea. Return ONLY: {"type":"text_only","diagnosis":"what this idea is really about — 2 sentences","hook_ideas":["hook 1","hook 2","hook 3"],"content_angle":"strongest angle to take","best_platform":"single best platform","next_action":"the one thing to do right now"}';
+      // Text only fallback
+      const textSystem = `${base} Analyse this content idea. Return ONLY: {"type":"text_only","diagnosis":"what this idea is really about and why it has potential — 2 sentences","hook_ideas":["hook 1","hook 2","hook 3"],"content_angle":"the strongest angle to take","best_platform":"single best platform","next_action":"the one most important thing to do with this idea right now"}`;
       return await streamCall(textSystem, moment, 700);
     }
 
     // ── CONCEPT ───────────────────────────────────────────────────────────────
     if (mode === 'concept') {
       const conceptStyle = req.body.contentType || '';
-      const conceptPlatforms = req.body.platforms && req.body.platforms.length > 0 ? req.body.platforms : ['TikTok','YouTube Shorts'];
-      const styleStr = conceptStyle ? 'Concept style: ' + conceptStyle + '.' : '';
-      const prompt = base + ' Target platforms: ' + conceptPlatforms.join(', ') + '. ' + styleStr + ' Generate ONE bold scroll-stopping video concept. Assign a real virality_score 60-100 based on actual concept strength. Return ONLY: {"title":"6-10 word title","format":"format type","premise":"2-3 sentences","why_it_works":"2 sentences","production_notes":["note 1","note 2","note 3"],"hook_line":"exact opening sentence","twist":"unexpected angle","virality_score":85}';
+      const conceptPlatforms = req.body.platforms && req.body.platforms.length > 0 ? req.body.platforms : ['TikTok', 'YouTube Shorts'];
+      const styleStr = conceptStyle ? `Requested style: ${conceptStyle}.` : '';
+      const prompt = `${base} Target platforms: ${conceptPlatforms.join(', ')}. ${styleStr}
+Generate ONE bold, specific video concept for this creator to actually make.
+Be honest: this is a CONCEPT and SCRIPT OUTLINE — the creator still needs to film and edit it.
+The concept should feel like something only THEY could make given their story and niche.
+Assign a real virality_score 60-100 based on genuine concept strength — not always 90+.
+Return ONLY: {"title":"6-10 word concept title","format":"Reel OR Short OR YouTube video OR etc","premise":"2-3 sentences — what the video actually is","why_it_works":"2 sentences on why this specific creator's audience will respond","production_notes":["practical filming note 1","practical filming note 2","practical filming note 3"],"hook_line":"exact first sentence the creator speaks on camera","twist":"the unexpected angle that makes this memorable","virality_score":72}`;
       return await streamCall(prompt, moment, 1000);
     }
 
     // ── THE PULSE ─────────────────────────────────────────────────────────────
-    const textPostInstruction = 'Write a complete text post. No brackets. Hook first, short paragraphs, ends with CTA.';
+    const textPostFormats = ['LinkedIn text post', 'Instagram caption', 'Email newsletter', 'Text post', 'Blog post'];
+    const isTextPost = textPostFormats.includes(contentType);
+
     const scriptInstructions = {
-      'Short-form video': 'Write word-for-word spoken script 60-90 seconds. Use [HOOK],[SETUP],[TENSION],[PAYOFF],[CTA] beats. Pacing notes in (parentheses).',
-      'Long-form YouTube video': 'Write complete script 8-12 minutes. Label: [INTRO HOOK],[CONTEXT],[MAIN STORY],[LESSONS],[OUTRO CTA].',
-      'LinkedIn text post': 'Write complete LinkedIn post. Strong opener, short paragraphs, question at end. 3 hashtags.',
-      'Instagram caption': 'Write complete caption. Hook first line under 125 chars, body, CTA, 5 hashtags.',
-      'Email newsletter': 'Write complete email: SUBJECT LINE, PREVIEW TEXT, then full BODY.',
-      'Text post': textPostInstruction
+      'Short-form video':       'Write a complete word-for-word SCRIPT for the creator to deliver on camera. 60-90 seconds spoken. Beats in [BRACKETS]: [HOOK],[SETUP],[TENSION],[PAYOFF],[CTA]. Pacing notes in (parentheses). This is a script — the creator films it.',
+      'Long-form YouTube video':'Write a complete word-for-word SCRIPT for 8-12 minutes. Label: [INTRO HOOK],[CONTEXT],[MAIN STORY],[KEY LESSONS],[OUTRO CTA]. This is a script — the creator films it.',
+      'LinkedIn text post':     'Write the complete LinkedIn post text. No brackets. Strong opening line, short paragraphs, ends with a question. 3 hashtags at end.',
+      'Instagram caption':      'Write the complete Instagram caption. Hook in first line under 125 chars, body copy, CTA, then 5 focused hashtags.',
+      'Email newsletter':       'Write complete email: SUBJECT LINE on first line, PREVIEW TEXT on second line, then full BODY.',
+      'Text post':              'Write a complete text post. No brackets. Hook first, short paragraphs, ends with CTA.',
+      'Blog post':              'Write: SEO HEADLINE, META DESCRIPTION under 160 chars, then the full article body with section headers.'
     };
     const scriptInstruction = scriptInstructions[contentType] || scriptInstructions['Short-form video'];
-    const allPlatList = platforms && platforms.length > 0 ? platforms : ['TikTok','Instagram Reels'];
-    const platStratInstruction = 'Write caption + hashtags for EACH platform, respecting character limits: ' + allPlatList.join(', ') + '.';
 
-    const pulsePrompt = base + ' ' + scriptInstruction + ' ' + platStratInstruction +
-      ' Return ONLY: {"diagnosis":"2-3 sentences on emotional core","hook":"single best opening line — SAMs top pick","visual_note":"what to show on screen first 3 seconds","full_script":"COMPLETE script","b_roll":["shot 1","shot 2","shot 3","shot 4"],"pacing_note":"one delivery tip","cta":"call to action","platform_strategies":[{"platform":"name","strategy":"one tip","caption":"ready-to-post caption","hashtags":"hashtags"}]}';
+    const allPlatList = platforms && platforms.length > 0 ? platforms : ['TikTok', 'Instagram Reels'];
+    const platStratInstruction = `Write a ready-to-post caption and hashtags for EACH of these platforms, respecting their exact character limits: ${allPlatList.join(', ')}. Be honest in captions about what the content IS — a script, a post, a strategy — not a finished video SAM made.`;
+
+    const pulsePrompt = `${base}
+${scriptInstruction}
+${platStratInstruction}
+
+IMPORTANT — HONESTY IN CAPTIONS:
+When writing platform captions, be accurate about what SAM has produced:
+- SAM wrote a SCRIPT for the creator to deliver
+- SAM wrote CAPTIONS for the creator to post  
+- SAM built a STRATEGY for the creator to execute
+- The creator still films, edits, shows up and posts
+- Never say "SAM made this video" or "AI created this content" — say "AI wrote the script" or "SAM helped me plan this"
+
+Return ONLY this JSON:
+{"diagnosis":"2-3 sentences on the emotional core of this moment and why it will resonate","hook":"SAM's single best opening line — the creator delivers this on camera or in text","visual_note":"what to show on screen in the first 3 seconds (for video) or the key visual element","full_script":"COMPLETE script or post text as specified above","b_roll":["specific shot or visual to capture","shot 2","shot 3","shot 4"],"pacing_note":"one specific delivery tip for the creator","cta":"a specific call to action that builds community not just views","platform_strategies":[{"platform":"platform name","strategy":"one specific posting tip for this platform","caption":"ready-to-post caption respecting character limit","hashtags":"hashtags"}]}`;
 
     return await streamCall(pulsePrompt, moment, 2400);
 
