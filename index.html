@@ -2522,11 +2522,11 @@ async function pasteToEl(id) {
 
 
 // ── THUMBNAIL CANVAS + DOWNLOAD ──────────────────────────────────────────────
-function renderThumbnailCanvases(headline, subtext, accentColor, imgSrc, id169, id916, contentType, templateName, isBold) {
+function renderThumbnailCanvases(headline, subtext, accentColor, imgSrc, id169, id916, contentType, templateName, isBold, textSide) {
   const c169 = (id169 || 'thumb169') + 'canvas';
   const c916 = (id916 || 'thumb916') + 'canvas';
-  drawThumb(c169, 1280, 720, headline, subtext, accentColor, imgSrc, contentType, templateName, isBold);
-  drawThumb(c916, 1080, 1920, headline, subtext, accentColor, imgSrc, contentType, templateName, isBold);
+  drawThumb(c169, 1280, 720, headline, subtext, accentColor, imgSrc, contentType, templateName, isBold, textSide);
+  drawThumb(c916, 1080, 1920, headline, subtext, accentColor, imgSrc, contentType, templateName, isBold, textSide);
 }
 
 // ── THUMBNAIL TEMPLATE ENGINE ────────────────────────────────────────────────
@@ -2622,36 +2622,71 @@ function smartWrap(ctx, text, maxW, startFs, minFs, maxLines) {
 
 const THUMB_TEMPLATES = {
 
-  // SAFE TEMPLATES
+  // ── SAFE TEMPLATES ──────────────────────────────────────────────────────────
+
+  splitPanel: {
+    safe: true,
+    render: (ctx, w, h, hl, sub, palette, textSide) => {
+      const p = h > w;
+      // Text goes left if face is right, right if face is left, bottom if centered
+      const textLeft = textSide === 'left' || textSide === 'bottom' || p;
+      const panelX = textLeft ? 0 : w * 0.5;
+      const panelW = p ? w : w * 0.5;
+      // Directional gradient — dark where text is, fades toward face
+      const grad = ctx.createLinearGradient(
+        textLeft ? 0 : w, 0,
+        textLeft ? (p ? 0 : panelW) : w * 0.5, p ? h * 0.65 : 0
+      );
+      grad.addColorStop(0, 'rgba(0,0,0,0.94)');
+      grad.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(panelX, 0, panelW, h);
+      // Accent bar on text side
+      ctx.fillStyle = palette.accent;
+      if (textLeft) ctx.fillRect(0, 0, Math.round(h*0.022), h);
+      else ctx.fillRect(w - Math.round(h*0.022), 0, Math.round(h*0.022), h);
+      // Text
+      const fs = p ? h*0.082 : h*0.098;
+      const maxW = p ? w*0.88 : w*0.44;
+      const { lines, fs: aFs } = smartWrap(ctx, hl.toUpperCase(), maxW, fs, h*0.05, 4);
+      const totalH = lines.length * aFs * 1.2;
+      const startY = p ? h * 0.55 : (h - totalH) / 2;
+      const startX = textLeft ? w*0.055 : w*0.56;
+      ctx.shadowColor='rgba(0,0,0,1)'; ctx.shadowBlur=10;
+      lines.forEach((ln, i) => {
+        ctx.font = `900 ${aFs}px Arial Black, sans-serif`;
+        ctx.fillStyle = i === 0 ? palette.accent : '#fff';
+        ctx.textBaseline = 'top'; ctx.textAlign = 'left';
+        ctx.fillText(ln, startX, startY + i * aFs * 1.2);
+      });
+      if (sub) {
+        ctx.font = `700 ${aFs*0.5}px Arial`; ctx.fillStyle = 'rgba(255,255,255,0.65)';
+        ctx.fillText(sub.toUpperCase(), startX, startY + totalH + aFs*0.25);
+      }
+      ctx.shadowBlur = 0;
+    }
+  },
 
   cinematic: {
     safe: true,
-    render: (ctx, w, h, hl, sub, palette) => {
+    render: (ctx, w, h, hl, sub, palette, textSide) => {
       const p = h > w;
-      const fs = p ? h*0.072 : h*0.095;
-      const minFs = p ? h*0.05 : h*0.065;
-      const maxW = w * 0.9;
-      const { lines, fs: actualFs } = smartWrap(ctx, hl.toUpperCase(), maxW, fs, minFs, p?4:3);
-      const botH = actualFs * 1.2 * lines.length + (sub ? actualFs*0.7 : 0) + h*0.06;
-      // Top bar
-      ctx.fillStyle = 'rgba(0,0,0,0.9)'; ctx.fillRect(0, 0, w, h*0.13);
-      ctx.fillStyle = palette.accent; ctx.fillRect(0, 0, w, h*0.018);
-      ctx.fillStyle = 'rgba(255,255,255,0.35)';
-      ctx.font = `600 ${h*0.038}px Arial`; ctx.textBaseline='middle'; ctx.textAlign='left';
-      // No static label — keep it clean
-      // Bottom bar
+      // Always bottom bar for cinematic
+      const fs = p ? h*0.075 : h*0.092;
+      const { lines, fs: aFs } = smartWrap(ctx, hl.toUpperCase(), w*0.88, fs, h*0.05, p?4:3);
+      const botH = lines.length * aFs * 1.2 + (sub ? aFs*0.75 : 0) + h*0.055;
       ctx.fillStyle = 'rgba(0,0,0,0.92)'; ctx.fillRect(0, h-botH, w, botH);
       ctx.fillStyle = palette.accent; ctx.fillRect(0, h-botH, w, h*0.018);
-      ctx.font = `900 ${actualFs}px Arial Black, sans-serif`;
       ctx.shadowColor='rgba(0,0,0,1)'; ctx.shadowBlur=6;
       lines.forEach((ln, i) => {
+        ctx.font = `900 ${aFs}px Arial Black, sans-serif`;
         ctx.fillStyle = i === lines.length-1 ? palette.accent : '#fff';
         ctx.textBaseline='top'; ctx.textAlign='left';
-        ctx.fillText(ln, w*0.04, h-botH+h*0.035 + i*actualFs*1.2);
+        ctx.fillText(ln, w*0.04, h-botH+h*0.028 + i*aFs*1.2);
       });
       if (sub) {
-        ctx.font=`700 ${actualFs*0.48}px Arial`; ctx.fillStyle='rgba(255,255,255,0.6)';
-        ctx.fillText(sub.toUpperCase(), w*0.04, h-botH+h*0.035+lines.length*actualFs*1.2+actualFs*0.1);
+        ctx.font=`700 ${aFs*0.5}px Arial`; ctx.fillStyle='rgba(255,255,255,0.6)';
+        ctx.fillText(sub.toUpperCase(), w*0.04, h-botH+h*0.028+lines.length*aFs*1.2+aFs*0.1);
       }
       ctx.shadowBlur=0;
     }
@@ -2659,132 +2694,67 @@ const THUMB_TEMPLATES = {
 
   newsFlash: {
     safe: true,
-    render: (ctx, w, h, hl, sub, palette) => {
+    render: (ctx, w, h, hl, sub, palette, textSide) => {
       const p = h > w;
-      const panelW = p ? w : w*0.55;
-      ctx.fillStyle = 'rgba(0,0,15,0.92)'; ctx.fillRect(0, 0, panelW, h);
-      ctx.fillStyle = palette.accent; ctx.fillRect(0, 0, panelW, h*0.022);
-      // Badge
-      const bh=h*0.075; const bx=w*0.04; const by=h*0.05; const bw=p?w*0.35:w*0.28;
-      ctx.fillStyle = palette.accent;
+      const textLeft = textSide !== 'right' || p;
+      const panelW = p ? w : w*0.52;
+      const panelX = textLeft ? 0 : w - panelW;
+      ctx.fillStyle = 'rgba(0,0,15,0.92)'; ctx.fillRect(panelX, 0, panelW, h);
+      ctx.fillStyle = palette.accent; ctx.fillRect(panelX, 0, panelW, h*0.022);
+      const bh=h*0.075; const bx=(textLeft?0:w-panelW)+panelW*0.07; const by=h*0.05; const bw=panelW*0.55;
+      ctx.fillStyle=palette.accent;
       ctx.beginPath(); ctx.roundRect(bx,by,bw,bh,h*0.025); ctx.fill();
       ctx.font=`800 ${bh*0.5}px Arial`; ctx.fillStyle=isLightColor(palette.accent)?'#000':'#fff';
       ctx.textBaseline='middle'; ctx.textAlign='center';
-      ctx.fillText('BREAKING NEWS', bx+bw/2, by+bh/2);
-      // Headline
-      const fs = p ? h*0.088 : h*0.1;
-      const maxW = p ? w*0.9 : w*0.5;
+      ctx.fillText('BREAKING', bx+bw/2, by+bh/2);
+      const fs = p ? h*0.085 : h*0.1;
+      const maxW = p ? w*0.88 : panelW*0.88;
       const { lines, fs: aFs } = smartWrap(ctx, hl.toUpperCase(), maxW, fs, h*0.055, 4);
+      const textX = (textLeft ? 0 : w-panelW) + panelW*0.07;
       ctx.font=`900 ${aFs}px Arial Black`; ctx.fillStyle='#fff';
       ctx.textBaseline='top'; ctx.textAlign='left'; ctx.shadowColor='rgba(0,0,0,0.9)'; ctx.shadowBlur=5;
-      lines.forEach((ln,i) => ctx.fillText(ln, w*0.04, h*0.17+i*aFs*1.15));
+      lines.forEach((ln,i) => ctx.fillText(ln, textX, h*0.17+i*aFs*1.15));
       ctx.strokeStyle=palette.accent; ctx.lineWidth=2; ctx.shadowBlur=0;
       const divY = h*0.17+lines.length*aFs*1.15+aFs*0.25;
-      ctx.beginPath(); ctx.moveTo(w*0.04,divY); ctx.lineTo(p?w*0.92:w*0.5,divY); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(textX,divY); ctx.lineTo(textX+maxW,divY); ctx.stroke();
       if (sub) {
         ctx.font=`600 ${aFs*0.52}px Arial`; ctx.fillStyle='rgba(255,255,255,0.6)';
-        ctx.fillText(sub.toUpperCase(), w*0.04, divY+h*0.02);
+        ctx.fillText(sub.toUpperCase(), textX, divY+h*0.02);
       }
     }
   },
 
-  splitPanel: {
-    safe: true,
-    render: (ctx, w, h, hl, sub, palette) => {
-      const p = h > w;
-      const panelW = p ? w : w*0.5;
-      // Gradient panel
-      const grad = ctx.createLinearGradient(0,0,p?0:panelW,p?h*0.7:0);
-      grad.addColorStop(0, 'rgba(0,0,0,0.95)');
-      grad.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle=grad; ctx.fillRect(0,0,p?w:panelW,h);
-      // Accent left border
-      ctx.fillStyle=palette.accent; ctx.fillRect(0, 0, Math.round(h*0.025), h);
-      // Headline
-      const fs = p ? h*0.085 : h*0.1;
-      const maxW = p ? w*0.85 : w*0.44;
-      const { lines, fs: aFs } = smartWrap(ctx, hl.toUpperCase(), maxW, fs, h*0.055, 4);
-      const totalH = lines.length * aFs * 1.15;
-      const startY = p ? h*0.35 : (h-totalH)/2;
-      const startX = w*0.06;
-      ctx.shadowColor='rgba(0,0,0,1)'; ctx.shadowBlur=8;
-      lines.forEach((ln, i) => {
-        ctx.font=`900 ${aFs}px Arial Black`; 
-        ctx.fillStyle = i===0 ? palette.accent : '#fff';
-        ctx.textBaseline='top'; ctx.textAlign='left';
-        ctx.fillText(ln, startX, startY + i*aFs*1.15);
-      });
-      if (sub) {
-        ctx.font=`700 ${aFs*0.5}px Arial`; ctx.fillStyle='rgba(255,255,255,0.65)';
-        ctx.fillText(sub.toUpperCase(), startX, startY+totalH+aFs*0.3);
-      }
-      ctx.shadowBlur=0;
-    }
-  },
-
-  // BOLD TEMPLATES
+  // ── BOLD TEMPLATES ──────────────────────────────────────────────────────────
 
   giantWord: {
     safe: false,
-    render: (ctx, w, h, hl, sub, palette) => {
+    render: (ctx, w, h, hl, sub, palette, textSide) => {
       const p = h > w;
-      const words = hl.toUpperCase().split(' ');
-      const bigWord = words[0];
-      const rest = words.slice(1).join(' ');
-      const grad = ctx.createLinearGradient(0,0,p?0:w*0.7,p?h*0.5:0);
-      grad.addColorStop(0,'rgba(0,0,0,0.88)'); grad.addColorStop(1,'rgba(0,0,0,0)');
+      const textLeft = textSide !== 'right';
+      const grad = ctx.createLinearGradient(
+        textLeft?0:w, 0, textLeft?(p?0:w*0.72):w*0.28, p?h*0.5:0
+      );
+      grad.addColorStop(0,'rgba(0,0,0,0.9)'); grad.addColorStop(1,'rgba(0,0,0,0)');
       ctx.fillStyle=grad; ctx.fillRect(0,0,w,h);
-      ctx.shadowColor='rgba(0,0,0,1)'; ctx.shadowBlur=20;
-      // Giant word — auto-size to fit
-      const maxGiantW = p ? w*0.9 : w*0.85;
-      const giantFs = fitText(ctx, bigWord, maxGiantW, p?h*0.3:h*0.44, p?h*0.15:h*0.2);
-      ctx.font=`900 ${giantFs}px Arial Black, sans-serif`;
-      ctx.fillStyle=palette.accent; ctx.textBaseline='top'; ctx.textAlign='left';
-      const giantY = p ? h*0.12 : h*0.08;
-      ctx.fillText(bigWord, w*0.04, giantY);
+      ctx.shadowColor='rgba(0,0,0,1)'; ctx.shadowBlur=22;
+      const words=hl.toUpperCase().split(' ');
+      const bigWord=words[0]; const rest=words.slice(1).join(' ');
+      const maxGW = p ? w*0.9 : w*(textLeft?0.82:0.82);
+      const gFs = fitText(ctx, bigWord, maxGW, p?h*0.3:h*0.44, p?h*0.15:h*0.22);
+      const startX = textLeft ? w*0.04 : w - maxGW - w*0.04;
+      ctx.font=`900 ${gFs}px Arial Black`; ctx.fillStyle=palette.accent;
+      ctx.textBaseline='top'; ctx.textAlign='left';
+      const giantY = p?h*0.12:h*0.09;
+      ctx.fillText(bigWord, startX, giantY);
       if (rest) {
-        const restFs = Math.round(p ? h*0.082 : h*0.1);
-        const maxW = p ? w*0.9 : w*0.85;
-        const { lines, fs: aFs } = smartWrap(ctx, rest, maxW, restFs, h*0.05, 3);
+        const rFs = Math.round(p?h*0.08:h*0.1);
+        const { lines, fs: aFs } = smartWrap(ctx, rest, p?w*0.88:w*0.8, rFs, h*0.05, 3);
         ctx.font=`900 ${aFs}px Arial Black`; ctx.fillStyle='#fff';
-        lines.forEach((ln,i) => ctx.fillText(ln, w*0.04, giantY+giantFs*1.05+i*aFs*1.2));
-        if (sub) {
-          ctx.font=`700 ${aFs*0.6}px Arial`; ctx.fillStyle=palette.accent;
-          ctx.fillText(sub.toUpperCase(), w*0.04, giantY+giantFs*1.05+lines.length*aFs*1.2+aFs*0.3);
+        lines.forEach((ln,i)=>ctx.fillText(ln, startX, giantY+gFs*1.08+i*aFs*1.2));
+        if(sub){
+          ctx.font=`700 ${aFs*0.6}px Arial`; ctx.fillStyle='rgba(255,255,255,0.65)';
+          ctx.fillText(sub.toUpperCase(), startX, giantY+gFs*1.08+lines.length*aFs*1.2+aFs*0.3);
         }
-      }
-      ctx.shadowBlur=0;
-    }
-  },
-
-  diagonalSlash: {
-    safe: false,
-    render: (ctx, w, h, hl, sub, palette) => {
-      const p = h > w;
-      const slantRatio = p ? 0.72 : 0.58;
-      ctx.save();
-      ctx.beginPath();
-      ctx.moveTo(0,0); ctx.lineTo(w*slantRatio,0); ctx.lineTo(w*(slantRatio-0.15),h); ctx.lineTo(0,h);
-      ctx.closePath(); ctx.fillStyle='rgba(0,0,0,0.82)'; ctx.fill(); ctx.restore();
-      ctx.strokeStyle=palette.accent; ctx.lineWidth=Math.round(h*0.018);
-      ctx.shadowColor=palette.accent; ctx.shadowBlur=10;
-      ctx.beginPath(); ctx.moveTo(w*slantRatio+2,0); ctx.lineTo(w*(slantRatio-0.15)+2,h); ctx.stroke();
-      ctx.shadowBlur=0;
-      const maxW = p ? w*(slantRatio-0.08) : w*(slantRatio-0.1);
-      const fs = p ? h*0.085 : h*0.11;
-      const { lines, fs: aFs } = smartWrap(ctx, hl.toUpperCase(), maxW, fs, h*0.055, 4);
-      const totalH = lines.length * aFs * 1.15;
-      const startY = (h-totalH)/2 - aFs*0.3;
-      ctx.shadowColor='rgba(0,0,0,1)'; ctx.shadowBlur=8;
-      lines.forEach((ln, i) => {
-        ctx.font=`900 ${aFs}px Arial Black`;
-        ctx.fillStyle = i%2===0 ? '#fff' : palette.accent;
-        ctx.textBaseline='top'; ctx.textAlign='left';
-        ctx.fillText(ln, w*0.04, startY+i*aFs*1.15);
-      });
-      if (sub) {
-        ctx.font=`700 ${aFs*0.52}px Arial`; ctx.fillStyle='rgba(255,255,255,0.65)';
-        ctx.fillText(sub.toUpperCase(), w*0.04, startY+totalH+aFs*0.2);
       }
       ctx.shadowBlur=0;
     }
@@ -2792,63 +2762,114 @@ const THUMB_TEMPLATES = {
 
   cornerBurst: {
     safe: false,
-    render: (ctx, w, h, hl, sub, palette) => {
+    render: (ctx, w, h, hl, sub, palette, textSide) => {
       const p = h > w;
+      const textLeft = textSide !== 'right';
+      // Corner triangle — opposite side from text
+      const triX = textLeft ? w : 0;
       ctx.fillStyle=palette.accent;
       ctx.beginPath();
-      ctx.moveTo(w,0); ctx.lineTo(w,h*(p?0.28:0.42)); ctx.lineTo(w*(p?0.5:0.6),0);
+      if (textLeft) {
+        ctx.moveTo(w,0); ctx.lineTo(w,h*(p?0.28:0.42)); ctx.lineTo(w*(p?0.5:0.58),0);
+      } else {
+        ctx.moveTo(0,0); ctx.lineTo(0,h*(p?0.28:0.42)); ctx.lineTo(w*(p?0.5:0.42),0);
+      }
       ctx.closePath(); ctx.fill();
-      ctx.save(); ctx.translate(w*0.87,h*(p?0.065:0.09)); ctx.rotate(0.5);
-      const bFs = Math.round(h*(p?0.045:0.06));
-      ctx.font=`900 ${bFs}px Arial Black`; ctx.fillStyle=isLightColor(palette.accent)?'#000':'#fff';
-      ctx.textBaseline='middle'; ctx.textAlign='center'; ctx.fillText('MUST SEE',0,0); ctx.restore();
-      const grad=ctx.createLinearGradient(0,0,p?0:w*0.65,p?h*0.5:0);
-      grad.addColorStop(0,'rgba(0,0,0,0.88)'); grad.addColorStop(1,'rgba(0,0,0,0)');
+      const labelX = textLeft ? w*0.83 : w*0.17;
+      ctx.save(); ctx.translate(labelX, h*(p?0.065:0.09)); ctx.rotate(textLeft?0.5:-0.5);
+      ctx.font=`900 ${Math.round(h*(p?0.045:0.058))}px Arial Black`;
+      ctx.fillStyle=isLightColor(palette.accent)?'#000':'#fff';
+      ctx.textBaseline='middle'; ctx.textAlign='center'; ctx.fillText('WOW',0,0); ctx.restore();
+      const grad=ctx.createLinearGradient(textLeft?0:w,0,textLeft?w*0.72:w*0.28,0);
+      grad.addColorStop(0,'rgba(0,0,0,0.9)'); grad.addColorStop(1,'rgba(0,0,0,0)');
       ctx.fillStyle=grad; ctx.fillRect(0,0,w,h);
       const words=hl.toUpperCase().split(' ');
-      const bigWord=words[0]; const rest=words.slice(1).join(' ');
-      const maxGW = p ? w*0.88 : w*0.78;
-      const gFs = fitText(ctx, bigWord, maxGW, p?h*0.28:h*0.42, p?h*0.14:h*0.2);
-      ctx.font=`900 ${gFs}px Arial Black`;
-      ctx.fillStyle=palette.accent; ctx.textBaseline='top'; ctx.textAlign='left';
-      ctx.shadowColor='rgba(0,0,0,1)'; ctx.shadowBlur=18;
-      ctx.fillText(bigWord, w*0.04, p?h*0.11:h*0.08);
-      if (rest) {
-        const rFs = Math.round(p?h*0.08:h*0.095);
-        const { lines, fs: aFs } = smartWrap(ctx, rest, p?w*0.82:w*0.72, rFs, h*0.05, 3);
+      const big=words[0]; const rest=words.slice(1).join(' ');
+      const maxW = p?w*0.88:w*0.75;
+      const gFs=fitText(ctx,big,maxW,p?h*0.28:h*0.42,p?h*0.14:h*0.2);
+      const sx = textLeft ? w*0.04 : w*(textLeft?0.04:0.25);
+      ctx.font=`900 ${gFs}px Arial Black`; ctx.fillStyle=palette.accent;
+      ctx.textBaseline='top'; ctx.textAlign='left'; ctx.shadowColor='rgba(0,0,0,1)'; ctx.shadowBlur=18;
+      ctx.fillText(big, sx, p?h*0.11:h*0.09);
+      if(rest){
+        const rFs=Math.round(p?h*0.08:h*0.094);
+        const{lines,fs:aFs}=smartWrap(ctx,rest,maxW,rFs,h*0.05,3);
         ctx.font=`900 ${aFs}px Arial Black`; ctx.fillStyle='#fff';
-        lines.forEach((ln,i)=>ctx.fillText(ln,w*0.04,p?h*0.11+gFs*1.08+i*aFs*1.2:h*0.08+gFs*1.08+i*aFs*1.2));
+        lines.forEach((ln,i)=>ctx.fillText(ln,sx,p?h*0.11+gFs*1.08+i*aFs*1.2:h*0.09+gFs*1.08+i*aFs*1.2));
         if(sub){ctx.font=`700 ${aFs*0.58}px Arial`;ctx.fillStyle=palette.accent;
-          ctx.fillText(sub.toUpperCase(),w*0.04,p?h*0.11+gFs*1.08+lines.length*aFs*1.2+aFs*0.3:h*0.08+gFs*1.08+lines.length*aFs*1.2+aFs*0.3);}
+          ctx.fillText(sub.toUpperCase(),sx,p?h*0.11+gFs*1.08+(lines.length)*aFs*1.2+aFs*0.3:h*0.09+gFs*1.08+(lines.length)*aFs*1.2+aFs*0.3);}
       }
-      ctx.shadowBlur=0; ctx.textAlign='left';
+      ctx.shadowBlur=0;
+    }
+  },
+
+  diagonalSlash: {
+    safe: false,
+    render: (ctx, w, h, hl, sub, palette, textSide) => {
+      const p = h > w;
+      const textLeft = textSide !== 'right';
+      const ratio = p ? 0.74 : 0.6;
+      ctx.save();
+      ctx.beginPath();
+      if (textLeft) {
+        ctx.moveTo(0,0); ctx.lineTo(w*ratio,0); ctx.lineTo(w*(ratio-0.14),h); ctx.lineTo(0,h);
+      } else {
+        ctx.moveTo(w,0); ctx.lineTo(w*(1-ratio),0); ctx.lineTo(w*(1-ratio+0.14),h); ctx.lineTo(w,h);
+      }
+      ctx.closePath(); ctx.fillStyle='rgba(0,0,0,0.84)'; ctx.fill(); ctx.restore();
+      ctx.strokeStyle=palette.accent; ctx.lineWidth=Math.round(h*0.016);
+      ctx.shadowColor=palette.accent; ctx.shadowBlur=8;
+      if(textLeft){ctx.beginPath();ctx.moveTo(w*ratio+2,0);ctx.lineTo(w*(ratio-0.14)+2,h);ctx.stroke();}
+      else{ctx.beginPath();ctx.moveTo(w*(1-ratio)-2,0);ctx.lineTo(w*(1-ratio+0.14)-2,h);ctx.stroke();}
+      ctx.shadowBlur=0;
+      const maxW = p ? w*(ratio-0.06) : w*(ratio-0.08);
+      const fs = p ? h*0.088 : h*0.108;
+      const{lines,fs:aFs}=smartWrap(ctx,hl.toUpperCase(),maxW,fs,h*0.056,4);
+      const totalH=lines.length*aFs*1.15;
+      const startY=(h-totalH)/2-aFs*0.2;
+      const startX=textLeft?w*0.04:w*(1-ratio)+w*0.04;
+      ctx.shadowColor='rgba(0,0,0,1)'; ctx.shadowBlur=10;
+      lines.forEach((ln,i)=>{
+        ctx.font=`900 ${aFs}px Arial Black`;
+        ctx.fillStyle=i%2===0?'#fff':palette.accent;
+        ctx.textBaseline='top'; ctx.textAlign='left';
+        ctx.fillText(ln,startX,startY+i*aFs*1.15);
+      });
+      if(sub){ctx.font=`700 ${aFs*0.52}px Arial`;ctx.fillStyle='rgba(255,255,255,0.65)';ctx.fillText(sub.toUpperCase(),startX,startY+totalH+aFs*0.2);}
+      ctx.shadowBlur=0;
     }
   },
 
   stackedBoxes: {
     safe: false,
-    render: (ctx, w, h, hl, sub, palette) => {
+    render: (ctx, w, h, hl, sub, palette, textSide) => {
       const p = h > w;
-      const words = hl.toUpperCase().split(' ');
-      const third = Math.ceil(words.length/3);
-      const chunks = [words.slice(0,third).join(' '), words.slice(third,third*2).join(' '), words.slice(third*2).join(' ')].filter(c=>c.trim());
-      const bh = p ? h*0.14 : h*0.18;
-      const bw = p ? w*0.82 : w*0.56;
-      const startX = p ? w*0.09 : w*0.04;
-      const gap = h*0.014;
-      const totalBoxH = chunks.length * bh + (chunks.length-1)*gap;
-      const startY = p ? h*0.28 : (h-totalBoxH)/2;
-      const colors = ['#fff', palette.accent, '#111'];
-      const txColors = ['#111', isLightColor(palette.accent)?'#000':'#fff', '#fff'];
-      ctx.shadowColor='rgba(0,0,0,0.5)'; ctx.shadowBlur=8;
-      chunks.slice(0,3).forEach((chunk, i) => {
-        ctx.fillStyle=colors[i]; ctx.fillRect(startX, startY+i*(bh+gap), bw, bh);
-        const fs = fitText(ctx, chunk, bw*0.88, i===1?bh*0.62:bh*0.5, bh*0.25);
+      const textLeft = textSide !== 'right';
+      const words=hl.toUpperCase().split(' ');
+      const third=Math.ceil(words.length/3);
+      const chunks=[words.slice(0,third).join(' '),words.slice(third,third*2).join(' '),words.slice(third*2).join(' ')].filter(c=>c.trim());
+      const bh=p?h*0.13:h*0.17;
+      const bw=p?w*0.84:w*0.54;
+      const gap=h*0.013;
+      const totalBoxH=chunks.length*(bh+gap)-gap;
+      const startY=p?h*0.3:(h-totalBoxH)/2;
+      const startX=textLeft?w*0.04:w*(1-(p?0.88:0.58));
+      const colors=['#fff',palette.accent,'#111'];
+      const txColors=['#111',isLightColor(palette.accent)?'#000':'#fff','#fff'];
+      ctx.shadowColor='rgba(0,0,0,0.6)'; ctx.shadowBlur=8;
+      // Dark overlay behind boxes
+      const pad=h*0.04;
+      ctx.fillStyle='rgba(0,0,0,0.5)';
+      ctx.fillRect(startX-pad, startY-pad, bw+pad*2, totalBoxH+pad*2);
+      chunks.slice(0,3).forEach((chunk,i)=>{
+        ctx.fillStyle=colors[i]; ctx.shadowBlur=0;
+        ctx.fillRect(startX,startY+i*(bh+gap),bw,bh);
+        const fs=fitText(ctx,chunk,bw*0.9,i===1?bh*0.62:bh*0.5,bh*0.28);
         ctx.font=`900 ${fs}px Arial Black`; ctx.fillStyle=txColors[i];
         ctx.textBaseline='middle'; ctx.textAlign='left';
-        ctx.fillText(chunk, startX+bw*0.05, startY+i*(bh+gap)+bh/2);
+        ctx.fillText(chunk,startX+bw*0.05,startY+i*(bh+gap)+bh/2);
       });
-      ctx.shadowBlur=0; ctx.textAlign='left';
+      ctx.textAlign='left';
     }
   }
 
@@ -2904,7 +2925,7 @@ function pickTemplate(contentType) {
   return all[Math.floor(Date.now()/10000) % all.length];
 }
 
-function drawThumb(canvasId, w, h, headline, subtext, accentColor, imgSrc, contentType, templateName, isBold) {
+function drawThumb(canvasId, w, h, headline, subtext, accentColor, imgSrc, contentType, templateName, isBold, textSide) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
   canvas.width = w;
@@ -2918,7 +2939,7 @@ function drawThumb(canvasId, w, h, headline, subtext, accentColor, imgSrc, conte
   const finish = () => {
     ctx.save();
     try {
-      tpl.render(ctx, w, h, headline || 'YOUR STORY', subtext || '', palette);
+      tpl.render(ctx, w, h, headline || 'YOUR STORY', subtext || '', palette, textSide || 'bottom');
     } catch(e) {
       // Fallback render if template fails
       ctx.fillStyle='rgba(0,0,0,0.8)'; ctx.fillRect(0,0,w,h);
