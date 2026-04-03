@@ -527,7 +527,7 @@
       resize: none;
       -webkit-appearance: none;
     }
-    textarea { min-height: 110px; padding-right: 52px; }
+    textarea { min-height: 110px; padding-right: 94px; }
     textarea:focus, input[type="text"]:focus {
       outline: none;
       border-color: var(--border2);
@@ -536,6 +536,22 @@
     textarea::placeholder, input::placeholder { color: var(--text3); }
 
     .input-wrap { position: relative; }
+
+    .paste-btn {
+      position: absolute;
+      bottom: 10px; right: 50px;
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      transition: all 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .paste-btn:hover { border-color: var(--border2); }
+    .paste-btn.pasted { border-color: rgba(52,211,153,0.4); }
     .mic-btn {
       position: absolute;
       bottom: 10px; right: 10px;
@@ -1308,6 +1324,7 @@
         <div class="field-label"><span class="field-label-accent" style="background:var(--pulse);"></span>Describe your moment</div>
         <div class="input-wrap">
           <textarea id="pulseInp" placeholder="Tell me what happened — in your own words, unpolished. The more real and specific, the better." oninput="updateChar('pulseInp','pulseChar')" maxlength="1000"></textarea>
+          <button class="paste-btn" onclick="pasteToEl('pulseInp')" title="Paste">📋</button>
           <button class="mic-btn" id="micPulse" onclick="toggleMicFor('pulseInp','micPulse')">🎙</button>
         </div>
         <div class="char-hint"><span id="pulseChar">0</span> / 1000</div>
@@ -1349,6 +1366,7 @@
         <div class="field-label"><span class="field-label-accent" style="background:var(--spark);"></span>Tell SAM about your niche</div>
         <div class="input-wrap">
           <textarea id="sparkInp" placeholder="e.g. Self-taught DIY renovator documenting a full cottage gut renovation. My audience loves real moments, setbacks, and figuring things out without being an expert." style="min-height:90px;"></textarea>
+          <button class="paste-btn" onclick="pasteToEl('sparkInp')" title="Paste">📋</button>
           <button class="mic-btn" id="micSpark" onclick="toggleMicFor('sparkInp','micSpark')">🎙</button>
         </div>
         <div class="loader" id="sparkLoader"><div class="loader-dots"><span style="background:var(--spark)"></span><span style="background:var(--spark)"></span><span style="background:var(--spark)"></span></div><div class="loader-text">SAM is generating your ideas...</div></div>
@@ -1380,6 +1398,7 @@
         <div class="field-label"><span class="field-label-accent" style="background:var(--blueprint);"></span>Content theme or niche</div>
         <div class="input-wrap">
           <textarea id="blueprintInp" placeholder="e.g. DIY cottage renovation — emotional moments, setbacks, and wins. Audience loves authenticity." style="min-height:90px;"></textarea>
+          <button class="paste-btn" onclick="pasteToEl('blueprintInp')" title="Paste">📋</button>
           <button class="mic-btn" id="micBlueprint" onclick="toggleMicFor('blueprintInp','micBlueprint')">🎙</button>
         </div>
         <div style="margin-top:14px;">
@@ -1423,6 +1442,7 @@
         <div class="field-label"><span class="field-label-accent" style="background:var(--vision);"></span>Describe your niche or idea</div>
         <div class="input-wrap">
           <textarea id="visionInp" placeholder="e.g. Self-taught DIY renovator. I want a concept nobody has seen before — something scroll-stopping that people share." style="min-height:90px;"></textarea>
+          <button class="paste-btn" onclick="pasteToEl('visionInp')" title="Paste">📋</button>
           <button class="mic-btn" id="micVision" onclick="toggleMicFor('visionInp','micVision')">🎙</button>
         </div>
         <div style="margin-top:14px;">
@@ -1508,7 +1528,8 @@
           <div class="field-label"><span class="field-label-accent" style="background:var(--lens);"></span>Add context <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3);font-size:12px;">(optional)</span></div>
           <div class="input-wrap">
             <textarea id="lensInp" placeholder="Add any context, questions, or goals for this analysis..." style="min-height:80px;"></textarea>
-            <button class="mic-btn" id="micLens" onclick="toggleMicFor('lensInp','micLens')">🎙</button>
+            <button class="paste-btn" onclick="pasteToEl('lensInp')" title="Paste">📋</button>
+          <button class="mic-btn" id="micLens" onclick="toggleMicFor('lensInp','micLens')">🎙</button>
           </div>
         </div>
 
@@ -2373,6 +2394,21 @@ function renderLens(data) {
   </div>`;
 
   body.innerHTML = html;
+}
+
+
+async function pasteToEl(id) {
+  try {
+    const text = await navigator.clipboard.readText();
+    const el = document.getElementById(id);
+    if (el) {
+      el.value = text;
+      if (id === 'pulseInp') updateChar('pulseInp','pulseChar');
+      el.focus();
+      const btn = el.parentElement.querySelector('.paste-btn');
+      if (btn) { btn.textContent = '✓'; setTimeout(() => btn.textContent = '📋', 1500); }
+    }
+  } catch(e) { alert('Paste: use Ctrl+V / Cmd+V directly.'); }
 }
 
 // ── INIT ─────────────────────────────────────────────────────────────────────
