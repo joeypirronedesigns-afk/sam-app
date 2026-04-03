@@ -2086,6 +2086,7 @@
             <div class="platform-grid" id="calPlatformGrid">
               <button class="platform-pill" data-platform="TikTok" onclick="toggleCalPlatform(this)">🎵 TikTok</button>
               <button class="platform-pill" data-platform="YouTube Shorts" onclick="toggleCalPlatform(this)">▶ YouTube Shorts</button>
+              <button class="platform-pill" data-platform="YouTube" onclick="toggleCalPlatform(this)">▶ YouTube</button>
               <button class="platform-pill" data-platform="Instagram Reels" onclick="toggleCalPlatform(this)">📸 Instagram Reels</button>
               <button class="platform-pill" data-platform="Facebook Reels" onclick="toggleCalPlatform(this)">👥 Facebook Reels</button>
               <button class="platform-pill" data-platform="LinkedIn" onclick="toggleCalPlatform(this)">💼 LinkedIn</button>
@@ -2129,11 +2130,12 @@
             <div class="section-label">What platform is this for?</div>
             <div class="platform-grid" id="conceptPlatformGrid">
               <button class="platform-pill" data-platform="TikTok" onclick="toggleConceptPlatform(this)">🎵 TikTok</button>
+              <button class="platform-pill" data-platform="YouTube Shorts" onclick="toggleConceptPlatform(this)">▶ YouTube Shorts</button>
               <button class="platform-pill" data-platform="YouTube" onclick="toggleConceptPlatform(this)">▶ YouTube</button>
               <button class="platform-pill" data-platform="Instagram Reels" onclick="toggleConceptPlatform(this)">📸 Instagram Reels</button>
-              <button class="platform-pill" data-platform="YouTube Shorts" onclick="toggleConceptPlatform(this)">⚡ YouTube Shorts</button>
-              <button class="platform-pill" data-platform="Facebook" onclick="toggleConceptPlatform(this)">👥 Facebook</button>
+              <button class="platform-pill" data-platform="Facebook Reels" onclick="toggleConceptPlatform(this)">👥 Facebook Reels</button>
               <button class="platform-pill" data-platform="LinkedIn" onclick="toggleConceptPlatform(this)">💼 LinkedIn</button>
+              <button class="platform-pill" data-platform="X (Twitter)" onclick="toggleConceptPlatform(this)">✕ X (Twitter)</button>
             </div>
           </div>
           <div style="margin-top:1.25rem;">
@@ -2230,11 +2232,12 @@
             <div class="section-label">Which platform? <span style="font-weight:400;text-transform:none;letter-spacing:0;font-style:italic;color:var(--text-muted);font-family:'Inter',sans-serif;">(optional)</span></div>
             <div class="platform-grid" id="uploadPlatformGrid">
               <button class="platform-pill" data-platform="TikTok" onclick="toggleUploadPlatform(this)">🎵 TikTok</button>
+              <button class="platform-pill" data-platform="YouTube Shorts" onclick="toggleUploadPlatform(this)">▶ YouTube Shorts</button>
               <button class="platform-pill" data-platform="YouTube" onclick="toggleUploadPlatform(this)">▶ YouTube</button>
-              <button class="platform-pill" data-platform="Instagram" onclick="toggleUploadPlatform(this)">📸 Instagram</button>
-              <button class="platform-pill" data-platform="YouTube Shorts" onclick="toggleUploadPlatform(this)">⚡ YouTube Shorts</button>
-              <button class="platform-pill" data-platform="Facebook" onclick="toggleUploadPlatform(this)">👥 Facebook</button>
+              <button class="platform-pill" data-platform="Instagram Reels" onclick="toggleUploadPlatform(this)">📸 Instagram Reels</button>
+              <button class="platform-pill" data-platform="Facebook Reels" onclick="toggleUploadPlatform(this)">👥 Facebook Reels</button>
               <button class="platform-pill" data-platform="LinkedIn" onclick="toggleUploadPlatform(this)">💼 LinkedIn</button>
+              <button class="platform-pill" data-platform="X (Twitter)" onclick="toggleUploadPlatform(this)">✕ X (Twitter)</button>
             </div>
           </div>
 
@@ -2302,6 +2305,7 @@
           <div class="platform-grid">
             <button class="platform-pill" data-platform="TikTok" onclick="togglePlatform(this)">🎵 TikTok</button>
             <button class="platform-pill" data-platform="YouTube Shorts" onclick="togglePlatform(this)">▶ YouTube Shorts</button>
+            <button class="platform-pill" data-platform="YouTube" onclick="togglePlatform(this)">▶ YouTube</button>
             <button class="platform-pill" data-platform="Instagram Reels" onclick="togglePlatform(this)">📸 Instagram Reels</button>
             <button class="platform-pill" data-platform="Facebook Reels" onclick="togglePlatform(this)">👥 Facebook Reels</button>
             <button class="platform-pill" data-platform="LinkedIn" onclick="togglePlatform(this)">💼 LinkedIn</button>
@@ -2766,7 +2770,16 @@
     if (isReal(data.content_warning)) html += `<div class="blk"><div class="blk-title">Watch out for</div><div class="warn-box">${data.content_warning}</div></div>`;
     if (isReal(data.best_platform) && !isReal(data.primary_platform)) html += `<div class="blk"><div class="blk-title">Best platform</div><div class="pill">${(platParts[0]||'').trim()}</div><div class="blk-text" style="margin-top:8px;">${(platParts.slice(1).join('—')||'').trim()}</div></div>`;
     if (data.platform_strategies && Array.isArray(data.platform_strategies)) {
-      data.platform_strategies.forEach(ps=>{ if(ps&&ps.platform&&ps.strategy) html+=`<div class="blk"><div class="blk-title">${ps.platform}</div><div class="blk-text">${ps.strategy}</div><button class="copy-btn" onclick="copyEl(this)">Copy</button></div>`; });
+      data.platform_strategies.forEach(ps => {
+        if (ps && ps.platform) {
+          let psHtml = `<div class="blk"><div class="blk-title">${ps.platform}</div>`;
+          if (ps.strategy) psHtml += `<div class="blk-text" style="margin-bottom:10px;">${ps.strategy}</div>`;
+          if (ps.caption) psHtml += `<div class="text-output-box" style="font-size:14px;margin-bottom:8px;">${ps.caption}</div><button class="copy-btn" onclick="copyEl(this)">Copy caption</button>`;
+          if (ps.hashtags) psHtml += `<div class="blk-text" style="margin-top:10px;font-size:13px;color:var(--text-muted);">${ps.hashtags}</div>`;
+          psHtml += `</div>`;
+          html += psHtml;
+        }
+      });
     }
     body.innerHTML = html || '<div style="color:var(--text-muted)">No output returned. Try again.</div>';
   }
