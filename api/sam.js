@@ -104,31 +104,77 @@ module.exports = async function handler(req, res) {
 
   const base = 'You are S.A.M. — Strategic Assistant for Making. ' + toneContext + ' ' + emojiLine + ' ' + creatorLine + ' ' + audienceLine + ' ' + languageLine + ' ' + platformContext + ' ' + formatContext + ' CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No preamble.';
 
-  const callAnthropic = async (system, userContent, maxTokens) => {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 25000);
-    try {
-      const r = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: maxTokens, system, messages: [{ role: 'user', content: userContent }] }),
-        signal: controller.signal
-      });
-      clearTimeout(timeout);
-      if (!r.ok) {
-        const errBody = await r.text().catch(() => '');
-        throw new Error('Anthropic API error ' + r.status + (errBody ? ': ' + errBody.slice(0, 200) : ''));
-      }
-      const d = await r.json();
-      const text = d.content && d.content[0] && d.content[0].text;
-      if (!text) throw new Error('Empty response from API');
-      const clean = text.replace(/```json[\s\S]*?```/g, m => m.slice(7, -3)).replace(/```/g, '').trim();
-      return JSON.parse(clean);
-    } catch (e) {
-      clearTimeout(timeout);
-      if (e.name === 'AbortError') throw new Error('Request timed out — try a shorter moment description');
-      throw e;
+  // ── STREAMING CALL TO ANTHROPIC ──────────────────────────────────────────
+  // Streams the response back to the client to avoid Vercel's 30s timeout.
+  // The frontend receives SSE chunks and assembles the full JSON on completion.
+  const callAnthropicStream = async (system, userContent, maxTokens) => {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: maxTokens,
+        stream: true,
+        system,
+        messages: [{ role: 'user', content: userContent }]
+      })
+    });
+
+    if (!r.ok) {
+      const errBody = await r.text().catch(() => '');
+      throw new Error('Anthropic API error ' + r.status + (errBody ? ': ' + errBody.slice(0, 200) : ''));
     }
+
+    // Set SSE headers so the client can read chunks as they arrive
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('X-Accel-Buffering', 'no');
+
+    const reader = r.body.getReader();
+    const decoder = new TextDecoder();
+    let fullText = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      const chunk = decoder.decode(value, { stream: true });
+
+      // Extract text deltas from SSE events and forward them
+      const lines = chunk.split('\n');
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          const raw = line.slice(6).trim();
+          if (raw === '[DONE]') continue;
+          try {
+            const evt = JSON.parse(raw);
+            if (evt.type === 'content_block_delta' && evt.delta && evt.delta.text) {
+              fullText += evt.delta.text;
+              // Send incremental text to client
+              res.write('data: ' + JSON.stringify({ delta: evt.delta.text }) + '\n\n');
+            }
+          } catch (_) {}
+        }
+      }
+    }
+
+    // Send the complete assembled JSON as the final event
+    const clean = fullText.replace(/```json[\s\S]*?```/g, m => m.slice(7, -3)).replace(/```/g, '').trim();
+    let parsed;
+    try {
+      parsed = JSON.parse(clean);
+    } catch (e) {
+      throw new Error('Failed to parse JSON from response');
+    }
+
+    res.write('data: ' + JSON.stringify({ done: true, result: parsed }) + '\n\n');
+    res.end();
+    return parsed;
   };
 
   try {
@@ -137,16 +183,16 @@ module.exports = async function handler(req, res) {
     if (mode === 'calendar') {
       const platList = platforms && platforms.length > 0 ? platforms : ['TikTok', 'YouTube Shorts', 'YouTube', 'Instagram Reels', 'Facebook Reels', 'LinkedIn', 'X (Twitter)'];
       const prompt = base + ' Build a concise 7-day posting plan. Keep each day short and punchy. Rotate across: ' + platList.join(', ') + '. For each day, write caption/content that respects that platform exact character limits and hashtag rules as specified above. Return exactly: {"days":[{"platform":"platform name","post_type":"format","content":"ready-to-post caption respecting that platforms character limit","tip":"one tactical tip specific to that platform","ideal_time":"specific time + brief reason"}]}';
-      const parsed = await callAnthropic(prompt, moment, 1400);
-      return res.status(200).json(parsed);
+      await callAnthropicStream(prompt, moment, 1400);
+      return;
     }
 
     // ── IDEAS ─────────────────────────────────────────────────────────────
     if (mode === 'ideas') {
       const ideasPlatforms = platforms && platforms.length > 0 ? platforms : ['TikTok', 'YouTube Shorts', 'YouTube', 'Instagram Reels', 'Facebook Reels', 'LinkedIn', 'X (Twitter)'];
       const prompt = base + ' Generate exactly 10 specific, actionable content ideas for this week. Spread ideas across these platforms: ' + ideasPlatforms.join(', ') + '. Return: {"ideas":[{"title":"specific idea title","why":"one sentence why this performs","best_platform":"single best platform name from the list"}]}';
-      const parsed = await callAnthropic(prompt, moment, 1400);
-      return res.status(200).json(parsed);
+      await callAnthropicStream(prompt, moment, 1400);
+      return;
     }
 
     // ── UPLOAD & STRATEGIZE ───────────────────────────────────────────────
@@ -175,8 +221,8 @@ module.exports = async function handler(req, res) {
           ]
         : moment;
 
-      const parsed = await callAnthropic(uploadSystem, userContent, 1800);
-      return res.status(200).json(parsed);
+      await callAnthropicStream(uploadSystem, userContent, 1800);
+      return;
     }
 
     // ── CONCEPT ───────────────────────────────────────────────────────────
@@ -186,16 +232,16 @@ module.exports = async function handler(req, res) {
       const platStr = 'Target platform(s): ' + conceptPlatforms.join(', ') + '. Platform specs: ' + getPlatformContext(conceptPlatforms);
       const styleStr = conceptStyle ? 'Concept style: ' + conceptStyle + '.' : '';
       const prompt = base + ' ' + platStr + ' ' + styleStr + ' Generate ONE bold, unique video concept. Think like a top creative director at a viral studio. Make the concept genuinely scroll-stopping — not safe, not average. Push it until it deserves 100% virality. The video_title, video_description, and video_hashtags MUST strictly follow the target platform character limits and hashtag rules. If multiple platforms, use the most restrictive limits. Return: {"title":"Short punchy concept title 6-10 words","format":"format type e.g. Reverse Reveal","premise":"2-3 sentences on exactly what the video IS","why_it_works":"2 sentences on the psychology of why it stops scrolls","production_notes":["filming note 1","filming note 2","filming note 3","filming note 4"],"hook_line":"exact first sentence to say on camera","best_platform":"single best platform","platform_reason":"one sentence why","twist":"the unexpected angle that makes this truly memorable","virality_score":100,"video_title":"SEO-optimised title respecting platform char limit","video_description":"description respecting platform char limit with keywords and CTA","video_hashtags":["hashtag1","hashtag2","hashtag3","hashtag4","hashtag5","hashtag6","hashtag7","hashtag8"]}';
-      const parsed = await callAnthropic(prompt, moment, 1800);
-      return res.status(200).json(parsed);
+      await callAnthropicStream(prompt, moment, 1800);
+      return;
     }
 
     // ── FOCUS ─────────────────────────────────────────────────────────────
     if (mode === 'focus') {
       const focusSummary = req.body.focusSummary || '';
       const prompt = base + ' Give ONE specific action for the next 30 minutes. Start with a verb. Be direct. Return: {"action":"one specific action starting with a verb","sub":"one sentence on why right now not tomorrow"}';
-      const parsed = await callAnthropic(prompt, moment + ' ' + focusSummary, 300);
-      return res.status(200).json(parsed);
+      await callAnthropicStream(prompt, moment + ' ' + focusSummary, 300);
+      return;
     }
 
     // ── STORY + HOOK (moment → content mode) ─────────────────────────────
@@ -214,7 +260,6 @@ module.exports = async function handler(req, res) {
 
     const scriptInstruction = scriptInstructions[contentType] || scriptInstructions['Short-form video'];
 
-    // Build per-platform strategy instruction
     const platStrategyInstruction = platforms && platforms.length > 0
       ? 'For platform_strategies, write a tailored caption + hashtags for EACH selected platform, strictly following that platforms character limits and hashtag rules as specified above.'
       : '';
@@ -227,10 +272,16 @@ module.exports = async function handler(req, res) {
     const systemPrompt = mode === 'story' ? storyPrompt : hookPrompt;
     if (!systemPrompt) return res.status(400).json({ error: 'Invalid mode' });
 
-    const parsed = await callAnthropic(systemPrompt, moment, 1600);
-    return res.status(200).json(parsed);
+    await callAnthropicStream(systemPrompt, moment, 1600);
+    return;
 
   } catch (err) {
-    return res.status(500).json({ error: err.message || 'Something went wrong.' });
+    // If headers already sent (streaming started), can't send JSON error
+    if (!res.headersSent) {
+      return res.status(500).json({ error: err.message || 'Something went wrong.' });
+    }
+    // Otherwise end the stream with an error event
+    res.write('data: ' + JSON.stringify({ error: err.message || 'Something went wrong.' }) + '\n\n');
+    res.end();
   }
 };
