@@ -159,7 +159,7 @@
        MOBILE HERO  (unchanged from v49)
     ───────────────────────────────────────── */
     .hero-mobile {
-      padding: 28px 20px 20px;
+      padding: 20px 20px 12px;
       max-width: 480px;
       margin: 0 auto;
     }
@@ -173,10 +173,10 @@
       margin-top: 20px;
     }
     .mobile-stat-card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 14px;
-      padding: 16px 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 12px 12px;
     }
     .mobile-stat-label {
       font-size: 10px;
@@ -207,7 +207,7 @@
       display: none;
       max-width: 1280px;
       margin: 0 auto;
-      padding: 64px 48px 48px;
+      padding: 40px 48px 28px;
       grid-template-columns: 1fr 1fr;
       gap: 56px;
       align-items: center;
@@ -344,10 +344,10 @@
       gap: 14px;
     }
     .stat-card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 18px;
-      padding: 22px 20px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 14px 16px;
       backdrop-filter: blur(12px);
     }
     .stat-label {
@@ -360,9 +360,9 @@
     }
     .stat-value {
       font-family: 'Sora', sans-serif;
-      font-size: 32px;
+      font-size: 24px;
       font-weight: 700;
-      letter-spacing: -1px;
+      letter-spacing: -0.5px;
       line-height: 1;
     }
     .stat-sub {
@@ -2359,6 +2359,63 @@
     }
     .desktop-hint strong { color: #A78BFA; }
     @media (max-width: 899px) { .desktop-hint { display: block; } }
+
+    /* Full-width divider bar with animated down arrows at each end */
+    .tool-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 28px;
+      position: relative;
+    }
+    @media (min-width: 768px) { .tool-divider { margin-bottom: 36px; } }
+
+    .divider-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(167,139,250,0.4), rgba(244,114,182,0.4), rgba(167,139,250,0.4), transparent);
+    }
+
+    .divider-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text2);
+      padding: 0 20px;
+      white-space: nowrap;
+    }
+    @media (min-width: 768px) { .divider-label { font-size: 12px; } }
+
+    .divider-arrow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 0 12px;
+      position: relative;
+      top: 2px;
+    }
+    .divider-arrow span {
+      display: block;
+      width: 7px;
+      height: 7px;
+      border-right: 1.5px solid #A78BFA;
+      border-bottom: 1.5px solid #A78BFA;
+      transform: rotate(45deg);
+      animation: chev-drop 1.6s ease-in-out infinite;
+    }
+    .divider-arrow span:nth-child(1) { animation-delay: 0s; }
+    .divider-arrow span:nth-child(2) { animation-delay: 0.18s; }
+    .divider-arrow span:nth-child(3) { animation-delay: 0.36s; }
+    @keyframes chev-drop {
+      0%   { opacity: 0.2; transform: rotate(45deg) translate(0,0); }
+      50%  { opacity: 1;   transform: rotate(45deg) translate(2px, 2px); }
+      100% { opacity: 0.2; transform: rotate(45deg) translate(0,0); }
+    }
+
+    .section-label { display: none; } /* replaced by divider-label */
   </style>
 </head>
 <body>
@@ -2461,7 +2518,13 @@
 
     <!-- HOME GRID -->
     <div id="homeView">
-      <div class="section-label">Choose your tool</div>
+      <div class="tool-divider">
+        <div class="divider-line"></div>
+        <div class="divider-arrow"><span></span><span></span><span></span></div>
+        <div class="divider-label">Choose your tool</div>
+        <div class="divider-arrow"><span></span><span></span><span></span></div>
+        <div class="divider-line"></div>
+      </div>
       <div class="home-grid">
 
         <button class="tool-icon-btn tool-pulse" onclick="previewTool('pulse')">
