@@ -6031,8 +6031,16 @@ function showWizardStep(step) {
   const isEntry = step === 'entry';
   const isBuilding = step === '12';
   document.getElementById('wizardProgressWrap').style.display = isEntry ? 'none' : 'block';
+  // On step 12 hide the Next/Back wizard nav but show the print bar
   document.getElementById('wizardNav').style.display = (isEntry || isBuilding) ? 'none' : 'flex';
-  document.getElementById('playbookPrintBar').style.display = 'none';
+  // Print bar only shows on step 12 AFTER playbook is built (buildPlaybook sets it)
+  // But reset it to none whenever navigating away from 12
+  if (step !== '12') {
+    document.getElementById('playbookPrintBar').style.display = 'none';
+    // Clear next tool output when navigating back
+    const nto = document.getElementById('nextToolOutput');
+    if (nto) nto.innerHTML = '';
+  }
 
   // Update progress
   if (!isEntry) {
@@ -6083,6 +6091,8 @@ function setupWizardStep(step) {
   }
 
   if (step === '6') {
+    // Restore any previously selected age/gender chips
+    restoreAgeGenderSelections();
     // Show SAM's audience diagnosis
     const diag = WS.diagnosedAudience;
     if (diag) {
@@ -6103,8 +6113,19 @@ function setupWizardStep(step) {
   }
 
   if (step === '12') {
-    // Start building the playbook
-    buildPlaybook();
+    // If we have a saved playbook from going back, restore it instead of rebuilding
+    if (window._savedPlaybookHTML && window._savedPlaybookData) {
+      const wizOutput = document.getElementById('wizardOutput');
+      if (wizOutput) {
+        wizOutput.innerHTML = window._savedPlaybookHTML;
+        window._lastPlaybookData = window._savedPlaybookData;
+        document.getElementById('playbookPrintBar').style.display = 'flex';
+        // Re-wire any copy buttons
+        document.getElementById('wizardPage').scrollTop = 0;
+      }
+    } else {
+      buildPlaybook();
+    }
   }
 }
 
@@ -6134,6 +6155,17 @@ function wizardBack() {
   } else {
     showWizardStep('entry');
   }
+}
+
+function wizardBackFromPlaybook() {
+  // Go back to step 11 (steer SAM) but preserve playbook data
+  // Store current playbook HTML so we can restore it if they go forward again
+  const wizOutput = document.getElementById('wizardOutput');
+  if (wizOutput) {
+    window._savedPlaybookHTML = wizOutput.innerHTML;
+    window._savedPlaybookData = window._lastPlaybookData;
+  }
+  showWizardStep('10');
 }
 
 function startWizard(mode) {
@@ -6256,9 +6288,38 @@ function toggleWizAgeChip(btn) {
       selected.push(b.dataset.value);
     }
   });
-  WS.audienceAge = selected.join(', ');
+  // Store as array-friendly string — never null if nothing selected (SAM diagnoses)
+  WS.audienceAge = selected.length > 0 ? selected.join(', ') : '';
   document.getElementById('wizardNextBtn').disabled = false;
   saveWizardState();
+}
+
+function restoreAgeGenderSelections() {
+  // Restore age chip selections from WS state when returning to step 6
+  if (WS.audienceAge) {
+    const ages = WS.audienceAge.split(', ').map(a => a.trim()).filter(Boolean);
+    document.querySelectorAll('[onclick*="toggleWizAgeChip"]').forEach(chip => {
+      if (ages.includes(chip.dataset.value)) {
+        chip.classList.add('selected');
+      }
+    });
+  }
+  // Restore gender selection
+  if (WS.audienceGender) {
+    document.querySelectorAll('[onclick*="toggleWizChip"][data-value]').forEach(chip => {
+      if (chip.dataset.value === WS.audienceGender) {
+        chip.classList.add('selected');
+      }
+    });
+  }
+  // Restore custom text
+  const customEl = document.getElementById('wiz6customtext');
+  if (customEl && WS.audienceCustom) {
+    customEl.value = WS.audienceCustom;
+  }
+  // Always enable continue on step 6
+  const nb = document.getElementById('wizardNextBtn');
+  if (nb) nb.disabled = false;
 }
 
 function toggleWizChip(btn, group) {
@@ -6660,12 +6721,18 @@ async function buildPlaybook() {
   const steerText = WS.steerText || '';
   const allSteers = [steerChips, steerText].filter(Boolean).join('. ');
 
+  // Build full audience context — include everything SAM gathered
+  const diagnosedClean = WS.diagnosedAudience
+    ? WS.diagnosedAudience.replace(/<[^>]+>/g,'').slice(0,200)
+    : '';
   const audienceContext = [
-    WS.audienceAge ? `Age ${WS.audienceAge}` : '',
-    WS.audienceGender || '',
-    WS.audienceCustom || '',
-    WS.diagnosedAudience ? '(SAM diagnosed: ' + WS.diagnosedAudience.replace(/<[^>]+>/g,'').slice(0,100) + ')' : ''
-  ].filter(Boolean).join(', ');
+    WS.audienceAge    ? `Age brackets: ${WS.audienceAge}` : '',
+    WS.audienceGender ? `Gender: ${WS.audienceGender}` : '',
+    WS.audienceCustom ? `Additional: ${WS.audienceCustom}` : '',
+    WS.audienceConfirm === 'yes' ? 'User confirmed SAM diagnosis' : '',
+    WS.audienceConfirm === 'different' ? 'User provided own audience description' : '',
+    diagnosedClean ? `SAM diagnosed: ${diagnosedClean}` : ''
+  ].filter(Boolean).join(' | ');
 
   const context = `
 CREATOR TYPE: ${WS.creatorType || 'personal brand'} — ${WS.brandName || ''} ${WS.brandHandle || ''}
@@ -7014,6 +7081,8 @@ function renderPlaybook(data) {
 
   // Show print bar
   document.getElementById('playbookPrintBar').style.display = 'flex';
+  // Store playbook data for PDF generation
+  window._lastPlaybookData = data;
 
   // Save playbook to history
   savePlaybookHistory(data);
@@ -7044,6 +7113,80 @@ function wizCopy(btn, text) {
 function wizCopyEl(btn) {
   const prev = btn.previousElementSibling;
   wizCopy(btn, prev ? (prev.innerText || prev.textContent) : '');
+}
+
+// ── PDF DOWNLOAD via Puppeteer API ────────────────────────────────────────
+async function downloadPDF(type) {
+  const btn = document.getElementById(type === 'playbook' ? 'playbookPdfBtn' : 'leadMagnetPdfBtn');
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '⏳ Generating PDF...';
+  btn.disabled = true;
+
+  try {
+    // Collect all playbook data from WS state + rendered DOM
+    const s = getSetup();
+    const pb = window._lastPlaybookData || {};
+
+    const brandData = {
+      brandName:  WS.brandName  || s.niche || 'Your Brand',
+      brandHandle:WS.brandHandle|| '',
+      brandColor: WS.brandColor || '#7C3AED',
+      brandLogo:  WS.brandLogo  || null,
+      date: new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})
+    };
+
+    const userId = WS.email || WS.userId || 'anon-' + (localStorage.getItem('sam_uid') || Math.random().toString(36).slice(2));
+    if (!localStorage.getItem('sam_uid')) localStorage.setItem('sam_uid', userId);
+    const tier = WS.tier || 'free';
+
+    const payload = {
+      type,
+      userId,
+      tier,
+      brandData,
+      playbookData: pb,
+      leadMagnetData: pb.lead_magnet || {}
+    };
+
+    const res = await fetch('/api/pdf', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (res.status === 429) {
+      const err = await res.json();
+      alert(err.message || 'Daily PDF limit reached. Upgrade your plan for more downloads.');
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+      return;
+    }
+
+    if (!res.ok) throw new Error('PDF generation failed');
+
+    // Trigger download
+    const blob = await res.blob();
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = type === 'playbook' ? 'SAM_Content_Playbook.pdf' : 'SAM_Lead_Magnet.pdf';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    btn.innerHTML = '✅ Downloaded!';
+    setTimeout(() => { btn.innerHTML = originalText; btn.disabled = false; }, 3000);
+
+  } catch(err) {
+    console.error('PDF error:', err);
+    // Fallback to browser print if API fails
+    alert('PDF API unavailable — opening browser print as backup.');
+    if (type === 'playbook') printPlaybookOnly();
+    else printLeadMagnetOnly();
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+  }
 }
 
 function printPlaybookOnly() {
@@ -8250,7 +8393,7 @@ function openWizardFromNav() {
         </div>
         <div>
           <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;">Anything else about them?</div>
-          <textarea class="wizard-textarea" id="wiz6customtext" placeholder="e.g. DIY enthusiasts, young parents, small business owners, fitness beginners..." rows="2" style="min-height:70px;"></textarea>
+          <textarea class="wizard-textarea" id="wiz6customtext" placeholder="e.g. DIY enthusiasts, young parents, small business owners, fitness beginners..." rows="2" style="min-height:70px;" oninput="WS.audienceCustom=this.value;saveWizardState();document.getElementById('wizardNextBtn').disabled=false;"></textarea>
         </div>
       </div>
     </div>
@@ -8483,6 +8626,12 @@ function openWizardFromNav() {
 
     <!-- ── STEP 12: BUILDING ── -->
     <div class="wizard-step" id="wiz-12">
+    <!-- Back button always visible on step 12 -->
+    <div class="no-print" style="padding:12px 0 0;margin-bottom:8px;">
+      <button onclick="wizardBackFromPlaybook()" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:transparent;border:1px solid var(--border2);border-radius:var(--radius);color:var(--text3);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.color='var(--text)';this.style.borderColor='var(--border)'" onmouseout="this.style.color='var(--text3)';this.style.borderColor='var(--border2)'">
+        ← Back to edit
+      </button>
+    </div>
       <div class="wizard-loader show" id="wizardLoader">
         <div class="wizard-loader-title">SAM is building your playbook.</div>
         <div class="wizard-loader-sub">
@@ -8562,11 +8711,11 @@ function openWizardFromNav() {
   <div class="playbook-print-bar" id="playbookPrintBar" style="display:none;flex-wrap:wrap;gap:8px;">
     <button class="playbook-new-btn" onclick="showWizardStep('10')" style="flex-shrink:0;">← Back</button>
     <button class="playbook-new-btn" onclick="wizardNewPlaybook()" style="flex-shrink:0;">+ New</button>
-    <button class="playbook-print-btn" onclick="printPlaybookOnly()" style="flex:1;min-width:140px;font-size:12px;">
-      🖨️ My Playbook PDF
+    <button class="playbook-print-btn" id="playbookPdfBtn" onclick="downloadPDF('playbook')" style="flex:1;min-width:140px;font-size:12px;">
+      ⬇️ Download Playbook PDF
     </button>
-    <button class="playbook-print-btn" onclick="printLeadMagnetOnly()" style="flex:1;min-width:140px;font-size:12px;background:linear-gradient(135deg,#92400E,#FBBF24,#F59E0B);">
-      📄 Lead Magnet PDF
+    <button class="playbook-print-btn" id="leadMagnetPdfBtn" onclick="downloadPDF('leadmagnet')" style="flex:1;min-width:140px;font-size:12px;background:linear-gradient(135deg,#92400E,#FBBF24,#F59E0B);">
+      ⬇️ Download Lead Magnet PDF
     </button>
   </div>
 
