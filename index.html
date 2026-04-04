@@ -2344,6 +2344,21 @@
       -webkit-text-fill-color: #F0ECFF !important;
       caret-color: #A78BFA;
     }
+
+    /* Mobile desktop hint — only shows on phones */
+    .desktop-hint {
+      display: none;
+      background: linear-gradient(135deg, rgba(109,40,217,0.15), rgba(244,114,182,0.1));
+      border-bottom: 1px solid rgba(167,139,250,0.2);
+      padding: 10px 20px;
+      text-align: center;
+      font-size: 13px;
+      color: rgba(240,236,255,0.7);
+      position: relative;
+      z-index: 99;
+    }
+    .desktop-hint strong { color: #A78BFA; }
+    @media (max-width: 899px) { .desktop-hint { display: block; } }
   </style>
 </head>
 <body>
@@ -2367,6 +2382,9 @@
 </nav>
 
 <main>
+  <div class="desktop-hint">
+    💻 <strong>Pro tip:</strong> SAM hits different on a laptop. Phone is cool — desktop is where the magic happens.
+  </div>
 
   <!-- ── MOBILE HERO ── -->
   <div class="hero-mobile" id="heroSection">
