@@ -5694,6 +5694,21 @@ function selectInputMethod(method) {
   }
 }
 
+function toggleWizAgeChip(btn) {
+  // Multi-select for age brackets
+  btn.classList.toggle('selected');
+  const allAges = ['13-17','18-24','25-34','35-44','45-54','55+'];
+  const selected = [];
+  btn.closest('div').querySelectorAll('.wizard-chip').forEach(b => {
+    if (b.classList.contains('selected') && allAges.includes(b.dataset.value)) {
+      selected.push(b.dataset.value);
+    }
+  });
+  WS.audienceAge = selected.join(', ');
+  document.getElementById('wizardNextBtn').disabled = false;
+  saveWizardState();
+}
+
 function toggleWizChip(btn, group) {
   if (group === 'steer') {
     btn.classList.toggle('selected');
@@ -5704,15 +5719,13 @@ function toggleWizChip(btn, group) {
       WS.steers = WS.steers.filter(s => s !== val);
     }
   } else {
-    // Single select chips
+    // Single select chips (gender)
     btn.closest('.wizard-chips, div').querySelectorAll('.wizard-chip[data-value]').forEach(b => {
       if (b.dataset.value && (
-        (group === 'age' && ['13-17','18-24','25-34','35-44','45-54','55+'].includes(b.dataset.value)) ||
         (group === 'gender' && ['Mostly men','Mix of both','Mostly women'].includes(b.dataset.value))
       )) b.classList.remove('selected');
     });
     btn.classList.add('selected');
-    if (group === 'age') WS.audienceAge = btn.dataset.value;
     if (group === 'gender') WS.audienceGender = btn.dataset.value;
   }
   document.getElementById('wizardNextBtn').disabled = false;
@@ -7048,14 +7061,14 @@ function openWizardFromNav() {
       <!-- Adjust audience area -->
       <div class="wizard-input-area" id="wiz6adjust">
         <div style="margin-bottom:16px;">
-          <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;">Age bracket</div>
+          <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;">Age bracket <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3);font-size:11px;">— select all that apply</span></div>
           <div style="display:flex;flex-wrap:wrap;gap:8px;">
-            <button class="wizard-chip" onclick="toggleWizChip(this,'age')" data-value="13-17">13–17</button>
-            <button class="wizard-chip" onclick="toggleWizChip(this,'age')" data-value="18-24">18–24</button>
-            <button class="wizard-chip" onclick="toggleWizChip(this,'age')" data-value="25-34">25–34</button>
-            <button class="wizard-chip" onclick="toggleWizChip(this,'age')" data-value="35-44">35–44</button>
-            <button class="wizard-chip" onclick="toggleWizChip(this,'age')" data-value="45-54">45–54</button>
-            <button class="wizard-chip" onclick="toggleWizChip(this,'age')" data-value="55+">55+</button>
+            <button class="wizard-chip" onclick="toggleWizAgeChip(this)" data-value="13-17">13–17</button>
+            <button class="wizard-chip" onclick="toggleWizAgeChip(this)" data-value="18-24">18–24</button>
+            <button class="wizard-chip" onclick="toggleWizAgeChip(this)" data-value="25-34">25–34</button>
+            <button class="wizard-chip" onclick="toggleWizAgeChip(this)" data-value="35-44">35–44</button>
+            <button class="wizard-chip" onclick="toggleWizAgeChip(this)" data-value="45-54">45–54</button>
+            <button class="wizard-chip" onclick="toggleWizAgeChip(this)" data-value="55+">55+</button>
           </div>
         </div>
         <div style="margin-bottom:16px;">
