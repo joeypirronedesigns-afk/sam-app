@@ -6681,15 +6681,17 @@ async function generateAudienceDiagnosis() {
   let diag = '';
 
   if (text.toLowerCase().includes('parent') || text.toLowerCase().includes('mom') || text.toLowerCase().includes('dad') || text.toLowerCase().includes('family')) {
-    diag = `Based on your story, SAM sees a natural audience of <strong>women and men 35-54</strong> who are emotionally driven by family and home content. They\'re not following you for technique — they\'re following you because you make them feel something. This audience is fiercely loyal when they find a creator who\'s real with them. <br/><br/>They live primarily on <strong>Facebook</strong> (emotional stories, community-driven) and <strong>TikTok</strong> (discovery, transformation content). YouTube is the long game when you\'re ready.`;
+    diag = `Based on your story, SAM sees a natural audience of <strong>people 35-54</strong> who are emotionally driven by family and home content. They\'re not following you for technique — they\'re following you because you make them feel something. This audience is fiercely loyal when they find a creator who\'s real with them. <br/><br/>They live primarily on <strong>Facebook</strong> (emotional stories, community-driven) and <strong>TikTok</strong> (discovery, transformation content). YouTube is the long game when you\'re ready.`;
     WS.diagnosedAudience = diag;
-    WS.audienceAge = '35-44';
-    WS.audienceGender = 'Mix of both';
+    // Only set defaults if user hasn't already selected
+    if (!WS.audienceAge) WS.audienceAge = '35-44';
+    if (!WS.audienceGender) WS.audienceGender = 'Mix of both';
   } else if (text.toLowerCase().includes('renovati') || text.toLowerCase().includes('diy') || text.toLowerCase().includes('build')) {
-    diag = `Based on your story, SAM sees a natural audience of <strong>men and women 25-54</strong> who are DIY-curious — people who want to do what you\'re doing but don\'t know how to start, or people who started and got stuck. They follow you for the journey, not just the result. <br/><br/>They\'re on <strong>YouTube</strong> (how-to, long-form), <strong>TikTok</strong> (quick wins and real moments), and <strong>Facebook</strong> groups (community, advice-seeking).`;
+    diag = `Based on your story, SAM sees a natural audience of <strong>people 25-54</strong> who are DIY-curious — people who want to do what you\'re doing but don\'t know how to start, or people who started and got stuck. They follow you for the journey, not just the result. <br/><br/>They\'re on <strong>YouTube</strong> (how-to, long-form), <strong>TikTok</strong> (quick wins and real moments), and <strong>Facebook</strong> groups (community, advice-seeking).`;
     WS.diagnosedAudience = diag;
-    WS.audienceAge = '25-44';
-    WS.audienceGender = 'Mix of both';
+    // Only set defaults if user hasn't already selected
+    if (!WS.audienceAge) WS.audienceAge = '25-44';
+    if (!WS.audienceGender) WS.audienceGender = 'Mix of both';
   } else if (storyType === 'idea' || storyType === 'concept') {
     diag = `SAM will build a full audience profile during your playbook based on the concept you shared. For now, SAM is assuming a <strong>broad creator audience</strong> — you can adjust this here if you have a specific group in mind.`;
     WS.diagnosedAudience = diag;
@@ -6747,13 +6749,14 @@ async function buildPlaybook() {
   const diagnosedClean = WS.diagnosedAudience
     ? WS.diagnosedAudience.replace(/<[^>]+>/g,'').slice(0,200)
     : '';
+  // IMPORTANT: User-selected values take priority over SAM's diagnosis
   const audienceContext = [
-    WS.audienceAge    ? `Age brackets: ${WS.audienceAge}` : '',
-    WS.audienceGender ? `Gender: ${WS.audienceGender}` : '',
-    WS.audienceCustom ? `Additional: ${WS.audienceCustom}` : '',
+    WS.audienceAge    ? `SELECTED AGE BRACKETS (respect exactly): ${WS.audienceAge}` : '',
+    WS.audienceGender ? `SELECTED GENDER (respect exactly): ${WS.audienceGender}` : '',
+    WS.audienceCustom ? `Additional audience notes: ${WS.audienceCustom}` : '',
     WS.audienceConfirm === 'yes' ? 'User confirmed SAM diagnosis' : '',
-    WS.audienceConfirm === 'different' ? 'User provided own audience description' : '',
-    diagnosedClean ? `SAM diagnosed: ${diagnosedClean}` : ''
+    WS.audienceConfirm === 'different' ? 'User described their own audience' : '',
+    diagnosedClean ? `SAM initial diagnosis (may be overridden by selections above): ${diagnosedClean}` : ''
   ].filter(Boolean).join(' | ');
 
   const context = `
@@ -7313,25 +7316,54 @@ Return ONLY valid JSON — no markdown, no backticks:
 }`;
 
   try {
-    // Use callAPI which properly handles streaming and JSON parsing
-    const regenResult = await callAPI({
-      mode: 'chat',
-      messages: [{ role: 'user', content: prompt }]
+    // Direct fetch with proper SSE parsing
+    const regenUid = localStorage.getItem('sam_uid') || 'anon';
+    const regenTier = localStorage.getItem('sam_dev') === 'true' ? 'studio' : 'free';
+
+    const regenRes = await fetch('/api/sam', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        mode: 'chat',
+        userId: regenUid,
+        tier: regenTier,
+        messages: [{ role: 'user', content: prompt }] 
+      })
     });
 
-    // Extract JSON from reply
-    let lm;
-    try {
-      const replyText = (regenResult && regenResult.reply) ? regenResult.reply : JSON.stringify(regenResult);
-      const cleanText = replyText.replace(/```json[\s\S]*?```|```[\s\S]*?```/g, m => m.replace(/```json|```/g,'')).trim();
-      const jsonStart = cleanText.indexOf('{');
-      const jsonEnd = cleanText.lastIndexOf('}');
-      lm = (jsonStart !== -1 && jsonEnd !== -1)
-        ? JSON.parse(cleanText.slice(jsonStart, jsonEnd + 1))
-        : JSON.parse(cleanText);
-    } catch(e) {
-      throw new Error('Could not parse response');
+    if (!regenRes.ok) throw new Error('API error ' + regenRes.status);
+
+    const regenReader = regenRes.body.getReader();
+    const regenDec = new TextDecoder();
+    let regenRaw = '';
+    while (true) {
+      const { done, value } = await regenReader.read();
+      if (done) break;
+      regenRaw += regenDec.decode(value, { stream: true });
     }
+
+    // Extract JSON from SSE stream
+    let lm = null;
+    const regenLines = regenRaw.split('\n');
+    for (const line of regenLines) {
+      if (line.startsWith('data: ')) {
+        try {
+          const evt = JSON.parse(line.slice(6));
+          if (evt.done && evt.result && evt.result.reply) {
+            const j1 = evt.result.reply.indexOf('{');
+            const j2 = evt.result.reply.lastIndexOf('}');
+            if (j1 !== -1 && j2 !== -1) {
+              lm = JSON.parse(evt.result.reply.slice(j1, j2 + 1));
+            }
+          }
+        } catch(e) {}
+      }
+    }
+    if (!lm) {
+      const j1 = regenRaw.indexOf('{'); const j2 = regenRaw.lastIndexOf('}');
+      if (j1 !== -1 && j2 !== -1) { try { lm = JSON.parse(regenRaw.slice(j1, j2+1)); } catch(e) {} }
+    }
+    if (!lm) throw new Error('Could not parse response');
 
     // Rebuild the document
     const brandHeader = `<div class="wl-doc-header no-print" style="display:flex;align-items:center;justify-content:space-between;padding-bottom:16px;margin-bottom:20px;border-bottom:2px solid ${brandColor};">
@@ -7366,6 +7398,11 @@ Return ONLY valid JSON — no markdown, no backticks:
     docEl.style.opacity = '1';
     docEl.style.pointerEvents = '';
     statusEl.style.display = 'none';
+
+    // Update the stored playbook data so PDF download uses the new lead magnet
+    if (window._lastPlaybookData) {
+      window._lastPlaybookData.lead_magnet = lm;
+    }
 
     // Scroll to show it
     docEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -7507,19 +7544,62 @@ Return ONLY valid JSON:
 
   try {
     // Use callAPI which properly handles streaming and JSON parsing
-    const rawResult = await callAPI({
-      mode: 'chat',
-      messages: [{ role: 'user', content: cfg.prompt }]
+    // Use direct fetch + stream read to get raw text, then parse JSON from it
+    const devUid = localStorage.getItem('sam_uid') || 'anon';
+    const devTier = localStorage.getItem('sam_dev') === 'true' ? 'studio' : 'free';
+    
+    const nextRes = await fetch('/api/sam', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        mode: 'chat', 
+        userId: devUid,
+        tier: devTier,
+        messages: [{ role: 'user', content: cfg.prompt }] 
+      })
     });
 
-    // Chat mode returns { reply: "json string" } — extract and parse
-    const replyText = (rawResult && rawResult.reply) ? rawResult.reply : JSON.stringify(rawResult);
-    const cleanText = replyText.replace(/```json[\s\S]*?```|```[\s\S]*?```/g, m => m.replace(/```json|```/g, '')).trim();
-    const jsonStart = cleanText.indexOf('{');
-    const jsonEnd = cleanText.lastIndexOf('}');
-    const actualData = (jsonStart !== -1 && jsonEnd !== -1) 
-      ? JSON.parse(cleanText.slice(jsonStart, jsonEnd + 1))
-      : JSON.parse(cleanText);
+    if (!nextRes.ok) throw new Error('API error ' + nextRes.status);
+
+    // Read full stream
+    const nextReader = nextRes.body.getReader();
+    const nextDec = new TextDecoder();
+    let nextRaw = '';
+    while (true) {
+      const { done, value } = await nextReader.read();
+      if (done) break;
+      nextRaw += nextDec.decode(value, { stream: true });
+    }
+
+    // Extract JSON from SSE stream — look for done event with result
+    let actualData = null;
+    const lines = nextRaw.split('\n');
+    for (const line of lines) {
+      if (line.startsWith('data: ')) {
+        try {
+          const evt = JSON.parse(line.slice(6));
+          if (evt.done && evt.result && evt.result.reply) {
+            const replyText = evt.result.reply;
+            const j1 = replyText.indexOf('{');
+            const j2 = replyText.lastIndexOf('}');
+            if (j1 !== -1 && j2 !== -1) {
+              actualData = JSON.parse(replyText.slice(j1, j2 + 1));
+            }
+          }
+        } catch(e) {}
+      }
+    }
+    
+    // Fallback: try to find JSON anywhere in raw response
+    if (!actualData) {
+      const j1 = nextRaw.indexOf('{');
+      const j2 = nextRaw.lastIndexOf('}');
+      if (j1 !== -1 && j2 !== -1) {
+        try { actualData = JSON.parse(nextRaw.slice(j1, j2 + 1)); } catch(e) {}
+      }
+    }
+    
+    if (!actualData) throw new Error('Could not parse SAM response');
 
     // Render based on tool type
     let html = `<div style="border:1px solid ${cfg.color}33;border-radius:var(--radius-xl);overflow:hidden;margin-top:4px;">
