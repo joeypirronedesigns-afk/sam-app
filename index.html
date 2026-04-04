@@ -6846,21 +6846,27 @@ function renderPlaybook(data) {
     html += `</div>`;
   }
 
-  // ⑥ AUDIENCE PROFILE
+  // ⑥ AUDIENCE PROFILE — deep psychographic
   const audienceProfile = data.audience_profile;
   if (audienceProfile) {
+    const apRow = (key, label, icon) => audienceProfile[key]
+      ? `<div class="wizard-audience-row"><div class="wizard-audience-key">${icon ? icon + ' ' : ''}${label}</div><div class="wizard-audience-val">${audienceProfile[key]}</div></div>`
+      : '';
+
     html += `<div class="playbook-section">
       <div class="playbook-section-num">Section 06</div>
       <div class="playbook-section-title">Your ideal audience</div>
-      <div class="wizard-why" style="margin-bottom:16px;">This isn't a demographic report. This is a description of a real person — the one who needs to hear your story most. When you know exactly who you're talking to, you stop trying to talk to everyone. And that's when your content starts to land.</div>
+      <div class="wizard-why" style="margin-bottom:16px;">This isn't a demographic report. This is a real person — the one who needs your story most. When SAM knows exactly who they are, every word in your playbook is written for them.</div>
       <div class="wizard-audience-card">
-        ${audienceProfile.who ? `<div class="wizard-audience-row"><div class="wizard-audience-key">Who</div><div class="wizard-audience-val">${audienceProfile.who}</div></div>` : ''}
-        ${audienceProfile.where ? `<div class="wizard-audience-row"><div class="wizard-audience-key">Where</div><div class="wizard-audience-val">${audienceProfile.where}</div></div>` : ''}
-        ${audienceProfile.what_they_want ? `<div class="wizard-audience-row"><div class="wizard-audience-key">Want</div><div class="wizard-audience-val">${audienceProfile.what_they_want}</div></div>` : ''}
-        ${audienceProfile.what_hooks_them ? `<div class="wizard-audience-row"><div class="wizard-audience-key">Hook</div><div class="wizard-audience-val">${audienceProfile.what_hooks_them}</div></div>` : ''}
-        ${audienceProfile.voice ? `<div class="wizard-audience-row"><div class="wizard-audience-key">Voice</div><div class="wizard-audience-val">${audienceProfile.voice}</div></div>` : ''}
+        ${apRow('who', 'Who They Are', '👤')}
+        ${apRow('pain_points', 'Their Pain Points', '😤')}
+        ${apRow('secret_want', 'What They Secretly Want', '💭')}
+        ${apRow('where', 'Where They Spend Time', '📍')}
+        ${apRow('what_hooks_them', 'What Makes Them Stop Scrolling', '🎯')}
+        ${apRow('what_loses_them', 'What Loses Them Fast', '⚠️')}
+        ${apRow('voice', 'How to Talk to Them', '🗣️')}
       </div>
-      ${audienceProfile.why ? `<div class="wizard-why" style="margin-top:12px;"><strong>Why SAM sees this for you:</strong> ${audienceProfile.why}</div>` : ''}
+      ${audienceProfile.why ? `<div class="wizard-why" style="margin-top:12px;border-left:3px solid var(--spark);padding-left:14px;"><strong>Why SAM sees this for you:</strong> ${audienceProfile.why}</div>` : ''}
     </div>`;
   }
 
@@ -6900,11 +6906,41 @@ function renderPlaybook(data) {
       </div>
     </div>`;
 
-    html += `<div class="playbook-section">
+    // Perspective toggle + regenerate controls
+    const perspectiveControls = `<div class="no-print lm-controls" style="margin-bottom:18px;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;">Choose what to give your audience:</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+        <button class="lm-persp-btn active" data-persp="viewer" onclick="setLMPerspective('viewer',this)" style="flex:1;min-width:140px;padding:10px 14px;border-radius:var(--radius);border:1px solid rgba(251,191,36,0.4);background:rgba(251,191,36,0.12);color:var(--lens);font-size:12px;font-weight:600;cursor:pointer;text-align:left;transition:all 0.2s;">
+          <div style="font-size:16px;margin-bottom:3px;">👥</div>
+          <div style="font-size:13px;font-weight:700;">Viewer Perspective</div>
+          <div style="font-size:11px;opacity:0.75;margin-top:2px;">Tips &amp; advice from your experience — inspires your audience</div>
+        </button>
+        <button class="lm-persp-btn" data-persp="user" onclick="setLMPerspective('user',this)" style="flex:1;min-width:140px;padding:10px 14px;border-radius:var(--radius);border:1px solid rgba(167,139,250,0.2);background:rgba(167,139,250,0.06);color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;text-align:left;transition:all 0.2s;">
+          <div style="font-size:16px;margin-bottom:3px;">🛠️</div>
+          <div style="font-size:13px;font-weight:700;">User Perspective</div>
+          <div style="font-size:11px;opacity:0.75;margin-top:2px;">A working template or planning tool — something they actually use daily</div>
+        </button>
+      </div>
+      <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;">
+        <div style="flex:1;min-width:200px;">
+          <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text3);margin-bottom:5px;">Steer SAM in a different direction (optional)</div>
+          <textarea id="lmSteerInput" placeholder="e.g. make it a planning checklist… or focus on budgeting tips… or for someone starting their first project…" style="width:100%;padding:9px 12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);font-size:13px;color:var(--text);resize:none;line-height:1.5;height:60px;box-sizing:border-box;" oninput="this.style.height='auto';this.style.height=Math.max(60,this.scrollHeight)+'px'"></textarea>
+        </div>
+        <button onclick="regenerateLeadMagnet()" style="padding:10px 18px;background:linear-gradient(135deg,#7C3AED,#EC4899);border:none;border-radius:var(--radius);color:white;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;height:60px;">
+          🔄 Regenerate
+        </button>
+      </div>
+      <div id="lmRegenStatus" style="display:none;margin-top:10px;font-size:13px;color:var(--text3);padding:10px;background:rgba(167,139,250,0.08);border-radius:var(--radius);text-align:center;">
+        <span class="pulse-dots">SAM is rebuilding your lead magnet</span> <span class="typing-dots"><span>●</span><span>●</span><span>●</span></span>
+      </div>
+    </div>`;
+
+    html += `<div class="playbook-section" id="leadMagnetSection">
       <div class="playbook-section-num">Section 08</div>
       <div class="playbook-section-title">Your audience resource</div>
-      <div class="wizard-why" style="margin-bottom:16px;">This is the part no other tool builds. SAM created a complete, ready-to-share resource based on what it learned about you and your audience. Give this away for free. It builds trust faster than any piece of content alone.</div>
-      <div class="playbook-lead-magnet" data-brand-color="${brandColor}">
+      <div class="wizard-why no-print" style="margin-bottom:8px;">This is the part no other tool builds. SAM created a complete, ready-to-share resource based on what it learned about you and your audience. Give it away for free — it builds trust faster than any piece of content alone.</div>
+      ${perspectiveControls}
+      <div id="leadMagnetDoc" class="playbook-lead-magnet" data-brand-color="${brandColor}">
         <div class="no-print">${brandHeader}</div>
         <div style="display:none;" class="print-only-brand">${brandHeader}</div>
         <div class="playbook-lead-badge">⭐ Free resource for your audience</div>
@@ -7027,6 +7063,144 @@ function printLeadMagnetOnly() {
 
 function printPlaybook() {
   printPlaybookOnly();
+}
+
+// ─── LEAD MAGNET PERSPECTIVE + REGENERATE ────────────────────────
+function setLMPerspective(persp, btn) {
+  // Update button styles
+  document.querySelectorAll('.lm-persp-btn').forEach(b => {
+    b.classList.remove('active');
+    b.style.background = 'rgba(167,139,250,0.06)';
+    b.style.borderColor = 'rgba(167,139,250,0.2)';
+    b.style.color = 'var(--text2)';
+  });
+  btn.classList.add('active');
+  btn.style.background = 'rgba(251,191,36,0.12)';
+  btn.style.borderColor = 'rgba(251,191,36,0.4)';
+  btn.style.color = 'var(--lens)';
+  WS.lmPerspective = persp;
+}
+
+async function regenerateLeadMagnet() {
+  const statusEl = document.getElementById('lmRegenStatus');
+  const docEl = document.getElementById('leadMagnetDoc');
+  const steer = (document.getElementById('lmSteerInput') || {}).value || '';
+  const persp = WS.lmPerspective || 'viewer';
+  if (!statusEl || !docEl) return;
+
+  statusEl.style.display = 'block';
+  docEl.style.opacity = '0.4';
+  docEl.style.pointerEvents = 'none';
+
+  const s = getSetup();
+  const story = WS.storyText || '';
+  const audienceContext = [
+    WS.audienceAge ? 'Age ' + WS.audienceAge : '',
+    WS.audienceGender || '',
+    WS.audienceCustom || '',
+  ].filter(Boolean).join(', ');
+
+  const brandName = WS.brandName || 'Your Brand';
+  const brandHandle = WS.brandHandle || '';
+  const brandColor = WS.brandColor || '#7C3AED';
+  const brandLogo = WS.brandLogo || null;
+
+  const perspNote = persp === 'user'
+    ? 'USER PERSPECTIVE: Create a practical working template, planner or checklist the audience can actively USE — not just read. Think planning guide, project tracker, budget notes template, contractor checklist, or step-by-step workbook. Include fillable sections, checklists, and space for notes. This is a functional TOOL they keep on their desk, not inspirational tips.'
+    : 'VIEWER PERSPECTIVE: Create an inspirational tips/advice guide written FROM the creator's experience. Share what you learned, what to avoid, what worked. Warm and personal tone. The audience reads this and feels understood and guided.';
+
+  const prompt = `You are SAM — Strategic Assistant for Making. Regenerate a lead magnet for this creator to give their audience.
+
+CREATOR STORY: ${story.slice(0, 600)}
+CREATOR TYPE: ${s.creatorType || 'personal brand'} — ${brandName}
+AUDIENCE: ${audienceContext || 'general audience'}
+NICHE/CONTEXT: ${s.niche || ''}
+PERSPECTIVE: ${perspNote}
+${steer ? 'CREATOR DIRECTION: ' + steer : ''}
+
+Return ONLY valid JSON — no markdown, no backticks:
+{
+  "title": "Compelling free resource title",
+  "why": "2 sentences — why this specific resource for this specific audience.",
+  "items": [
+    {"heading": "Point or section 1", "body": "2-3 sentences. Real, specific, useful. ${persp === 'user' ? 'Include what to fill in or track here.' : 'Written from creator experience.'}"},
+    {"heading": "Point or section 2", "body": "2-3 sentences."},
+    {"heading": "Point or section 3", "body": "2-3 sentences."},
+    {"heading": "Point or section 4", "body": "2-3 sentences."},
+    {"heading": "Point or section 5", "body": "2-3 sentences — ends with reason to follow the creator."}
+  ],
+  "comment_response": "Under 150 chars. Conversational. What to post in comments to distribute this."
+}`;
+
+  try {
+    const res = await fetch('/api/sam', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mode: 'chat', messages: [{ role: 'user', content: prompt }] })
+    });
+
+    let raw = '';
+    const reader = res.body.getReader();
+    const dec = new TextDecoder();
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      raw += dec.decode(value, { stream: true });
+    }
+
+    // Parse JSON from response
+    let lm;
+    try {
+      const clean = raw.replace(/```json|```/g, '').trim();
+      const jsonMatch = clean.match(/\{[\s\S]*\}/);
+      lm = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(clean);
+    } catch(e) {
+      throw new Error('Could not parse response');
+    }
+
+    // Rebuild the document
+    const brandHeader = `<div class="wl-doc-header no-print" style="display:flex;align-items:center;justify-content:space-between;padding-bottom:16px;margin-bottom:20px;border-bottom:2px solid ${brandColor};">
+      <div style="display:flex;align-items:center;gap:12px;">
+        ${brandLogo ? `<img src="${brandLogo}" style="max-height:48px;max-width:120px;object-fit:contain;border-radius:6px;" />` : `<div style="width:40px;height:40px;border-radius:8px;background:${brandColor};display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:16px;">${brandName.charAt(0)}</div>`}
+        <div>
+          <div style="font-family:'Sora',Arial,sans-serif;font-size:15px;font-weight:700;color:#09080F;">${brandName}</div>
+          ${brandHandle ? `<div style="font-size:11px;color:#666;">${brandHandle}</div>` : ''}
+        </div>
+      </div>
+      <div style="text-align:right;"><div style="font-size:8px;color:#999;line-height:1.5;">Built with S.A.M.<br/><span style="color:${brandColor};">samforcreators.com</span></div></div>
+    </div>`;
+
+    docEl.innerHTML = `
+      ${brandHeader}
+      <div class="playbook-lead-badge">${persp === 'user' ? '🛠️ Working template for your audience' : '⭐ Free resource for your audience'}</div>
+      <div class="playbook-lead-title">${lm.title || 'Your Audience Resource'}</div>
+      ${lm.why ? `<div class="playbook-lead-why"><strong>Why this works for your audience:</strong> ${lm.why}</div>` : ''}
+      <div class="playbook-lead-items">
+        ${(lm.items || []).map((item, i) => `
+          <div class="playbook-lead-item">
+            <div class="playbook-lead-num">${i+1}</div>
+            <div><strong>${item.heading || ''}</strong>${item.heading && item.body ? ' — ' : ''}${item.body || item}</div>
+          </div>`).join('')}
+      </div>
+      ${lm.comment_response ? `<div class="playbook-lead-comment">
+        <div class="playbook-lead-comment-label">📣 Post this in your comments:</div>
+        <div class="playbook-lead-comment-text">"${lm.comment_response}"</div>
+        <button class="playbook-copy-btn" onclick="wizCopy(this,this.closest('.playbook-lead-comment').querySelector('.playbook-lead-comment-text').textContent)">Copy comment</button>
+      </div>` : ''}`;
+
+    docEl.style.opacity = '1';
+    docEl.style.pointerEvents = '';
+    statusEl.style.display = 'none';
+
+    // Scroll to show it
+    docEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  } catch(err) {
+    console.error('Regen error:', err);
+    statusEl.innerHTML = '⚠️ SAM had trouble rebuilding. Try again or adjust your direction.';
+    docEl.style.opacity = '1';
+    docEl.style.pointerEvents = '';
+  }
 }
 
 function startNextTool(tool) {
