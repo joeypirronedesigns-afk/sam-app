@@ -14,7 +14,6 @@ async function checkLimit(userId, tier, action) {
   // Only attempt KV if env vars are present
   if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
     try {
-      // Dynamic require so missing package doesn't crash at module load
       let kv;
       try {
         kv = require('@vercel/kv').kv;
@@ -35,10 +34,10 @@ async function checkLimit(userId, tier, action) {
       return { allowed: true, used: current + 1, limit };
     } catch(e) {
       console.error('KV error — failing open:', e.message);
-      return { allowed: true }; // Always fail open — never block users due to KV issues
+      return { allowed: true };
     }
   }
-  return { allowed: true }; // No KV configured = no limits enforced yet
+  return { allowed: true };
 }
 
 module.exports = async function handler(req, res) {
@@ -51,7 +50,6 @@ module.exports = async function handler(req, res) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'API key not configured' });
 
-  // Rate limit check for playbook and next-tool modes
   if (mode === 'playbook') {
     const check = await checkLimit(userId, tier, 'playbooks');
     if (!check.allowed) return res.status(429).json({ error: 'limit_reached', message: check.message });
@@ -61,7 +59,7 @@ module.exports = async function handler(req, res) {
     if (!check.allowed) return res.status(429).json({ error: 'limit_reached', message: check.message });
   }
 
-  // ── CHAT MODE (SAM chatbot — Haiku, short conversational replies) ──────────
+  // ── CHAT MODE ──────────────────────────────────────────────────────────────
   if (mode === 'chat') {
     const { messages, systemPrompt } = req.body;
     if (!messages || !Array.isArray(messages)) {
@@ -121,20 +119,10 @@ PERSONALITY: Confident, direct, warm. Talk like a trusted creative director — 
     }
   }
 
-  // ── ALL OTHER MODES need moment + mode (playbook is more flexible) ────────
   if (!mode) return res.status(400).json({ error: 'Missing mode' });
   if (mode !== 'playbook' && mode !== 'chat' && (!moment)) {
     return res.status(400).json({ error: 'Missing moment' });
   }
-
-  // ── WHAT SAM ACTUALLY DOES (honest capabilities) ──────────────────────────
-  // SAM writes: scripts, hooks, captions, hashtags, content strategies, ideas,
-  //             posting calendars, video concepts, thumbnail strategy
-  // SAM does NOT: make videos, edit footage, post content, design graphics,
-  //               guarantee results, replace the creator's voice or presence
-  // Every output helps the CREATOR make better content — SAM is the strategy
-  // brain, the creator is still the one who films, edits and shows up.
-  // ──────────────────────────────────────────────────────────────────────────
 
   const PLATFORM_SPECS = {
     'TikTok':           { limit: 2200, hashtags: '3-5 hashtags', note: 'Hook in first line. First 1-2 seconds decide everything. Under 60s performs best.' },
@@ -237,8 +225,7 @@ PERSONALITY: Confident, direct, warm. Talk like a trusted creative director — 
 
   try {
 
-
-    // ── PLAYBOOK MODE (wizard full build) ─────────────────────────────────────
+    // ── PLAYBOOK MODE ─────────────────────────────────────────────────────────
     if (mode === 'playbook') {
       const wizContext = req.body.wizardContext || '';
       const delivery   = req.body.delivery || 'camera';
@@ -355,7 +342,7 @@ Return ONLY: {"ideas":[{"title":"specific content idea","why":"one sentence on w
       return await streamCall(prompt, moment, 900);
     }
 
-    // ── UPLOAD (photo or analytics) ──────────────────────────────────────────
+    // ── UPLOAD ────────────────────────────────────────────────────────────────
     if (mode === 'upload') {
       const imageBase64 = req.body.imageBase64 || null;
       const imageType = req.body.imageType || 'image/jpeg';
@@ -410,7 +397,6 @@ CRITICAL: Return ONLY valid JSON. Nothing else.`;
         return await streamCall(analyticsSystem, userContent, 900);
       }
 
-      // Text only fallback
       const textSystem = `${base} Analyse this content idea. Return ONLY: {"type":"text_only","diagnosis":"what this idea is really about and why it has potential — 2 sentences","hook_ideas":["hook 1","hook 2","hook 3"],"content_angle":"the strongest angle to take","best_platform":"single best platform","next_action":"the one most important thing to do with this idea right now"}`;
       return await streamCall(textSystem, moment, 700);
     }
@@ -450,14 +436,6 @@ Return ONLY: {"title":"6-10 word concept title","format":"Reel OR Short OR YouTu
     const pulsePrompt = `${base}
 ${scriptInstruction}
 ${platStratInstruction}
-
-IMPORTANT — HONESTY IN CAPTIONS:
-When writing platform captions, be accurate about what SAM has produced:
-- SAM wrote a SCRIPT for the creator to deliver
-- SAM wrote CAPTIONS for the creator to post
-- SAM built a STRATEGY for the creator to execute
-- The creator still films, edits, shows up and posts
-- Never say "SAM made this video" or "AI created this content" — say "AI wrote the script" or "SAM helped me plan this"
 
 Return ONLY this JSON:
 {"diagnosis":"2-3 sentences on the emotional core of this moment and why it will resonate","hook":"SAM's single best opening line — the creator delivers this on camera or in text","visual_note":"what to show on screen in the first 3 seconds (for video) or the key visual element","full_script":"COMPLETE script or post text as specified above","b_roll":["specific shot or visual to capture","shot 2","shot 3","shot 4"],"pacing_note":"one specific delivery tip for the creator","cta":"a specific call to action that builds community not just views","platform_strategies":[{"platform":"platform name","strategy":"one specific posting tip for this platform","caption":"ready-to-post caption respecting character limit","hashtags":"hashtags"}]}`;
