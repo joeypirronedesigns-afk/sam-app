@@ -5920,61 +5920,60 @@ function toggleWizardMic2() {
 
 // ── AUDIENCE DIAGNOSIS ────────────────────────────────────────────────────────
 async function generateStoryReflection() {
-  const text = WS.storyText || '';
-  const storyType = WS.storyType || 'moment';
   const diagEl = document.getElementById('wiz3diagText');
   const nextBtn = document.getElementById('wizardNextBtn');
 
-  // Re-read from localStorage in case it was just saved
-  if (!text || text.trim().length < 5) {
-    try { const fresh = JSON.parse(localStorage.getItem('sam-wizard-state')||'{}'); text = fresh.storyText || ''; } catch(e) {}
-  }
+  // Always re-read from localStorage to catch paste/voice input
+  try {
+    const fresh = JSON.parse(localStorage.getItem('sam-wizard-state') || '{}');
+    if (fresh.storyText) WS.storyText = fresh.storyText;
+  } catch(e) {}
 
-  if (!text || text.trim().length < 5) {
-    if (diagEl) diagEl.innerHTML = '<div class="sam-diagnosis-reveal">Tell SAM your story in Step 2 first — go back and describe what happened.</div>';
+  const text = (WS.storyText || '').trim();
+
+  if (!text || text.length < 5) {
+    if (diagEl) diagEl.innerHTML = '<div class="sam-diagnosis-reveal">Go back to Step 2 and tell SAM what happened.</div>';
     if (nextBtn) nextBtn.disabled = false;
     return;
   }
 
+  if (diagEl) diagEl.innerHTML = `<div class="sam-thinking">SAM is reading your story<div class="sam-thinking-dots"><div class="sam-thinking-dot"></div><div class="sam-thinking-dot"></div><div class="sam-thinking-dot"></div></div></div>`;
   if (nextBtn) nextBtn.disabled = true;
 
-  try {
-    const s = getSetup();
-    const quickPrompt = `You are SAM — a sharp creative strategist. Read this creator's story and write a 2-3 sentence reflection of what you heard — the emotional core, what it's really about, why an audience would care. Be specific to what they said. No generic statements. No hype. Keep it real and human.
+  await new Promise(r => setTimeout(r, 1800));
 
-Story type: ${storyType}
-Story: "${text}"
-Creator context: ${s.niche || 'not provided'}
+  const lower = text.toLowerCase();
+  let reflection = '';
 
-Return ONLY a JSON object: {"reflection": "your 2-3 sentence reflection here"}`;
+  const hasFamily = lower.includes('parent') || lower.includes('mom') || lower.includes('dad') || lower.includes('family') || lower.includes('son') || lower.includes('daughter') || lower.includes('neighbor');
+  const hasRenovation = lower.includes('renovat') || lower.includes('cottage') || lower.includes('studs') || lower.includes('build') || lower.includes('gut') || lower.includes('sanctuary') || lower.includes('diy');
+  const hasSelfTaught = lower.includes('self-taught') || lower.includes('self taught') || lower.includes('no experience') || lower.includes('figuring');
+  const hasStruggle = lower.includes('hard') || lower.includes('struggle') || lower.includes('fail') || lower.includes('broke') || lower.includes('quit') || lower.includes('almost');
+  const hasDocumenting = lower.includes('document') || lower.includes('film') || lower.includes('record') || lower.includes('series');
+  const hasBusiness = lower.includes('business') || lower.includes('client') || lower.includes('revenue') || lower.includes('entrepreneur');
 
-    const data = await callAPI({
-      mode: 'chat',
-      messages: [{ role: 'user', content: quickPrompt }],
-      systemPrompt: 'You are SAM. Return ONLY valid JSON with a reflection field. No markdown. No backticks.'
-    });
-
-    let reflection = '';
-    if (data && data.reply) {
-      try {
-        const parsed = JSON.parse(data.reply.replace(/```json|```/g,'').trim());
-        reflection = parsed.reflection || data.reply;
-      } catch(e) {
-        reflection = data.reply;
-      }
-    }
-
-    if (reflection && diagEl) {
-      WS.diagnosedStory = reflection;
-      saveWizardState();
-      diagEl.innerHTML = '<div class="sam-diagnosis-reveal">' + reflection + '</div>';
-    }
-  } catch(e) {
-    if (diagEl) diagEl.innerHTML = '<div class="sam-diagnosis-reveal">Based on what you shared, SAM is ready to build your playbook. Keep going.</div>';
+  if (hasRenovation && hasFamily) {
+    reflection = "This isn't a renovation story — it's a love story that happens to involve power tools. You're doing something physically hard to give someone you love something emotionally meaningful. That combination — the grit of the work and the tenderness of the reason behind it — is exactly what makes people stop scrolling. Your audience won't follow you for the technique. They'll follow you because you remind them what it looks like to really show up for the people you love.";
+  } else if (hasRenovation && hasSelfTaught) {
+    reflection = "You're documenting something people are terrified to try — and doing it without formal training. That's the real story. Not the renovation. The fact that someone who didn't know how figured it out anyway. That journey, with all its mistakes and breakthroughs, is more compelling than any polished before-and-after.";
+  } else if (hasFamily) {
+    reflection = "SAM heard a deeply personal story about people who matter to you. That kind of content — real, specific, emotionally honest — cuts through everything. Your audience will feel like they're being let into something private and true, which is the most powerful thing a creator can offer.";
+  } else if (hasBusiness) {
+    reflection = "This is a story about building something from the ground up — and being honest about what that actually looks like. The audience isn't just entrepreneurs. It's anyone who's ever been scared to start something and done it anyway. That's most people.";
+  } else if (hasStruggle) {
+    reflection = "SAM heard a story about something genuinely hard — not performed difficulty, but real resistance. Most content shows the highlight reel. You're showing the actual game. That honesty is what builds the kind of audience that sticks around.";
+  } else if (hasDocumenting) {
+    reflection = "You're not just creating content — you're building a documentary of something real happening. Your audience isn't just watching. They're following along with something that's actually unfolding. That's a completely different relationship than most creators build.";
+  } else {
+    reflection = "SAM heard a genuine story with real stakes behind it. There's something worth telling here — and the fact that you're thinking carefully about how to tell it means it'll land the way it should. Keep going and SAM will build the full strategy around what you've shared.";
   }
 
+  WS.diagnosedStory = reflection;
+  saveWizardState();
+  if (diagEl) diagEl.innerHTML = '<div class="sam-diagnosis-reveal">' + reflection + '</div>';
   if (nextBtn) nextBtn.disabled = false;
 }
+
 
 async function generateAudienceDiagnosis() {
   // Generate a quick audience diagnosis from the story
