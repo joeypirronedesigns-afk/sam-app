@@ -277,7 +277,7 @@ CRITICAL RULES:
 - Every 'why' field must explain SAM's reasoning in plain English without jargon.
 - Return ONLY valid JSON. No markdown. No backticks. Nothing outside the JSON.`;
 
-      return await streamCall(playbookPrompt, moment, 4000);
+      return await streamCall(playbookPrompt, moment, 6000);
     }
 
     // ── CALENDAR ─────────────────────────────────────────────────────────────
