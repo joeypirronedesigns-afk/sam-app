@@ -7203,60 +7203,221 @@ Return ONLY valid JSON — no markdown, no backticks:
   }
 }
 
-function startNextTool(tool) {
+async function startNextTool(tool) {
   const s = getSetup();
   const story = WS.storyText || '';
   const audience = [WS.audienceAge, WS.audienceGender, WS.audienceCustom].filter(Boolean).join(', ');
-  const platforms = WS.platforms || [];
+  const platforms = (WS.platforms || []).join(', ');
+  const brandName = WS.brandName || '';
+  const niche = s.niche || '';
+  const tone = s.tone || 'Authentic/Natural';
 
-  if (tool === 'email') {
-    // Open email sequence in advanced tools with context pre-loaded
-    closeWizard();
-    // Pre-populate pulse with email newsletter format
-    setTimeout(() => {
-      openTool('pulse');
-      const ta = document.getElementById('pulseText');
-      if (ta) {
-        ta.value = 'Write a 3-email welcome sequence for new subscribers. My story: ' + story.slice(0, 500);
-        ta.dispatchEvent(new Event('input'));
-      }
-      // Select email newsletter format
-      document.querySelectorAll('#tool-pulse .opt-btn').forEach(btn => {
-        if (btn.dataset.v === 'Email newsletter') {
-          btn.click();
-        }
+  const context = `CREATOR: ${brandName} — ${niche}
+STORY: ${story.slice(0, 500)}
+AUDIENCE: ${audience}
+PLATFORMS: ${platforms}
+TONE: ${tone}`;
+
+  // Find the "what SAM can build next" container and inject output there
+  const nextSection = document.querySelector('.playbook-next-section') || document.getElementById('samNextSection');
+
+  const configs = {
+    email: {
+      label: '📧 Your Email Welcome Sequence',
+      color: '#7C3AED',
+      prompt: `${context}
+
+Write a 5-email welcome sequence for new subscribers. Each email should feel like it came from a real person, not a marketing bot. Use the creator's story and audience above.
+
+Return ONLY valid JSON:
+{
+  "sequence": [
+    {"day": "Day 0", "subject": "subject line", "body": "full email body — warm, personal, 150-200 words"},
+    {"day": "Day 2", "subject": "subject line", "body": "full email body"},
+    {"day": "Day 4", "subject": "subject line", "body": "full email body — deliver value, teach something real"},
+    {"day": "Day 7", "subject": "subject line", "body": "full email body — soft invitation to follow/engage"},
+    {"day": "Day 10", "subject": "subject line", "body": "full email body — share your best story or insight"}
+  ]
+}`
+    },
+    week: {
+      label: '📅 Your 7-Day Content Plan',
+      color: '#EC4899',
+      prompt: `${context}
+
+Build a 7-day content calendar. One post per day across the creator's platforms. Each post should build on the story and audience above.
+
+Return ONLY valid JSON:
+{
+  "week": [
+    {"day": "Monday", "platform": "platform name", "format": "post type", "hook": "opening hook", "topic": "what this post covers", "caption_preview": "first 2 sentences of caption"},
+    {"day": "Tuesday", "platform": "platform name", "format": "post type", "hook": "opening hook", "topic": "what this post covers", "caption_preview": "first 2 sentences"},
+    {"day": "Wednesday", "platform": "platform name", "format": "post type", "hook": "opening hook", "topic": "what this post covers", "caption_preview": "first 2 sentences"},
+    {"day": "Thursday", "platform": "platform name", "format": "post type", "hook": "opening hook", "topic": "what this post covers", "caption_preview": "first 2 sentences"},
+    {"day": "Friday", "platform": "platform name", "format": "post type", "hook": "opening hook", "topic": "what this post covers", "caption_preview": "first 2 sentences"},
+    {"day": "Saturday", "platform": "platform name", "format": "post type", "hook": "opening hook", "topic": "what this post covers", "caption_preview": "first 2 sentences"},
+    {"day": "Sunday", "platform": "platform name", "format": "post type", "hook": "opening hook", "topic": "what this post covers", "caption_preview": "first 2 sentences"}
+  ]
+}`
+    },
+    idea: {
+      label: '⚡ 5 Content Ideas Built for You',
+      color: '#F59E0B',
+      prompt: `${context}
+
+Generate 5 specific content ideas for this creator. Each should be immediately actionable — not generic. Based on their real story and audience.
+
+Return ONLY valid JSON:
+{
+  "ideas": [
+    {"title": "idea title", "hook": "the opening hook line", "why": "why this works for their audience", "platform": "best platform", "format": "post type"},
+    {"title": "idea title", "hook": "the opening hook line", "why": "why this works", "platform": "best platform", "format": "post type"},
+    {"title": "idea title", "hook": "the opening hook line", "why": "why this works", "platform": "best platform", "format": "post type"},
+    {"title": "idea title", "hook": "the opening hook line", "why": "why this works", "platform": "best platform", "format": "post type"},
+    {"title": "idea title", "hook": "the opening hook line", "why": "why this works", "platform": "best platform", "format": "post type"}
+  ]
+}`
+    },
+    concept: {
+      label: '🎬 Your Bold Video Concept',
+      color: '#10B981',
+      prompt: `${context}
+
+Build one bold, original video concept for this creator. Something nobody else has made in their niche. Based on their story and audience.
+
+Return ONLY valid JSON:
+{
+  "concept": {
+    "title": "video title",
+    "hook": "opening hook — the first line they say or show",
+    "premise": "2-3 sentences — what makes this video unique and worth watching",
+    "structure": ["beat 1", "beat 2", "beat 3", "beat 4", "beat 5"],
+    "why_it_works": "why this specific concept for this specific audience",
+    "thumbnail_direction": "visual concept for the thumbnail",
+    "platform": "primary platform and why"
+  }
+}`
+    }
+  };
+
+  const cfg = configs[tool];
+  if (!cfg) return;
+
+  // Find the button that was clicked and show loading state inline
+  const allNextBtns = document.querySelectorAll('[onclick*="startNextTool"]');
+  allNextBtns.forEach(b => b.style.opacity = '0.4');
+
+  // Find or create output area
+  let outputArea = document.getElementById('nextToolOutput');
+  if (!outputArea) {
+    // Insert after the "what SAM can build next" section
+    const lastSection = document.querySelector('.playbook-section:last-of-type');
+    outputArea = document.createElement('div');
+    outputArea.id = 'nextToolOutput';
+    outputArea.style.cssText = 'margin-top:20px;';
+    if (lastSection && lastSection.parentNode) {
+      lastSection.parentNode.insertBefore(outputArea, lastSection.nextSibling);
+    }
+  }
+
+  outputArea.innerHTML = `<div style="padding:24px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);text-align:center;">
+    <div style="font-size:13px;color:var(--text3);margin-bottom:8px;">SAM is building your ${cfg.label.replace(/^[^ ]+ /, '')}...</div>
+    <div class="typing-dots" style="justify-content:center;"><span>●</span><span>●</span><span>●</span></div>
+  </div>`;
+  outputArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  try {
+    const res = await fetch('/api/sam', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mode: 'chat', messages: [{ role: 'user', content: cfg.prompt }] })
+    });
+
+    let raw = '';
+    const reader = res.body.getReader();
+    const dec = new TextDecoder();
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      raw += dec.decode(value, { stream: true });
+    }
+
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const jsonMatch = clean.match(/\{[\s\S]*\}/);
+    const data = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(clean);
+
+    // Render based on tool type
+    let html = `<div style="border:1px solid ${cfg.color}33;border-radius:var(--radius-xl);overflow:hidden;margin-top:4px;">
+      <div style="background:${cfg.color}18;padding:14px 20px;border-bottom:1px solid ${cfg.color}22;display:flex;align-items:center;gap:10px;">
+        <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--text);">${cfg.label}</div>
+      </div>
+      <div style="padding:20px;display:flex;flex-direction:column;gap:14px;">`;
+
+    if (tool === 'email' && data.sequence) {
+      data.sequence.forEach(email => {
+        html += `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${cfg.color};">${email.day}</span>
+            <button class="playbook-copy-btn" onclick="wizCopy(this, ${JSON.stringify(email.subject + '\n\n' + email.body)})">Copy</button>
+          </div>
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;">Subject: ${email.subject}</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.65;white-space:pre-line;">${email.body}</div>
+        </div>`;
       });
-    }, 300);
-  } else if (tool === 'week') {
-    closeWizard();
-    setTimeout(() => {
-      openTool('blueprint');
-      const ta = document.getElementById('blueprintText');
-      if (ta) {
-        ta.value = story.slice(0, 300);
-        ta.dispatchEvent(new Event('input'));
-      }
-    }, 300);
-  } else if (tool === 'idea') {
-    closeWizard();
-    setTimeout(() => {
-      openTool('spark');
-      const ta = document.getElementById('sparkText');
-      if (ta) {
-        ta.value = (s.niche || '') + ' ' + story.slice(0, 200);
-        ta.dispatchEvent(new Event('input'));
-      }
-    }, 300);
-  } else if (tool === 'concept') {
-    closeWizard();
-    setTimeout(() => {
-      openTool('vision');
-      const ta = document.getElementById('visionText');
-      if (ta) {
-        ta.value = story.slice(0, 300);
-        ta.dispatchEvent(new Event('input'));
-      }
-    }, 300);
+    } else if (tool === 'week' && data.week) {
+      data.week.forEach(day => {
+        html += `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;display:grid;grid-template-columns:80px 1fr;gap:12px;align-items:start;">
+          <div style="text-align:center;">
+            <div style="font-size:11px;font-weight:700;color:${cfg.color};text-transform:uppercase;">${day.day}</div>
+            <div style="font-size:10px;color:var(--text3);margin-top:3px;">${day.platform}</div>
+            <div style="font-size:10px;color:var(--text3);">${day.format}</div>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;">${day.topic}</div>
+            <div style="font-size:12px;color:var(--spark);font-style:italic;margin-bottom:6px;">"${day.hook}"</div>
+            <div style="font-size:12px;color:var(--text3);">${day.caption_preview}</div>
+          </div>
+        </div>`;
+      });
+    } else if (tool === 'idea' && data.ideas) {
+      data.ideas.forEach((idea, i) => {
+        html += `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;">
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="width:28px;height:28px;border-radius:50%;background:${cfg.color};display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:12px;flex-shrink:0;">${i+1}</div>
+            <div style="flex:1;">
+              <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px;">${idea.title}</div>
+              <div style="font-size:12px;color:var(--spark);font-style:italic;margin-bottom:8px;">"${idea.hook}"</div>
+              <div style="font-size:12px;color:var(--text3);margin-bottom:6px;">${idea.why}</div>
+              <div style="display:flex;gap:8px;">
+                <span style="font-size:10px;padding:2px 8px;background:${cfg.color}22;color:${cfg.color};border-radius:20px;">${idea.platform}</span>
+                <span style="font-size:10px;padding:2px 8px;background:rgba(255,255,255,0.05);color:var(--text3);border-radius:20px;">${idea.format}</span>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      });
+    } else if (tool === 'concept' && data.concept) {
+      const c2 = data.concept;
+      html += `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${cfg.color};margin-bottom:6px;">Video Title</div>
+        <div style="font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--text);margin-bottom:16px;">${c2.title}</div>
+        <div style="font-size:13px;color:var(--spark);font-style:italic;padding:12px;background:rgba(167,139,250,0.08);border-radius:var(--radius);margin-bottom:16px;">"${c2.hook}"</div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.65;">${c2.premise}</div>
+        ${c2.structure ? `<div style="margin-bottom:16px;"><div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;">Structure</div>${c2.structure.map((b,i)=>`<div style="display:flex;gap:10px;margin-bottom:6px;"><span style="color:${cfg.color};font-weight:700;font-size:12px;">${i+1}.</span><span style="font-size:13px;color:var(--text2);">${b}</span></div>`).join('')}</div>` : ''}
+        <div style="font-size:12px;color:var(--text3);padding:10px;background:rgba(255,255,255,0.03);border-radius:var(--radius);margin-bottom:10px;"><strong style="color:var(--text2);">Why it works:</strong> ${c2.why_it_works}</div>
+        <div style="font-size:12px;color:var(--text3);"><strong style="color:var(--text2);">Thumbnail:</strong> ${c2.thumbnail_direction}</div>
+      </div>`;
+    }
+
+    html += `</div></div>`;
+    outputArea.innerHTML = html;
+    allNextBtns.forEach(b => b.style.opacity = '1');
+    outputArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  } catch(err) {
+    console.error('Next tool error:', err);
+    outputArea.innerHTML = `<div style="padding:16px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:var(--radius-lg);font-size:13px;color:var(--text3);">SAM had trouble building that. Try again — she\'ll get it.</div>`;
+    allNextBtns.forEach(b => b.style.opacity = '1');
   }
 }
 
