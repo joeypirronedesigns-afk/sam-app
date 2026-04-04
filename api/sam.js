@@ -272,10 +272,14 @@ YOUR JOB — Build a complete content playbook. Return ONLY this JSON:
 }
 
 CRITICAL RULES:
-- The lead_magnet must be a COMPLETE, REAL, USEFUL document — not an outline or placeholders. Write all 5 items in full.
-- The audience_profile must be specific to THIS creator's story — not generic demographics.
-- Every 'why' field must explain SAM's reasoning in plain English without jargon.
-- Return ONLY valid JSON. No markdown. No backticks. Nothing outside the JSON.`;
+- Return ONLY valid JSON. No markdown. No backticks. Nothing outside the JSON.
+- Keep ALL text fields concise — max 3 sentences per field unless it is full_script or lead_magnet items.
+- full_script: max 300 words total.
+- lead_magnet items: each item body max 2 sentences. Real and specific but brief.
+- audience_profile fields: max 2 sentences each.
+- platform_strategies caption: respect character limits strictly.
+- The JSON MUST be complete and valid — never cut off mid-response.
+- If you are running long, cut detail from b_roll and visual_note first, never from hook, script or lead_magnet.`;
 
       return await streamCall(playbookPrompt, moment, 6000);
     }
