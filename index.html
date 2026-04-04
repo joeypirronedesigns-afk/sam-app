@@ -3387,7 +3387,7 @@
     <h1>Your creative<br/><em>director.</em><br/>Always on.</h1>
     <p class="hero-sub" style="margin-bottom:18px;">SAM writes your hooks, scripts, captions and strategy — so you can stop second-guessing and start making.</p>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:0;">
-      <button class="hero-cta-primary" style="font-size:14px;padding:12px 22px;" onclick="document.getElementById('tools').scrollIntoView({behavior:'smooth'})">Start creating →</button>
+      <button class="hero-cta-primary" style="font-size:14px;padding:12px 22px;" onclick="openWizardPage()">✦ Build my playbook →</button>
       <button class="hero-cta-ghost" style="font-size:13px;padding:11px 18px;" onclick="openProModal()">✦ Go Pro</button>
     </div>
     <div class="mobile-stat-grid">
@@ -3421,7 +3421,7 @@
       <div class="hero-title-desktop">Your creative<br><em>director.</em><br>Always on.</div>
       <div class="hero-sub-desktop">SAM writes your hooks, scripts, captions, and strategy — so you can stop second-guessing and start making.</div>
       <div class="hero-cta-row">
-        <button class="hero-cta-primary" onclick="document.getElementById('tools').scrollIntoView({behavior:'smooth'})">Start creating →</button>
+        <button class="hero-cta-primary" onclick="openWizardPage()">✦ Build my playbook →</button>
         <button class="hero-cta-ghost" onclick="openProModal()">✦ See Pro plan</button>
       </div>
     </div>
@@ -5393,15 +5393,10 @@ function initWizard() {
     continueBtn.style.display = 'block';
   }
 
-  // Show wizard entry on first visit (after 0.5s delay)
+  // Show nav wizard button if they have a saved playbook
   const trialState = getTrialState();
-  if (!trialState.wizardSeen) {
-    setTimeout(() => {
-      openWizardPage();
-    }, 500);
-    trialState.wizardSeen = true;
-    saveTrialState(trialState);
-  }
+  const navBtn = document.getElementById('navWizardBtn');
+  if (navBtn) navBtn.style.display = 'flex';
 }
 
 function openWizardPage() {
