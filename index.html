@@ -6122,8 +6122,11 @@ Include complete reasoning (WHY) for every recommendation.
       <div style="text-align:center;padding:40px 0;">
         <div style="font-size:32px;margin-bottom:16px;">⚠️</div>
         <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:var(--text);margin-bottom:8px;">Something went wrong</div>
-        <div style="font-size:14px;color:var(--text3);margin-bottom:24px;">${err.message || 'Please try again.'}</div>
-        <button onclick="buildPlaybook()" style="padding:12px 28px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);color:#fff;border:none;border-radius:var(--radius);font-family:'Sora',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">Try again</button>
+        <div style="font-size:14px;color:var(--text3);margin-bottom:24px;max-width:400px;margin-left:auto;margin-right:auto;">${err.message || 'Please try again.'}</div>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <button onclick="buildPlaybook()" style="padding:12px 28px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);color:#fff;border:none;border-radius:var(--radius);font-family:'Sora',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">Try again</button>
+          <button onclick="showWizardStep('10')" style="padding:12px 28px;background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:var(--radius);font-family:'Sora',sans-serif;font-size:14px;font-weight:600;cursor:pointer;">← Back</button>
+        </div>
       </div>`;
   }
 }
