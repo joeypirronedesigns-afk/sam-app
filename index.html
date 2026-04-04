@@ -2619,6 +2619,35 @@
       color: var(--spark);
       margin-bottom: 12px;
     }
+    /* Thinking animation */
+    .sam-thinking {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text3);
+      font-size: 14px;
+      font-style: italic;
+    }
+    .sam-thinking-dots {
+      display: flex;
+      gap: 4px;
+    }
+    .sam-thinking-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--spark);
+      animation: thinking-pulse 1.4s ease-in-out infinite;
+    }
+    .sam-thinking-dot:nth-child(2) { animation-delay: 0.2s; }
+    .sam-thinking-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes thinking-pulse {
+      0%, 100% { opacity: 0.2; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    .sam-diagnosis-reveal {
+      animation: fade-up 0.4s cubic-bezier(0.34,1.2,0.64,1);
+    }
     .wizard-diagnosis-text {
       font-size: 15px;
       line-height: 1.75;
@@ -5471,13 +5500,17 @@ function setupWizardStep(step) {
     document.getElementById('wiz2why').textContent = w[WS.storyType] || w.moment;
   }
 
+  if (step === '3') {
+    // Generate real story reflection via API
+    generateStoryReflection();
+  }
+
   if (step === '6') {
     // Show SAM's audience diagnosis
     const diag = WS.diagnosedAudience;
     if (diag) {
-      document.getElementById('wiz6diagText').innerHTML = diag;
+      document.getElementById('wiz6diagText').innerHTML = '<div class="sam-diagnosis-reveal">' + diag + '</div>';
     } else {
-      // Generate diagnosis from story context
       generateAudienceDiagnosis();
     }
   }
@@ -5881,6 +5914,58 @@ function toggleWizardMic2() {
 }
 
 // ── AUDIENCE DIAGNOSIS ────────────────────────────────────────────────────────
+async function generateStoryReflection() {
+  const text = WS.storyText || '';
+  const storyType = WS.storyType || 'moment';
+  const diagEl = document.getElementById('wiz3diagText');
+  const nextBtn = document.getElementById('wizardNextBtn');
+
+  if (!text || text.trim().length < 5) {
+    if (diagEl) diagEl.innerHTML = '<div class="sam-diagnosis-reveal">Tell SAM your story in Step 2 first — go back and describe what happened.</div>';
+    if (nextBtn) nextBtn.disabled = false;
+    return;
+  }
+
+  if (nextBtn) nextBtn.disabled = true;
+
+  try {
+    const s = getSetup();
+    const quickPrompt = `You are SAM — a sharp creative strategist. Read this creator's story and write a 2-3 sentence reflection of what you heard — the emotional core, what it's really about, why an audience would care. Be specific to what they said. No generic statements. No hype. Keep it real and human.
+
+Story type: ${storyType}
+Story: "${text}"
+Creator context: ${s.niche || 'not provided'}
+
+Return ONLY a JSON object: {"reflection": "your 2-3 sentence reflection here"}`;
+
+    const data = await callAPI({
+      mode: 'chat',
+      messages: [{ role: 'user', content: quickPrompt }],
+      systemPrompt: 'You are SAM. Return ONLY valid JSON with a reflection field. No markdown. No backticks.'
+    });
+
+    let reflection = '';
+    if (data && data.reply) {
+      try {
+        const parsed = JSON.parse(data.reply.replace(/```json|```/g,'').trim());
+        reflection = parsed.reflection || data.reply;
+      } catch(e) {
+        reflection = data.reply;
+      }
+    }
+
+    if (reflection && diagEl) {
+      WS.diagnosedStory = reflection;
+      saveWizardState();
+      diagEl.innerHTML = '<div class="sam-diagnosis-reveal">' + reflection + '</div>';
+    }
+  } catch(e) {
+    if (diagEl) diagEl.innerHTML = '<div class="sam-diagnosis-reveal">Based on what you shared, SAM is ready to build your playbook. Keep going.</div>';
+  }
+
+  if (nextBtn) nextBtn.disabled = false;
+}
+
 async function generateAudienceDiagnosis() {
   // Generate a quick audience diagnosis from the story
   const text = WS.storyText || '';
@@ -6766,7 +6851,14 @@ function openWizardFromNav() {
       <div class="wizard-diagnosis" id="wiz3diagnosis">
         <div class="wizard-diagnosis-label">✦ SAM's read on your story</div>
         <div class="wizard-diagnosis-text" id="wiz3diagText">
-          SAM is reading your story...
+          <div class="sam-thinking">
+            SAM is reading your story
+            <div class="sam-thinking-dots">
+              <div class="sam-thinking-dot"></div>
+              <div class="sam-thinking-dot"></div>
+              <div class="sam-thinking-dot"></div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="wizard-choices">
@@ -6874,7 +6966,16 @@ function openWizardFromNav() {
       </div>
       <div class="wizard-diagnosis" id="wiz6audienceDiag">
         <div class="wizard-diagnosis-label">✦ SAM's audience diagnosis</div>
-        <div class="wizard-diagnosis-text" id="wiz6diagText">Analysing your story...</div>
+        <div class="wizard-diagnosis-text" id="wiz6diagText">
+          <div class="sam-thinking">
+            SAM is diagnosing your audience
+            <div class="sam-thinking-dots">
+              <div class="sam-thinking-dot"></div>
+              <div class="sam-thinking-dot"></div>
+              <div class="sam-thinking-dot"></div>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="wizard-choices">
         <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz6','yes')" data-value="yes">
