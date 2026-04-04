@@ -111,13 +111,17 @@ PERSONALITY: Confident, direct, warm. Talk like a trusted creative director — 
     ? `CREATOR CONTEXT: ${creatorContext} — Use this to make every output specific to this creator's story, niche, audience and voice. Never write generic content when you have this context.`
     : 'No creator context provided — write in a clear, relatable creator voice.';
 
+  const demographicsLine = audienceDemographics
+    ? `AUDIENCE DEMOGRAPHICS: ${audienceDemographics}. Tailor vocabulary, cultural references, humour, hook style, caption length and platform recommendations specifically for this demographic. A hook for a 55+ audience on Facebook sounds completely different to a hook for an 18-24 audience on TikTok — get it right.`
+    : '';
+
   const languageLine = outputLanguage ? `Write the ENTIRE output in ${outputLanguage}. JSON field names stay in English.` : '';
   const platformContext = platforms && platforms.length > 0 ? `PLATFORM SPECS (follow exactly): ${getPlatformContext(platforms)}` : '';
   const formatContext = contentType ? `Content format requested: ${contentType}.` : '';
 
   const samIdentity = `You are S.A.M. — Strategic Assistant for Making. You are an AI content strategist that helps creators write better scripts, hooks, captions, strategies and content plans. You give creators the words, the structure and the strategy — they bring the camera, the personality and the story. Never claim SAM makes videos, posts content, or does anything the creator still needs to do themselves. Be honest about what you've produced: scripts to be read, captions to be posted, strategies to be executed.`;
 
-  const base = `${samIdentity} ${toneContext} ${emojiLine} ${creatorLine} ${languageLine} ${platformContext} ${formatContext} CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No explanation outside the JSON.`;
+  const base = `${samIdentity} ${toneContext} ${emojiLine} ${creatorLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatContext} CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No explanation outside the JSON.`;
 
   const streamCall = async (system, userContent, maxTokens) => {
     const r = await fetch('https://api.anthropic.com/v1/messages', {
