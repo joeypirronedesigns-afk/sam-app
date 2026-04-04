@@ -2,6 +2,9 @@
   "functions": {
     "api/sam.js": {
       "maxDuration": 60
+    },
+    "api/waitlist.js": {
+      "maxDuration": 10
     }
   }
 }
