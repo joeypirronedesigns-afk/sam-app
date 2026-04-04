@@ -1818,6 +1818,371 @@
     .wl-success-sub { font-size: 14px; color: var(--text2); line-height: 1.6; }
     .wl-err { font-size: 13px; color: #F09595; text-align: center; margin-top: 6px; display: none; }
     .wl-err.show { display: block; }
+
+    /* ── TRIAL COUNTDOWN NAV PILL ── */
+    .trial-countdown {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #FBBF24;
+      background: rgba(251,191,36,0.1);
+      border: 1px solid rgba(251,191,36,0.25);
+      border-radius: 50px;
+      padding: 5px 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .trial-countdown.show { display: flex; }
+    .trial-countdown:hover { background: rgba(251,191,36,0.18); }
+    .trial-countdown-dot { width:6px;height:6px;border-radius:50%;background:#FBBF24;animation:pulse-dot 2s ease-in-out infinite; }
+
+    /* ── EMAIL CAPTURE MODAL ── */
+    .capture-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 700;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .capture-overlay.open { display: flex; }
+
+    .capture-inner {
+      background: rgba(13,11,22,0.99);
+      border: 1px solid rgba(167,139,250,0.4);
+      border-radius: 28px;
+      padding: 44px 32px 38px;
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      animation: fade-up 0.4s cubic-bezier(0.34,1.2,0.64,1);
+    }
+    .capture-inner::before {
+      content:'';position:absolute;top:0;left:5%;right:5%;height:1px;
+      background:linear-gradient(90deg,transparent,#A78BFA,#F472B6,#38BDF8,transparent);
+    }
+    .capture-glow {
+      position:absolute;top:-60px;left:50%;transform:translateX(-50%);
+      width:280px;height:280px;
+      background:radial-gradient(circle,rgba(167,139,250,0.15),transparent 70%);
+      pointer-events:none;
+    }
+
+    .capture-icon { font-size:48px;margin-bottom:16px;position:relative;z-index:1; }
+
+    .capture-headline {
+      font-family:'Sora',sans-serif;
+      font-size:clamp(28px,6vw,38px);
+      font-weight:700;
+      letter-spacing:-0.025em;
+      color:var(--text);
+      line-height:1.1;
+      margin-bottom:12px;
+      position:relative;z-index:1;
+    }
+    .capture-headline em {
+      font-style:normal;
+      background:linear-gradient(135deg,#F472B6,#A78BFA,#38BDF8);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+
+    .capture-subline {
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:0.22em;
+      color:#FBBF24;
+      margin-bottom:28px;
+      line-height:2;
+      position:relative;z-index:1;
+    }
+
+    .capture-form { display:flex;flex-direction:column;gap:11px;margin-bottom:12px;position:relative;z-index:1; }
+
+    .capture-input {
+      width:100%;padding:15px 18px;
+      background:rgba(255,255,255,0.06);
+      border:1px solid rgba(167,139,250,0.3);
+      border-radius:var(--radius);
+      font-family:'Inter',sans-serif;font-size:16px;color:var(--text);
+      -webkit-appearance:none;transition:all 0.2s;
+    }
+    .capture-input:focus { outline:none;border-color:rgba(167,139,250,0.7);background:rgba(255,255,255,0.09); }
+    .capture-input::placeholder { color:var(--text3); }
+
+    .capture-submit {
+      width:100%;padding:16px;border:none;border-radius:var(--radius);
+      font-family:'Sora',sans-serif;font-size:16px;font-weight:700;cursor:pointer;
+      background:linear-gradient(135deg,#6D28D9,#A78BFA 50%,#F472B6);
+      color:#fff;box-shadow:0 0 40px rgba(167,139,250,0.35);
+      transition:all 0.2s;letter-spacing:0.02em;
+    }
+    .capture-submit:hover { transform:translateY(-2px);box-shadow:0 0 60px rgba(167,139,250,0.5); }
+    .capture-submit:disabled { opacity:0.5;cursor:not-allowed;transform:none; }
+    .capture-note { font-size:12px;color:var(--text3);margin-top:4px;position:relative;z-index:1; }
+    .capture-err { font-size:13px;color:#F09595;margin-top:6px;display:none; }
+    .capture-err.show { display:block; }
+
+    /* ── SHARE TO UNLOCK SCREEN ── */
+    .share-screen { display:none; }
+    .share-screen.show { display:block; }
+
+    .share-title {
+      font-family:'Sora',sans-serif;font-size:22px;font-weight:700;
+      color:var(--text);margin-bottom:8px;line-height:1.2;
+    }
+    .share-sub { font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:24px; }
+
+    .share-btns { display:flex;flex-direction:column;gap:10px;margin-bottom:18px; }
+
+    .share-btn {
+      display:flex;align-items:center;gap:12px;
+      padding:14px 18px;
+      background:var(--surface);
+      border:1px solid var(--border2);
+      border-radius:var(--radius);
+      cursor:pointer;transition:all 0.2s;
+      -webkit-tap-highlight-color:transparent;
+      text-align:left;
+    }
+    .share-btn:hover { background:var(--surface2);border-color:rgba(167,139,250,0.4); }
+    .share-btn-icon { font-size:22px;flex-shrink:0; }
+    .share-btn-text { flex:1; }
+    .share-btn-label { font-size:14px;font-weight:600;color:var(--text); }
+    .share-btn-sub { font-size:12px;color:var(--text3);margin-top:2px; }
+    .share-btn-arrow { font-size:16px;color:var(--text3); }
+
+    .share-skip {
+      font-size:13px;color:var(--text3);cursor:pointer;
+      background:transparent;border:none;width:100%;padding:8px;
+      transition:color 0.15s;text-align:center;
+    }
+    .share-skip:hover { color:var(--text2); }
+
+    /* ── CAPTURE SUCCESS (after share) ── */
+    .capture-success { display:none;text-align:center; }
+    .capture-success.show { display:block; }
+    .capture-success-icon { font-size:52px;margin-bottom:16px; }
+    .capture-success-title { font-family:'Sora',sans-serif;font-size:24px;font-weight:700;color:var(--text);margin-bottom:10px; }
+    .capture-success-sub { font-size:14px;color:var(--text2);line-height:1.65;margin-bottom:24px; }
+    .capture-success-btn {
+      width:100%;padding:15px;border:none;border-radius:var(--radius);
+      font-family:'Sora',sans-serif;font-size:15px;font-weight:700;cursor:pointer;
+      background:linear-gradient(135deg,#6D28D9,#A78BFA 50%,#F472B6);
+      color:#fff;box-shadow:0 0 30px rgba(167,139,250,0.3);transition:all 0.2s;
+    }
+    .capture-success-btn:hover { transform:translateY(-2px); }
+
+    /* ── DAY 4 PAYWALL ── */
+    .paywall-overlay {
+      display:none;position:fixed;inset:0;z-index:700;
+      background:rgba(0,0,0,0.92);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+      align-items:center;justify-content:center;padding:20px;
+    }
+    .paywall-overlay.open { display:flex; }
+    .paywall-inner {
+      background:rgba(13,11,22,0.99);border:1px solid rgba(167,139,250,0.45);
+      border-radius:28px;padding:40px 28px 36px;width:100%;max-width:420px;
+      text-align:center;position:relative;overflow:hidden;
+      animation:fade-up 0.4s cubic-bezier(0.34,1.2,0.64,1);
+    }
+    .paywall-inner::before {
+      content:'';position:absolute;top:0;left:5%;right:5%;height:1px;
+      background:linear-gradient(90deg,transparent,#F472B6,#A78BFA,transparent);
+    }
+    .paywall-icon { font-size:40px;margin-bottom:16px; }
+    .paywall-title { font-family:'Sora',sans-serif;font-size:26px;font-weight:700;color:var(--text);letter-spacing:-0.02em;line-height:1.2;margin-bottom:10px; }
+    .paywall-sub { font-size:15px;color:var(--text2);line-height:1.65;margin-bottom:6px; }
+    .paywall-price-block { margin:20px 0; }
+    .paywall-price {
+      font-family:'Sora',sans-serif;font-size:54px;font-weight:700;
+      letter-spacing:-2px;line-height:1;
+      background:linear-gradient(135deg,#A78BFA,#F472B6);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+    .paywall-price-orig { font-size:16px;color:var(--text3);text-decoration:line-through;margin-left:8px; }
+    .paywall-price-note { font-size:13px;color:#FBBF24;font-weight:600;margin-top:8px; }
+    .paywall-btn {
+      width:100%;padding:16px;border:none;border-radius:var(--radius);
+      font-family:'Sora',sans-serif;font-size:16px;font-weight:700;cursor:pointer;
+      background:linear-gradient(135deg,#6D28D9,#A78BFA 50%,#F472B6);
+      color:#fff;box-shadow:0 0 40px rgba(167,139,250,0.35);
+      transition:all 0.2s;margin-bottom:12px;
+    }
+    .paywall-btn:hover { transform:translateY(-2px);box-shadow:0 0 60px rgba(167,139,250,0.5); }
+    .paywall-btn-ghost {
+      width:100%;padding:13px;background:transparent;
+      border:1px solid var(--border2);border-radius:var(--radius);
+      font-size:14px;color:var(--text3);cursor:pointer;transition:all 0.2s;
+    }
+    .paywall-btn-ghost:hover { color:var(--text2);border-color:rgba(255,255,255,0.25); }
+    .paywall-guarantee { font-size:12px;color:var(--text3);margin-top:14px; }
+
+    /* ── SAM CHATBOT ── */
+    .chat-fab {
+      position:fixed;bottom:24px;right:20px;z-index:600;
+      width:56px;height:56px;border-radius:50%;
+      background:linear-gradient(135deg,#6D28D9,#A78BFA 50%,#F472B6);
+      border:none;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      box-shadow:0 0 30px rgba(167,139,250,0.4);
+      transition:all 0.25s cubic-bezier(0.34,1.4,0.64,1);
+      -webkit-tap-highlight-color:transparent;
+    }
+    .chat-fab:hover { transform:scale(1.1);box-shadow:0 0 50px rgba(167,139,250,0.6); }
+    .chat-fab-icon { font-size:22px;transition:transform 0.2s; }
+    .chat-fab.open .chat-fab-icon { transform:rotate(45deg); }
+
+    .chat-bubble {
+      position:fixed;bottom:90px;right:20px;z-index:599;
+      background:rgba(13,11,22,0.97);
+      border:1px solid rgba(167,139,250,0.35);
+      border-radius:20px 20px 4px 20px;
+      padding:12px 16px;
+      max-width:240px;
+      font-size:14px;color:var(--text2);line-height:1.5;
+      box-shadow:0 8px 40px rgba(0,0,0,0.4);
+      animation:fade-up 0.3s cubic-bezier(0.34,1.2,0.64,1);
+      cursor:pointer;
+      display:none;
+    }
+    .chat-bubble strong { color:var(--spark); }
+    .chat-bubble-close {
+      position:absolute;top:8px;right:10px;
+      font-size:11px;color:var(--text3);cursor:pointer;background:none;border:none;
+    }
+
+    .chat-window {
+      position:fixed;bottom:90px;right:20px;z-index:599;
+      width:calc(100vw - 40px);max-width:360px;
+      background:rgba(13,11,22,0.98);
+      border:1px solid rgba(167,139,250,0.3);
+      border-radius:20px;
+      display:none;
+      flex-direction:column;
+      overflow:hidden;
+      box-shadow:0 20px 60px rgba(0,0,0,0.5);
+      animation:fade-up 0.3s cubic-bezier(0.34,1.2,0.64,1);
+      max-height:520px;
+    }
+    .chat-window.open { display:flex; }
+
+    .chat-header {
+      display:flex;align-items:center;gap:10px;
+      padding:14px 16px;
+      border-bottom:1px solid var(--border);
+      background:var(--surface);flex-shrink:0;
+    }
+    .chat-header-avatar {
+      width:34px;height:34px;border-radius:50%;
+      background:linear-gradient(135deg,#6D28D9,#F472B6);
+      display:flex;align-items:center;justify-content:center;
+      font-size:14px;font-weight:700;color:#fff;flex-shrink:0;
+    }
+    .chat-header-info { flex:1; }
+    .chat-header-name { font-size:14px;font-weight:600;color:var(--text); }
+    .chat-header-status { font-size:11px;color:#34D399;display:flex;align-items:center;gap:4px; }
+    .chat-header-status::before { content:'';width:5px;height:5px;border-radius:50%;background:#34D399; }
+
+    .chat-messages {
+      flex:1;overflow-y:auto;padding:16px;
+      display:flex;flex-direction:column;gap:12px;
+      min-height:200px;
+    }
+
+    .chat-msg {
+      display:flex;align-items:flex-end;gap:8px;
+      animation:fade-up 0.25s ease;
+    }
+    .chat-msg.user { flex-direction:row-reverse; }
+
+    .chat-msg-avatar {
+      width:26px;height:26px;border-radius:50%;flex-shrink:0;
+      background:linear-gradient(135deg,#6D28D9,#F472B6);
+      display:flex;align-items:center;justify-content:center;
+      font-size:10px;font-weight:700;color:#fff;
+    }
+
+    .chat-msg-bubble {
+      max-width:80%;padding:10px 14px;border-radius:16px;
+      font-size:14px;line-height:1.55;color:var(--text);
+    }
+    .chat-msg.sam .chat-msg-bubble {
+      background:var(--surface2);border:1px solid var(--border);
+      border-bottom-left-radius:4px;
+    }
+    .chat-msg.user .chat-msg-bubble {
+      background:linear-gradient(135deg,#6D28D9,#A78BFA);
+      color:#fff;border-bottom-right-radius:4px;
+    }
+
+    .chat-typing {
+      display:flex;align-items:flex-end;gap:8px;
+    }
+    .chat-typing-dots {
+      background:var(--surface2);border:1px solid var(--border);
+      border-radius:16px;border-bottom-left-radius:4px;
+      padding:12px 16px;display:flex;gap:4px;align-items:center;
+    }
+    .chat-typing-dots span {
+      width:6px;height:6px;border-radius:50%;background:var(--text3);
+      animation:bounce 1.2s ease-in-out infinite;
+    }
+    .chat-typing-dots span:nth-child(2) { animation-delay:0.15s; }
+    .chat-typing-dots span:nth-child(3) { animation-delay:0.3s; }
+
+    .chat-quick-replies {
+      display:flex;flex-wrap:wrap;gap:6px;
+      padding:0 16px 12px;flex-shrink:0;
+    }
+    .chat-qr {
+      font-size:12px;padding:6px 12px;
+      background:var(--surface);border:1px solid var(--border2);
+      border-radius:20px;cursor:pointer;color:var(--text2);
+      transition:all 0.15s;-webkit-tap-highlight-color:transparent;
+      white-space:nowrap;
+    }
+    .chat-qr:hover { border-color:var(--spark);color:var(--spark); }
+
+    .chat-input-row {
+      display:flex;gap:8px;padding:12px 14px;
+      border-top:1px solid var(--border);flex-shrink:0;
+    }
+    .chat-input {
+      flex:1;padding:10px 14px;
+      background:var(--surface);border:1px solid var(--border);
+      border-radius:50px;font-family:'Inter',sans-serif;
+      font-size:14px;color:var(--text);-webkit-appearance:none;
+      transition:all 0.2s;
+    }
+    .chat-input:focus { outline:none;border-color:var(--spark); }
+    .chat-input::placeholder { color:var(--text3); }
+    .chat-send {
+      width:36px;height:36px;border-radius:50%;border:none;
+      background:linear-gradient(135deg,#6D28D9,#F472B6);
+      color:#fff;font-size:14px;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      flex-shrink:0;transition:all 0.2s;
+    }
+    .chat-send:hover { transform:scale(1.1); }
+    .chat-send:disabled { opacity:0.4;cursor:not-allowed;transform:none; }
+
+    /* Chat hint label under FAB */
+    .chat-hint {
+      position:fixed;bottom:86px;right:20px;z-index:598;
+      font-size:11px;font-weight:700;letter-spacing:0.08em;
+      text-transform:uppercase;color:var(--text3);
+      pointer-events:none;text-align:right;
+    }
+
   </style>
 </head>
 <body>
@@ -1828,11 +2193,15 @@
 <nav>
   <div class="nav-logo">S<span class="nav-logo-dot">.</span>A<span class="nav-logo-dot">.</span>M<span class="nav-logo-dot">.</span></div>
   <div class="nav-right">
+    <div class="trial-countdown" id="trialCountdown" onclick="openProModal()" title="Your free trial">
+      <div class="trial-countdown-dot"></div>
+      <span id="trialCountdownText">3 days free</span>
+    </div>
     <button class="nav-setup-btn" onclick="openSetup()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
       About me
     </button>
-    <button class="nav-pro-btn" onclick="openProModal()">✦ Go Pro</button>
+    <button class="nav-pro-btn" id="navProBtn" onclick="openProModal()">✦ Go Pro</button>
   </div>
 </nav>
 
@@ -3392,6 +3761,466 @@ function showWlErr(msg) {
 // Also wire the annual notify button
 function handleAnnualNotify() { openWaitlist(); }
 
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TRIAL SYSTEM
+// ═══════════════════════════════════════════════════════════════════════════
+
+const TRIAL_DURATION_MS = 3 * 24 * 60 * 60 * 1000; // 72 hours
+const TRIGGER_DELAY_MS  = 10 * 60 * 1000;            // 10 minutes
+const SAM_SITE_URL      = 'https://samforcreators.com';
+
+// Share copy — crafted for curiosity + unfair advantage
+const SHARE_COPY = {
+  text: "bro I'm not supposed to tell everyone about this but there's an AI that writes your entire content strategy in 30 seconds. hooks, scripts, captions — everything. it's called SAM and it feels like cheating. " + SAM_SITE_URL,
+  twitter: "there's a tool that gives you your hook, full script and captions for every platform in 30 seconds. it's called SAM. I don't know why it's still free. " + SAM_SITE_URL,
+  instagram: "the creators winning right now aren't working harder. they have an unfair advantage.\n\nSAM writes your hooks, scripts and platform strategy in 30 seconds flat. while everyone else is staring at a blank screen, you're already posting.\n\n3 days free. no card.\n\n→ " + SAM_SITE_URL,
+  emailSubject: "this feels illegal to know about",
+  emailBody: "found this AI called SAM that writes your entire content strategy while everyone else is still figuring out what to post. hooks, scripts, captions, 7-day calendars — 30 seconds. try it free → " + SAM_SITE_URL
+};
+
+function getTrialState() {
+  try { return JSON.parse(localStorage.getItem('sam-trial') || 'null'); } catch { return null; }
+}
+function setTrialState(obj) {
+  localStorage.setItem('sam-trial', JSON.stringify(obj));
+}
+
+function isTrialActive() {
+  const t = getTrialState();
+  if (!t || !t.startedAt) return false;
+  return (Date.now() - t.startedAt) < TRIAL_DURATION_MS;
+}
+
+function isTrialExpired() {
+  const t = getTrialState();
+  if (!t || !t.startedAt) return false;
+  return (Date.now() - t.startedAt) >= TRIAL_DURATION_MS;
+}
+
+function hasEmail() {
+  const t = getTrialState();
+  return t && t.email;
+}
+
+function incrementRunCount() {
+  const t = getTrialState() || {};
+  t.runs = (t.runs || 0) + 1;
+  setTrialState(t);
+  return t.runs;
+}
+
+// ── CAPTURE MODAL ────────────────────────────────────────────────────────────
+function openCaptureModal() {
+  // Reset to step 1
+  document.getElementById('captureFormStep').style.display = 'block';
+  document.getElementById('captureShareStep').classList.remove('show');
+  document.getElementById('captureSuccess').classList.remove('show');
+  document.getElementById('captureErr').classList.remove('show');
+  document.getElementById('captureName').value = '';
+  document.getElementById('captureEmail').value = '';
+  document.getElementById('captureSubmitBtn').disabled = false;
+  document.getElementById('captureSubmitBtn').textContent = 'Unlock my 3 free days →';
+  document.getElementById('captureOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCaptureModal() {
+  document.getElementById('captureOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeCaptureAndStart() {
+  closeCaptureModal();
+  updateTrialCountdown();
+  // Show chatbot intro after a moment
+  setTimeout(() => {
+    document.getElementById('chatBubble').style.display = 'block';
+  }, 2000);
+}
+
+async function submitCapture() {
+  const name  = document.getElementById('captureName').value.trim();
+  const email = document.getElementById('captureEmail').value.trim();
+  const btn   = document.getElementById('captureSubmitBtn');
+  const err   = document.getElementById('captureErr');
+
+  err.classList.remove('show');
+
+  if (!name) { err.textContent = 'Please enter your first name.'; err.classList.add('show'); return; }
+  if (!email || !email.includes('@')) { err.textContent = 'Please enter a valid email.'; err.classList.add('show'); return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Locking in your trial...';
+
+  // Save locally immediately
+  setTrialState({ email, name, capturedAt: Date.now(), startedAt: null, shared: false, runs: 0 });
+
+  // Fire to waitlist API
+  try {
+    await fetch('/api/waitlist', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, notifyEmail: SAM_NOTIFY_EMAIL, source: 'trial-capture' })
+    });
+  } catch(e) { /* silent — local save is enough */ }
+
+  // Go to share step
+  document.getElementById('captureFormStep').style.display = 'none';
+  document.getElementById('captureShareStep').classList.add('show');
+}
+
+function markSharedAndUnlock() {
+  const t = getTrialState() || {};
+  t.shared = true;
+  t.startedAt = Date.now();
+  setTrialState(t);
+  // Show success
+  document.getElementById('captureShareStep').classList.remove('show');
+  document.getElementById('captureSuccess').classList.add('show');
+  updateTrialCountdown();
+}
+
+function skipShare() {
+  const t = getTrialState() || {};
+  t.startedAt = Date.now();
+  setTrialState(t);
+  document.getElementById('captureShareStep').classList.remove('show');
+  document.getElementById('captureSuccess').classList.add('show');
+  updateTrialCountdown();
+}
+
+// ── SHARE FUNCTIONS ───────────────────────────────────────────────────────────
+function shareViaText() {
+  const encoded = encodeURIComponent(SHARE_COPY.text);
+  window.open('sms:?body=' + encoded, '_blank');
+  setTimeout(markSharedAndUnlock, 1000);
+}
+
+function shareViaTwitter() {
+  const encoded = encodeURIComponent(SHARE_COPY.twitter);
+  window.open('https://twitter.com/intent/tweet?text=' + encoded, '_blank');
+  setTimeout(markSharedAndUnlock, 1000);
+}
+
+function shareViaInstagram() {
+  // Copy caption to clipboard then show success (Instagram doesn't support deep links)
+  navigator.clipboard.writeText(SHARE_COPY.instagram).then(() => {
+    alert('Caption copied! Paste it into your Instagram or TikTok post. 📋');
+    markSharedAndUnlock();
+  }).catch(() => {
+    markSharedAndUnlock();
+  });
+}
+
+function shareViaEmail() {
+  const subject = encodeURIComponent(SHARE_COPY.emailSubject);
+  const body    = encodeURIComponent(SHARE_COPY.emailBody);
+  window.open('mailto:?subject=' + subject + '&body=' + body, '_blank');
+  setTimeout(markSharedAndUnlock, 1000);
+}
+
+// ── TRIAL COUNTDOWN ───────────────────────────────────────────────────────────
+function updateTrialCountdown() {
+  const t = getTrialState();
+  const pill = document.getElementById('trialCountdown');
+  const text = document.getElementById('trialCountdownText');
+  const proBtn = document.getElementById('navProBtn');
+
+  if (!t || !t.startedAt) { pill.classList.remove('show'); return; }
+
+  const elapsed = Date.now() - t.startedAt;
+  const remaining = TRIAL_DURATION_MS - elapsed;
+
+  if (remaining <= 0) {
+    pill.classList.remove('show');
+    return;
+  }
+
+  pill.classList.add('show');
+  if (proBtn) proBtn.style.display = 'none';
+
+  const hours = Math.floor(remaining / (1000 * 60 * 60));
+  const mins  = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+
+  if (hours >= 48) {
+    text.textContent = '3 days free ✦';
+  } else if (hours >= 24) {
+    text.textContent = '2 days left ✦';
+  } else if (hours >= 1) {
+    text.textContent = hours + 'h ' + mins + 'm left';
+  } else {
+    text.textContent = mins + ' mins left';
+  }
+}
+
+// ── PAYWALL ───────────────────────────────────────────────────────────────────
+function showPaywall() {
+  document.getElementById('paywallOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function handlePaywallSignup() {
+  document.getElementById('paywallOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  openProPage();
+}
+
+function paywallShare() {
+  // Give 1 extra day for sharing
+  const t = getTrialState() || {};
+  t.startedAt = Date.now() - TRIAL_DURATION_MS + (24 * 60 * 60 * 1000); // reset to 1 day
+  setTrialState(t);
+  document.getElementById('paywallOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  // Open share options
+  shareViaTwitter();
+  updateTrialCountdown();
+}
+
+// ── GATE CHECK — runs before every tool run ────────────────────────────────
+function checkTrialGate() {
+  // No email yet → show capture (only after 10min or 2nd run — handled by trigger)
+  if (!hasEmail()) return true; // let them run, trigger handles timing
+  // Trial active → allow
+  if (isTrialActive()) {
+    incrementRunCount();
+    return true;
+  }
+  // Trial expired → paywall
+  if (isTrialExpired()) {
+    showPaywall();
+    return false;
+  }
+  return true;
+}
+
+// ── TRIGGER LOGIC ─────────────────────────────────────────────────────────────
+let _triggerFired = false;
+let _runsSinceLoad = 0;
+
+function maybeTriggerCapture() {
+  if (_triggerFired) return;
+  if (hasEmail()) return;
+  _runsSinceLoad++;
+  if (_runsSinceLoad >= 2) {
+    _triggerFired = true;
+    setTimeout(openCaptureModal, 800);
+  }
+}
+
+// 10-minute timer trigger
+function startTriggerTimer() {
+  if (hasEmail()) return;
+  setTimeout(() => {
+    if (!_triggerFired && !hasEmail()) {
+      _triggerFired = true;
+      openCaptureModal();
+    }
+  }, TRIGGER_DELAY_MS);
+}
+
+// ── PATCH EXISTING RUN FUNCTIONS TO CHECK GATE ────────────────────────────
+// Patch run functions after page load so originals are defined
+window.addEventListener('load', function patchRunFunctions() {
+  const origPulse = window.runPulse;
+  window.runPulse = async function() {
+    maybeTriggerCapture();
+    if (!checkTrialGate()) return;
+    if (typeof origPulse === 'function') await origPulse();
+  };
+
+  const origSpark = window.runSpark;
+  window.runSpark = async function() {
+    maybeTriggerCapture();
+    if (!checkTrialGate()) return;
+    if (typeof origSpark === 'function') await origSpark();
+  };
+
+  const origBlueprint = window.runBlueprint;
+  window.runBlueprint = async function() {
+    maybeTriggerCapture();
+    if (!checkTrialGate()) return;
+    if (typeof origBlueprint === 'function') await origBlueprint();
+  };
+
+  const origVision = window.runVision;
+  window.runVision = async function() {
+    maybeTriggerCapture();
+    if (!checkTrialGate()) return;
+    if (typeof origVision === 'function') await origVision();
+  };
+
+  const origLens = window.runLens;
+  window.runLens = async function(mode) {
+    maybeTriggerCapture();
+    if (!checkTrialGate()) return;
+    if (typeof origLens === 'function') await origLens(mode);
+  };
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SAM CHATBOT
+// ═══════════════════════════════════════════════════════════════════════════
+
+let chatOpen = false;
+let chatHistory = [];
+
+const CHATBOT_SYSTEM = `You are SAM — Strategic Assistant for Making. You are the friendly, confident, knowledgeable AI assistant built into the SAM app at samforcreators.com.
+
+You know every tool in the app inside out:
+- The Pulse: Takes any raw moment or story the creator experienced and turns it into a hook, full word-for-word script, b-roll shot list, pacing notes, CTA, and platform-specific captions. This is the most powerful tool.
+- The Spark: Generates 5 powerful, specific content ideas tailored to the creator's niche. Each comes with why it will perform and the best platform for it. Ideas can be sent directly to The Pulse.
+- The Blueprint: Builds a complete 7-day content calendar around the creator's niche and chosen platforms. Each day has a content type, caption, and strategy. Days can be sent to The Pulse.
+- The Vision: Creates one bold, unique video concept with premise, opening hook line, shot list, and real virality score. Concept can be sent to The Pulse.
+- The Lens: Two modes — drop a photo to get thumbnail headline strategy (safe + bold options, layout direction, visual reference); drop an analytics screenshot to get what's working, what to fix, and exactly what to post next.
+
+SAM is honest: it writes scripts, hooks, captions and strategy. It does NOT post for you, edit video, or create actual images.
+
+The app is free for 3 days (unlimited), then $9/month founding member rate (going up to $19).
+
+Your personality: warm, direct, creator-to-creator. You speak like a smart friend who knows content strategy inside out — not like a corporate chatbot. Short answers. No fluff. Real advice.
+
+If someone asks which tool to use, ask one quick question to understand their situation, then give a direct recommendation.
+
+Keep responses under 120 words unless the question genuinely requires more detail.`;
+
+function toggleChat() {
+  chatOpen = !chatOpen;
+  const fab = document.getElementById('chatFab');
+  const win = document.getElementById('chatWindow');
+  const bubble = document.getElementById('chatBubble');
+
+  if (chatOpen) {
+    fab.classList.add('open');
+    win.classList.add('open');
+    bubble.style.display = 'none';
+    document.getElementById('chatInput').focus();
+  } else {
+    fab.classList.remove('open');
+    win.classList.remove('open');
+  }
+}
+
+function sendQuickReply(text) {
+  document.getElementById('chatInput').value = text;
+  sendChat();
+}
+
+async function sendChat() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+
+  input.value = '';
+  document.getElementById('chatSendBtn').disabled = true;
+
+  // Hide quick replies after first message
+  document.getElementById('chatQuickReplies').style.display = 'none';
+
+  // Add user message
+  addChatMsg('user', msg);
+  chatHistory.push({ role: 'user', content: msg });
+
+  // Show typing indicator
+  const typingEl = showTyping();
+
+  try {
+    const response = await fetch('/api/sam', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        mode: 'chat',
+        moment: msg,
+        chatHistory: chatHistory.slice(-8),
+        chatSystemPrompt: CHATBOT_SYSTEM,
+        platforms: [],
+        creatorContext: (getSetup().niche || '')
+      })
+    });
+
+    // Use streaming reader
+    const data = await readStream(response);
+    const reply = (data && data.reply) ? data.reply : "Hmm, I hit a snag — try again in a sec!";
+
+    removeTyping(typingEl);
+    addChatMsg('sam', reply);
+    chatHistory.push({ role: 'assistant', content: reply });
+
+  } catch(e) {
+    removeTyping(typingEl);
+    addChatMsg('sam', "I'm having a moment — try again in a second. The tools are all still working though! 🎯");
+  }
+
+  document.getElementById('chatSendBtn').disabled = false;
+  input.focus();
+}
+
+function addChatMsg(role, text) {
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'chat-msg ' + role;
+
+  const avatar = document.createElement('div');
+  avatar.className = 'chat-msg-avatar';
+  avatar.textContent = role === 'sam' ? 'S' : 'Y';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'chat-msg-bubble';
+  bubble.textContent = text;
+
+  div.appendChild(avatar);
+  div.appendChild(bubble);
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function showTyping() {
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'chat-typing';
+  div.innerHTML = '<div class="chat-msg-avatar" style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#6D28D9,#F472B6);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;">S</div><div class="chat-typing-dots"><span></span><span></span><span></span></div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+function removeTyping(el) {
+  if (el && el.parentNode) el.parentNode.removeChild(el);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+// Init runs after everything is ready
+window.addEventListener('load', function initTrialSystem() {
+  // Update countdown immediately and every minute
+  updateTrialCountdown();
+  setInterval(updateTrialCountdown, 60000);
+
+  // Check if trial expired on load
+  if (isTrialExpired()) {
+    setTimeout(showPaywall, 1500);
+    return;
+  }
+
+  // Start 10-min trigger timer if no email yet
+  if (!hasEmail()) {
+    startTriggerTimer();
+  }
+
+  // Show chatbot bubble after 5 seconds always (it's the FAB teaser)
+  setTimeout(() => {
+    const bubble = document.getElementById('chatBubble');
+    if (bubble) { bubble.style.display = 'block'; }
+  }, 5000);
+
+  // Hide chatbot bubble after 18 seconds
+  setTimeout(() => {
+    const bubble = document.getElementById('chatBubble');
+    if (bubble) bubble.style.display = 'none';
+  }, 18000);
+});
+
 </script>
 
 
@@ -3655,6 +4484,139 @@ function handleAnnualNotify() { openWaitlist(); }
       <div class="wl-success-sub">We'll email you the moment SAM Pro opens. You've locked in the founding member rate.<br/><br/>In the meantime — use the free tools. SAM is ready right now.</div>
     </div>
 
+  </div>
+</div>
+
+
+<!-- ── EMAIL CAPTURE MODAL ── -->
+<div class="capture-overlay" id="captureOverlay">
+  <div class="capture-inner">
+    <div class="capture-glow"></div>
+
+    <!-- Step 1: Email form -->
+    <div id="captureFormStep">
+      <div class="capture-icon">✦</div>
+      <div class="capture-headline">SAM's on <em>us</em><br/>for 3 days.</div>
+      <div class="capture-subline">3 FULL DAYS · ALL 5 TOOLS · UNLIMITED RUNS · NO CARD EVER</div>
+      <div class="capture-form">
+        <input class="capture-input" type="text" id="captureName" placeholder="Your first name" autocomplete="given-name" />
+        <input class="capture-input" type="email" id="captureEmail" placeholder="Your email address" autocomplete="email" inputmode="email" />
+        <button class="capture-submit" id="captureSubmitBtn" onclick="submitCapture()">Unlock my 3 free days →</button>
+        <div class="capture-err" id="captureErr"></div>
+        <div class="capture-note">🔒 No card. No spam. One email when Pro launches.</div>
+      </div>
+    </div>
+
+    <!-- Step 2: Share to unlock -->
+    <div class="share-screen" id="captureShareStep">
+      <div style="font-size:40px;margin-bottom:14px;">🚀</div>
+      <div class="share-title">One more thing —<br/>share SAM to unlock.</div>
+      <div class="share-sub">Tell one person about SAM and your 3 days start right now. Pick how you want to share:</div>
+      <div class="share-btns">
+        <button class="share-btn" onclick="shareViaText()">
+          <div class="share-btn-icon">💬</div>
+          <div class="share-btn-text">
+            <div class="share-btn-label">Text a friend</div>
+            <div class="share-btn-sub">Pre-written. Just tap send.</div>
+          </div>
+          <div class="share-btn-arrow">→</div>
+        </button>
+        <button class="share-btn" onclick="shareViaTwitter()">
+          <div class="share-btn-icon">✕</div>
+          <div class="share-btn-text">
+            <div class="share-btn-label">Post on X</div>
+            <div class="share-btn-sub">Opens with copy ready to go.</div>
+          </div>
+          <div class="share-btn-arrow">→</div>
+        </button>
+        <button class="share-btn" onclick="shareViaInstagram()">
+          <div class="share-btn-icon">📸</div>
+          <div class="share-btn-text">
+            <div class="share-btn-label">Share on Instagram / TikTok</div>
+            <div class="share-btn-sub">Caption copied to clipboard.</div>
+          </div>
+          <div class="share-btn-arrow">→</div>
+        </button>
+        <button class="share-btn" onclick="shareViaEmail()">
+          <div class="share-btn-icon">✉️</div>
+          <div class="share-btn-text">
+            <div class="share-btn-label">Forward to someone</div>
+            <div class="share-btn-sub">Opens your email app.</div>
+          </div>
+          <div class="share-btn-arrow">→</div>
+        </button>
+      </div>
+      <button class="share-skip" onclick="skipShare()">I'll share it later — start my trial anyway</button>
+    </div>
+
+    <!-- Step 3: Success -->
+    <div class="capture-success" id="captureSuccess">
+      <div class="capture-success-icon">🎉</div>
+      <div class="capture-success-title">You're in. 3 days starts now.</div>
+      <div class="capture-success-sub">All 5 tools. Unlimited runs. No limits for 72 hours.<br/><br/>We'll email you before your trial ends with the founding member offer — <strong style="color:#FBBF24;">$9/month before we raise to $19.</strong></div>
+      <button class="capture-success-btn" onclick="closeCaptureAndStart()">Let's go make something →</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── DAY 4 PAYWALL ── -->
+<div class="paywall-overlay" id="paywallOverlay">
+  <div class="paywall-inner">
+    <div class="paywall-icon">⏰</div>
+    <div class="paywall-title">Your 3 free days<br/>are up.</div>
+    <div class="paywall-sub">You've seen what SAM can do. Now lock in your rate before the price goes up.</div>
+    <div class="paywall-price-block">
+      <div style="display:flex;align-items:baseline;justify-content:center;gap:6px;">
+        <div class="paywall-price">$9</div>
+        <div style="font-size:16px;color:var(--text3);">/month</div>
+        <div class="paywall-price-orig">$19</div>
+      </div>
+      <div class="paywall-price-note">🔒 Founding member rate — locked forever</div>
+    </div>
+    <button class="paywall-btn" onclick="handlePaywallSignup()">Become a founding member →</button>
+    <button class="paywall-btn-ghost" onclick="paywallShare()">Share SAM instead — get 1 more free day</button>
+    <div class="paywall-guarantee">🔒 7-day money-back · Cancel anytime · No contracts</div>
+  </div>
+</div>
+
+<!-- ── SAM CHATBOT ── -->
+<div class="chat-hint" id="chatHint" style="display:none;">Ask SAM anything</div>
+<button class="chat-fab" id="chatFab" onclick="toggleChat()" title="Ask SAM anything">
+  <span class="chat-fab-icon">✦</span>
+</button>
+
+<!-- Intro bubble -->
+<div class="chat-bubble" id="chatBubble">
+  <button class="chat-bubble-close" onclick="document.getElementById('chatBubble').style.display='none'">✕</button>
+  <strong>Hey! I'm SAM.</strong> Not sure which tool to use? Ask me anything — I know this place inside out. 👋
+</div>
+
+<!-- Chat window -->
+<div class="chat-window" id="chatWindow">
+  <div class="chat-header">
+    <div class="chat-header-avatar">S</div>
+    <div class="chat-header-info">
+      <div class="chat-header-name">SAM</div>
+      <div class="chat-header-status">Online — always</div>
+    </div>
+    <button onclick="toggleChat()" style="background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;padding:4px;">✕</button>
+  </div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="chat-msg sam">
+      <div class="chat-msg-avatar">S</div>
+      <div class="chat-msg-bubble">Hey! I'm SAM — your creative director. I know every tool in this app inside out. What can I help you with? 🎯</div>
+    </div>
+  </div>
+  <div class="chat-quick-replies" id="chatQuickReplies">
+    <button class="chat-qr" onclick="sendQuickReply('Which tool should I start with?')">Where do I start?</button>
+    <button class="chat-qr" onclick="sendQuickReply('What does The Pulse do?')">What is The Pulse?</button>
+    <button class="chat-qr" onclick="sendQuickReply('How do I get the best results from SAM?')">Best tips?</button>
+    <button class="chat-qr" onclick="sendQuickReply('What makes a good hook?')">Hook advice</button>
+  </div>
+  <div class="chat-input-row">
+    <input class="chat-input" id="chatInput" placeholder="Ask SAM anything..." onkeydown="if(event.key==='Enter')sendChat()" />
+    <button class="chat-send" id="chatSendBtn" onclick="sendChat()">→</button>
   </div>
 </div>
 
