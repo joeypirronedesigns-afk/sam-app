@@ -6777,8 +6777,13 @@ Include complete reasoning (WHY) for every recommendation.
 
   try {
     // Main playbook API call
+    const devUserId = localStorage.getItem('sam_uid') || 'anon';
+    const devTier = localStorage.getItem('sam_dev') === 'true' ? 'studio' : (WS.tier || 'free');
+
     const payload = {
       mode: 'playbook',
+      userId: devUserId,
+      tier: devTier,
       moment: story,
       platforms: WS.platforms,
       contentType: WS.format || 'short-form video',
