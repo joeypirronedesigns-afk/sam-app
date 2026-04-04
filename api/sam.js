@@ -192,16 +192,16 @@ PERSONALITY: Confident, direct, warm. Talk like a trusted creative director — 
       const hasPhoto   = req.body.includeThumb && req.body.imageBase64;
 
       const scriptStyle = {
-        camera:    'Write a punchy, conversational on-camera script. Direct, personal, natural rhythm.',
-        narration: 'Write a cinematic narration script. More visual, more descriptive. Written to be spoken over footage. Use pauses intentionally. Each sentence should earn its place.',
-        text:      'Write short punchy text blocks for on-screen text. 5-8 words max per line. No speaking required.',
-        mix:       'Write a mixed script — label [ON CAMERA] and [NARRATION] sections clearly. Creator chooses what to use.'
+        camera:    "Write a punchy, conversational on-camera script. Direct, personal, natural rhythm.",
+        narration: "Write a cinematic narration script. More visual, more descriptive. Written to be spoken over footage. Use pauses intentionally. Each sentence should earn its place.",
+        text:      "Write short punchy text blocks for on-screen text. 5-8 words max per line. No speaking required.",
+        mix:       "Write a mixed script. Label ON CAMERA and NARRATION sections clearly. Creator chooses what to use."
       }[delivery] || '';
 
       const paceNote = {
-        fast:    'Speaker pace: fast. Script should be tight and punchy — 60 seconds max. Cut anything that doesn't serve the story.',
-        natural: 'Speaker pace: natural. Script should breathe — 75-90 seconds. Room for a pause or two.',
-        slow:    'Speaker pace: deliberate. Script can go to 90-120 seconds. Pauses are intentional and emotional.'
+        fast:    "Speaker pace: fast. Script should be tight and punchy. 60 seconds max. Cut anything that does not serve the story.",
+        natural: "Speaker pace: natural. Script should breathe. 75-90 seconds. Room for a pause or two.",
+        slow:    "Speaker pace: deliberate. Script can go to 90-120 seconds. Pauses are intentional and emotional."
       }[pace] || '';
 
       const playbookPrompt = `${samIdentity} ${toneContext} ${emojiLine} ${creatorLine} ${demographicsLine} ${languageLine}
