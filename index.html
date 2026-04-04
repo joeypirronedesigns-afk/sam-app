@@ -7190,6 +7190,14 @@ async function downloadPDF(type) {
       return;
     }
 
+    if (res.status === 404 || res.status === 500) {
+      // PDF API not ready yet — silently use browser print
+      if (type === 'playbook') printPlaybookOnly();
+      else printLeadMagnetOnly();
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+      return;
+    }
     if (!res.ok) throw new Error('PDF generation failed');
 
     // Trigger download
@@ -7208,8 +7216,7 @@ async function downloadPDF(type) {
 
   } catch(err) {
     console.error('PDF error:', err);
-    // Fallback to browser print if API fails
-    alert('PDF API unavailable — opening browser print as backup.');
+    // Fallback to browser print if API fails — silently
     if (type === 'playbook') printPlaybookOnly();
     else printLeadMagnetOnly();
     btn.innerHTML = originalText;
@@ -7315,10 +7322,13 @@ Return ONLY valid JSON — no markdown, no backticks:
     // Extract JSON from reply
     let lm;
     try {
-      const replyText = regenResult.reply || regenResult.content || regenResult.text || JSON.stringify(regenResult);
-      const clean = replyText.replace(/```json|```/g, '').trim();
-      const jsonMatch = clean.match(/\{[\s\S]*\}/);
-      lm = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(clean);
+      const replyText = (regenResult && regenResult.reply) ? regenResult.reply : JSON.stringify(regenResult);
+      const cleanText = replyText.replace(/```json[\s\S]*?```|```[\s\S]*?```/g, m => m.replace(/```json|```/g,'')).trim();
+      const jsonStart = cleanText.indexOf('{');
+      const jsonEnd = cleanText.lastIndexOf('}');
+      lm = (jsonStart !== -1 && jsonEnd !== -1)
+        ? JSON.parse(cleanText.slice(jsonStart, jsonEnd + 1))
+        : JSON.parse(cleanText);
     } catch(e) {
       throw new Error('Could not parse response');
     }
@@ -7497,18 +7507,19 @@ Return ONLY valid JSON:
 
   try {
     // Use callAPI which properly handles streaming and JSON parsing
-    const data = await callAPI({
+    const rawResult = await callAPI({
       mode: 'chat',
       messages: [{ role: 'user', content: cfg.prompt }]
     });
 
-    // callAPI returns parsed result — extract JSON from reply field
-    let parsedData;
-    const replyText = data.reply || data.content || data.text || JSON.stringify(data);
-    const clean = replyText.replace(/```json|```/g, '').trim();
-    const jsonMatch = clean.match(/\{[\s\S]*\}/);
-    parsedData = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(clean);
-    const actualData = parsedData;
+    // Chat mode returns { reply: "json string" } — extract and parse
+    const replyText = (rawResult && rawResult.reply) ? rawResult.reply : JSON.stringify(rawResult);
+    const cleanText = replyText.replace(/```json[\s\S]*?```|```[\s\S]*?```/g, m => m.replace(/```json|```/g, '')).trim();
+    const jsonStart = cleanText.indexOf('{');
+    const jsonEnd = cleanText.lastIndexOf('}');
+    const actualData = (jsonStart !== -1 && jsonEnd !== -1) 
+      ? JSON.parse(cleanText.slice(jsonStart, jsonEnd + 1))
+      : JSON.parse(cleanText);
 
     // Render based on tool type
     let html = `<div style="border:1px solid ${cfg.color}33;border-radius:var(--radius-xl);overflow:hidden;margin-top:4px;">
