@@ -5647,18 +5647,23 @@ function selectInputMethod(method) {
 
   document.getElementById('wizardNextBtn').disabled = false;
 
-  // Watch for text input
+  // Watch for text input — covers typing, paste, voice
   const ta = document.getElementById('wiz2text');
   if (ta) {
-    ta.oninput = () => {
+    const updateStory = () => {
       WS.storyText = ta.value;
-      document.getElementById('wiz2charcount').textContent = ta.value.length + ' characters';
+      const count = document.getElementById('wiz2charcount');
+      if (count) count.textContent = ta.value.length + ' characters';
       document.getElementById('wizardNextBtn').disabled = ta.value.trim().length < 10;
       saveWizardState();
     };
+    ta.addEventListener('input', updateStory);
+    ta.addEventListener('paste', () => setTimeout(updateStory, 50));
+    ta.addEventListener('keyup', updateStory);
+    ta.addEventListener('change', updateStory);
     if (WS.storyText) {
       ta.value = WS.storyText;
-      ta.oninput();
+      updateStory();
     }
   }
 }
@@ -5919,6 +5924,11 @@ async function generateStoryReflection() {
   const storyType = WS.storyType || 'moment';
   const diagEl = document.getElementById('wiz3diagText');
   const nextBtn = document.getElementById('wizardNextBtn');
+
+  // Re-read from localStorage in case it was just saved
+  if (!text || text.trim().length < 5) {
+    try { const fresh = JSON.parse(localStorage.getItem('sam-wizard-state')||'{}'); text = fresh.storyText || ''; } catch(e) {}
+  }
 
   if (!text || text.trim().length < 5) {
     if (diagEl) diagEl.innerHTML = '<div class="sam-diagnosis-reveal">Tell SAM your story in Step 2 first — go back and describe what happened.</div>';
