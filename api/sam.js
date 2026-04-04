@@ -66,8 +66,11 @@ PERSONALITY: Confident, direct, warm. Talk like a trusted creative director — 
     }
   }
 
-  // ── ALL OTHER MODES need moment + mode ────────────────────────────────────
-  if (!moment || !mode) return res.status(400).json({ error: 'Missing mode or moment' });
+  // ── ALL OTHER MODES need moment + mode (playbook is more flexible) ────────
+  if (!mode) return res.status(400).json({ error: 'Missing mode' });
+  if (mode !== 'playbook' && mode !== 'chat' && (!moment)) {
+    return res.status(400).json({ error: 'Missing moment' });
+  }
 
   // ── WHAT SAM ACTUALLY DOES (honest capabilities) ──────────────────────────
   // SAM writes: scripts, hooks, captions, hashtags, content strategies, ideas,
