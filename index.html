@@ -5922,11 +5922,17 @@ async function sendChatMessage() {
 // Run sam_devmode() in browser console to bypass all limits for testing
 window.sam_devmode = function() {
   localStorage.setItem('sam_dev', 'true');
+  localStorage.setItem('sam_uid', 'dev-joey');
   localStorage.setItem('sam-trial', JSON.stringify({ paid: true, email: 'dev@sam.com', trialStart: Date.now() }));
+  WS.email = 'dev@sam.com';
+  WS.userId = 'dev-joey';
+  WS.tier = 'studio';
+  saveWizardState();
   console.log('✅ SAM dev mode ON — all limits bypassed. Run sam_devmode_off() to disable.');
 };
 window.sam_devmode_off = function() {
   localStorage.removeItem('sam_dev');
+  localStorage.removeItem('sam_uid');
   localStorage.removeItem('sam-trial');
   console.log('✅ SAM dev mode OFF — normal user experience restored.');
 };
