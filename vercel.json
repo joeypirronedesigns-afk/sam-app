@@ -1,7 +1,12 @@
 {
   "functions": {
     "api/sam.js": {
-      "maxDuration": 60
+      "maxDuration": 60,
+      "memory": 1024
+    },
+    "api/pdf.js": {
+      "maxDuration": 60,
+      "memory": 3009
     },
     "api/waitlist.js": {
       "maxDuration": 10
