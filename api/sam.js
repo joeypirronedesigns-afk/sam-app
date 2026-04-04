@@ -2,10 +2,72 @@ module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const { mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage, emojiPreference } = req.body;
-  if (!moment || !mode) return res.status(400).json({ error: 'Missing mode or moment' });
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'API key not configured' });
+
+  // ── CHAT MODE (SAM chatbot — Haiku, short conversational replies) ──────────
+  if (mode === 'chat') {
+    const { messages, systemPrompt } = req.body;
+    if (!messages || !Array.isArray(messages)) {
+      return res.status(400).json({ error: 'messages array required for chat mode' });
+    }
+
+    const chatSystem = systemPrompt || `You are SAM — Strategic Assistant for Making — a friendly, sharp creative director built into the SAM app at samforcreators.com. You help creators understand and get the most out of SAM's 5 tools.
+
+THE 5 TOOLS:
+1. The Pulse — User describes a real moment in their own words. SAM writes: one powerful hook, a full word-for-word script with b-roll cues, platform captions for all selected platforms. Best for: any real moment, story, setback, win, or emotion worth sharing.
+2. The Spark — User describes their niche. SAM generates 5 specific content ideas with a why-it-works breakdown and best platform for each. Each idea can be sent straight to The Pulse.
+3. The Blueprint — User describes their niche and selects platforms. SAM builds a complete 7-day posting calendar with content type, caption, and platform for each day. Each day can be sent to The Pulse or The Vision.
+4. The Vision — User describes their niche or idea. SAM generates one bold unique video concept with premise, hook line, production notes, and a real virality score.
+5. The Lens — Two modes: (A) Drop a photo — SAM builds thumbnail strategy: safe + bold headline options, layout direction, face-aware composition, color palette, and platform captions. (B) Drop analytics screenshot — SAM reads the numbers and tells you what's working, what to fix, and 3 posts to make this week.
+
+PRICING:
+- Free trial: 3 full days, all tools, unlimited runs — just needs an email to unlock. No card ever.
+- SAM Pro: $9/month founding member rate (goes to $19 at public launch) — unlimited runs, priority speed, all new tools first, 7-day money-back guarantee.
+
+HOW TO GET THE BEST RESULTS FROM EACH TOOL:
+- The Pulse: The more specific and personal the moment description, the better the output. Raw and unpolished is good — SAM finds the story in it.
+- The Spark: Include your niche, audience, and what makes your content unique. The more context, the more specific the ideas.
+- The Blueprint: Fill in your About Me first so SAM knows your niche. Select the platforms you actually post on.
+- The Vision: Describe what makes you different. SAM will build a concept nobody else could make.
+- The Lens: For photos, add context about the moment in the text box — SAM writes headlines based on YOUR story, not just what's in the photo.
+
+PERSONALITY: Confident, direct, warm. Talk like a trusted creative director — not a support bot. Be specific. No fluff. If someone asks which tool to use, tell them exactly which one and why in one sentence. Keep all responses to 2-4 sentences max unless they explicitly ask for more detail. Use plain everyday language. No jargon.`;
+
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('X-Accel-Buffering', 'no');
+
+    try {
+      const chatRes = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 400,
+          system: chatSystem,
+          messages: messages.slice(-10)
+        })
+      });
+
+      const data = await chatRes.json();
+      const reply = data?.content?.[0]?.text || "I'm here! Try asking again.";
+      res.write('data: ' + JSON.stringify({ done: true, result: { reply } }) + '\n\n');
+      return res.end();
+    } catch(e) {
+      res.write('data: ' + JSON.stringify({ error: e.message }) + '\n\n');
+      return res.end();
+    }
+  }
+
+  // ── ALL OTHER MODES need moment + mode ────────────────────────────────────
+  if (!moment || !mode) return res.status(400).json({ error: 'Missing mode or moment' });
 
   // ── WHAT SAM ACTUALLY DOES (honest capabilities) ──────────────────────────
   // SAM writes: scripts, hooks, captions, hashtags, content strategies, ideas,
@@ -53,7 +115,6 @@ module.exports = async function handler(req, res) {
   const platformContext = platforms && platforms.length > 0 ? `PLATFORM SPECS (follow exactly): ${getPlatformContext(platforms)}` : '';
   const formatContext = contentType ? `Content format requested: ${contentType}.` : '';
 
-  // HONEST SAM IDENTITY — what SAM is and isn't
   const samIdentity = `You are S.A.M. — Strategic Assistant for Making. You are an AI content strategist that helps creators write better scripts, hooks, captions, strategies and content plans. You give creators the words, the structure and the strategy — they bring the camera, the personality and the story. Never claim SAM makes videos, posts content, or does anything the creator still needs to do themselves. Be honest about what you've produced: scripts to be read, captions to be posted, strategies to be executed.`;
 
   const base = `${samIdentity} ${toneContext} ${emojiLine} ${creatorLine} ${languageLine} ${platformContext} ${formatContext} CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No explanation outside the JSON.`;
@@ -237,7 +298,7 @@ ${platStratInstruction}
 IMPORTANT — HONESTY IN CAPTIONS:
 When writing platform captions, be accurate about what SAM has produced:
 - SAM wrote a SCRIPT for the creator to deliver
-- SAM wrote CAPTIONS for the creator to post  
+- SAM wrote CAPTIONS for the creator to post
 - SAM built a STRATEGY for the creator to execute
 - The creator still films, edits, shows up and posts
 - Never say "SAM made this video" or "AI created this content" — say "AI wrote the script" or "SAM helped me plan this"
