@@ -212,63 +212,53 @@ ${wizContext}
 SCRIPT STYLE: ${scriptStyle}
 ${paceNote}
 
-YOUR JOB — Build a complete content playbook. Return ONLY this JSON:
+YOUR JOB — Build a complete content playbook. Be concise but powerful. Return ONLY this JSON with NO additional text:
 
 {
-  "diagnosis": "2-3 sentences on the emotional core of this moment and why it will resonate. Be specific to their actual story — no generic statements.",
-  "diagnosis_why": "1-2 sentences on why this diagnosis matters for how they should frame and deliver this story.",
+  "diagnosis": "2 sentences max — the emotional core and why it resonates. Specific to their story.",
   "story_architecture": {
-    "opening": "The exact moment or line that opens — stops the scroll",
-    "setup": "The context that makes people care — why this matters",
-    "risk": "The stakes — what could go wrong or what was hard",
-    "turn": "The moment everything changed",
-    "payoff": "The emotional resolution — what they feel at the end",
-    "cta": "Exactly what you want them to do — specific and honest"
+    "opening": "10 words max — the scroll-stopping opener",
+    "setup": "10 words max — why people should care",
+    "risk": "10 words max — the stakes",
+    "turn": "10 words max — the moment things changed",
+    "payoff": "10 words max — the emotional resolution",
+    "cta": "10 words max — what you want them to do"
   },
-  "hook": "SAM's single best opening line — specific to their story, creates an open loop",
-  "hook_why": "Why this hook works for this specific story and audience",
-  "full_script": "COMPLETE word-for-word script in the style specified. Properly sectioned with [BEAT] labels. Include pacing notes in (parentheses).",
-  "narration_script": "If delivery is narration — write the complete narration version here. Otherwise null.",
-  "pacing_note": "One specific delivery tip for how to perform this script",
-  "visual_note": "What to show on screen in the first 3 seconds",
-  "b_roll": ["specific shot 1", "specific shot 2", "specific shot 3", "specific shot 4"],
+  "hook": "The single best opening line — under 15 words. Creates an open loop.",
+  "hook_why": "One sentence — why this hook works.",
+  "full_script": "Complete script — 150 words max. Use [BEAT] labels. Natural speech rhythm.",
+  "narration_script": "If narration delivery — 150 word narration version. Otherwise null.",
+  "pacing_note": "One sentence delivery tip.",
+  "b_roll": ["shot 1", "shot 2", "shot 3"],
   "platform_strategies": [
     {
       "platform": "platform name",
-      "strategy": "one specific honest posting tip for this platform",
-      "caption": "ready-to-post caption respecting character limit",
-      "hashtags": "hashtags"
+      "strategy": "One sentence posting tip specific to this platform and story.",
+      "caption": "Ready-to-post caption at correct character limit.",
+      "hashtags": "#tag1 #tag2 #tag3"
     }
   ],
   "audience_profile": {
-    "who": "Specific description of who this person is — age, values, what drives them. Not a demographic — a real person.",
-    "where": "Where they spend their time online and why",
-    "what_they_want": "What they actually want from this creator — not just content, the feeling",
-    "what_hooks_them": "Specific types of content, hooks and moments that make them stop scrolling",
-    "voice": "How to talk to them — tone, vocabulary, what to avoid",
-    "why": "Why SAM sees this audience for this creator — specific to their story and what they shared"
+    "who": "2 sentences — who they really are. Values, what drives them.",
+    "where": "1 sentence — where they spend time online and why.",
+    "what_they_want": "1 sentence — what they want from this creator.",
+    "what_hooks_them": "1 sentence — what makes them stop scrolling.",
+    "voice": "1 sentence — tone and vocabulary to use with them.",
+    "why": "2 sentences — why SAM sees this audience for this specific creator."
   },
-  "thumbnail_strategy": ${hasPhoto ? `{
-    "headline_safe": "Safe headline in creator voice — 5-8 words",
-    "subtext_safe": "3-5 word supporting line",
-    "headline_bold": "Bold scroll-stopping headline — 3-6 words",
-    "subtext_bold": "3-5 word contrast line",
-    "layout_direction": "Where to put text relative to face. Which template style. Which accent color and why.",
-    "face_side": "left OR right OR center"
-  }` : 'null'},
   "lead_magnet": {
-    "title": "The exact title of the free resource — something the creator's audience would genuinely want",
-    "why": "Why this specific resource for this specific audience. What problem does it solve. Why they'd want it.",
+    "title": "Free resource title — specific and compelling",
+    "why": "2 sentences — why this resource for this audience.",
     "items": [
-      {"heading": "Point 1 heading", "body": "Full explanation — real, specific, useful. Not a placeholder. Something the audience actually learns from."},
-      {"heading": "Point 2 heading", "body": "Full explanation — honest and specific to this creator's real experience."},
-      {"heading": "Point 3 heading", "body": "Full explanation."},
-      {"heading": "Point 4 heading", "body": "Full explanation."},
-      {"heading": "Point 5 heading", "body": "Full explanation — end with something that makes them want to follow the creator for more."}
+      {"heading": "Point 1", "body": "2 sentences — real, specific, useful to their audience."},
+      {"heading": "Point 2", "body": "2 sentences — honest and specific to creator experience."},
+      {"heading": "Point 3", "body": "2 sentences."},
+      {"heading": "Point 4", "body": "2 sentences."},
+      {"heading": "Point 5", "body": "2 sentences — ends with reason to follow creator."}
     ],
-    "comment_response": "The exact comment the creator posts in replies to distribute this resource — conversational, not salesy. Under 280 chars."
+    "comment_response": "Under 150 chars. Conversational. Not salesy."
   },
-  "focus_directive": "One sentence. Plain English. What to do today — not tomorrow. No inspiration quote. The actual next right move."
+  "focus_directive": "One sentence. The single most important thing to do today."
 }
 
 CRITICAL RULES:
