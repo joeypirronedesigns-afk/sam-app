@@ -1169,27 +1169,7 @@
     .output-pill { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 8px; }
 
     /* Mobile hero title — left aligned like desktop */
-    .hero-mobile h1 {
-      font-family: 'Sora', sans-serif;
-      font-size: clamp(28px, 7vw, 40px);
-      font-weight: 700;
-      line-height: 1.1;
-      letter-spacing: -0.03em;
-      color: var(--text);
-      margin-bottom: 14px;
-    }
-    .hero-mobile h1 em {
-      font-style: normal;
-      background: linear-gradient(135deg, #F472B6, #A78BFA, #38BDF8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .hero-mobile .hero-sub {
-      font-size: 15px;
-      line-height: 1.6;
-      color: var(--text2);
-    }
+
 
 
     /* ── PRO PAGE ── */
@@ -2985,6 +2965,8 @@ function openTool(tool) {
   currentTool = tool;
   document.getElementById('homeView').style.display = 'none';
   document.getElementById('heroSection').style.display = 'none';
+  const hd = document.getElementById('heroDesktop');
+  if (hd) hd.style.display = 'none';
   document.getElementById('heroDesktop').style.display = 'none';
   document.querySelectorAll('.tool-wrap').forEach(w => w.classList.remove('active'));
   document.getElementById('tool-' + tool).classList.add('active');
@@ -2998,7 +2980,7 @@ function openTool(tool) {
 }
 function goHome() {
   currentTool = null;
-  document.getElementById('heroSection').style.display = 'block';
+  document.getElementById('heroSection').style.display = '';
   document.getElementById('heroDesktop').style.display = '';
   document.getElementById('homeView').style.display = 'block';
   document.querySelectorAll('.tool-wrap').forEach(w => w.classList.remove('active'));
