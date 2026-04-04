@@ -3362,22 +3362,510 @@
     .playbook-copy-btn:hover { color: var(--text2); border-color: var(--border2); }
     .playbook-copy-btn.copied { color: #34D399; border-color: rgba(52,211,153,0.3); }
 
+    .no-print { }
     @media print {
-      .wizard-progress-wrap,
-      .wizard-nav,
-      .playbook-print-bar,
-      .desktop-hint,
-      nav { display: none !important; }
-      .wizard-page { position: relative !important; overflow: visible !important; }
-      .wizard-playbook { display: block !important; }
-      body { background: white !important; color: black !important; }
-      .playbook-cover-title, .playbook-section-title,
-      .wizard-question, .playbook-hook { color: black !important; }
-      .playbook-card, .playbook-arch-card,
-      .playbook-lead-magnet, .playbook-focus {
-        border: 1px solid #ddd !important;
-        background: #f9f9f9 !important;
+      .no-print { display: none !important; }
+
+      /* Hide everything except playbook */
+      .wizard-progress-wrap, .wizard-nav, .playbook-print-bar,
+      .desktop-hint, nav, .wizard-step:not(#wiz-12),
+      .wizard-advanced-link, #wizardLoader,
+      .wl-overlay, .trial-overlay, .paywall-overlay,
+      .setup-modal, .pro-page, footer,
+      .chatbot-bubble, .chatbot-panel { display: none !important; }
+
+      /* Page setup */
+      @page {
+        size: A4;
+        margin: 15mm 18mm;
       }
+      @page :first { margin-top: 0; }
+
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+      body {
+        background: #ffffff !important;
+        color: #1a1a2e !important;
+        font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif !important;
+        font-size: 11pt !important;
+        line-height: 1.6 !important;
+      }
+
+      .wizard-page {
+        position: relative !important;
+        overflow: visible !important;
+        background: white !important;
+      }
+
+      .wizard-body { padding: 0 !important; max-width: 100% !important; }
+      .wizard-playbook { display: block !important; }
+
+      /* ── PLAYBOOK COVER ── */
+      .playbook-cover {
+        background: linear-gradient(135deg, #09080F 0%, #1a0a2e 50%, #0d0527 100%) !important;
+        color: white !important;
+        padding: 60px 48px !important;
+        margin: -15mm -18mm 0 !important;
+        page-break-after: always !important;
+        min-height: 200mm !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        border-bottom: none !important;
+      }
+
+      .playbook-cover-badge {
+        background: rgba(167,139,250,0.2) !important;
+        border: 1px solid rgba(167,139,250,0.4) !important;
+        color: #A78BFA !important;
+        padding: 6px 16px !important;
+        border-radius: 30px !important;
+        display: inline-block !important;
+        font-size: 9pt !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.15em !important;
+        text-transform: uppercase !important;
+        margin-bottom: 24px !important;
+      }
+
+      .playbook-cover-title {
+        font-family: 'Sora', 'Inter', Arial, sans-serif !important;
+        font-size: 42pt !important;
+        font-weight: 800 !important;
+        color: #ffffff !important;
+        line-height: 1.05 !important;
+        letter-spacing: -0.02em !important;
+        margin-bottom: 20px !important;
+      }
+
+      .playbook-cover-title em {
+        color: #A78BFA !important;
+        font-style: normal !important;
+      }
+
+      .playbook-cover-meta {
+        font-size: 11pt !important;
+        color: rgba(240,236,255,0.6) !important;
+        margin-top: 32px !important;
+        padding-top: 24px !important;
+        border-top: 1px solid rgba(255,255,255,0.1) !important;
+      }
+
+      /* ── SECTION LAYOUT ── */
+      .playbook-section {
+        page-break-inside: avoid !important;
+        margin-bottom: 24pt !important;
+        padding-bottom: 24pt !important;
+        border-bottom: 1px solid #e8e4f0 !important;
+      }
+
+      .playbook-section:last-child { border-bottom: none !important; }
+
+      .playbook-section-num {
+        font-size: 8pt !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.15em !important;
+        text-transform: uppercase !important;
+        color: #A78BFA !important;
+        margin-bottom: 4pt !important;
+      }
+
+      .playbook-section-title {
+        font-family: 'Sora', 'Inter', Arial, sans-serif !important;
+        font-size: 18pt !important;
+        font-weight: 700 !important;
+        color: #09080F !important;
+        margin-bottom: 12pt !important;
+        letter-spacing: -0.01em !important;
+      }
+
+      /* ── CARDS ── */
+      .playbook-card {
+        background: #f7f5ff !important;
+        border: 1px solid #e0d9f7 !important;
+        border-radius: 8pt !important;
+        padding: 14pt 16pt !important;
+        margin-bottom: 8pt !important;
+      }
+
+      .playbook-card-label {
+        font-size: 7.5pt !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.1em !important;
+        text-transform: uppercase !important;
+        color: #7C3AED !important;
+        margin-bottom: 6pt !important;
+      }
+
+      .playbook-card-text {
+        font-size: 10.5pt !important;
+        color: #1a1a2e !important;
+        line-height: 1.65 !important;
+      }
+
+      /* ── HOOK ── */
+      .playbook-hook {
+        background: linear-gradient(135deg, rgba(109,40,217,0.08), rgba(244,114,182,0.05)) !important;
+        border: 1px solid rgba(109,40,217,0.2) !important;
+        border-left: 4px solid #7C3AED !important;
+        border-radius: 0 8pt 8pt 0 !important;
+        padding: 16pt 20pt !important;
+        font-size: 16pt !important;
+        font-weight: 700 !important;
+        color: #09080F !important;
+        line-height: 1.3 !important;
+        margin-bottom: 10pt !important;
+      }
+
+      /* ── SCRIPT ── */
+      .playbook-script {
+        background: #fafafa !important;
+        border: 1px solid #e8e4f0 !important;
+        border-radius: 8pt !important;
+        padding: 16pt !important;
+        font-size: 10pt !important;
+        line-height: 2 !important;
+        color: #1a1a2e !important;
+        white-space: pre-wrap !important;
+      }
+
+      .script-beat {
+        color: #7C3AED !important;
+        font-weight: 700 !important;
+        font-size: 8pt !important;
+        letter-spacing: 0.08em !important;
+        display: block !important;
+        margin-top: 12pt !important;
+        margin-bottom: 4pt !important;
+      }
+
+      /* ── STORY ARCHITECTURE ── */
+      .playbook-arch-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 8pt !important;
+      }
+
+      .playbook-arch-card {
+        background: #f7f5ff !important;
+        border: 1px solid #e0d9f7 !important;
+        border-radius: 6pt !important;
+        padding: 10pt 12pt !important;
+      }
+
+      .arch-opening { border-top: 2.5px solid #38BDF8 !important; }
+      .arch-setup   { border-top: 2.5px solid #A78BFA !important; }
+      .arch-risk    { border-top: 2.5px solid #F472B6 !important; }
+      .arch-turn    { border-top: 2.5px solid #FBBF24 !important; }
+      .arch-payoff  { border-top: 2.5px solid #34D399 !important; }
+      .arch-cta     { border-top: 2.5px solid #F472B6 !important; }
+
+      .playbook-arch-beat {
+        font-size: 7.5pt !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.08em !important;
+        text-transform: uppercase !important;
+        color: #666 !important;
+        margin-bottom: 4pt !important;
+      }
+
+      .playbook-arch-text {
+        font-size: 10pt !important;
+        color: #1a1a2e !important;
+        line-height: 1.5 !important;
+      }
+
+      /* ── AUDIENCE PROFILE ── */
+      .wizard-audience-card {
+        background: #f7f5ff !important;
+        border: 1px solid #e0d9f7 !important;
+        border-radius: 8pt !important;
+        padding: 12pt 16pt !important;
+      }
+
+      .wizard-audience-row {
+        border-bottom: 1px solid #e8e4f0 !important;
+        padding: 8pt 0 !important;
+        display: flex !important;
+        gap: 12pt !important;
+      }
+
+      .wizard-audience-key {
+        font-size: 8pt !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.08em !important;
+        text-transform: uppercase !important;
+        color: #7C3AED !important;
+        min-width: 60pt !important;
+        padding-top: 2pt !important;
+      }
+
+      .wizard-audience-val {
+        font-size: 10pt !important;
+        color: #1a1a2e !important;
+        line-height: 1.55 !important;
+      }
+
+      /* ── PLATFORM STRATEGY ── */
+      .platform-strategy {
+        background: #f7f5ff !important;
+        border: 1px solid #e0d9f7 !important;
+        border-radius: 8pt !important;
+        padding: 12pt 14pt !important;
+        margin-bottom: 8pt !important;
+        page-break-inside: avoid !important;
+      }
+
+      .ps-header { display: flex !important; align-items: center !important; margin-bottom: 6pt !important; }
+      .ps-name { font-weight: 700 !important; font-size: 11pt !important; color: #09080F !important; }
+      .ps-caption { font-size: 10pt !important; color: #1a1a2e !important; line-height: 1.6 !important; margin-bottom: 4pt !important; }
+      .ps-hashtags { font-size: 9pt !important; color: #7C3AED !important; }
+
+      /* Hide copy buttons in print */
+      .copy-btn, .playbook-copy-btn, .hook-retry,
+      .playbook-copy-btn, button.copy-btn { display: none !important; }
+
+      /* ── LEAD MAGNET — NEW PAGE, WHITE DESIGN ── */
+      .playbook-lead-magnet {
+        page-break-before: always !important;
+        background: #ffffff !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: -15mm -18mm !important;
+        padding: 20mm 18mm !important;
+      }
+
+      .playbook-lead-magnet::before { display: none !important; }
+
+      .playbook-lead-badge {
+        background: #FEF3C7 !important;
+        border: 1px solid #FCD34D !important;
+        color: #92400E !important;
+        padding: 5pt 12pt !important;
+        border-radius: 20pt !important;
+        display: inline-block !important;
+        font-size: 8pt !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.1em !important;
+        text-transform: uppercase !important;
+        margin-bottom: 16pt !important;
+      }
+
+      .playbook-lead-title {
+        font-family: 'Sora', 'Inter', Arial, sans-serif !important;
+        font-size: 28pt !important;
+        font-weight: 800 !important;
+        color: #09080F !important;
+        line-height: 1.1 !important;
+        margin-bottom: 16pt !important;
+        letter-spacing: -0.02em !important;
+      }
+
+      .playbook-lead-why {
+        background: #f7f5ff !important;
+        border: none !important;
+        border-left: 3px solid #7C3AED !important;
+        padding: 12pt 16pt !important;
+        border-radius: 0 6pt 6pt 0 !important;
+        font-size: 10pt !important;
+        color: #333 !important;
+        line-height: 1.65 !important;
+        margin-bottom: 20pt !important;
+      }
+
+      .playbook-lead-items { gap: 10pt !important; }
+
+      .playbook-lead-item {
+        background: #fafafa !important;
+        border: 1px solid #e8e4f0 !important;
+        border-radius: 8pt !important;
+        padding: 12pt 14pt !important;
+        page-break-inside: avoid !important;
+      }
+
+      .playbook-lead-num {
+        font-size: 20pt !important;
+        font-weight: 800 !important;
+        color: #7C3AED !important;
+        min-width: 24pt !important;
+      }
+
+      .playbook-lead-comment {
+        background: #FEF3C7 !important;
+        border: 1.5px solid #FCD34D !important;
+        border-radius: 8pt !important;
+        padding: 12pt 16pt !important;
+        margin-top: 16pt !important;
+        page-break-inside: avoid !important;
+      }
+
+      .playbook-lead-comment-label {
+        font-size: 8pt !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.1em !important;
+        text-transform: uppercase !important;
+        color: #92400E !important;
+        margin-bottom: 6pt !important;
+      }
+
+      .playbook-lead-comment-text {
+        font-size: 11pt !important;
+        color: #1a1a2e !important;
+        line-height: 1.6 !important;
+        font-style: italic !important;
+      }
+
+      /* ── FOCUS DIRECTIVE ── */
+      .playbook-focus {
+        background: linear-gradient(135deg, rgba(109,40,217,0.08), rgba(244,114,182,0.05)) !important;
+        border: 1.5px solid rgba(109,40,217,0.2) !important;
+        border-radius: 8pt !important;
+        padding: 16pt 20pt !important;
+      }
+
+      .playbook-focus-eyebrow {
+        font-size: 8pt !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.15em !important;
+        text-transform: uppercase !important;
+        color: #7C3AED !important;
+        margin-bottom: 6pt !important;
+      }
+
+      .playbook-focus-text {
+        font-size: 14pt !important;
+        font-weight: 700 !important;
+        color: #09080F !important;
+        line-height: 1.4 !important;
+      }
+
+      /* ── WIZARD WHY BLOCKS ── */
+      .wizard-why {
+        background: #f7f5ff !important;
+        border-left: 3px solid #A78BFA !important;
+        border-radius: 0 6pt 6pt 0 !important;
+        padding: 10pt 14pt !important;
+        font-size: 9.5pt !important;
+        color: #333 !important;
+        line-height: 1.65 !important;
+        margin-bottom: 10pt !important;
+      }
+
+      /* SAM footer on each page */
+      .wizard-playbook::after {
+        content: 'Built by S.A.M. — Strategic Assistant for Making · samforcreators.com';
+        display: block !important;
+        text-align: center !important;
+        font-size: 8pt !important;
+        color: #999 !important;
+        margin-top: 30pt !important;
+        padding-top: 12pt !important;
+        border-top: 1px solid #eee !important;
+      }
+    }
+
+
+    /* ── BRAND PROFILE ── */
+    .brand-upload-zone {
+      border: 2px dashed var(--border2);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--surface);
+      position: relative;
+    }
+    .brand-upload-zone:hover { border-color: var(--spark); background: var(--surface2); }
+    .brand-upload-zone.has-logo { border-style: solid; border-color: rgba(167,139,250,0.4); }
+    .brand-logo-preview {
+      max-height: 80px;
+      max-width: 200px;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+    .brand-color-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .brand-color-swatch {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .brand-color-swatch.selected {
+      border-color: var(--text);
+      transform: scale(1.15);
+    }
+    .brand-text-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: #1a1428 !important;
+      border: 1px solid rgba(167,139,250,0.3);
+      border-radius: var(--radius);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px !important;
+      color: #F0ECFF !important;
+      -webkit-text-fill-color: #F0ECFF !important;
+      margin-top: 8px;
+      -webkit-appearance: none;
+    }
+    .brand-text-input:focus {
+      outline: none;
+      border-color: rgba(167,139,250,0.6);
+    }
+    .pro-lock {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--lens);
+      background: rgba(251,191,36,0.1);
+      border: 1px solid rgba(251,191,36,0.2);
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-left: 8px;
+    }
+
+    /* ── PRINT: WHITE LABEL HEADER ── */
+    @media print {
+      .wl-doc-header {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 0 0 16pt 0 !important;
+        margin-bottom: 20pt !important;
+        border-bottom: 2px solid var(--brand-color, #7C3AED) !important;
+      }
+      .wl-brand-logo {
+        max-height: 48pt !important;
+        max-width: 140pt !important;
+        object-fit: contain !important;
+      }
+      .wl-brand-name {
+        font-family: 'Sora', Arial, sans-serif !important;
+        font-size: 16pt !important;
+        font-weight: 700 !important;
+        color: #09080F !important;
+      }
+      .wl-brand-handle {
+        font-size: 9pt !important;
+        color: #666 !important;
+      }
+      .wl-sam-credit {
+        font-size: 7pt !important;
+        color: #999 !important;
+        text-align: right !important;
+      }
+      .wl-sam-credit a { color: #7C3AED !important; }
     }
 
   </style>
@@ -5389,12 +5877,17 @@ if (document.readyState === 'loading') {
 // ══════════════════════════════════════════════════════════════════════════════
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
-const WIZARD_STEPS = ['entry','1','2','3','4','5','6','7','8','9','10','11','12'];
+const WIZARD_STEPS = ['entry','0','1','2','3','4','5','6','7','8','9','10','11','12'];
 let wizardCurrentStep = 'entry';
 let wizardActiveMic = null;
 
 const WS = {
   // The collected context
+  creatorType: null,     // personal / business / coach / maker / community / brand
+  brandName: null,       // their name or brand name
+  brandHandle: null,     // their handle or website
+  brandLogo: null,       // base64 logo
+  brandColor: '#7C3AED', // brand accent color
   storyType: null,       // moment / idea / plan / concept / analyse
   storyText: null,       // their raw story
   inputMethod: null,     // speak / type / photo
@@ -5486,7 +5979,7 @@ function showWizardStep(step) {
   // Update progress
   if (!isEntry) {
     const stepNum = parseInt(step);
-    const total = 11;
+    const total = 12;
     const pct = Math.round((stepNum / total) * 100);
     document.getElementById('wizardProgressFill').style.width = pct + '%';
     document.getElementById('wizardStepLabel').textContent = 'Step ' + stepNum + ' of ' + total;
@@ -5598,7 +6091,7 @@ function startWizard(mode) {
     saveWizardState();
   }
   document.getElementById('wizardProgressWrap').style.display = 'block';
-  showWizardStep('1');
+  showWizardStep('0');
 }
 
 // ── SELECTIONS ────────────────────────────────────────────────────────────────
@@ -5610,6 +6103,7 @@ function selectWizardChoice(btn, stepId, value) {
 
   // Save value
   const map = {
+    wiz0: 'creatorType',
     wiz1: 'storyType',
     wiz3: 'reflection',
     wiz4: 'delivery',
@@ -5958,6 +6452,28 @@ function toggleWizardMic2() {
 }
 
 // ── AUDIENCE DIAGNOSIS ────────────────────────────────────────────────────────
+function handleBrandLogo(e) {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    WS.brandLogo = ev.target.result; // full data URL
+    saveWizardState();
+    document.getElementById('brandLogoImg').src = ev.target.result;
+    document.getElementById('brandLogoPreview').style.display = 'block';
+    document.getElementById('brandLogoEmpty').style.display = 'none';
+    document.getElementById('brandLogoZone').classList.add('has-logo');
+  };
+  reader.readAsDataURL(file);
+}
+
+function selectBrandColor(swatch, color) {
+  document.querySelectorAll('.brand-color-swatch').forEach(s => s.classList.remove('selected'));
+  swatch.classList.add('selected');
+  WS.brandColor = color;
+  saveWizardState();
+}
+
 async function generateStoryReflection() {
   const diagEl = document.getElementById('wiz3diagText');
   const nextBtn = document.getElementById('wizardNextBtn');
@@ -6075,6 +6591,7 @@ async function buildPlaybook() {
   ].filter(Boolean).join(', ');
 
   const context = `
+CREATOR TYPE: ${WS.creatorType || 'personal brand'} — ${WS.brandName || ''} ${WS.brandHandle || ''}
 DELIVERY STYLE: ${WS.delivery || 'on camera'}
 SPEAKING PACE: ${WS.pace || 'natural'}  
 CONTENT TYPE: ${WS.storyType || 'moment'}
@@ -6287,11 +6804,32 @@ function renderPlaybook(data) {
   // ⑧ AUDIENCE RESOURCE — THE LEAD MAGNET ⭐
   if (data.lead_magnet) {
     const lm = data.lead_magnet;
+    const brandName = WS.brandName || 'Your Brand';
+    const brandHandle = WS.brandHandle || '';
+    const brandLogo = WS.brandLogo || null;
+    const brandColor = WS.brandColor || '#7C3AED';
+
+    // Brand header HTML for the lead magnet document
+    const brandHeader = `<div class="wl-doc-header" style="display:flex;align-items:center;justify-content:space-between;padding-bottom:16px;margin-bottom:20px;border-bottom:2px solid ${brandColor};">
+      <div style="display:flex;align-items:center;gap:12px;">
+        ${brandLogo ? `<img src="${brandLogo}" style="max-height:48px;max-width:120px;object-fit:contain;border-radius:6px;" />` : `<div style="width:40px;height:40px;border-radius:8px;background:${brandColor};display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:16px;">${brandName.charAt(0)}</div>`}
+        <div>
+          <div style="font-family:'Sora',Arial,sans-serif;font-size:15px;font-weight:700;color:#09080F;">${brandName}</div>
+          ${brandHandle ? `<div style="font-size:11px;color:#666;">${brandHandle}</div>` : ''}
+        </div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:8px;color:#999;line-height:1.5;">Built with S.A.M.<br/><span style="color:${brandColor};">samforcreators.com</span></div>
+      </div>
+    </div>`;
+
     html += `<div class="playbook-section">
       <div class="playbook-section-num">Section 08</div>
       <div class="playbook-section-title">Your audience resource</div>
       <div class="wizard-why" style="margin-bottom:16px;">This is the part no other tool builds. SAM created a complete, ready-to-share resource based on what it learned about you and your audience. Give this away for free. It builds trust faster than any piece of content alone.</div>
-      <div class="playbook-lead-magnet">
+      <div class="playbook-lead-magnet" data-brand-color="${brandColor}">
+        <div class="no-print">${brandHeader}</div>
+        <div style="display:none;" class="print-only-brand">${brandHeader}</div>
         <div class="playbook-lead-badge">⭐ Free resource for your audience</div>
         <div class="playbook-lead-title">${lm.title || 'Your Audience Resource'}</div>
         ${lm.why ? `<div class="playbook-lead-why"><strong>Why this works for your audience:</strong> ${lm.why}</div>` : ''}
@@ -6318,6 +6856,43 @@ function renderPlaybook(data) {
     <div class="playbook-focus">
       <div class="playbook-focus-eyebrow">Stop. Focus.</div>
       <div class="playbook-focus-text">${data.focus_directive || 'You have everything you need. The only thing left is to show up and do the work. Go.'}</div>
+    </div>
+  </div>
+
+  <!-- WHAT SAM CAN BUILD NEXT -->
+  <div class="playbook-section no-print" style="border:1px solid rgba(167,139,250,0.2);border-radius:var(--radius-xl);background:linear-gradient(135deg,rgba(109,40,217,0.08),rgba(244,114,182,0.05));padding:28px;">
+    <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--spark);margin-bottom:8px;">✦ What SAM can build next</div>
+    <div style="font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--text);margin-bottom:6px;letter-spacing:-0.01em;">SAM already knows your story.<br/>What do you want to create next?</div>
+    <div style="font-size:13px;color:var(--text3);margin-bottom:24px;line-height:1.6;">No starting over. No re-explaining. SAM uses everything from this session to build the next piece instantly.</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <button onclick="startNextTool('email')" style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);cursor:pointer;text-align:left;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="font-size:22px;">📧</div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;">Build my email welcome sequence</div>
+          <div style="font-size:12px;color:var(--text3);">3-5 emails for new subscribers — written in your voice, for your audience.</div>
+        </div>
+      </button>
+      <button onclick="startNextTool('week')" style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);cursor:pointer;text-align:left;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="font-size:22px;">📅</div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;">Plan my content week</div>
+          <div style="font-size:12px;color:var(--text3);">7 days of posts, captions and platform strategy — all built from this story.</div>
+        </div>
+      </button>
+      <button onclick="startNextTool('idea')" style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);cursor:pointer;text-align:left;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="font-size:22px;">⚡</div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;">Generate 5 content ideas</div>
+          <div style="font-size:12px;color:var(--text3);">Specific ideas built for your niche and audience — each one ready to run through SAM.</div>
+        </div>
+      </button>
+      <button onclick="startNextTool('concept')" style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);cursor:pointer;text-align:left;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="font-size:22px;">🎬</div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;">Build a bold video concept</div>
+          <div style="font-size:12px;color:var(--text3);">One unique concept nobody else has made — with hook, script and shot list.</div>
+        </div>
+      </button>
     </div>
   </div>`;
 
@@ -6360,6 +6935,63 @@ function wizCopyEl(btn) {
 
 function printPlaybook() {
   window.print();
+}
+
+function startNextTool(tool) {
+  const s = getSetup();
+  const story = WS.storyText || '';
+  const audience = [WS.audienceAge, WS.audienceGender, WS.audienceCustom].filter(Boolean).join(', ');
+  const platforms = WS.platforms || [];
+
+  if (tool === 'email') {
+    // Open email sequence in advanced tools with context pre-loaded
+    closeWizard();
+    // Pre-populate pulse with email newsletter format
+    setTimeout(() => {
+      openTool('pulse');
+      const ta = document.getElementById('pulseText');
+      if (ta) {
+        ta.value = 'Write a 3-email welcome sequence for new subscribers. My story: ' + story.slice(0, 500);
+        ta.dispatchEvent(new Event('input'));
+      }
+      // Select email newsletter format
+      document.querySelectorAll('#tool-pulse .opt-btn').forEach(btn => {
+        if (btn.dataset.v === 'Email newsletter') {
+          btn.click();
+        }
+      });
+    }, 300);
+  } else if (tool === 'week') {
+    closeWizard();
+    setTimeout(() => {
+      openTool('blueprint');
+      const ta = document.getElementById('blueprintText');
+      if (ta) {
+        ta.value = story.slice(0, 300);
+        ta.dispatchEvent(new Event('input'));
+      }
+    }, 300);
+  } else if (tool === 'idea') {
+    closeWizard();
+    setTimeout(() => {
+      openTool('spark');
+      const ta = document.getElementById('sparkText');
+      if (ta) {
+        ta.value = (s.niche || '') + ' ' + story.slice(0, 200);
+        ta.dispatchEvent(new Event('input'));
+      }
+    }, 300);
+  } else if (tool === 'concept') {
+    closeWizard();
+    setTimeout(() => {
+      openTool('vision');
+      const ta = document.getElementById('visionText');
+      if (ta) {
+        ta.value = story.slice(0, 300);
+        ta.dispatchEvent(new Event('input'));
+      }
+    }, 300);
+  }
 }
 
 function wizardNewPlaybook() {
@@ -6787,6 +7419,112 @@ function openWizardFromNav() {
         <button class="wizard-entry-ghost" onclick="closeWizard()">
           Open advanced tools instead
         </button>
+      </div>
+    </div>
+
+    <!-- ── STEP 0: BRAND PROFILE ── -->
+    <div class="wizard-step" id="wiz-0">
+      <div class="wizard-question">First — who's creating this?</div>
+      <div class="wizard-why">
+        SAM builds everything around who you are and how you show up. This shapes your hook, your script, your audience profile and your lead magnet. Pick the one that fits best right now — you can always update it.
+      </div>
+
+      <div class="wizard-choices" style="margin-bottom:24px;">
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz0','personal')" data-value="personal">
+          <div class="wizard-choice-icon">👤</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">Personal brand</div>
+            <div class="wizard-choice-desc">I am the content. My face, my story, my journey. People follow me — not a business name.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz0','business')" data-value="business">
+          <div class="wizard-choice-icon">🏪</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">Small business owner</div>
+            <div class="wizard-choice-desc">I create content to grow my business. Products, services, local or online.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz0','coach')" data-value="coach">
+          <div class="wizard-choice-icon">🎓</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">Coach or educator</div>
+            <div class="wizard-choice-desc">I teach something. I have knowledge or a framework people pay to learn from me.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz0','maker')" data-value="maker">
+          <div class="wizard-choice-icon">🛠️</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">Maker or creator</div>
+            <div class="wizard-choice-desc">I make things — art, music, products, crafts. The work is the content.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz0','community')" data-value="community">
+          <div class="wizard-choice-icon">📣</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">Community builder</div>
+            <div class="wizard-choice-desc">I am growing a movement or community around a shared interest or cause.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz0','brand')" data-value="brand">
+          <div class="wizard-choice-icon">🏢</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">I create for a brand</div>
+            <div class="wizard-choice-desc">I am a content creator or marketer making content for someone else's brand.</div>
+          </div>
+        </button>
+      </div>
+
+      <!-- Brand details -->
+      <div style="margin-top:8px;">
+        <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;">Your name or brand name</div>
+        <input type="text" class="brand-text-input" id="brandName" placeholder="e.g. Joey Pirrone · Studs to Sanctuary" oninput="WS.brandName=this.value;saveWizardState();" autocomplete="name" />
+      </div>
+
+      <div style="margin-top:16px;">
+        <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;">Your handle or website <span style="font-weight:400;text-transform:none;opacity:0.6;">(optional)</span></div>
+        <input type="text" class="brand-text-input" id="brandHandle" placeholder="e.g. @studstosanctuary · studstosanctuary.com" oninput="WS.brandHandle=this.value;saveWizardState();" />
+      </div>
+
+      <div style="margin-top:16px;">
+        <div style="display:flex;align-items:center;margin-bottom:6px;">
+          <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);">Your logo</div>
+          <span class="pro-lock">⭐ Pro</span>
+        </div>
+        <div class="brand-upload-zone" id="brandLogoZone" onclick="document.getElementById('brandLogoInput').click()">
+          <input type="file" id="brandLogoInput" accept="image/*" style="display:none;" onchange="handleBrandLogo(event)">
+          <div id="brandLogoEmpty">
+            <div style="font-size:28px;margin-bottom:8px;">🎨</div>
+            <div style="font-size:14px;font-weight:600;color:var(--text2);">Upload your logo</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:4px;">Appears on all your downloadable documents</div>
+          </div>
+          <div id="brandLogoPreview" style="display:none;">
+            <img id="brandLogoImg" class="brand-logo-preview" src="" />
+            <div style="font-size:12px;color:var(--spark);margin-top:8px;">✓ Logo ready — tap to change</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;">
+        <div style="display:flex;align-items:center;margin-bottom:8px;">
+          <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);">Brand accent color</div>
+          <span class="pro-lock">⭐ Pro</span>
+        </div>
+        <div class="brand-color-grid">
+          <div class="brand-color-swatch selected" style="background:#7C3AED;" onclick="selectBrandColor(this,'#7C3AED')" title="SAM Purple"></div>
+          <div class="brand-color-swatch" style="background:#0EA5E9;" onclick="selectBrandColor(this,'#0EA5E9')" title="Sky Blue"></div>
+          <div class="brand-color-swatch" style="background:#10B981;" onclick="selectBrandColor(this,'#10B981')" title="Emerald"></div>
+          <div class="brand-color-swatch" style="background:#F59E0B;" onclick="selectBrandColor(this,'#F59E0B')" title="Amber"></div>
+          <div class="brand-color-swatch" style="background:#EF4444;" onclick="selectBrandColor(this,'#EF4444')" title="Red"></div>
+          <div class="brand-color-swatch" style="background:#EC4899;" onclick="selectBrandColor(this,'#EC4899')" title="Pink"></div>
+          <div class="brand-color-swatch" style="background:#1a1a2e;" onclick="selectBrandColor(this,'#1a1a2e')" title="Dark"></div>
+          <div class="brand-color-swatch" style="background:#374151;" onclick="selectBrandColor(this,'#374151')" title="Slate"></div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;padding:14px 16px;background:rgba(167,139,250,0.06);border-radius:var(--radius);border:1px solid rgba(167,139,250,0.15);">
+        <div style="font-size:13px;color:var(--text3);line-height:1.6;">
+          ✦ Your logo and brand color appear on every document SAM creates for you — playbooks, lead magnets, audience resources. <strong style="color:var(--text2);">Small print at the bottom says "Built with S.A.M. · samforcreators.com"</strong> — so every document you share grows SAM too.
+        </div>
       </div>
     </div>
 
@@ -7382,8 +8120,10 @@ function openWizardFromNav() {
 
   <!-- PLAYBOOK PRINT BAR -->
   <div class="playbook-print-bar" id="playbookPrintBar" style="display:none;">
-    <button class="playbook-new-btn" onclick="wizardNewPlaybook()">+ New playbook</button>
-    <button class="playbook-print-btn" onclick="printPlaybook()">🖨️ Print / Save PDF</button>
+    <button class="playbook-new-btn" onclick="wizardNewPlaybook()">+ New</button>
+    <button class="playbook-print-btn" onclick="printPlaybook()" style="flex:1.2;">
+      🖨️ Save Complete Playbook PDF
+    </button>
   </div>
 
 </div><!-- end wizard-page -->
