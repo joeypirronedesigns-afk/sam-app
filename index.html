@@ -1735,16 +1735,31 @@
     .wl-input {
       width: 100%;
       padding: 14px 16px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border2);
-      border-radius: var(--radius);
+      background: #1a1428 !important;
+      border: 1px solid rgba(167,139,250,0.3);
+      border-radius: 14px;
       font-family: 'Inter', sans-serif;
       font-size: 16px !important;
-      color: var(--text);
-      transition: all 0.2s;
+      color: #F0ECFF !important;
+      -webkit-text-fill-color: #F0ECFF !important;
+      caret-color: #A78BFA;
+      transition: border-color 0.2s;
       -webkit-appearance: none;
-      -webkit-text-fill-color: var(--text);
-      border-radius: 14px;
+      appearance: none;
+    }
+    .wl-input:focus {
+      outline: none;
+      border-color: rgba(167,139,250,0.7);
+      background: #1e1830 !important;
+    }
+    /* Force override iOS autofill yellow/white background */
+    .wl-input:-webkit-autofill,
+    .wl-input:-webkit-autofill:hover,
+    .wl-input:-webkit-autofill:focus {
+      -webkit-box-shadow: 0 0 0 1000px #1a1428 inset !important;
+      -webkit-text-fill-color: #F0ECFF !important;
+      caret-color: #A78BFA;
+      border-color: rgba(167,139,250,0.5) !important;
     }
     .wl-input:focus { outline: none; border-color: rgba(167,139,250,0.6); background: rgba(255,255,255,0.07); }
     .wl-input::placeholder { color: var(--text3); }
@@ -1902,18 +1917,32 @@
 
     .trial-form { display: flex; flex-direction: column; gap: 10px; }
 
-    .trial-input {
+        .trial-input {
       width: 100%;
       padding: 14px 16px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(167,139,250,0.25);
-      border-radius: var(--radius);
+      background: #1a1428 !important;
+      border: 1px solid rgba(167,139,250,0.3);
+      border-radius: 14px;
       font-family: 'Inter', sans-serif;
-      font-size: 16px;
-      color: var(--text);
-      text-align: center;
-      transition: all 0.2s;
+      font-size: 16px !important;
+      color: #F0ECFF !important;
+      -webkit-text-fill-color: #F0ECFF !important;
+      caret-color: #A78BFA;
+      transition: border-color 0.2s;
       -webkit-appearance: none;
+      appearance: none;
+    }
+    .trial-input:focus {
+      outline: none;
+      border-color: rgba(167,139,250,0.7);
+      background: #1e1830 !important;
+    }
+    .trial-input:-webkit-autofill,
+    .trial-input:-webkit-autofill:hover,
+    .trial-input:-webkit-autofill:focus {
+      -webkit-box-shadow: 0 0 0 1000px #1a1428 inset !important;
+      -webkit-text-fill-color: #F0ECFF !important;
+      caret-color: #A78BFA;
     }
     .trial-input:focus { outline: none; border-color: rgba(167,139,250,0.6); background: rgba(255,255,255,0.07); }
     .trial-input::placeholder { color: var(--text3); }
@@ -2305,6 +2334,16 @@
     .chat-send-btn:hover { transform: scale(1.08); }
     .chat-send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
+
+    /* Global iOS autofill override */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    textarea:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0 1000px #0D0B16 inset !important;
+      -webkit-text-fill-color: #F0ECFF !important;
+      caret-color: #A78BFA;
+    }
   </style>
 </head>
 <body>
