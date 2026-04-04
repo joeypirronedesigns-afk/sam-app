@@ -239,31 +239,33 @@ YOUR JOB — Build a complete content playbook. Be concise but powerful. Return 
     }
   ],
   "audience_profile": {
-    "who": "2 sentences — who they really are. Values, what drives them.",
-    "where": "1 sentence — where they spend time online and why.",
-    "what_they_want": "1 sentence — what they want from this creator.",
-    "what_hooks_them": "1 sentence — what makes them stop scrolling.",
-    "voice": "1 sentence — tone and vocabulary to use with them.",
-    "why": "2 sentences — why SAM sees this audience for this specific creator."
+    "who": "2-3 sentences — who they really are in real life. Not just age/gender. Their actual life situation, values, what fills their days, what they care about deeply.",
+    "pain_points": "2 sentences — what frustrates or worries them. What problem are they quietly trying to solve?",
+    "secret_want": "1-2 sentences — what they secretly hope this creator gives them. Permission, validation, a shortcut, community?",
+    "where": "2 sentences — where they spend time online, WHY they go there, and how they consume content (scroll/watch/save/share).",
+    "what_hooks_them": "2 sentences — what makes them stop scrolling specifically. What format, tone, and opening line lands with them.",
+    "what_loses_them": "1 sentence — what kills their interest immediately. What feels fake, boring, or irrelevant to them.",
+    "voice": "2 sentences — exact tone, vocabulary level, and communication style to use. What they respond to vs. tune out.",
+    "why": "2-3 sentences — why SAM sees THIS specific audience for THIS specific creator based on their actual story and content."
   },
   "lead_magnet": {
-    "title": "Free resource title — specific and compelling",
-    "why": "2 sentences — why this resource for this audience.",
+    "title": "Free resource title — specific, compelling, clearly useful",
+    "why": "2 sentences — why this specific resource for this specific audience. What problem does it solve for them?",
     "items": [
-      {"heading": "Point 1", "body": "2 sentences — real, specific, useful to their audience."},
-      {"heading": "Point 2", "body": "2 sentences — honest and specific to creator experience."},
-      {"heading": "Point 3", "body": "2 sentences."},
-      {"heading": "Point 4", "body": "2 sentences."},
-      {"heading": "Point 5", "body": "2 sentences — ends with reason to follow creator."}
+      {"heading": "Point 1", "body": "2-3 sentences — real, specific, actionable. From the creator's genuine experience."},
+      {"heading": "Point 2", "body": "2-3 sentences — honest and grounded. No fluff."},
+      {"heading": "Point 3", "body": "2-3 sentences. Include something surprising or counterintuitive."},
+      {"heading": "Point 4", "body": "2-3 sentences. Address a common mistake or misconception."},
+      {"heading": "Point 5", "body": "2-3 sentences — ends with something that makes the audience feel seen and want to follow the creator."}
     ],
-    "comment_response": "Under 150 chars. Conversational. Not salesy."
+    "comment_response": "Under 150 chars. Conversational. Sounds like a real person wrote it, not a marketing bot."
   },
   "focus_directive": "One sentence. The single most important thing to do today."
 }
 
 CRITICAL RULES:
 - Return ONLY valid JSON. No markdown. No backticks. Nothing outside the JSON.
-- Keep ALL text fields concise — max 3 sentences per field unless it is full_script or lead_magnet items.
+- Keep ALL text fields concise — max 3 sentences per field unless it is full_script, lead_magnet items, or audience_profile fields.
 - full_script: max 300 words total.
 - lead_magnet items: each item body max 2 sentences. Real and specific but brief.
 - audience_profile fields: max 2 sentences each.
