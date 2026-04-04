@@ -7,6 +7,10 @@ const TIER_LIMITS = {
 };
 
 async function checkLimit(userId, tier, action) {
+  // Dev bypass — userId starting with 'dev-' skips all limits
+  if (userId && (userId.startsWith('dev-') || userId === 'dev@sam.com')) {
+    return { allowed: true };
+  }
   // Only attempt KV if env vars are present
   if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
     try {
