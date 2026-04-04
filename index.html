@@ -5748,6 +5748,9 @@ function checkTrialBeforeRun() {
 let runCount = 0;
 
 function guardedRunFn(originalFn) {
+  // Dev mode bypass — run sam_devmode() in console to enable
+  if (localStorage.getItem('sam_dev') === 'true') { originalFn(); return; }
+
   runCount++;
   const state = getTrialState();
 
@@ -5914,6 +5917,19 @@ async function sendChatMessage() {
     addChatMessage('sam', "One sec — give me another try! 💪");
   }
 }
+
+// ── DEV MODE ─────────────────────────────────────────────────────────────────
+// Run sam_devmode() in browser console to bypass all limits for testing
+window.sam_devmode = function() {
+  localStorage.setItem('sam_dev', 'true');
+  localStorage.setItem('sam-trial', JSON.stringify({ paid: true, email: 'dev@sam.com', trialStart: Date.now() }));
+  console.log('✅ SAM dev mode ON — all limits bypassed. Run sam_devmode_off() to disable.');
+};
+window.sam_devmode_off = function() {
+  localStorage.removeItem('sam_dev');
+  localStorage.removeItem('sam-trial');
+  console.log('✅ SAM dev mode OFF — normal user experience restored.');
+};
 
 // ── INIT ALL SYSTEMS ──────────────────────────────────────────────────────────
 // Wait for DOM to be fully ready before initializing
@@ -7123,7 +7139,6 @@ async function downloadPDF(type) {
   btn.disabled = true;
 
   try {
-    // Collect all playbook data from WS state + rendered DOM
     const s = getSetup();
     const pb = window._lastPlaybookData || {};
 
@@ -7137,7 +7152,9 @@ async function downloadPDF(type) {
 
     const userId = WS.email || WS.userId || 'anon-' + (localStorage.getItem('sam_uid') || Math.random().toString(36).slice(2));
     if (!localStorage.getItem('sam_uid')) localStorage.setItem('sam_uid', userId);
-    const tier = WS.tier || 'free';
+    // Dev mode bypass — set localStorage.sam_dev = 'true' to skip rate limits
+    const isDevMode = localStorage.getItem('sam_dev') === 'true';
+    const tier = isDevMode ? 'studio' : (WS.tier || 'free');
 
     const payload = {
       type,
