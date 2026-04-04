@@ -179,6 +179,104 @@ PERSONALITY: Confident, direct, warm. Talk like a trusted creative director — 
 
   try {
 
+
+    // ── PLAYBOOK MODE (wizard full build) ─────────────────────────────────────
+    if (mode === 'playbook') {
+      const wizContext = req.body.wizardContext || '';
+      const delivery   = req.body.delivery || 'camera';
+      const pace       = req.body.pace || 'natural';
+      const storyType  = req.body.storyType || 'moment';
+      const hasPhoto   = req.body.includeThumb && req.body.imageBase64;
+
+      const scriptStyle = {
+        camera:    'Write a punchy, conversational on-camera script. Direct, personal, natural rhythm.',
+        narration: 'Write a cinematic narration script. More visual, more descriptive. Written to be spoken over footage. Use pauses intentionally. Each sentence should earn its place.',
+        text:      'Write short punchy text blocks for on-screen text. 5-8 words max per line. No speaking required.',
+        mix:       'Write a mixed script — label [ON CAMERA] and [NARRATION] sections clearly. Creator chooses what to use.'
+      }[delivery] || '';
+
+      const paceNote = {
+        fast:    'Speaker pace: fast. Script should be tight and punchy — 60 seconds max. Cut anything that doesn't serve the story.',
+        natural: 'Speaker pace: natural. Script should breathe — 75-90 seconds. Room for a pause or two.',
+        slow:    'Speaker pace: deliberate. Script can go to 90-120 seconds. Pauses are intentional and emotional.'
+      }[pace] || '';
+
+      const playbookPrompt = `${samIdentity} ${toneContext} ${emojiLine} ${creatorLine} ${demographicsLine} ${languageLine}
+
+WIZARD CONTEXT:
+${wizContext}
+
+SCRIPT STYLE: ${scriptStyle}
+${paceNote}
+
+YOUR JOB — Build a complete content playbook. Return ONLY this JSON:
+
+{
+  "diagnosis": "2-3 sentences on the emotional core of this moment and why it will resonate. Be specific to their actual story — no generic statements.",
+  "diagnosis_why": "1-2 sentences on why this diagnosis matters for how they should frame and deliver this story.",
+  "story_architecture": {
+    "opening": "The exact moment or line that opens — stops the scroll",
+    "setup": "The context that makes people care — why this matters",
+    "risk": "The stakes — what could go wrong or what was hard",
+    "turn": "The moment everything changed",
+    "payoff": "The emotional resolution — what they feel at the end",
+    "cta": "Exactly what you want them to do — specific and honest"
+  },
+  "hook": "SAM's single best opening line — specific to their story, creates an open loop",
+  "hook_why": "Why this hook works for this specific story and audience",
+  "full_script": "COMPLETE word-for-word script in the style specified. Properly sectioned with [BEAT] labels. Include pacing notes in (parentheses).",
+  "narration_script": "If delivery is narration — write the complete narration version here. Otherwise null.",
+  "pacing_note": "One specific delivery tip for how to perform this script",
+  "visual_note": "What to show on screen in the first 3 seconds",
+  "b_roll": ["specific shot 1", "specific shot 2", "specific shot 3", "specific shot 4"],
+  "platform_strategies": [
+    {
+      "platform": "platform name",
+      "strategy": "one specific honest posting tip for this platform",
+      "caption": "ready-to-post caption respecting character limit",
+      "hashtags": "hashtags"
+    }
+  ],
+  "audience_profile": {
+    "who": "Specific description of who this person is — age, values, what drives them. Not a demographic — a real person.",
+    "where": "Where they spend their time online and why",
+    "what_they_want": "What they actually want from this creator — not just content, the feeling",
+    "what_hooks_them": "Specific types of content, hooks and moments that make them stop scrolling",
+    "voice": "How to talk to them — tone, vocabulary, what to avoid",
+    "why": "Why SAM sees this audience for this creator — specific to their story and what they shared"
+  },
+  "thumbnail_strategy": ${hasPhoto ? `{
+    "headline_safe": "Safe headline in creator voice — 5-8 words",
+    "subtext_safe": "3-5 word supporting line",
+    "headline_bold": "Bold scroll-stopping headline — 3-6 words",
+    "subtext_bold": "3-5 word contrast line",
+    "layout_direction": "Where to put text relative to face. Which template style. Which accent color and why.",
+    "face_side": "left OR right OR center"
+  }` : 'null'},
+  "lead_magnet": {
+    "title": "The exact title of the free resource — something the creator's audience would genuinely want",
+    "why": "Why this specific resource for this specific audience. What problem does it solve. Why they'd want it.",
+    "items": [
+      {"heading": "Point 1 heading", "body": "Full explanation — real, specific, useful. Not a placeholder. Something the audience actually learns from."},
+      {"heading": "Point 2 heading", "body": "Full explanation — honest and specific to this creator's real experience."},
+      {"heading": "Point 3 heading", "body": "Full explanation."},
+      {"heading": "Point 4 heading", "body": "Full explanation."},
+      {"heading": "Point 5 heading", "body": "Full explanation — end with something that makes them want to follow the creator for more."}
+    ],
+    "comment_response": "The exact comment the creator posts in replies to distribute this resource — conversational, not salesy. Under 280 chars."
+  },
+  "focus_directive": "One sentence. Plain English. What to do today — not tomorrow. No inspiration quote. The actual next right move."
+}
+
+CRITICAL RULES:
+- The lead_magnet must be a COMPLETE, REAL, USEFUL document — not an outline or placeholders. Write all 5 items in full.
+- The audience_profile must be specific to THIS creator's story — not generic demographics.
+- Every 'why' field must explain SAM's reasoning in plain English without jargon.
+- Return ONLY valid JSON. No markdown. No backticks. Nothing outside the JSON.`;
+
+      return await streamCall(playbookPrompt, moment, 4000);
+    }
+
     // ── CALENDAR ─────────────────────────────────────────────────────────────
     if (mode === 'calendar') {
       const platList = platforms && platforms.length > 0 ? platforms : ['TikTok', 'Instagram Reels', 'YouTube Shorts'];
