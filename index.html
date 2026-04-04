@@ -3922,7 +3922,13 @@ function initTrial() {
     updateTrialBadge(state); return;
   }
 
-  // New visitor — set 10-min timer
+  // New visitor — show teaser badge immediately, set 10-min email prompt
+  const badge = document.getElementById('trialBadge');
+  const badgeText = document.getElementById('trialBadgeText');
+  if (badge) {
+    badgeText.textContent = '✦ 3 days free';
+    badge.classList.add('show');
+  }
   if (!state.promptShown) {
     setTimeout(() => {
       const fresh = getTrialState();
@@ -4163,28 +4169,32 @@ async function sendChatMessage() {
   }));
 
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    // Route through our backend to avoid CORS — uses mode:'chat'
+    const r = await fetch('/api/sam', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 300,
-        system: SAM_SYSTEM_PROMPT,
-        messages: messages
+        mode: 'chat',
+        messages: messages,
+        systemPrompt: SAM_SYSTEM_PROMPT
       })
     });
 
-    const data = await response.json();
     hideChatTyping();
 
-    if (data.content && data.content[0]) {
-      addChatMessage('sam', data.content[0].text);
-    } else {
-      addChatMessage('sam', "Hmm, I hit a snag. Try asking again — I'm still here!");
+    if (!r.ok) {
+      addChatMessage('sam', "Hmm, one sec — try that again! 💪");
+      return;
     }
+
+    // Handle streaming response
+    const result = await readStream(r);
+    const reply = result?.reply || result?.content || result?.text || "I'm here! Try asking again.";
+    addChatMessage('sam', reply);
+
   } catch(e) {
     hideChatTyping();
-    addChatMessage('sam', "Connection hiccup — try again in a moment. I'm not going anywhere! 💪");
+    addChatMessage('sam', "One sec — give me another try! 💪");
   }
 }
 
