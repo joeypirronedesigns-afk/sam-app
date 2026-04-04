@@ -7307,16 +7307,20 @@ Return ONLY valid JSON:
   const allNextBtns = document.querySelectorAll('[onclick*="startNextTool"]');
   allNextBtns.forEach(b => b.style.opacity = '0.4');
 
-  // Find or create output area
+  // Find or create output area — reliably inserted before print bar
   let outputArea = document.getElementById('nextToolOutput');
   if (!outputArea) {
-    // Insert after the "what SAM can build next" section
-    const lastSection = document.querySelector('.playbook-section:last-of-type');
     outputArea = document.createElement('div');
     outputArea.id = 'nextToolOutput';
-    outputArea.style.cssText = 'margin-top:20px;';
-    if (lastSection && lastSection.parentNode) {
-      lastSection.parentNode.insertBefore(outputArea, lastSection.nextSibling);
+    outputArea.style.cssText = 'margin:20px 0.5rem 40px;padding:0 0.5rem;';
+    const printBar = document.getElementById('playbookPrintBar');
+    const wizOutput = document.getElementById('wizardOutput') || document.querySelector('.wizard-output');
+    if (printBar && printBar.parentNode) {
+      printBar.parentNode.insertBefore(outputArea, printBar);
+    } else if (wizOutput) {
+      wizOutput.appendChild(outputArea);
+    } else {
+      document.body.appendChild(outputArea);
     }
   }
 
@@ -8550,6 +8554,9 @@ function openWizardFromNav() {
       Continue →
     </button>
   </div>
+
+  <!-- NEXT TOOL OUTPUT — permanent container so DOM insertion always works -->
+  <div id="nextToolOutput" style="margin:0 0 8px;"></div>
 
   <!-- PLAYBOOK PRINT BAR -->
   <div class="playbook-print-bar" id="playbookPrintBar" style="display:none;flex-wrap:wrap;gap:8px;">
