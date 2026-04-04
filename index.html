@@ -2879,9 +2879,61 @@
       font-size: 14px;
       color: var(--text3);
       line-height: 1.6;
-      margin-bottom: 32px;
+      margin-bottom: 24px;
       font-style: italic;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
     }
+
+    /* Pulsing progress bar */
+    .wizard-loader-bar-wrap {
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto 32px;
+      background: var(--border);
+      border-radius: 4px;
+      height: 4px;
+      overflow: hidden;
+    }
+    .wizard-loader-bar {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #6D28D9, #A78BFA, #F472B6);
+      width: 0%;
+      transition: width 3.5s ease;
+      animation: none;
+    }
+    .wizard-loader-bar.indeterminate {
+      width: 100%;
+      background-size: 200% 100%;
+      background: linear-gradient(90deg, transparent 0%, #A78BFA 40%, #F472B6 60%, transparent 100%);
+      background-size: 200%;
+      animation: shimmer-bar 1.8s ease-in-out infinite;
+    }
+    @keyframes shimmer-bar {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+
+    /* Still building notice */
+    .wizard-still-building {
+      display: none;
+      margin-top: 24px;
+      padding: 12px 16px;
+      background: rgba(167,139,250,0.08);
+      border: 1px solid rgba(167,139,250,0.2);
+      border-radius: var(--radius);
+      font-size: 13px;
+      color: var(--text2);
+      max-width: 360px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
+      animation: fade-up 0.4s ease;
+    }
+    .wizard-still-building.show { display: block; }
+
     .wizard-loader-steps {
       display: flex;
       flex-direction: column;
@@ -2895,19 +2947,20 @@
       align-items: center;
       gap: 12px;
       font-size: 14px;
-      color: var(--text3);
-      transition: color 0.3s;
+      color: rgba(240,236,255,0.3);
+      transition: color 0.5s, opacity 0.5s;
+      opacity: 0.4;
     }
-    .wizard-loader-step.done { color: var(--text2); }
-    .wizard-loader-step.active { color: var(--text); }
+    .wizard-loader-step.done { color: var(--text2); opacity: 1; }
+    .wizard-loader-step.active { color: var(--text); opacity: 1; }
     .wizard-loader-dot {
       width: 20px; height: 20px;
       border-radius: 50%;
-      border: 1.5px solid var(--border2);
+      border: 1.5px solid rgba(255,255,255,0.1);
       display: flex; align-items: center; justify-content: center;
       font-size: 10px;
       flex-shrink: 0;
-      transition: all 0.3s;
+      transition: all 0.5s;
     }
     .wizard-loader-step.done .wizard-loader-dot {
       background: linear-gradient(135deg, #A78BFA, #F472B6);
@@ -2916,7 +2969,8 @@
     }
     .wizard-loader-step.active .wizard-loader-dot {
       border-color: var(--spark);
-      animation: pulse-dot 1s ease-in-out infinite;
+      background: rgba(167,139,250,0.15);
+      animation: pulse-dot 1.2s ease-in-out infinite;
     }
 
     /* Playbook */
@@ -3366,13 +3420,17 @@
     @media print {
       .no-print { display: none !important; }
 
-      /* Hide everything except playbook */
+      /* Hide EVERYTHING except playbook content */
       .wizard-progress-wrap, .wizard-nav, .playbook-print-bar,
       .desktop-hint, nav, .wizard-step:not(#wiz-12),
       .wizard-advanced-link, #wizardLoader,
       .wl-overlay, .trial-overlay, .paywall-overlay,
-      .setup-modal, .pro-page, footer,
-      .chatbot-bubble, .chatbot-panel { display: none !important; }
+      .setup-modal, footer, .chatbot-bubble, .chatbot-panel,
+      #homeView, #heroSection, #heroDesktop, .home-grid,
+      .tool-section, .tool-divider, .ambient,
+      #sheetOverlay, #bottomSheet, #paywallOverlay,
+      #trialOverlay, #wlOverlay, #proPage,
+      .chatbot-toggle, .no-print { display: none !important; }
 
       /* Page setup */
       @page {
@@ -6568,13 +6626,32 @@ const LOADER_STEPS = ['lstep-1','lstep-2','lstep-3','lstep-4','lstep-5','lstep-6
 async function buildPlaybook() {
   // Animate loader steps
   let stepIdx = 0;
+  let stillBuildingShown = false;
+
+  // Reset all steps to default state first
+  LOADER_STEPS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.classList.remove('active','done'); }
+  });
+
   const loaderInterval = setInterval(() => {
-    if (stepIdx > 0) document.getElementById(LOADER_STEPS[stepIdx-1])?.classList.replace('active','done');
+    // Mark previous as done
+    if (stepIdx > 0) {
+      document.getElementById(LOADER_STEPS[stepIdx-1])?.classList.replace('active','done');
+    }
+    // Activate next step
     if (stepIdx < LOADER_STEPS.length) {
       document.getElementById(LOADER_STEPS[stepIdx])?.classList.add('active');
       stepIdx++;
     }
-  }, 3500);
+    // Show "still building" notice after step 5
+    if (stepIdx >= 5 && !stillBuildingShown) {
+      stillBuildingShown = true;
+      setTimeout(() => {
+        document.getElementById('wizardStillBuilding')?.classList.add('show');
+      }, 5000);
+    }
+  }, 3800);
 
   // Build the API payload
   const s = getSetup();
@@ -6933,8 +7010,23 @@ function wizCopyEl(btn) {
   wizCopy(btn, prev ? (prev.innerText || prev.textContent) : '');
 }
 
-function printPlaybook() {
+function printPlaybookOnly() {
+  // Add class to body to tell CSS which document to print
+  document.body.classList.add('print-playbook-only');
+  document.body.classList.remove('print-leadmagnet-only');
   window.print();
+  setTimeout(() => document.body.classList.remove('print-playbook-only'), 1000);
+}
+
+function printLeadMagnetOnly() {
+  document.body.classList.add('print-leadmagnet-only');
+  document.body.classList.remove('print-playbook-only');
+  window.print();
+  setTimeout(() => document.body.classList.remove('print-leadmagnet-only'), 1000);
+}
+
+function printPlaybook() {
+  printPlaybookOnly();
 }
 
 function startNextTool(tool) {
@@ -8057,6 +8149,9 @@ function openWizardFromNav() {
         <div class="wizard-loader-sub">
           "Social media is genuinely hard. What SAM is building right now would take a professional strategist half a day. You'll have it in about 30 seconds. The work of showing up is still yours — SAM just made sure it's worth it."
         </div>
+        <div class="wizard-loader-bar-wrap">
+          <div class="wizard-loader-bar indeterminate" id="wizardLoaderBar"></div>
+        </div>
         <div class="wizard-loader-steps" id="wizardLoaderSteps">
           <div class="wizard-loader-step" id="lstep-1">
             <div class="wizard-loader-dot"></div>
@@ -8091,6 +8186,9 @@ function openWizardFromNav() {
             Assembling your playbook
           </div>
         </div>
+        <div class="wizard-still-building" id="wizardStillBuilding">
+          ⏳ SAM is still working — this story has a lot of depth to it. Give her a few more seconds. The more real your story, the more she has to build with.
+        </div>
       </div>
 
       <!-- PLAYBOOK OUTPUT -->
@@ -8119,10 +8217,14 @@ function openWizardFromNav() {
   </div>
 
   <!-- PLAYBOOK PRINT BAR -->
-  <div class="playbook-print-bar" id="playbookPrintBar" style="display:none;">
-    <button class="playbook-new-btn" onclick="wizardNewPlaybook()">+ New</button>
-    <button class="playbook-print-btn" onclick="printPlaybook()" style="flex:1.2;">
-      🖨️ Save Complete Playbook PDF
+  <div class="playbook-print-bar" id="playbookPrintBar" style="display:none;flex-wrap:wrap;gap:8px;">
+    <button class="playbook-new-btn" onclick="showWizardStep('10')" style="flex-shrink:0;">← Back</button>
+    <button class="playbook-new-btn" onclick="wizardNewPlaybook()" style="flex-shrink:0;">+ New</button>
+    <button class="playbook-print-btn" onclick="printPlaybookOnly()" style="flex:1;min-width:140px;font-size:12px;">
+      🖨️ My Playbook PDF
+    </button>
+    <button class="playbook-print-btn" onclick="printLeadMagnetOnly()" style="flex:1;min-width:140px;font-size:12px;background:linear-gradient(135deg,#92400E,#FBBF24,#F59E0B);">
+      📄 Lead Magnet PDF
     </button>
   </div>
 
