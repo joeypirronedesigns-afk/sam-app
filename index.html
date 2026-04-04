@@ -2542,7 +2542,7 @@
         </div>
         <div class="loader" id="pulseLoader"><div class="loader-dots"><span style="background:var(--pulse)"></span><span style="background:var(--pulse)"></span><span style="background:var(--pulse)"></span></div><div class="loader-text" id="pulseLoaderText">SAM is reading your moment...</div></div>
         <div class="err-box" id="pulseErr"></div>
-        <button class="run-btn run-pulse" id="pulseBtn" onclick="runPulse()">Run The Pulse →</button>
+        <button class="run-btn run-pulse" id="pulseBtn" onclick="guardedRunFn(runPulse)">Run The Pulse →</button>
       </div>
 
       <div class="output-wrap" id="pulseOutput">
@@ -2578,7 +2578,7 @@
         </div>
         <div class="loader" id="sparkLoader"><div class="loader-dots"><span style="background:var(--spark)"></span><span style="background:var(--spark)"></span><span style="background:var(--spark)"></span></div><div class="loader-text">SAM is generating your ideas...</div></div>
         <div class="err-box" id="sparkErr"></div>
-        <button class="run-btn run-spark" id="sparkBtn" onclick="runSpark()">Generate 5 ideas →</button>
+        <button class="run-btn run-spark" id="sparkBtn" onclick="guardedRunFn(runSpark)">Generate 5 ideas →</button>
       </div>
       <div class="output-wrap" id="sparkOutput">
         <div class="output-header" style="border-radius:var(--radius-xl) var(--radius-xl) 0 0;border:1px solid var(--border);border-bottom:none;">
@@ -2622,7 +2622,7 @@
         </div>
         <div class="loader" id="blueprintLoader"><div class="loader-dots"><span style="background:var(--blueprint)"></span><span style="background:var(--blueprint)"></span><span style="background:var(--blueprint)"></span></div><div class="loader-text">SAM is building your calendar...</div></div>
         <div class="err-box" id="blueprintErr"></div>
-        <button class="run-btn run-blueprint" id="blueprintBtn" onclick="runBlueprint()">Build 7-day plan →</button>
+        <button class="run-btn run-blueprint" id="blueprintBtn" onclick="guardedRunFn(runBlueprint)">Build 7-day plan →</button>
       </div>
       <div class="output-wrap" id="blueprintOutput">
         <div class="output-header" style="border-radius:var(--radius-xl) var(--radius-xl) 0 0;border:1px solid var(--border);border-bottom:none;">
@@ -2675,7 +2675,7 @@
         </div>
         <div class="loader" id="visionLoader"><div class="loader-dots"><span style="background:var(--vision)"></span><span style="background:var(--vision)"></span><span style="background:var(--vision)"></span></div><div class="loader-text">SAM is building your concept...</div></div>
         <div class="err-box" id="visionErr"></div>
-        <button class="run-btn run-vision" id="visionBtn" onclick="runVision()">Generate concept →</button>
+        <button class="run-btn run-vision" id="visionBtn" onclick="guardedRunFn(runVision)">Generate concept →</button>
       </div>
       <div class="output-wrap" id="visionOutput">
         <div class="output-card">
@@ -3956,19 +3956,25 @@ function initTrial() {
     updateTrialBadge(state); return;
   }
 
-  // New visitor — show teaser badge immediately, set 10-min email prompt
+  // New visitor — show teaser badge immediately
   const badge = document.getElementById('trialBadge');
   const badgeText = document.getElementById('trialBadgeText');
   if (badge) {
     badgeText.textContent = '✦ 3 days free';
     badge.classList.add('show');
   }
-  if (!state.promptShown) {
-    setTimeout(() => {
-      const fresh = getTrialState();
-      if (!fresh.email && !fresh.paid) openTrialCapture();
-    }, TRIGGER_DELAY_MS);
-  }
+
+  // Always set the 10-min timer on every page load (reset promptShown so it always fires)
+  // If they already gave email this session, timer will see that and skip
+  state.promptShown = false;
+  saveTrialState(state);
+
+  setTimeout(() => {
+    const fresh = getTrialState();
+    if (!fresh.email && !fresh.paid) {
+      openTrialCapture();
+    }
+  }, TRIGGER_DELAY_MS);
 }
 
 function updateTrialBadge(state) {
@@ -4073,18 +4079,30 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// Also trigger capture on 2nd run if no email yet
+// Trial guard — called before every tool run
 let runCount = 0;
-const _originalRunPulse = typeof runPulse !== 'undefined' ? runPulse : null;
 
-function guardedRun(originalFn) {
+function guardedRunFn(originalFn) {
   runCount++;
   const state = getTrialState();
-  // On 2nd run with no email, capture first
-  if (runCount >= 2 && !state.email && !state.paid) {
+
+  // Paid member — always allow
+  if (state.paid) { originalFn(); return; }
+
+  // Trial expired — show paywall
+  if (state.email && state.trialStart && (Date.now() - state.trialStart) > TRIAL_DURATION_MS) {
+    showPaywall(); return;
+  }
+
+  // Has email + active trial — allow
+  if (state.email && state.trialStart) { originalFn(); return; }
+
+  // No email yet — on 2nd run, ask for email first
+  if (runCount >= 2 && !state.email) {
     openTrialCapture(); return;
   }
-  if (!checkTrialBeforeRun()) return;
+
+  // First run — allow freely, no interruption
   originalFn();
 }
 
