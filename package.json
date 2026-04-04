@@ -1,0 +1,9 @@
+{
+  "name": "sam-app",
+  "version": "1.0.0",
+  "dependencies": {
+    "@sparticuz/chromium": "^123.0.1",
+    "puppeteer-core": "^22.6.0",
+    "@vercel/kv": "^2.0.0"
+  }
+}
