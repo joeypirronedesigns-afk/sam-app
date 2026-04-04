@@ -3823,7 +3823,34 @@
     }
 
 
-    /* ── BRAND PROFILE ── */
+        /* ── SELECTIVE PRINT MODES ── */
+    /* body.print-playbook-only = Download Playbook PDF was clicked */
+    /* body.print-leadmagnet-only = Download Lead Magnet PDF was clicked */
+    @media print {
+      body.print-playbook-only #leadMagnetSection,
+      body.print-playbook-only #leadMagnetSection * { display: none !important; }
+      body.print-leadmagnet-only .playbook-cover,
+      body.print-leadmagnet-only .playbook-section:not(#leadMagnetSection),
+      body.print-leadmagnet-only .wizard-loader,
+      body.print-leadmagnet-only .wizard-advanced-link { display: none !important; }
+      body.print-leadmagnet-only #leadMagnetSection { display: block !important; }
+      body.print-leadmagnet-only .lm-controls,
+      body.print-leadmagnet-only #lmRegenStatus,
+      body.print-leadmagnet-only .wizard-why,
+      body.print-leadmagnet-only .playbook-section-num,
+      body.print-leadmagnet-only .playbook-section-title,
+      body.print-leadmagnet-only .no-print { display: none !important; }
+      body.print-leadmagnet-only .playbook-lead-magnet {
+        page-break-before: avoid !important;
+        background: #ffffff !important;
+        border: none !important;
+        margin: -15mm -18mm !important;
+        padding: 20mm 18mm !important;
+      }
+      body.print-leadmagnet-only .wl-doc-header { display: flex !important; }
+    }
+
+/* ── BRAND PROFILE ── */
     .brand-upload-zone {
       border: 2px dashed var(--border2);
       border-radius: var(--radius-lg);
