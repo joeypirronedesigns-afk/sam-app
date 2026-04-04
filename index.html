@@ -4235,9 +4235,35 @@ async function readStream(r) {
   if (accumulated) {
     const clean = accumulated.replace(/```json/g,'').replace(/```/g,'').trim();
     const first = clean.indexOf('{');
-    const last = clean.lastIndexOf('}');
+    let last = clean.lastIndexOf('}');
+
+    // Try full parse first
     if (first !== -1 && last !== -1) {
       try { return JSON.parse(clean.slice(first, last + 1)); } catch(e) {}
+    }
+
+    // If JSON was cut off, try to salvage what we have
+    if (first !== -1) {
+      let partial = clean.slice(first);
+      // Count open braces and try to close them
+      let opens = 0;
+      for (const ch of partial) { if (ch === '{') opens++; else if (ch === '}') opens--; }
+      // Add closing braces to complete the JSON
+      partial = partial + '}'.repeat(Math.max(0, opens));
+      try { return JSON.parse(partial); } catch(e) {}
+
+      // Last resort — extract what we can field by field
+      const diagnosis = partial.match(/"diagnosis"\s*:\s*"([^"]+)"/)?.[1];
+      const hook = partial.match(/"hook"\s*:\s*"([^"]+)"/)?.[1];
+      if (diagnosis || hook) {
+        return {
+          diagnosis: diagnosis || 'SAM read your story. Keep going.',
+          hook: hook || 'Your story is worth telling.',
+          full_script: 'SAM had trouble formatting the full output. Try again for the complete playbook.',
+          platform_strategies: [],
+          focus_directive: 'Try again — SAM has your story and is ready to build.'
+        };
+      }
     }
     throw new Error('SAM responded but output could not be parsed. Raw: ' + accumulated.slice(0,300));
   }
@@ -7181,30 +7207,71 @@ function openWizardFromNav() {
 
     <!-- ── STEP 11: LANGUAGE ── -->
     <div class="wizard-step" id="wiz-11">
-      <div class="wizard-question">What language should SAM write in?</div>
+      <div class="wizard-question">Where is your audience?</div>
       <div class="wizard-why">
-        SAM writes your entire playbook — scripts, narration, captions, hashtags and your audience resource — in your chosen language. Not translated after the fact. Written natively from the start.
+        SAM writes your entire playbook — scripts, narration, captions, hashtags and your audience resource — in your chosen language and dialect. Not translated after the fact. Written natively from the start. <strong>English alone has four distinct voices</strong> — American, British, Australian and Canadian audiences expect completely different tones, references and phrasing. Pick the one that matches where your audience lives.
       </div>
-      <div class="wizard-choices">
-        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','English')" data-value="English">
-          <div class="wizard-choice-icon">🌐</div>
-          <div class="wizard-choice-content"><div class="wizard-choice-label">English</div></div>
+      <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;">English variants</div>
+      <div class="wizard-choices" style="margin-bottom:20px;">
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','English (American)')" data-value="English (American)">
+          <div class="wizard-choice-icon">🇺🇸</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">English — American</div>
+            <div class="wizard-choice-desc">US tone, spelling and cultural references. Direct, punchy, confident.</div>
+          </div>
         </button>
-        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','Spanish')" data-value="Spanish">
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','English (British)')" data-value="English (British)">
+          <div class="wizard-choice-icon">🇬🇧</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">English — British</div>
+            <div class="wizard-choice-desc">UK tone, spelling and phrasing. Dry wit, understated, warm.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','English (Australian)')" data-value="English (Australian)">
+          <div class="wizard-choice-icon">🇦🇺</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">English — Australian</div>
+            <div class="wizard-choice-desc">Aussie tone and phrasing. Relaxed, real, no-nonsense.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','English (Canadian)')" data-value="English (Canadian)">
+          <div class="wizard-choice-icon">🇨🇦</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">English — Canadian</div>
+            <div class="wizard-choice-desc">Canadian tone and spelling. Warm, inclusive, community-driven.</div>
+          </div>
+        </button>
+      </div>
+
+      <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;">Other languages</div>
+      <div class="wizard-choices">
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','Spanish (Latin American)')" data-value="Spanish (Latin American)">
+          <div class="wizard-choice-icon">🌎</div>
+          <div class="wizard-choice-content"><div class="wizard-choice-label">Spanish — Latin American</div></div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','Spanish (Spain)')" data-value="Spanish (Spain)">
           <div class="wizard-choice-icon">🇪🇸</div>
-          <div class="wizard-choice-content"><div class="wizard-choice-label">Spanish</div></div>
+          <div class="wizard-choice-content"><div class="wizard-choice-label">Spanish — Spain</div></div>
         </button>
         <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','French')" data-value="French">
           <div class="wizard-choice-icon">🇫🇷</div>
           <div class="wizard-choice-content"><div class="wizard-choice-label">French</div></div>
         </button>
-        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','Portuguese')" data-value="Portuguese">
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','Portuguese (Brazilian)')" data-value="Portuguese (Brazilian)">
           <div class="wizard-choice-icon">🇧🇷</div>
-          <div class="wizard-choice-content"><div class="wizard-choice-label">Portuguese</div></div>
+          <div class="wizard-choice-content"><div class="wizard-choice-label">Portuguese — Brazilian</div></div>
         </button>
         <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','German')" data-value="German">
           <div class="wizard-choice-icon">🇩🇪</div>
           <div class="wizard-choice-content"><div class="wizard-choice-label">German</div></div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','Italian')" data-value="Italian">
+          <div class="wizard-choice-icon">🇮🇹</div>
+          <div class="wizard-choice-content"><div class="wizard-choice-label">Italian</div></div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','Dutch')" data-value="Dutch">
+          <div class="wizard-choice-icon">🇳🇱</div>
+          <div class="wizard-choice-content"><div class="wizard-choice-label">Dutch</div></div>
         </button>
         <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','Japanese')" data-value="Japanese">
           <div class="wizard-choice-icon">🇯🇵</div>
@@ -7213,6 +7280,18 @@ function openWizardFromNav() {
         <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','Korean')" data-value="Korean">
           <div class="wizard-choice-icon">🇰🇷</div>
           <div class="wizard-choice-content"><div class="wizard-choice-label">Korean</div></div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','Hindi')" data-value="Hindi">
+          <div class="wizard-choice-icon">🇮🇳</div>
+          <div class="wizard-choice-content"><div class="wizard-choice-label">Hindi</div></div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','Arabic')" data-value="Arabic">
+          <div class="wizard-choice-icon">🌍</div>
+          <div class="wizard-choice-content"><div class="wizard-choice-label">Arabic</div></div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','Mandarin Chinese')" data-value="Mandarin Chinese">
+          <div class="wizard-choice-icon">🇨🇳</div>
+          <div class="wizard-choice-content"><div class="wizard-choice-label">Mandarin Chinese</div></div>
         </button>
       </div>
     </div>
