@@ -2927,6 +2927,25 @@
       </div>
     </div>
     <div class="setup-field">
+      <div class="setup-field-label">Your audience — age</div>
+      <div class="options-grid options-grid-3">
+        <button class="opt-btn" data-v="13-17" onclick="selectOpt(this,'setupAge')">13–17</button>
+        <button class="opt-btn" data-v="18-24" onclick="selectOpt(this,'setupAge')">18–24</button>
+        <button class="opt-btn sel" data-v="25-34" onclick="selectOpt(this,'setupAge')">25–34</button>
+        <button class="opt-btn" data-v="35-44" onclick="selectOpt(this,'setupAge')">35–44</button>
+        <button class="opt-btn" data-v="45-54" onclick="selectOpt(this,'setupAge')">45–54</button>
+        <button class="opt-btn" data-v="55+" onclick="selectOpt(this,'setupAge')">55+</button>
+      </div>
+    </div>
+    <div class="setup-field">
+      <div class="setup-field-label">Your audience — gender</div>
+      <div class="options-grid options-grid-3">
+        <button class="opt-btn" data-v="Mostly men" onclick="selectOpt(this,'setupGender')">👨 Mostly men</button>
+        <button class="opt-btn sel" data-v="Mix of both" onclick="selectOpt(this,'setupGender')">👥 Mix of both</button>
+        <button class="opt-btn" data-v="Mostly women" onclick="selectOpt(this,'setupGender')">👩 Mostly women</button>
+      </div>
+    </div>
+    <div class="setup-field">
       <div class="setup-field-label">Your tone</div>
       <div class="options-grid">
         <button class="opt-btn sel" data-v="Authentic/Natural" onclick="selectOpt(this,'setupTone')">🎯 Authentic</button>
@@ -3052,8 +3071,12 @@ function saveSetup() {
   };
   const toneEl = document.querySelector('.setup-field .opt-btn.sel[data-v="Authentic/Natural"], .setup-field .opt-btn.sel[data-v="Viral/Hype"], .setup-field .opt-btn.sel[data-v="Wise/Mentor"], .setup-field .opt-btn.sel[data-v="Bubbly/Energetic"]');
   const emojiEl = document.querySelector('.setup-field .opt-btn.sel[data-v="no"], .setup-field .opt-btn.sel[data-v="few"], .setup-field .opt-btn.sel[data-v="lots"]');
+  const ageEl   = document.querySelector('.setup-field .opt-btn.sel[data-v="13-17"], .setup-field .opt-btn.sel[data-v="18-24"], .setup-field .opt-btn.sel[data-v="25-34"], .setup-field .opt-btn.sel[data-v="35-44"], .setup-field .opt-btn.sel[data-v="45-54"], .setup-field .opt-btn.sel[data-v="55+"]');
+  const genderEl = document.querySelector('.setup-field .opt-btn.sel[data-v="Mostly men"], .setup-field .opt-btn.sel[data-v="Mix of both"], .setup-field .opt-btn.sel[data-v="Mostly women"]');
   if (toneEl) s.tone = toneEl.dataset.v;
   if (emojiEl) s.emoji = emojiEl.dataset.v;
+  if (ageEl) s.age = ageEl.dataset.v;
+  if (genderEl) s.gender = genderEl.dataset.v;
   localStorage.setItem('sam-setup', JSON.stringify(s));
   document.getElementById('setupModal').classList.remove('open');
 }
@@ -3061,6 +3084,18 @@ function openSetup() {
   const s = getSetup();
   if (s.niche) document.getElementById('setupNiche').value = s.niche;
   if (s.lang) document.getElementById('setupLang').value = s.lang;
+  // Restore age selection
+  if (s.age) {
+    document.querySelectorAll('.setup-field .opt-btn[data-v="13-17"], .setup-field .opt-btn[data-v="18-24"], .setup-field .opt-btn[data-v="25-34"], .setup-field .opt-btn[data-v="35-44"], .setup-field .opt-btn[data-v="45-54"], .setup-field .opt-btn[data-v="55+"]').forEach(btn => {
+      btn.classList.toggle('sel', btn.dataset.v === s.age);
+    });
+  }
+  // Restore gender selection
+  if (s.gender) {
+    document.querySelectorAll('.setup-field .opt-btn[data-v="Mostly men"], .setup-field .opt-btn[data-v="Mix of both"], .setup-field .opt-btn[data-v="Mostly women"]').forEach(btn => {
+      btn.classList.toggle('sel', btn.dataset.v === s.gender);
+    });
+  }
   document.getElementById('setupModal').classList.add('open');
 }
 function handleSetupOutsideClick(e) {
@@ -3246,7 +3281,17 @@ async function readStream(r) {
 
 function getBase() {
   const s = getSetup();
-  return { tone: s.tone || 'Authentic/Natural', emojiPreference: s.emoji || 'few', outputLanguage: s.lang || '', creatorContext: s.niche || '' };
+  // Build audience demographics string from saved age + gender
+  const agePart    = s.age    ? `Age ${s.age}` : '';
+  const genderPart = s.gender ? s.gender       : '';
+  const demographics = [agePart, genderPart].filter(Boolean).join(', ');
+  return {
+    tone: s.tone || 'Authentic/Natural',
+    emojiPreference: s.emoji || 'few',
+    outputLanguage: s.lang || '',
+    creatorContext: s.niche || '',
+    audienceDemographics: demographics
+  };
 }
 
 // ── THE PULSE ────────────────────────────────────────────────────────────────
