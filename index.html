@@ -7222,32 +7222,39 @@ function renderPlaybook(data) {
     const brandColor = WS.brandColor || '#7C3AED';
 
     // Brand header HTML for the lead magnet document
-    const brandHeader = `<div class="wl-doc-header" style="display:flex;align-items:center;justify-content:space-between;padding-bottom:16px;margin-bottom:20px;border-bottom:2px solid ${brandColor};">
-      <div style="display:flex;align-items:center;gap:12px;">
-        ${brandLogo ? `<img src="${brandLogo}" style="max-height:48px;max-width:120px;object-fit:contain;border-radius:6px;" />` : `<div style="width:40px;height:40px;border-radius:8px;background:${brandColor};display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:16px;">${brandName.charAt(0)}</div>`}
+    const brandWebsite = s.website || s.brandHandle || '';
+    const brandHeader = `<div class="wl-doc-header" style="display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;margin-bottom:22px;border-bottom:3px solid ${brandColor};">
+      <div style="display:flex;align-items:center;gap:14px;">
+        ${brandLogo ? `<img src="${brandLogo}" style="max-height:52px;max-width:130px;object-fit:contain;border-radius:6px;" />` : `<div style="width:44px;height:44px;border-radius:10px;background:${brandColor};display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:18px;">${brandName.charAt(0)}</div>`}
         <div>
-          <div style="font-family:'Sora',Arial,sans-serif;font-size:15px;font-weight:700;color:#09080F;">${brandName}</div>
-          ${brandHandle ? `<div style="font-size:11px;color:#666;">${brandHandle}</div>` : ''}
+          <div style="font-family:'Sora',Arial,sans-serif;font-size:16px;font-weight:800;color:#09080F;letter-spacing:-0.01em;">${brandName}</div>
+          ${brandWebsite ? `<div style="font-size:11px;color:${brandColor};font-weight:600;margin-top:2px;">${brandWebsite}</div>` : ''}
         </div>
       </div>
       <div style="text-align:right;">
-        <div style="font-size:8px;color:#999;line-height:1.5;"></div>
+        <div style="display:inline-block;background:${brandColor}22;border:1px solid ${brandColor}44;border-radius:20px;padding:4px 12px;">
+          <div style="font-size:10px;font-weight:700;color:${brandColor};letter-spacing:0.05em;">FREE RESOURCE</div>
+        </div>
       </div>
     </div>`;
 
     // Perspective toggle + regenerate controls
     const perspectiveControls = `<div class="no-print lm-controls" style="margin-bottom:18px;">
+      <div style="background:linear-gradient(135deg,rgba(251,191,36,0.18),rgba(251,191,36,0.08));border:1.5px solid rgba(251,191,36,0.5);border-radius:12px;padding:14px 16px;margin-bottom:14px;">
+        <div style="font-size:13px;font-weight:800;color:#FBB824;letter-spacing:0.04em;margin-bottom:4px;">🎁 YOUR LIST-BUILDING WEAPON</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.5;">SAM just built a free resource your audience would trade their email to get — written in YOUR voice, branded as YOUR work. No other tool does this. Share it as a free download to grow your email list.</div>
+      </div>
       <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;">Choose what to give your audience:</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
         <button class="lm-persp-btn active" data-persp="viewer" onclick="setLMPerspective('viewer',this)" style="flex:1;min-width:140px;padding:10px 14px;border-radius:var(--radius);border:1px solid rgba(251,191,36,0.4);background:rgba(251,191,36,0.12);color:var(--lens);font-size:12px;font-weight:600;cursor:pointer;text-align:left;transition:all 0.2s;">
-          <div style="font-size:16px;margin-bottom:3px;">👥</div>
-          <div style="font-size:13px;font-weight:700;">Viewer Perspective</div>
-          <div style="font-size:11px;opacity:0.75;margin-top:2px;">Tips &amp; advice from your experience — inspires your audience</div>
+          <div style="font-size:16px;margin-bottom:3px;">✨</div>
+          <div style="font-size:13px;font-weight:700;">Inspire Them</div>
+          <div style="font-size:11px;opacity:0.75;margin-top:2px;">Tips &amp; lessons from your journey — they read it and trust you instantly</div>
         </button>
         <button class="lm-persp-btn" data-persp="user" onclick="setLMPerspective('user',this)" style="flex:1;min-width:140px;padding:10px 14px;border-radius:var(--radius);border:1px solid rgba(167,139,250,0.2);background:rgba(167,139,250,0.06);color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;text-align:left;transition:all 0.2s;">
           <div style="font-size:16px;margin-bottom:3px;">🛠️</div>
-          <div style="font-size:13px;font-weight:700;">User Perspective</div>
-          <div style="font-size:11px;opacity:0.75;margin-top:2px;">A working template or planning tool — something they actually use daily</div>
+          <div style="font-size:13px;font-weight:700;">Equip Them</div>
+          <div style="font-size:11px;opacity:0.75;margin-top:2px;">A tool they use every single day — and think of you every time they open it</div>
         </button>
       </div>
       <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;">
@@ -7267,8 +7274,8 @@ function renderPlaybook(data) {
 
     html += `<div class="playbook-section" id="leadMagnetSection">
       <div class="playbook-section-num">Section 08</div>
-      <div class="playbook-section-title">Your audience resource</div>
-      <div class="wizard-why no-print" style="margin-bottom:8px;">This is the part no other tool builds. SAM created a complete, ready-to-share resource based on what it learned about you and your audience. Give it away for free — it builds trust faster than any piece of content alone.</div>
+      <div class="playbook-section-title" style="color:#FBB824;">🎁 Your Lead Magnet</div>
+      <div class="wizard-why no-print" style="margin-bottom:8px;border-left:3px solid #FBB824;padding-left:12px;">This is the part no other tool builds. SAM created a complete, ready-to-deploy free resource — written in your voice, branded as your work. Give it away in exchange for an email address. It builds your list and your trust faster than any piece of content alone.</div>
       ${perspectiveControls}
       <div id="leadMagnetDoc" class="playbook-lead-magnet" data-brand-color="${brandColor}">
         <div class="no-print">${brandHeader}</div>
