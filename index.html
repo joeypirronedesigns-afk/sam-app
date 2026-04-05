@@ -4062,7 +4062,7 @@
 
 <nav>
   <div class="nav-logo">S<span class="nav-logo-dot">.</span>A<span class="nav-logo-dot">.</span>M<span class="nav-logo-dot">.</span></div>
-  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v1.6</div>
+  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v1.7</div>
   <div class="nav-right">
     <div class="trial-nav-badge" id="trialBadge" onclick="openProPage()">
       <div class="trial-nav-dot"></div>
@@ -7438,7 +7438,7 @@ async function downloadPDF(type) {
       brandName:  WS.brandName  || s.niche || 'Your Brand',
       brandHandle:WS.brandHandle|| '',
       brandColor: WS.brandColor || '#7C3AED',
-      brandLogo:  WS.brandLogo  || null,
+      brandLogo:  null, // stripped — base64 causes 413 Content Too Large
       date: new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})
     };
 
