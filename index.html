@@ -7526,6 +7526,8 @@ Return ONLY valid JSON — no markdown, no backticks:
     if (window._lastPlaybookData) {
       window._lastPlaybookData.lead_magnet = lm;
     }
+    // Also update stored playbook HTML so PDF download uses new content
+    window._savedPlaybookData = window._lastPlaybookData;
 
     // Scroll to show it
     docEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -8986,3 +8988,4 @@ function openWizardFromNav() {
 <div class="ib-toast" id="ibToast"></div>
 </body>
 </html>
+
