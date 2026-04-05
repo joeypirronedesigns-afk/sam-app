@@ -353,7 +353,7 @@ Return ONLY this JSON — be CONCISE in every field to fit within token limits:
 CRITICAL: Return ONLY valid JSON. Keep ALL fields concise — the JSON must be complete and valid.`;
 
       // ← KEY FIX: increased from 6000 to 8000 to prevent truncation
-      return await streamCall(playbookPrompt, moment, 8000);
+      return await streamCall(playbookPrompt, moment, 12000);
     }
 
     // ── CALENDAR ─────────────────────────────────────────────────────────────
