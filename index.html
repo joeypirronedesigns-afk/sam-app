@@ -5255,6 +5255,8 @@ function renderBlueprint(data) {
           <button class="cal-make-btn" style="background:var(--vision-bg);border-color:var(--vision-border);color:var(--vision);" onclick="sendToVision('${escQ(day.content||'')}')">▶ Build concept →</button>
           <button class="cal-make-btn" style="background:rgba(167,139,250,0.08);border-color:rgba(167,139,250,0.25);color:#A78BFA;" onclick="copyText(this,'${escQ(day.content||'')}')">📋 Copy</button>
           ${makeIbSaveBtn(day.content||'','blueprint','post',day.platform||'')}
+          <button class="cal-make-btn" style="background:rgba(167,139,250,0.08);border-color:rgba(167,139,250,0.25);color:#A78BFA;" onclick="copyText(this,'${escQ(day.content||'')}')">📋 Copy</button>
+          ${makeIbSaveBtn(day.content||'','blueprint','post',day.platform||'')}
         </div>
       </div>
     </div>`).join('');
@@ -5309,6 +5311,23 @@ function renderVision(data) {
 }
 
 // ── THE LENS ──────────────────────────────────────────────────────────────────
+function lensLiveUpdate() {
+  const hl1 = document.getElementById('lensEditHL1')?.value || window._currentLensHeadline || '';
+  const hl2 = document.getElementById('lensEditHL2')?.value || window._currentLensHL2 || hl1;
+  const sub1 = document.getElementById('lensEditSub1')?.value || window._currentLensSubtext || '';
+  const sub2 = window._currentLensSub2 || sub1;
+  const ac = document.getElementById('lensEditColor')?.value || window._currentLensAc || '#F472B6';
+  const colorLabel = document.getElementById('lensColorLabel');
+  if (colorLabel) colorLabel.textContent = ac;
+  const imgSrc = window._currentLensImgSrc || window._lensImgSrc || '';
+  const safe = window._currentLensSafeTemplate || 'cinematic';
+  const bold = window._currentLensBoldTemplate || 'cornerBurst';
+  const textSide = window._currentLensTextSide || 'bottom';
+  if (typeof renderThumbnailCanvases === 'function') {
+    renderThumbnailCanvases(hl1, sub1, ac, imgSrc, 'thumb169s', 'thumb916s', '', safe, false, textSide);
+    renderThumbnailCanvases(hl2, sub2, ac, imgSrc, 'thumb169b', 'thumb916b', '', bold, true, textSide);
+  }
+}
 function lensLiveUpdate() {
   const hl1 = document.getElementById('lensEditHL1')?.value || window._currentLensHeadline || '';
   const hl2 = document.getElementById('lensEditHL2')?.value || window._currentLensHL2 || hl1;
@@ -5727,6 +5746,51 @@ function renderLens(data) {
     </div><button style="width:100%;margin-top:12px;padding:12px;background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(244,114,182,0.1));border:1px solid rgba(167,139,250,0.3);border-radius:var(--radius);font-size:14px;font-weight:600;color:var(--spark);cursor:pointer;" onclick="window.open('https://www.canva.com/create/youtube-thumbnails/','_blank')">🎨 Take this to Canva →</button></div>`;
     window._currentLensHeadline = hl1;
     window._currentLensSubtext = sub1;
+    window._currentLensHL2 = hl2;
+    window._currentLensSub2 = sub2;
+    window._currentLensAc = ac;
+    window._currentLensImgSrc = imgSrc;
+    window._currentLensSafeTemplate = safeTemplate;
+    window._currentLensBoldTemplate = boldTemplate;
+    window._currentLensTextSide = textSide;
+    // Inject inline editor after the headline section
+    setTimeout(() => {
+      const lensBody = document.getElementById('lensBody');
+      if (!lensBody || document.getElementById('lensInlineEditor')) return;
+      const editor = document.createElement('div');
+      editor.id = 'lensInlineEditor';
+      editor.style.cssText = 'background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.2);border-radius:12px;padding:16px;margin:16px 0;';
+      editor.innerHTML = `
+        <div style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#A78BFA;margin-bottom:12px;">✏️ Edit your thumbnail text</div>
+        <div style="margin-bottom:10px;">
+          <div style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:4px;">Safe headline</div>
+          <input id="lensEditHL1" type="text" value="${(hl1||'').replace(/"/g,'&quot;')}" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:14px;color:var(--text);box-sizing:border-box;" oninput="lensLiveUpdate()" />
+        </div>
+        <div style="margin-bottom:10px;">
+          <div style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:4px;">Bold headline</div>
+          <input id="lensEditHL2" type="text" value="${(hl2||'').replace(/"/g,'&quot;')}" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:14px;color:var(--text);box-sizing:border-box;" oninput="lensLiveUpdate()" />
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:10px;">
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:4px;">Subtext (safe)</div>
+            <input id="lensEditSub1" type="text" value="${(sub1||'').replace(/"/g,'&quot;')}" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:13px;color:var(--text);box-sizing:border-box;" oninput="lensLiveUpdate()" />
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:4px;">Accent color</div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <input id="lensEditColor" type="color" value="${ac||'#F472B6'}" style="width:40px;height:36px;border:none;border-radius:8px;cursor:pointer;background:none;" oninput="lensLiveUpdate()" />
+              <span id="lensColorLabel" style="font-size:12px;color:var(--text2);">${ac||'#F472B6'}</span>
+            </div>
+          </div>
+        </div>
+        <button onclick="lensLiveUpdate()" style="font-size:12px;font-weight:700;background:linear-gradient(135deg,rgba(167,139,250,0.2),rgba(244,114,182,0.1));border:1px solid rgba(167,139,250,0.3);border-radius:8px;padding:8px 20px;color:#A78BFA;cursor:pointer;width:100%;">↻ Regenerate thumbnails with edits</button>
+      `;
+      // Insert before the visual reference block
+      const allBlocks = lensBody.querySelectorAll('.out-block');
+      const visualBlock = Array.from(allBlocks).find(b => b.textContent.includes('Visual reference'));
+      if (visualBlock) lensBody.insertBefore(editor, visualBlock);
+      else lensBody.appendChild(editor);
+    }, 400);
     window._currentLensHL2 = hl2;
     window._currentLensSub2 = sub2;
     window._currentLensAc = ac;
