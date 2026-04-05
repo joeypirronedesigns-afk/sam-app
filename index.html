@@ -4943,13 +4943,7 @@ async function readStream(r) {
       const diagnosis = partial.match(/"diagnosis"\s*:\s*"([^"]+)"/)?.[1];
       const hook = partial.match(/"hook"\s*:\s*"([^"]+)"/)?.[1];
       if (diagnosis || hook) {
-        return {
-          diagnosis: diagnosis || 'SAM read your story. Keep going.',
-          hook: hook || 'Your story is worth telling.',
-          full_script: 'SAM had trouble formatting the full output. Try again for the complete playbook.',
-          platform_strategies: [],
-          focus_directive: 'Try again — SAM has your story and is ready to build.'
-        };
+        throw new Error('SAM built your playbook but had trouble sending it all at once. Hit Try Again — it almost always works the second time. (Parse error)');
       }
     }
     throw new Error('SAM built your playbook but had trouble sending it all at once. Hit Try Again — it almost always works the second time. (Parse error)');
