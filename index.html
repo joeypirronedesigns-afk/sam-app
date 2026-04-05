@@ -4108,7 +4108,7 @@
 
 <nav>
   <div class="nav-logo">S<span class="nav-logo-dot">.</span>A<span class="nav-logo-dot">.</span>M<span class="nav-logo-dot">.</span></div>
-  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v3.5</div>
+  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v3.6</div>
   <div class="nav-right">
     <div class="trial-nav-badge" id="trialBadge" onclick="openProPage()">
       <div class="trial-nav-dot"></div>
@@ -4332,7 +4332,7 @@
             <button class="reset-btn" onclick="resetTool('pulse')">← New moment</button>
           </div>
           <div class="output-body" id="pulseBody"></div>
-          <div class="save-bar"><button class="save-btn" onclick="window.print()">↓ Save as PDF</button></div>
+          <div class="save-bar"><button class="save-btn" onclick="printToolOutput('pulseOutput','The Pulse')">↓ Save as PDF</button></div>
         </div>
       </div>
     </div>
@@ -4413,7 +4413,7 @@
         </div>
         <div id="blueprintBody" style="border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius-xl) var(--radius-xl);padding:16px;background:rgba(18,14,28,0.8);"></div>
         <div style="border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius-xl) var(--radius-xl);padding:14px 16px 18px;background:rgba(18,14,28,0.8);">
-          <button class="save-btn" onclick="window.print()">↓ Save calendar as PDF</button>
+          <button class="save-btn" onclick="printToolOutput('blueprintOutput','Blueprint')">↓ Save calendar as PDF</button>
         </div>
       </div>
     </div>
@@ -4467,7 +4467,7 @@
             <button class="reset-btn" onclick="resetTool('vision')">← Start over</button>
           </div>
           <div class="output-body" id="visionBody"></div>
-          <div class="save-bar"><button class="save-btn" onclick="window.print()">↓ Save as PDF</button></div>
+          <div class="save-bar"><button class="save-btn" onclick="printToolOutput('visionOutput','The Vision')">↓ Save as PDF</button></div>
         </div>
       </div>
     </div>
@@ -4588,7 +4588,7 @@
             <div style="font-size:12px;color:var(--text3);text-align:center;padding:4px 0;">These are layout blueprints. Take the headline and composition into your design tool to finish.</div>
             <div style="display:flex;gap:8px;">
               <button class="save-btn" style="flex:1;" onclick="openCanva()">🎨 Finish in Canva →</button>
-              <button class="save-btn" style="flex:1;" onclick="window.print()">↓ Save PDF</button>
+              <button class="save-btn" style="flex:1;" onclick="printToolOutput('lensOutput','The Lens')">↓ Save PDF</button>
             </div>
           </div>
         </div>
@@ -6376,6 +6376,49 @@ function updateWizardHeader() {
     if (identity) identity.style.display = 'none';
     if (defaultLabel) defaultLabel.style.display = '';
   }
+}
+function printToolOutput(outputId, toolName) {
+  const el = document.getElementById(outputId);
+  if (!el) { window.print(); return; }
+  const content = el.innerHTML;
+  const brandName = WS && WS.brandName ? WS.brandName : (document.getElementById('brandName') ? document.getElementById('brandName').value : '');
+  const win = window.open('', '_blank');
+  if (!win) { window.print(); return; }
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+    <title>${toolName}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <style>
+      *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+      @page{size:A4;margin:14mm 16mm}
+      body{font-family:'Inter',Arial,sans-serif;font-size:10.5pt;line-height:1.6;color:#1a1a2e;background:#fff;}
+      .out-block{margin-bottom:20pt;padding-bottom:16pt;border-bottom:1px solid #e8e4f0;page-break-inside:avoid;}
+      .out-block:last-child{border-bottom:none;}
+      .out-block-title{font-size:8pt;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#7C3AED;margin-bottom:8pt;}
+      .out-text,.hook-display,.out-caption{font-size:10.5pt;color:#1a1a2e;line-height:1.7;white-space:pre-wrap;}
+      .hook-display{font-size:14pt;font-weight:700;color:#09080F;line-height:1.3;}
+      .copy-btn,.save-btn,.hook-retry,.save-to-ideas-btn,.no-print{display:none!important;}
+      .sam-status-bar,.loader,.run-btn,.output-header{display:none!important;}
+      h3{font-family:'Sora',Arial;font-size:13pt;font-weight:700;color:#09080F;margin-bottom:6pt;}
+      .print-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:12pt;margin-bottom:20pt;border-bottom:2px solid #7C3AED;}
+      .print-title{font-family:'Sora',Arial;font-size:10pt;font-weight:700;color:#7C3AED;letter-spacing:.08em;text-transform:uppercase;}
+      .print-brand{font-family:'Sora',Arial;font-size:13pt;font-weight:800;color:#09080F;}
+      table{width:100%;border-collapse:collapse;font-size:9.5pt;}
+      th{background:#f7f5ff;color:#7C3AED;font-weight:700;font-size:8pt;letter-spacing:.08em;text-transform:uppercase;padding:6pt 8pt;text-align:left;border:1px solid #e0d9f7;}
+      td{padding:6pt 8pt;border:1px solid #e8e4f0;vertical-align:top;line-height:1.5;}
+      tr:nth-child(even) td{background:#fafafa;}
+    </style>
+  </head><body>
+    <div class="print-header">
+      <div>
+        <div class="print-brand">${brandName || 'Your Content'}</div>
+        <div class="print-title">${toolName}</div>
+      </div>
+      <div style="font-size:9pt;color:#999;">${new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</div>
+    </div>
+    ${content}
+    <script>window.onload=function(){setTimeout(function(){window.print();},600);};<\/script>
+  </body></html>`);
+  win.document.close();
 }
 function toggleStepJumper() {
   const menu = document.getElementById('stepJumperMenu');
@@ -8585,7 +8628,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v3.5</div>
+  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v3.6</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
