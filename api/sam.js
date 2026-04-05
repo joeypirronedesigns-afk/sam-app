@@ -1,3 +1,5 @@
+module.exports.config = { api: { bodyParser: { sizeLimit: "10mb" } } };
+
 // ── TIER LIMITS ────────────────────────────────────────────────────────────
 const TIER_LIMITS = {
   free:    { playbooks: 2,  nextTools: 2,  chatMessages: 5  },
@@ -106,6 +108,8 @@ PERSONALITY: Confident, direct, warm. Keep responses to 2-4 sentences max. No ja
       return res.end();
     }
 
+    // Trim toolPrompt if too large to prevent Anthropic API errors
+    const trimmedPrompt = toolPrompt.length > 6000 ? toolPrompt.slice(0, 6000) + '\n[truncated for length]' : toolPrompt;
     try {
       const toolRes = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
@@ -115,7 +119,7 @@ PERSONALITY: Confident, direct, warm. Keep responses to 2-4 sentences max. No ja
           max_tokens: 3000,   // ← KEY FIX: enough room for email sequences, calendars, lead magnets
           stream: true,
           system: 'You are SAM — Strategic Assistant for Making. Return ONLY valid JSON. No markdown. No backticks. No explanation outside the JSON.',
-          messages: [{ role: 'user', content: toolPrompt }]
+          messages: [{ role: 'user', content: trimmedPrompt }]
         })
       });
 
