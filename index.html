@@ -4108,7 +4108,7 @@
 
 <nav>
   <div class="nav-logo">S<span class="nav-logo-dot">.</span>A<span class="nav-logo-dot">.</span>M<span class="nav-logo-dot">.</span></div>
-  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v2.3</div>
+  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v2.4</div>
   <div class="nav-right">
     <div class="trial-nav-badge" id="trialBadge" onclick="openProPage()">
       <div class="trial-nav-dot"></div>
@@ -7954,8 +7954,10 @@ Return ONLY valid JSON:
   try {
     // Use callAPI which properly handles streaming and JSON parsing
     // Use direct fetch + stream read to get raw text, then parse JSON from it
-    const devUid = localStorage.getItem('sam_uid') || 'anon';
-    const devTier = localStorage.getItem('sam_dev') === 'true' ? 'studio' : 'free';
+    const _rawUid = localStorage.getItem('sam_uid') || 'anon';
+    const _isDev = localStorage.getItem('sam_dev') === 'true';
+    const devUid = _isDev ? 'dev-' + _rawUid : _rawUid;
+    const devTier = _isDev ? 'studio' : 'free';
     
     const nextRes = await fetch('/api/sam', {
       method: 'POST',
@@ -8473,7 +8475,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v2.3</div>
+  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v2.4</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
