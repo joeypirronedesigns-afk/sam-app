@@ -2416,6 +2416,1543 @@
     }
 
     .section-label { display: none; } /* replaced by divider-label */
+
+    /* ══════════════════════════════════════════════════════
+       SAM GUIDED WIZARD
+    ══════════════════════════════════════════════════════ */
+
+    .wizard-page {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 800;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      animation: fade-up 0.35s cubic-bezier(0.34,1.2,0.64,1);
+    }
+    .wizard-page.open { display: block; }
+
+    /* Progress bar */
+    .wizard-progress-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(9,8,15,0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 14px 20px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    @media(min-width:768px){ .wizard-progress-wrap { padding: 16px 48px 14px; } }
+
+    .wizard-progress-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .wizard-progress-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text3);
+    }
+    .wizard-progress-step {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--spark);
+    }
+    .wizard-progress-bar {
+      width: 100%;
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .wizard-progress-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #6D28D9, #A78BFA, #F472B6);
+      transition: width 0.5s cubic-bezier(0.34,1.2,0.64,1);
+    }
+
+    /* Wizard body */
+    .wizard-body {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 40px 24px 220px;
+    }
+    @media(min-width:768px){ .wizard-body { padding: 56px 40px 220px; } }
+
+    /* Step */
+    .wizard-step {
+      display: none;
+      animation: fade-up 0.3s cubic-bezier(0.34,1.2,0.64,1);
+    }
+    .wizard-step.active { display: block; }
+
+    .wizard-question {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(22px, 4vw, 32px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .wizard-why {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text2);
+      margin-bottom: 28px;
+      padding: 14px 16px;
+      background: rgba(167,139,250,0.06);
+      border-left: 2px solid rgba(167,139,250,0.3);
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+    .wizard-why strong { color: var(--text); }
+
+    /* Choice buttons */
+    .wizard-choices {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .wizard-choice {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 16px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.34,1.2,0.64,1);
+      text-align: left;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .wizard-choice:hover {
+      border-color: var(--border2);
+      background: var(--surface2);
+      transform: translateY(-2px);
+    }
+    .wizard-choice.selected {
+      background: linear-gradient(135deg, rgba(109,40,217,0.2), rgba(244,114,182,0.1));
+      border-color: rgba(167,139,250,0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(109,40,217,0.15);
+    }
+    .wizard-choice-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .wizard-choice-content { flex: 1; }
+    .wizard-choice-label {
+      font-family: 'Sora', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 3px;
+      line-height: 1.3;
+    }
+    .wizard-choice.selected .wizard-choice-label {
+      background: linear-gradient(135deg, #A78BFA, #F472B6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .wizard-choice-desc {
+      font-size: 13px;
+      color: var(--text3);
+      line-height: 1.5;
+    }
+    .wizard-choice.selected .wizard-choice-desc { color: var(--text2); }
+
+    /* Multi-select choices */
+    .wizard-choices.multi .wizard-choice { position: relative; }
+    .wizard-choice-check {
+      position: absolute;
+      top: 12px; right: 14px;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px;
+      color: transparent;
+      transition: all 0.15s;
+    }
+    .wizard-choice.selected .wizard-choice-check {
+      background: linear-gradient(135deg, #A78BFA, #F472B6);
+      border-color: transparent;
+      color: #fff;
+    }
+
+    /* SAM diagnosis card */
+    .wizard-diagnosis {
+      background: linear-gradient(135deg, rgba(109,40,217,0.1), rgba(244,114,182,0.06));
+      border: 1px solid rgba(167,139,250,0.25);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .wizard-diagnosis::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 8%; right: 8%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #A78BFA, #F472B6, transparent);
+    }
+    .wizard-diagnosis-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--spark);
+      margin-bottom: 12px;
+    }
+    /* Thinking animation */
+    .sam-thinking {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text3);
+      font-size: 14px;
+      font-style: italic;
+    }
+    .sam-thinking-dots {
+      display: flex;
+      gap: 4px;
+    }
+    .sam-thinking-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--spark);
+      animation: thinking-pulse 1.4s ease-in-out infinite;
+    }
+    .sam-thinking-dot:nth-child(2) { animation-delay: 0.2s; }
+    .sam-thinking-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes thinking-pulse {
+      0%, 100% { opacity: 0.2; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    .sam-diagnosis-reveal {
+      animation: fade-up 0.4s cubic-bezier(0.34,1.2,0.64,1);
+    }
+    .wizard-diagnosis-text {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text2);
+      margin-bottom: 16px;
+    }
+    .wizard-diagnosis-text strong { color: var(--text); }
+
+    /* Audience profile card */
+    .wizard-audience-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .wizard-audience-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .wizard-audience-row:last-child { border-bottom: none; }
+    .wizard-audience-key {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text3);
+      min-width: 80px;
+      padding-top: 2px;
+    }
+    .wizard-audience-val {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    /* Platform cards */
+    .wizard-platform-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 14px 16px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .wizard-platform-card:hover { border-color: var(--border2); }
+    .wizard-platform-card.selected {
+      background: linear-gradient(135deg, rgba(109,40,217,0.15), rgba(244,114,182,0.08));
+      border-color: rgba(167,139,250,0.4);
+    }
+    .wizard-platform-card.not-recommended {
+      opacity: 0.6;
+    }
+    .wizard-platform-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+    .wizard-platform-info { flex: 1; }
+    .wizard-platform-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .wizard-platform-rec {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+    .rec-primary { background: rgba(52,211,153,0.15); color: #34D399; }
+    .rec-secondary { background: rgba(167,139,250,0.15); color: var(--spark); }
+    .rec-later { background: rgba(255,255,255,0.06); color: var(--text3); }
+    .wizard-platform-why { font-size: 13px; color: var(--text3); line-height: 1.5; }
+    .wizard-platform-card.selected .wizard-platform-why { color: var(--text2); }
+    .wizard-platform-check {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; color: transparent;
+      flex-shrink: 0; margin-top: 2px;
+      transition: all 0.15s;
+    }
+    .wizard-platform-card.selected .wizard-platform-check {
+      background: linear-gradient(135deg, #A78BFA, #F472B6);
+      border-color: transparent;
+      color: #fff;
+    }
+
+    /* Input area */
+    .wizard-input-area {
+      display: none;
+      margin-top: 16px;
+      animation: fade-up 0.25s ease;
+    }
+    .wizard-input-area.show { display: block; }
+
+    .wizard-textarea {
+      width: 100%;
+      min-height: 120px;
+      background: rgba(255,255,255,0.05) !important;
+      border: 1px solid rgba(167,139,250,0.3);
+      border-radius: var(--radius-lg);
+      padding: 16px 50px 16px 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 16px !important;
+      color: #F0ECFF !important;
+      -webkit-text-fill-color: #F0ECFF !important;
+      line-height: 1.65;
+      resize: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+    .wizard-textarea:focus {
+      outline: none;
+      border-color: rgba(167,139,250,0.6);
+    }
+    .wizard-textarea::placeholder { color: var(--text3); }
+    .wizard-textarea:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0 1000px #0D0B16 inset !important;
+      -webkit-text-fill-color: #F0ECFF !important;
+    }
+
+    /* Chips */
+    .wizard-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .wizard-chip {
+      font-size: 13px;
+      font-weight: 500;
+      padding: 7px 14px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      cursor: pointer;
+      background: var(--surface);
+      color: var(--text2);
+      transition: all 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .wizard-chip:hover { border-color: var(--border2); color: var(--text); }
+    .wizard-chip.selected {
+      background: linear-gradient(135deg, rgba(109,40,217,0.2), rgba(244,114,182,0.1));
+      border-color: rgba(167,139,250,0.5);
+      color: var(--text);
+    }
+
+    /* Navigation */
+    .wizard-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      padding: 16px 24px;
+      padding-bottom: max(16px, env(safe-area-inset-bottom, 16px));
+      background: rgba(9,8,15,0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      z-index: 10;
+    }
+    @media(min-width:768px){ .wizard-nav { padding: 20px 48px; } }
+
+    .wizard-back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text3);
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .wizard-back:hover { color: var(--text2); border-color: var(--border2); }
+
+    .wizard-next {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'Sora', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, #F472B6);
+      color: #fff;
+      box-shadow: 0 0 24px rgba(167,139,250,0.3);
+      transition: all 0.2s;
+      letter-spacing: 0.02em;
+    }
+    .wizard-next:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(167,139,250,0.45); }
+    .wizard-next:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+    /* Loader */
+    .wizard-loader {
+      display: none;
+      padding: 40px 0;
+      text-align: center;
+    }
+    .wizard-loader.show { display: block; }
+    .wizard-loader-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .wizard-loader-sub {
+      font-size: 14px;
+      color: var(--text3);
+      line-height: 1.6;
+      margin-bottom: 24px;
+      font-style: italic;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Pulsing progress bar */
+    .wizard-loader-bar-wrap {
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto 32px;
+      background: var(--border);
+      border-radius: 4px;
+      height: 4px;
+      overflow: hidden;
+    }
+    .wizard-loader-bar {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #6D28D9, #A78BFA, #F472B6);
+      width: 0%;
+      transition: width 3.5s ease;
+      animation: none;
+    }
+    .wizard-loader-bar.indeterminate {
+      width: 100%;
+      background-size: 200% 100%;
+      background: linear-gradient(90deg, transparent 0%, #A78BFA 40%, #F472B6 60%, transparent 100%);
+      background-size: 200%;
+      animation: shimmer-bar 1.8s ease-in-out infinite;
+    }
+    @keyframes shimmer-bar {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+
+    /* Still building notice */
+    .wizard-still-building {
+      display: none;
+      margin-top: 24px;
+      padding: 12px 16px;
+      background: rgba(167,139,250,0.08);
+      border: 1px solid rgba(167,139,250,0.2);
+      border-radius: var(--radius);
+      font-size: 13px;
+      color: var(--text2);
+      max-width: 360px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
+      animation: fade-up 0.4s ease;
+    }
+    .wizard-still-building.show { display: block; }
+
+    .wizard-loader-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      text-align: left;
+      max-width: 360px;
+      margin: 0 auto;
+    }
+    .wizard-loader-step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      color: rgba(240,236,255,0.3);
+      transition: color 0.5s, opacity 0.5s;
+      opacity: 0.4;
+    }
+    .wizard-loader-step.done { color: var(--text2); opacity: 1; }
+    .wizard-loader-step.active { color: var(--text); opacity: 1; }
+    .wizard-loader-dot {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,0.1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px;
+      flex-shrink: 0;
+      transition: all 0.5s;
+    }
+    .wizard-loader-step.done .wizard-loader-dot {
+      background: linear-gradient(135deg, #A78BFA, #F472B6);
+      border-color: transparent;
+      color: #fff;
+    }
+    .wizard-loader-step.active .wizard-loader-dot {
+      border-color: var(--spark);
+      background: rgba(167,139,250,0.15);
+      animation: pulse-dot 1.2s ease-in-out infinite;
+    }
+
+    /* Playbook */
+    .wizard-playbook {
+      display: none;
+      animation: fade-up 0.4s cubic-bezier(0.34,1.2,0.64,1);
+    }
+    .wizard-playbook.show { display: block; }
+
+    .playbook-cover {
+      text-align: center;
+      padding: 40px 0 32px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 32px;
+    }
+    .playbook-cover-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--spark);
+      background: var(--spark-bg);
+      border: 1px solid var(--spark-border);
+      padding: 5px 14px;
+      border-radius: 50px;
+      margin-bottom: 20px;
+    }
+    .playbook-cover-title {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .playbook-cover-title em {
+      font-style: normal;
+      background: linear-gradient(135deg, #F472B6, #A78BFA, #38BDF8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .playbook-cover-meta {
+      font-size: 13px;
+      color: var(--text3);
+    }
+
+    .playbook-section {
+      margin-bottom: 32px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+    }
+    .playbook-section:last-child { border-bottom: none; }
+
+    .playbook-section-num {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 6px;
+    }
+    .playbook-section-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+    }
+
+    .playbook-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      margin-bottom: 12px;
+    }
+    .playbook-card-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 8px;
+    }
+    .playbook-card-text {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text);
+    }
+
+    .playbook-hook {
+      font-family: 'Sora', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.3;
+      color: var(--text);
+      padding: 20px;
+      background: linear-gradient(135deg, rgba(109,40,217,0.12), rgba(244,114,182,0.08));
+      border: 1px solid rgba(167,139,250,0.25);
+      border-left: 4px solid var(--pulse);
+      border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+
+    .playbook-script {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      font-size: 15px;
+      line-height: 2.1;
+      color: var(--text);
+      white-space: pre-wrap;
+    }
+
+    .playbook-arch-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media(min-width:560px){ .playbook-arch-grid { grid-template-columns: 1fr 1fr; } }
+
+    .playbook-arch-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      border-top: 2px solid transparent;
+    }
+    .arch-opening { border-top-color: #38BDF8; }
+    .arch-setup   { border-top-color: #A78BFA; }
+    .arch-risk    { border-top-color: #F472B6; }
+    .arch-turn    { border-top-color: #FBBF24; }
+    .arch-payoff  { border-top-color: #34D399; }
+    .arch-cta     { border-top-color: #F472B6; }
+
+    .playbook-arch-beat {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 5px;
+    }
+    .playbook-arch-text {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.55;
+    }
+    .playbook-arch-time {
+      font-size: 11px;
+      color: var(--text3);
+      margin-top: 4px;
+    }
+
+    /* Lead magnet section — the star */
+    .playbook-lead-magnet {
+      background: linear-gradient(135deg, rgba(251,191,36,0.08), rgba(251,191,36,0.04));
+      border: 1px solid rgba(251,191,36,0.25);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      margin-bottom: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+    .playbook-lead-magnet::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #FBBF24, #F472B6, #A78BFA);
+    }
+    .playbook-lead-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--lens);
+      background: rgba(251,191,36,0.1);
+      border: 1px solid rgba(251,191,36,0.25);
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+    .playbook-lead-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+    .playbook-lead-why {
+      font-size: 14px;
+      color: var(--text2);
+      line-height: 1.7;
+      margin-bottom: 20px;
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.04);
+      border-radius: var(--radius);
+    }
+    .playbook-lead-items {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .playbook-lead-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.55;
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.04);
+      border-radius: var(--radius);
+    }
+    .playbook-lead-num {
+      font-family: 'Sora', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--lens);
+      flex-shrink: 0;
+      min-width: 24px;
+    }
+    .playbook-lead-comment {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(251,191,36,0.2);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+    }
+    .playbook-lead-comment-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--lens);
+      margin-bottom: 8px;
+    }
+    .playbook-lead-comment-text {
+      font-size: 15px;
+      color: var(--text);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    /* Focus directive */
+    .playbook-focus {
+      background: linear-gradient(135deg, rgba(109,40,217,0.15), rgba(244,114,182,0.1));
+      border: 1px solid rgba(167,139,250,0.25);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+    }
+    .playbook-focus-eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--spark);
+      margin-bottom: 8px;
+    }
+    .playbook-focus-text {
+      font-family: 'Sora', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    /* Print button */
+    .playbook-print-bar {
+      position: sticky;
+      bottom: 0;
+      background: rgba(9,8,15,0.95);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border);
+      padding: 16px 24px;
+      padding-bottom: max(16px, env(safe-area-inset-bottom, 16px));
+      display: flex;
+      gap: 10px;
+    }
+    .playbook-print-btn {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'Sora', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, #F472B6);
+      color: #fff;
+      box-shadow: 0 0 20px rgba(167,139,250,0.25);
+      transition: all 0.2s;
+    }
+    .playbook-print-btn:hover { transform: translateY(-2px); }
+    .playbook-new-btn {
+      padding: 14px 20px;
+      background: transparent;
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      font-family: 'Sora', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text2);
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .playbook-new-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.3); }
+
+    /* Advanced tools link */
+    .wizard-advanced-link {
+      text-align: center;
+      padding: 20px 0 8px;
+    }
+    .wizard-advanced-btn {
+      font-size: 13px;
+      color: var(--text3);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: color 0.15s;
+    }
+    .wizard-advanced-btn:hover { color: var(--text2); }
+
+    /* Entry screen */
+    .wizard-entry {
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      text-align: center;
+    }
+    .wizard-entry-logo {
+      font-family: 'Sora', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 32px;
+    }
+    .wizard-entry-title {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(28px, 6vw, 48px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+    .wizard-entry-title em {
+      font-style: normal;
+      background: linear-gradient(135deg, #F472B6, #A78BFA, #38BDF8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .wizard-entry-sub {
+      font-size: 16px;
+      color: var(--text2);
+      line-height: 1.65;
+      max-width: 480px;
+      margin: 0 auto 36px;
+    }
+    .wizard-entry-choices {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .wizard-entry-btn {
+      padding: 16px 20px;
+      border-radius: var(--radius-lg);
+      font-family: 'Sora', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .wizard-entry-primary {
+      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, #F472B6);
+      color: #fff;
+      border: none;
+      box-shadow: 0 0 24px rgba(167,139,250,0.3);
+    }
+    .wizard-entry-primary:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(167,139,250,0.45); }
+    .wizard-entry-secondary {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      color: var(--text2);
+    }
+    .wizard-entry-secondary:hover { color: var(--text); border-color: rgba(255,255,255,0.3); }
+    .wizard-entry-ghost {
+      background: transparent;
+      border: none;
+      color: var(--text3);
+      font-size: 13px;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      padding: 10px;
+    }
+
+    /* Copy button on playbook */
+    .playbook-copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text3);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+      float: right;
+      margin-top: 10px;
+    }
+    .playbook-copy-btn:hover { color: var(--text2); border-color: var(--border2); }
+    .playbook-copy-btn.copied { color: #34D399; border-color: rgba(52,211,153,0.3); }
+
+    .no-print { }
+    @media print {
+      .no-print { display: none !important; }
+
+      /* Hide EVERYTHING except playbook content */
+      .wizard-progress-wrap, .wizard-nav, .playbook-print-bar,
+      .desktop-hint, nav, .wizard-step:not(#wiz-12),
+      .wizard-advanced-link, #wizardLoader,
+      .wl-overlay, .trial-overlay, .paywall-overlay,
+      .setup-modal, footer, .chatbot-bubble, .chatbot-panel,
+      #homeView, #heroSection, #heroDesktop, .home-grid,
+      .tool-section, .tool-divider, .ambient,
+      #sheetOverlay, #bottomSheet, #paywallOverlay,
+      #trialOverlay, #wlOverlay, #proPage,
+      .chatbot-toggle, .no-print, #chatFab, #chatPanel, .chat-fab, .chat-panel, #nextToolOutput, .lm-controls, #lmRegenStatus { display: none !important; }
+
+      /* Page setup */
+      @page {
+        size: A4;
+        margin: 15mm 18mm;
+      }
+      @page :first { margin-top: 0; }
+
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+      body {
+        background: #ffffff !important;
+        color: #1a1a2e !important;
+        font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif !important;
+        font-size: 11pt !important;
+        line-height: 1.6 !important;
+      }
+
+      .wizard-page {
+        position: relative !important;
+        overflow: visible !important;
+        background: white !important;
+      }
+
+      .wizard-body { padding: 0 !important; max-width: 100% !important; }
+      .wizard-playbook { display: block !important; }
+
+      /* ── PLAYBOOK COVER ── */
+      .playbook-cover {
+        background: linear-gradient(135deg, #09080F 0%, #1a0a2e 50%, #0d0527 100%) !important;
+        color: white !important;
+        padding: 60px 48px !important;
+        margin: -15mm -18mm 0 !important;
+        page-break-after: always !important;
+        min-height: 200mm !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        border-bottom: none !important;
+      }
+
+      .playbook-cover-badge {
+        background: rgba(167,139,250,0.2) !important;
+        border: 1px solid rgba(167,139,250,0.4) !important;
+        color: #A78BFA !important;
+        padding: 6px 16px !important;
+        border-radius: 30px !important;
+        display: inline-block !important;
+        font-size: 9pt !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.15em !important;
+        text-transform: uppercase !important;
+        margin-bottom: 24px !important;
+      }
+
+      .playbook-cover-title {
+        font-family: 'Sora', 'Inter', Arial, sans-serif !important;
+        font-size: 42pt !important;
+        font-weight: 800 !important;
+        color: #ffffff !important;
+        line-height: 1.05 !important;
+        letter-spacing: -0.02em !important;
+        margin-bottom: 20px !important;
+      }
+
+      .playbook-cover-title em {
+        color: #A78BFA !important;
+        font-style: normal !important;
+      }
+
+      .playbook-cover-meta {
+        font-size: 11pt !important;
+        color: rgba(240,236,255,0.6) !important;
+        margin-top: 32px !important;
+        padding-top: 24px !important;
+        border-top: 1px solid rgba(255,255,255,0.1) !important;
+      }
+
+      /* ── SECTION LAYOUT ── */
+      .playbook-section {
+        page-break-inside: avoid !important;
+        margin-bottom: 24pt !important;
+        padding-bottom: 24pt !important;
+        border-bottom: 1px solid #e8e4f0 !important;
+      }
+
+      .playbook-section:last-child { border-bottom: none !important; }
+
+      .playbook-section-num {
+        font-size: 8pt !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.15em !important;
+        text-transform: uppercase !important;
+        color: #A78BFA !important;
+        margin-bottom: 4pt !important;
+      }
+
+      .playbook-section-title {
+        font-family: 'Sora', 'Inter', Arial, sans-serif !important;
+        font-size: 18pt !important;
+        font-weight: 700 !important;
+        color: #09080F !important;
+        margin-bottom: 12pt !important;
+        letter-spacing: -0.01em !important;
+      }
+
+      /* ── CARDS ── */
+      .playbook-card {
+        background: #f7f5ff !important;
+        border: 1px solid #e0d9f7 !important;
+        border-radius: 8pt !important;
+        padding: 14pt 16pt !important;
+        margin-bottom: 8pt !important;
+      }
+
+      .playbook-card-label {
+        font-size: 7.5pt !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.1em !important;
+        text-transform: uppercase !important;
+        color: #7C3AED !important;
+        margin-bottom: 6pt !important;
+      }
+
+      .playbook-card-text {
+        font-size: 10.5pt !important;
+        color: #1a1a2e !important;
+        line-height: 1.65 !important;
+      }
+
+      /* ── HOOK ── */
+      .playbook-hook {
+        background: linear-gradient(135deg, rgba(109,40,217,0.08), rgba(244,114,182,0.05)) !important;
+        border: 1px solid rgba(109,40,217,0.2) !important;
+        border-left: 4px solid #7C3AED !important;
+        border-radius: 0 8pt 8pt 0 !important;
+        padding: 16pt 20pt !important;
+        font-size: 16pt !important;
+        font-weight: 700 !important;
+        color: #09080F !important;
+        line-height: 1.3 !important;
+        margin-bottom: 10pt !important;
+      }
+
+      /* ── SCRIPT ── */
+      .playbook-script {
+        background: #fafafa !important;
+        border: 1px solid #e8e4f0 !important;
+        border-radius: 8pt !important;
+        padding: 16pt !important;
+        font-size: 10pt !important;
+        line-height: 2 !important;
+        color: #1a1a2e !important;
+        white-space: pre-wrap !important;
+      }
+
+      .script-beat {
+        color: #7C3AED !important;
+        font-weight: 700 !important;
+        font-size: 8pt !important;
+        letter-spacing: 0.08em !important;
+        display: block !important;
+        margin-top: 12pt !important;
+        margin-bottom: 4pt !important;
+      }
+
+      /* ── STORY ARCHITECTURE ── */
+      .playbook-arch-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 8pt !important;
+      }
+
+      .playbook-arch-card {
+        background: #f7f5ff !important;
+        border: 1px solid #e0d9f7 !important;
+        border-radius: 6pt !important;
+        padding: 10pt 12pt !important;
+      }
+
+      .arch-opening { border-top: 2.5px solid #38BDF8 !important; }
+      .arch-setup   { border-top: 2.5px solid #A78BFA !important; }
+      .arch-risk    { border-top: 2.5px solid #F472B6 !important; }
+      .arch-turn    { border-top: 2.5px solid #FBBF24 !important; }
+      .arch-payoff  { border-top: 2.5px solid #34D399 !important; }
+      .arch-cta     { border-top: 2.5px solid #F472B6 !important; }
+
+      .playbook-arch-beat {
+        font-size: 7.5pt !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.08em !important;
+        text-transform: uppercase !important;
+        color: #666 !important;
+        margin-bottom: 4pt !important;
+      }
+
+      .playbook-arch-text {
+        font-size: 10pt !important;
+        color: #1a1a2e !important;
+        line-height: 1.5 !important;
+      }
+
+      /* ── AUDIENCE PROFILE ── */
+      .wizard-audience-card {
+        background: #f7f5ff !important;
+        border: 1px solid #e0d9f7 !important;
+        border-radius: 8pt !important;
+        padding: 12pt 16pt !important;
+      }
+
+      .wizard-audience-row {
+        border-bottom: 1px solid #e8e4f0 !important;
+        padding: 8pt 0 !important;
+        display: flex !important;
+        gap: 12pt !important;
+      }
+
+      .wizard-audience-key {
+        font-size: 8pt !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.08em !important;
+        text-transform: uppercase !important;
+        color: #7C3AED !important;
+        min-width: 60pt !important;
+        padding-top: 2pt !important;
+      }
+
+      .wizard-audience-val {
+        font-size: 10pt !important;
+        color: #1a1a2e !important;
+        line-height: 1.55 !important;
+      }
+
+      /* ── PLATFORM STRATEGY ── */
+      .platform-strategy {
+        background: #f7f5ff !important;
+        border: 1px solid #e0d9f7 !important;
+        border-radius: 8pt !important;
+        padding: 12pt 14pt !important;
+        margin-bottom: 8pt !important;
+        page-break-inside: avoid !important;
+      }
+
+      .ps-header { display: flex !important; align-items: center !important; margin-bottom: 6pt !important; }
+      .ps-name { font-weight: 700 !important; font-size: 11pt !important; color: #09080F !important; }
+      .ps-caption { font-size: 10pt !important; color: #1a1a2e !important; line-height: 1.6 !important; margin-bottom: 4pt !important; }
+      .ps-hashtags { font-size: 9pt !important; color: #7C3AED !important; }
+
+      /* Hide copy buttons in print */
+      .copy-btn, .playbook-copy-btn, .hook-retry,
+      .playbook-copy-btn, button.copy-btn { display: none !important; }
+
+      /* ── LEAD MAGNET — NEW PAGE, WHITE DESIGN ── */
+      .playbook-lead-magnet {
+        page-break-before: always !important;
+        background: #ffffff !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: -15mm -18mm !important;
+        padding: 20mm 18mm !important;
+      }
+
+      .playbook-lead-magnet::before { display: none !important; }
+
+      .playbook-lead-badge {
+        background: #FEF3C7 !important;
+        border: 1px solid #FCD34D !important;
+        color: #92400E !important;
+        padding: 5pt 12pt !important;
+        border-radius: 20pt !important;
+        display: inline-block !important;
+        font-size: 8pt !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.1em !important;
+        text-transform: uppercase !important;
+        margin-bottom: 16pt !important;
+      }
+
+      .playbook-lead-title {
+        font-family: 'Sora', 'Inter', Arial, sans-serif !important;
+        font-size: 28pt !important;
+        font-weight: 800 !important;
+        color: #09080F !important;
+        line-height: 1.1 !important;
+        margin-bottom: 16pt !important;
+        letter-spacing: -0.02em !important;
+      }
+
+      .playbook-lead-why {
+        background: #f7f5ff !important;
+        border: none !important;
+        border-left: 3px solid #7C3AED !important;
+        padding: 12pt 16pt !important;
+        border-radius: 0 6pt 6pt 0 !important;
+        font-size: 10pt !important;
+        color: #333 !important;
+        line-height: 1.65 !important;
+        margin-bottom: 20pt !important;
+      }
+
+      .playbook-lead-items { gap: 10pt !important; }
+
+      .playbook-lead-item {
+        background: #fafafa !important;
+        border: 1px solid #e8e4f0 !important;
+        border-radius: 8pt !important;
+        padding: 12pt 14pt !important;
+        page-break-inside: avoid !important;
+      }
+
+      .playbook-lead-num {
+        font-size: 20pt !important;
+        font-weight: 800 !important;
+        color: #7C3AED !important;
+        min-width: 24pt !important;
+      }
+
+      .playbook-lead-comment {
+        background: #FEF3C7 !important;
+        border: 1.5px solid #FCD34D !important;
+        border-radius: 8pt !important;
+        padding: 12pt 16pt !important;
+        margin-top: 16pt !important;
+        page-break-inside: avoid !important;
+      }
+
+      .playbook-lead-comment-label {
+        font-size: 8pt !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.1em !important;
+        text-transform: uppercase !important;
+        color: #92400E !important;
+        margin-bottom: 6pt !important;
+      }
+
+      .playbook-lead-comment-text {
+        font-size: 11pt !important;
+        color: #1a1a2e !important;
+        line-height: 1.6 !important;
+        font-style: italic !important;
+      }
+
+      /* ── FOCUS DIRECTIVE ── */
+      .playbook-focus {
+        background: linear-gradient(135deg, rgba(109,40,217,0.08), rgba(244,114,182,0.05)) !important;
+        border: 1.5px solid rgba(109,40,217,0.2) !important;
+        border-radius: 8pt !important;
+        padding: 16pt 20pt !important;
+      }
+
+      .playbook-focus-eyebrow {
+        font-size: 8pt !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.15em !important;
+        text-transform: uppercase !important;
+        color: #7C3AED !important;
+        margin-bottom: 6pt !important;
+      }
+
+      .playbook-focus-text {
+        font-size: 14pt !important;
+        font-weight: 700 !important;
+        color: #09080F !important;
+        line-height: 1.4 !important;
+      }
+
+      /* ── WIZARD WHY BLOCKS ── */
+      .wizard-why {
+        background: #f7f5ff !important;
+        border-left: 3px solid #A78BFA !important;
+        border-radius: 0 6pt 6pt 0 !important;
+        padding: 10pt 14pt !important;
+        font-size: 9.5pt !important;
+        color: #333 !important;
+        line-height: 1.65 !important;
+        margin-bottom: 10pt !important;
+      }
+
+      /* SAM footer on each page */
+      .wizard-playbook::after {
+        content: 'Built by S.A.M. — Strategic Assistant for Making · samforcreators.com';
+        display: block !important;
+        text-align: center !important;
+        font-size: 8pt !important;
+        color: #999 !important;
+        margin-top: 30pt !important;
+        padding-top: 12pt !important;
+        border-top: 1px solid #eee !important;
+      }
+    }
+
+
+        /* ── SELECTIVE PRINT MODES ── */
+    /* body.print-playbook-only = Download Playbook PDF was clicked */
+    /* body.print-leadmagnet-only = Download Lead Magnet PDF was clicked */
+    @media print {
+      body.print-playbook-only #leadMagnetSection,
+      body.print-playbook-only #leadMagnetSection * { display: none !important; }
+      body.print-leadmagnet-only .playbook-cover,
+      body.print-leadmagnet-only .playbook-section:not(#leadMagnetSection),
+      body.print-leadmagnet-only .wizard-loader,
+      body.print-leadmagnet-only .wizard-advanced-link { display: none !important; }
+      body.print-leadmagnet-only #leadMagnetSection { display: block !important; }
+      body.print-leadmagnet-only .lm-controls,
+      body.print-leadmagnet-only #lmRegenStatus,
+      body.print-leadmagnet-only .wizard-why,
+      body.print-leadmagnet-only .playbook-section-num,
+      body.print-leadmagnet-only .playbook-section-title,
+      body.print-leadmagnet-only .no-print { display: none !important; }
+      body.print-leadmagnet-only .playbook-lead-magnet {
+        page-break-before: avoid !important;
+        background: #ffffff !important;
+        border: none !important;
+        margin: -15mm -18mm !important;
+        padding: 20mm 18mm !important;
+      }
+      body.print-leadmagnet-only .wl-doc-header { display: flex !important; }
+    }
+
+/* ── BRAND PROFILE ── */
+    .brand-upload-zone {
+      border: 2px dashed var(--border2);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--surface);
+      position: relative;
+    }
+    .brand-upload-zone:hover { border-color: var(--spark); background: var(--surface2); }
+    .brand-upload-zone.has-logo { border-style: solid; border-color: rgba(167,139,250,0.4); }
+    .brand-logo-preview {
+      max-height: 80px;
+      max-width: 200px;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+    .brand-color-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .brand-color-swatch {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .brand-color-swatch.selected {
+      border-color: var(--text);
+      transform: scale(1.15);
+    }
+    .brand-text-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: #1a1428 !important;
+      border: 1px solid rgba(167,139,250,0.3);
+      border-radius: var(--radius);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px !important;
+      color: #F0ECFF !important;
+      -webkit-text-fill-color: #F0ECFF !important;
+      margin-top: 8px;
+      -webkit-appearance: none;
+    }
+    .brand-text-input:focus {
+      outline: none;
+      border-color: rgba(167,139,250,0.6);
+    }
+    .pro-lock {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--lens);
+      background: rgba(251,191,36,0.1);
+      border: 1px solid rgba(251,191,36,0.2);
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-left: 8px;
+    }
+
+    /* ── PRINT: WHITE LABEL HEADER ── */
+    @media print {
+      .wl-doc-header {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 0 0 16pt 0 !important;
+        margin-bottom: 20pt !important;
+        border-bottom: 2px solid var(--brand-color, #7C3AED) !important;
+      }
+      .wl-brand-logo {
+        max-height: 48pt !important;
+        max-width: 140pt !important;
+        object-fit: contain !important;
+      }
+      .wl-brand-name {
+        font-family: 'Sora', Arial, sans-serif !important;
+        font-size: 16pt !important;
+        font-weight: 700 !important;
+        color: #09080F !important;
+      }
+      .wl-brand-handle {
+        font-size: 9pt !important;
+        color: #666 !important;
+      }
+      .wl-sam-credit {
+        font-size: 7pt !important;
+        color: #999 !important;
+        text-align: right !important;
+      }
+      .wl-sam-credit a { color: #7C3AED !important; }
+    }
+
   </style>
 </head>
 <body>
@@ -2430,6 +3967,9 @@
       <div class="trial-nav-dot"></div>
       <span id="trialBadgeText">3 days free</span>
     </div>
+    <button class="nav-setup-btn" onclick="openWizardPage()" style="background:linear-gradient(135deg,rgba(109,40,217,0.2),rgba(244,114,182,0.1));border-color:rgba(167,139,250,0.3);color:var(--text);display:none;" id="navWizardBtn">
+      ✦ My playbook
+    </button>
     <button class="nav-setup-btn" onclick="openSetup()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
       About me
@@ -2449,7 +3989,7 @@
     <h1>Your creative<br/><em>director.</em><br/>Always on.</h1>
     <p class="hero-sub" style="margin-bottom:18px;">SAM writes your hooks, scripts, captions and strategy — so you can stop second-guessing and start making.</p>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:0;">
-      <button class="hero-cta-primary" style="font-size:14px;padding:12px 22px;" onclick="document.getElementById('tools').scrollIntoView({behavior:'smooth'})">Start creating →</button>
+      <button class="hero-cta-primary" style="font-size:14px;padding:12px 22px;" onclick="openWizardPage()">✦ Build my playbook →</button>
       <button class="hero-cta-ghost" style="font-size:13px;padding:11px 18px;" onclick="openProModal()">✦ Go Pro</button>
     </div>
     <div class="mobile-stat-grid">
@@ -2483,7 +4023,7 @@
       <div class="hero-title-desktop">Your creative<br><em>director.</em><br>Always on.</div>
       <div class="hero-sub-desktop">SAM writes your hooks, scripts, captions, and strategy — so you can stop second-guessing and start making.</div>
       <div class="hero-cta-row">
-        <button class="hero-cta-primary" onclick="document.getElementById('tools').scrollIntoView({behavior:'smooth'})">Start creating →</button>
+        <button class="hero-cta-primary" onclick="openWizardPage()">✦ Build my playbook →</button>
         <button class="hero-cta-ghost" onclick="openProModal()">✦ See Pro plan</button>
       </div>
     </div>
@@ -3268,9 +4808,35 @@ async function readStream(r) {
   if (accumulated) {
     const clean = accumulated.replace(/```json/g,'').replace(/```/g,'').trim();
     const first = clean.indexOf('{');
-    const last = clean.lastIndexOf('}');
+    let last = clean.lastIndexOf('}');
+
+    // Try full parse first
     if (first !== -1 && last !== -1) {
       try { return JSON.parse(clean.slice(first, last + 1)); } catch(e) {}
+    }
+
+    // If JSON was cut off, try to salvage what we have
+    if (first !== -1) {
+      let partial = clean.slice(first);
+      // Count open braces and try to close them
+      let opens = 0;
+      for (const ch of partial) { if (ch === '{') opens++; else if (ch === '}') opens--; }
+      // Add closing braces to complete the JSON
+      partial = partial + '}'.repeat(Math.max(0, opens));
+      try { return JSON.parse(partial); } catch(e) {}
+
+      // Last resort — extract what we can field by field
+      const diagnosis = partial.match(/"diagnosis"\s*:\s*"([^"]+)"/)?.[1];
+      const hook = partial.match(/"hook"\s*:\s*"([^"]+)"/)?.[1];
+      if (diagnosis || hook) {
+        return {
+          diagnosis: diagnosis || 'SAM read your story. Keep going.',
+          hook: hook || 'Your story is worth telling.',
+          full_script: 'SAM had trouble formatting the full output. Try again for the complete playbook.',
+          platform_strategies: [],
+          focus_directive: 'Try again — SAM has your story and is ready to build.'
+        };
+      }
     }
     throw new Error('SAM responded but output could not be parsed. Raw: ' + accumulated.slice(0,300));
   }
@@ -4209,6 +5775,9 @@ function checkTrialBeforeRun() {
 let runCount = 0;
 
 function guardedRunFn(originalFn) {
+  // Dev mode bypass — run sam_devmode() in console to enable
+  if (localStorage.getItem('sam_dev') === 'true') { originalFn(); return; }
+
   runCount++;
   const state = getTrialState();
 
@@ -4376,17 +5945,1773 @@ async function sendChatMessage() {
   }
 }
 
+// ── DEV MODE ─────────────────────────────────────────────────────────────────
+// Run sam_devmode() in browser console to bypass all limits for testing
+window.sam_devmode = function() {
+  localStorage.setItem('sam_dev', 'true');
+  localStorage.setItem('sam_uid', 'dev-joey');
+  localStorage.setItem('sam-trial', JSON.stringify({ paid: true, email: 'dev@sam.com', trialStart: Date.now() }));
+  WS.email = 'dev@sam.com';
+  WS.userId = 'dev-joey';
+  WS.tier = 'studio';
+  saveWizardState();
+  console.log('✅ SAM dev mode ON — all limits bypassed. Run sam_devmode_off() to disable.');
+};
+window.sam_devmode_off = function() {
+  localStorage.removeItem('sam_dev');
+  localStorage.removeItem('sam_uid');
+  localStorage.removeItem('sam-trial');
+  console.log('✅ SAM dev mode OFF — normal user experience restored.');
+};
+
 // ── INIT ALL SYSTEMS ──────────────────────────────────────────────────────────
 // Wait for DOM to be fully ready before initializing
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', function() {
     initTrial();
     initChat();
+    initWizard();
   });
 } else {
-  // DOM already ready (script is deferred or at end of body)
   initTrial();
   initChat();
+  initWizard();
+}
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// SAM GUIDED WIZARD — COMPLETE BRAIN
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+const WIZARD_STEPS = ['entry','0','1','2','3','4','5','6','7','8','9','10','11','12'];
+let wizardCurrentStep = 'entry';
+let wizardActiveMic = null;
+
+const WS = {
+  // The collected context
+  creatorType: null,     // personal / business / coach / maker / community / brand
+  brandName: null,       // their name or brand name
+  brandHandle: null,     // their handle or website
+  brandLogo: null,       // base64 logo
+  brandColor: '#7C3AED', // brand accent color
+  storyType: null,       // moment / idea / plan / concept / analyse
+  storyText: null,       // their raw story
+  inputMethod: null,     // speak / type / photo
+  storyPhoto: null,      // base64 if they uploaded in step 2
+  storyPhotoType: null,
+  reflection: null,      // yes / mostly / no
+  reflectionExtra: null,
+  delivery: null,        // camera / narration / text / mix
+  pace: null,            // fast / natural / slow
+  audienceConfirm: null, // yes / adjust / different / trust
+  audienceAge: null,
+  audienceGender: null,
+  audienceCustom: null,
+  platforms: [],
+  format: null,
+  photoOption: null,     // upload / later / skip
+  thumbPhoto: null,      // base64 if uploaded in step 9
+  thumbPhotoType: null,
+  steers: [],
+  steerText: null,
+  language: 'English',
+
+  // SAM's internal diagnosis (set by API calls during wizard)
+  diagnosedStory: null,
+  diagnosedAudience: null,
+  diagnosedPlatforms: null,
+};
+
+// Load saved wizard state
+function loadWizardState() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('sam-wizard-state') || '{}');
+    Object.assign(WS, saved);
+  } catch(e) {}
+}
+
+function saveWizardState() {
+  try {
+    localStorage.setItem('sam-wizard-state', JSON.stringify(WS));
+  } catch(e) {}
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+function initWizard() {
+  loadWizardState();
+
+  // Check if there's a saved session to continue
+  const hasSaved = WS.storyType && WS.storyText;
+  const continueBtn = document.getElementById('continueBtn');
+  if (hasSaved && continueBtn) {
+    continueBtn.style.display = 'block';
+  }
+
+  // Show nav wizard button if they have a saved playbook
+  const trialState = getTrialState();
+  const navBtn = document.getElementById('navWizardBtn');
+  if (navBtn) navBtn.style.display = 'flex';
+}
+
+function openWizardPage() {
+  document.getElementById('wizardPage').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  showWizardStep('entry');
+}
+
+function closeWizard() {
+  document.getElementById('wizardPage').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+function showWizardStep(step) {
+  wizardCurrentStep = step;
+
+  // Hide all steps
+  document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
+
+  // Show target step
+  const stepEl = document.getElementById('wiz-' + step);
+  if (stepEl) stepEl.classList.add('active');
+
+  // Show/hide progress bar and nav
+  const isEntry = step === 'entry';
+  const isBuilding = step === '12';
+  document.getElementById('wizardProgressWrap').style.display = isEntry ? 'none' : 'block';
+  // On step 12 hide the Next/Back wizard nav but show the print bar
+  document.getElementById('wizardNav').style.display = (isEntry || isBuilding) ? 'none' : 'flex';
+  // Print bar only shows on step 12 AFTER playbook is built (buildPlaybook sets it)
+  // But reset it to none whenever navigating away from 12
+  if (step !== '12') {
+    document.getElementById('playbookPrintBar').style.display = 'none';
+    // Clear next tool output when navigating back
+    const nto = document.getElementById('nextToolOutput');
+    if (nto) nto.innerHTML = '';
+  }
+
+  // Update progress
+  if (!isEntry) {
+    const stepNum = parseInt(step);
+    const total = 12;
+    const pct = Math.round((stepNum / total) * 100);
+    document.getElementById('wizardProgressFill').style.width = pct + '%';
+    document.getElementById('wizardStepLabel').textContent = 'Step ' + stepNum + ' of ' + total;
+  }
+
+  // Disable next by default — re-enabled when selection made
+  const nextBtn = document.getElementById('wizardNextBtn');
+  if (nextBtn) nextBtn.disabled = true;
+
+  // Scroll to top
+  document.getElementById('wizardPage').scrollTop = 0;
+
+  // Step-specific setup
+  setupWizardStep(step);
+}
+
+function setupWizardStep(step) {
+  const s = getSetup();
+
+  if (step === '2') {
+    // Adapt question based on story type
+    const q = {
+      moment: "Tell SAM about your moment.",
+      idea:   "Tell SAM about your content idea.",
+      plan:   "Tell SAM about your niche and what you create.",
+      concept:"Tell SAM about yourself and the kind of video you want.",
+      analyse:"Drop your analytics screenshot below."
+    };
+    const w = {
+      moment: "Don't polish it. Just talk. The raw version is always better than the edited one — SAM will find the story in it.",
+      idea:   "What's the idea? What made you think of it? Who's it for? Don't overthink it.",
+      plan:   "Tell SAM what you make, who your audience is, and what themes or topics you want to cover this week.",
+      concept:"What makes you different? What's your niche? What kind of video would stop you scrolling?",
+      analyse:"Upload your analytics screenshot and SAM will tell you exactly what to do next."
+    };
+    document.getElementById('wiz2question').textContent = q[WS.storyType] || q.moment;
+    document.getElementById('wiz2why').textContent = w[WS.storyType] || w.moment;
+  }
+
+  if (step === '3') {
+    // Generate real story reflection via API
+    generateStoryReflection();
+  }
+
+  if (step === '6') {
+    // Restore any previously selected age/gender chips
+    restoreAgeGenderSelections();
+    // Show SAM's audience diagnosis
+    const diag = WS.diagnosedAudience;
+    if (diag) {
+      document.getElementById('wiz6diagText').innerHTML = '<div class="sam-diagnosis-reveal">' + diag + '</div>';
+    } else {
+      generateAudienceDiagnosis();
+    }
+  }
+
+  if (step === '7') {
+    // Build platform cards
+    renderWizardPlatforms();
+  }
+
+  if (step === '8') {
+    // Pre-select format based on story type + pace
+    preSelectFormat();
+  }
+
+  if (step === '12') {
+    // If we have a saved playbook from going back, restore it instead of rebuilding
+    if (window._savedPlaybookHTML && window._savedPlaybookData) {
+      const wizOutput = document.getElementById('wizardOutput');
+      if (wizOutput) {
+        wizOutput.innerHTML = window._savedPlaybookHTML;
+        window._lastPlaybookData = window._savedPlaybookData;
+        document.getElementById('playbookPrintBar').style.display = 'flex';
+        // Re-wire any copy buttons
+        document.getElementById('wizardPage').scrollTop = 0;
+      }
+    } else {
+      buildPlaybook();
+    }
+  }
+}
+
+function wizardNext() {
+  const stepOrder = ['1','2','3','4','5','6','7','8','9','10','11','12'];
+  const idx = stepOrder.indexOf(wizardCurrentStep);
+  if (idx < stepOrder.length - 1) {
+    // Special: if analyse type, skip straight to build after photo step
+    if (WS.storyType === 'analyse' && wizardCurrentStep === '2') {
+      showWizardStep('12'); return;
+    }
+    // Skip photo step if not needed
+    if (wizardCurrentStep === '8' && WS.format !== 'short' && WS.format !== 'long') {
+      WS.photoOption = 'skip';
+      showWizardStep('10'); return;
+    }
+    showWizardStep(stepOrder[idx + 1]);
+    saveWizardState();
+  }
+}
+
+function wizardBack() {
+  const stepOrder = ['1','2','3','4','5','6','7','8','9','10','11','12'];
+  const idx = stepOrder.indexOf(wizardCurrentStep);
+  if (idx > 0) {
+    showWizardStep(stepOrder[idx - 1]);
+  } else {
+    showWizardStep('entry');
+  }
+}
+
+function wizardBackFromPlaybook() {
+  // Go back to step 11 (steer SAM) but preserve playbook data
+  // Store current playbook HTML so we can restore it if they go forward again
+  const wizOutput = document.getElementById('wizardOutput');
+  if (wizOutput) {
+    window._savedPlaybookHTML = wizOutput.innerHTML;
+    window._savedPlaybookData = window._lastPlaybookData;
+  }
+  showWizardStep('10');
+}
+
+function startWizard(mode) {
+  if (mode === 'new') {
+    // Clear state for new playbook
+    Object.keys(WS).forEach(k => {
+      if (Array.isArray(WS[k])) WS[k] = [];
+      else WS[k] = null;
+    });
+    WS.language = 'English';
+    WS.platforms = [];
+    WS.steers = [];
+    saveWizardState();
+  }
+  document.getElementById('wizardProgressWrap').style.display = 'block';
+  showWizardStep('0');
+}
+
+// ── SELECTIONS ────────────────────────────────────────────────────────────────
+function selectWizardChoice(btn, stepId, value) {
+  // Single select for most steps
+  const parent = btn.closest('.wizard-choices') || btn.closest('.wizard-step');
+  parent.querySelectorAll('.wizard-choice').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+
+  // Save value
+  const map = {
+    wiz0: 'creatorType',
+    wiz1: 'storyType',
+    wiz3: 'reflection',
+    wiz4: 'delivery',
+    wiz5: 'pace',
+    wiz6: 'audienceConfirm',
+    wiz8: 'format',
+    wiz9: 'photoOption',
+    wiz11: 'language',
+  };
+  if (map[stepId]) WS[map[stepId]] = value;
+
+  // Handle conditional reveals
+  if (stepId === 'wiz3') {
+    const extra = document.getElementById('wiz3extra');
+    if (extra) extra.classList.toggle('show', value === 'mostly' || value === 'no');
+    if (value === 'no') {
+      // Go back to step 2
+      setTimeout(() => showWizardStep('2'), 500);
+      return;
+    }
+  }
+
+  if (stepId === 'wiz6') {
+    const adj = document.getElementById('wiz6adjust');
+    if (adj) adj.classList.toggle('show', value === 'adjust' || value === 'different');
+  }
+
+  if (stepId === 'wiz9') {
+    const upload = document.getElementById('wiz9upload');
+    if (upload) upload.classList.toggle('show', value === 'upload');
+  }
+
+  // Enable next button
+  document.getElementById('wizardNextBtn').disabled = false;
+  saveWizardState();
+}
+
+function selectInputMethod(method) {
+  WS.inputMethod = method;
+
+  // Highlight selected button
+  document.querySelectorAll('#wiz-2 .wizard-choice').forEach(b => b.classList.remove('selected'));
+  const btnMap = { speak: 'btn-speak', type: 'btn-type', photo: 'btn-photo' };
+  const btn = document.getElementById(btnMap[method]);
+  if (btn) btn.classList.add('selected');
+
+  // Show appropriate input
+  document.getElementById('wiz2input').classList.remove('show');
+  document.getElementById('wiz2photo').classList.remove('show');
+
+  if (method === 'speak') {
+    document.getElementById('wiz2input').classList.add('show');
+    // Auto-start mic
+    toggleWizardMic();
+  } else if (method === 'type') {
+    document.getElementById('wiz2input').classList.add('show');
+    document.getElementById('wiz2text').focus();
+  } else if (method === 'photo') {
+    document.getElementById('wiz2photo').classList.add('show');
+  }
+
+  document.getElementById('wizardNextBtn').disabled = false;
+
+  // Watch for text input — covers typing, paste, voice
+  const ta = document.getElementById('wiz2text');
+  if (ta) {
+    const updateStory = () => {
+      WS.storyText = ta.value;
+      const count = document.getElementById('wiz2charcount');
+      if (count) count.textContent = ta.value.length + ' characters';
+      document.getElementById('wizardNextBtn').disabled = ta.value.trim().length < 10;
+      saveWizardState();
+    };
+    ta.addEventListener('input', updateStory);
+    ta.addEventListener('paste', () => setTimeout(updateStory, 50));
+    ta.addEventListener('keyup', updateStory);
+    ta.addEventListener('change', updateStory);
+    if (WS.storyText) {
+      ta.value = WS.storyText;
+      updateStory();
+    }
+  }
+}
+
+function toggleWizAgeChip(btn) {
+  // Multi-select for age brackets
+  btn.classList.toggle('selected');
+  const allAges = ['13-17','18-24','25-34','35-44','45-54','55+'];
+  const selected = [];
+  btn.closest('div').querySelectorAll('.wizard-chip').forEach(b => {
+    if (b.classList.contains('selected') && allAges.includes(b.dataset.value)) {
+      selected.push(b.dataset.value);
+    }
+  });
+  // Store as array-friendly string — never null if nothing selected (SAM diagnoses)
+  WS.audienceAge = selected.length > 0 ? selected.join(', ') : '';
+  document.getElementById('wizardNextBtn').disabled = false;
+  saveWizardState();
+}
+
+function restoreAgeGenderSelections() {
+  // Restore age chip selections from WS state when returning to step 6
+  if (WS.audienceAge) {
+    const ages = WS.audienceAge.split(', ').map(a => a.trim()).filter(Boolean);
+    document.querySelectorAll('[onclick*="toggleWizAgeChip"]').forEach(chip => {
+      if (ages.includes(chip.dataset.value)) {
+        chip.classList.add('selected');
+      }
+    });
+  }
+  // Restore gender selection
+  if (WS.audienceGender) {
+    document.querySelectorAll('[onclick*="toggleWizChip"][data-value]').forEach(chip => {
+      if (chip.dataset.value === WS.audienceGender) {
+        chip.classList.add('selected');
+      }
+    });
+  }
+  // Restore custom text
+  const customEl = document.getElementById('wiz6customtext');
+  if (customEl && WS.audienceCustom) {
+    customEl.value = WS.audienceCustom;
+  }
+  // Always enable continue on step 6
+  const nb = document.getElementById('wizardNextBtn');
+  if (nb) nb.disabled = false;
+}
+
+function toggleWizChip(btn, group) {
+  if (group === 'steer') {
+    btn.classList.toggle('selected');
+    const val = btn.dataset.value;
+    if (btn.classList.contains('selected')) {
+      if (!WS.steers.includes(val)) WS.steers.push(val);
+    } else {
+      WS.steers = WS.steers.filter(s => s !== val);
+    }
+  } else {
+    // Single select chips (gender)
+    btn.closest('.wizard-chips, div').querySelectorAll('.wizard-chip[data-value]').forEach(b => {
+      if (b.dataset.value && (
+        (group === 'gender' && ['Mostly men','Mix of both','Mostly women'].includes(b.dataset.value))
+      )) b.classList.remove('selected');
+    });
+    btn.classList.add('selected');
+    if (group === 'gender') WS.audienceGender = btn.dataset.value;
+  }
+  document.getElementById('wizardNextBtn').disabled = false;
+  saveWizardState();
+}
+
+// ── PLATFORM CARDS ────────────────────────────────────────────────────────────
+const PLATFORM_DETAILS = {
+  'TikTok': {
+    icon: '🎵',
+    desc: 'Discovery platform. Algorithm favors new creators more than anywhere else. Your story doesn\'t need a following to get seen here.',
+    recKey: 'primary'
+  },
+  'Facebook': {
+    icon: '👥',
+    desc: 'Where emotional stories and family content perform best. Your existing community is already here.',
+    recKey: 'secondary'
+  },
+  'YouTube': {
+    icon: '▶️',
+    desc: 'The long game. Builds deep loyalty and searchable content. Best when you have more story to tell.',
+    recKey: 'later'
+  },
+  'Instagram Reels': {
+    icon: '📸',
+    desc: 'Visual-first platform. Strong for transformations and aesthetically driven content.',
+    recKey: 'secondary'
+  },
+  'YouTube Shorts': {
+    icon: '▶️',
+    desc: 'If you\'re on TikTok, repurpose here. Don\'t create separately for it.',
+    recKey: 'later'
+  },
+  'LinkedIn': {
+    icon: '💼',
+    desc: 'Professional storytelling. Best for lessons learned and industry insights.',
+    recKey: 'later'
+  },
+  'X (Twitter)': {
+    icon: '✕',
+    desc: 'Text-first platform. Works for commentary and hot takes but limited for visual storytelling.',
+    recKey: 'later'
+  }
+};
+
+function renderWizardPlatforms() {
+  const container = document.getElementById('wiz7platforms');
+  if (!container) return;
+
+  // Smart pre-selection based on story type, pace, audience
+  const recommended = getRecommendedPlatforms();
+  if (!WS.platforms.length) {
+    WS.platforms = recommended.primary.concat(recommended.secondary);
+  }
+
+  let html = '';
+  const allPlatforms = Object.keys(PLATFORM_DETAILS);
+
+  allPlatforms.forEach(p => {
+    const details = PLATFORM_DETAILS[p];
+    const isPrimary = recommended.primary.includes(p);
+    const isSecondary = recommended.secondary.includes(p);
+    const isSelected = WS.platforms.includes(p);
+    const recLabel = isPrimary ? 'Primary' : isSecondary ? 'Secondary' : 'Later';
+    const recClass = isPrimary ? 'rec-primary' : isSecondary ? 'rec-secondary' : 'rec-later';
+
+    html += `<div class="wizard-platform-card ${isSelected ? 'selected' : ''} ${!isPrimary && !isSecondary ? 'not-recommended' : ''}"
+      onclick="toggleWizardPlatform(this, '${p}')">
+      <div class="wizard-platform-icon">${details.icon}</div>
+      <div class="wizard-platform-info">
+        <div class="wizard-platform-name">
+          ${p}
+          <span class="wizard-platform-rec ${recClass}">${recLabel}</span>
+        </div>
+        <div class="wizard-platform-why">${details.desc}</div>
+      </div>
+      <div class="wizard-platform-check">${isSelected ? '✓' : ''}</div>
+    </div>`;
+  });
+
+  container.innerHTML = html;
+  document.getElementById('wizardNextBtn').disabled = WS.platforms.length === 0;
+}
+
+function getRecommendedPlatforms() {
+  const storyType = WS.storyType;
+  const pace = WS.pace;
+  const audience = WS.diagnosedAudience || '';
+
+  const older = audience.includes('35') || audience.includes('45') || audience.includes('55');
+  const emotional = storyType === 'moment';
+  const fastPace = pace === 'fast';
+
+  if (emotional && older) {
+    return { primary: ['Facebook', 'TikTok'], secondary: ['YouTube'] };
+  } else if (emotional && !older) {
+    return { primary: ['TikTok', 'Instagram Reels'], secondary: ['YouTube Shorts'] };
+  } else if (storyType === 'plan' || storyType === 'concept') {
+    return { primary: ['TikTok', 'YouTube'], secondary: ['Instagram Reels'] };
+  } else {
+    return { primary: ['TikTok'], secondary: ['Instagram Reels', 'YouTube Shorts'] };
+  }
+}
+
+function toggleWizardPlatform(card, platform) {
+  const isSelected = card.classList.contains('selected');
+  if (isSelected) {
+    card.classList.remove('selected');
+    card.querySelector('.wizard-platform-check').textContent = '';
+    WS.platforms = WS.platforms.filter(p => p !== platform);
+  } else {
+    card.classList.add('selected');
+    card.querySelector('.wizard-platform-check').textContent = '✓';
+    WS.platforms.push(platform);
+  }
+  document.getElementById('wizardNextBtn').disabled = WS.platforms.length === 0;
+  saveWizardState();
+}
+
+function preSelectFormat() {
+  // Pre-select based on delivery + pace
+  let format = 'short';
+  if (WS.delivery === 'narration' && WS.pace === 'slow') format = 'long';
+  if (WS.storyType === 'plan') format = 'short';
+
+  WS.format = format;
+  document.querySelectorAll('#wiz-8 .wizard-choice').forEach(btn => {
+    btn.classList.toggle('selected', btn.dataset.value === format);
+  });
+  document.getElementById('wizardNextBtn').disabled = false;
+}
+
+// ── PHOTO HANDLING ────────────────────────────────────────────────────────────
+function handleWizPhoto(e) {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  processWizPhoto(file, 'wiz2photo', 'wizDropInner', 'wizPhotoPreview', 'wizPhotoImg', 1);
+}
+
+function handleWizPhoto2(e) {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  processWizPhoto(file, 'wiz2photo2', 'wizDropInner2', 'wizPhotoPreview2', 'wizPhotoImg2', 2);
+}
+
+function processWizPhoto(file, zone, innerId, previewId, imgId, slot) {
+  const img = new Image();
+  const url = URL.createObjectURL(file);
+  img.onload = () => {
+    const MAX = 800;
+    let w = img.width, h = img.height;
+    if (w > MAX) { h = Math.round(h*MAX/w); w = MAX; }
+    if (h > MAX) { w = Math.round(w*MAX/h); h = MAX; }
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+    const hq = canvas.toDataURL('image/jpeg', 0.9);
+    const compressed = canvas.toDataURL('image/jpeg', 0.55);
+    if (slot === 1) {
+      WS.storyPhoto = compressed.split(',')[1];
+      WS.storyPhotoType = 'image/jpeg';
+      window._wizStoryImgSrc = hq;
+    } else {
+      WS.thumbPhoto = compressed.split(',')[1];
+      WS.thumbPhotoType = 'image/jpeg';
+      window._wizThumbImgSrc = hq;
+    }
+    const preview = document.getElementById(previewId);
+    const inner = document.getElementById(innerId);
+    const imgEl = document.getElementById(imgId);
+    if (imgEl) imgEl.src = compressed;
+    if (preview) preview.style.display = 'block';
+    if (inner) inner.style.display = 'none';
+    document.getElementById('wizardNextBtn').disabled = false;
+    saveWizardState();
+    URL.revokeObjectURL(url);
+  };
+  img.src = url;
+}
+
+function removeWizPhoto(e) {
+  e.stopPropagation();
+  WS.storyPhoto = null; WS.storyPhotoType = null;
+  window._wizStoryImgSrc = null;
+  document.getElementById('wizPhotoPreview').style.display = 'none';
+  document.getElementById('wizDropInner').style.display = 'flex';
+  document.getElementById('wizPhotoInput').value = '';
+}
+
+function removeWizPhoto2(e) {
+  e.stopPropagation();
+  WS.thumbPhoto = null; WS.thumbPhotoType = null;
+  window._wizThumbImgSrc = null;
+  document.getElementById('wizPhotoPreview2').style.display = 'none';
+  document.getElementById('wizDropInner2').style.display = 'flex';
+  document.getElementById('wizPhotoInput2').value = '';
+}
+
+// ── MIC ───────────────────────────────────────────────────────────────────────
+function toggleWizardMic() {
+  const btn = document.getElementById('wiz2mic');
+  const ta = document.getElementById('wiz2text');
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { alert('Try Chrome or Safari for voice input.'); return; }
+  if (wizardActiveMic) { wizardActiveMic.stop(); return; }
+  const rec = new SR();
+  rec.continuous = true; rec.interimResults = true; rec.lang = 'en-US';
+  rec.onstart = () => { wizardActiveMic = rec; if(btn) { btn.textContent = '⏹'; btn.style.borderColor = '#F472B6'; btn.style.background = 'rgba(244,114,182,0.1)'; } };
+  rec.onresult = e => {
+    let t = '';
+    for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript;
+    if (ta) { ta.value = t; WS.storyText = t; document.getElementById('wiz2charcount').textContent = t.length + ' characters'; document.getElementById('wizardNextBtn').disabled = t.trim().length < 10; }
+  };
+  rec.onend = rec.onerror = () => { wizardActiveMic = null; if(btn) { btn.textContent = '🎙'; btn.style.borderColor = ''; btn.style.background = ''; } };
+  rec.start();
+}
+
+function toggleWizardMic2() {
+  const btn = document.getElementById('wiz10mic');
+  const ta = document.getElementById('wiz10text');
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { alert('Try Chrome or Safari.'); return; }
+  if (wizardActiveMic) { wizardActiveMic.stop(); return; }
+  const rec = new SR();
+  rec.continuous = true; rec.interimResults = true; rec.lang = 'en-US';
+  rec.onstart = () => { wizardActiveMic = rec; if(btn) btn.textContent = '⏹'; };
+  rec.onresult = e => { let t = ''; for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript; if(ta) { ta.value = t; WS.steerText = t; } };
+  rec.onend = rec.onerror = () => { wizardActiveMic = null; if(btn) btn.textContent = '🎙'; };
+  rec.start();
+}
+
+// ── AUDIENCE DIAGNOSIS ────────────────────────────────────────────────────────
+function handleBrandLogo(e) {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    WS.brandLogo = ev.target.result; // full data URL
+    saveWizardState();
+    document.getElementById('brandLogoImg').src = ev.target.result;
+    document.getElementById('brandLogoPreview').style.display = 'block';
+    document.getElementById('brandLogoEmpty').style.display = 'none';
+    document.getElementById('brandLogoZone').classList.add('has-logo');
+  };
+  reader.readAsDataURL(file);
+}
+
+function selectBrandColor(swatch, color) {
+  document.querySelectorAll('.brand-color-swatch').forEach(s => s.classList.remove('selected'));
+  swatch.classList.add('selected');
+  WS.brandColor = color;
+  saveWizardState();
+}
+
+async function generateStoryReflection() {
+  const diagEl = document.getElementById('wiz3diagText');
+  const nextBtn = document.getElementById('wizardNextBtn');
+
+  // Always re-read from localStorage to catch paste/voice input
+  try {
+    const fresh = JSON.parse(localStorage.getItem('sam-wizard-state') || '{}');
+    if (fresh.storyText) WS.storyText = fresh.storyText;
+  } catch(e) {}
+
+  const text = (WS.storyText || '').trim();
+
+  if (!text || text.length < 5) {
+    if (diagEl) diagEl.innerHTML = '<div class="sam-diagnosis-reveal">Go back to Step 2 and tell SAM what happened.</div>';
+    if (nextBtn) nextBtn.disabled = false;
+    return;
+  }
+
+  if (diagEl) diagEl.innerHTML = `<div class="sam-thinking">SAM is reading your story<div class="sam-thinking-dots"><div class="sam-thinking-dot"></div><div class="sam-thinking-dot"></div><div class="sam-thinking-dot"></div></div></div>`;
+  if (nextBtn) nextBtn.disabled = true;
+
+  await new Promise(r => setTimeout(r, 1800));
+
+  const lower = text.toLowerCase();
+  let reflection = '';
+
+  const hasFamily = lower.includes('parent') || lower.includes('mom') || lower.includes('dad') || lower.includes('family') || lower.includes('son') || lower.includes('daughter') || lower.includes('neighbor');
+  const hasRenovation = lower.includes('renovat') || lower.includes('cottage') || lower.includes('studs') || lower.includes('build') || lower.includes('gut') || lower.includes('sanctuary') || lower.includes('diy');
+  const hasSelfTaught = lower.includes('self-taught') || lower.includes('self taught') || lower.includes('no experience') || lower.includes('figuring');
+  const hasStruggle = lower.includes('hard') || lower.includes('struggle') || lower.includes('fail') || lower.includes('broke') || lower.includes('quit') || lower.includes('almost');
+  const hasDocumenting = lower.includes('document') || lower.includes('film') || lower.includes('record') || lower.includes('series');
+  const hasBusiness = lower.includes('business') || lower.includes('client') || lower.includes('revenue') || lower.includes('entrepreneur');
+
+  if (hasRenovation && hasFamily) {
+    reflection = "This isn't a renovation story — it's a love story that happens to involve power tools. You're doing something physically hard to give someone you love something emotionally meaningful. That combination — the grit of the work and the tenderness of the reason behind it — is exactly what makes people stop scrolling. Your audience won't follow you for the technique. They'll follow you because you remind them what it looks like to really show up for the people you love.";
+  } else if (hasRenovation && hasSelfTaught) {
+    reflection = "You're documenting something people are terrified to try — and doing it without formal training. That's the real story. Not the renovation. The fact that someone who didn't know how figured it out anyway. That journey, with all its mistakes and breakthroughs, is more compelling than any polished before-and-after.";
+  } else if (hasFamily) {
+    reflection = "SAM heard a deeply personal story about people who matter to you. That kind of content — real, specific, emotionally honest — cuts through everything. Your audience will feel like they're being let into something private and true, which is the most powerful thing a creator can offer.";
+  } else if (hasBusiness) {
+    reflection = "This is a story about building something from the ground up — and being honest about what that actually looks like. The audience isn't just entrepreneurs. It's anyone who's ever been scared to start something and done it anyway. That's most people.";
+  } else if (hasStruggle) {
+    reflection = "SAM heard a story about something genuinely hard — not performed difficulty, but real resistance. Most content shows the highlight reel. You're showing the actual game. That honesty is what builds the kind of audience that sticks around.";
+  } else if (hasDocumenting) {
+    reflection = "You're not just creating content — you're building a documentary of something real happening. Your audience isn't just watching. They're following along with something that's actually unfolding. That's a completely different relationship than most creators build.";
+  } else {
+    reflection = "SAM heard a genuine story with real stakes behind it. There's something worth telling here — and the fact that you're thinking carefully about how to tell it means it'll land the way it should. Keep going and SAM will build the full strategy around what you've shared.";
+  }
+
+  WS.diagnosedStory = reflection;
+  saveWizardState();
+  if (diagEl) diagEl.innerHTML = '<div class="sam-diagnosis-reveal">' + reflection + '</div>';
+  if (nextBtn) nextBtn.disabled = false;
+}
+
+
+async function generateAudienceDiagnosis() {
+  // Generate a quick audience diagnosis from the story
+  const text = WS.storyText || '';
+  const storyType = WS.storyType;
+
+  // Simple pattern-based diagnosis while waiting for full AI call
+  // Will be enriched by the full playbook build
+  let diag = '';
+
+  if (text.toLowerCase().includes('parent') || text.toLowerCase().includes('mom') || text.toLowerCase().includes('dad') || text.toLowerCase().includes('family')) {
+    diag = `Based on your story, SAM sees a natural audience of <strong>people 35-54</strong> who are emotionally driven by family and home content. They\'re not following you for technique — they\'re following you because you make them feel something. This audience is fiercely loyal when they find a creator who\'s real with them. <br/><br/>They live primarily on <strong>Facebook</strong> (emotional stories, community-driven) and <strong>TikTok</strong> (discovery, transformation content). YouTube is the long game when you\'re ready.`;
+    WS.diagnosedAudience = diag;
+    // Only set defaults if user hasn't already selected
+    if (!WS.audienceAge) WS.audienceAge = '35-44';
+    if (!WS.audienceGender) WS.audienceGender = 'Mix of both';
+  } else if (text.toLowerCase().includes('renovati') || text.toLowerCase().includes('diy') || text.toLowerCase().includes('build')) {
+    diag = `Based on your story, SAM sees a natural audience of <strong>people 25-54</strong> who are DIY-curious — people who want to do what you\'re doing but don\'t know how to start, or people who started and got stuck. They follow you for the journey, not just the result. <br/><br/>They\'re on <strong>YouTube</strong> (how-to, long-form), <strong>TikTok</strong> (quick wins and real moments), and <strong>Facebook</strong> groups (community, advice-seeking).`;
+    WS.diagnosedAudience = diag;
+    // Only set defaults if user hasn't already selected
+    if (!WS.audienceAge) WS.audienceAge = '25-44';
+    if (!WS.audienceGender) WS.audienceGender = 'Mix of both';
+  } else if (storyType === 'idea' || storyType === 'concept') {
+    diag = `SAM will build a full audience profile during your playbook based on the concept you shared. For now, SAM is assuming a <strong>broad creator audience</strong> — you can adjust this here if you have a specific group in mind.`;
+    WS.diagnosedAudience = diag;
+  } else {
+    diag = `Based on what you\'ve shared, SAM is building your audience profile. The full diagnosis will appear in your playbook with complete reasoning. <strong>For now — do you have a sense of who this is for?</strong> Adjust below or trust SAM to figure it out.`;
+    WS.diagnosedAudience = diag;
+  }
+
+  const el = document.getElementById('wiz6diagText');
+  if (el) el.innerHTML = diag;
+  document.getElementById('wizardNextBtn').disabled = false;
+}
+
+// ── PLAYBOOK BUILD ────────────────────────────────────────────────────────────
+const LOADER_STEPS = ['lstep-1','lstep-2','lstep-3','lstep-4','lstep-5','lstep-6','lstep-7','lstep-8'];
+
+async function buildPlaybook() {
+  // Animate loader steps
+  let stepIdx = 0;
+  let stillBuildingShown = false;
+
+  // Reset all steps to default state first
+  LOADER_STEPS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.classList.remove('active','done'); }
+  });
+
+  const loaderInterval = setInterval(() => {
+    // Mark previous as done
+    if (stepIdx > 0) {
+      document.getElementById(LOADER_STEPS[stepIdx-1])?.classList.replace('active','done');
+    }
+    // Activate next step
+    if (stepIdx < LOADER_STEPS.length) {
+      document.getElementById(LOADER_STEPS[stepIdx])?.classList.add('active');
+      stepIdx++;
+    }
+    // Show "still building" notice after step 5
+    if (stepIdx >= 5 && !stillBuildingShown) {
+      stillBuildingShown = true;
+      setTimeout(() => {
+        document.getElementById('wizardStillBuilding')?.classList.add('show');
+      }, 5000);
+    }
+  }, 3800);
+
+  // Build the API payload
+  const s = getSetup();
+  const story = WS.storyText || '';
+  const steerChips = WS.steers.join(', ');
+  const steerText = WS.steerText || '';
+  const allSteers = [steerChips, steerText].filter(Boolean).join('. ');
+
+  // Build full audience context — include everything SAM gathered
+  const diagnosedClean = WS.diagnosedAudience
+    ? WS.diagnosedAudience.replace(/<[^>]+>/g,'').slice(0,200)
+    : '';
+  // IMPORTANT: User-selected values take priority over SAM's diagnosis
+  const audienceContext = [
+    WS.audienceAge    ? `SELECTED AGE BRACKETS (respect exactly): ${WS.audienceAge}` : '',
+    WS.audienceGender ? `SELECTED GENDER (respect exactly): ${WS.audienceGender}` : '',
+    WS.audienceCustom ? `Additional audience notes: ${WS.audienceCustom}` : '',
+    WS.audienceConfirm === 'yes' ? 'User confirmed SAM diagnosis' : '',
+    WS.audienceConfirm === 'different' ? 'User described their own audience' : '',
+    diagnosedClean ? `SAM initial diagnosis (may be overridden by selections above): ${diagnosedClean}` : ''
+  ].filter(Boolean).join(' | ');
+
+  const context = `
+CREATOR TYPE: ${WS.creatorType || 'personal brand'} — ${WS.brandName || ''} ${WS.brandHandle || ''}
+DELIVERY STYLE: ${WS.delivery || 'on camera'}
+SPEAKING PACE: ${WS.pace || 'natural'}  
+CONTENT TYPE: ${WS.storyType || 'moment'}
+SELECTED PLATFORMS: ${WS.platforms.join(', ')}
+FORMAT: ${WS.format || 'short-form video'}
+AUDIENCE: ${audienceContext}
+STEERS: ${allSteers || 'none'}
+LANGUAGE: ${WS.language || 'English'}
+${WS.storyPhoto ? 'HAS PHOTO: yes' : ''}
+${WS.thumbPhoto ? 'HAS THUMBNAIL PHOTO: yes' : ''}
+
+IMPORTANT — Write the FULL narration/script based on delivery style.
+Write the COMPLETE audience resource document (lead magnet) in full — 
+not an outline, a real finished document the creator can give their audience.
+Include complete reasoning (WHY) for every recommendation.
+  `.trim();
+
+  try {
+    // Main playbook API call
+    const devUserId = localStorage.getItem('sam_uid') || 'anon';
+    const devTier = localStorage.getItem('sam_dev') === 'true' ? 'studio' : (WS.tier || 'free');
+
+    const payload = {
+      mode: 'playbook',
+      userId: devUserId,
+      tier: devTier,
+      moment: story,
+      platforms: WS.platforms,
+      contentType: WS.format || 'short-form video',
+      tone: s.tone || 'Authentic/Natural',
+      emojiPreference: s.emoji || 'few',
+      outputLanguage: WS.language || '',
+      creatorContext: s.niche || '',
+      audienceDemographics: audienceContext,
+      wizardContext: context,
+      delivery: WS.delivery || 'camera',
+      pace: WS.pace || 'natural',
+      storyType: WS.storyType || 'moment',
+      includeThumb: !!(WS.thumbPhoto || WS.storyPhoto),
+      imageBase64: WS.thumbPhoto || WS.storyPhoto || null,
+      imageType: WS.thumbPhotoType || WS.storyPhotoType || 'image/jpeg',
+    };
+
+    const data = await callAPI(payload);
+
+    clearInterval(loaderInterval);
+
+    // Mark all loader steps done
+    LOADER_STEPS.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.classList.remove('active'); el.classList.add('done'); }
+    });
+
+    // Short delay then show playbook
+    setTimeout(() => {
+      document.getElementById('wizardLoader').classList.remove('show');
+      renderPlaybook(data);
+    }, 800);
+
+  } catch(err) {
+    clearInterval(loaderInterval);
+    document.getElementById('wizardLoader').innerHTML = `
+      <div style="text-align:center;padding:40px 0;">
+        <div style="font-size:32px;margin-bottom:16px;">⚠️</div>
+        <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:var(--text);margin-bottom:8px;">Something went wrong</div>
+        <div style="font-size:14px;color:var(--text3);margin-bottom:24px;max-width:400px;margin-left:auto;margin-right:auto;">${err.message || 'Please try again.'}</div>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <button onclick="buildPlaybook()" style="padding:12px 28px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);color:#fff;border:none;border-radius:var(--radius);font-family:'Sora',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">Try again</button>
+          <button onclick="showWizardStep('10')" style="padding:12px 28px;background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:var(--radius);font-family:'Sora',sans-serif;font-size:14px;font-weight:600;cursor:pointer;">← Back</button>
+        </div>
+      </div>`;
+  }
+}
+
+// ── RENDER PLAYBOOK ────────────────────────────────────────────────────────────
+function renderPlaybook(data) {
+  const container = document.getElementById('wizardPlaybook');
+  const today = new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  const s = getSetup();
+  const userName = WS.storyText ? (s.niche ? s.niche.split(' ').slice(0,3).join(' ') : 'Your') : 'Your';
+
+  let html = `
+    <div class="playbook-cover">
+      <div class="playbook-cover-badge">✦ SAM Content Playbook</div>
+      <div class="playbook-cover-title">Your <em>Complete</em><br/>Content Strategy</div>
+      <div class="playbook-cover-meta">${today} &nbsp;·&nbsp; Built by SAM for you</div>
+    </div>
+  `;
+
+  // ① STORY DIAGNOSIS
+  if (data.diagnosis) {
+    html += `<div class="playbook-section">
+      <div class="playbook-section-num">Section 01</div>
+      <div class="playbook-section-title">What this story is really about</div>
+      <div class="playbook-card">
+        <div class="playbook-card-text">${data.diagnosis}</div>
+      </div>
+      ${data.diagnosis_why ? `<div class="wizard-why" style="margin-top:12px;"><strong>Why this matters:</strong> ${data.diagnosis_why}</div>` : ''}
+    </div>`;
+  }
+
+  // ② STORY ARCHITECTURE
+  if (data.story_architecture) {
+    const arch = data.story_architecture;
+    html += `<div class="playbook-section">
+      <div class="playbook-section-num">Section 02</div>
+      <div class="playbook-section-title">Your story architecture</div>
+      <div class="wizard-why" style="margin-bottom:16px;">Every story that holds attention follows a structure. This is yours — mapped out so you know exactly where you're going before you press record.</div>
+      <div class="playbook-arch-grid">
+        ${arch.opening ? `<div class="playbook-arch-card arch-opening"><div class="playbook-arch-beat">Opening (0–3s)</div><div class="playbook-arch-text">${arch.opening}</div><div class="playbook-arch-time">Stop the scroll</div></div>` : ''}
+        ${arch.setup ? `<div class="playbook-arch-card arch-setup"><div class="playbook-arch-beat">Setup (3–15s)</div><div class="playbook-arch-text">${arch.setup}</div><div class="playbook-arch-time">Make them care</div></div>` : ''}
+        ${arch.risk ? `<div class="playbook-arch-card arch-risk"><div class="playbook-arch-beat">The Risk (15–30s)</div><div class="playbook-arch-text">${arch.risk}</div><div class="playbook-arch-time">Raise the stakes</div></div>` : ''}
+        ${arch.turn ? `<div class="playbook-arch-card arch-turn"><div class="playbook-arch-beat">The Turn (30–50s)</div><div class="playbook-arch-text">${arch.turn}</div><div class="playbook-arch-time">The moment everything changes</div></div>` : ''}
+        ${arch.payoff ? `<div class="playbook-arch-card arch-payoff"><div class="playbook-arch-beat">The Payoff (50–70s)</div><div class="playbook-arch-text">${arch.payoff}</div><div class="playbook-arch-time">The emotional resolution</div></div>` : ''}
+        ${arch.cta ? `<div class="playbook-arch-card arch-cta"><div class="playbook-arch-beat">Your Call (final 5s)</div><div class="playbook-arch-text">${arch.cta}</div><div class="playbook-arch-time">What you want them to do</div></div>` : ''}
+      </div>
+    </div>`;
+  }
+
+  // ③ HOOK
+  if (data.hook) {
+    html += `<div class="playbook-section">
+      <div class="playbook-section-num">Section 03</div>
+      <div class="playbook-section-title">Your hook</div>
+      <div class="wizard-why" style="margin-bottom:16px;">This is the first thing your audience hears or reads. You have 1-3 seconds. This line was chosen because it creates an open loop — a question in the viewer's mind they have to stay to answer.</div>
+      <div class="playbook-hook">${data.hook}</div>
+      ${data.hook_why ? `<div class="wizard-why" style="margin-top:12px;"><strong>Why this hook:</strong> ${data.hook_why}</div>` : ''}
+      <button class="playbook-copy-btn" onclick="wizCopy(this,'${escQ(data.hook)}')">Copy hook</button>
+    </div>`;
+  }
+
+  // ④ SCRIPT
+  if (data.full_script || data.narration_script) {
+    const script = data.narration_script || data.full_script;
+    const scriptLabel = WS.delivery === 'narration' ? 'Your narration script' : 'Your full script';
+    const scriptNote = WS.delivery === 'narration'
+      ? 'This script is written for narration — your voice over footage or photos. Read it at your natural pace. The pauses are where your visuals do the work.'
+      : 'This script is written for direct delivery to camera. It\'s built around how you naturally speak. Don\'t memorize it — internalize the beats, then talk.';
+
+    const formattedScript = (typeof script === 'string' ? script : JSON.stringify(script))
+      .split('\n').map(line => {
+        const t = line.trim();
+        if (!t) return '';
+        if (t.match(/^\[.*\]$/)) return `<span class="script-beat">${t}</span>`;
+        if (t.startsWith('(') && t.endsWith(')')) return `<span class="script-note">${t}</span>`;
+        return `<span class="script-line">${t}</span>`;
+      }).filter(Boolean).join('\n');
+
+    html += `<div class="playbook-section">
+      <div class="playbook-section-num">Section 04</div>
+      <div class="playbook-section-title">${scriptLabel}</div>
+      <div class="wizard-why" style="margin-bottom:16px;">${scriptNote}</div>
+      <div class="playbook-script">${formattedScript}</div>
+      ${data.pacing_note ? `<div class="wizard-why" style="margin-top:12px;"><strong>Delivery note:</strong> ${data.pacing_note}</div>` : ''}
+      <button class="playbook-copy-btn" onclick="wizCopyEl(this)">Copy script</button>
+    </div>`;
+  }
+
+  // ⑤ PLATFORM STRATEGY
+  if (data.platform_strategies && Array.isArray(data.platform_strategies) && data.platform_strategies.length) {
+    html += `<div class="playbook-section">
+      <div class="playbook-section-num">Section 05</div>
+      <div class="playbook-section-title">Your platform strategy</div>
+      <div class="wizard-why" style="margin-bottom:16px;">These are the platforms SAM selected for this story and this audience — with the specific approach for each one. Every platform is different. Same content posted the same way everywhere performs worse than content adapted to where it lives.</div>`;
+
+    data.platform_strategies.forEach(ps => {
+      if (!ps?.platform) return;
+      html += `<div class="platform-strategy" style="margin-bottom:10px;">
+        <div class="ps-header">
+          <div class="ps-name">${ps.platform}</div>
+          <button class="copy-btn" style="float:none;margin:0;" onclick="wizCopy(this,'${escQ((ps.caption||'') + '\n' + (ps.hashtags||''))}')">Copy</button>
+        </div>
+        <div class="ps-body">
+          ${ps.strategy ? `<div style="font-size:13px;color:var(--text3);margin-bottom:8px;font-style:italic;">${ps.strategy}</div>` : ''}
+          ${ps.caption ? `<div class="ps-caption">${ps.caption}</div>` : ''}
+          ${ps.hashtags ? `<div class="ps-hashtags">${ps.hashtags}</div>` : ''}
+        </div>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  // ⑥ AUDIENCE PROFILE — deep psychographic
+  const audienceProfile = data.audience_profile;
+  if (audienceProfile) {
+    const apRow = (key, label, icon) => audienceProfile[key]
+      ? `<div class="wizard-audience-row"><div class="wizard-audience-key">${icon ? icon + ' ' : ''}${label}</div><div class="wizard-audience-val">${audienceProfile[key]}</div></div>`
+      : '';
+
+    html += `<div class="playbook-section">
+      <div class="playbook-section-num">Section 06</div>
+      <div class="playbook-section-title">Your ideal audience</div>
+      <div class="wizard-why" style="margin-bottom:16px;">This isn't a demographic report. This is a real person — the one who needs your story most. When SAM knows exactly who they are, every word in your playbook is written for them.</div>
+      <div class="wizard-audience-card">
+        ${apRow('who', 'Who They Are', '👤')}
+        ${apRow('pain_points', 'Their Pain Points', '😤')}
+        ${apRow('secret_want', 'What They Secretly Want', '💭')}
+        ${apRow('where', 'Where They Spend Time', '📍')}
+        ${apRow('what_hooks_them', 'What Makes Them Stop Scrolling', '🎯')}
+        ${apRow('what_loses_them', 'What Loses Them Fast', '⚠️')}
+        ${apRow('voice', 'How to Talk to Them', '🗣️')}
+      </div>
+      ${audienceProfile.why ? `<div class="wizard-why" style="margin-top:12px;border-left:3px solid var(--spark);padding-left:14px;"><strong>Why SAM sees this for you:</strong> ${audienceProfile.why}</div>` : ''}
+    </div>`;
+  }
+
+  // ⑦ THUMBNAIL (if photo provided)
+  if (data.thumbnail_strategy && (WS.thumbPhoto || WS.storyPhoto)) {
+    const ts = data.thumbnail_strategy;
+    html += `<div class="playbook-section">
+      <div class="playbook-section-num">Section 07</div>
+      <div class="playbook-section-title">Your thumbnail strategy</div>
+      <div class="wizard-why" style="margin-bottom:16px;">Your thumbnail is a billboard. It's the only reason someone clicks. SAM built two options — safe and bold — both written in your voice, both using your photo as the canvas.</div>
+      ${ts.headline_safe ? `<div style="margin-bottom:10px;"><div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(52,211,153,0.8);margin-bottom:6px;">✓ Safe headline</div><div class="playbook-hook" style="font-size:18px;">${ts.headline_safe}</div>${ts.subtext_safe ? `<div style="font-size:13px;color:var(--text3);margin-top:4px;">${ts.subtext_safe}</div>` : ''}<button class="playbook-copy-btn" onclick="wizCopy(this,'${escQ(ts.headline_safe)}')">Copy</button></div>` : ''}
+      ${ts.headline_bold ? `<div style="margin-bottom:10px;"><div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(244,114,182,0.8);margin-bottom:6px;">⚡ Bold headline</div><div class="playbook-hook" style="font-size:18px;border-left-color:var(--pulse);">${ts.headline_bold}</div>${ts.subtext_bold ? `<div style="font-size:13px;color:var(--text3);margin-top:4px;">${ts.subtext_bold}</div>` : ''}<button class="playbook-copy-btn" onclick="wizCopy(this,'${escQ(ts.headline_bold)}')">Copy</button></div>` : ''}
+      ${ts.layout_direction ? `<div class="wizard-why" style="margin-top:12px;"><strong>Layout direction:</strong> ${ts.layout_direction}</div>` : ''}
+      <button style="width:100%;margin-top:12px;padding:12px;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.3);border-radius:var(--radius);font-size:14px;font-weight:600;color:var(--spark);cursor:pointer;" onclick="window.open('https://www.canva.com/create/youtube-thumbnails/','_blank')">🎨 Take this to Canva →</button>
+    </div>`;
+  }
+
+  // ⑧ AUDIENCE RESOURCE — THE LEAD MAGNET ⭐
+  if (data.lead_magnet) {
+    const lm = data.lead_magnet;
+    const brandName = WS.brandName || 'Your Brand';
+    const brandHandle = WS.brandHandle || '';
+    const brandLogo = WS.brandLogo || null;
+    const brandColor = WS.brandColor || '#7C3AED';
+
+    // Brand header HTML for the lead magnet document
+    const brandHeader = `<div class="wl-doc-header" style="display:flex;align-items:center;justify-content:space-between;padding-bottom:16px;margin-bottom:20px;border-bottom:2px solid ${brandColor};">
+      <div style="display:flex;align-items:center;gap:12px;">
+        ${brandLogo ? `<img src="${brandLogo}" style="max-height:48px;max-width:120px;object-fit:contain;border-radius:6px;" />` : `<div style="width:40px;height:40px;border-radius:8px;background:${brandColor};display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:16px;">${brandName.charAt(0)}</div>`}
+        <div>
+          <div style="font-family:'Sora',Arial,sans-serif;font-size:15px;font-weight:700;color:#09080F;">${brandName}</div>
+          ${brandHandle ? `<div style="font-size:11px;color:#666;">${brandHandle}</div>` : ''}
+        </div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:8px;color:#999;line-height:1.5;">Built with S.A.M.<br/><span style="color:${brandColor};">samforcreators.com</span></div>
+      </div>
+    </div>`;
+
+    // Perspective toggle + regenerate controls
+    const perspectiveControls = `<div class="no-print lm-controls" style="margin-bottom:18px;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;">Choose what to give your audience:</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+        <button class="lm-persp-btn active" data-persp="viewer" onclick="setLMPerspective('viewer',this)" style="flex:1;min-width:140px;padding:10px 14px;border-radius:var(--radius);border:1px solid rgba(251,191,36,0.4);background:rgba(251,191,36,0.12);color:var(--lens);font-size:12px;font-weight:600;cursor:pointer;text-align:left;transition:all 0.2s;">
+          <div style="font-size:16px;margin-bottom:3px;">👥</div>
+          <div style="font-size:13px;font-weight:700;">Viewer Perspective</div>
+          <div style="font-size:11px;opacity:0.75;margin-top:2px;">Tips &amp; advice from your experience — inspires your audience</div>
+        </button>
+        <button class="lm-persp-btn" data-persp="user" onclick="setLMPerspective('user',this)" style="flex:1;min-width:140px;padding:10px 14px;border-radius:var(--radius);border:1px solid rgba(167,139,250,0.2);background:rgba(167,139,250,0.06);color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;text-align:left;transition:all 0.2s;">
+          <div style="font-size:16px;margin-bottom:3px;">🛠️</div>
+          <div style="font-size:13px;font-weight:700;">User Perspective</div>
+          <div style="font-size:11px;opacity:0.75;margin-top:2px;">A working template or planning tool — something they actually use daily</div>
+        </button>
+      </div>
+      <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;">
+        <div style="flex:1;min-width:200px;">
+          <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text3);margin-bottom:5px;">Steer SAM in a different direction (optional)</div>
+          <textarea id="lmSteerInput" placeholder="e.g. make it a planning checklist… or focus on budgeting tips… or for someone starting their first project…" style="width:100%;padding:9px 12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);font-size:13px;color:var(--text);resize:none;line-height:1.5;height:60px;box-sizing:border-box;" oninput="this.style.height='auto';this.style.height=Math.max(60,this.scrollHeight)+'px'"></textarea>
+        </div>
+        <button onclick="regenerateLeadMagnet()" style="padding:10px 18px;background:linear-gradient(135deg,#7C3AED,#EC4899);border:none;border-radius:var(--radius);color:white;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;height:60px;">
+          🔄 Regenerate
+        </button>
+      </div>
+      <div id="lmRegenStatus" style="display:none;margin-top:10px;font-size:13px;color:var(--text3);padding:10px;background:rgba(167,139,250,0.08);border-radius:var(--radius);text-align:center;">
+        <span class="pulse-dots">SAM is rebuilding your lead magnet</span> <span class="typing-dots"><span>●</span><span>●</span><span>●</span></span>
+      </div>
+    </div>`;
+
+    html += `<div class="playbook-section" id="leadMagnetSection">
+      <div class="playbook-section-num">Section 08</div>
+      <div class="playbook-section-title">Your audience resource</div>
+      <div class="wizard-why no-print" style="margin-bottom:8px;">This is the part no other tool builds. SAM created a complete, ready-to-share resource based on what it learned about you and your audience. Give it away for free — it builds trust faster than any piece of content alone.</div>
+      ${perspectiveControls}
+      <div id="leadMagnetDoc" class="playbook-lead-magnet" data-brand-color="${brandColor}">
+        <div class="no-print">${brandHeader}</div>
+        <div style="display:none;" class="print-only-brand">${brandHeader}</div>
+        <div class="playbook-lead-badge">⭐ Free resource for your audience</div>
+        <div class="playbook-lead-title">${lm.title || 'Your Audience Resource'}</div>
+        ${lm.why ? `<div class="playbook-lead-why"><strong>Why this works for your audience:</strong> ${lm.why}</div>` : ''}
+        <div class="playbook-lead-items">
+          ${(lm.items || []).map((item, i) => `
+            <div class="playbook-lead-item">
+              <div class="playbook-lead-num">${i+1}</div>
+              <div><strong>${item.heading || ''}</strong>${item.heading && item.body ? ' — ' : ''}${item.body || item}</div>
+            </div>`).join('')}
+        </div>
+        ${lm.comment_response ? `<div class="playbook-lead-comment">
+          <div class="playbook-lead-comment-label">📣 Post this in your comments:</div>
+          <div class="playbook-lead-comment-text">"${lm.comment_response}"</div>
+          <button class="playbook-copy-btn" onclick="wizCopy(this,'${escQ(lm.comment_response)}')">Copy comment</button>
+        </div>` : ''}
+      </div>
+    </div>`;
+  }
+
+  // ⑨ FOCUS DIRECTIVE
+  html += `<div class="playbook-section">
+    <div class="playbook-section-num">Section 09</div>
+    <div class="playbook-section-title">Your next move</div>
+    <div class="playbook-focus">
+      <div class="playbook-focus-eyebrow">Stop. Focus.</div>
+      <div class="playbook-focus-text">${data.focus_directive || 'You have everything you need. The only thing left is to show up and do the work. Go.'}</div>
+    </div>
+  </div>
+
+  <!-- WHAT SAM CAN BUILD NEXT -->
+  <div class="playbook-section no-print" style="border:1px solid rgba(167,139,250,0.2);border-radius:var(--radius-xl);background:linear-gradient(135deg,rgba(109,40,217,0.08),rgba(244,114,182,0.05));padding:28px;">
+    <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--spark);margin-bottom:8px;">✦ What SAM can build next</div>
+    <div style="font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--text);margin-bottom:6px;letter-spacing:-0.01em;">SAM already knows your story.<br/>What do you want to create next?</div>
+    <div style="font-size:13px;color:var(--text3);margin-bottom:24px;line-height:1.6;">No starting over. No re-explaining. SAM uses everything from this session to build the next piece instantly.</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <button onclick="startNextTool('email')" style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);cursor:pointer;text-align:left;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="font-size:22px;">📧</div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;">Build my email welcome sequence</div>
+          <div style="font-size:12px;color:var(--text3);">3-5 emails for new subscribers — written in your voice, for your audience.</div>
+        </div>
+      </button>
+      <button onclick="startNextTool('week')" style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);cursor:pointer;text-align:left;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="font-size:22px;">📅</div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;">Plan my content week</div>
+          <div style="font-size:12px;color:var(--text3);">7 days of posts, captions and platform strategy — all built from this story.</div>
+        </div>
+      </button>
+      <button onclick="startNextTool('idea')" style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);cursor:pointer;text-align:left;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="font-size:22px;">⚡</div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;">Generate 5 content ideas</div>
+          <div style="font-size:12px;color:var(--text3);">Specific ideas built for your niche and audience — each one ready to run through SAM.</div>
+        </div>
+      </button>
+      <button onclick="startNextTool('concept')" style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);cursor:pointer;text-align:left;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="font-size:22px;">🎬</div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;">Build a bold video concept</div>
+          <div style="font-size:12px;color:var(--text3);">One unique concept nobody else has made — with hook, script and shot list.</div>
+        </div>
+      </button>
+    </div>
+  </div>`;
+
+  container.innerHTML = html;
+  container.classList.add('show');
+
+  // Show print bar
+  document.getElementById('playbookPrintBar').style.display = 'flex';
+  // Store playbook data for PDF generation
+  window._lastPlaybookData = data;
+
+  // Save playbook to history
+  savePlaybookHistory(data);
+}
+
+function savePlaybookHistory(data) {
+  try {
+    const history = JSON.parse(localStorage.getItem('sam-playbooks') || '[]');
+    history.unshift({
+      date: new Date().toISOString(),
+      story: WS.storyText?.slice(0,100),
+      data: data
+    });
+    localStorage.setItem('sam-playbooks', JSON.stringify(history.slice(0, 10)));
+  } catch(e) {}
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────────────────
+function wizCopy(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function wizCopyEl(btn) {
+  const prev = btn.previousElementSibling;
+  wizCopy(btn, prev ? (prev.innerText || prev.textContent) : '');
+}
+
+// ── PDF DOWNLOAD via Puppeteer API ────────────────────────────────────────
+async function downloadPDF(type) {
+  const btn = document.getElementById(type === 'playbook' ? 'playbookPdfBtn' : 'leadMagnetPdfBtn');
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '⏳ Generating PDF...';
+  btn.disabled = true;
+
+  try {
+    const s = getSetup();
+    const pb = window._lastPlaybookData || {};
+
+    const brandData = {
+      brandName:  WS.brandName  || s.niche || 'Your Brand',
+      brandHandle:WS.brandHandle|| '',
+      brandColor: WS.brandColor || '#7C3AED',
+      brandLogo:  WS.brandLogo  || null,
+      date: new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})
+    };
+
+    const userId = WS.email || WS.userId || 'anon-' + (localStorage.getItem('sam_uid') || Math.random().toString(36).slice(2));
+    if (!localStorage.getItem('sam_uid')) localStorage.setItem('sam_uid', userId);
+    // Dev mode bypass — set localStorage.sam_dev = 'true' to skip rate limits
+    const isDevMode = localStorage.getItem('sam_dev') === 'true';
+    const tier = isDevMode ? 'studio' : (WS.tier || 'free');
+
+    const payload = {
+      type,
+      userId,
+      tier,
+      brandData,
+      playbookData: pb,
+      leadMagnetData: pb.lead_magnet || {}
+    };
+
+    const res = await fetch('/api/pdf', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (res.status === 429) {
+      const err = await res.json();
+      alert(err.message || 'Daily PDF limit reached. Upgrade your plan for more downloads.');
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+      return;
+    }
+
+    if (res.status === 404 || res.status === 500) {
+      // PDF API not ready yet — silently use browser print
+      if (type === 'playbook') printPlaybookOnly();
+      else printLeadMagnetOnly();
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+      return;
+    }
+    if (!res.ok) throw new Error('PDF generation failed');
+
+    // Trigger download
+    const blob = await res.blob();
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = type === 'playbook' ? 'SAM_Content_Playbook.pdf' : 'SAM_Lead_Magnet.pdf';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    btn.innerHTML = '✅ Downloaded!';
+    setTimeout(() => { btn.innerHTML = originalText; btn.disabled = false; }, 3000);
+
+  } catch(err) {
+    console.error('PDF error:', err);
+    // Fallback to browser print if API fails — silently
+    if (type === 'playbook') printPlaybookOnly();
+    else printLeadMagnetOnly();
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+  }
+}
+
+function printPlaybookOnly() {
+  // Add class to body to tell CSS which document to print
+  document.body.classList.add('print-playbook-only');
+  document.body.classList.remove('print-leadmagnet-only');
+  window.print();
+  setTimeout(() => document.body.classList.remove('print-playbook-only'), 1000);
+}
+
+function printLeadMagnetOnly() {
+  document.body.classList.add('print-leadmagnet-only');
+  document.body.classList.remove('print-playbook-only');
+  window.print();
+  setTimeout(() => document.body.classList.remove('print-leadmagnet-only'), 1000);
+}
+
+function printPlaybook() {
+  printPlaybookOnly();
+}
+
+// ─── LEAD MAGNET PERSPECTIVE + REGENERATE ────────────────────────
+function setLMPerspective(persp, btn) {
+  // Update button styles
+  document.querySelectorAll('.lm-persp-btn').forEach(b => {
+    b.classList.remove('active');
+    b.style.background = 'rgba(167,139,250,0.06)';
+    b.style.borderColor = 'rgba(167,139,250,0.2)';
+    b.style.color = 'var(--text2)';
+  });
+  btn.classList.add('active');
+  btn.style.background = persp === 'user' ? 'rgba(56,189,248,0.12)' : 'rgba(251,191,36,0.12)';
+  btn.style.borderColor = persp === 'user' ? 'rgba(56,189,248,0.4)' : 'rgba(251,191,36,0.4)';
+  btn.style.color = persp === 'user' ? 'var(--blueprint)' : 'var(--lens)';
+  WS.lmPerspective = persp;
+  // Auto-trigger regenerate when perspective switches
+  regenerateLeadMagnet();
+}
+
+async function regenerateLeadMagnet() {
+  const statusEl = document.getElementById('lmRegenStatus');
+  const docEl = document.getElementById('leadMagnetDoc');
+  const steer = (document.getElementById('lmSteerInput') || {}).value || '';
+  const persp = WS.lmPerspective || 'viewer';
+  if (!statusEl || !docEl) return;
+
+  statusEl.style.display = 'block';
+  docEl.style.opacity = '0.4';
+  docEl.style.pointerEvents = 'none';
+
+  const s = getSetup();
+  const story = WS.storyText || '';
+  const audienceContext = [
+    WS.audienceAge ? 'Age ' + WS.audienceAge : '',
+    WS.audienceGender || '',
+    WS.audienceCustom || '',
+  ].filter(Boolean).join(', ');
+
+  const brandName = WS.brandName || 'Your Brand';
+  const brandHandle = WS.brandHandle || '';
+  const brandColor = WS.brandColor || '#7C3AED';
+  const brandLogo = WS.brandLogo || null;
+
+  const perspNote = persp === 'user'
+    ? 'USER PERSPECTIVE: Create a practical working template, planner or checklist the audience can actively USE — not just read. Think planning guide, project tracker, budget notes template, contractor checklist, or step-by-step workbook. Include fillable sections, checklists, and space for notes. This is a functional TOOL they keep on their desk, not inspirational tips.'
+    : 'VIEWER PERSPECTIVE: Create an inspirational tips/advice guide written FROM the creator\'s experience. Share what you learned, what to avoid, what worked. Warm and personal tone. The audience reads this and feels understood and guided.';
+
+  const prompt = `You are SAM — Strategic Assistant for Making. Regenerate a lead magnet for this creator to give their audience.
+
+CREATOR STORY: ${story.slice(0, 600)}
+CREATOR TYPE: ${s.creatorType || 'personal brand'} — ${brandName}
+AUDIENCE: ${audienceContext || 'general audience'}
+NICHE/CONTEXT: ${s.niche || ''}
+PERSPECTIVE: ${perspNote}
+${steer ? 'CREATOR DIRECTION: ' + steer : ''}
+
+Return ONLY valid JSON — no markdown, no backticks:
+{
+  "title": "Compelling free resource title",
+  "why": "2 sentences — why this specific resource for this specific audience.",
+  "items": [
+    {"heading": "Point or section 1", "body": "2-3 sentences. Real, specific, useful. ${persp === 'user' ? 'Include what to fill in or track here.' : 'Written from creator experience.'}"},
+    {"heading": "Point or section 2", "body": "2-3 sentences."},
+    {"heading": "Point or section 3", "body": "2-3 sentences."},
+    {"heading": "Point or section 4", "body": "2-3 sentences."},
+    {"heading": "Point or section 5", "body": "2-3 sentences — ends with reason to follow the creator."}
+  ],
+  "comment_response": "Under 150 chars. Conversational. What to post in comments to distribute this."
+}`;
+
+  try {
+    // Direct fetch with proper SSE parsing
+    const regenUid = localStorage.getItem('sam_uid') || 'anon';
+    const regenTier = localStorage.getItem('sam_dev') === 'true' ? 'studio' : 'free';
+
+    const regenRes = await fetch('/api/sam', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        mode: 'chat',
+        userId: regenUid,
+        tier: regenTier,
+        toolPrompt: prompt
+      })
+    });
+
+    if (!regenRes.ok) throw new Error('API error ' + regenRes.status);
+
+    const regenReader = regenRes.body.getReader();
+    const regenDec = new TextDecoder();
+    let regenRaw = '';
+    while (true) {
+      const { done, value } = await regenReader.read();
+      if (done) break;
+      regenRaw += regenDec.decode(value, { stream: true });
+    }
+
+    // Extract JSON from SSE stream
+    let lm = null;
+    const regenLines = regenRaw.split('\n');
+    for (const line of regenLines) {
+      if (line.startsWith('data: ')) {
+        try {
+          const evt = JSON.parse(line.slice(6));
+          if (evt.done && evt.result && evt.result.reply) {
+            const j1 = evt.result.reply.indexOf('{');
+            const j2 = evt.result.reply.lastIndexOf('}');
+            if (j1 !== -1 && j2 !== -1) {
+              lm = JSON.parse(evt.result.reply.slice(j1, j2 + 1));
+            }
+          }
+        } catch(e) {}
+      }
+    }
+    if (!lm) {
+      const j1 = regenRaw.indexOf('{'); const j2 = regenRaw.lastIndexOf('}');
+      if (j1 !== -1 && j2 !== -1) { try { lm = JSON.parse(regenRaw.slice(j1, j2+1)); } catch(e) {} }
+    }
+    if (!lm) { console.error('Regen parse fail:', regenRaw.slice(0,400)); throw new Error('SAM response could not be parsed — try again'); }
+
+    // Rebuild the document
+    const brandHeader = `<div class="wl-doc-header no-print" style="display:flex;align-items:center;justify-content:space-between;padding-bottom:16px;margin-bottom:20px;border-bottom:2px solid ${brandColor};">
+      <div style="display:flex;align-items:center;gap:12px;">
+        ${brandLogo ? `<img src="${brandLogo}" style="max-height:48px;max-width:120px;object-fit:contain;border-radius:6px;" />` : `<div style="width:40px;height:40px;border-radius:8px;background:${brandColor};display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:16px;">${brandName.charAt(0)}</div>`}
+        <div>
+          <div style="font-family:'Sora',Arial,sans-serif;font-size:15px;font-weight:700;color:#09080F;">${brandName}</div>
+          ${brandHandle ? `<div style="font-size:11px;color:#666;">${brandHandle}</div>` : ''}
+        </div>
+      </div>
+      <div style="text-align:right;"><div style="font-size:8px;color:#999;line-height:1.5;">Built with S.A.M.<br/><span style="color:${brandColor};">samforcreators.com</span></div></div>
+    </div>`;
+
+    docEl.innerHTML = `
+      ${brandHeader}
+      <div class="playbook-lead-badge">${persp === 'user' ? '🛠️ Working template for your audience' : '⭐ Free resource for your audience'}</div>
+      <div class="playbook-lead-title">${lm.title || 'Your Audience Resource'}</div>
+      ${lm.why ? `<div class="playbook-lead-why"><strong>Why this works for your audience:</strong> ${lm.why}</div>` : ''}
+      <div class="playbook-lead-items">
+        ${(lm.items || []).map((item, i) => `
+          <div class="playbook-lead-item">
+            <div class="playbook-lead-num">${i+1}</div>
+            <div><strong>${item.heading || ''}</strong>${item.heading && item.body ? ' — ' : ''}${item.body || item}</div>
+          </div>`).join('')}
+      </div>
+      ${lm.comment_response ? `<div class="playbook-lead-comment">
+        <div class="playbook-lead-comment-label">📣 Post this in your comments:</div>
+        <div class="playbook-lead-comment-text">"${lm.comment_response}"</div>
+        <button class="playbook-copy-btn" onclick="wizCopy(this,this.closest('.playbook-lead-comment').querySelector('.playbook-lead-comment-text').textContent)">Copy comment</button>
+      </div>` : ''}`;
+
+    docEl.style.opacity = '1';
+    docEl.style.pointerEvents = '';
+    statusEl.style.display = 'none';
+
+    // Update the stored playbook data so PDF download uses the new lead magnet
+    if (window._lastPlaybookData) {
+      window._lastPlaybookData.lead_magnet = lm;
+    }
+
+    // Scroll to show it
+    docEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  } catch(err) {
+    console.error('Regen error:', err);
+    statusEl.innerHTML = '⚠️ SAM had trouble rebuilding. Try again or adjust your direction.';
+    docEl.style.opacity = '1';
+    docEl.style.pointerEvents = '';
+  }
+}
+
+async function startNextTool(tool) {
+  const s = getSetup();
+  const story = WS.storyText || '';
+  const audience = [WS.audienceAge, WS.audienceGender, WS.audienceCustom].filter(Boolean).join(', ');
+  const platforms = (WS.platforms || []).join(', ');
+  const brandName = WS.brandName || '';
+  const niche = s.niche || '';
+  const tone = s.tone || 'Authentic/Natural';
+
+  const context = `CREATOR: ${brandName} — ${niche}
+STORY: ${story.slice(0, 500)}
+AUDIENCE: ${audience}
+PLATFORMS: ${platforms}
+TONE: ${tone}`;
+
+  // Find the "what SAM can build next" container and inject output there
+  const nextSection = document.querySelector('.playbook-next-section') || document.getElementById('samNextSection');
+
+  const configs = {
+    email: {
+      label: '📧 Your Email Welcome Sequence',
+      color: '#7C3AED',
+      prompt: `${context}
+
+Write a 5-email welcome sequence for new subscribers. Each email should feel like it came from a real person, not a marketing bot. Use the creator's story and audience above.
+
+Return ONLY valid JSON:
+{
+  "sequence": [
+    {"day": "Day 0", "subject": "subject line", "body": "full email body — warm, personal, 150-200 words"},
+    {"day": "Day 2", "subject": "subject line", "body": "full email body"},
+    {"day": "Day 4", "subject": "subject line", "body": "full email body — deliver value, teach something real"},
+    {"day": "Day 7", "subject": "subject line", "body": "full email body — soft invitation to follow/engage"},
+    {"day": "Day 10", "subject": "subject line", "body": "full email body — share your best story or insight"}
+  ]
+}`
+    },
+    week: {
+      label: '📅 Your 7-Day Content Plan',
+      color: '#EC4899',
+      prompt: `${context}
+
+Build a 7-day content calendar. One post per day across the creator's platforms. Each post should build on the story and audience above.
+
+Return ONLY valid JSON:
+{
+  "week": [
+    {"day": "Monday", "platform": "platform name", "format": "post type", "hook": "opening hook", "topic": "what this post covers", "caption_preview": "first 2 sentences of caption"},
+    {"day": "Tuesday", "platform": "platform name", "format": "post type", "hook": "opening hook", "topic": "what this post covers", "caption_preview": "first 2 sentences"},
+    {"day": "Wednesday", "platform": "platform name", "format": "post type", "hook": "opening hook", "topic": "what this post covers", "caption_preview": "first 2 sentences"},
+    {"day": "Thursday", "platform": "platform name", "format": "post type", "hook": "opening hook", "topic": "what this post covers", "caption_preview": "first 2 sentences"},
+    {"day": "Friday", "platform": "platform name", "format": "post type", "hook": "opening hook", "topic": "what this post covers", "caption_preview": "first 2 sentences"},
+    {"day": "Saturday", "platform": "platform name", "format": "post type", "hook": "opening hook", "topic": "what this post covers", "caption_preview": "first 2 sentences"},
+    {"day": "Sunday", "platform": "platform name", "format": "post type", "hook": "opening hook", "topic": "what this post covers", "caption_preview": "first 2 sentences"}
+  ]
+}`
+    },
+    idea: {
+      label: '⚡ 5 Content Ideas Built for You',
+      color: '#F59E0B',
+      prompt: `${context}
+
+Generate 5 specific content ideas for this creator. Each should be immediately actionable — not generic. Based on their real story and audience.
+
+Return ONLY valid JSON:
+{
+  "ideas": [
+    {"title": "idea title", "hook": "the opening hook line", "why": "why this works for their audience", "platform": "best platform", "format": "post type"},
+    {"title": "idea title", "hook": "the opening hook line", "why": "why this works", "platform": "best platform", "format": "post type"},
+    {"title": "idea title", "hook": "the opening hook line", "why": "why this works", "platform": "best platform", "format": "post type"},
+    {"title": "idea title", "hook": "the opening hook line", "why": "why this works", "platform": "best platform", "format": "post type"},
+    {"title": "idea title", "hook": "the opening hook line", "why": "why this works", "platform": "best platform", "format": "post type"}
+  ]
+}`
+    },
+    concept: {
+      label: '🎬 Your Bold Video Concept',
+      color: '#10B981',
+      prompt: `${context}
+
+Build one bold, original video concept for this creator. Something nobody else has made in their niche. Based on their story and audience.
+
+Return ONLY valid JSON:
+{
+  "concept": {
+    "title": "video title",
+    "hook": "opening hook — the first line they say or show",
+    "premise": "2-3 sentences — what makes this video unique and worth watching",
+    "structure": ["beat 1", "beat 2", "beat 3", "beat 4", "beat 5"],
+    "why_it_works": "why this specific concept for this specific audience",
+    "thumbnail_direction": "visual concept for the thumbnail",
+    "platform": "primary platform and why"
+  }
+}`
+    }
+  };
+
+  const cfg = configs[tool];
+  if (!cfg) return;
+
+  // Find the button that was clicked and show loading state inline
+  const allNextBtns = document.querySelectorAll('[onclick*="startNextTool"]');
+  allNextBtns.forEach(b => b.style.opacity = '0.4');
+
+  // Find or create output area — reliably inserted before print bar
+  let outputArea = document.getElementById('nextToolOutput');
+  if (!outputArea) {
+    outputArea = document.createElement('div');
+    outputArea.id = 'nextToolOutput';
+    outputArea.style.cssText = 'margin:20px 0.5rem 40px;padding:0 0.5rem;';
+    const printBar = document.getElementById('playbookPrintBar');
+    const wizOutput = document.getElementById('wizardOutput') || document.querySelector('.wizard-output');
+    if (printBar && printBar.parentNode) {
+      printBar.parentNode.insertBefore(outputArea, printBar);
+    } else if (wizOutput) {
+      wizOutput.appendChild(outputArea);
+    } else {
+      document.body.appendChild(outputArea);
+    }
+  }
+
+  outputArea.innerHTML = `<div style="padding:24px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);text-align:center;">
+    <div style="font-size:13px;color:var(--text3);margin-bottom:8px;">SAM is building your ${cfg.label.replace(/^[^ ]+ /, '')}...</div>
+    <div class="typing-dots" style="justify-content:center;"><span>●</span><span>●</span><span>●</span></div>
+  </div>`;
+  setTimeout(() => { outputArea.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 150);
+
+  try {
+    // Use callAPI which properly handles streaming and JSON parsing
+    // Use direct fetch + stream read to get raw text, then parse JSON from it
+    const devUid = localStorage.getItem('sam_uid') || 'anon';
+    const devTier = localStorage.getItem('sam_dev') === 'true' ? 'studio' : 'free';
+    
+    const nextRes = await fetch('/api/sam', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        mode: 'chat', 
+        userId: devUid,
+        tier: devTier,
+        toolPrompt: cfg.prompt
+      })
+    });
+
+    if (!nextRes.ok) throw new Error('API error ' + nextRes.status);
+
+    // Read full stream
+    const nextReader = nextRes.body.getReader();
+    const nextDec = new TextDecoder();
+    let nextRaw = '';
+    while (true) {
+      const { done, value } = await nextReader.read();
+      if (done) break;
+      nextRaw += nextDec.decode(value, { stream: true });
+    }
+
+    // Extract JSON from SSE stream — look for done event with result
+    let actualData = null;
+    const lines = nextRaw.split('\n');
+    for (const line of lines) {
+      if (line.startsWith('data: ')) {
+        try {
+          const evt = JSON.parse(line.slice(6));
+          if (evt.done && evt.result && evt.result.reply) {
+            const replyText = evt.result.reply;
+            const j1 = replyText.indexOf('{');
+            const j2 = replyText.lastIndexOf('}');
+            if (j1 !== -1 && j2 !== -1) {
+              actualData = JSON.parse(replyText.slice(j1, j2 + 1));
+            }
+          }
+        } catch(e) {}
+      }
+    }
+    
+    // Fallback: try to find JSON anywhere in raw response
+    if (!actualData) {
+      const j1 = nextRaw.indexOf('{');
+      const j2 = nextRaw.lastIndexOf('}');
+      if (j1 !== -1 && j2 !== -1) {
+        try { actualData = JSON.parse(nextRaw.slice(j1, j2 + 1)); } catch(e) {}
+      }
+    }
+    
+    if (!actualData) throw new Error('Could not parse SAM response');
+
+    // Render based on tool type
+    let html = `<div style="border:1px solid ${cfg.color}33;border-radius:var(--radius-xl);overflow:hidden;margin-top:4px;">
+      <div style="background:${cfg.color}18;padding:14px 20px;border-bottom:1px solid ${cfg.color}22;display:flex;align-items:center;gap:10px;">
+        <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--text);">${cfg.label}</div>
+      </div>
+      <div style="padding:20px;display:flex;flex-direction:column;gap:14px;">`;
+
+    if (tool === 'email' && actualData.sequence) {
+      actualData.sequence.forEach(email => {
+        html += `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${cfg.color};">${email.day}</span>
+            <button class="playbook-copy-btn" onclick="wizCopy(this, ${JSON.stringify(email.subject + '\n\n' + email.body)})">Copy</button>
+          </div>
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;">Subject: ${email.subject}</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.65;white-space:pre-line;">${email.body}</div>
+        </div>`;
+      });
+    } else if (tool === 'week' && actualData.week) {
+      actualData.week.forEach(day => {
+        html += `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;display:grid;grid-template-columns:80px 1fr;gap:12px;align-items:start;">
+          <div style="text-align:center;">
+            <div style="font-size:11px;font-weight:700;color:${cfg.color};text-transform:uppercase;">${day.day}</div>
+            <div style="font-size:10px;color:var(--text3);margin-top:3px;">${day.platform}</div>
+            <div style="font-size:10px;color:var(--text3);">${day.format}</div>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;">${day.topic}</div>
+            <div style="font-size:12px;color:var(--spark);font-style:italic;margin-bottom:6px;">"${day.hook}"</div>
+            <div style="font-size:12px;color:var(--text3);">${day.caption_preview}</div>
+          </div>
+        </div>`;
+      });
+    } else if (tool === 'idea' && actualData.ideas) {
+      actualData.ideas.forEach((idea, i) => {
+        html += `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;">
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="width:28px;height:28px;border-radius:50%;background:${cfg.color};display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:12px;flex-shrink:0;">${i+1}</div>
+            <div style="flex:1;">
+              <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px;">${idea.title}</div>
+              <div style="font-size:12px;color:var(--spark);font-style:italic;margin-bottom:8px;">"${idea.hook}"</div>
+              <div style="font-size:12px;color:var(--text3);margin-bottom:6px;">${idea.why}</div>
+              <div style="display:flex;gap:8px;">
+                <span style="font-size:10px;padding:2px 8px;background:${cfg.color}22;color:${cfg.color};border-radius:20px;">${idea.platform}</span>
+                <span style="font-size:10px;padding:2px 8px;background:rgba(255,255,255,0.05);color:var(--text3);border-radius:20px;">${idea.format}</span>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      });
+    } else if (tool === 'concept' && actualData.concept) {
+      const c2 = actualData.concept;
+      html += `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${cfg.color};margin-bottom:6px;">Video Title</div>
+        <div style="font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--text);margin-bottom:16px;">${c2.title}</div>
+        <div style="font-size:13px;color:var(--spark);font-style:italic;padding:12px;background:rgba(167,139,250,0.08);border-radius:var(--radius);margin-bottom:16px;">"${c2.hook}"</div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.65;">${c2.premise}</div>
+        ${c2.structure ? `<div style="margin-bottom:16px;"><div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;">Structure</div>${c2.structure.map((b,i)=>`<div style="display:flex;gap:10px;margin-bottom:6px;"><span style="color:${cfg.color};font-weight:700;font-size:12px;">${i+1}.</span><span style="font-size:13px;color:var(--text2);">${b}</span></div>`).join('')}</div>` : ''}
+        <div style="font-size:12px;color:var(--text3);padding:10px;background:rgba(255,255,255,0.03);border-radius:var(--radius);margin-bottom:10px;"><strong style="color:var(--text2);">Why it works:</strong> ${c2.why_it_works}</div>
+        <div style="font-size:12px;color:var(--text3);"><strong style="color:var(--text2);">Thumbnail:</strong> ${c2.thumbnail_direction}</div>
+      </div>`;
+    }
+
+    html += `</div></div>`;
+    outputArea.innerHTML = html;
+    allNextBtns.forEach(b => b.style.opacity = '1');
+    outputArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  } catch(err) {
+    console.error('Next tool error:', err);
+    outputArea.innerHTML = `<div style="padding:16px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:var(--radius-lg);font-size:13px;color:var(--text3);">SAM had trouble building that. Try again — she\'ll get it.</div>`;
+    allNextBtns.forEach(b => b.style.opacity = '1');
+  }
+}
+
+function wizardNewPlaybook() {
+  if (confirm('Start a fresh playbook? Your current one will be saved in history.')) {
+    startWizard('new');
+  }
+}
+
+// ── WIRE WIZARD BUTTON IN NAV ─────────────────────────────────────────────────
+function openWizardFromNav() {
+  openWizardPage();
 }
 
 </script>
@@ -4759,6 +8084,777 @@ if (document.readyState === 'loading') {
     <button class="chat-send-btn" id="chatSendBtn" onclick="sendChatMessage()">➤</button>
   </div>
 </div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     SAM GUIDED WIZARD PAGE
+══════════════════════════════════════════════════════ -->
+<div class="wizard-page" id="wizardPage">
+
+  <!-- PROGRESS BAR -->
+  <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
+    <div class="wizard-progress-top">
+      <div class="wizard-progress-label">Building your playbook</div>
+      <div class="wizard-progress-step" id="wizardStepLabel">Step 1 of 10</div>
+    </div>
+    <div class="wizard-progress-bar">
+      <div class="wizard-progress-fill" id="wizardProgressFill" style="width:10%;"></div>
+    </div>
+  </div>
+
+  <div class="wizard-body">
+
+    <!-- ── ENTRY SCREEN ── -->
+    <div class="wizard-step active" id="wiz-entry">
+      <div class="wizard-entry">
+        <div class="wizard-entry-logo">S.A.M.</div>
+        <div class="wizard-entry-title">
+          Ready to build<br/>something <em>real?</em>
+        </div>
+        <div class="wizard-entry-sub">
+          Social media is genuinely hard. SAM's job is to take your real story, figure out who needs to hear it, and hand you a complete content strategy — not a template. Something actually worth your time.
+        </div>
+        <div class="wizard-entry-choices" id="wizardEntryChoices">
+          <button class="wizard-entry-btn wizard-entry-primary" onclick="startWizard('new')">
+            ✦ Build my content playbook →
+          </button>
+          <button class="wizard-entry-btn wizard-entry-secondary" id="continueBtn" style="display:none;" onclick="startWizard('continue')">
+            ↩ Continue where I left off
+          </button>
+          <button class="wizard-entry-btn wizard-entry-secondary" onclick="startWizard('new')">
+            + Start a new playbook
+          </button>
+        </div>
+        <button class="wizard-entry-ghost" onclick="closeWizard()">
+          Open advanced tools instead
+        </button>
+      </div>
+    </div>
+
+    <!-- ── STEP 0: BRAND PROFILE ── -->
+    <div class="wizard-step" id="wiz-0">
+      <div class="wizard-question">First — who's creating this?</div>
+      <div class="wizard-why">
+        SAM builds everything around who you are and how you show up. This shapes your hook, your script, your audience profile and your lead magnet. Pick the one that fits best right now — you can always update it.
+      </div>
+
+      <div class="wizard-choices" style="margin-bottom:24px;">
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz0','personal')" data-value="personal">
+          <div class="wizard-choice-icon">👤</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">Personal brand</div>
+            <div class="wizard-choice-desc">I am the content. My face, my story, my journey. People follow me — not a business name.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz0','business')" data-value="business">
+          <div class="wizard-choice-icon">🏪</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">Small business owner</div>
+            <div class="wizard-choice-desc">I create content to grow my business. Products, services, local or online.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz0','coach')" data-value="coach">
+          <div class="wizard-choice-icon">🎓</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">Coach or educator</div>
+            <div class="wizard-choice-desc">I teach something. I have knowledge or a framework people pay to learn from me.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz0','maker')" data-value="maker">
+          <div class="wizard-choice-icon">🛠️</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">Maker or creator</div>
+            <div class="wizard-choice-desc">I make things — art, music, products, crafts. The work is the content.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz0','community')" data-value="community">
+          <div class="wizard-choice-icon">📣</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">Community builder</div>
+            <div class="wizard-choice-desc">I am growing a movement or community around a shared interest or cause.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz0','brand')" data-value="brand">
+          <div class="wizard-choice-icon">🏢</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">I create for a brand</div>
+            <div class="wizard-choice-desc">I am a content creator or marketer making content for someone else's brand.</div>
+          </div>
+        </button>
+      </div>
+
+      <!-- Brand details -->
+      <div style="margin-top:8px;">
+        <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;">Your name or brand name</div>
+        <input type="text" class="brand-text-input" id="brandName" placeholder="e.g. Joey Pirrone · Studs to Sanctuary" oninput="WS.brandName=this.value;saveWizardState();" autocomplete="name" />
+      </div>
+
+      <div style="margin-top:16px;">
+        <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;">Your handle or website <span style="font-weight:400;text-transform:none;opacity:0.6;">(optional)</span></div>
+        <input type="text" class="brand-text-input" id="brandHandle" placeholder="e.g. @studstosanctuary · studstosanctuary.com" oninput="WS.brandHandle=this.value;saveWizardState();" />
+      </div>
+
+      <div style="margin-top:16px;">
+        <div style="display:flex;align-items:center;margin-bottom:6px;">
+          <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);">Your logo</div>
+          <span class="pro-lock">⭐ Pro</span>
+        </div>
+        <div class="brand-upload-zone" id="brandLogoZone" onclick="document.getElementById('brandLogoInput').click()">
+          <input type="file" id="brandLogoInput" accept="image/*" style="display:none;" onchange="handleBrandLogo(event)">
+          <div id="brandLogoEmpty">
+            <div style="font-size:28px;margin-bottom:8px;">🎨</div>
+            <div style="font-size:14px;font-weight:600;color:var(--text2);">Upload your logo</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:4px;">Appears on all your downloadable documents</div>
+          </div>
+          <div id="brandLogoPreview" style="display:none;">
+            <img id="brandLogoImg" class="brand-logo-preview" src="" />
+            <div style="font-size:12px;color:var(--spark);margin-top:8px;">✓ Logo ready — tap to change</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;">
+        <div style="display:flex;align-items:center;margin-bottom:8px;">
+          <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);">Brand accent color</div>
+          <span class="pro-lock">⭐ Pro</span>
+        </div>
+        <div class="brand-color-grid">
+          <div class="brand-color-swatch selected" style="background:#7C3AED;" onclick="selectBrandColor(this,'#7C3AED')" title="SAM Purple"></div>
+          <div class="brand-color-swatch" style="background:#0EA5E9;" onclick="selectBrandColor(this,'#0EA5E9')" title="Sky Blue"></div>
+          <div class="brand-color-swatch" style="background:#10B981;" onclick="selectBrandColor(this,'#10B981')" title="Emerald"></div>
+          <div class="brand-color-swatch" style="background:#F59E0B;" onclick="selectBrandColor(this,'#F59E0B')" title="Amber"></div>
+          <div class="brand-color-swatch" style="background:#EF4444;" onclick="selectBrandColor(this,'#EF4444')" title="Red"></div>
+          <div class="brand-color-swatch" style="background:#EC4899;" onclick="selectBrandColor(this,'#EC4899')" title="Pink"></div>
+          <div class="brand-color-swatch" style="background:#1a1a2e;" onclick="selectBrandColor(this,'#1a1a2e')" title="Dark"></div>
+          <div class="brand-color-swatch" style="background:#374151;" onclick="selectBrandColor(this,'#374151')" title="Slate"></div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;padding:14px 16px;background:rgba(167,139,250,0.06);border-radius:var(--radius);border:1px solid rgba(167,139,250,0.15);">
+        <div style="font-size:13px;color:var(--text3);line-height:1.6;">
+          ✦ Your logo and brand color appear on every document SAM creates for you — playbooks, lead magnets, audience resources. <strong style="color:var(--text2);">Small print at the bottom says "Built with S.A.M. · samforcreators.com"</strong> — so every document you share grows SAM too.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── STEP 1: WHAT TO CREATE ── -->
+    <div class="wizard-step" id="wiz-1">
+      <div class="wizard-question">What's happening in your world right now?</div>
+      <div class="wizard-why">
+        SAM builds everything from your real experience — not a template. There's no wrong answer here. The more honest you are, the more powerful your playbook will be.
+      </div>
+      <div class="wizard-choices" id="wiz1choices">
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz1','moment')" data-value="moment">
+          <div class="wizard-choice-icon">📖</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">I have a real moment to share</div>
+            <div class="wizard-choice-desc">Something happened — a win, a setback, an emotional moment, a breakthrough. You were there and you have a camera.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz1','idea')" data-value="idea">
+          <div class="wizard-choice-icon">💡</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">I have a content idea</div>
+            <div class="wizard-choice-desc">Something you've been thinking about making. A topic, an angle, a concept you think your audience would value.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz1','plan')" data-value="plan">
+          <div class="wizard-choice-icon">📅</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">I need a content plan for the week</div>
+            <div class="wizard-choice-desc">You want SAM to map out your entire week — what to post, where, and why — so you can just execute.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz1','concept')" data-value="concept">
+          <div class="wizard-choice-icon">🎬</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">I want a unique video concept</div>
+            <div class="wizard-choice-desc">You want SAM to generate one bold, original concept built specifically for your niche — something nobody else has made.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz1','analyse')" data-value="analyse">
+          <div class="wizard-choice-icon">📊</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">I want to analyse what's working</div>
+            <div class="wizard-choice-desc">You have analytics data and want SAM to read it and tell you exactly what to do next.</div>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── STEP 2: DESCRIBE IT ── -->
+    <div class="wizard-step" id="wiz-2">
+      <div class="wizard-question" id="wiz2question">Tell SAM about your moment.</div>
+      <div class="wizard-why" id="wiz2why">
+        Don't polish it. Don't overthink it. Talk to SAM like you'd tell a friend what happened. The raw version is always better than the edited one — SAM will find the story in it.
+      </div>
+      <div class="wizard-choices">
+        <button class="wizard-choice" onclick="selectInputMethod('speak')" id="btn-speak">
+          <div class="wizard-choice-icon">🎙</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">I'll speak it</div>
+            <div class="wizard-choice-desc">Tap and talk. SAM transcribes as you go.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectInputMethod('type')" id="btn-type">
+          <div class="wizard-choice-icon">✏️</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">I'll type it</div>
+            <div class="wizard-choice-desc">Write it out in your own words.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectInputMethod('photo')" id="btn-photo">
+          <div class="wizard-choice-icon">📸</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">I have a photo that tells the story</div>
+            <div class="wizard-choice-desc">Upload it and SAM reads the context — then asks follow-up questions.</div>
+          </div>
+        </button>
+      </div>
+      <div class="wizard-input-area" id="wiz2input">
+        <div style="position:relative;">
+          <textarea class="wizard-textarea" id="wiz2text" placeholder="Just start talking — SAM is listening..." rows="5"></textarea>
+          <button id="wiz2mic" onclick="toggleWizardMic()" style="position:absolute;bottom:12px;right:12px;width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all 0.2s;">🎙</button>
+        </div>
+        <div style="font-size:12px;color:var(--text3);margin-top:8px;text-align:right;" id="wiz2charcount">0 characters</div>
+      </div>
+      <div class="wizard-input-area" id="wiz2photo">
+        <div class="drop-zone" id="wizDropZone" onclick="document.getElementById('wizPhotoInput').click()" style="border-color:var(--spark-border);">
+          <input type="file" id="wizPhotoInput" accept="image/*" style="display:none;" onchange="handleWizPhoto(event)">
+          <div id="wizDropInner">
+            <div class="drop-icon">📸</div>
+            <div class="drop-label">Drop your photo or <span style="color:var(--spark);">browse</span></div>
+            <div class="drop-hint">SAM will read the image and build from there</div>
+          </div>
+          <div id="wizPhotoPreview" style="display:none;position:relative;width:100%;">
+            <img id="wizPhotoImg" src="" style="width:100%;max-height:200px;object-fit:contain;border-radius:var(--radius);" />
+            <button onclick="removeWizPhoto(event)" style="position:absolute;top:-8px;right:-8px;width:26px;height:26px;border-radius:50%;background:#C53030;color:white;border:2px solid var(--bg);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;">✕</button>
+          </div>
+        </div>
+        <div style="margin-top:12px;">
+          <div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;">Add context to your photo (optional)</div>
+          <div style="position:relative;">
+            <textarea class="wizard-textarea" id="wiz2phototext" placeholder="Tell SAM what's happening in this photo — who's in it, what just happened, what you want people to feel..." style="min-height:80px;" rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── STEP 3: SAM REFLECTS ── -->
+    <div class="wizard-step" id="wiz-3">
+      <div class="wizard-question">Here's what SAM heard.</div>
+      <div class="wizard-why">
+        SAM read everything you shared and distilled it down to what's really going on. This is the emotional core of your story — the thing your audience will actually connect with. If SAM got it wrong, tell us now before we build the whole playbook on it.
+      </div>
+      <div class="wizard-diagnosis" id="wiz3diagnosis">
+        <div class="wizard-diagnosis-label">✦ SAM's read on your story</div>
+        <div class="wizard-diagnosis-text" id="wiz3diagText">
+          <div class="sam-thinking">
+            SAM is reading your story
+            <div class="sam-thinking-dots">
+              <div class="sam-thinking-dot"></div>
+              <div class="sam-thinking-dot"></div>
+              <div class="sam-thinking-dot"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="wizard-choices">
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz3','yes')" data-value="yes">
+          <div class="wizard-choice-icon">✅</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">Yes — that's exactly it</div>
+            <div class="wizard-choice-desc">SAM nailed it. Let's keep going.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz3','mostly')" data-value="mostly">
+          <div class="wizard-choice-icon">🔄</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">Mostly — let me add something</div>
+            <div class="wizard-choice-desc">Close but there's more to it. A text box opens so you can add context.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz3','no')" data-value="no">
+          <div class="wizard-choice-icon">↩️</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">Not quite — let me clarify</div>
+            <div class="wizard-choice-desc">Go back and tell the story differently. SAM will re-read.</div>
+          </div>
+        </button>
+      </div>
+      <div class="wizard-input-area" id="wiz3extra">
+        <textarea class="wizard-textarea" id="wiz3extratext" placeholder="What did SAM miss? Add anything that changes the story..." rows="3"></textarea>
+      </div>
+    </div>
+
+    <!-- ── STEP 4: DELIVERY STYLE ── -->
+    <div class="wizard-step" id="wiz-4">
+      <div class="wizard-question">How do you feel most comfortable telling this story?</div>
+      <div class="wizard-why">
+        Your delivery style shapes your entire script. A narration script sounds completely different from an on-camera script. There's no wrong answer — the right answer is whatever lets you show up most authentically. <strong>Your voice is an asset.</strong> If people have ever complimented how you tell a story, lean into that.
+      </div>
+      <div class="wizard-choices">
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz4','camera')" data-value="camera">
+          <div class="wizard-choice-icon">📹</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">On camera — I speak directly</div>
+            <div class="wizard-choice-desc">My face is part of the story. I'll look into the lens and talk. SAM writes a punchy, conversational script built for direct delivery.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz4','narration')" data-value="narration">
+          <div class="wizard-choice-icon">🎙</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">Narration — my voice over footage</div>
+            <div class="wizard-choice-desc">I record my voice while footage or photos play. SAM writes a cinematic narration script — more visual, more descriptive, more immersive.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz4','text')" data-value="text">
+          <div class="wizard-choice-icon">📝</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">Text on screen — no speaking</div>
+            <div class="wizard-choice-desc">Words tell the story. Music and visuals carry the emotion. SAM writes short punchy text blocks built for silent viewing.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz4','mix')" data-value="mix">
+          <div class="wizard-choice-icon">🎬</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">Mix — I'll figure it out as I go</div>
+            <div class="wizard-choice-desc">SAM writes a flexible script with both on-camera moments and narration sections clearly labeled. You decide what to use on the day.</div>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── STEP 5: SPEAKING PACE ── -->
+    <div class="wizard-step" id="wiz-5">
+      <div class="wizard-question">When you tell a story out loud, you tend to...</div>
+      <div class="wizard-why">
+        How fast you naturally speak determines how long your video will be — and that determines which platforms it's right for. SAM uses this to set realistic expectations and build a script that actually fits your natural rhythm. A script that fights how you talk will never sound right on camera.
+      </div>
+      <div class="wizard-choices">
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz5','fast')" data-value="fast">
+          <div class="wizard-choice-icon">⚡</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">Talk fast — I get to the point</div>
+            <div class="wizard-choice-desc">I don't waste people's time. I say what I need to say and move on. Probably puts me under 60 seconds for most stories.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz5','natural')" data-value="natural">
+          <div class="wizard-choice-icon">💬</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">Speak naturally — somewhere in between</div>
+            <div class="wizard-choice-desc">I'm comfortable talking. Not rushing, not dragging. Probably 60-90 seconds for most stories depending on the depth.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz5','slow')" data-value="slow">
+          <div class="wizard-choice-icon">🎯</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">Take my time — I let things breathe</div>
+            <div class="wizard-choice-desc">Pauses are part of how I tell it. I like to let a moment land before moving on. Probably 90 seconds to 3 minutes for this story.</div>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── STEP 6: AUDIENCE ── -->
+    <div class="wizard-step" id="wiz-6">
+      <div class="wizard-question">Who is this story for?</div>
+      <div class="wizard-why" id="wiz6why">
+        SAM has already formed a picture of who your natural audience is based on your story. Here's the diagnosis — and the reasoning behind it. You're in control. If SAM got it wrong, adjust it. This shapes everything in your playbook.
+      </div>
+      <div class="wizard-diagnosis" id="wiz6audienceDiag">
+        <div class="wizard-diagnosis-label">✦ SAM's audience diagnosis</div>
+        <div class="wizard-diagnosis-text" id="wiz6diagText">
+          <div class="sam-thinking">
+            SAM is diagnosing your audience
+            <div class="sam-thinking-dots">
+              <div class="sam-thinking-dot"></div>
+              <div class="sam-thinking-dot"></div>
+              <div class="sam-thinking-dot"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="wizard-choices">
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz6','yes')" data-value="yes">
+          <div class="wizard-choice-icon">✅</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">Yes — that's exactly my audience</div>
+            <div class="wizard-choice-desc">SAM nailed it. Build everything for them.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz6','adjust')" data-value="adjust">
+          <div class="wizard-choice-icon">🔧</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">Close — let me adjust a few things</div>
+            <div class="wizard-choice-desc">Age, gender or interests aren't quite right. Quick buttons to fix it.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz6','different')" data-value="different">
+          <div class="wizard-choice-icon">👥</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">Different — I know my audience</div>
+            <div class="wizard-choice-desc">I'll describe them myself. SAM will build everything around who I say they are.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz6','trust')" data-value="trust">
+          <div class="wizard-choice-icon">🤝</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">I have no idea — I trust SAM</div>
+            <div class="wizard-choice-desc">SAM figures it out completely. You'll see the full reasoning in the playbook.</div>
+          </div>
+        </button>
+      </div>
+      <!-- Adjust audience area -->
+      <div class="wizard-input-area" id="wiz6adjust">
+        <div style="margin-bottom:16px;">
+          <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;">Age bracket <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3);font-size:11px;">— select all that apply</span></div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <button class="wizard-chip" onclick="toggleWizAgeChip(this)" data-value="13-17">13–17</button>
+            <button class="wizard-chip" onclick="toggleWizAgeChip(this)" data-value="18-24">18–24</button>
+            <button class="wizard-chip" onclick="toggleWizAgeChip(this)" data-value="25-34">25–34</button>
+            <button class="wizard-chip" onclick="toggleWizAgeChip(this)" data-value="35-44">35–44</button>
+            <button class="wizard-chip" onclick="toggleWizAgeChip(this)" data-value="45-54">45–54</button>
+            <button class="wizard-chip" onclick="toggleWizAgeChip(this)" data-value="55+">55+</button>
+          </div>
+        </div>
+        <div style="margin-bottom:16px;">
+          <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;">Gender</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <button class="wizard-chip" onclick="toggleWizChip(this,'gender')" data-value="Mostly men">👨 Mostly men</button>
+            <button class="wizard-chip" onclick="toggleWizChip(this,'gender')" data-value="Mix of both">👥 Mix of both</button>
+            <button class="wizard-chip" onclick="toggleWizChip(this,'gender')" data-value="Mostly women">👩 Mostly women</button>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;">Anything else about them?</div>
+          <textarea class="wizard-textarea" id="wiz6customtext" placeholder="e.g. DIY enthusiasts, young parents, small business owners, fitness beginners..." rows="2" style="min-height:70px;" oninput="WS.audienceCustom=this.value;saveWizardState();document.getElementById('wizardNextBtn').disabled=false;"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── STEP 7: PLATFORMS ── -->
+    <div class="wizard-step" id="wiz-7">
+      <div class="wizard-question">Where should this story live?</div>
+      <div class="wizard-why">
+        SAM has pre-selected the platforms that make the most sense for your story, your pace and your audience. Here's the reasoning for each one. You can change anything — but SAM will tell you honestly why it did or didn't recommend each platform.
+      </div>
+      <div id="wiz7platforms">
+        <!-- Generated by JS based on story context -->
+      </div>
+      <div style="margin-top:16px;padding:14px 16px;background:rgba(255,255,255,0.03);border-radius:var(--radius);border:1px solid var(--border);">
+        <div style="font-size:13px;color:var(--text3);line-height:1.6;">
+          <strong style="color:var(--text2);">The honest truth about platforms:</strong> You don't need to be everywhere. Three platforms done consistently and well will always beat seven platforms done poorly. SAM built your playbook around what makes sense for this story — not what sounds impressive.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── STEP 8: FORMAT ── -->
+    <div class="wizard-step" id="wiz-8">
+      <div class="wizard-question">What format fits this story best?</div>
+      <div class="wizard-why" id="wiz8why">
+        SAM has recommended a format based on your story, your delivery style and your platforms. Here's the reasoning. You can change it — but understand what changes when you do.
+      </div>
+      <div class="wizard-choices">
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz8','short')" data-value="short" id="fmt-short">
+          <div class="wizard-choice-icon">🎬</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">Short-form video — under 90 seconds</div>
+            <div class="wizard-choice-desc">The most shared format on every platform right now. Best for emotional stories, transformations and moments with a clear payoff.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz8','long')" data-value="long" id="fmt-long">
+          <div class="wizard-choice-icon">▶️</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">Long-form YouTube — 8 to 12 minutes</div>
+            <div class="wizard-choice-desc">For stories that need room to breathe. Documentary-style. Builds deep loyalty but requires more production. Best when you have a lot to show.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz8','caption')" data-value="caption" id="fmt-caption">
+          <div class="wizard-choice-icon">📸</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">Instagram caption</div>
+            <div class="wizard-choice-desc">Text-first storytelling paired with a strong image. Works when the photo does the emotional heavy lifting.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz8','linkedin')" data-value="linkedin" id="fmt-linkedin">
+          <div class="wizard-choice-icon">💼</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">LinkedIn post</div>
+            <div class="wizard-choice-desc">Professional storytelling that builds authority. Best for lessons learned, industry insights and personal growth stories.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz8','email')" data-value="email" id="fmt-email">
+          <div class="wizard-choice-icon">✉️</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">Email newsletter</div>
+            <div class="wizard-choice-desc">The most personal format. Highest trust, highest conversion. If you have a list — use it.</div>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── STEP 9: PHOTO ── -->
+    <div class="wizard-step" id="wiz-9">
+      <div class="wizard-question">Do you have a photo from this moment?</div>
+      <div class="wizard-why">
+        A photo does two things for your playbook. It gives SAM visual context that makes your script more specific and real. And it lets SAM build you a real thumbnail strategy — the single most important factor in whether someone clicks your video or keeps scrolling. <strong>Your thumbnail is a billboard. SAM will help you make it stop traffic.</strong>
+      </div>
+      <div class="wizard-choices">
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz9','upload')" data-value="upload">
+          <div class="wizard-choice-icon">📸</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">Upload a photo</div>
+            <div class="wizard-choice-desc">SAM reads it, detects face position, and builds safe + bold thumbnail concepts with headlines written in your voice.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz9','later')" data-value="later">
+          <div class="wizard-choice-icon">📷</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">I have footage but no photo yet</div>
+            <div class="wizard-choice-desc">SAM writes text-based thumbnail concepts you can use when you grab a frame from your footage.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz9','skip')" data-value="skip">
+          <div class="wizard-choice-icon">⏭</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">Skip for now</div>
+            <div class="wizard-choice-desc">No thumbnail section in this playbook. You can always come back to The Lens later.</div>
+          </div>
+        </button>
+      </div>
+      <div class="wizard-input-area" id="wiz9upload">
+        <div class="drop-zone" id="wizDropZone2" onclick="document.getElementById('wizPhotoInput2').click()" style="border-color:var(--lens-border);">
+          <input type="file" id="wizPhotoInput2" accept="image/*" style="display:none;" onchange="handleWizPhoto2(event)">
+          <div id="wizDropInner2">
+            <div class="drop-icon">📎</div>
+            <div class="drop-label">Drop your photo or <span style="color:var(--lens);">browse</span></div>
+            <div class="drop-hint">SAM reads it and builds your thumbnail strategy</div>
+          </div>
+          <div id="wizPhotoPreview2" style="display:none;position:relative;width:100%;">
+            <img id="wizPhotoImg2" src="" style="width:100%;max-height:200px;object-fit:contain;border-radius:var(--radius);" />
+            <button onclick="removeWizPhoto2(event)" style="position:absolute;top:-8px;right:-8px;width:26px;height:26px;border-radius:50%;background:#C53030;color:white;border:2px solid var(--bg);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;">✕</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── STEP 10: STEER SAM ── -->
+    <div class="wizard-step" id="wiz-10">
+      <div class="wizard-question">Anything SAM should know before building?</div>
+      <div class="wizard-why">
+        This is optional. SAM has everything it needs to build your playbook right now. But if there's a specific direction, tone or constraint you want — tell SAM here. You're always in control of your story.
+      </div>
+      <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;">Quick steers — tap any that apply:</div>
+      <div class="wizard-chips" id="wiz10chips">
+        <button class="wizard-chip" onclick="toggleWizChip(this,'steer')" data-value="Keep it family friendly">Keep it family friendly</button>
+        <button class="wizard-chip" onclick="toggleWizChip(this,'steer')" data-value="Make it feel cinematic">Make it cinematic</button>
+        <button class="wizard-chip" onclick="toggleWizChip(this,'steer')" data-value="This is part of a series">Part of a series</button>
+        <button class="wizard-chip" onclick="toggleWizChip(this,'steer')" data-value="Focus on authenticity over reach">Authenticity over reach</button>
+        <button class="wizard-chip" onclick="toggleWizChip(this,'steer')" data-value="I'm brand new to content creation">Brand new creator</button>
+        <button class="wizard-chip" onclick="toggleWizChip(this,'steer')" data-value="I want to grow fast">I want to grow fast</button>
+        <button class="wizard-chip" onclick="toggleWizChip(this,'steer')" data-value="Keep the script short and punchy">Short and punchy</button>
+        <button class="wizard-chip" onclick="toggleWizChip(this,'steer')" data-value="This is for a business audience">Business audience</button>
+      </div>
+      <div style="margin-top:16px;">
+        <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;">Or add your own direction:</div>
+        <div style="position:relative;">
+          <textarea class="wizard-textarea" id="wiz10text" placeholder="Anything specific you want SAM to keep in mind... (optional)" rows="3" style="min-height:80px;"></textarea>
+          <button id="wiz10mic" onclick="toggleWizardMic2()" style="position:absolute;bottom:12px;right:12px;width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;">🎙</button>
+        </div>
+      </div>
+      <div style="margin-top:16px;padding:14px 16px;background:rgba(255,255,255,0.03);border-radius:var(--radius);border:1px solid var(--border);">
+        <div style="font-size:13px;color:var(--text3);line-height:1.6;">You're in control of your story. SAM is here to help you tell it better — not to change who you are.</div>
+      </div>
+    </div>
+
+    <!-- ── STEP 11: LANGUAGE ── -->
+    <div class="wizard-step" id="wiz-11">
+      <div class="wizard-question">Where is your audience?</div>
+      <div class="wizard-why">
+        SAM writes your entire playbook — scripts, narration, captions, hashtags and your audience resource — in your chosen language and dialect. Not translated after the fact. Written natively from the start. <strong>English alone has four distinct voices</strong> — American, British, Australian and Canadian audiences expect completely different tones, references and phrasing. Pick the one that matches where your audience lives.
+      </div>
+      <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;">English variants</div>
+      <div class="wizard-choices" style="margin-bottom:20px;">
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','English (American)')" data-value="English (American)">
+          <div class="wizard-choice-icon">🇺🇸</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">English — American</div>
+            <div class="wizard-choice-desc">US tone, spelling and cultural references. Direct, punchy, confident.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','English (British)')" data-value="English (British)">
+          <div class="wizard-choice-icon">🇬🇧</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">English — British</div>
+            <div class="wizard-choice-desc">UK tone, spelling and phrasing. Dry wit, understated, warm.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','English (Australian)')" data-value="English (Australian)">
+          <div class="wizard-choice-icon">🇦🇺</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">English — Australian</div>
+            <div class="wizard-choice-desc">Aussie tone and phrasing. Relaxed, real, no-nonsense.</div>
+          </div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','English (Canadian)')" data-value="English (Canadian)">
+          <div class="wizard-choice-icon">🇨🇦</div>
+          <div class="wizard-choice-content">
+            <div class="wizard-choice-label">English — Canadian</div>
+            <div class="wizard-choice-desc">Canadian tone and spelling. Warm, inclusive, community-driven.</div>
+          </div>
+        </button>
+      </div>
+
+      <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;">Other languages</div>
+      <div class="wizard-choices">
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','Spanish (Latin American)')" data-value="Spanish (Latin American)">
+          <div class="wizard-choice-icon">🌎</div>
+          <div class="wizard-choice-content"><div class="wizard-choice-label">Spanish — Latin American</div></div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','Spanish (Spain)')" data-value="Spanish (Spain)">
+          <div class="wizard-choice-icon">🇪🇸</div>
+          <div class="wizard-choice-content"><div class="wizard-choice-label">Spanish — Spain</div></div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','French')" data-value="French">
+          <div class="wizard-choice-icon">🇫🇷</div>
+          <div class="wizard-choice-content"><div class="wizard-choice-label">French</div></div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','Portuguese (Brazilian)')" data-value="Portuguese (Brazilian)">
+          <div class="wizard-choice-icon">🇧🇷</div>
+          <div class="wizard-choice-content"><div class="wizard-choice-label">Portuguese — Brazilian</div></div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','German')" data-value="German">
+          <div class="wizard-choice-icon">🇩🇪</div>
+          <div class="wizard-choice-content"><div class="wizard-choice-label">German</div></div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','Italian')" data-value="Italian">
+          <div class="wizard-choice-icon">🇮🇹</div>
+          <div class="wizard-choice-content"><div class="wizard-choice-label">Italian</div></div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','Dutch')" data-value="Dutch">
+          <div class="wizard-choice-icon">🇳🇱</div>
+          <div class="wizard-choice-content"><div class="wizard-choice-label">Dutch</div></div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','Japanese')" data-value="Japanese">
+          <div class="wizard-choice-icon">🇯🇵</div>
+          <div class="wizard-choice-content"><div class="wizard-choice-label">Japanese</div></div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','Korean')" data-value="Korean">
+          <div class="wizard-choice-icon">🇰🇷</div>
+          <div class="wizard-choice-content"><div class="wizard-choice-label">Korean</div></div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','Hindi')" data-value="Hindi">
+          <div class="wizard-choice-icon">🇮🇳</div>
+          <div class="wizard-choice-content"><div class="wizard-choice-label">Hindi</div></div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','Arabic')" data-value="Arabic">
+          <div class="wizard-choice-icon">🌍</div>
+          <div class="wizard-choice-content"><div class="wizard-choice-label">Arabic</div></div>
+        </button>
+        <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz11','Mandarin Chinese')" data-value="Mandarin Chinese">
+          <div class="wizard-choice-icon">🇨🇳</div>
+          <div class="wizard-choice-content"><div class="wizard-choice-label">Mandarin Chinese</div></div>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── STEP 12: BUILDING ── -->
+    <div class="wizard-step" id="wiz-12">
+    <!-- Back button always visible on step 12 -->
+    <div class="no-print" style="padding:12px 0 0;margin-bottom:8px;">
+      <button onclick="wizardBackFromPlaybook()" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:transparent;border:1px solid var(--border2);border-radius:var(--radius);color:var(--text3);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.color='var(--text)';this.style.borderColor='var(--border)'" onmouseout="this.style.color='var(--text3)';this.style.borderColor='var(--border2)'">
+        ← Back to edit
+      </button>
+    </div>
+      <div class="wizard-loader show" id="wizardLoader">
+        <div class="wizard-loader-title">SAM is building your playbook.</div>
+        <div class="wizard-loader-sub">
+          "Social media is genuinely hard. What SAM is building right now would take a professional strategist half a day. You'll have it in about 30 seconds. The work of showing up is still yours — SAM just made sure it's worth it."
+        </div>
+        <div class="wizard-loader-bar-wrap">
+          <div class="wizard-loader-bar indeterminate" id="wizardLoaderBar"></div>
+        </div>
+        <div class="wizard-loader-steps" id="wizardLoaderSteps">
+          <div class="wizard-loader-step" id="lstep-1">
+            <div class="wizard-loader-dot"></div>
+            Reading your story
+          </div>
+          <div class="wizard-loader-step" id="lstep-2">
+            <div class="wizard-loader-dot"></div>
+            Mapping your story architecture
+          </div>
+          <div class="wizard-loader-step" id="lstep-3">
+            <div class="wizard-loader-dot"></div>
+            Writing your hook
+          </div>
+          <div class="wizard-loader-step" id="lstep-4">
+            <div class="wizard-loader-dot"></div>
+            Crafting your script
+          </div>
+          <div class="wizard-loader-step" id="lstep-5">
+            <div class="wizard-loader-dot"></div>
+            Building your platform strategy
+          </div>
+          <div class="wizard-loader-step" id="lstep-6">
+            <div class="wizard-loader-dot"></div>
+            Diagnosing your ideal audience
+          </div>
+          <div class="wizard-loader-step" id="lstep-7">
+            <div class="wizard-loader-dot"></div>
+            Creating your audience resource
+          </div>
+          <div class="wizard-loader-step" id="lstep-8">
+            <div class="wizard-loader-dot"></div>
+            Assembling your playbook
+          </div>
+        </div>
+        <div class="wizard-still-building" id="wizardStillBuilding">
+          ⏳ SAM is still working — this story has a lot of depth to it. Give her a few more seconds. The more real your story, the more she has to build with.
+        </div>
+      </div>
+
+      <!-- PLAYBOOK OUTPUT -->
+      <div class="wizard-playbook" id="wizardPlaybook">
+        <!-- Generated by JS -->
+      </div>
+    </div>
+
+    <!-- Advanced tools link -->
+    <div class="wizard-advanced-link">
+      <button class="wizard-advanced-btn" onclick="closeWizard()">
+        ↓ Open advanced tools
+      </button>
+    </div>
+
+  </div><!-- end wizard-body -->
+
+  <!-- WIZARD NAV -->
+  <div class="wizard-nav" id="wizardNav" style="display:none;">
+    <button class="wizard-back" id="wizardBackBtn" onclick="wizardBack()">
+      ← Back
+    </button>
+    <button class="wizard-next" id="wizardNextBtn" onclick="wizardNext()" disabled>
+      Continue →
+    </button>
+  </div>
+
+  <!-- NEXT TOOL OUTPUT — permanent container so DOM insertion always works -->
+  <div id="nextToolOutput" style="margin:0 0 8px;"></div>
+
+  <!-- PLAYBOOK PRINT BAR -->
+  <div class="playbook-print-bar" id="playbookPrintBar" style="display:none;flex-wrap:wrap;gap:8px;">
+    <button class="playbook-new-btn" onclick="showWizardStep('10')" style="flex-shrink:0;">← Back</button>
+    <button class="playbook-new-btn" onclick="wizardNewPlaybook()" style="flex-shrink:0;">+ New</button>
+    <button class="playbook-print-btn" id="playbookPdfBtn" onclick="downloadPDF('playbook')" style="flex:1;min-width:140px;font-size:12px;">
+      ⬇️ Download Playbook PDF
+    </button>
+    <button class="playbook-print-btn" id="leadMagnetPdfBtn" onclick="downloadPDF('leadmagnet')" style="flex:1;min-width:140px;font-size:12px;background:linear-gradient(135deg,#92400E,#FBBF24,#F59E0B);">
+      ⬇️ Download Lead Magnet PDF
+    </button>
+  </div>
+
+</div><!-- end wizard-page -->
 
 </body>
 </html>
