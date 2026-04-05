@@ -4099,7 +4099,7 @@
 
 <nav>
   <div class="nav-logo">S<span class="nav-logo-dot">.</span>A<span class="nav-logo-dot">.</span>M<span class="nav-logo-dot">.</span></div>
-  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v2.0</div>
+  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v2.1</div>
   <div class="nav-right">
     <div class="trial-nav-badge" id="trialBadge" onclick="openProPage()">
       <div class="trial-nav-dot"></div>
@@ -7930,9 +7930,15 @@ Return ONLY valid JSON:
     if (el) { _ntIdx = (_ntIdx + 1) % _ntMsgs.length; el.textContent = _ntMsgs[_ntIdx]; }
   }, 2200);
 
-  outputArea.innerHTML = `<div style="padding:24px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);text-align:center;">
-    <div style="font-size:13px;color:var(--text3);margin-bottom:8px;" id="nextToolLoaderText">SAM is building your ${cfg.label.replace(/^[^ ]+ /, '')}...</div>
-    <div class="typing-dots" style="justify-content:center;"><span>●</span><span>●</span><span>●</span></div>
+  outputArea.innerHTML = `<div style="padding:28px 24px;background:linear-gradient(135deg,${cfg.color}0d,var(--surface));border:1px solid ${cfg.color}44;border-radius:var(--radius-xl);text-align:center;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,${cfg.color}10,transparent);animation:samSweep 2s ease-in-out infinite;pointer-events:none;"></div>
+    <div style="font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:${cfg.color};margin-bottom:10px;opacity:0.8;">✦ SAM IS BUILDING</div>
+    <div style="font-size:14px;font-weight:600;color:transparent;background:linear-gradient(90deg,#A78BFA,#F472B6,#FBB824,#A78BFA);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;animation:samTextShimmer 2.5s ease infinite;margin-bottom:18px;" id="nextToolLoaderText">SAM is building your ${cfg.label.replace(/^[^ ]+ /, '')}...</div>
+    <div style="display:flex;justify-content:center;gap:10px;">
+      <span style="width:10px;height:10px;border-radius:50%;background:${cfg.color};display:inline-block;animation:bounce 1.4s ease-in-out infinite;box-shadow:0 0 10px ${cfg.color};"></span>
+      <span style="width:10px;height:10px;border-radius:50%;background:${cfg.color};display:inline-block;animation:bounce 1.4s ease-in-out 0.15s infinite;box-shadow:0 0 10px ${cfg.color};"></span>
+      <span style="width:10px;height:10px;border-radius:50%;background:${cfg.color};display:inline-block;animation:bounce 1.4s ease-in-out 0.3s infinite;box-shadow:0 0 10px ${cfg.color};"></span>
+    </div>
   </div>`;
   setTimeout(() => { outputArea.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 150);
 
@@ -8458,7 +8464,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v2.0</div>
+  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v2.1</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
