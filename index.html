@@ -2482,9 +2482,9 @@
     .wizard-body {
       max-width: 640px;
       margin: 0 auto;
-      padding: 40px 24px 120px;
+      padding: 40px 24px 220px;
     }
-    @media(min-width:768px){ .wizard-body { padding: 56px 40px 120px; } }
+    @media(min-width:768px){ .wizard-body { padding: 56px 40px 220px; } }
 
     /* Step */
     .wizard-step {
@@ -7354,7 +7354,7 @@ Return ONLY valid JSON — no markdown, no backticks:
         mode: 'chat',
         userId: regenUid,
         tier: regenTier,
-        messages: [{ role: 'user', content: prompt }] 
+        toolPrompt: prompt
       })
     });
 
@@ -7582,7 +7582,7 @@ Return ONLY valid JSON:
         mode: 'chat', 
         userId: devUid,
         tier: devTier,
-        messages: [{ role: 'user', content: cfg.prompt }] 
+        toolPrompt: cfg.prompt
       })
     });
 
