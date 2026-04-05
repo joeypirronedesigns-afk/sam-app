@@ -4062,7 +4062,7 @@
 
 <nav>
   <div class="nav-logo">S<span class="nav-logo-dot">.</span>A<span class="nav-logo-dot">.</span>M<span class="nav-logo-dot">.</span></div>
-  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v1.7</div>
+  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v1.8</div>
   <div class="nav-right">
     <div class="trial-nav-badge" id="trialBadge" onclick="openProPage()">
       <div class="trial-nav-dot"></div>
@@ -4310,7 +4310,7 @@
           <button class="paste-btn" onclick="pasteToEl('sparkInp')" title="Paste">📋</button>
           <button class="mic-btn" id="micSpark" onclick="toggleMicFor('sparkInp','micSpark')">🎙</button>
         </div>
-        <div class="loader" id="sparkLoader"><div class="loader-dots"><span style="background:var(--spark)"></span><span style="background:var(--spark)"></span><span style="background:var(--spark)"></span></div><div class="loader-text">SAM is generating your ideas...</div></div>
+        <div class="loader" id="sparkLoader"><div class="loader-dots"><span style="background:var(--spark)"></span><span style="background:var(--spark)"></span><span style="background:var(--spark)"></span></div><div class="loader-text" id="sparkLoaderText">SAM is generating your ideas...</div></div>
         <div class="err-box" id="sparkErr"></div>
         <div class="sam-status-bar hidden" id="sparkStatusBar"><div class="sam-status-dots"><span></span><span></span><span></span></div><div class="sam-status-text">SAM is working...</div></div>
         <button class="run-btn run-spark" id="sparkBtn" onclick="guardedRunFn(runSpark)">Generate 5 ideas →</button>
@@ -4355,7 +4355,7 @@
             <button class="platform-pill" data-p="X (Twitter)" onclick="togglePill(this,'blueprintPlatforms')">✕ X</button>
           </div>
         </div>
-        <div class="loader" id="blueprintLoader"><div class="loader-dots"><span style="background:var(--blueprint)"></span><span style="background:var(--blueprint)"></span><span style="background:var(--blueprint)"></span></div><div class="loader-text">SAM is building your calendar...</div></div>
+        <div class="loader" id="blueprintLoader"><div class="loader-dots"><span style="background:var(--blueprint)"></span><span style="background:var(--blueprint)"></span><span style="background:var(--blueprint)"></span></div><div class="loader-text" id="blueprintLoaderText">SAM is building your calendar...</div></div>
         <div class="err-box" id="blueprintErr"></div>
         <div class="sam-status-bar hidden" id="blueprintStatusBar"><div class="sam-status-dots"><span></span><span></span><span></span></div><div class="sam-status-text">SAM is working...</div></div>
         <button class="run-btn run-blueprint" id="blueprintBtn" onclick="guardedRunFn(runBlueprint)">Build 7-day plan →</button>
@@ -4409,7 +4409,7 @@
             <button class="opt-btn" data-v="Tutorial with a Twist" onclick="selectOpt(this,'visionStyle')">🔄 Tutorial Twist</button>
           </div>
         </div>
-        <div class="loader" id="visionLoader"><div class="loader-dots"><span style="background:var(--vision)"></span><span style="background:var(--vision)"></span><span style="background:var(--vision)"></span></div><div class="loader-text">SAM is building your concept...</div></div>
+        <div class="loader" id="visionLoader"><div class="loader-dots"><span style="background:var(--vision)"></span><span style="background:var(--vision)"></span><span style="background:var(--vision)"></span></div><div class="loader-text" id="visionLoaderText">SAM is building your concept...</div></div>
         <div class="err-box" id="visionErr"></div>
         <div class="sam-status-bar hidden" id="visionStatusBar"><div class="sam-status-dots"><span></span><span></span><span></span></div><div class="sam-status-text">SAM is working...</div></div>
         <button class="run-btn run-vision" id="visionBtn" onclick="guardedRunFn(runVision)">Generate concept →</button>
@@ -4984,7 +4984,7 @@ async function runPulse() {
   document.getElementById('pulseBtn').disabled = true;
   document.getElementById('pulseLoader').classList.add('show');
   document.getElementById('pulseOutput').classList.remove('show');
-  showSamStatus('pulseStatusBar','SAM is reading your moment and writing your script...');
+  showSamStatus('pulseStatusBar','SAM is reading your moment and writing your script...'); startLoaderCycle('pulse');
   let i = 0;
   pulseInterval = setInterval(() => { i=(i+1)%pulseLines.length; document.getElementById('pulseLoaderText').textContent=pulseLines[i]; }, 1800);
   try {
@@ -5065,6 +5065,35 @@ function copyEl(btn) {
   const prev = btn.previousElementSibling;
   copyText(btn, prev ? (prev.innerText || prev.textContent) : '');
 }
+
+function cycleLoaderText(textElId, msgs, intervalMs) {
+  const el = document.getElementById(textElId);
+  if (!el) return null;
+  let i = 0;
+  el.textContent = msgs[0];
+  return setInterval(() => {
+    i = (i + 1) % msgs.length;
+    el.textContent = msgs[i];
+  }, intervalMs || 2200);
+}
+
+const _loaderCyclers = {};
+function startLoaderCycle(tool) {
+  const map = {
+    pulse:     ['id','pulseLoaderText',     ['SAM is reading your moment...','Studying your story...','Writing your hook...','Scripting your video...','Almost done...']],
+    spark:     ['id','sparkLoaderText',     ['Generating your ideas...','Finding angles for your niche...','Crafting each concept...','Almost ready...']],
+    blueprint: ['id','blueprintLoaderText', ['Mapping your week...','Planning your posts...','Scheduling content...','Building your calendar...','Almost there...']],
+    vision:    ['id','visionLoaderText',    ['Building your concept...','Finding the hook...','Adding the twist...','Writing your script...','Wrapping up...']],
+  };
+  const entry = map[tool];
+  if (!entry) return;
+  if (_loaderCyclers[tool]) clearInterval(_loaderCyclers[tool]);
+  _loaderCyclers[tool] = cycleLoaderText(entry[1], entry[2], 2200);
+}
+function stopLoaderCycle(tool) {
+  if (_loaderCyclers[tool]) { clearInterval(_loaderCyclers[tool]); delete _loaderCyclers[tool]; }
+}
+
 function showSamStatus(barId, message) {
   const bar = document.getElementById(barId);
   const txt = bar && bar.querySelector('.sam-status-text');
@@ -5078,6 +5107,9 @@ function showSamStatus(barId, message) {
   bar._iv = iv;
 }
 function hideSamStatus(barId) {
+  const toolMap = {'pulseStatusBar':'pulse','sparkStatusBar':'spark','blueprintStatusBar':'blueprint','visionStatusBar':'vision'};
+  const tool = toolMap[barId];
+  if (tool) stopLoaderCycle(tool);
   const bar = document.getElementById(barId);
   if (!bar) return;
   if (bar._iv) clearInterval(bar._iv);
@@ -5094,7 +5126,7 @@ async function runSpark() {
   document.getElementById('sparkBtn').disabled = true;
   document.getElementById('sparkLoader').classList.add('show');
   document.getElementById('sparkOutput').classList.remove('show');
-  showSamStatus('sparkStatusBar','SAM is generating ideas for your niche...');
+  showSamStatus('sparkStatusBar','SAM is generating ideas for your niche...'); startLoaderCycle('spark');
   try {
     const data = await callAPI({ ...getBase(), mode:'ideas', moment:niche, platforms:[] });
     document.getElementById('sparkLoader').classList.remove('show');
@@ -5141,7 +5173,7 @@ async function runBlueprint() {
   document.getElementById('blueprintBtn').disabled = true;
   document.getElementById('blueprintLoader').classList.add('show');
   document.getElementById('blueprintOutput').classList.remove('show');
-  showSamStatus('blueprintStatusBar','SAM is building your 7-day content calendar...');
+  showSamStatus('blueprintStatusBar','SAM is building your 7-day content calendar...'); startLoaderCycle('blueprint');
   try {
     const data = await callAPI({ ...getBase(), mode:'calendar', moment, platforms:getSelPills('blueprintPlatforms') });
     document.getElementById('blueprintLoader').classList.remove('show');
@@ -5187,7 +5219,7 @@ async function runVision() {
   document.getElementById('visionBtn').disabled = true;
   document.getElementById('visionLoader').classList.add('show');
   document.getElementById('visionOutput').classList.remove('show');
-  showSamStatus('visionStatusBar','SAM is building your video concept...');
+  showSamStatus('visionStatusBar','SAM is building your video concept...'); startLoaderCycle('vision');
   try {
     const style = document.querySelector('#tool-vision .opt-btn.sel')?.dataset.v || '';
     const plats = getSelPills('visionPlatforms');
@@ -8375,7 +8407,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v1.7</div>
+  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v1.8</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
