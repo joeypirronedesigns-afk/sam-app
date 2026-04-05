@@ -7537,6 +7537,24 @@ function setLMPerspective(persp, btn) {
   regenerateLeadMagnet();
 }
 
+
+function startToolCycler(statusBarId, msgs) {
+  const bar = document.getElementById(statusBarId);
+  if (!bar) return;
+  const textEl = bar.querySelector('.sam-status-text');
+  if (!textEl) return;
+  let i = 0;
+  textEl.textContent = msgs[0];
+  bar._cycler = setInterval(() => {
+    i = (i + 1) % msgs.length;
+    textEl.textContent = msgs[i];
+  }, 3000);
+}
+function stopToolCycler(statusBarId) {
+  const bar = document.getElementById(statusBarId);
+  if (bar && bar._cycler) { clearInterval(bar._cycler); bar._cycler = null; }
+}
+
 async function regenerateLeadMagnet() {
   const statusEl = document.getElementById('lmRegenStatus');
   const docEl = document.getElementById('leadMagnetDoc');
