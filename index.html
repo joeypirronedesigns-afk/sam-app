@@ -4108,7 +4108,7 @@
 
 <nav>
   <div class="nav-logo">S<span class="nav-logo-dot">.</span>A<span class="nav-logo-dot">.</span>M<span class="nav-logo-dot">.</span></div>
-  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v3.8</div>
+  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v3.9</div>
   <div class="nav-right">
     <div class="trial-nav-badge" id="trialBadge" onclick="openProPage()">
       <div class="trial-nav-dot"></div>
@@ -5056,7 +5056,7 @@ function renderPulse(data, contentType, originalText, platforms) {
   const body = document.getElementById('pulseBody');
   let html = '';
   if (isReal(data.diagnosis)) {
-    html += `<div class="out-block"><div class="out-block-title" style="color:var(--pulse);">● What this is really about</div><div class="out-text">${data.diagnosis}</div><button class="copy-btn" onclick="copyText(this,'${escQ(data.diagnosis)}')">Copy</button></div>`;
+    html += `<div class="out-block"><div class="out-block-title" style="color:var(--pulse);">● What this is really about</div><div class="out-text">${data.diagnosis}</div><button class="copy-btn" onclick="copyText(this,'${escQ(data.diagnosis)}')">Copy</button>${makeIbSaveBtn(data.diagnosis,"pulse","diagnosis",platforms&&platforms[0]?platforms[0]:"")}</div>`;
   }
   const hook = data.hook || data.hook_1 || '';
   if (isReal(hook)) {
@@ -5068,7 +5068,7 @@ function renderPulse(data, contentType, originalText, platforms) {
     const isTxt = textFmts.some(f => (contentType||'').trim() === f.trim());
     if (isTxt) {
       const clean = sc.replace(/\[[A-Z /]+\]/g,'').replace(/\([^)]*\)/gi,'').trim();
-      html += `<div class="out-block"><div class="out-block-title" style="color:var(--pulse);">● Your post — ready to copy</div><div class="out-text" style="background:var(--surface);border-radius:var(--radius);padding:16px;border-left:3px solid var(--pulse);white-space:pre-wrap;">${clean}</div><button class="copy-btn" onclick="copyText(this,'${escQ(clean)}')">Copy</button></div>`;
+      html += `<div class="out-block"><div class="out-block-title" style="color:var(--pulse);">● Your post — ready to copy</div><div class="out-text" style="background:var(--surface);border-radius:var(--radius);padding:16px;border-left:3px solid var(--pulse);white-space:pre-wrap;">${clean}</div><button class="copy-btn" onclick="copyText(this,'${escQ(clean)}')">Copy</button>${makeIbSaveBtn(clean,"pulse","post",platforms&&platforms[0]?platforms[0]:"")}</div>`;
     } else {
       const fs = sc.split('\n').map(line => {
         const t = line.trim();
@@ -5077,14 +5077,14 @@ function renderPulse(data, contentType, originalText, platforms) {
         if (t.startsWith('(') && t.endsWith(')')) return `<span class="script-note">${t}</span>`;
         return `<span class="script-line">${t}</span>`;
       }).filter(Boolean).join('\n');
-      html += `<div class="out-block"><div class="out-block-title" style="color:var(--pulse);">● Full script — word for word</div><div class="script-block">${fs}</div><button class="copy-btn" onclick="copyEl(this)">Copy script</button></div>`;
+      html += `<div class="out-block"><div class="out-block-title" style="color:var(--pulse);">● Full script — word for word</div><div class="script-block">${fs}</div><button class="copy-btn" onclick="copyEl(this)">Copy script</button>${makeIbSaveBtn(fs,"pulse","script",platforms&&platforms[0]?platforms[0]:"")}</div>`;
     }
   }
   if (isReal(data.visual_note)) html += `<div class="out-block"><div class="out-block-title" style="color:var(--pulse);">● What to show on screen</div><div class="out-text">${data.visual_note}</div></div>`;
   const brollArr = Array.isArray(data.b_roll) ? data.b_roll : (data.b_roll||'').split('\n').filter(Boolean);
   if (brollArr.length) html += `<div class="out-block"><div class="out-block-title" style="color:var(--pulse);">● B-roll shots</div><div class="broll-list">${brollArr.map(l=>`<div class="broll-item"><i class="broll-arrow">→</i>${l.trim()}</div>`).join('')}</div></div>`;
   if (isReal(data.pacing_note)) html += `<div class="out-block"><div class="out-block-title" style="color:var(--pulse);">● How to deliver it</div><div class="out-text">${data.pacing_note}</div></div>`;
-  if (isReal(data.cta)) html += `<div class="out-block"><div class="out-block-title" style="color:var(--pulse);">● Call to action</div><div class="out-text">${data.cta}</div><button class="copy-btn" onclick="copyText(this,'${escQ(data.cta)}')">Copy</button></div>`;
+  if (isReal(data.cta)) html += `<div class="out-block"><div class="out-block-title" style="color:var(--pulse);">● Call to action</div><div class="out-text">${data.cta}</div><button class="copy-btn" onclick="copyText(this,'${escQ(data.cta)}')">Copy</button>${makeIbSaveBtn(data.cta,"pulse","cta",platforms&&platforms[0]?platforms[0]:"")}</div>`;
   if (data.platform_strategies && Array.isArray(data.platform_strategies)) {
     const selPlatforms = platforms && platforms.length > 0 ? platforms : null;
     const filtered = selPlatforms ? data.platform_strategies.filter(ps => selPlatforms.includes(ps.platform)) : data.platform_strategies;
@@ -5092,7 +5092,7 @@ function renderPulse(data, contentType, originalText, platforms) {
       html += `<div class="out-block"><div class="out-block-title" style="color:var(--pulse);">● Platform strategy</div>`;
       filtered.forEach(ps => {
         if (!ps || !ps.platform) return;
-        html += `<div class="platform-strategy"><div class="ps-header"><div class="ps-name">${ps.platform}</div><button class="copy-btn" style="float:none;margin:0;" onclick="copyText(this,'${escQ((ps.caption||'') + '\n' + (ps.hashtags||''))}')">Copy</button></div><div class="ps-body">${ps.strategy ? `<div class="out-text" style="font-size:13px;color:var(--text3);margin-bottom:8px;">${ps.strategy}</div>` : ''}${ps.caption ? `<div class="ps-caption">${ps.caption}</div>` : ''}${ps.hashtags ? `<div class="ps-hashtags">${ps.hashtags}</div>` : ''}</div></div>`;
+        html += `<div class="platform-strategy"><div class="ps-header"><div class="ps-name">${ps.platform}</div><button class="copy-btn" style="float:none;margin:0;" onclick="copyText(this,'${escQ((ps.caption||'') + '\n' + (ps.hashtags||''))}')">Copy</button>${makeIbSaveBtn((ps.caption||'')+(ps.hashtags?'\n'+ps.hashtags:''),"pulse","caption",ps.platform||"")}</div><div class="ps-body">${ps.strategy ? `<div class="out-text" style="font-size:13px;color:var(--text3);margin-bottom:8px;">${ps.strategy}</div>` : ''}${ps.caption ? `<div class="ps-caption">${ps.caption}</div>` : ''}${ps.hashtags ? `<div class="ps-hashtags">${ps.hashtags}</div>` : ''}</div></div>`;
       });
       html += `</div>`;
     }
@@ -5312,6 +5312,10 @@ function renderVision(data) {
 
 // ── THE LENS ──────────────────────────────────────────────────────────────────
 function lensLiveUpdate() {
+  // Small delay to let input value settle
+  setTimeout(_doLensUpdate, 50);
+}
+function _doLensUpdate() {
   const hl1 = document.getElementById('lensEditHL1')?.value || window._currentLensHeadline || '';
   const hl2 = document.getElementById('lensEditHL2')?.value || window._currentLensHL2 || hl1;
   const sub1 = document.getElementById('lensEditSub1')?.value || window._currentLensSubtext || '';
@@ -5726,8 +5730,8 @@ function renderLens(data) {
     const ac = data.thumbnail_color || '#F472B6';
     if (hl1 || hl2) {
       html += `<div class="out-block"><div class="out-block-title" style="color:var(--lens);">● Your headlines</div>`;
-      if (hl1) html += `<div style="margin-bottom:10px;"><div style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:rgba(52,211,153,0.8);text-transform:uppercase;margin-bottom:5px;">✓ Safe — clean &amp; relatable</div><div style="background:var(--surface);border-left:3px solid rgba(52,211,153,0.6);border-radius:0 var(--radius) var(--radius) 0;padding:12px 14px;"><div style="font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--text);line-height:1.2;">${hl1}</div>${sub1?`<div style="font-size:13px;color:var(--text3);margin-top:4px;">${sub1}</div>`:''}</div><button class="copy-btn" style="float:none;margin-top:6px;" onclick="copyText(this,'${escQ(hl1+(sub1?'\n'+sub1:''))}')">Copy</button></div>`;
-      if (hl2) html += `<div style="margin-bottom:10px;"><div style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:rgba(244,114,182,0.8);text-transform:uppercase;margin-bottom:5px;">⚡ Bold — scroll-stopping</div><div style="background:var(--surface);border-left:3px solid rgba(244,114,182,0.6);border-radius:0 var(--radius) var(--radius) 0;padding:12px 14px;"><div style="font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--text);line-height:1.2;">${hl2}</div>${sub2?`<div style="font-size:13px;color:var(--text3);margin-top:4px;">${sub2}</div>`:''}</div><button class="copy-btn" style="float:none;margin-top:6px;" onclick="copyText(this,'${escQ(hl2+(sub2?'\n'+sub2:''))}')">Copy</button></div>`;
+      if (hl1) html += `<div style="margin-bottom:10px;"><div style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:rgba(52,211,153,0.8);text-transform:uppercase;margin-bottom:5px;">✓ Safe — clean &amp; relatable</div><div style="background:var(--surface);border-left:3px solid rgba(52,211,153,0.6);border-radius:0 var(--radius) var(--radius) 0;padding:12px 14px;"><div style="font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--text);line-height:1.2;">${hl1}</div>${sub1?`<div style="font-size:13px;color:var(--text3);margin-top:4px;">${sub1}</div>`:''}</div><button class="copy-btn" style="float:none;margin-top:6px;" onclick="copyText(this,'${escQ(hl1+(sub1?'\n'+sub1:''))}')">Copy</button>${makeIbSaveBtn(hl1+(sub1?'\n'+sub1:''),"lens","headline","")}</div>`;
+      if (hl2) html += `<div style="margin-bottom:10px;"><div style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:rgba(244,114,182,0.8);text-transform:uppercase;margin-bottom:5px;">⚡ Bold — scroll-stopping</div><div style="background:var(--surface);border-left:3px solid rgba(244,114,182,0.6);border-radius:0 var(--radius) var(--radius) 0;padding:12px 14px;"><div style="font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--text);line-height:1.2;">${hl2}</div>${sub2?`<div style="font-size:13px;color:var(--text3);margin-top:4px;">${sub2}</div>`:''}</div><button class="copy-btn" style="float:none;margin-top:6px;" onclick="copyText(this,'${escQ(hl2+(sub2?'\n'+sub2:''))}')">Copy</button>${makeIbSaveBtn(hl2+(sub2?'\n'+sub2:''),"lens","headline","")}</div>`;
       html += `</div>`;
     }
     const faceSide = data.face_side || 'center';
@@ -5736,7 +5740,7 @@ function renderLens(data) {
     const boldTemplate = data.bold_template || 'cornerBurst';
     const templateNames = {cinematic:'Cinematic bars',splitPanel:'Split panel',newsFlash:'News flash panel',giantWord:'Giant word',cornerBurst:'Corner burst',diagonalSlash:'Diagonal slash',stackedBoxes:'Stacked boxes'};
     html += `<div class="out-block"><div class="out-block-title" style="color:var(--lens);">● Layout direction</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"><div style="background:var(--surface);border-radius:var(--radius);padding:12px;"><div style="font-size:10px;font-weight:700;color:rgba(52,211,153,0.8);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Safe layout</div><div style="font-size:14px;font-weight:500;color:var(--text);">${templateNames[safeTemplate]||safeTemplate}</div></div><div style="background:var(--surface);border-radius:var(--radius);padding:12px;"><div style="font-size:10px;font-weight:700;color:rgba(244,114,182,0.8);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Bold layout</div><div style="font-size:14px;font-weight:500;color:var(--text);">${templateNames[boldTemplate]||boldTemplate}</div></div></div><div style="margin-top:10px;background:var(--surface);border-radius:var(--radius);padding:12px;display:flex;gap:12px;align-items:center;"><div><div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">Face position</div><div style="font-size:14px;font-weight:500;color:var(--text);">${faceSide==='center'?'Centre — text below':'Face '+faceSide+' — text goes '+textSide}</div></div><div style="margin-left:auto;"><div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">Accent color</div><div style="display:flex;align-items:center;gap:6px;"><div style="width:20px;height:20px;border-radius:50%;background:${ac};border:2px solid rgba(255,255,255,0.2);"></div><span style="font-size:13px;color:var(--text2);">${ac}</span></div></div></div></div>`;
-    if (data.content_angle) html += `<div class="out-block"><div class="out-block-title" style="color:var(--lens);">● Story angle</div><div style="background:var(--lens-bg);border:1px solid var(--lens-border);border-radius:var(--radius);padding:14px 16px;"><div style="font-size:15px;color:var(--text);line-height:1.6;">${data.content_angle}</div></div></div>`;
+    if (data.content_angle) html += `<div class="out-block"><div class="out-block-title" style="color:var(--lens);">● Story angle</div><div style="background:var(--lens-bg);border:1px solid var(--lens-border);border-radius:var(--radius);padding:14px 16px;"><div style="font-size:15px;color:var(--text);line-height:1.6;">${data.content_angle}</div></div>${makeIbSaveBtn(data.content_angle,"lens","angle","")}</div>`;
     const imgSrc = window._lensImgSrc || document.getElementById('previewImg')?.src || '';
     html += `<div class="out-block"><div class="out-block-title" style="color:var(--lens);">● Visual reference <span style="font-size:10px;font-weight:400;color:var(--text3);text-transform:none;letter-spacing:0;">(layout blueprint — finish in Canva or CapCut)</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
       <div><div style="font-size:10px;color:var(--text3);margin-bottom:5px;font-weight:500;">16:9 safe</div><div style="position:relative;width:100%;aspect-ratio:16/9;border-radius:8px;overflow:hidden;cursor:pointer;" onclick="downloadCanvas('thumb169scanvas','thumbnail-safe-16x9.png')"><canvas id="thumb169scanvas" style="width:100%;height:100%;display:block;border-radius:8px;"></canvas><div style="position:absolute;top:4px;left:4px;background:rgba(167,139,250,0.8);border-radius:3px;padding:1px 6px;font-size:8px;font-weight:700;color:#fff;letter-spacing:0.06em;">CONCEPT</div><div style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.6);border-radius:4px;padding:2px 7px;font-size:9px;color:#fff;">↓</div></div></div>
@@ -5783,7 +5787,7 @@ function renderLens(data) {
             </div>
           </div>
         </div>
-        <button onclick="lensLiveUpdate()" style="font-size:12px;font-weight:700;background:linear-gradient(135deg,rgba(167,139,250,0.2),rgba(244,114,182,0.1));border:1px solid rgba(167,139,250,0.3);border-radius:8px;padding:8px 20px;color:#A78BFA;cursor:pointer;width:100%;">↻ Regenerate thumbnails with edits</button>
+        <button onclick="lensLiveUpdate()" style="font-size:12px;font-weight:700;background:linear-gradient(135deg,rgba(167,139,250,0.2),rgba(244,114,182,0.1));border:1px solid rgba(167,139,250,0.3);border-radius:8px;padding:10px 20px;color:#A78BFA;cursor:pointer;width:100%;margin-top:4px;">↻ Update thumbnails</button>
       `;
       // Insert before the visual reference block
       const allBlocks = lensBody.querySelectorAll('.out-block');
@@ -8757,7 +8761,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v3.8</div>
+  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v3.9</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
