@@ -4108,7 +4108,7 @@
 
 <nav>
   <div class="nav-logo">S<span class="nav-logo-dot">.</span>A<span class="nav-logo-dot">.</span>M<span class="nav-logo-dot">.</span></div>
-  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v3.1</div>
+  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v3.2</div>
   <div class="nav-right">
     <div class="trial-nav-badge" id="trialBadge" onclick="openProPage()">
       <div class="trial-nav-dot"></div>
@@ -7172,7 +7172,7 @@ Include complete reasoning (WHY) for every recommendation.
 
   try {
     // Main playbook API call
-    const _pbRaw = localStorage.getItem('sam_uid') || 'anon';
+    const _pbRaw = (localStorage.getItem('sam_uid') || 'anon').replace(/^dev-/, '');
     const _pbDev = localStorage.getItem('sam_dev') === 'true';
     const devUserId = _pbDev ? 'dev-' + _pbRaw : _pbRaw;
     const devTier = _pbDev ? 'studio' : (WS.tier || 'free');
@@ -7788,14 +7788,14 @@ CREATOR TYPE: ${s.creatorType || 'personal brand'} — ${brandName}
 AUDIENCE: ${audienceContext || 'general audience'}
 NICHE/CONTEXT: ${s.niche || ''}
 PERSPECTIVE: ${perspNote}
-${steer ? 'CREATOR DIRECTION: ' + steer : ''}
+${steer ? '\n\nCRITICAL OVERRIDE — CREATOR DIRECTION (you MUST follow this exactly, it overrides everything above): ' + steer + '\n' : ''}
 
 Return ONLY valid JSON — no markdown, no backticks:
 {"title":"Resource title","why":"2 sentences.","items":[{"heading":"Section 1 title","body":"2-3 sentences specific and useful."},{"heading":"Section 2 title","body":"2-3 sentences."},{"heading":"Section 3 title","body":"2-3 sentences."},{"heading":"Section 4 title","body":"2-3 sentences."},{"heading":"Section 5 title","body":"2-3 sentences. End with reason to follow creator."}],"comment_response":"Under 150 chars."}`;
 
   try {
     // Direct fetch with proper SSE parsing
-    const _regenRaw = localStorage.getItem('sam_uid') || 'anon';
+    const _regenRaw = (localStorage.getItem('sam_uid') || 'anon').replace(/^dev-/, '');
     const _regenDev = localStorage.getItem('sam_dev') === 'true';
     const regenUid = _regenDev ? 'dev-' + _regenRaw : _regenRaw;
     const regenTier = _regenDev ? 'studio' : 'free';
@@ -8049,7 +8049,7 @@ Return ONLY valid JSON:
   try {
     // Use callAPI which properly handles streaming and JSON parsing
     // Use direct fetch + stream read to get raw text, then parse JSON from it
-    const _rawUid = localStorage.getItem('sam_uid') || 'anon';
+    const _rawUid = (localStorage.getItem('sam_uid') || 'anon').replace(/^dev-/, '');
     const _isDev = localStorage.getItem('sam_dev') === 'true';
     const devUid = _isDev ? 'dev-' + _rawUid : _rawUid;
     const devTier = _isDev ? 'studio' : 'free';
@@ -8570,7 +8570,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v3.1</div>
+  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v3.2</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
