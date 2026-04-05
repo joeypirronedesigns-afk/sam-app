@@ -4952,7 +4952,7 @@ async function readStream(r) {
         };
       }
     }
-    throw new Error('SAM responded but output could not be parsed. Raw: ' + accumulated.slice(0,300));
+    throw new Error('SAM built your playbook but had trouble sending it all at once. Hit Try Again — it almost always works the second time. (Parse error)');
   }
   if (streamError) throw new Error(streamError);
   const preview = rawLines.slice(0,5).join(' | ').slice(0,200);
@@ -6921,6 +6921,10 @@ async function buildPlaybook() {
     if (el) { el.classList.remove('active','done'); }
   });
 
+  const buildMsgs = ['Building your playbook — this takes about 30 seconds','SAM is writing your hook and script...','Building your platform strategy...','Diagnosing your ideal audience...','Creating your free audience resource...','Almost done — putting it all together...','Still working — your story has a lot of depth...','Nearly there — hang tight...'];
+  let bIdx = 0;
+  const buildMsgIv = setInterval(() => { bIdx=Math.min(bIdx+1,buildMsgs.length-1); const el=document.getElementById('wizardBuildStatusText'); if(el)el.textContent=buildMsgs[bIdx]; if(bIdx===buildMsgs.length-1)clearInterval(buildMsgIv); }, 5000);
+
   const loaderInterval = setInterval(() => {
     // Mark previous as done
     if (stepIdx > 0) {
@@ -7009,6 +7013,7 @@ Include complete reasoning (WHY) for every recommendation.
     const data = await callAPI(payload);
 
     clearInterval(loaderInterval);
+    clearInterval(buildMsgIv);
 
     // Mark all loader steps done
     LOADER_STEPS.forEach(id => {
@@ -7024,15 +7029,40 @@ Include complete reasoning (WHY) for every recommendation.
 
   } catch(err) {
     clearInterval(loaderInterval);
+    const errMsg = err.message || '';
+    const isTimeout = errMsg.includes('timeout') || errMsg.includes('timed out');
+    const isParseErr = errMsg.includes('parse') || errMsg.includes('formatted') || errMsg.includes('JSON') || errMsg.includes('Parse error');
+    const isRateLimit = errMsg.includes('429') || errMsg.includes('rate') || errMsg.includes('limit');
+    let errTitle = 'SAM hit a snag', errExplain = '', errTip = '';
+    if (isRateLimit) {
+      errTitle = "You've hit today's limit";
+      errExplain = "SAM's free plan includes a set number of runs per day. Your limit resets at midnight.";
+      errTip = "Go Pro for unlimited runs — $9/month, cancel anytime.";
+    } else if (isTimeout) {
+      errTitle = 'SAM took too long';
+      errExplain = "Your story had a lot of depth and SAM ran out of time. This sometimes happens with longer stories.";
+      errTip = "Try shortening your story slightly, or hit Try Again — it usually works on the second attempt.";
+    } else if (isParseErr) {
+      errTitle = 'SAM lost her train of thought';
+      errExplain = "SAM built your playbook but had trouble sending it all at once. This is rare and almost always fixes itself.";
+      errTip = "Hit Try Again — SAM already knows your story and will rebuild it fast.";
+    } else {
+      errTitle = 'Something went wrong';
+      errExplain = "SAM ran into an unexpected issue. Your story is saved — you won't lose anything.";
+      errTip = "Try again. If it keeps happening, refresh the page and start from Step 10.";
+    }
     document.getElementById('wizardLoader').innerHTML = `
-      <div style="text-align:center;padding:40px 0;">
-        <div style="font-size:32px;margin-bottom:16px;">⚠️</div>
-        <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:var(--text);margin-bottom:8px;">Something went wrong</div>
-        <div style="font-size:14px;color:var(--text3);margin-bottom:24px;max-width:400px;margin-left:auto;margin-right:auto;">${err.message || 'Please try again.'}</div>
+      <div style="text-align:center;padding:40px 0;max-width:480px;margin:0 auto;">
+        <div style="font-size:36px;margin-bottom:16px;">😤</div>
+        <div style="font-family:'Sora',sans-serif;font-size:22px;font-weight:700;color:var(--text);margin-bottom:10px;">${errTitle}</div>
+        <div style="font-size:15px;color:var(--text2);line-height:1.65;margin-bottom:10px;">${errExplain}</div>
+        <div style="font-size:13px;color:var(--spark);background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.2);border-radius:var(--radius);padding:12px 16px;margin-bottom:28px;line-height:1.6;">💡 ${errTip}</div>
         <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-          <button onclick="buildPlaybook()" style="padding:12px 28px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);color:#fff;border:none;border-radius:var(--radius);font-family:'Sora',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">Try again</button>
-          <button onclick="showWizardStep('10')" style="padding:12px 28px;background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:var(--radius);font-family:'Sora',sans-serif;font-size:14px;font-weight:600;cursor:pointer;">← Back</button>
+          <button onclick="retryPlaybook()" style="padding:14px 32px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);color:#fff;border:none;border-radius:var(--radius);font-family:'Sora',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">↻ Try again</button>
+          ${isRateLimit ? '<button onclick="openProModal()" style="padding:14px 24px;background:linear-gradient(135deg,rgba(251,191,36,0.2),rgba(251,191,36,0.1));border:1px solid rgba(251,191,36,0.4);border-radius:var(--radius);font-family:\'Sora\',sans-serif;font-size:14px;font-weight:600;color:var(--lens);cursor:pointer;">✦ Go Pro</button>' : ''}
+          <button onclick="showWizardStep('10')" style="padding:14px 24px;background:transparent;color:var(--text3);border:1px solid var(--border);border-radius:var(--radius);font-family:'Sora',sans-serif;font-size:14px;cursor:pointer;">← Edit my answers</button>
         </div>
+        <div style="margin-top:20px;font-size:12px;color:var(--text3);">Your story is saved. Nothing is lost.</div>
       </div>`;
   }
 }
@@ -7319,6 +7349,26 @@ function renderPlaybook(data) {
 
   // Save playbook to history
   savePlaybookHistory(data);
+}
+
+function retryPlaybook() {
+  document.getElementById('wizardLoader').innerHTML = `
+    <div class="wizard-loader-title">SAM is trying again.</div>
+    <div class="wizard-loader-sub">"Hang tight — SAM already knows your story. This will be faster."</div>
+    <div class="wizard-loader-bar-wrap"><div class="wizard-loader-bar indeterminate"></div></div>
+    <div class="wizard-loader-steps">
+      <div class="wizard-loader-step" id="lstep-1"><div class="wizard-loader-dot"></div>Reading your story</div>
+      <div class="wizard-loader-step" id="lstep-2"><div class="wizard-loader-dot"></div>Mapping your story architecture</div>
+      <div class="wizard-loader-step" id="lstep-3"><div class="wizard-loader-dot"></div>Writing your hook</div>
+      <div class="wizard-loader-step" id="lstep-4"><div class="wizard-loader-dot"></div>Crafting your script</div>
+      <div class="wizard-loader-step" id="lstep-5"><div class="wizard-loader-dot"></div>Building your platform strategy</div>
+      <div class="wizard-loader-step" id="lstep-6"><div class="wizard-loader-dot"></div>Diagnosing your ideal audience</div>
+      <div class="wizard-loader-step" id="lstep-7"><div class="wizard-loader-dot"></div>Creating your audience resource</div>
+      <div class="wizard-loader-step" id="lstep-8"><div class="wizard-loader-dot"></div>Assembling your playbook</div>
+    </div>
+    <div class="wizard-still-building" id="wizardStillBuilding">⏳ SAM is still working — give her a few more seconds.</div>`;
+  document.getElementById('wizardLoader').classList.add('show');
+  buildPlaybook();
 }
 
 function savePlaybookHistory(data) {
