@@ -212,7 +212,7 @@
       gap: 56px;
       align-items: center;
     }
-    @media (min-width: 900px) { .hero-desktop { display: grid; } }
+    @media (min-width: 900px) { .hero-desktop { display: block; } }
 
     .hero-left {}
 
@@ -4058,73 +4058,83 @@
     💻 <strong>Pro tip:</strong> SAM hits different on a laptop. Phone is cool — desktop is where the magic happens.
   </div>
 
-  <!-- ── MOBILE HERO ── -->
+  <!-- ── MOBILE HERO v2 ── -->
   <div class="hero-mobile" id="heroSection">
-    <div class="hero-badge">✦ Strategic Assistant for Making</div>
-    <h1>Your creative<br/><em>director.</em><br/>Always on.</h1>
-    <p class="hero-sub" style="margin-bottom:18px;">SAM writes your hooks, scripts, captions and strategy — so you can stop second-guessing and start making.</p>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:0;">
-      <button class="hero-cta-primary" style="font-size:14px;padding:12px 22px;" onclick="openWizardPage()">✦ Build my playbook →</button>
-      <button class="hero-cta-ghost" style="font-size:13px;padding:11px 18px;" onclick="openProModal()">✦ Go Pro</button>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;padding:10px 14px;background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.2);border-radius:50px;">
+      <div style="display:flex;margin-right:2px;">
+        <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#F472B6,#EC4899);border:2px solid var(--bg);margin-right:-6px;font-size:10px;display:flex;align-items:center;justify-content:center;">&#128105;</div>
+        <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#A78BFA,#818CF8);border:2px solid var(--bg);margin-right:-6px;font-size:10px;display:flex;align-items:center;justify-content:center;">&#128104;</div>
+        <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#38BDF8,#0EA5E9);border:2px solid var(--bg);font-size:10px;display:flex;align-items:center;justify-content:center;">&#128105;</div>
+      </div>
+      <div style="font-size:12px;color:var(--text2);flex:1;">Creators building playbooks right now</div>
+      <div style="font-size:10px;font-weight:700;color:var(--spark);letter-spacing:0.06em;white-space:nowrap;">FREE</div>
     </div>
-    <div class="mobile-stat-grid">
-      <div class="mobile-stat-card">
-        <div class="mobile-stat-label">Tools</div>
-        <div class="mobile-stat-value grad-pink">5</div>
-        <div class="mobile-stat-sub">All creator needs covered</div>
+    <div class="hero-badge">&#10022; Strategic Assistant for Making</div>
+    <h1>Turn your real story into <em>scroll-stopping</em> content.</h1>
+    <p class="hero-sub" style="margin-bottom:10px;font-size:14px;">Answer 5 questions. SAM writes your hook, script, platform strategy and a free audience resource &#8212; in under 60 seconds.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;">
+      <span style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);color:var(--vision);">&#10003; Hook</span>
+      <span style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);color:var(--vision);">&#10003; Script</span>
+      <span style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);color:var(--vision);">&#10003; Platform strategy</span>
+      <span style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.2);color:var(--lens);">&#11088; Free audience resource</span>
+    </div>
+    <button class="hero-cta-primary" style="width:100%;font-size:15px;padding:16px 22px;margin-bottom:10px;justify-content:center;" onclick="openWizardPage()">&#10022; Build my content playbook &#8594;</button>
+    <div style="text-align:center;font-size:12px;color:var(--text3);margin-bottom:24px;">Free &#183; No card &#183; Ready in &lt;60s</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+      <div style="text-align:center;padding:10px 4px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;">
+        <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:700;" class="grad-pink">5</div>
+        <div style="font-size:9px;color:var(--text3);margin-top:2px;">AI tools</div>
       </div>
-      <div class="mobile-stat-card">
-        <div class="mobile-stat-label">Platforms</div>
-        <div class="mobile-stat-value grad-purple">7</div>
-        <div class="mobile-stat-sub">TikTok, YouTube, IG + more</div>
+      <div style="text-align:center;padding:10px 4px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;">
+        <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:700;" class="grad-purple">7</div>
+        <div style="font-size:9px;color:var(--text3);margin-top:2px;">Platforms</div>
       </div>
-      <div class="mobile-stat-card">
-        <div class="mobile-stat-label">First output</div>
-        <div class="mobile-stat-value grad-cyan">&lt;30s</div>
-        <div class="mobile-stat-sub">Hook, script, captions</div>
+      <div style="text-align:center;padding:10px 4px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;">
+        <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:700;" class="grad-cyan">&lt;60s</div>
+        <div style="font-size:9px;color:var(--text3);margin-top:2px;">First output</div>
       </div>
-      <div class="mobile-stat-card">
-        <div class="mobile-stat-label">Built for</div>
-        <div class="mobile-stat-value grad-green">You</div>
-        <div class="mobile-stat-sub">No agency. Just SAM.</div>
+      <div style="text-align:center;padding:10px 4px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;">
+        <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:700;" class="grad-green">$0</div>
+        <div style="font-size:9px;color:var(--text3);margin-top:2px;">To start</div>
       </div>
     </div>
   </div>
 
-  <!-- ── DESKTOP HERO ── -->
-  <div class="hero-desktop" id="heroDesktop">
-    <div class="hero-left">
-      <div class="hero-badge">✦ Strategic Assistant for Making</div>
-      <div class="hero-title-desktop">Your creative<br><em>director.</em><br>Always on.</div>
-      <div class="hero-sub-desktop">SAM writes your hooks, scripts, captions, and strategy — so you can stop second-guessing and start making.</div>
-      <div class="hero-cta-row">
-        <button class="hero-cta-primary" onclick="openWizardPage()">✦ Build my playbook →</button>
-        <button class="hero-cta-ghost" onclick="openProModal()">✦ See Pro plan</button>
+  <!-- ── DESKTOP HERO v2 ── -->
+  <div id="heroDesktop" style="display:none;max-width:1280px;margin:0 auto;padding:56px 48px 40px;">
+    <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:48px;padding:14px 24px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:50px;max-width:760px;margin-left:auto;margin-right:auto;">
+      <div style="display:flex;">
+        <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#F472B6,#EC4899);border:2px solid var(--bg);margin-right:-8px;font-size:14px;display:flex;align-items:center;justify-content:center;">&#128105;</div>
+        <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#A78BFA,#818CF8);border:2px solid var(--bg);margin-right:-8px;font-size:14px;display:flex;align-items:center;justify-content:center;">&#128104;</div>
+        <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#38BDF8,#0EA5E9);border:2px solid var(--bg);margin-right:-8px;font-size:14px;display:flex;align-items:center;justify-content:center;">&#128105;</div>
+        <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#34D399,#10B981);border:2px solid var(--bg);font-size:14px;display:flex;align-items:center;justify-content:center;">&#128104;</div>
       </div>
+      <div style="font-size:14px;color:var(--text2);">Creators turning real moments into content right now</div>
+      <div style="height:16px;width:1px;background:var(--border);"></div>
+      <div style="font-size:12px;font-weight:700;color:var(--spark);letter-spacing:0.08em;white-space:nowrap;">FREE &#183; NO CARD</div>
     </div>
-    <div class="hero-right">
-      <div class="stat-grid">
-        <div class="stat-card">
-          <div class="stat-label">Tools available</div>
-          <div class="stat-value grad-pink">5</div>
-          <div class="stat-sub">Pulse · Spark · Blueprint · Vision · Lens</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Platforms covered</div>
-          <div class="stat-value grad-purple">7</div>
-          <div class="stat-sub">TikTok, YouTube, IG, LinkedIn + more</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Time to first output</div>
-          <div class="stat-value grad-cyan">&lt;30s</div>
-          <div class="stat-sub">Hook, script, captions — all at once</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Built for</div>
-          <div class="stat-value grad-green">You</div>
-          <div class="stat-sub">No agency. No guessing. Just SAM.</div>
-        </div>
+    <div style="text-align:center;max-width:860px;margin:0 auto 48px;">
+      <div class="hero-badge" style="margin-bottom:24px;">&#10022; Strategic Assistant for Making</div>
+      <div style="font-family:'Sora',sans-serif;font-size:clamp(44px,5.5vw,72px);font-weight:700;line-height:1.05;letter-spacing:-0.03em;color:var(--text);margin-bottom:22px;">Turn your real story into<br/><span style="background:linear-gradient(135deg,#F472B6,#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">scroll-stopping content.</span></div>
+      <div style="font-size:20px;line-height:1.65;color:var(--text2);max-width:620px;margin:0 auto 36px;">Answer 5 questions. SAM writes your hook, word-for-word script, platform strategy and a free audience resource &#8212; in under 60 seconds.</div>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:36px;">
+        <span style="font-size:13px;font-weight:600;padding:6px 14px;border-radius:20px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);color:var(--vision);">&#10003; Hook that stops the scroll</span>
+        <span style="font-size:13px;font-weight:600;padding:6px 14px;border-radius:20px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);color:var(--vision);">&#10003; Word-for-word script</span>
+        <span style="font-size:13px;font-weight:600;padding:6px 14px;border-radius:20px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);color:var(--vision);">&#10003; Platform strategy</span>
+        <span style="font-size:13px;font-weight:600;padding:6px 14px;border-radius:20px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);color:var(--vision);">&#10003; Captions + hashtags</span>
+        <span style="font-size:13px;font-weight:600;padding:6px 14px;border-radius:20px;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.2);color:var(--lens);">&#11088; Free audience resource</span>
       </div>
+      <div style="display:flex;gap:14px;justify-content:center;align-items:center;flex-wrap:wrap;margin-bottom:16px;">
+        <button class="hero-cta-primary" style="font-size:18px;padding:18px 40px;" onclick="openWizardPage()">&#10022; Build my content playbook &#8594;</button>
+        <button class="hero-cta-ghost" style="font-size:15px;padding:17px 28px;" onclick="openProModal()">See Pro plan</button>
+      </div>
+      <div style="font-size:13px;color:var(--text3);">Free &#183; No card required &#183; First playbook ready in &lt;60 seconds</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:860px;margin:0 auto;">
+      <div class="stat-card" style="text-align:center;"><div class="stat-label">AI tools</div><div class="stat-value grad-pink">5</div><div class="stat-sub">Pulse &#183; Spark &#183; Blueprint &#183; Vision &#183; Lens</div></div>
+      <div class="stat-card" style="text-align:center;"><div class="stat-label">Platforms</div><div class="stat-value grad-purple">7</div><div class="stat-sub">TikTok, YouTube, IG, LinkedIn + more</div></div>
+      <div class="stat-card" style="text-align:center;"><div class="stat-label">First output</div><div class="stat-value grad-cyan">&lt;60s</div><div class="stat-sub">Hook, script, captions &#8212; all at once</div></div>
+      <div class="stat-card" style="text-align:center;"><div class="stat-label">Starting price</div><div class="stat-value grad-green">$0</div><div class="stat-sub">Always free &#183; No card ever</div></div>
     </div>
   </div>
 
@@ -4136,7 +4146,7 @@
       <div class="tool-divider">
         <div class="divider-line"></div>
         <div class="divider-arrow"><span></span><span></span><span></span></div>
-        <div class="divider-label">Choose your tool</div>
+        <div class="divider-label">Or pick a single tool</div>
         <div class="divider-arrow"><span></span><span></span><span></span></div>
         <div class="divider-line"></div>
       </div>
@@ -4750,7 +4760,6 @@ function openTool(tool) {
   document.getElementById('heroSection').style.display = 'none';
   const hd = document.getElementById('heroDesktop');
   if (hd) hd.style.display = 'none';
-  document.getElementById('heroDesktop').style.display = 'none';
   document.querySelectorAll('.tool-wrap').forEach(w => w.classList.remove('active'));
   document.getElementById('tool-' + tool).classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -4764,7 +4773,8 @@ function openTool(tool) {
 function goHome() {
   currentTool = null;
   document.getElementById('heroSection').style.display = '';
-  document.getElementById('heroDesktop').style.display = '';
+  const hd = document.getElementById('heroDesktop');
+  if (hd) hd.style.display = window.innerWidth >= 900 ? 'block' : 'none';
   document.getElementById('homeView').style.display = 'block';
   document.querySelectorAll('.tool-wrap').forEach(w => w.classList.remove('active'));
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -6063,16 +6073,21 @@ window.sam_devmode_off = function() {
 
 // ── INIT ALL SYSTEMS ──────────────────────────────────────────────────────────
 // Wait for DOM to be fully ready before initializing
+function initHeroVisibility() {
+  const hd = document.getElementById('heroDesktop');
+  if (hd) hd.style.display = window.innerWidth >= 900 ? 'block' : 'none';
+  window.addEventListener('resize', () => {
+    const hd2 = document.getElementById('heroDesktop');
+    const homeShowing = document.getElementById('homeView')?.style.display !== 'none' && !document.getElementById('homeView')?.style.display;
+    if (hd2 && homeShowing) hd2.style.display = window.innerWidth >= 900 ? 'block' : 'none';
+  });
+}
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', function() {
-    initTrial();
-    initChat();
-    initWizard();
+    initTrial(); initChat(); initWizard(); initHeroVisibility();
   });
 } else {
-  initTrial();
-  initChat();
-  initWizard();
+  initTrial(); initChat(); initWizard(); initHeroVisibility();
 }
 
 
