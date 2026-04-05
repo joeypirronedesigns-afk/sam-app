@@ -7664,7 +7664,7 @@ Return ONLY valid JSON — no markdown, no backticks:
 
     docEl.innerHTML = `
       ${brandHeader}
-      <div class="playbook-lead-badge">${persp === 'user' ? '🛠️ Working template for your audience' : '⭐ Free resource for your audience'}</div>
+      
       <div class="playbook-lead-title">${lm.title || 'Your Audience Resource'}</div>
       ${lm.why ? `<div class="playbook-lead-why"><strong>Why this works for your audience:</strong> ${lm.why}</div>` : ''}
       <div class="playbook-lead-items">
@@ -9115,6 +9115,7 @@ function openWizardFromNav() {
       ⬇️ Download Lead Magnet PDF
     </button>
     <div style="width:100%;text-align:center;font-size:11px;color:rgba(240,236,255,0.4);margin-top:4px;">Uncheck "Headers and footers" in the print dialog for a clean PDF</div>
+    <div style="position:fixed;bottom:60px;right:12px;background:rgba(109,40,217,0.85);color:#fff;font-size:9px;font-weight:700;letter-spacing:0.1em;padding:3px 8px;border-radius:20px;z-index:9999;pointer-events:none;" id="samPatchBadge">v1.4</div>
   </div>
 
 </div><!-- end wizard-page -->
