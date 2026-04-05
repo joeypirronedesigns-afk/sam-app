@@ -7231,7 +7231,7 @@ function renderPlaybook(data) {
         </div>
       </div>
       <div style="text-align:right;">
-        <div style="font-size:8px;color:#999;line-height:1.5;">Built with S.A.M.<br/><span style="color:${brandColor};">samforcreators.com</span></div>
+        <div style="font-size:8px;color:#999;line-height:1.5;"></div>
       </div>
     </div>`;
 
@@ -7562,7 +7562,13 @@ async function regenerateLeadMagnet() {
     ? 'USER PERSPECTIVE: Create a practical working template, planner or checklist the audience can actively USE — not just read. Think planning guide, project tracker, budget notes template, contractor checklist, or step-by-step workbook. Include fillable sections, checklists, and space for notes. This is a functional TOOL they keep on their desk, not inspirational tips.'
     : 'VIEWER PERSPECTIVE: Create an inspirational tips/advice guide written FROM the creator\'s experience. Share what you learned, what to avoid, what worked. Warm and personal tone. The audience reads this and feels understood and guided.';
 
-  const prompt = `You are SAM — Strategic Assistant for Making. Regenerate a lead magnet for this creator to give their audience.
+  const prompt = `You are a lead magnet engine. Your job is to create a polished, standalone downloadable resource that the creator's audience would genuinely trade their email address to receive. This is NOT internal content — it will be published and distributed by the creator as a free opt-in gift to grow their email list.
+
+CRITICAL RULES:
+- Write entirely in the creator's voice. No mention of SAM, no tool branding, no meta-commentary.
+- Make it genuinely useful — specific, actionable, and tailored to the exact audience described.
+- This should feel like the creator spent hours making it. It should be something their audience saves and returns to.
+- The output is a complete, ready-to-deploy lead magnet. Nothing internal. Nothing explanatory.
 
 CREATOR STORY: ${story.slice(0, 600)}
 CREATOR TYPE: ${s.creatorType || 'personal brand'} — ${brandName}
@@ -7644,7 +7650,7 @@ Return ONLY valid JSON — no markdown, no backticks:
           ${brandHandle ? `<div style="font-size:11px;color:#666;">${brandHandle}</div>` : ''}
         </div>
       </div>
-      <div style="text-align:right;"><div style="font-size:8px;color:#999;line-height:1.5;">Built with S.A.M.<br/><span style="color:${brandColor};">samforcreators.com</span></div></div>
+      <div style="text-align:right;"><div style="font-size:8px;color:#999;line-height:1.5;"></div></div>
     </div>`;
 
     docEl.innerHTML = `
