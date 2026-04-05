@@ -4108,7 +4108,7 @@
 
 <nav>
   <div class="nav-logo">S<span class="nav-logo-dot">.</span>A<span class="nav-logo-dot">.</span>M<span class="nav-logo-dot">.</span></div>
-  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v2.8</div>
+  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v2.9</div>
   <div class="nav-right">
     <div class="trial-nav-badge" id="trialBadge" onclick="openProPage()">
       <div class="trial-nav-dot"></div>
@@ -8498,7 +8498,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v2.8</div>
+  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v2.9</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -8597,7 +8597,20 @@ if (localStorage.getItem('sam_dev') === 'true') {
 
     <!-- ── STEP 0: BRAND PROFILE ── -->
     <div class="wizard-step" id="wiz-0">
-      <div class="wizard-question">First — who's creating this?</div>
+      <div style="background:linear-gradient(135deg,rgba(167,139,250,0.1),rgba(251,184,36,0.05));border:1.5px solid rgba(167,139,250,0.3);border-radius:14px;padding:16px 18px;margin-bottom:20px;">
+        <div style="font-size:11px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#A78BFA;margin-bottom:6px;">✦ Your brand — step 1 of 1</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:14px;">Everything SAM builds will be branded as <strong style="color:var(--text);">yours</strong> — playbooks, lead magnets, audience resources. Start by telling SAM who you are.</div>
+        <div style="margin-bottom:12px;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;">Your name or brand name</div>
+          <input type="text" class="brand-text-input" id="brandName" placeholder="e.g. Joey Pirrone · Studs to Sanctuary" oninput="WS.brandName=this.value;saveWizardState();if(typeof updateWizardHeader==='function')updateWizardHeader();" autocomplete="name" autofocus />
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;">Your handle or website <span style="font-weight:400;text-transform:none;opacity:0.6;">(optional)</span></div>
+          <input type="text" class="brand-text-input" id="brandHandle" placeholder="e.g. @studstosanctuary · studstosanctuary.com" oninput="WS.brandHandle=this.value;saveWizardState();" />
+        </div>
+      </div>
+
+      <div class="wizard-question">Now — who's creating this?</div>
       <div class="wizard-why">
         SAM builds everything around who you are and how you show up. This shapes your hook, your script, your audience profile and your lead magnet. Pick the one that fits best right now — you can always update it.
       </div>
@@ -8647,16 +8660,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
         </button>
       </div>
 
-      <!-- Brand details -->
-      <div style="margin-top:8px;">
-        <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;">Your name or brand name</div>
-        <input type="text" class="brand-text-input" id="brandName" placeholder="e.g. Joey Pirrone · Studs to Sanctuary" oninput="WS.brandName=this.value;saveWizardState();if(typeof updateWizardHeader==='function')updateWizardHeader();" autocomplete="name" autofocus />
-      </div>
 
-      <div style="margin-top:16px;">
-        <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;">Your handle or website <span style="font-weight:400;text-transform:none;opacity:0.6;">(optional)</span></div>
-        <input type="text" class="brand-text-input" id="brandHandle" placeholder="e.g. @studstosanctuary · studstosanctuary.com" oninput="WS.brandHandle=this.value;saveWizardState();" />
-      </div>
 
       <div style="margin-top:16px;">
         <div style="display:flex;align-items:center;margin-bottom:6px;">
@@ -8696,8 +8700,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
 
       <div style="margin-top:20px;padding:14px 16px;background:rgba(167,139,250,0.06);border-radius:var(--radius);border:1px solid rgba(167,139,250,0.15);">
         <div style="font-size:13px;color:var(--text3);line-height:1.6;">
-          ✦ Your logo and brand color appear on every document SAM creates for you — playbooks, lead magnets, audience resources. <strong style="color:var(--text2);">Small print at the bottom says "</strong> — so every document you share grows SAM too.
-        </div>
+          ✦ Your logo and brand color appear on every document SAM creates for you — playbooks, lead magnets, audience resources. </div>
       </div>
     </div>
 
