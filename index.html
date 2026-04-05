@@ -5067,7 +5067,7 @@ function showSamStatus(barId, message) {
   const txt = bar && bar.querySelector('.sam-status-text');
   if (!bar) return;
   if (txt) txt.textContent = message || 'SAM is working...';
-  bar.classList.remove('hidden');
+  bar.classList.remove('hidden'); if (typeof startToolCycler === 'function') { const msgs = {'pulseStatusBar':['SAM is reading your moment...','Building your hook...','Writing your script...','Almost done...'],'sparkStatusBar':['Generating your ideas...','Finding the angles...','Crafting each concept...','Almost ready...'],'blueprintStatusBar':['Mapping your calendar...','Planning your posts...','Scheduling your week...','Almost there...'],'visionStatusBar':['Building your concept...','Finding the hook...','Adding the twist...','Wrapping up...']}; const barId = bar.id; if (msgs[barId]) startToolCycler(barId, msgs[barId]); }
   bar.style.display = 'flex';
   const msgs = [message||'SAM is working...','This usually takes 10-20 seconds...','SAM is thinking carefully...','Almost there — building your output...','Still working — hang tight...'];
   let idx = 0;
@@ -5078,7 +5078,7 @@ function hideSamStatus(barId) {
   const bar = document.getElementById(barId);
   if (!bar) return;
   if (bar._iv) clearInterval(bar._iv);
-  bar.classList.add('hidden');
+  bar.classList.add('hidden'); if (typeof stopToolCycler === 'function') stopToolCycler(bar.id);
   bar.style.display = 'none';
 }
 function escQ(s) { return (s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,'\\n'); }
