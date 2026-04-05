@@ -1242,6 +1242,30 @@
     @media print{.ideas-overlay,.ideas-panel,.ib-toast,.save-to-ideas-btn,.ideas-nav-btn{display:none!important;}}
     /* ── END IDEAS BANK ── */
 
+    /* ── TOOL LOADING STATES ── */
+    .sam-status-bar {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 16px;
+      background:rgba(167,139,250,0.08);
+      border:1px solid rgba(167,139,250,0.2);
+      border-radius:var(--radius);
+      margin-top:12px;
+      animation:fade-up 0.3s ease;
+    }
+    .sam-status-bar.hidden { display:none !important; }
+    .sam-status-dots { display:flex; gap:4px; flex-shrink:0; }
+    .sam-status-dots span {
+      width:6px;height:6px;border-radius:50%;
+      background:var(--spark);
+      animation:bounce 1.2s ease-in-out infinite;
+    }
+    .sam-status-dots span:nth-child(2){animation-delay:0.15s}
+    .sam-status-dots span:nth-child(3){animation-delay:0.3s}
+    .sam-status-text { font-size:13px; color:var(--text2); font-style:italic; flex:1; }
+    /* ── END TOOL LOADING STATES ── */
+
     footer { text-align: center; padding: 24px 20px; font-size: 13px; color: var(--text3); border-top: 1px solid var(--border); position: relative; z-index: 1; }
 
     .hashtag-wrap { display: flex; flex-wrap: wrap; gap: 6px; padding-right: 60px; }
@@ -4248,6 +4272,7 @@
         </div>
         <div class="loader" id="pulseLoader"><div class="loader-dots"><span style="background:var(--pulse)"></span><span style="background:var(--pulse)"></span><span style="background:var(--pulse)"></span></div><div class="loader-text" id="pulseLoaderText">SAM is reading your moment...</div></div>
         <div class="err-box" id="pulseErr"></div>
+        <div class="sam-status-bar hidden" id="pulseStatusBar"><div class="sam-status-dots"><span></span><span></span><span></span></div><div class="sam-status-text">SAM is working...</div></div>
         <button class="run-btn run-pulse" id="pulseBtn" onclick="guardedRunFn(runPulse)">Run The Pulse →</button>
       </div>
 
@@ -4284,6 +4309,7 @@
         </div>
         <div class="loader" id="sparkLoader"><div class="loader-dots"><span style="background:var(--spark)"></span><span style="background:var(--spark)"></span><span style="background:var(--spark)"></span></div><div class="loader-text">SAM is generating your ideas...</div></div>
         <div class="err-box" id="sparkErr"></div>
+        <div class="sam-status-bar hidden" id="sparkStatusBar"><div class="sam-status-dots"><span></span><span></span><span></span></div><div class="sam-status-text">SAM is working...</div></div>
         <button class="run-btn run-spark" id="sparkBtn" onclick="guardedRunFn(runSpark)">Generate 5 ideas →</button>
       </div>
       <div class="output-wrap" id="sparkOutput">
@@ -4328,6 +4354,7 @@
         </div>
         <div class="loader" id="blueprintLoader"><div class="loader-dots"><span style="background:var(--blueprint)"></span><span style="background:var(--blueprint)"></span><span style="background:var(--blueprint)"></span></div><div class="loader-text">SAM is building your calendar...</div></div>
         <div class="err-box" id="blueprintErr"></div>
+        <div class="sam-status-bar hidden" id="blueprintStatusBar"><div class="sam-status-dots"><span></span><span></span><span></span></div><div class="sam-status-text">SAM is working...</div></div>
         <button class="run-btn run-blueprint" id="blueprintBtn" onclick="guardedRunFn(runBlueprint)">Build 7-day plan →</button>
       </div>
       <div class="output-wrap" id="blueprintOutput">
@@ -4381,6 +4408,7 @@
         </div>
         <div class="loader" id="visionLoader"><div class="loader-dots"><span style="background:var(--vision)"></span><span style="background:var(--vision)"></span><span style="background:var(--vision)"></span></div><div class="loader-text">SAM is building your concept...</div></div>
         <div class="err-box" id="visionErr"></div>
+        <div class="sam-status-bar hidden" id="visionStatusBar"><div class="sam-status-dots"><span></span><span></span><span></span></div><div class="sam-status-text">SAM is working...</div></div>
         <button class="run-btn run-vision" id="visionBtn" onclick="guardedRunFn(runVision)">Generate concept →</button>
       </div>
       <div class="output-wrap" id="visionOutput">
@@ -4498,6 +4526,7 @@
         <button onclick="goHome();setTimeout(()=>previewTool('pulse'),150)" style="background:var(--pulse-bg);border:1px solid var(--pulse-border);border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;color:var(--pulse);cursor:pointer;white-space:nowrap;">Use The Pulse →</button>
       </div>
 
+      <div class="sam-status-bar hidden" id="lensStatusBar" style="margin-top:12px;"><div class="sam-status-dots"><span></span><span></span><span></span></div><div class="sam-status-text">SAM is working...</div></div>
       <!-- Lens output -->
       <div class="output-wrap" id="lensOutput">
         <div class="output-card">
@@ -4958,12 +4987,14 @@ async function runPulse() {
   document.getElementById('pulseBtn').disabled = true;
   document.getElementById('pulseLoader').classList.add('show');
   document.getElementById('pulseOutput').classList.remove('show');
+  showSamStatus('pulseStatusBar','SAM is reading your moment and writing your script...');
   let i = 0;
   pulseInterval = setInterval(() => { i=(i+1)%pulseLines.length; document.getElementById('pulseLoaderText').textContent=pulseLines[i]; }, 1800);
   try {
     const data = await callAPI({ ...getBase(), mode:'pulse', moment:text, platforms, contentType:ct });
     clearInterval(pulseInterval);
     document.getElementById('pulseLoader').classList.remove('show');
+    hideSamStatus('pulseStatusBar');
     renderPulse(data, ct, text, platforms);
     document.getElementById('pulseOutput').classList.add('show');
     document.getElementById('pulseBtn').disabled = false;
@@ -4971,6 +5002,7 @@ async function runPulse() {
   } catch(err) {
     clearInterval(pulseInterval);
     document.getElementById('pulseLoader').classList.remove('show');
+    hideSamStatus('pulseStatusBar');
     showErr('pulseErr', err.message);
     document.getElementById('pulseBtn').disabled = false;
   }
@@ -5036,6 +5068,25 @@ function copyEl(btn) {
   const prev = btn.previousElementSibling;
   copyText(btn, prev ? (prev.innerText || prev.textContent) : '');
 }
+function showSamStatus(barId, message) {
+  const bar = document.getElementById(barId);
+  const txt = bar && bar.querySelector('.sam-status-text');
+  if (!bar) return;
+  if (txt) txt.textContent = message || 'SAM is working...';
+  bar.classList.remove('hidden');
+  bar.style.display = 'flex';
+  const msgs = [message||'SAM is working...','This usually takes 10-20 seconds...','SAM is thinking carefully...','Almost there — building your output...','Still working — hang tight...'];
+  let idx = 0;
+  const iv = setInterval(() => { idx=Math.min(idx+1,msgs.length-1); if(txt)txt.textContent=msgs[idx]; if(idx===msgs.length-1)clearInterval(iv); },4000);
+  bar._iv = iv;
+}
+function hideSamStatus(barId) {
+  const bar = document.getElementById(barId);
+  if (!bar) return;
+  if (bar._iv) clearInterval(bar._iv);
+  bar.classList.add('hidden');
+  bar.style.display = 'none';
+}
 function escQ(s) { return (s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,'\\n'); }
 
 // ── THE SPARK ────────────────────────────────────────────────────────────────
@@ -5046,15 +5097,18 @@ async function runSpark() {
   document.getElementById('sparkBtn').disabled = true;
   document.getElementById('sparkLoader').classList.add('show');
   document.getElementById('sparkOutput').classList.remove('show');
+  showSamStatus('sparkStatusBar','SAM is generating ideas for your niche...');
   try {
     const data = await callAPI({ ...getBase(), mode:'ideas', moment:niche, platforms:[] });
     document.getElementById('sparkLoader').classList.remove('show');
+    hideSamStatus('sparkStatusBar');
     renderSpark(data);
     document.getElementById('sparkOutput').classList.add('show');
     document.getElementById('sparkBtn').disabled = false;
     document.getElementById('sparkOutput').scrollIntoView({ behavior:'smooth', block:'start' });
   } catch(err) {
     document.getElementById('sparkLoader').classList.remove('show');
+    hideSamStatus('sparkStatusBar');
     showErr('sparkErr', err.message);
     document.getElementById('sparkBtn').disabled = false;
   }
@@ -5090,15 +5144,18 @@ async function runBlueprint() {
   document.getElementById('blueprintBtn').disabled = true;
   document.getElementById('blueprintLoader').classList.add('show');
   document.getElementById('blueprintOutput').classList.remove('show');
+  showSamStatus('blueprintStatusBar','SAM is building your 7-day content calendar...');
   try {
     const data = await callAPI({ ...getBase(), mode:'calendar', moment, platforms:getSelPills('blueprintPlatforms') });
     document.getElementById('blueprintLoader').classList.remove('show');
+    hideSamStatus('blueprintStatusBar');
     renderBlueprint(data);
     document.getElementById('blueprintOutput').classList.add('show');
     document.getElementById('blueprintBtn').disabled = false;
     document.getElementById('blueprintOutput').scrollIntoView({ behavior:'smooth', block:'start' });
   } catch(err) {
     document.getElementById('blueprintLoader').classList.remove('show');
+    hideSamStatus('blueprintStatusBar');
     showErr('blueprintErr', err.message);
     document.getElementById('blueprintBtn').disabled = false;
   }
@@ -5133,17 +5190,20 @@ async function runVision() {
   document.getElementById('visionBtn').disabled = true;
   document.getElementById('visionLoader').classList.add('show');
   document.getElementById('visionOutput').classList.remove('show');
+  showSamStatus('visionStatusBar','SAM is building your video concept...');
   try {
     const style = document.querySelector('#tool-vision .opt-btn.sel')?.dataset.v || '';
     const plats = getSelPills('visionPlatforms');
     const data = await callAPI({ ...getBase(), mode:'concept', moment:niche, platforms:plats, contentType:style });
     document.getElementById('visionLoader').classList.remove('show');
+    hideSamStatus('visionStatusBar');
     renderVision(data);
     document.getElementById('visionOutput').classList.add('show');
     document.getElementById('visionBtn').disabled = false;
     document.getElementById('visionOutput').scrollIntoView({ behavior:'smooth', block:'start' });
   } catch(err) {
     document.getElementById('visionLoader').classList.remove('show');
+    hideSamStatus('visionStatusBar');
     showErr('visionErr', err.message);
     document.getElementById('visionBtn').disabled = false;
   }
@@ -5264,11 +5324,13 @@ async function runLens(mode) {
   const textEl = document.getElementById(isAnalytics ? 'lensLoaderText2' : 'lensLoaderText');
   const interval = setInterval(() => { li=(li+1)%msgs.length; if(textEl) textEl.textContent = msgs[li]; }, 1800);
   try {
-    const payload = { ...getBase(), mode:'upload', moment:text||'Analyse this image.', platforms:[], imageBase64:imgB64, imageType:imgType, forceType:mode };
+    showSamStatus('lensStatusBar', isAnalytics ? 'SAM is reading your analytics...' : 'SAM is reading your image and building thumbnails...');
+  const payload = { ...getBase(), mode:'upload', moment:text||'Analyse this image.', platforms:[], imageBase64:imgB64, imageType:imgType, forceType:mode };
     const data = await callAPI(payload);
     clearInterval(interval);
     if (loader) loader.classList.remove('show');
     if (btn) btn.disabled = false;
+    hideSamStatus('lensStatusBar');
     if (!data || typeof data !== 'object') { alert('SAM returned an unexpected response. Please try again.'); return; }
     renderLens(data);
     document.getElementById('lensOutput')?.classList.add('show');
@@ -5278,6 +5340,7 @@ async function runLens(mode) {
     if (loader) loader.classList.remove('show');
     if (btn) btn.disabled = false;
     const msg = err.message || 'Something went wrong.';
+    hideSamStatus('lensStatusBar');
     if (errBox) { errBox.textContent = msg; errBox.classList.add('show'); }
     else alert('Error: ' + msg);
   }
@@ -7166,8 +7229,9 @@ function renderPlaybook(data) {
           🔄 Regenerate
         </button>
       </div>
-      <div id="lmRegenStatus" style="display:none;margin-top:10px;font-size:13px;color:var(--text3);padding:10px;background:rgba(167,139,250,0.08);border-radius:var(--radius);text-align:center;">
-        <span class="pulse-dots">SAM is rebuilding your lead magnet</span> <span class="typing-dots"><span>●</span><span>●</span><span>●</span></span>
+      <div id="lmRegenStatus" style="display:none;margin-top:10px;align-items:center;gap:10px;padding:12px 16px;background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.2);border-radius:var(--radius);">
+        <div class="sam-status-dots"><span></span><span></span><span></span></div>
+        <div class="sam-status-text" id="lmRegenStatusText">SAM is rebuilding your lead magnet — about 15 seconds...</div>
       </div>
     </div>`;
 
@@ -7189,8 +7253,8 @@ function renderPlaybook(data) {
               <div><strong>${item.heading || ''}</strong>${item.heading && item.body ? ' — ' : ''}${item.body || item}</div>
             </div>`).join('')}
         </div>
-        ${lm.comment_response ? `<div class="playbook-lead-comment">
-          <div class="playbook-lead-comment-label">📣 Post this in your comments:</div>
+        ${lm.comment_response ? `<div class="playbook-lead-comment no-print">
+          <div class="playbook-lead-comment-label">📣 Post this in your comments <span style="font-size:10px;opacity:0.6;">(hidden in PDF)</span>:</div>
           <div class="playbook-lead-comment-text">"${lm.comment_response}"</div>
           <button class="playbook-copy-btn" onclick="wizCopy(this,'${escQ(lm.comment_response)}')">Copy comment</button>
         </div>` : ''}
@@ -7399,7 +7463,12 @@ function setLMPerspective(persp, btn) {
   btn.style.borderColor = persp === 'user' ? 'rgba(56,189,248,0.4)' : 'rgba(251,191,36,0.4)';
   btn.style.color = persp === 'user' ? 'var(--blueprint)' : 'var(--lens)';
   WS.lmPerspective = persp;
-  // Auto-trigger regenerate when perspective switches
+  const statusEl2 = document.getElementById('lmRegenStatus');
+  if (statusEl2) {
+    const msgEl = document.getElementById('lmRegenStatusText');
+    if (msgEl) msgEl.textContent = persp==='user' ? 'Switching to working template format — about 15 seconds...' : 'Switching to tips & advice format — about 15 seconds...';
+    statusEl2.style.display = 'flex';
+  }
   regenerateLeadMagnet();
 }
 
@@ -7410,9 +7479,13 @@ async function regenerateLeadMagnet() {
   const persp = WS.lmPerspective || 'viewer';
   if (!statusEl || !docEl) return;
 
-  statusEl.style.display = 'block';
-  docEl.style.opacity = '0.4';
+  statusEl.style.display = 'flex';
+  docEl.style.opacity = '0.35';
   docEl.style.pointerEvents = 'none';
+  const regenMsgs = ['SAM is rebuilding your lead magnet — about 15 seconds...','Thinking about your audience...','Writing your resource items...','Almost done — putting it together...'];
+  let rIdx = 0;
+  const rIv = setInterval(() => { rIdx=Math.min(rIdx+1,regenMsgs.length-1); const el=document.getElementById('lmRegenStatusText'); if(el)el.textContent=regenMsgs[rIdx]; if(rIdx===regenMsgs.length-1)clearInterval(rIv); },3500);
+  window._regenIv = rIv;
 
   const s = getSetup();
   const story = WS.storyText || '';
@@ -7528,12 +7601,13 @@ Return ONLY valid JSON — no markdown, no backticks:
             <div><strong>${item.heading || ''}</strong>${item.heading && item.body ? ' — ' : ''}${item.body || item}</div>
           </div>`).join('')}
       </div>
-      ${lm.comment_response ? `<div class="playbook-lead-comment">
-        <div class="playbook-lead-comment-label">📣 Post this in your comments:</div>
+      ${lm.comment_response ? `<div class="playbook-lead-comment no-print">
+        <div class="playbook-lead-comment-label">📣 Post this in your comments <span style="font-size:10px;opacity:0.6;">(hidden in PDF)</span>:</div>
         <div class="playbook-lead-comment-text">"${lm.comment_response}"</div>
         <button class="playbook-copy-btn" onclick="wizCopy(this,this.closest('.playbook-lead-comment').querySelector('.playbook-lead-comment-text').textContent)">Copy comment</button>
       </div>` : ''}`;
 
+    clearInterval(window._regenIv);
     docEl.style.opacity = '1';
     docEl.style.pointerEvents = '';
     statusEl.style.display = 'none';
@@ -7549,8 +7623,9 @@ Return ONLY valid JSON — no markdown, no backticks:
     docEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
   } catch(err) {
+    clearInterval(window._regenIv);
     console.error('Regen error:', err);
-    statusEl.innerHTML = '⚠️ SAM had trouble rebuilding. Try again or adjust your direction.';
+    statusEl.style.display = 'none';
     docEl.style.opacity = '1';
     docEl.style.pointerEvents = '';
   }
