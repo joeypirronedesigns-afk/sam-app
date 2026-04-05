@@ -4108,7 +4108,7 @@
 
 <nav>
   <div class="nav-logo">S<span class="nav-logo-dot">.</span>A<span class="nav-logo-dot">.</span>M<span class="nav-logo-dot">.</span></div>
-  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v2.5</div>
+  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v2.6</div>
   <div class="nav-right">
     <div class="trial-nav-badge" id="trialBadge" onclick="openProPage()">
       <div class="trial-nav-dot"></div>
@@ -7081,8 +7081,10 @@ Include complete reasoning (WHY) for every recommendation.
 
   try {
     // Main playbook API call
-    const devUserId = localStorage.getItem('sam_uid') || 'anon';
-    const devTier = localStorage.getItem('sam_dev') === 'true' ? 'studio' : (WS.tier || 'free');
+    const _pbRaw = localStorage.getItem('sam_uid') || 'anon';
+    const _pbDev = localStorage.getItem('sam_dev') === 'true';
+    const devUserId = _pbDev ? 'dev-' + _pbRaw : _pbRaw;
+    const devTier = _pbDev ? 'studio' : (WS.tier || 'free');
 
     const payload = {
       mode: 'playbook',
@@ -8477,11 +8479,39 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v2.5</div>
+  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v2.6</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
-    <div class="wizard-progress-top">
+    <div id="devToolbar" style="display:none;position:fixed;bottom:70px;right:12px;z-index:9998;display:flex;flex-direction:column;gap:6px;">
+  <button onclick="devSaveSession()" style="font-size:10px;font-weight:700;background:#6D28D9;color:#fff;border:none;border-radius:8px;padding:6px 12px;cursor:pointer;">💾 Save Session</button>
+  <button onclick="devRestoreSession()" style="font-size:10px;font-weight:700;background:#059669;color:#fff;border:none;border-radius:8px;padding:6px 12px;cursor:pointer;">⚡ Restore Session</button>
+</div>
+<script>
+function devSaveSession() {
+  if (localStorage.getItem('sam_dev') !== 'true') return;
+  localStorage.setItem('sam_dev_session', JSON.stringify(WS));
+  alert('✅ Session saved! You can restore this after a refresh.');
+}
+function devRestoreSession() {
+  if (localStorage.getItem('sam_dev') !== 'true') return;
+  const saved = localStorage.getItem('sam_dev_session');
+  if (!saved) { alert('No saved session found.'); return; }
+  Object.assign(WS, JSON.parse(saved));
+  saveWizardState();
+  showWizardStep('12');
+  document.getElementById('wizardNextBtn').disabled = false;
+  alert('✅ Session restored — jumped to Step 12!');
+}
+// Show dev toolbar if in dev mode
+if (localStorage.getItem('sam_dev') === 'true') {
+  document.addEventListener('DOMContentLoaded', () => {
+    const tb = document.getElementById('devToolbar');
+    if (tb) tb.style.display = 'flex';
+  });
+}
+</script>
+<div class="wizard-progress-top">
       <div class="wizard-progress-label">Building your playbook</div>
       <div style="display:flex;align-items:center;gap:8px;">
         <div class="wizard-progress-step" id="wizardStepLabel">Step 1 of 10</div>
