@@ -4108,7 +4108,7 @@
 
 <nav>
   <div class="nav-logo">S<span class="nav-logo-dot">.</span>A<span class="nav-logo-dot">.</span>M<span class="nav-logo-dot">.</span></div>
-  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v2.6</div>
+  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v2.7</div>
   <div class="nav-right">
     <div class="trial-nav-badge" id="trialBadge" onclick="openProPage()">
       <div class="trial-nav-dot"></div>
@@ -6288,6 +6288,25 @@ function saveWizardState() {
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
+function updateWizardHeader() {
+  const name = WS.brandName || '';
+  const photo = WS.brandLogo || '';
+  const identity = document.getElementById('wizardUserIdentity');
+  const defaultLabel = document.getElementById('wizardDefaultLabel');
+  const headerName = document.getElementById('wizardHeaderName');
+  const headerPhoto = document.getElementById('wizardHeaderPhoto');
+  const currentStep = parseInt(WS._currentStep || '0');
+  if (name && currentStep >= 1) {
+    if (identity) { identity.style.display = 'flex'; }
+    if (defaultLabel) defaultLabel.style.display = 'none';
+    if (headerName) headerName.textContent = name + ' — let's build';
+    if (headerPhoto && photo) { headerPhoto.src = photo; headerPhoto.style.display = 'block'; }
+    else if (headerPhoto) headerPhoto.style.display = 'none';
+  } else {
+    if (identity) identity.style.display = 'none';
+    if (defaultLabel) defaultLabel.style.display = '';
+  }
+}
 function toggleStepJumper() {
   const menu = document.getElementById('stepJumperMenu');
   if (menu) menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
@@ -6367,7 +6386,7 @@ function showWizardStep(step) {
     const total = 12;
     const pct = Math.round((stepNum / total) * 100);
     document.getElementById('wizardProgressFill').style.width = pct + '%';
-    document.getElementById('wizardStepLabel').textContent = 'Step ' + stepNum + ' of ' + total;
+    document.getElementById('wizardStepLabel').textContent = 'Step ' + stepNum + ' of ' + total; WS._currentStep = stepNum; if (typeof updateWizardHeader === 'function') updateWizardHeader();
   }
 
   // Disable next by default — re-enabled when selection made
@@ -7324,8 +7343,8 @@ function renderPlaybook(data) {
       <div style="display:flex;align-items:center;gap:14px;">
         ${brandLogo ? `<img src="${brandLogo}" style="max-height:52px;max-width:130px;object-fit:contain;border-radius:6px;" />` : `<div style="width:44px;height:44px;border-radius:10px;background:${brandColor};display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:18px;">${brandName.charAt(0)}</div>`}
         <div>
-          <div style="font-family:'Sora',Arial,sans-serif;font-size:16px;font-weight:800;color:#09080F;letter-spacing:-0.01em;">${brandName}</div>
-          ${brandWebsite ? `<div style="font-size:11px;color:${brandColor};font-weight:600;margin-top:2px;">${brandWebsite}</div>` : ''}
+          <div style="font-family:'Sora',Arial,sans-serif;font-size:16px;font-weight:800;color:var(--text);letter-spacing:-0.01em;">${brandName}</div>
+          ${brandWebsite ? `<div style="font-size:11px;color:${brandColor};font-weight:700;margin-top:2px;opacity:1;">${brandWebsite}</div>` : ''}
         </div>
       </div>
       <div style="text-align:right;">
@@ -8479,7 +8498,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v2.6</div>
+  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v2.7</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -8512,7 +8531,13 @@ if (localStorage.getItem('sam_dev') === 'true') {
 }
 </script>
 <div class="wizard-progress-top">
-      <div class="wizard-progress-label">Building your playbook</div>
+      <div class="wizard-progress-label" id="wizardProgressLabel">
+        <span id="wizardUserIdentity" style="display:none;align-items:center;gap:8px;">
+          <img id="wizardHeaderPhoto" src="" style="width:24px;height:24px;border-radius:50%;object-fit:cover;display:none;" />
+          <span id="wizardHeaderName" style="font-size:13px;font-weight:700;color:var(--text);"></span>
+        </span>
+        <span id="wizardDefaultLabel">Building your playbook</span>
+      </div>
       <div style="display:flex;align-items:center;gap:8px;">
         <div class="wizard-progress-step" id="wizardStepLabel">Step 1 of 10</div>
         <div id="wizardStepJumper" style="position:relative;">
@@ -8625,7 +8650,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
       <!-- Brand details -->
       <div style="margin-top:8px;">
         <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;">Your name or brand name</div>
-        <input type="text" class="brand-text-input" id="brandName" placeholder="e.g. Joey Pirrone · Studs to Sanctuary" oninput="WS.brandName=this.value;saveWizardState();" autocomplete="name" autofocus />
+        <input type="text" class="brand-text-input" id="brandName" placeholder="e.g. Joey Pirrone · Studs to Sanctuary" oninput="WS.brandName=this.value;saveWizardState();if(typeof updateWizardHeader==='function')updateWizardHeader();" autocomplete="name" autofocus />
       </div>
 
       <div style="margin-top:16px;">
@@ -8671,7 +8696,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
 
       <div style="margin-top:20px;padding:14px 16px;background:rgba(167,139,250,0.06);border-radius:var(--radius);border:1px solid rgba(167,139,250,0.15);">
         <div style="font-size:13px;color:var(--text3);line-height:1.6;">
-          ✦ Your logo and brand color appear on every document SAM creates for you — playbooks, lead magnets, audience resources. <strong style="color:var(--text2);">Small print at the bottom says "Built with S.A.M. · samforcreators.com"</strong> — so every document you share grows SAM too.
+          ✦ Your logo and brand color appear on every document SAM creates for you — playbooks, lead magnets, audience resources. <strong style="color:var(--text2);">Small print at the bottom says "</strong> — so every document you share grows SAM too.
         </div>
       </div>
     </div>
