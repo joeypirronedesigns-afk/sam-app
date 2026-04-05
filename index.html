@@ -3909,7 +3909,7 @@
 
       /* SAM footer on each page */
       .wizard-playbook::after {
-        content: 'Built by S.A.M. — Strategic Assistant for Making · samforcreators.com';
+        content: '';
         display: block !important;
         text-align: center !important;
         font-size: 8pt !important;
@@ -7275,7 +7275,7 @@ function renderPlaybook(data) {
         <div style="display:none;" class="print-only-brand">${brandHeader}</div>
         <div class="playbook-lead-badge">⭐ Free resource for your audience</div>
         <div class="playbook-lead-title">${lm.title || 'Your Audience Resource'}</div>
-        ${lm.why ? `<div class="playbook-lead-why"><strong>Why this works for your audience:</strong> ${lm.why}</div>` : ''}
+        ${lm.why ? `<div class="playbook-lead-why no-print"><strong>Why this works for your audience:</strong> ${lm.why}</div>` : ''}
         <div class="playbook-lead-items">
           ${(lm.items || []).map((item, i) => `
             <div class="playbook-lead-item">
