@@ -1,9 +1,12 @@
 {
-  "name": "sam-app",
-  "version": "1.0.0",
+  "note": "Add these to your package.json dependencies section",
   "dependencies": {
-    "@sparticuz/chromium": "^123.0.1",
-    "puppeteer-core": "^22.6.0",
-    "@vercel/kv": "^2.0.0"
-  }
+    "@sparticuz/chromium-min": "^123.0.1",
+    "puppeteer-core": "^22.15.0",
+    "@vercel/kv": "^1.0.0"
+  },
+  "devDependencies": {
+    "puppeteer": "^22.15.0"
+  },
+  "warning": "Do NOT use @sparticuz/chromium (full) — it exceeds Vercel's 50MB limit. Use chromium-min only."
 }
