@@ -7457,7 +7457,14 @@ async function downloadPDF(type) {
       btn.disabled = false;
       return;
     }
-    if (!res.ok) throw new Error('PDF generation failed');
+    if (!res.ok) {
+      // Any other error — fall back to browser print silently
+      if (type === 'playbook') printPlaybookOnly();
+      else printLeadMagnetOnly();
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+      return;
+    }
 
     // Trigger download
     const blob = await res.blob();
