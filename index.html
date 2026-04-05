@@ -1169,6 +1169,79 @@
 
     .upload-result-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--lens); background: var(--lens-bg); border: 1px solid var(--lens-border); padding: 4px 12px; border-radius: 20px; margin-bottom: 16px; }
 
+
+    /* ── IDEAS BANK ── */
+    .ideas-nav-btn{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--text2);background:var(--surface);border:1px solid var(--border);border-radius:50px;padding:7px 14px;cursor:pointer;transition:all 0.2s;position:relative;}
+    .ideas-nav-btn:hover{border-color:var(--border2);color:var(--text);}
+    .ideas-count-badge{position:absolute;top:-5px;right:-5px;width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#A78BFA,#F472B6);color:#fff;font-size:10px;font-weight:700;display:none;align-items:center;justify-content:center;border:2px solid var(--bg);}
+    .ideas-count-badge.show{display:flex;}
+    .ideas-overlay{display:none;position:fixed;inset:0;z-index:900;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);}
+    .ideas-overlay.open{display:block;}
+    .ideas-panel{position:fixed;top:0;right:0;bottom:0;width:100%;max-width:480px;background:rgba(13,11,22,0.98);border-left:1px solid var(--border2);z-index:901;display:flex;flex-direction:column;transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1);overflow:hidden;}
+    .ideas-panel.open{transform:translateX(0);}
+    .ideas-panel-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid var(--border);flex-shrink:0;position:relative;}
+    .ideas-panel-header::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,#A78BFA,#F472B6,transparent);}
+    .ideas-panel-title{font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--text);}
+    .ideas-panel-title span{font-size:13px;font-weight:500;color:var(--text3);margin-left:8px;font-family:'Inter',sans-serif;}
+    .ideas-close-btn{width:32px;height:32px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);color:var(--text3);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;}
+    .ideas-close-btn:hover{color:var(--text);border-color:var(--border2);}
+    .ideas-search-bar{padding:12px 20px;border-bottom:1px solid var(--border);flex-shrink:0;display:flex;flex-direction:column;gap:10px;}
+    .ideas-search-wrap{position:relative;}
+    .ideas-search-wrap::before{content:"⌕";position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:16px;pointer-events:none;z-index:1;}
+    .ideas-search-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 14px 10px 36px;font-family:"Inter",sans-serif;font-size:14px;color:var(--text);-webkit-appearance:none;}
+    .ideas-search-input:focus{outline:none;border-color:var(--border2);}
+    .ideas-search-input::placeholder{color:var(--text3);}
+    .ideas-filters{display:flex;gap:6px;flex-wrap:wrap;}
+    .ideas-filter-btn{font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text3);cursor:pointer;transition:all 0.15s;}
+    .ideas-filter-btn.active{background:linear-gradient(135deg,rgba(109,40,217,0.25),rgba(244,114,182,0.15));border-color:rgba(167,139,250,0.5);color:var(--text);}
+    .ideas-list{flex:1;overflow-y:auto;padding:12px 20px 80px;}
+    .ideas-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;}
+    .ideas-empty-icon{font-size:40px;margin-bottom:16px;}
+    .ideas-empty-title{font-family:"Sora",sans-serif;font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px;}
+    .ideas-empty-sub{font-size:14px;color:var(--text3);line-height:1.6;max-width:280px;}
+    .idea-bank-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:10px;position:relative;overflow:hidden;}
+    .idea-bank-card::before{content:"";position:absolute;top:0;left:0;width:3px;height:100%;border-radius:14px 0 0 14px;}
+    .idea-bank-card:hover{border-color:var(--border2);}
+    .idea-bank-card.type-pulse::before{background:var(--pulse);}
+    .idea-bank-card.type-spark::before{background:var(--spark);}
+    .idea-bank-card.type-wizard::before{background:linear-gradient(180deg,#A78BFA,#F472B6);}
+    .idea-bank-card.type-vision::before{background:var(--vision);}
+    .idea-bank-card.type-blueprint::before{background:var(--blueprint);}
+    .idea-bank-card.type-lens::before{background:var(--lens);}
+    .idea-bank-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px;}
+    .idea-bank-type-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:3px 8px;border-radius:20px;flex-shrink:0;}
+    .badge-pulse{background:var(--pulse-bg);color:var(--pulse);border:1px solid var(--pulse-border);}
+    .badge-spark{background:var(--spark-bg);color:var(--spark);border:1px solid var(--spark-border);}
+    .badge-wizard{background:rgba(167,139,250,0.12);color:var(--spark);border:1px solid rgba(167,139,250,0.25);}
+    .badge-vision{background:var(--vision-bg);color:var(--vision);border:1px solid var(--vision-border);}
+    .badge-blueprint{background:var(--blueprint-bg);color:var(--blueprint);border:1px solid var(--blueprint-border);}
+    .badge-lens{background:var(--lens-bg);color:var(--lens);border:1px solid var(--lens-border);}
+    .idea-bank-card-actions{display:flex;gap:6px;align-items:center;flex-shrink:0;}
+    .ib-action-btn{width:28px;height:28px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text3);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
+    .ib-action-btn:hover{border-color:var(--border2);color:var(--text2);}
+    .ib-action-btn.danger:hover{border-color:rgba(226,75,74,0.4);color:#F09595;background:rgba(226,75,74,0.08);}
+    .idea-bank-text{font-size:14px;color:var(--text);line-height:1.55;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer;}
+    .idea-bank-text.expanded{display:block;}
+    .idea-bank-card-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+    .idea-bank-date{font-size:11px;color:var(--text3);}
+    .idea-status-select{display:flex;gap:4px;}
+    .idea-status-btn{font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;transition:all 0.15s;}
+    .idea-status-btn.active-saved{background:rgba(167,139,250,0.15);border-color:rgba(167,139,250,0.4);color:var(--spark);}
+    .idea-status-btn.active-scripting{background:rgba(56,189,248,0.15);border-color:rgba(56,189,248,0.4);color:var(--blueprint);}
+    .idea-status-btn.active-filmed{background:rgba(251,191,36,0.15);border-color:rgba(251,191,36,0.4);color:var(--lens);}
+    .idea-status-btn.active-posted{background:rgba(52,211,153,0.15);border-color:rgba(52,211,153,0.4);color:var(--vision);}
+    .ideas-panel-footer{padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:10px;flex-shrink:0;background:rgba(13,11,22,0.95);}
+    .ideas-footer-btn{flex:1;padding:10px;border-radius:var(--radius);font-family:"Sora",sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;text-align:center;}
+    .ideas-footer-clear{background:transparent;border:1px solid var(--border);color:var(--text3);}
+    .ideas-footer-export{background:linear-gradient(135deg,rgba(109,40,217,0.2),rgba(244,114,182,0.1));border:1px solid rgba(167,139,250,0.3);color:var(--text);}
+    .save-to-ideas-btn{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--spark);background:var(--spark-bg);border:1px solid var(--spark-border);border-radius:8px;padding:5px 12px;cursor:pointer;transition:all 0.15s;}
+    .save-to-ideas-btn:hover{background:rgba(167,139,250,0.2);}
+    .save-to-ideas-btn.saved{color:var(--vision);background:var(--vision-bg);border-color:var(--vision-border);pointer-events:none;}
+    .ib-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:rgba(13,11,22,0.97);border:1px solid rgba(167,139,250,0.3);border-radius:50px;padding:10px 20px;font-size:13px;font-weight:600;color:var(--text);z-index:1100;transition:transform 0.3s cubic-bezier(0.34,1.2,0.64,1),opacity 0.3s;white-space:nowrap;display:flex;align-items:center;gap:8px;opacity:0;pointer-events:none;}
+    .ib-toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+    @media print{.ideas-overlay,.ideas-panel,.ib-toast,.save-to-ideas-btn,.ideas-nav-btn{display:none!important;}}
+    /* ── END IDEAS BANK ── */
+
     footer { text-align: center; padding: 24px 20px; font-size: 13px; color: var(--text3); border-top: 1px solid var(--border); position: relative; z-index: 1; }
 
     .hashtag-wrap { display: flex; flex-wrap: wrap; gap: 6px; padding-right: 60px; }
@@ -3970,6 +4043,7 @@
     <button class="nav-setup-btn" onclick="openWizardPage()" style="background:linear-gradient(135deg,rgba(109,40,217,0.2),rgba(244,114,182,0.1));border-color:rgba(167,139,250,0.3);color:var(--text);display:none;" id="navWizardBtn">
       ✦ My playbook
     </button>
+    <button class="ideas-nav-btn" onclick="openIdeasPanel()">💡 My Ideas<span class="ideas-count-badge" id="ideasNavBadge">0</span></button>
     <button class="nav-setup-btn" onclick="openSetup()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
       About me
@@ -4899,7 +4973,7 @@ function renderPulse(data, contentType, originalText, platforms) {
   }
   const hook = data.hook || data.hook_1 || '';
   if (isReal(hook)) {
-    html += `<div class="out-block"><div class="out-block-title" style="color:var(--pulse);">● Your hook</div><div class="hook-display">${hook}</div><button class="hook-retry" onclick="regenHook('${escQ(originalText)}')">↻ Try a different hook</button><button class="copy-btn" onclick="copyText(this,'${escQ(hook)}')">Copy</button></div>`;
+    html += `<div class="out-block"><div class="out-block-title" style="color:var(--pulse);">● Your hook</div><div class="hook-display">${hook}</div>${makeIbSaveBtn(hook,"pulse","hook",platforms&&platforms[0]?platforms[0]:"")}<button class="hook-retry" onclick="regenHook('${escQ(originalText)}')">↻ Try a different hook</button><button class="copy-btn" onclick="copyText(this,'${escQ(hook)}')">Copy</button></div>`;
   }
   if (data.full_script || data.script) {
     const sc = data.full_script || data.script;
@@ -4984,7 +5058,7 @@ function renderSpark(data) {
       <div class="idea-title">${idea.title}</div>
       <div class="idea-why">${idea.why}</div>
       ${idea.best_platform ? `<div class="idea-platform">📍 ${idea.best_platform}</div>` : ''}
-      <button class="idea-use-btn" onclick="sendToPulse('${escQ(idea.title)}')">Turn into content →</button>
+      ${makeIbSaveBtn(idea.title,"spark","idea",idea.best_platform||"")}<button class="idea-use-btn" onclick="sendToPulse('${escQ(idea.title)}')">Turn into content →</button>
     </div>`).join('');
 }
 
@@ -5078,7 +5152,7 @@ function renderVision(data) {
     ${isReal(data.premise) ? `<div class="concept-card out-block"><div class="concept-card-label">The premise</div><div class="concept-card-text">${data.premise}</div></div>` : ''}
     ${isReal(data.why_it_works) ? `<div class="concept-card out-block"><div class="concept-card-label">Why it works</div><div class="concept-card-text">${data.why_it_works}</div></div>` : ''}
     ${prodItems ? `<div class="concept-card out-block"><div class="concept-card-label">How to film it</div><ul class="prod-list">${prodItems}</ul></div>` : ''}
-    ${isReal(data.hook_line) ? `<div class="out-block"><div class="out-block-title" style="color:var(--vision);">● Opening hook line</div><div class="hook-display" style="border-left-color:var(--vision);">${data.hook_line}</div><button class="copy-btn" onclick="copyText(this,'${escQ(data.hook_line)}')">Copy hook</button></div>` : ''}
+    ${isReal(data.hook_line) ? `<div class="out-block"><div class="out-block-title" style="color:var(--vision);">● Opening hook line</div><div class="hook-display" style="border-left-color:var(--vision);">${data.hook_line}</div><button class="copy-btn" onclick="copyText(this,'${escQ(data.hook_line)}')">Copy hook</button>${makeIbSaveBtn(data.hook||'',"wizard","hook",(WS.platforms&&WS.platforms[0])||"")}</div>` : ''}
     ${isReal(data.twist) ? `<div class="concept-card" style="border:1px solid var(--vision-border);background:var(--vision-bg);"><div class="concept-card-label" style="color:var(--vision);">The twist</div><div class="concept-card-text">${data.twist}</div></div>` : ''}
     <div class="out-block" style="margin-top:16px;"><button class="cross-tool-btn" onclick="sendToPulse('${escQ(data.title + ': ' + (data.premise||''))}')"><div class="cross-tool-left"><div class="cross-tool-icon" style="background:var(--pulse-bg);border:1px solid var(--pulse-border);">📝</div><div class="cross-tool-text">Write the full script in The Pulse</div></div><div class="cross-tool-arrow">→</div></button></div>
     <div class="focus-directive"><div class="focus-eyebrow">Stop. Focus.</div><div class="focus-text">You have the concept. Go film it today — not tomorrow.</div></div>`;
@@ -5944,6 +6018,28 @@ async function sendChatMessage() {
     addChatMessage('sam', "One sec — give me another try! 💪");
   }
 }
+
+
+// ══ SAM IDEAS BANK ══
+const IB={currentFilter:'all',currentStatusFilter:null,load(){try{return JSON.parse(localStorage.getItem('sam-ideas')||'[]')}catch{return[]}},save(ideas){try{localStorage.setItem('sam-ideas',JSON.stringify(ideas))}catch{}this.updateNavBadge()},add(idea){const ideas=this.load();const entry={id:Date.now()+'_'+Math.random().toString(36).slice(2,7),text:idea.text||'',type:idea.type||'pulse',subtype:idea.subtype||'',platform:idea.platform||'',status:'saved',date:new Date().toISOString()};ideas.unshift(entry);this.save(ideas);this.updateNavBadge();showIbToast('Saved to Ideas');return entry.id},updateStatus(id,status){const ideas=this.load();const idx=ideas.findIndex(i=>i.id===id);if(idx!==-1){ideas[idx].status=status;this.save(ideas)}},delete(id){this.save(this.load().filter(i=>i.id!==id));renderIdeasList();this.updateNavBadge()},updateNavBadge(){const count=this.load().filter(i=>i.status!=='posted').length;const b=document.getElementById('ideasNavBadge');if(b){b.textContent=count>9?'9+':count;b.classList.toggle('show',count>0)}const l=document.getElementById('ideasCountLabel');if(l){const t=this.load().length;l.textContent=t===0?'0 saved':t+' idea'+(t!==1?'s':'')}},getFiltered(){let ideas=this.load();const q=(document.getElementById('ideasSearchInput')?.value||'').trim().toLowerCase();if(q)ideas=ideas.filter(i=>(i.text||'').toLowerCase().includes(q)||(i.platform||'').toLowerCase().includes(q)||(i.subtype||'').toLowerCase().includes(q));if(this.currentFilter!=='all')ideas=ideas.filter(i=>i.type===this.currentFilter);if(this.currentStatusFilter)ideas=ideas.filter(i=>i.status===this.currentStatusFilter);return ideas}};
+function openIdeasPanel(){document.getElementById('ideasOverlay').classList.add('open');document.getElementById('ideasPanel').classList.add('open');document.body.style.overflow='hidden';IB.updateNavBadge();renderIdeasList()}
+function closeIdeasPanel(){document.getElementById('ideasOverlay').classList.remove('open');document.getElementById('ideasPanel').classList.remove('open');document.body.style.overflow=''}
+function setIdeasFilter(f,btn){IB.currentFilter=f;document.querySelectorAll('.ideas-filter-btn[data-filter]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderIdeasList()}
+function setIdeasStatusFilter(s,btn){if(IB.currentStatusFilter===s){IB.currentStatusFilter=null;btn.classList.remove('active')}else{IB.currentStatusFilter=s;document.querySelectorAll('.ideas-filter-btn[data-sf]').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}renderIdeasList()}
+function renderIdeasList(){const list=document.getElementById('ideasList');if(!list)return;const ideas=IB.getFiltered();if(!ideas.length){const empty=IB.load().length===0;list.innerHTML='<div class="ideas-empty"><div class="ideas-empty-icon">'+(empty?'&#128161;':'&#128269;')+'</div><div class="ideas-empty-title">'+(empty?'No ideas saved yet':'Nothing matches')+'</div><div class="ideas-empty-sub">'+(empty?'Every time SAM generates a hook, script, or concept — tap Save to Ideas.':'Try a different search or clear your filters.')+'</div></div>';return}const sL={saved:'Saved',scripting:'Scripting',filmed:'Filmed',posted:'Posted'};const tL={pulse:'The Pulse',spark:'The Spark',wizard:'Playbook',vision:'The Vision',blueprint:'Blueprint',lens:'The Lens'};list.innerHTML=ideas.map(idea=>{const date=new Date(idea.date).toLocaleDateString('en-US',{month:'short',day:'numeric'});const sb=['saved','scripting','filmed','posted'].map(s=>'<button class="idea-status-btn'+(idea.status===s?' active-'+s:'')+'" onclick="ibUpdateStatus(\''+idea.id+'\',\''+s+'\',this)">'+sL[s]+'</button>').join('');const ul=idea.type==='wizard'?'Open playbook':idea.type==='vision'?'Script it':'Build this';const txt=(idea.text||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');const esc=(idea.text||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,'\\n').slice(0,300);return'<div class="idea-bank-card type-'+idea.type+'" id="ibc-'+idea.id+'"><div class="idea-bank-card-top"><div><span class="idea-bank-type-badge badge-'+idea.type+'">'+(tL[idea.type]||idea.type)+'</span>'+(idea.subtype?'<span style="font-size:10px;color:var(--text3);margin-left:6px;">'+idea.subtype+'</span>':'')+(idea.platform?'<span style="font-size:10px;color:var(--text3);margin-left:4px;">&#183; '+idea.platform+'</span>':'')+'</div><div class="idea-bank-card-actions"><button class="ib-action-btn" onclick="ibCopy(\''+esc+'\')" title="Copy">&#128203;</button><button class="ib-action-btn" onclick="ibUse(\''+idea.id+'\')" style="font-size:11px;font-weight:600;width:auto;padding:0 10px;color:var(--spark);">'+ul+' &#8594;</button><button class="ib-action-btn danger" onclick="ibDel(\''+idea.id+'\')" title="Delete">&#10005;</button></div></div><div class="idea-bank-text" id="ibt-'+idea.id+'" onclick="document.getElementById(\'ibt-'+idea.id+'\').classList.toggle(\'expanded\')">'+txt+'</div><div class="idea-bank-card-footer"><div class="idea-status-select">'+sb+'</div><div class="idea-bank-date">'+date+'</div></div></div>'}).join('');IB.updateNavBadge()}
+function ibUpdateStatus(id,status){IB.updateStatus(id,status);const card=document.getElementById('ibc-'+id);if(card)card.querySelectorAll('.idea-status-btn').forEach(b=>{const s=b.getAttribute('onclick').match(/'(\w+)'/g)?.[1]?.replace(/'/g,'');b.className='idea-status-btn'+(s===status?' active-'+status:'')});IB.updateNavBadge();if(status==='posted')showIbToast('Marked as posted!')}
+function ibDel(id){const card=document.getElementById('ibc-'+id);if(card){card.style.opacity='0';card.style.transform='translateX(30px)';card.style.transition='all 0.25s';setTimeout(()=>{IB.delete(id);renderIdeasList()},250)}else{IB.delete(id);renderIdeasList()}}
+function ibCopy(text){navigator.clipboard.writeText(text.replace(/\\n/g,'\n')).then(()=>showIbToast('Copied!'))}
+function ibUse(id){const idea=IB.load().find(i=>i.id===id);if(!idea)return;closeIdeasPanel();setTimeout(()=>{if(idea.type==='wizard')openWizardPage();else if(idea.type==='vision')sendToVision(idea.text);else if(idea.type==='blueprint'){openTool('blueprint');setTimeout(()=>{const el=document.getElementById('blueprintInp');if(el){el.value=idea.text;el.focus()}},300)}else sendToPulse(idea.text)},300)}
+function clearPostedIdeas(){if(!confirm('Remove all ideas marked as Posted?'))return;IB.save(IB.load().filter(i=>i.status!=='posted'));renderIdeasList();showIbToast('Cleared')}
+function exportIdeas(){const ideas=IB.load();if(!ideas.length){showIbToast('No ideas to export');return}const lines=ideas.map((idea,i)=>'--- Idea '+(i+1)+' ['+idea.type.toUpperCase()+'] '+(idea.platform?'· '+idea.platform:'')+' · '+idea.status.toUpperCase()+' · '+new Date(idea.date).toLocaleDateString()+' ---\n'+idea.text+'\n');const blob=new Blob(['SAM Ideas Export\n'+new Date().toLocaleDateString()+'\n\n'+lines.join('\n')],{type:'text/plain'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='SAM_Ideas_'+new Date().toISOString().slice(0,10)+'.txt';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);showIbToast('Exported!')}
+let ibToastTimer=null;
+function showIbToast(msg){const t=document.getElementById('ibToast');if(!t)return;t.textContent=msg;t.classList.add('show');clearTimeout(ibToastTimer);ibToastTimer=setTimeout(()=>t.classList.remove('show'),2500)}
+function saveToIdeas(opts){return IB.add(opts)}
+function makeIbSaveBtn(text,type,subtype,platform){const e=(text||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,'\\n').slice(0,300);return '<button class="save-to-ideas-btn" onclick="ibSaveBtnClick(this,\''+e+'\',\''+type+'\',\''+(subtype||'')+'\',\''+(platform||'')+'\')">&#128156; Save to Ideas</button>'}
+function ibSaveBtnClick(btn,text,type,subtype,platform){saveToIdeas({text:text.replace(/\\n/g,'\n'),type,subtype,platform});btn.textContent='Saved!';btn.classList.add('saved');IB.updateNavBadge()}
+function initIdeasBank(){IB.updateNavBadge()}
+// ══ END SAM IDEAS BANK ══
 
 // ── DEV MODE ─────────────────────────────────────────────────────────────────
 // Run sam_devmode() in browser console to bypass all limits for testing
@@ -8856,5 +8952,37 @@ function openWizardFromNav() {
 
 </div><!-- end wizard-page -->
 
+
+<div class="ideas-overlay" id="ideasOverlay" onclick="if(event.target===this)closeIdeasPanel()"></div>
+<div class="ideas-panel" id="ideasPanel">
+  <div class="ideas-panel-header">
+    <div class="ideas-panel-title">My Ideas <span id="ideasCountLabel">0 saved</span></div>
+    <button class="ideas-close-btn" onclick="closeIdeasPanel()">&#10005;</button>
+  </div>
+  <div class="ideas-search-bar">
+    <div class="ideas-search-wrap"><input class="ideas-search-input" id="ideasSearchInput" type="text" placeholder="Search ideas, hooks, concepts..." oninput="renderIdeasList()" autocomplete="off"/></div>
+    <div class="ideas-filters">
+      <button class="ideas-filter-btn active" data-filter="all" onclick="setIdeasFilter('all',this)">All</button>
+      <button class="ideas-filter-btn" data-filter="wizard" onclick="setIdeasFilter('wizard',this)">&#10022; Playbook</button>
+      <button class="ideas-filter-btn" data-filter="pulse" onclick="setIdeasFilter('pulse',this)">The Pulse</button>
+      <button class="ideas-filter-btn" data-filter="spark" onclick="setIdeasFilter('spark',this)">The Spark</button>
+      <button class="ideas-filter-btn" data-filter="vision" onclick="setIdeasFilter('vision',this)">The Vision</button>
+      <button class="ideas-filter-btn" data-filter="blueprint" onclick="setIdeasFilter('blueprint',this)">Blueprint</button>
+      <button class="ideas-filter-btn" data-filter="lens" onclick="setIdeasFilter('lens',this)">The Lens</button>
+    </div>
+    <div class="ideas-filters">
+      <button class="ideas-filter-btn" data-sf="saved" onclick="setIdeasStatusFilter('saved',this)">Saved</button>
+      <button class="ideas-filter-btn" data-sf="scripting" onclick="setIdeasStatusFilter('scripting',this)">Scripting</button>
+      <button class="ideas-filter-btn" data-sf="filmed" onclick="setIdeasStatusFilter('filmed',this)">Filmed</button>
+      <button class="ideas-filter-btn" data-sf="posted" onclick="setIdeasStatusFilter('posted',this)">Posted</button>
+    </div>
+  </div>
+  <div class="ideas-list" id="ideasList"></div>
+  <div class="ideas-panel-footer">
+    <button class="ideas-footer-btn ideas-footer-export" onclick="exportIdeas()">&#8595; Export all</button>
+    <button class="ideas-footer-btn ideas-footer-clear" onclick="clearPostedIdeas()">Clear posted</button>
+  </div>
+</div>
+<div class="ib-toast" id="ibToast"></div>
 </body>
 </html>
