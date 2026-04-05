@@ -7272,8 +7272,7 @@ function renderPlaybook(data) {
       <div class="wizard-why no-print" style="margin-bottom:8px;border-left:3px solid #FBB824;padding-left:12px;">This is the part no other tool builds. SAM created a complete, ready-to-deploy free resource — written in your voice, branded as your work. Give it away in exchange for an email address. It builds your list and your trust faster than any piece of content alone.</div>
       ${perspectiveControls}
       <div id="leadMagnetDoc" class="playbook-lead-magnet" data-brand-color="${brandColor}">
-        <div class="no-print">${brandHeader}</div>
-        <div style="display:none;" class="print-only-brand">${brandHeader}</div>
+        <div class="print-only-brand">${brandHeader}</div>
         <div class="playbook-lead-badge">⭐ Free resource for your audience</div>
         <div class="playbook-lead-title">${lm.title || 'Your Audience Resource'}</div>
         ${lm.why ? `<div class="playbook-lead-why no-print"><strong>Why this works for your audience:</strong> ${lm.why}</div>` : ''}
@@ -7650,7 +7649,7 @@ Return ONLY valid JSON — no markdown, no backticks:
     if (!lm) { console.error('Regen parse fail:', regenRaw.slice(0,400)); throw new Error('SAM response could not be parsed — try again'); }
 
     // Rebuild the document
-    const brandHeader = `<div class="wl-doc-header no-print" style="display:flex;align-items:center;justify-content:space-between;padding-bottom:16px;margin-bottom:20px;border-bottom:2px solid ${brandColor};">
+    const brandHeader = `<div class="wl-doc-header" style="display:flex;align-items:center;justify-content:space-between;padding-bottom:16px;margin-bottom:20px;border-bottom:2px solid ${brandColor};">
       <div style="display:flex;align-items:center;gap:12px;">
         ${brandLogo ? `<img src="${brandLogo}" style="max-height:48px;max-width:120px;object-fit:contain;border-radius:6px;" />` : `<div style="width:40px;height:40px;border-radius:8px;background:${brandColor};display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:16px;">${brandName.charAt(0)}</div>`}
         <div>
