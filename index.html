@@ -7528,13 +7528,7 @@ function setLMPerspective(persp, btn) {
   btn.style.borderColor = persp === 'user' ? 'rgba(56,189,248,0.4)' : 'rgba(251,191,36,0.4)';
   btn.style.color = persp === 'user' ? 'var(--blueprint)' : 'var(--lens)';
   WS.lmPerspective = persp;
-  const statusEl2 = document.getElementById('lmRegenStatus');
-  if (statusEl2) {
-    const msgEl = document.getElementById('lmRegenStatusText');
-    if (msgEl) msgEl.textContent = persp==='user' ? 'Switching to working template format — about 15 seconds...' : 'Switching to tips & advice format — about 15 seconds...';
-    statusEl2.style.display = 'flex';
-  }
-  regenerateLeadMagnet();
+  // User controls regeneration manually via the Regenerate button
 }
 
 
