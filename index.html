@@ -7597,18 +7597,7 @@ PERSPECTIVE: ${perspNote}
 ${steer ? 'CREATOR DIRECTION: ' + steer : ''}
 
 Return ONLY valid JSON — no markdown, no backticks:
-{
-  "title": "Compelling free resource title",
-  "why": "2 sentences — why this specific resource for this specific audience.",
-  "items": [
-    {"heading": "Point or section 1", "body": "2-3 sentences. Real, specific, useful. ${persp === 'user' ? 'Include what to fill in or track here.' : 'Written from creator experience.'}"},
-    {"heading": "Point or section 2", "body": "2-3 sentences."},
-    {"heading": "Point or section 3", "body": "2-3 sentences."},
-    {"heading": "Point or section 4", "body": "2-3 sentences."},
-    {"heading": "Point or section 5", "body": "2-3 sentences — ends with reason to follow the creator."}
-  ],
-  "comment_response": "Under 150 chars. Conversational. What to post in comments to distribute this."
-}`;
+{"title":"Resource title","why":"2 sentences.","items":[{"heading":"Section 1 title","body":"2-3 sentences specific and useful."},{"heading":"Section 2 title","body":"2-3 sentences."},{"heading":"Section 3 title","body":"2-3 sentences."},{"heading":"Section 4 title","body":"2-3 sentences."},{"heading":"Section 5 title","body":"2-3 sentences. End with reason to follow creator."}],"comment_response":"Under 150 chars."}`;
 
   try {
     // Direct fetch with proper SSE parsing
@@ -7622,7 +7611,8 @@ Return ONLY valid JSON — no markdown, no backticks:
         mode: 'chat',
         userId: regenUid,
         tier: regenTier,
-        toolPrompt: prompt
+        toolPrompt: prompt,
+        maxTokens: 2000
       })
     });
 
