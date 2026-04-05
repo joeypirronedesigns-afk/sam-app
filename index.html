@@ -7352,6 +7352,8 @@ function renderPlaybook(data) {
 }
 
 function retryPlaybook() {
+  const _rl = document.getElementById('wizardLoader');
+  if (_rl) { _rl.style.display = ''; _rl.style.visibility = 'visible'; }
   document.getElementById('wizardLoader').innerHTML = `
     <div class="wizard-loader-title">SAM is trying again.</div>
     <div class="wizard-loader-sub">"Hang tight — SAM already knows your story. This will be faster."</div>
