@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v5.32)
+       UNIFIED HERO (v5.33)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4295,7 +4295,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v5.32
+       CINEMATIC MEET SAM — v5.33
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4720,7 +4720,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v5.32
+       SAM GUIDED TOUR SPLASH — v5.33
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -4732,17 +4732,25 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
       -webkit-backdrop-filter: blur(20px);
       overflow-y: auto;
       animation: fade-in 0.5s ease;
+      padding: 24px 16px;
     }
-    .tour-splash.open { display: flex; align-items: center; justify-content: center; }
+    .tour-splash.open { display: flex; align-items: flex-start; justify-content: center; }
+    @media(min-height: 700px) {
+      .tour-splash.open { align-items: center; }
+    }
 
     .tour-splash-inner {
-      max-width: 560px;
+      max-width: 520px;
       width: 100%;
-      padding: 48px 32px;
-      margin: 0 auto;
+      padding: 36px 28px;
+      margin: auto;
       display: flex;
       flex-direction: column;
       align-items: center;
+      background: rgba(13,11,22,0.95);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 28px;
+      box-shadow: 0 40px 120px rgba(0,0,0,0.8), 0 0 60px rgba(167,139,250,0.08);
       gap: 32px;
       text-align: center;
     }
@@ -4945,7 +4953,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
 <nav>
   <div class="nav-logo" onclick="goHome()" style="cursor:pointer;">S<span class="nav-logo-dot">.</span>A<span class="nav-logo-dot">.</span>M<span class="nav-logo-dot">.</span></div>
-  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v5.32</div>
+  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v5.33</div>
   <div class="nav-right">
     <div class="trial-nav-badge" id="trialBadge" onclick="openProPage()" style="display:none;">
       <div class="trial-nav-dot"></div>
@@ -4966,7 +4974,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 <main>
 
 
-  <!-- ── UNIFIED HERO v5.32 ── -->
+  <!-- ── UNIFIED HERO v5.33 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -6939,7 +6947,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v5.32 ──
+// ── RUN TRACKING v5.33 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 5;
@@ -7470,7 +7478,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v5.32
+  // CINEMATIC MEET SAM — v5.33
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -10047,7 +10055,7 @@ function openWizardFromNav() {
 </div>
 
 
-<!-- ── SOFT POPUP v5.32 ── -->
+<!-- ── SOFT POPUP v5.33 ── -->
 <div id="softPopup" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9000;padding:16px;pointer-events:none;">
   <div id="softPopupInner" style="max-width:480px;margin:0 auto;background:#13101F;border:1px solid rgba(167,139,250,0.25);border-radius:20px 20px 16px 16px;padding:20px 20px 18px;box-shadow:0 -8px 40px rgba(0,0,0,0.5);pointer-events:auto;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
@@ -10066,7 +10074,7 @@ function openWizardFromNav() {
   </div>
 </div>
 
-<!-- ── HARD ASK v5.32 ── -->
+<!-- ── HARD ASK v5.33 ── -->
 <div id="hardAskOverlay" style="display:none;position:fixed;inset:0;z-index:9100;background:rgba(9,8,15,0.88);backdrop-filter:blur(10px);">
   <div id="hardAskInner" style="position:absolute;bottom:0;left:0;right:0;max-width:520px;margin:0 auto;background:#13101F;border:1px solid rgba(251,184,36,0.2);border-radius:24px 24px 0 0;padding:28px 20px 36px;box-shadow:0 -16px 60px rgba(0,0,0,0.6);transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);max-height:92vh;overflow-y:auto;">
 
@@ -10253,7 +10261,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v5.32</div>
+  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v5.33</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -11192,7 +11200,7 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v5.32
+// SOFT POPUP v5.33
 // ══════════════════════════════════════════════════════════════════════════════
 const TOOL_META = {
   pulse:     { emoji:'🎯', title:'Now try Spark.', sub:'Generate 5 scroll-stopping ideas built for your niche.', id:'spark' },
@@ -11249,7 +11257,7 @@ function closeSoftPopupAndScroll() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// HARD ASK v5.32
+// HARD ASK v5.33
 // ══════════════════════════════════════════════════════════════════════════════
 function showHardAsk() {
   const el = document.getElementById('hardAskOverlay');
@@ -11383,7 +11391,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v5.32
+  // SAM GUIDED TOUR — v5.33
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
@@ -11493,10 +11501,29 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
         ✦ Try ${tool.name} now →
       </button>
       <div id="tourEmailWrap" class="tour-email-wrap">
-        <div style="font-size:13px;color:var(--text2);text-align:center;">Drop your email — unlock all 5 tools for 24hrs free</div>
+        <div style="font-size:13px;color:var(--text2);text-align:center;font-weight:600;">Try everything free for 24 hours</div>
         <input type="text" class="tour-email-input" placeholder="Your first name" id="tourNameInput" style="margin-bottom:0;"/>
         <input type="email" class="tour-email-input" placeholder="your@email.com" id="tourEmailInput"/>
-        <button class="tour-cta-primary" style="background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);" onclick="submitTourEmail()">✦ Unlock everything — 24hrs free →</button>
+        <button class="tour-cta-primary" style="background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);" onclick="submitTourEmail()">✦ Start 24hr free trial →</button>
+        <div style="display:flex;align-items:center;gap:10px;width:100%;margin:4px 0;">
+          <div style="flex:1;height:1px;background:rgba(255,255,255,0.08);"></div>
+          <div style="font-size:11px;color:var(--text3);">or go straight to pro</div>
+          <div style="flex:1;height:1px;background:rgba(255,255,255,0.08);"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;width:100%;">
+          <button onclick="window.location.href='#go-pro';closeTourSplash();"
+            style="padding:10px 6px;border:1px solid rgba(244,114,182,0.3);border-radius:12px;background:rgba(244,114,182,0.08);color:#F472B6;font-family:'Sora',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;line-height:1.3;">
+            Creator<br/><span style="font-size:13px;">$19/mo</span>
+          </button>
+          <button onclick="window.location.href='#go-pro';closeTourSplash();"
+            style="padding:10px 6px;border:1px solid rgba(167,139,250,0.4);border-radius:12px;background:rgba(167,139,250,0.12);color:#A78BFA;font-family:'Sora',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;line-height:1.3;box-shadow:0 0 16px rgba(167,139,250,0.2);">
+            Pro<br/><span style="font-size:13px;">$39/mo</span>
+          </button>
+          <button onclick="window.location.href='#go-pro';closeTourSplash();"
+            style="padding:10px 6px;border:1px solid rgba(251,191,36,0.3);border-radius:12px;background:rgba(251,191,36,0.08);color:#FBBF24;font-family:'Sora',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;line-height:1.3;">
+            Studio<br/><span style="font-size:13px;">$99/mo</span>
+          </button>
+        </div>
       </div>
       <button onclick="document.getElementById('tourEmailWrap').classList.add('show');this.style.display='none';"
         style="width:100%;max-width:360px;padding:14px 28px;border:1.5px solid rgba(167,139,250,0.4);border-radius:50px;background:transparent;font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:var(--text2);cursor:pointer;transition:all 0.2s;"
