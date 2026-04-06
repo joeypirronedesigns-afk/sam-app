@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v5.10)
+       UNIFIED HERO (v5.11)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -1693,11 +1693,11 @@
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;">
           <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;">
             <div style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#A78BFA;margin-bottom:12px;">✦ In 60 seconds</div>
-            <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;">A complete content playbook</div>
+            <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;">A complete content story</div>
             <div style="font-size:14px;color:var(--text2);line-height:1.6;">Hook that stops the scroll. Word-for-word script. Platform strategy for every channel you care about. Captions and hashtags. All from one real moment or story you shared with SAM.</div>
           </div>
           <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;">
-            <div style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#F472B6;margin-bottom:12px;">✦ Built into every playbook</div>
+            <div style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#F472B6;margin-bottom:12px;">✦ Built into every story</div>
             <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;">A branded lead magnet your audience actually wants</div>
             <div style="font-size:14px;color:var(--text2);line-height:1.6;">SAM builds a downloadable resource — checklist, guide, planner — branded with your name and logo. Your audience trades their email for it. You build your list while you sleep.</div>
           </div>
@@ -1719,7 +1719,7 @@
           <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;">
             <div style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#A78BFA;margin-bottom:12px;">✦ Your brand. Every time.</div>
             <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;">Every document comes out as yours</div>
-            <div style="font-size:14px;color:var(--text2);line-height:1.6;">Your logo. Your colors. Your name. Every playbook, lead magnet and audience resource SAM builds is branded as yours — ready to share, download or hand to a client.</div>
+            <div style="font-size:14px;color:var(--text2);line-height:1.6;">Your logo. Your colors. Your name. Every story, lead magnet and audience resource SAM builds is branded as yours — ready to share, download or hand to a client.</div>
           </div>
         </div>
       </div>
@@ -4276,7 +4276,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v5.10
+       CINEMATIC MEET SAM — v5.11
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4539,14 +4539,14 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
 <nav>
   <div class="nav-logo" onclick="goHome()" style="cursor:pointer;">S<span class="nav-logo-dot">.</span>A<span class="nav-logo-dot">.</span>M<span class="nav-logo-dot">.</span></div>
-  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v5.10</div>
+  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v5.11</div>
   <div class="nav-right">
     <div class="trial-nav-badge" id="trialBadge" onclick="openProPage()" style="display:none;">
       <div class="trial-nav-dot"></div>
       <span id="trialBadgeText">3 days free</span>
     </div>
     <button class="nav-setup-btn" onclick="openWizardPage()" style="background:linear-gradient(135deg,rgba(109,40,217,0.2),rgba(244,114,182,0.1));border-color:rgba(167,139,250,0.3);color:var(--text);display:none;" id="navWizardBtn">
-      ✦ My playbook
+      ✦ My Story
     </button>
     <button class="ideas-nav-btn" onclick="openIdeasPanel()" style="display:none;" id="ideasNavBtn">💡 My Ideas<span class="ideas-count-badge" id="ideasNavBadge">0</span></button>
     <button class="nav-setup-btn" onclick="openSetup()" style="display:none;" id="aboutMeNavBtn">
@@ -4560,7 +4560,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 <main>
 
 
-  <!-- ── UNIFIED HERO v5.10 ── -->
+  <!-- ── UNIFIED HERO v5.11 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -5378,10 +5378,10 @@ async function readStream(r) {
       const diagnosis = partial.match(/"diagnosis"\s*:\s*"([^"]+)"/)?.[1];
       const hook = partial.match(/"hook"\s*:\s*"([^"]+)"/)?.[1];
       if (diagnosis || hook) {
-        throw new Error('SAM built your playbook but had trouble sending it all at once. Hit Try Again — it almost always works the second time. (Parse error)');
+        throw new Error('SAM built your story but had trouble sending it all at once. Hit Try Again — it almost always works the second time. (Parse error)');
       }
     }
-    throw new Error('SAM built your playbook but had trouble sending it all at once. Hit Try Again — it almost always works the second time. (Parse error)');
+    throw new Error('SAM built your story but had trouble sending it all at once. Hit Try Again — it almost always works the second time. (Parse error)');
   }
   if (streamError) throw new Error(streamError);
   const preview = rawLines.slice(0,5).join(' | ').slice(0,200);
@@ -6512,7 +6512,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v5.10 ──
+// ── RUN TRACKING v5.11 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 5;
@@ -7034,7 +7034,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v5.10
+  // CINEMATIC MEET SAM — v5.11
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -7906,10 +7906,10 @@ async function generateAudienceDiagnosis() {
     if (!WS.audienceAge) WS.audienceAge = '25-44';
     if (!WS.audienceGender) WS.audienceGender = 'Mix of both';
   } else if (storyType === 'idea' || storyType === 'concept') {
-    diag = `SAM will build a full audience profile during your playbook based on the concept you shared. For now, SAM is assuming a <strong>broad creator audience</strong> — you can adjust this here if you have a specific group in mind.`;
+    diag = `SAM will build a full audience profile during your story based on the concept you shared. For now, SAM is assuming a <strong>broad creator audience</strong> — you can adjust this here if you have a specific group in mind.`;
     WS.diagnosedAudience = diag;
   } else {
-    diag = `Based on what you\'ve shared, SAM is building your audience profile. The full diagnosis will appear in your playbook with complete reasoning. <strong>For now — do you have a sense of who this is for?</strong> Adjust below or trust SAM to figure it out.`;
+    diag = `Based on what you\'ve shared, SAM is building your audience profile. The full diagnosis will appear in your story with complete reasoning. <strong>For now — do you have a sense of who this is for?</strong> Adjust below or trust SAM to figure it out.`;
     WS.diagnosedAudience = diag;
   }
 
@@ -7932,7 +7932,7 @@ async function buildPlaybook() {
     if (el) { el.classList.remove('active','done'); }
   });
 
-  const buildMsgs = ['Building your playbook — this takes about 30 seconds','SAM is writing your hook and script...','Building your platform strategy...','Diagnosing your ideal audience...','Creating your free audience resource...','Almost done — putting it all together...','Still working — your story has a lot of depth...','Nearly there — hang tight...'];
+  const buildMsgs = ['Building your story — this takes about 30 seconds','SAM is writing your hook and script...','Building your platform strategy...','Diagnosing your ideal audience...','Creating your free audience resource...','Almost done — putting it all together...','Still working — your story has a lot of depth...','Nearly there — hang tight...'];
   let bIdx = 0;
   const buildMsgIv = setInterval(() => { bIdx=Math.min(bIdx+1,buildMsgs.length-1); const el=document.getElementById('wizardBuildStatusText'); if(el)el.textContent=buildMsgs[bIdx]; if(bIdx===buildMsgs.length-1)clearInterval(buildMsgIv); }, 5000);
 
@@ -8057,7 +8057,7 @@ Include complete reasoning (WHY) for every recommendation.
       errTip = "Try shortening your story slightly, or hit Try Again — it usually works on the second attempt.";
     } else if (isParseErr) {
       errTitle = 'SAM lost her train of thought';
-      errExplain = "SAM built your playbook but had trouble sending it all at once. This is rare and almost always fixes itself.";
+      errExplain = "SAM built your story but had trouble sending it all at once. This is rare and almost always fixes itself.";
       errTip = "Hit Try Again — SAM already knows your story and will rebuild it fast.";
     } else {
       errTitle = 'Something went wrong';
@@ -8198,7 +8198,7 @@ function renderPlaybook(data) {
     html += `<div class="playbook-section">
       <div class="playbook-section-num">Section 06</div>
       <div class="playbook-section-title">Your ideal audience</div>
-      <div class="wizard-why" style="margin-bottom:16px;">This isn't a demographic report. This is a real person — the one who needs your story most. When SAM knows exactly who they are, every word in your playbook is written for them.</div>
+      <div class="wizard-why" style="margin-bottom:16px;">This isn't a demographic report. This is a real person — the one who needs your story most. When SAM knows exactly who they are, every word in your story is written for them.</div>
       <div class="wizard-audience-card">
         ${apRow('who', 'Who They Are', '👤')}
         ${apRow('pain_points', 'Their Pain Points', '😤')}
@@ -8385,7 +8385,7 @@ function retryPlaybook() {
       <div class="wizard-loader-step" id="lstep-5"><div class="wizard-loader-dot"></div>Building your platform strategy</div>
       <div class="wizard-loader-step" id="lstep-6"><div class="wizard-loader-dot"></div>Diagnosing your ideal audience</div>
       <div class="wizard-loader-step" id="lstep-7"><div class="wizard-loader-dot"></div>Creating your audience resource</div>
-      <div class="wizard-loader-step" id="lstep-8"><div class="wizard-loader-dot"></div>Assembling your playbook</div>
+      <div class="wizard-loader-step" id="lstep-8"><div class="wizard-loader-dot"></div>Assembling your story</div>
     </div>
     <div class="wizard-still-building" id="wizardStillBuilding">⏳ SAM is still working — give her a few more seconds.</div>`;
   document.getElementById('wizardLoader').classList.add('show');
@@ -9024,7 +9024,7 @@ Return ONLY valid JSON:
 }
 
 function wizardNewPlaybook() {
-  if (confirm('Start a fresh playbook? Your current one will be saved in history.')) {
+  if (confirm('Start a fresh story? Your current one will be saved in history.')) {
     startWizard('new');
   }
 }
@@ -9098,7 +9098,7 @@ function openWizardFromNav() {
       <div style="background:var(--blueprint-bg);border:1px solid var(--blueprint-border);border-radius:20px;padding:24px 20px;display:flex;flex-direction:column;gap:10px;">
         <div style="font-size:11px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--blueprint);">Blueprint</div>
         <div style="font-size:13px;font-weight:600;color:var(--text3);">The skeletal structure</div>
-        <div style="font-size:15px;font-weight:700;color:var(--text);line-height:1.3;">Content Playbook Builder</div>
+        <div style="font-size:15px;font-weight:700;color:var(--text);line-height:1.3;">Story Builder</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.5;flex:1;">"Your 30-day content strategy. Built around your bones."</div>
         <div style="margin-top:8px;padding-top:12px;border-top:1px solid var(--blueprint-border);">
           <div style="font-size:12px;color:var(--text3);text-decoration:line-through;">$39/mo standalone</div>
@@ -9278,11 +9278,11 @@ function openWizardFromNav() {
 
       <div class="pro-review-card">
         <div style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#A78BFA;margin-bottom:10px;">✦ In 60 seconds</div>
-        <div class="pro-review-text">A complete content playbook — hook, word-for-word script, platform strategy, captions and hashtags. Built from one real moment or story you shared with SAM.</div>
+        <div class="pro-review-text">A complete content story — hook, word-for-word script, platform strategy, captions and hashtags. Built from one real moment or story you shared with SAM.</div>
       </div>
 
       <div class="pro-review-card">
-        <div style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#F472B6;margin-bottom:10px;">✦ Built into every playbook</div>
+        <div style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#F472B6;margin-bottom:10px;">✦ Built into every story</div>
         <div class="pro-review-text">A branded lead magnet your audience trades their email for — checklist, guide or planner — with your logo, your colors, your name. Your list grows while you sleep.</div>
       </div>
 
@@ -9354,7 +9354,7 @@ function openWizardFromNav() {
 </div>
 
 
-<!-- ── SOFT POPUP v5.10 ── -->
+<!-- ── SOFT POPUP v5.11 ── -->
 <div id="softPopup" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9000;padding:16px;pointer-events:none;">
   <div id="softPopupInner" style="max-width:480px;margin:0 auto;background:#13101F;border:1px solid rgba(167,139,250,0.25);border-radius:20px 20px 16px 16px;padding:20px 20px 18px;box-shadow:0 -8px 40px rgba(0,0,0,0.5);pointer-events:auto;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
@@ -9373,7 +9373,7 @@ function openWizardFromNav() {
   </div>
 </div>
 
-<!-- ── HARD ASK v5.10 ── -->
+<!-- ── HARD ASK v5.11 ── -->
 <div id="hardAskOverlay" style="display:none;position:fixed;inset:0;z-index:9100;background:rgba(9,8,15,0.88);backdrop-filter:blur(10px);">
   <div id="hardAskInner" style="position:absolute;bottom:0;left:0;right:0;max-width:520px;margin:0 auto;background:#13101F;border:1px solid rgba(251,184,36,0.2);border-radius:24px 24px 0 0;padding:28px 20px 36px;box-shadow:0 -16px 60px rgba(0,0,0,0.6);transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);max-height:92vh;overflow-y:auto;">
 
@@ -9560,7 +9560,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v5.10</div>
+  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v5.11</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -9598,7 +9598,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
           <img id="wizardHeaderPhoto" src="" style="width:24px;height:24px;border-radius:50%;object-fit:cover;display:none;" />
           <span id="wizardHeaderName" style="font-size:13px;font-weight:700;color:var(--text);"></span>
         </span>
-        <span id="wizardDefaultLabel">Building your playbook</span>
+        <span id="wizardDefaultLabel">Building your story</span>
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
         <div class="wizard-progress-step" id="wizardStepLabel">Step 1 of 10</div>
@@ -9701,13 +9701,13 @@ if (localStorage.getItem('sam_dev') === 'true') {
             <div class="meet-sam-bubble ms-response-bubble" id="msResponseBubble"></div>
           </div>
           <button class="meet-sam-go-btn" id="msGoBtn" style="display:none;" onclick="meetSamHandoff()">
-            ✦ Let's build this →
+            ✦ Let's build your story →
           </button>
         </div>
 
         <!-- Skip link -->
         <button class="wizard-entry-ghost" onclick="closeWizard()" style="margin-top:32px;display:block;text-align:center;">
-          Open advanced tools instead
+          Skip intro — open tools directly
         </button>
 
       </div>
@@ -9826,7 +9826,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
     <div class="wizard-step" id="wiz-1">
       <div class="wizard-question">What's happening in your world right now?</div>
       <div class="wizard-why">
-        SAM builds everything from your real experience — not a template. There's no wrong answer here. The more honest you are, the more powerful your playbook will be.
+        SAM builds everything from your real experience — not a template. There's no wrong answer here. The more honest you are, the more powerful your story will be.
       </div>
       <div class="wizard-choices" id="wiz1choices">
         <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz1','moment')" data-value="moment">
@@ -10045,7 +10045,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
     <div class="wizard-step" id="wiz-6">
       <div class="wizard-question">Who is this story for?</div>
       <div class="wizard-why" id="wiz6why">
-        SAM has already formed a picture of who your natural audience is based on your story. Here's the diagnosis — and the reasoning behind it. You're in control. If SAM got it wrong, adjust it. This shapes everything in your playbook.
+        SAM has already formed a picture of who your natural audience is based on your story. Here's the diagnosis — and the reasoning behind it. You're in control. If SAM got it wrong, adjust it. This shapes everything in your story.
       </div>
       <div class="wizard-diagnosis" id="wiz6audienceDiag">
         <div class="wizard-diagnosis-label">✦ SAM's audience diagnosis</div>
@@ -10129,7 +10129,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
       </div>
       <div style="margin-top:16px;padding:14px 16px;background:rgba(255,255,255,0.03);border-radius:var(--radius);border:1px solid var(--border);">
         <div style="font-size:13px;color:var(--text3);line-height:1.6;">
-          <strong style="color:var(--text2);">The honest truth about platforms:</strong> You don't need to be everywhere. Three platforms done consistently and well will always beat seven platforms done poorly. SAM built your playbook around what makes sense for this story — not what sounds impressive.
+          <strong style="color:var(--text2);">The honest truth about platforms:</strong> You don't need to be everywhere. Three platforms done consistently and well will always beat seven platforms done poorly. SAM built your story around what makes sense for this story — not what sounds impressive.
         </div>
       </div>
     </div>
@@ -10183,7 +10183,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
     <div class="wizard-step" id="wiz-9">
       <div class="wizard-question">Do you have a photo from this moment?</div>
       <div class="wizard-why">
-        A photo does two things for your playbook. It gives SAM visual context that makes your script more specific and real. And it lets SAM build you a real thumbnail strategy — the single most important factor in whether someone clicks your video or keeps scrolling. <strong>Your thumbnail is a billboard. SAM will help you make it stop traffic.</strong>
+        A photo does two things for your story. It gives SAM visual context that makes your script more specific and real. And it lets SAM build you a real thumbnail strategy — the single most important factor in whether someone clicks your video or keeps scrolling. <strong>Your thumbnail is a billboard. SAM will help you make it stop traffic.</strong>
       </div>
       <div class="wizard-choices">
         <button class="wizard-choice" onclick="selectWizardChoice(this,'wiz9','upload')" data-value="upload">
@@ -10228,7 +10228,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
     <div class="wizard-step" id="wiz-10">
       <div class="wizard-question">Anything SAM should know before building?</div>
       <div class="wizard-why">
-        This is optional. SAM has everything it needs to build your playbook right now. But if there's a specific direction, tone or constraint you want — tell SAM here. You're always in control of your story.
+        This is optional. SAM has everything it needs to build your story right now. But if there's a specific direction, tone or constraint you want — tell SAM here. You're always in control of your story.
       </div>
       <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;">Quick steers — tap any that apply:</div>
       <div class="wizard-chips" id="wiz10chips">
@@ -10353,7 +10353,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
       </button>
     </div>
       <div class="wizard-loader show" id="wizardLoader">
-        <div class="wizard-loader-title">SAM is building your playbook.</div>
+        <div class="wizard-loader-title">SAM is building your story.</div>
         <div class="wizard-loader-sub">
           "Social media is genuinely hard. What SAM is building right now would take a professional strategist half a day. You'll have it in about 30 seconds. The work of showing up is still yours — SAM just made sure it's worth it."
         </div>
@@ -10391,7 +10391,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
           </div>
           <div class="wizard-loader-step" id="lstep-8">
             <div class="wizard-loader-dot"></div>
-            Assembling your playbook
+            Assembling your story
           </div>
         </div>
         <div class="wizard-still-building" id="wizardStillBuilding">
@@ -10482,7 +10482,7 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v5.10
+// SOFT POPUP v5.11
 // ══════════════════════════════════════════════════════════════════════════════
 const TOOL_META = {
   pulse:     { emoji:'🎯', title:'Now try Spark.', sub:'Generate 5 scroll-stopping ideas built for your niche.', id:'spark' },
@@ -10539,7 +10539,7 @@ function closeSoftPopupAndScroll() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// HARD ASK v5.10
+// HARD ASK v5.11
 // ══════════════════════════════════════════════════════════════════════════════
 function showHardAsk() {
   const el = document.getElementById('hardAskOverlay');
