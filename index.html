@@ -2890,6 +2890,25 @@
       flex-shrink: 0; margin-top: 2px;
       transition: all 0.15s;
     }
+    @keyframes platform-limit-shake {
+      0%,100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+    .platform-limit-shake { animation: platform-limit-shake 0.35s ease; }
+    .platform-limit-msg {
+      font-size: 12px;
+      font-weight: 600;
+      color: #F472B6;
+      text-align: center;
+      padding: 8px 0 0;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .platform-limit-msg.show { opacity: 1; }
+
     .wizard-platform-card.selected .wizard-platform-check {
       background: linear-gradient(135deg, #A78BFA, #F472B6);
       border-color: transparent;
@@ -7684,7 +7703,7 @@ function renderWizardPlatforms() {
   // Smart pre-selection based on story type, pace, audience
   const recommended = getRecommendedPlatforms();
   if (!WS.platforms.length) {
-    WS.platforms = recommended.primary.concat(recommended.secondary);
+    WS.platforms = recommended.primary.concat(recommended.secondary).slice(0, 4);
   }
 
   let html = '';
@@ -7738,11 +7757,34 @@ function getRecommendedPlatforms() {
 
 function toggleWizardPlatform(card, platform) {
   const isSelected = card.classList.contains('selected');
+  const MAX_PLATFORMS = 4;
+
   if (isSelected) {
     card.classList.remove('selected');
     card.querySelector('.wizard-platform-check').textContent = '';
     WS.platforms = WS.platforms.filter(p => p !== platform);
+    // Hide limit message if under limit
+    const msg = document.getElementById('platformLimitMsg');
+    if (msg) { msg.classList.remove('show'); }
   } else {
+    // Check limit
+    if (WS.platforms.length >= MAX_PLATFORMS) {
+      // Shake the card
+      card.classList.add('platform-limit-shake');
+      card.addEventListener('animationend', () => card.classList.remove('platform-limit-shake'), { once: true });
+      // Show limit message
+      let msg = document.getElementById('platformLimitMsg');
+      if (!msg) {
+        msg = document.createElement('div');
+        msg.id = 'platformLimitMsg';
+        msg.className = 'platform-limit-msg';
+        msg.textContent = 'Maximum 4 platforms — SAM works best with focus. Deselect one to swap.';
+        const container = document.getElementById('wiz7platforms');
+        if (container) container.after(msg);
+      }
+      msg.classList.add('show');
+      return;
+    }
     card.classList.add('selected');
     card.querySelector('.wizard-platform-check').textContent = '✓';
     WS.platforms.push(platform);
