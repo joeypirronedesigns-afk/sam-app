@@ -4315,9 +4315,9 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
     .ms-orb {
       position: absolute;
       border-radius: 50%;
-      filter: blur(90px);
+      filter: blur(80px);
       opacity: 0;
-      transition: opacity 1.5s ease;
+      transition: opacity 1.5s ease, background 2s ease, transform 0.5s ease;
     }
     .ms-orb-1 { width: 700px; height: 700px; background: #A78BFA; top: -200px; left: -150px; animation: ms-orb-drift-1 9s ease-in-out infinite; }
     .ms-orb-2 { width: 600px; height: 600px; background: #F472B6; bottom: -100px; right: -150px; animation: ms-orb-drift-2 11s ease-in-out infinite; }
@@ -4501,10 +4501,11 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
       flex-shrink: 0;
     }
     .ms-thinking-dots span {
-      width: 7px; height: 7px;
+      width: 9px; height: 9px;
       border-radius: 50%;
       background: linear-gradient(135deg, #A78BFA, #F472B6);
-      animation: ms-dot-bounce 1.2s ease-in-out infinite;
+      animation: ms-dot-bounce 1s ease-in-out infinite;
+      box-shadow: 0 0 12px rgba(167,139,250,0.8);
     }
     .ms-thinking-dots span:nth-child(2) { animation-delay: 0.15s; }
     .ms-thinking-dots span:nth-child(3) { animation-delay: 0.3s; }
@@ -7100,9 +7101,9 @@ function initWizard() {
       if (i < text.length) {
         cursor.insertAdjacentText('beforebegin', text[i]);
         i++;
-        // Slow on first word, natural rhythm after — pauses at punctuation
+        // Cinematic rhythm — deliberate pauses at punctuation
         const ch = text[i - 1];
-        const delay = ch === '.' ? 320 : ch === ',' ? 180 : ch === '?' ? 280 : ch === ' ' ? 55 : 38;
+        const delay = ch === '.' ? 520 : ch === ',' ? 220 : ch === '?' ? 480 : ch === '!' ? 400 : ch === ' ' ? 70 : 42;
         setTimeout(type, delay);
       } else {
         // Done typing — pulse the avatar, longer pause, then show paths
@@ -7226,9 +7227,28 @@ function initWizard() {
     const thinking = document.getElementById('msThinking');
     thinking.style.display = 'block';
 
-    // Shift ambient to cyan while thinking
-    document.querySelector('.ms-orb-1').style.background = '#38BDF8';
-    document.querySelector('.ms-orb-3').style.opacity = '0.12';
+    // Shift orbs to full neon while thinking — cycling
+    const orb1 = document.querySelector('.ms-orb-1');
+    const orb2 = document.querySelector('.ms-orb-2');
+    const orb3 = document.querySelector('.ms-orb-3');
+    orb1.style.background = '#A78BFA';
+    orb1.style.opacity = '0.35';
+    orb2.style.background = '#F472B6';
+    orb2.style.opacity = '0.28';
+    orb3.style.background = '#38BDF8';
+    orb3.style.opacity = '0.18';
+    // Cycle orb colors while thinking
+    let orbCycle = 0;
+    window._orbThinkInterval = setInterval(() => {
+      orbCycle++;
+      if (orbCycle % 3 === 0) {
+        orb1.style.background = '#38BDF8'; orb2.style.background = '#A78BFA'; orb3.style.background = '#F472B6';
+      } else if (orbCycle % 3 === 1) {
+        orb1.style.background = '#F472B6'; orb2.style.background = '#38BDF8'; orb3.style.background = '#A78BFA';
+      } else {
+        orb1.style.background = '#A78BFA'; orb2.style.background = '#F472B6'; orb3.style.background = '#38BDF8';
+      }
+    }, 2000);
 
     // Rotate thinking text
     let tIdx = 0;
@@ -7277,9 +7297,14 @@ function initWizard() {
     // Hide thinking
     document.getElementById('msThinking').style.display = 'none';
 
-    // Shift ambient back to purple/pink
-    document.querySelector('.ms-orb-1').style.background = '#A78BFA';
-    document.querySelector('.ms-orb-2').style.background = '#F472B6';
+    // Stop orb cycling, return to warm purple/pink
+    if (window._orbThinkInterval) { clearInterval(window._orbThinkInterval); window._orbThinkInterval = null; }
+    const ro1 = document.querySelector('.ms-orb-1');
+    const ro2 = document.querySelector('.ms-orb-2');
+    const ro3 = document.querySelector('.ms-orb-3');
+    ro1.style.background = '#A78BFA'; ro1.style.opacity = '0.28';
+    ro2.style.background = '#F472B6'; ro2.style.opacity = '0.22';
+    ro3.style.background = '#38BDF8'; ro3.style.opacity = '0.10';
 
     // Show response wrap
     const wrap = document.getElementById('msResponseWrap');
@@ -7297,7 +7322,9 @@ function initWizard() {
       if (i < text.length) {
         cursor.insertAdjacentText('beforebegin', text[i]);
         i++;
-        setTimeout(type, 22);
+        const ch = text[i - 1];
+        const delay = ch === '.' ? 420 : ch === ',' ? 180 : ch === '?' ? 380 : ch === '!' ? 320 : ch === ' ' ? 60 : 36;
+        setTimeout(type, delay);
       } else {
         cursor.remove();
         // Show go button
