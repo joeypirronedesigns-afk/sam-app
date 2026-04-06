@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v5.43)
+       UNIFIED HERO (v5.44)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4295,7 +4295,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v5.43
+       CINEMATIC MEET SAM — v5.44
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4720,7 +4720,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v5.43
+       SAM GUIDED TOUR SPLASH — v5.44
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5021,7 +5021,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 <main>
 
 
-  <!-- ── UNIFIED HERO v5.43 ── -->
+  <!-- ── UNIFIED HERO v5.44 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -5716,11 +5716,16 @@ function openTool(tool) {
   document.querySelectorAll('.tool-wrap').forEach(w => w.classList.remove('active'));
   document.getElementById('tool-' + tool).classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  const s = getSetup();
-  const fillMap = { spark: 'sparkInp', blueprint: 'blueprintInp', vision: 'visionInp' };
-  if (s.niche && fillMap[tool]) {
-    const el = document.getElementById(fillMap[tool]);
-    if (el && !el.value.trim()) el.value = s.niche;
+  // Pre-fill from wizard context if available, otherwise fall back to setup
+  if (typeof prefillToolFromWizard === 'function') {
+    setTimeout(() => prefillToolFromWizard(tool), 100);
+  } else {
+    const s = getSetup();
+    const fillMap = { spark: 'sparkInp', blueprint: 'blueprintInp', vision: 'visionInp' };
+    if (s.niche && fillMap[tool]) {
+      const el = document.getElementById(fillMap[tool]);
+      if (el && !el.value.trim()) el.value = s.niche;
+    }
   }
 }
 function goHome() {
@@ -5879,17 +5884,72 @@ async function readStream(r) {
 
 function getBase() {
   const s = getSetup();
-  // Build audience demographics string from saved age + gender
-  const agePart    = s.age    ? `Age ${s.age}` : '';
-  const genderPart = s.gender ? s.gender       : '';
+  // Pull from WS (wizard state) if available — wizard context is richer
+  const wizardDone = localStorage.getItem('samFirstRunDone');
+  const agePart    = (wizardDone && WS.audienceAge) ? `Age ${WS.audienceAge}` : (s.age ? `Age ${s.age}` : '');
+  const genderPart = (wizardDone && WS.audienceGender) ? WS.audienceGender : (s.gender ? s.gender : '');
   const demographics = [agePart, genderPart].filter(Boolean).join(', ');
+
+  // Build rich creator context from wizard
+  let creatorContext = s.niche || '';
+  if (wizardDone && WS.brandName) {
+    const parts = [
+      WS.brandName,
+      WS.storyText ? WS.storyText.slice(0, 300) : '',
+      WS.diagnosedStory || '',
+      WS.niche || ''
+    ].filter(Boolean);
+    creatorContext = parts.join(' — ');
+  }
+
   return {
-    tone: s.tone || 'Authentic/Natural',
+    tone: (wizardDone && WS.pace === 'fast') ? 'Viral/Hype' :
+          (wizardDone && WS.pace === 'slow') ? 'Wise/Mentor' :
+          s.tone || 'Authentic/Natural',
     emojiPreference: s.emoji || 'few',
     outputLanguage: s.lang || '',
-    creatorContext: s.niche || '',
-    audienceDemographics: demographics
+    creatorContext: creatorContext,
+    audienceDemographics: demographics,
+    platforms: (wizardDone && WS.platforms && WS.platforms.length) ? WS.platforms : null
   };
+}
+
+// Pre-fill tool inputs from wizard context
+function prefillToolFromWizard(toolId) {
+  const wizardDone = localStorage.getItem('samFirstRunDone');
+  if (!wizardDone || !WS.storyText) return;
+
+  const story = WS.storyText || '';
+  const brand = WS.brandName || '';
+
+  if (toolId === 'pulse') {
+    const inp = document.getElementById('pulseInp');
+    if (inp && !inp.value.trim()) {
+      inp.value = story;
+      inp.dispatchEvent(new Event('input'));
+    }
+  }
+  if (toolId === 'spark') {
+    const inp = document.getElementById('sparkInp');
+    if (inp && !inp.value.trim()) {
+      inp.value = brand ? `${brand}: ${story.slice(0, 200)}` : story.slice(0, 200);
+      inp.dispatchEvent(new Event('input'));
+    }
+  }
+  if (toolId === 'blueprint') {
+    const inp = document.getElementById('blueprintInp');
+    if (inp && !inp.value.trim()) {
+      inp.value = brand ? `${brand}: ${story.slice(0, 200)}` : story.slice(0, 200);
+      inp.dispatchEvent(new Event('input'));
+    }
+  }
+  if (toolId === 'vision') {
+    const inp = document.getElementById('visionInp');
+    if (inp && !inp.value.trim()) {
+      inp.value = brand ? `${brand}: ${story.slice(0, 200)}` : story.slice(0, 200);
+      inp.dispatchEvent(new Event('input'));
+    }
+  }
 }
 
 // ── THE PULSE ────────────────────────────────────────────────────────────────
@@ -7001,7 +7061,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v5.43 ──
+// ── RUN TRACKING v5.44 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 5;
@@ -7540,7 +7600,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v5.43
+  // CINEMATIC MEET SAM — v5.44
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -10129,7 +10189,7 @@ function openWizardFromNav() {
 </div>
 
 
-<!-- ── SOFT POPUP v5.43 ── -->
+<!-- ── SOFT POPUP v5.44 ── -->
 <div id="softPopup" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9000;padding:16px;pointer-events:none;">
   <div id="softPopupInner" style="max-width:480px;margin:0 auto;background:#13101F;border:1px solid rgba(167,139,250,0.25);border-radius:20px 20px 16px 16px;padding:20px 20px 18px;box-shadow:0 -8px 40px rgba(0,0,0,0.5);pointer-events:auto;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
@@ -10148,7 +10208,7 @@ function openWizardFromNav() {
   </div>
 </div>
 
-<!-- ── HARD ASK v5.43 ── -->
+<!-- ── HARD ASK v5.44 ── -->
 <div id="hardAskOverlay" style="display:none;position:fixed;inset:0;z-index:9100;background:rgba(9,8,15,0.88);backdrop-filter:blur(10px);">
   <div id="hardAskInner" style="position:absolute;bottom:0;left:0;right:0;max-width:520px;margin:0 auto;background:#13101F;border:1px solid rgba(251,184,36,0.2);border-radius:24px 24px 0 0;padding:28px 20px 36px;box-shadow:0 -16px 60px rgba(0,0,0,0.6);transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);max-height:92vh;overflow-y:auto;">
 
@@ -10335,7 +10395,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;right:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v5.43</div>
+  <div style="position:fixed;bottom:6px;right:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v5.44</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -11274,7 +11334,7 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v5.43
+// SOFT POPUP v5.44
 // ══════════════════════════════════════════════════════════════════════════════
 const TOOL_META = {
   pulse:     { emoji:'🎯', title:'Now try Spark.', sub:'Generate 5 scroll-stopping ideas built for your niche.', id:'spark' },
@@ -11331,7 +11391,7 @@ function closeSoftPopupAndScroll() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// HARD ASK v5.43
+// HARD ASK v5.44
 // ══════════════════════════════════════════════════════════════════════════════
 function showHardAsk() {
   const el = document.getElementById('hardAskOverlay');
@@ -11465,7 +11525,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v5.43
+  // SAM GUIDED TOUR — v5.44
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
