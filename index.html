@@ -9186,7 +9186,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
             class="meet-sam-textarea"
             placeholder="Start anywhere. I'll find the content in it."
             rows="4"
-            oninput="meetSamCheckInput()"
+            oninput="if(typeof meetSamCheckInput==='function')meetSamCheckInput()"
           ></textarea>
         </div>
 
