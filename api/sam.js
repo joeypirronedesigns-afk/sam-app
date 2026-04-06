@@ -2,15 +2,20 @@ module.exports.config = { api: { bodyParser: { sizeLimit: "10mb" } } };
 
 // ── TIER LIMITS ────────────────────────────────────────────────────────────
 const TIER_LIMITS = {
-  free:    { playbooks: 1,  nextTools: 3,  chatMessages: 5  },
-  starter: { playbooks: 3,  nextTools: 15, chatMessages: 20 },
+  free:    { playbooks: 3,  nextTools: 10, chatMessages: 20 },
+  starter: { playbooks: 5,  nextTools: 25, chatMessages: 40 },
   pro:     { playbooks: 10, nextTools: 50, chatMessages: 100 },
   studio:  { playbooks: 999,nextTools: 999,chatMessages: 999 },
 };
 
-async function checkLimit(userId, tier, action) {
+async function checkLimit(userId, tier, action, tourStep) {
+  // Dev bypass
   if (userId && (userId.startsWith('dev-') || userId === 'dev@sam.com')) {
     return { allowed: true };
+  }
+  // Tour bypass — users going through guided tour run free
+  if (tourStep !== undefined && tourStep !== null && parseInt(tourStep) >= 0 && parseInt(tourStep) <= 5) {
+    return { allowed: true, tour: true };
   }
   if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
     try {
@@ -45,12 +50,14 @@ module.exports = async function handler(req, res) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'API key not configured' });
 
+  const tourStep = req.body.tourStep !== undefined ? req.body.tourStep : null;
+
   if (mode === 'playbook') {
-    const check = await checkLimit(userId, tier, 'playbooks');
+    const check = await checkLimit(userId, tier, 'playbooks', tourStep);
     if (!check.allowed) return res.status(429).json({ error: 'limit_reached', message: check.message });
   }
   if (mode === 'chat' && req.body.messages) {
-    const check = await checkLimit(userId, tier, 'chatMessages');
+    const check = await checkLimit(userId, tier, 'chatMessages', tourStep);
     if (!check.allowed) return res.status(429).json({ error: 'limit_reached', message: check.message });
   }
 
