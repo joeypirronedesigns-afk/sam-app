@@ -4100,6 +4100,23 @@
 
   .step-jump-btn{display:block;width:100%;text-align:left;padding:7px 12px;font-size:12px;font-weight:500;color:var(--text2);background:transparent;border:none;border-radius:8px;cursor:pointer;transition:all 0.15s;}
 .step-jump-btn:hover{background:var(--surface2);color:var(--text);}
+/* === SAM MOBILE FIXES v5.5 === */
+.nav-pro-btn{display:flex!important;font-size:11px;padding:7px 13px;gap:4px;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+@media(min-width:600px){.nav-pro-btn{font-size:13px;padding:8px 18px;gap:6px;}}
+.pro-page:not(.open){display:none!important;pointer-events:none!important;}
+.pro-page.open{pointer-events:auto;}
+nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transparent;touch-action:manipulation;cursor:pointer;}
+.trial-nav-badge{pointer-events:auto;}
+.hook-retry{-webkit-tap-highlight-color:transparent;touch-action:manipulation;min-height:44px;min-width:44px;padding:8px 12px;display:inline-flex;align-items:center;border-radius:8px;}
+.hook-retry:active{opacity:0.7;}
+@media(max-width:600px){.hook-retry{font-size:13px;width:100%;justify-content:center;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 16px;margin-top:4px;box-sizing:border-box;}}
+.pro-plans{display:grid!important;grid-template-columns:1fr!important;gap:16px!important;padding:0 16px!important;max-width:1100px!important;margin:0 auto!important;box-sizing:border-box;}
+@media(min-width:600px){.pro-plans{grid-template-columns:repeat(2,1fr)!important;gap:20px!important;padding:0 24px!important;}}
+@media(min-width:1024px){.pro-plans{grid-template-columns:repeat(4,1fr)!important;gap:24px!important;padding:0 32px!important;}}
+.pro-card{width:100%!important;max-width:100%!important;box-sizing:border-box!important;min-width:0!important;}
+.pro-btn{width:100%!important;min-height:48px!important;touch-action:manipulation;-webkit-tap-highlight-color:transparent;display:flex!important;align-items:center;justify-content:center;box-sizing:border-box;}
+@media(max-width:600px){.pro-card.featured{order:-1;}}
+/* === END MOBILE FIXES === */
 </style>
 </head>
 <body>
@@ -9845,6 +9862,17 @@ if (localStorage.getItem('sam_dev') === 'true') {
     <button class="ideas-footer-btn ideas-footer-clear" onclick="clearPostedIdeas()">Clear posted</button>
   </div>
 </div>
+<script>
+/* SAM Mobile Fix JS */
+(function(){
+var _oc=window.closeProPage;
+window.closeProPage=function(){if(_oc)_oc();requestAnimationFrame(function(){var p=document.getElementById("proPage");if(p&&!p.classList.contains("open")){p.style.pointerEvents="none";p.style.display="none";}});};
+var _oo=window.openProPage;
+window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
+document.addEventListener("DOMContentLoaded",function(){document.querySelectorAll(".nav-pro-btn,.pro-btn,.hero-cta-primary,.trial-nav-badge").forEach(function(b){b.addEventListener("touchend",function(e){e.preventDefault();b.click();},{passive:false});});});
+document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-retry");if(!b)return;e.preventDefault();b.click();},{passive:false});
+})();
+</script>
 <div class="ib-toast" id="ibToast"></div>
 </body>
 </html>
