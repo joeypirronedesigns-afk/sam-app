@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v5.20)
+       UNIFIED HERO (v5.21)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4196,7 +4196,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
     .meet-sam-input-wrap {
       position: relative;
-      margin-left: 48px;
+      margin-left: 0;
     }
 
     .meet-sam-textarea {
@@ -4238,7 +4238,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-left: 48px;
+      margin-left: 0;
     }
 
     .meet-sam-pill {
@@ -4273,7 +4273,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
     }
 
     .meet-sam-go-btn {
-      margin-left: 48px;
+      margin-left: 0;
       padding: 16px 32px;
       border-radius: 50px;
       border: none;
@@ -4295,7 +4295,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v5.20
+       CINEMATIC MEET SAM — v5.21
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4349,22 +4349,80 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
       animation: fade-up 0.4s cubic-bezier(0.34,1.2,0.64,1);
     }
     .meet-sam-avatar {
-      width: 36px; height: 36px;
+      width: 44px; height: 44px;
       border-radius: 50%;
       background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, #F472B6);
       display: flex; align-items: center; justify-content: center;
       font-family: 'Sora', sans-serif;
-      font-size: 14px; font-weight: 800;
+      font-size: 15px; font-weight: 800;
       color: #fff;
       flex-shrink: 0;
       box-shadow: 0 0 20px rgba(167,139,250,0.4);
+      position: relative;
+      z-index: 1;
     }
+
+    /* Breathing ring wrapper */
+    .ms-avatar-wrap {
+      position: relative;
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+    }
+    .ms-avatar-wrap::before,
+    .ms-avatar-wrap::after {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .ms-avatar-wrap::before {
+      background: radial-gradient(circle, rgba(167,139,250,0.35) 0%, transparent 70%);
+      animation: ring-breathe-1 2s ease-in-out infinite;
+    }
+    .ms-avatar-wrap::after {
+      inset: -12px;
+      background: radial-gradient(circle, rgba(244,114,182,0.2) 0%, transparent 70%);
+      animation: ring-breathe-2 2s ease-in-out infinite 0.3s;
+    }
+    .ms-avatar-wrap.speaking::before,
+    .ms-avatar-wrap.speaking::after { opacity: 1; }
+
+    @keyframes ring-breathe-1 {
+      0%,100% { transform: scale(0.85); opacity: 0.6; }
+      50%      { transform: scale(1.15); opacity: 1; }
+    }
+    @keyframes ring-breathe-2 {
+      0%,100% { transform: scale(0.9); opacity: 0.3; }
+      50%      { transform: scale(1.25); opacity: 0.7; }
+    }
+
+    /* Third outer ring — slow, dramatic */
+    .ms-avatar-ring {
+      position: absolute;
+      inset: -18px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(167,139,250,0);
+      transition: border-color 0.5s ease;
+      animation: ring-outer 2.5s ease-in-out infinite 0.6s;
+      pointer-events: none;
+    }
+    .ms-avatar-wrap.speaking .ms-avatar-ring {
+      border-color: rgba(167,139,250,0.3);
+    }
+    @keyframes ring-outer {
+      0%,100% { transform: scale(0.9); opacity: 0.4; }
+      50%      { transform: scale(1.3); opacity: 0; }
+    }
+
     .ms-avatar-pulse {
       animation: avatar-pulse 1.5s ease-in-out infinite;
     }
     @keyframes avatar-pulse {
       0%,100% { box-shadow: 0 0 20px rgba(167,139,250,0.4); }
-      50% { box-shadow: 0 0 40px rgba(167,139,250,0.8), 0 0 60px rgba(244,114,182,0.4); }
+      50% { box-shadow: 0 0 50px rgba(167,139,250,0.9), 0 0 80px rgba(244,114,182,0.5); }
     }
     .meet-sam-bubble {
       background: rgba(255,255,255,0.05);
@@ -4584,7 +4642,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
     /* Go btn */
     .meet-sam-go-btn {
-      margin-left: 48px;
+      margin-left: 0;
       padding: 16px 32px;
       border-radius: 50px;
       border: none;
@@ -4611,7 +4669,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
 <nav>
   <div class="nav-logo" onclick="goHome()" style="cursor:pointer;">S<span class="nav-logo-dot">.</span>A<span class="nav-logo-dot">.</span>M<span class="nav-logo-dot">.</span></div>
-  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v5.20</div>
+  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v5.21</div>
   <div class="nav-right">
     <div class="trial-nav-badge" id="trialBadge" onclick="openProPage()" style="display:none;">
       <div class="trial-nav-dot"></div>
@@ -4632,7 +4690,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 <main>
 
 
-  <!-- ── UNIFIED HERO v5.20 ── -->
+  <!-- ── UNIFIED HERO v5.21 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -6584,7 +6642,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v5.20 ──
+// ── RUN TRACKING v5.21 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 5;
@@ -7106,7 +7164,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v5.20
+  // CINEMATIC MEET SAM — v5.21
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -7148,6 +7206,10 @@ function initWizard() {
     const cursor = document.createElement('span');
     cursor.className = 'ms-cursor';
     bubble.appendChild(cursor);
+
+    // Fire opening avatar ring immediately
+    const openingWrap = document.getElementById('msOpeningAvatarWrap');
+    if (openingWrap) openingWrap.classList.add('speaking');
 
     const type = () => {
       if (i < text.length) {
@@ -7404,6 +7466,14 @@ Rules: Max 3 sentences total. Never use bullet points. Never say "I can see that
     const wrap = document.getElementById('msResponseWrap');
     wrap.style.display = 'flex';
 
+    // Stop opening avatar ring
+    const openWrap = document.getElementById('msOpeningAvatarWrap');
+    if (openWrap) openWrap.classList.remove('speaking');
+
+    // Fire response avatar ring + pulse
+    const respWrap = document.getElementById('msResponseAvatarWrap');
+    if (respWrap) respWrap.classList.add('speaking');
+
     // Show voice waveform IMMEDIATELY — mouth moves from first word
     const voiceBar = document.getElementById('msVoiceBar');
     if (voiceBar) {
@@ -7435,8 +7505,9 @@ Rules: Max 3 sentences total. Never use bullet points. Never say "I can see that
         if (voiceBar) {
           voiceBar.classList.remove('speaking');
         }
-        // Stop avatar pulse
+        // Stop avatar pulse and ring
         avatars.forEach(a => a.classList.remove('ms-avatar-pulse'));
+        if (respWrap) respWrap.classList.remove('speaking');
         // Slow float-in button reveal
         setTimeout(() => {
           const wrap2 = document.getElementById('msGoBtnWrap');
@@ -9596,7 +9667,7 @@ function openWizardFromNav() {
 </div>
 
 
-<!-- ── SOFT POPUP v5.20 ── -->
+<!-- ── SOFT POPUP v5.21 ── -->
 <div id="softPopup" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9000;padding:16px;pointer-events:none;">
   <div id="softPopupInner" style="max-width:480px;margin:0 auto;background:#13101F;border:1px solid rgba(167,139,250,0.25);border-radius:20px 20px 16px 16px;padding:20px 20px 18px;box-shadow:0 -8px 40px rgba(0,0,0,0.5);pointer-events:auto;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
@@ -9615,7 +9686,7 @@ function openWizardFromNav() {
   </div>
 </div>
 
-<!-- ── HARD ASK v5.20 ── -->
+<!-- ── HARD ASK v5.21 ── -->
 <div id="hardAskOverlay" style="display:none;position:fixed;inset:0;z-index:9100;background:rgba(9,8,15,0.88);backdrop-filter:blur(10px);">
   <div id="hardAskInner" style="position:absolute;bottom:0;left:0;right:0;max-width:520px;margin:0 auto;background:#13101F;border:1px solid rgba(251,184,36,0.2);border-radius:24px 24px 0 0;padding:28px 20px 36px;box-shadow:0 -16px 60px rgba(0,0,0,0.6);transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);max-height:92vh;overflow-y:auto;">
 
@@ -9802,7 +9873,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v5.20</div>
+  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v5.21</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -9886,7 +9957,10 @@ if (localStorage.getItem('sam_dev') === 'true') {
 
         <!-- SAM opening line — typewriter -->
         <div class="meet-sam-bubble-row" id="msBubble1">
-          <div class="meet-sam-avatar">S</div>
+          <div class="ms-avatar-wrap" id="msOpeningAvatarWrap">
+            <div class="ms-avatar-ring"></div>
+            <div class="meet-sam-avatar">S</div>
+          </div>
           <div class="meet-sam-bubble" id="msOpeningBubble"></div>
         </div>
 
@@ -9939,7 +10013,10 @@ if (localStorage.getItem('sam_dev') === 'true') {
         <!-- SAM RESPONSE — types out after thinking -->
         <div class="ms-response-wrap" id="msResponseWrap" style="display:none;">
           <div class="meet-sam-bubble-row">
-            <div class="meet-sam-avatar">S</div>
+            <div class="ms-avatar-wrap" id="msResponseAvatarWrap">
+              <div class="ms-avatar-ring"></div>
+              <div class="meet-sam-avatar">S</div>
+            </div>
             <div class="meet-sam-bubble ms-response-bubble" id="msResponseBubble"></div>
           </div>
           <!-- SAM voice waveform — shows while typing -->
@@ -10733,7 +10810,7 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v5.20
+// SOFT POPUP v5.21
 // ══════════════════════════════════════════════════════════════════════════════
 const TOOL_META = {
   pulse:     { emoji:'🎯', title:'Now try Spark.', sub:'Generate 5 scroll-stopping ideas built for your niche.', id:'spark' },
@@ -10790,7 +10867,7 @@ function closeSoftPopupAndScroll() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// HARD ASK v5.20
+// HARD ASK v5.21
 // ══════════════════════════════════════════════════════════════════════════════
 function showHardAsk() {
   const el = document.getElementById('hardAskOverlay');
