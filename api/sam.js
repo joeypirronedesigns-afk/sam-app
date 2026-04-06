@@ -68,6 +68,10 @@ module.exports = async function handler(req, res) {
 
     // ── CHATBOT sub-mode (has messages array) ────────────────────────────────
     if (messages && Array.isArray(messages)) {
+      // Check if any message has image content — use Sonnet for vision
+      const hasImage = messages.some(m => Array.isArray(m.content) && m.content.some(c => c.type === 'image'));
+      const chatModel = hasImage ? 'claude-sonnet-4-6' : 'claude-haiku-4-5-20251001';
+      const chatMaxTokens = hasImage ? 600 : 400;
       const chatSystem = systemPrompt || `You are SAM — Strategic Assistant for Making — a friendly, sharp creative director built into the SAM app at samforcreators.com. You help creators understand and get the most out of SAM's 5 tools.
 
 THE 5 TOOLS:
@@ -84,8 +88,8 @@ PERSONALITY: Confident, direct, warm. Keep responses to 2-4 sentences max. No ja
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
           body: JSON.stringify({
-            model: 'claude-haiku-4-5-20251001',
-            max_tokens: 400,   // chatbot only — short conversational replies
+            model: chatModel,
+            max_tokens: chatMaxTokens,
             system: chatSystem,
             messages: messages.slice(-10)
           })
