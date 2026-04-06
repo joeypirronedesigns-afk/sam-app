@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v5.15)
+       UNIFIED HERO (v5.16)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4295,7 +4295,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v5.15
+       CINEMATIC MEET SAM — v5.16
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4521,6 +4521,54 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
     }
 
     /* Response wrap */
+    /* SAM speaking waveform */
+    .ms-voice-bar {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 0 4px 48px;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+      height: 36px;
+    }
+    .ms-voice-bar.speaking { opacity: 1; }
+    .ms-voice-bar span {
+      display: inline-block;
+      width: 3px;
+      border-radius: 3px;
+      background: linear-gradient(180deg, #A78BFA, #F472B6);
+      animation: ms-wave 1.2s ease-in-out infinite;
+      box-shadow: 0 0 6px rgba(167,139,250,0.6);
+    }
+    .ms-voice-bar span:nth-child(1)  { height: 8px;  animation-delay: 0s;    }
+    .ms-voice-bar span:nth-child(2)  { height: 16px; animation-delay: 0.1s;  }
+    .ms-voice-bar span:nth-child(3)  { height: 24px; animation-delay: 0.2s;  }
+    .ms-voice-bar span:nth-child(4)  { height: 32px; animation-delay: 0.15s; }
+    .ms-voice-bar span:nth-child(5)  { height: 20px; animation-delay: 0.05s; }
+    .ms-voice-bar span:nth-child(6)  { height: 28px; animation-delay: 0.25s; }
+    .ms-voice-bar span:nth-child(7)  { height: 14px; animation-delay: 0.1s;  }
+    .ms-voice-bar span:nth-child(8)  { height: 22px; animation-delay: 0.3s;  }
+    .ms-voice-bar span:nth-child(9)  { height: 18px; animation-delay: 0.08s; }
+    .ms-voice-bar span:nth-child(10) { height: 26px; animation-delay: 0.2s;  }
+    .ms-voice-bar span:nth-child(11) { height: 12px; animation-delay: 0.15s; }
+    .ms-voice-bar span:nth-child(12) { height: 20px; animation-delay: 0.05s; }
+    .ms-voice-bar span:nth-child(13) { height: 8px;  animation-delay: 0.25s; }
+    @keyframes ms-wave {
+      0%,100% { transform: scaleY(0.3); opacity: 0.4; }
+      50%      { transform: scaleY(1);   opacity: 1;   }
+    }
+
+    /* Button reveal — slow float up */
+    .ms-go-btn-wrap {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 1.2s ease, transform 1.2s cubic-bezier(0.34,1.2,0.64,1);
+    }
+    .ms-go-btn-wrap.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     .ms-response-wrap {
       display: flex;
       flex-direction: column;
@@ -4559,7 +4607,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
 <nav>
   <div class="nav-logo" onclick="goHome()" style="cursor:pointer;">S<span class="nav-logo-dot">.</span>A<span class="nav-logo-dot">.</span>M<span class="nav-logo-dot">.</span></div>
-  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v5.15</div>
+  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v5.16</div>
   <div class="nav-right">
     <div class="trial-nav-badge" id="trialBadge" onclick="openProPage()" style="display:none;">
       <div class="trial-nav-dot"></div>
@@ -4580,7 +4628,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 <main>
 
 
-  <!-- ── UNIFIED HERO v5.15 ── -->
+  <!-- ── UNIFIED HERO v5.16 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -6532,7 +6580,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v5.15 ──
+// ── RUN TRACKING v5.16 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 5;
@@ -7054,7 +7102,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v5.15
+  // CINEMATIC MEET SAM — v5.16
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -7310,6 +7358,16 @@ function initWizard() {
     const wrap = document.getElementById('msResponseWrap');
     wrap.style.display = 'flex';
 
+    // Show voice waveform
+    const voiceBar = document.getElementById('msVoiceBar');
+    if (voiceBar) {
+      setTimeout(() => voiceBar.classList.add('speaking'), 100);
+    }
+
+    // Pulse avatar while speaking
+    const avatars = document.querySelectorAll('.ms-response-wrap .meet-sam-avatar');
+    avatars.forEach(a => a.classList.add('ms-avatar-pulse'));
+
     // Typewriter response
     const bubble = document.getElementById('msResponseBubble');
     bubble.innerHTML = '';
@@ -7323,19 +7381,30 @@ function initWizard() {
         cursor.insertAdjacentText('beforebegin', text[i]);
         i++;
         const ch = text[i - 1];
-        const delay = ch === '.' ? 420 : ch === ',' ? 180 : ch === '?' ? 380 : ch === '!' ? 320 : ch === ' ' ? 60 : 36;
+        const delay = ch === '.' ? 520 : ch === ',' ? 220 : ch === '?' ? 480 : ch === '!' ? 400 : ch === ' ' ? 75 : 44;
         setTimeout(type, delay);
       } else {
         cursor.remove();
-        // Show go button
+        // Fade out waveform
+        if (voiceBar) {
+          voiceBar.classList.remove('speaking');
+        }
+        // Stop avatar pulse
+        avatars.forEach(a => a.classList.remove('ms-avatar-pulse'));
+        // Slow float-in button reveal
         setTimeout(() => {
-          const btn = document.getElementById('msGoBtn');
-          btn.style.display = 'block';
-          btn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }, 400);
+          const wrap2 = document.getElementById('msGoBtnWrap');
+          if (wrap2) {
+            wrap2.style.display = 'block';
+            setTimeout(() => {
+              wrap2.classList.add('revealed');
+              wrap2.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 80);
+          }
+        }, 800);
       }
     };
-    setTimeout(type, 200);
+    setTimeout(type, 300);
 
     wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
@@ -9481,7 +9550,7 @@ function openWizardFromNav() {
 </div>
 
 
-<!-- ── SOFT POPUP v5.15 ── -->
+<!-- ── SOFT POPUP v5.16 ── -->
 <div id="softPopup" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9000;padding:16px;pointer-events:none;">
   <div id="softPopupInner" style="max-width:480px;margin:0 auto;background:#13101F;border:1px solid rgba(167,139,250,0.25);border-radius:20px 20px 16px 16px;padding:20px 20px 18px;box-shadow:0 -8px 40px rgba(0,0,0,0.5);pointer-events:auto;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
@@ -9500,7 +9569,7 @@ function openWizardFromNav() {
   </div>
 </div>
 
-<!-- ── HARD ASK v5.15 ── -->
+<!-- ── HARD ASK v5.16 ── -->
 <div id="hardAskOverlay" style="display:none;position:fixed;inset:0;z-index:9100;background:rgba(9,8,15,0.88);backdrop-filter:blur(10px);">
   <div id="hardAskInner" style="position:absolute;bottom:0;left:0;right:0;max-width:520px;margin:0 auto;background:#13101F;border:1px solid rgba(251,184,36,0.2);border-radius:24px 24px 0 0;padding:28px 20px 36px;box-shadow:0 -16px 60px rgba(0,0,0,0.6);transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);max-height:92vh;overflow-y:auto;">
 
@@ -9687,7 +9756,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v5.15</div>
+  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v5.16</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -9827,9 +9896,18 @@ if (localStorage.getItem('sam_dev') === 'true') {
             <div class="meet-sam-avatar">S</div>
             <div class="meet-sam-bubble ms-response-bubble" id="msResponseBubble"></div>
           </div>
-          <button class="meet-sam-go-btn" id="msGoBtn" style="display:none;" onclick="meetSamHandoff()">
-            ✦ Let's build your story →
-          </button>
+          <!-- SAM voice waveform — shows while typing -->
+          <div class="ms-voice-bar" id="msVoiceBar">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span>
+          </div>
+          <!-- Button floats in slowly after response -->
+          <div class="ms-go-btn-wrap" id="msGoBtnWrap" style="display:none;">
+            <button class="meet-sam-go-btn" id="msGoBtn" onclick="meetSamHandoff()">
+              ✦ Let's build your story →
+            </button>
+          </div>
         </div>
 
         <!-- Skip link -->
@@ -10609,7 +10687,7 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v5.15
+// SOFT POPUP v5.16
 // ══════════════════════════════════════════════════════════════════════════════
 const TOOL_META = {
   pulse:     { emoji:'🎯', title:'Now try Spark.', sub:'Generate 5 scroll-stopping ideas built for your niche.', id:'spark' },
@@ -10666,7 +10744,7 @@ function closeSoftPopupAndScroll() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// HARD ASK v5.15
+// HARD ASK v5.16
 // ══════════════════════════════════════════════════════════════════════════════
 function showHardAsk() {
   const el = document.getElementById('hardAskOverlay');
