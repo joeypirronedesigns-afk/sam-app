@@ -156,14 +156,17 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       MOBILE HERO  (unchanged from v49)
+       UNIFIED HERO (v5.7)
     ───────────────────────────────────────── */
-    .hero-mobile {
-      padding: 20px 20px 12px;
-      max-width: 480px;
+    .hero {
+      padding: 48px 24px 40px;
+      max-width: 680px;
       margin: 0 auto;
+      text-align: center;
     }
-    @media (min-width: 900px) { .hero-mobile { display: none; } }
+    @media (min-width: 900px) {
+      .hero { padding: 72px 40px 56px; }
+    }
 
     /* Mobile stat grid */
     .mobile-stat-grid {
@@ -4128,225 +4131,61 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
 <nav>
   <div class="nav-logo" onclick="goHome()" style="cursor:pointer;">S<span class="nav-logo-dot">.</span>A<span class="nav-logo-dot">.</span>M<span class="nav-logo-dot">.</span></div>
-  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v5.6</div>
+  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v5.7</div>
   <div class="nav-right">
-    <div class="trial-nav-badge" id="trialBadge" onclick="openProPage()">
+    <div class="trial-nav-badge" id="trialBadge" onclick="openProPage()" style="display:none;">
       <div class="trial-nav-dot"></div>
       <span id="trialBadgeText">3 days free</span>
     </div>
     <button class="nav-setup-btn" onclick="openWizardPage()" style="background:linear-gradient(135deg,rgba(109,40,217,0.2),rgba(244,114,182,0.1));border-color:rgba(167,139,250,0.3);color:var(--text);display:none;" id="navWizardBtn">
       ✦ My playbook
     </button>
-    <button class="ideas-nav-btn" onclick="openIdeasPanel()">💡 My Ideas<span class="ideas-count-badge" id="ideasNavBadge">0</span></button>
-    <button class="nav-setup-btn" onclick="openSetup()">
+    <button class="ideas-nav-btn" onclick="openIdeasPanel()" style="display:none;" id="ideasNavBtn">💡 My Ideas<span class="ideas-count-badge" id="ideasNavBadge">0</span></button>
+    <button class="nav-setup-btn" onclick="openSetup()" style="display:none;" id="aboutMeNavBtn">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
       About me
     </button>
-    <button class="nav-pro-btn" onclick="openProModal()">✦ Go Pro</button>
+    <button class="nav-pro-btn" onclick="openProPage()">✦ Go Pro</button>
   </div>
 </nav>
 
 <main>
-  <div class="desktop-hint">
-    💻 <strong>Pro tip:</strong> SAM hits different on a laptop. Phone is cool — desktop is where the magic happens.
-  </div>
 
-  <!-- ── MOBILE HERO v2 ── -->
-  <div class="hero-mobile" id="heroSection">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;padding:10px 14px;background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.2);border-radius:50px;">
-      <div style="display:flex;margin-right:2px;">
-        <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#F472B6,#EC4899);border:2px solid var(--bg);margin-right:-6px;font-size:10px;display:flex;align-items:center;justify-content:center;">&#128105;</div>
-        <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#A78BFA,#818CF8);border:2px solid var(--bg);margin-right:-6px;font-size:10px;display:flex;align-items:center;justify-content:center;">&#128104;</div>
-        <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#38BDF8,#0EA5E9);border:2px solid var(--bg);font-size:10px;display:flex;align-items:center;justify-content:center;">&#128105;</div>
-      </div>
-      <div style="font-size:12px;color:var(--text2);flex:1;">Creators building playbooks right now</div>
-      <div style="font-size:10px;font-weight:700;color:var(--spark);letter-spacing:0.06em;white-space:nowrap;">FREE</div>
-    </div>
-    <div class="hero-badge">&#10022; Strategic Assistant for Making</div>
-    <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;">Meet S.A.M.</div>
-    <h1><em>Your complete social media team.</em><br/><span style="font-size:0.7em;font-weight:600;color:var(--text2);">No payroll.</span></h1>
-    <p class="hero-sub" style="margin-bottom:10px;font-size:14px;">SAM thinks, plans, writes and builds your audience — across every platform, in 12 languages — in under 60 seconds. The first AI content tool with a lead magnet builder built in.</p>
-    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;">
-      <span style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);color:var(--vision);">&#10003; Hook + script</span>
-      <span style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);color:var(--vision);">&#10003; Platform strategy</span>
-      <span style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);color:var(--vision);">&#10003; 12 languages</span>
-      <span style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.2);color:var(--lens);">&#11088; Lead magnet builder</span>
-    </div>
-    <button class="hero-cta-primary" style="width:100%;font-size:15px;padding:16px 22px;margin-bottom:10px;justify-content:center;" onclick="openWizardPage()">&#10022; Try SAM free &#8594;</button>
-    <div style="text-align:center;font-size:12px;color:var(--text3);margin-bottom:24px;">No paywall &#183; No card &#183; 3 days full access</div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
-      <div style="text-align:center;padding:10px 4px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;">
-        <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:700;" class="grad-pink">5</div>
-        <div style="font-size:9px;color:var(--text3);margin-top:2px;">AI tools</div>
-      </div>
-      <div style="text-align:center;padding:10px 4px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;">
-        <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:700;" class="grad-purple">12</div>
-        <div style="font-size:9px;color:var(--text3);margin-top:2px;">Languages</div>
-      </div>
-      <div style="text-align:center;padding:10px 4px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;">
-        <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:700;" class="grad-cyan">&lt;60s</div>
-        <div style="font-size:9px;color:var(--text3);margin-top:2px;">First output</div>
-      </div>
-      <div style="text-align:center;padding:10px 4px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;">
-        <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:700;" class="grad-green">$0</div>
-        <div style="font-size:9px;color:var(--text3);margin-top:2px;">To start</div>
-      </div>
-    </div>
-  </div>
 
-  <!-- ── DESKTOP HERO v2 ── -->
-  <div id="heroDesktop" style="display:none;max-width:1280px;margin:0 auto;padding:56px 48px 40px;">
-    <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:48px;padding:14px 24px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:50px;max-width:760px;margin-left:auto;margin-right:auto;">
+  <!-- ── UNIFIED HERO v5.7 ── -->
+  <div class="hero" id="heroSection">
+
+    <!-- Social proof bar -->
+    <div style="display:inline-flex;align-items:center;gap:10px;margin-bottom:32px;padding:10px 18px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:50px;">
       <div style="display:flex;">
-        <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#F472B6,#EC4899);border:2px solid var(--bg);margin-right:-8px;font-size:14px;display:flex;align-items:center;justify-content:center;">&#128105;</div>
-        <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#A78BFA,#818CF8);border:2px solid var(--bg);margin-right:-8px;font-size:14px;display:flex;align-items:center;justify-content:center;">&#128104;</div>
-        <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#38BDF8,#0EA5E9);border:2px solid var(--bg);margin-right:-8px;font-size:14px;display:flex;align-items:center;justify-content:center;">&#128105;</div>
-        <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#34D399,#10B981);border:2px solid var(--bg);font-size:14px;display:flex;align-items:center;justify-content:center;">&#128104;</div>
+        <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#F472B6,#EC4899);border:2px solid var(--bg);margin-right:-7px;font-size:11px;display:flex;align-items:center;justify-content:center;">&#128105;</div>
+        <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#A78BFA,#818CF8);border:2px solid var(--bg);margin-right:-7px;font-size:11px;display:flex;align-items:center;justify-content:center;">&#128104;</div>
+        <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#38BDF8,#0EA5E9);border:2px solid var(--bg);font-size:11px;display:flex;align-items:center;justify-content:center;">&#128105;</div>
       </div>
-      <div style="font-size:14px;color:var(--text2);">Business owners and creators building their content strategy right now</div>
-      <div style="height:16px;width:1px;background:var(--border);"></div>
-      <div style="font-size:12px;font-weight:700;color:var(--spark);letter-spacing:0.08em;white-space:nowrap;">FREE &#183; NO CARD</div>
+      <div style="font-size:12px;color:var(--text2);">Business owners and creators building their social media strategy right now</div>
+      <div style="width:1px;height:14px;background:var(--border);flex-shrink:0;"></div>
+      <div style="font-size:11px;font-weight:700;color:var(--spark);letter-spacing:0.08em;white-space:nowrap;flex-shrink:0;">FREE &middot; NO CARD</div>
     </div>
-    <div style="text-align:center;max-width:860px;margin:0 auto 48px;">
-      <div class="hero-badge" style="margin-bottom:24px;">&#10022; Strategic Assistant for Making</div>
-      <div style="font-family:'Sora',sans-serif;font-size:clamp(13px,1.2vw,16px);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:16px;">Meet S.A.M.</div>
-      <div style="font-family:'Sora',sans-serif;font-size:clamp(44px,5.5vw,72px);font-weight:700;line-height:1.05;letter-spacing:-0.03em;color:var(--text);margin-bottom:22px;"><span style="color:var(--text);">Your complete social media </span><span style="background:linear-gradient(135deg,#F472B6,#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">team.</span><br/><span style="font-size:0.65em;font-weight:600;color:var(--text2);letter-spacing:-0.01em;">No payroll.</span></div>
-      <div style="font-size:20px;line-height:1.65;color:var(--text2);max-width:680px;margin:0 auto 36px;">SAM thinks, plans, writes and builds your audience — across every platform, in 12 languages — in under 60 seconds. The first AI content tool with a lead magnet builder built in.</div>
-      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:36px;">
-        <span style="font-size:13px;font-weight:600;padding:6px 14px;border-radius:20px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);color:var(--vision);">&#10003; Hook + word-for-word script</span>
-        <span style="font-size:13px;font-weight:600;padding:6px 14px;border-radius:20px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);color:var(--vision);">&#10003; Platform strategy + captions</span>
-        <span style="font-size:13px;font-weight:600;padding:6px 14px;border-radius:20px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);color:var(--vision);">&#10003; 12 languages — written natively</span>
-        <span style="font-size:13px;font-weight:600;padding:6px 14px;border-radius:20px;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.2);color:#A78BFA;">&#10003; Thumbnail concept creator</span>
-        <span style="font-size:13px;font-weight:600;padding:6px 14px;border-radius:20px;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.2);color:var(--lens);">&#11088; Lead magnet builder — included</span>
-      </div>
-      <div style="display:flex;gap:14px;justify-content:center;align-items:center;flex-wrap:wrap;margin-bottom:16px;">
-        <button class="hero-cta-primary" style="font-size:18px;padding:18px 40px;" onclick="openWizardPage()">&#10022; Try SAM free &#8594;</button>
-        <button class="hero-cta-ghost" style="font-size:15px;padding:17px 28px;" onclick="openProModal()">See plans →</button>
-      </div>
-      <div style="font-size:13px;color:var(--text3);">No paywall &#183; No card required &#183; 3 days full access &#183; Everything included</div>
+
+    <!-- Badge -->
+    <div class="hero-badge" style="margin-bottom:28px;">&#10022; THE SAM ENGINE</div>
+
+    <!-- Headline -->
+    <h1 style="font-family:'Sora',sans-serif;font-size:clamp(32px,5vw,60px);font-weight:700;line-height:1.08;letter-spacing:-0.03em;color:var(--text);margin-bottom:20px;">The most powerful thing in your content <span style="background:linear-gradient(135deg,#FBB824,#F472B6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">arsenal.</span></h1>
+
+    <!-- Subhead -->
+    <p style="font-size:clamp(15px,2vw,20px);line-height:1.6;color:var(--text2);max-width:540px;margin:0 auto 36px;">Most tools give you a caption. SAM gives your moments life.</p>
+
+    <!-- CTA -->
+    <button onclick="openWizardPage()" style="background:linear-gradient(135deg,#FBB824,#F472B6);color:#09080F;font-family:'Sora',sans-serif;font-size:clamp(15px,2vw,18px);font-weight:800;padding:16px 36px;border:none;border-radius:50px;cursor:pointer;box-shadow:0 0 40px rgba(251,184,36,0.3);letter-spacing:-0.01em;margin-bottom:16px;transition:all 0.25s;">&#10022; Run the SAM Engine free &rarr;</button>
+
+    <!-- See plans link -->
+    <div>
+      <span onclick="openProPage()" style="font-size:14px;color:var(--text3);cursor:pointer;border-bottom:1px solid rgba(240,236,255,0.15);padding-bottom:1px;transition:color 0.2s;" onmouseover="this.style.color='var(--text2)'" onmouseout="this.style.color='var(--text3)'">See plans &rarr;</span>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:860px;margin:0 auto;">
-      <div class="stat-card" style="text-align:center;"><div class="stat-label">AI tools</div><div class="stat-value grad-pink">5</div><div class="stat-sub">Pulse &#183; Spark &#183; Blueprint &#183; Vision &#183; Lens</div></div>
-      <div class="stat-card" style="text-align:center;"><div class="stat-label">Languages</div><div class="stat-value grad-purple">12</div><div class="stat-sub">Written natively — not translated</div></div>
-      <div class="stat-card" style="text-align:center;"><div class="stat-label">First output</div><div class="stat-value grad-cyan">&lt;60s</div><div class="stat-sub">Hook, script, captions &#8212; all at once</div></div>
-      <div class="stat-card" style="text-align:center;"><div class="stat-label">Starting price</div><div class="stat-value grad-green">$0</div><div class="stat-sub">Always free &#183; No card needed</div></div>
-    </div>
-    <div style="display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap;margin-top:32px;padding:20px 24px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:16px;max-width:860px;margin-left:auto;margin-right:auto;">
-      <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);">Platforms</div>
-      <div style="width:1px;height:16px;background:var(--border);"></div>
-      <!-- TikTok -->
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--text2)" title="TikTok"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.27 8.27 0 004.84 1.56V6.81a4.85 4.85 0 01-1.07-.12z"/></svg>
-      <!-- YouTube -->
-      <svg width="26" height="18" viewBox="0 0 24 17" fill="var(--text2)" title="YouTube"><path d="M23.5 2.6S23.2.7 22.4 0C21.4-1 20.3-1 19.8-.9 16.5-.7 12 -.7 12-.7s-4.5 0-7.8.2C3.7-.4 2.6-.4 1.6.5.8 1.2.5 3.1.5 3.1S.2 5.3.2 7.5v2.1c0 2.2.3 4.4.3 4.4s.3 1.9 1.1 2.6c1 .9 2.3.9 2.9 1C6.5 17.8 12 17.8 12 17.8s4.5 0 7.8-.2c.5-.1 1.6-.1 2.6-1 .8-.7 1.1-2.6 1.1-2.6s.3-2.2.3-4.4V7.5c0-2.2-.3-4.4-.3-4.9zM9.7 11.5V5l6.6 3.3-6.6 3.2z"/></svg>
-      <!-- Instagram -->
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" title="Instagram"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-      <!-- Facebook -->
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--text2)" title="Facebook"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
-      <!-- LinkedIn -->
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--text2)" title="LinkedIn"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
-      <!-- X/Twitter -->
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--text2)" title="X (Twitter)"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.91-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-      <!-- Email -->
-      <svg width="24" height="18" viewBox="0 0 24 18" fill="none" stroke="var(--text2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" title="Email"><rect x="1" y="1" width="22" height="16" rx="2"/><path d="M1 1l11 9L23 1"/></svg>
-      <div style="width:1px;height:16px;background:var(--border);"></div>
-      <div style="font-size:11px;color:var(--text3);">+ more coming</div>
-    </div>
+
   </div>
 
-  <!-- ── SAM ENGINE ── -->
-  <div style="max-width:1100px;margin:0 auto;padding:80px 24px 64px;">
-    <div style="text-align:center;margin-bottom:56px;">
-      <div style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,rgba(251,184,36,0.12),rgba(167,139,250,0.08));border:1px solid rgba(251,184,36,0.3);border-radius:50px;padding:6px 18px;margin-bottom:24px;">
-        <span style="font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#FBB824;">✦ The SAM Engine</span>
-      </div>
-      <div style="font-family:'Sora',sans-serif;font-size:clamp(32px,4.5vw,58px);font-weight:700;color:var(--text);line-height:1.1;letter-spacing:-0.02em;margin-bottom:24px;">The most powerful thing<br/>in your content <span style="background:linear-gradient(135deg,#F472B6,#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">arsenal.</span></div>
-      <div style="font-size:18px;color:var(--text2);line-height:1.7;max-width:680px;margin:0 auto;">Most tools give you a caption. SAM gives you a complete content operation — built around your real story, your real audience, and your real voice. In under 60 seconds.</div>
-    </div>
-
-    <!-- What it builds -->
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin-bottom:48px;">
-
-      <div style="background:linear-gradient(135deg,rgba(251,184,36,0.08),rgba(18,14,28,0.9));border:1px solid rgba(251,184,36,0.2);border-radius:20px;padding:28px;">
-        <div style="font-size:28px;margin-bottom:12px;">📖</div>
-        <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;">Tell SAM your story</div>
-        <div style="font-size:14px;color:var(--text2);line-height:1.6;">Type it, speak it, or upload a photo. A real moment. A win. A setback. Something that happened. SAM reads the emotional core of your story and figures out what your audience actually needs to hear.</div>
-      </div>
-
-      <div style="background:linear-gradient(135deg,rgba(167,139,250,0.08),rgba(18,14,28,0.9));border:1px solid rgba(167,139,250,0.2);border-radius:20px;padding:28px;">
-        <div style="font-size:28px;margin-bottom:12px;">🧠</div>
-        <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;">SAM thinks before she writes</div>
-        <div style="font-size:14px;color:var(--text2);line-height:1.6;">SAM diagnoses your audience, selects the right platforms, chooses the right format and figures out the angle that will actually perform — before a single word of content is written. That's strategy. Not automation.</div>
-      </div>
-
-      <div style="background:linear-gradient(135deg,rgba(244,114,182,0.08),rgba(18,14,28,0.9));border:1px solid rgba(244,114,182,0.2);border-radius:20px;padding:28px;">
-        <div style="font-size:28px;margin-bottom:12px;">⚡</div>
-        <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;">Then she builds everything</div>
-        <div style="font-size:14px;color:var(--text2);line-height:1.6;">Hook that stops the scroll. Word-for-word script. Platform captions tailored to each channel. Hashtags. Thumbnail strategy. And a branded lead magnet your audience trades their email to receive. All of it. In one run.</div>
-      </div>
-
-    </div>
-
-    <!-- The full output list -->
-    <div style="background:linear-gradient(135deg,rgba(251,184,36,0.05),rgba(167,139,250,0.05));border:1px solid rgba(251,184,36,0.15);border-radius:24px;padding:40px 36px;">
-      <div style="text-align:center;margin-bottom:32px;">
-        <div style="font-size:11px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#FBB824;margin-bottom:8px;">What one SAM Engine run produces</div>
-        <div style="font-family:'Sora',sans-serif;font-size:24px;font-weight:700;color:var(--text);">Everything a professional content team would charge you $2,000 to build.</div>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;">
-        <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:rgba(255,255,255,0.03);border-radius:12px;border:1px solid rgba(255,255,255,0.06);">
-          <div style="font-size:18px;flex-shrink:0;">🎯</div>
-          <div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;">Scroll-stopping hook</div><div style="font-size:12px;color:var(--text2);">The exact first line that makes them stop scrolling</div></div>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:rgba(255,255,255,0.03);border-radius:12px;border:1px solid rgba(255,255,255,0.06);">
-          <div style="font-size:18px;flex-shrink:0;">📝</div>
-          <div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;">Word-for-word script</div><div style="font-size:12px;color:var(--text2);">Every line. Every pause. B-roll cues included.</div></div>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:rgba(255,255,255,0.03);border-radius:12px;border:1px solid rgba(255,255,255,0.06);">
-          <div style="font-size:18px;flex-shrink:0;">📱</div>
-          <div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;">Platform strategy</div><div style="font-size:12px;color:var(--text2);">TikTok, YouTube, Instagram, LinkedIn + more — each tailored</div></div>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:rgba(255,255,255,0.03);border-radius:12px;border:1px solid rgba(255,255,255,0.06);">
-          <div style="font-size:18px;flex-shrink:0;">💬</div>
-          <div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;">Captions + hashtags</div><div style="font-size:12px;color:var(--text2);">Platform-native copy that actually drives follows</div></div>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:rgba(255,255,255,0.03);border-radius:12px;border:1px solid rgba(255,255,255,0.06);">
-          <div style="font-size:18px;flex-shrink:0;">🖼️</div>
-          <div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;">Thumbnail strategy</div><div style="font-size:12px;color:var(--text2);">Safe + bold headline options with layout direction</div></div>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:rgba(255,255,255,0.03);border-radius:12px;border:1px solid rgba(255,255,255,0.06);">
-          <div style="font-size:18px;flex-shrink:0;">👥</div>
-          <div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;">Audience diagnosis</div><div style="font-size:12px;color:var(--text2);">Who they are, what they need, why they follow you</div></div>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:linear-gradient(135deg,rgba(251,184,36,0.1),rgba(167,139,250,0.08));border-radius:12px;border:1px solid rgba(251,184,36,0.25);">
-          <div style="font-size:18px;flex-shrink:0;">⭐</div>
-          <div><div style="font-size:13px;font-weight:700;color:#FBB824;margin-bottom:2px;">Branded lead magnet</div><div style="font-size:12px;color:var(--text3);">A downloadable your audience trades their email for. Your logo. Your brand. Your list grows.</div></div>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:linear-gradient(135deg,rgba(167,139,250,0.1),rgba(244,114,182,0.08));border-radius:12px;border:1px solid rgba(167,139,250,0.25);">
-          <div style="font-size:18px;flex-shrink:0;">✉️</div>
-          <div><div style="font-size:13px;font-weight:700;color:#A78BFA;margin-bottom:2px;">Email welcome sequence</div><div style="font-size:12px;color:var(--text3);">5 emails that turn new subscribers into loyal fans. Written in your voice.</div></div>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:rgba(255,255,255,0.03);border-radius:12px;border:1px solid rgba(255,255,255,0.06);">
-          <div style="font-size:18px;flex-shrink:0;">🌐</div>
-          <div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;">12 languages</div><div style="font-size:12px;color:var(--text2);">Written natively. Not translated. Your voice in any language.</div></div>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:linear-gradient(135deg,rgba(52,211,153,0.08),rgba(18,14,28,0.9));border-radius:12px;border:1px solid rgba(52,211,153,0.2);">
-          <div style="font-size:18px;flex-shrink:0;">🎯</div>
-          <div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;">Niche identifier</div><div style="font-size:12px;color:var(--text2);">Don't know your niche? SAM diagnoses exactly who you are, who needs you and why — then builds everything around that.</div></div>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:linear-gradient(135deg,rgba(56,189,248,0.08),rgba(18,14,28,0.9));border-radius:12px;border:1px solid rgba(56,189,248,0.2);">
-          <div style="font-size:18px;flex-shrink:0;">📅</div>
-          <div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;">7-day content calendar</div><div style="font-size:12px;color:var(--text2);">Your entire week planned in 30 seconds. 7 posts, 7 platforms, each one ready to hand to The Pulse.</div></div>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:linear-gradient(135deg,rgba(244,114,182,0.08),rgba(18,14,28,0.9));border-radius:12px;border:1px solid rgba(244,114,182,0.2);">
-          <div style="font-size:18px;flex-shrink:0;">📊</div>
-          <div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;">Virality score</div><div style="font-size:12px;color:var(--text2);">SAM rates every concept before you film it. Know if it'll perform before you press record.</div></div>
-        </div>
-      </div>
-      <div style="text-align:center;margin-top:32px;">
-        <button onclick="openWizardPage()" style="background:linear-gradient(135deg,#FBB824,#F472B6);color:#09080F;font-family:'Sora',sans-serif;font-size:16px;font-weight:800;padding:16px 40px;border:none;border-radius:50px;cursor:pointer;box-shadow:0 0 40px rgba(251,184,36,0.3);letter-spacing:-0.01em;">✦ Run the SAM Engine free →</button>
-        <div style="font-size:12px;color:var(--text3);margin-top:12px;">No card. No paywall. Your first playbook in under 60 seconds.</div>
-      </div>
-    </div>
   </div>
 
   <!-- ── WHAT IT REPLACES ── -->
@@ -9006,7 +8845,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v5.6</div>
+  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v5.7</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
