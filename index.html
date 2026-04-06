@@ -7171,29 +7171,27 @@ function initWizard() {
 
   async function meetSamCallAPI(story, thinkInterval) {
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch('/api/sam', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 200,
-          system: `You are SAM — a creative intelligence who finds the real story inside what creators share. You are warm, sharp, and direct. You do not use filler phrases. When someone tells you their story, you reflect back the emotional core in 2-3 sentences — what makes them unique, what their audience will connect with. End with one sentence that makes them feel ready to build. Never use bullet points. Never say "I can see that" or "It sounds like". Speak directly, as if you already know them.`,
-          messages: [{ role: 'user', content: story }]
+          mode: 'chat',
+          messages: [{ role: 'user', content: story }],
+          systemPrompt: `You are SAM — a creative intelligence who finds the real story inside what creators share. You are warm, sharp, and direct. You do not use filler phrases. When someone tells you their story, you reflect back the emotional core in 2-3 sentences — what makes them unique, what their audience will connect with. End with one sentence that makes them feel ready to build. Never use bullet points. Never say "I can see that" or "It sounds like". Speak directly, as if you already know them.`
         })
       });
       const data = await res.json();
       clearInterval(thinkInterval);
 
       let responseText = 'You have a real story here. Let\'s build something with it.';
-      if (data.content && data.content[0] && data.content[0].text) {
-        responseText = data.content[0].text;
+      if (data.result && data.result.reply) {
+        responseText = data.result.reply;
       }
       MS.samResponse = responseText;
       meetSamShowResponse(responseText);
 
     } catch(err) {
       clearInterval(thinkInterval);
-      // Fallback if API fails
       meetSamShowResponse('You have a real story here. Let\'s make sure the right people hear it.');
     }
   }
