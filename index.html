@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v5.17)
+       UNIFIED HERO (v5.18)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4295,7 +4295,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v5.17
+       CINEMATIC MEET SAM — v5.18
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4525,37 +4525,41 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
     .ms-voice-bar {
       display: flex;
       align-items: center;
-      gap: 4px;
-      padding: 8px 0 4px 48px;
+      justify-content: center;
+      gap: 5px;
+      padding: 12px 0 8px 0;
       opacity: 0;
-      transition: opacity 0.8s ease;
-      height: 36px;
+      transition: opacity 0.4s ease;
+      height: 60px;
+      width: 100%;
     }
     .ms-voice-bar.speaking { opacity: 1; }
     .ms-voice-bar span {
       display: inline-block;
-      width: 3px;
-      border-radius: 3px;
-      background: linear-gradient(180deg, #A78BFA, #F472B6);
-      animation: ms-wave 1.2s ease-in-out infinite;
-      box-shadow: 0 0 6px rgba(167,139,250,0.6);
+      width: 4px;
+      border-radius: 4px;
+      background: linear-gradient(180deg, #A78BFA, #F472B6, #38BDF8);
+      animation: ms-wave 0.9s ease-in-out infinite;
+      box-shadow: 0 0 10px rgba(167,139,250,0.7), 0 0 20px rgba(244,114,182,0.3);
     }
-    .ms-voice-bar span:nth-child(1)  { height: 8px;  animation-delay: 0s;    }
-    .ms-voice-bar span:nth-child(2)  { height: 16px; animation-delay: 0.1s;  }
-    .ms-voice-bar span:nth-child(3)  { height: 24px; animation-delay: 0.2s;  }
-    .ms-voice-bar span:nth-child(4)  { height: 32px; animation-delay: 0.15s; }
-    .ms-voice-bar span:nth-child(5)  { height: 20px; animation-delay: 0.05s; }
-    .ms-voice-bar span:nth-child(6)  { height: 28px; animation-delay: 0.25s; }
-    .ms-voice-bar span:nth-child(7)  { height: 14px; animation-delay: 0.1s;  }
-    .ms-voice-bar span:nth-child(8)  { height: 22px; animation-delay: 0.3s;  }
-    .ms-voice-bar span:nth-child(9)  { height: 18px; animation-delay: 0.08s; }
-    .ms-voice-bar span:nth-child(10) { height: 26px; animation-delay: 0.2s;  }
-    .ms-voice-bar span:nth-child(11) { height: 12px; animation-delay: 0.15s; }
-    .ms-voice-bar span:nth-child(12) { height: 20px; animation-delay: 0.05s; }
-    .ms-voice-bar span:nth-child(13) { height: 8px;  animation-delay: 0.25s; }
+    .ms-voice-bar span:nth-child(1)  { height: 12px; animation-delay: 0s;    }
+    .ms-voice-bar span:nth-child(2)  { height: 24px; animation-delay: 0.08s; }
+    .ms-voice-bar span:nth-child(3)  { height: 38px; animation-delay: 0.16s; }
+    .ms-voice-bar span:nth-child(4)  { height: 48px; animation-delay: 0.12s; }
+    .ms-voice-bar span:nth-child(5)  { height: 32px; animation-delay: 0.04s; }
+    .ms-voice-bar span:nth-child(6)  { height: 44px; animation-delay: 0.2s;  }
+    .ms-voice-bar span:nth-child(7)  { height: 20px; animation-delay: 0.08s; }
+    .ms-voice-bar span:nth-child(8)  { height: 40px; animation-delay: 0.24s; }
+    .ms-voice-bar span:nth-child(9)  { height: 28px; animation-delay: 0.06s; }
+    .ms-voice-bar span:nth-child(10) { height: 44px; animation-delay: 0.16s; }
+    .ms-voice-bar span:nth-child(11) { height: 36px; animation-delay: 0.12s; }
+    .ms-voice-bar span:nth-child(12) { height: 22px; animation-delay: 0.04s; }
+    .ms-voice-bar span:nth-child(13) { height: 14px; animation-delay: 0.2s;  }
+    .ms-voice-bar span:nth-child(14) { height: 30px; animation-delay: 0.1s;  }
+    .ms-voice-bar span:nth-child(15) { height: 18px; animation-delay: 0.18s; }
     @keyframes ms-wave {
-      0%,100% { transform: scaleY(0.3); opacity: 0.4; }
-      50%      { transform: scaleY(1);   opacity: 1;   }
+      0%,100% { transform: scaleY(0.25); opacity: 0.35; }
+      50%      { transform: scaleY(1);   opacity: 1;    }
     }
 
     /* Button reveal — slow float up */
@@ -4607,7 +4611,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
 <nav>
   <div class="nav-logo" onclick="goHome()" style="cursor:pointer;">S<span class="nav-logo-dot">.</span>A<span class="nav-logo-dot">.</span>M<span class="nav-logo-dot">.</span></div>
-  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v5.17</div>
+  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v5.18</div>
   <div class="nav-right">
     <div class="trial-nav-badge" id="trialBadge" onclick="openProPage()" style="display:none;">
       <div class="trial-nav-dot"></div>
@@ -4628,7 +4632,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 <main>
 
 
-  <!-- ── UNIFIED HERO v5.17 ── -->
+  <!-- ── UNIFIED HERO v5.18 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -6580,7 +6584,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v5.17 ──
+// ── RUN TRACKING v5.18 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 5;
@@ -7102,7 +7106,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v5.17
+  // CINEMATIC MEET SAM — v5.18
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -7332,13 +7336,17 @@ function initWizard() {
         body: JSON.stringify({
           mode: 'chat',
           messages: [{ role: 'user', content: story }],
-          systemPrompt: `You are SAM — a creative intelligence who finds the real story inside what creators share. You are warm, sharp, and direct. You never use filler phrases.
+          systemPrompt: `You are SAM — a warm, sharp creative intelligence. Your job right now is to make this person feel heard and gently guide them toward clicking the button below.
 
-If the person seems unsure, hesitant, or types something short like "hi" or "I don't know what to say" — respond warmly and draw them out. Ask one simple question or make one observation that helps them open up. Keep it to 2-3 sentences max.
+Read what they wrote carefully.
 
-If they share a real story — reflect back the emotional core in 2-3 sentences. What makes them unique. What their audience will connect with. End with one sentence that makes them feel ready to build.
+If they are confused, asking what this is, or seem lost: Warmly explain in 1-2 sentences that SAM helps creators find the story worth telling — then say something like "I have a feeling there's already something worth sharing in your world. Hit the button below and let's go find it."
 
-Never use bullet points. Never say "I can see that" or "It sounds like". Speak directly, as if you already know them. Never mention building a profile or next steps — just respond to what they said.`
+If they are hesitant, unsure, or say they don't know what to say: Show empathy, then gently nudge. Something like "That feeling? That's actually where every great story starts. Hit the button below — I'll ask you one question at a time until we find it."
+
+If they share something real — even a fragment: Reflect it back with emotional precision in 2 sentences. Tell them what's powerful about it. Then end with "Hit the button below — I'm ready to build this with you."
+
+Rules: Max 3 sentences total. Never use bullet points. Never say "I can see that" or "It sounds like." Never be generic. Always end by pointing them to the button below.`
         })
       });
 
@@ -7366,6 +7374,10 @@ Never use bullet points. Never say "I can see that" or "It sounds like". Speak d
       clearInterval(thinkInterval);
       const responseText = fullText || getFallback(story);
       MS.samResponse = responseText;
+      // Dynamic button text
+      const isLost = story.length < 40 || /don't know|not sure|idk|hi |hello|hey|what is|what's this|confused/i.test(story);
+      const btnEl = document.getElementById('msGoBtn');
+      if (btnEl) btnEl.textContent = isLost ? '✦ Let's find your story →' : '✦ Let's build your story →';
       meetSamShowResponse(responseText);
 
     } catch(err) {
@@ -7391,10 +7403,10 @@ Never use bullet points. Never say "I can see that" or "It sounds like". Speak d
     const wrap = document.getElementById('msResponseWrap');
     wrap.style.display = 'flex';
 
-    // Show voice waveform
+    // Show voice waveform IMMEDIATELY — mouth moves from first word
     const voiceBar = document.getElementById('msVoiceBar');
     if (voiceBar) {
-      setTimeout(() => voiceBar.classList.add('speaking'), 100);
+      voiceBar.classList.add('speaking');
     }
 
     // Pulse avatar while speaking
@@ -9583,7 +9595,7 @@ function openWizardFromNav() {
 </div>
 
 
-<!-- ── SOFT POPUP v5.17 ── -->
+<!-- ── SOFT POPUP v5.18 ── -->
 <div id="softPopup" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9000;padding:16px;pointer-events:none;">
   <div id="softPopupInner" style="max-width:480px;margin:0 auto;background:#13101F;border:1px solid rgba(167,139,250,0.25);border-radius:20px 20px 16px 16px;padding:20px 20px 18px;box-shadow:0 -8px 40px rgba(0,0,0,0.5);pointer-events:auto;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
@@ -9602,7 +9614,7 @@ function openWizardFromNav() {
   </div>
 </div>
 
-<!-- ── HARD ASK v5.17 ── -->
+<!-- ── HARD ASK v5.18 ── -->
 <div id="hardAskOverlay" style="display:none;position:fixed;inset:0;z-index:9100;background:rgba(9,8,15,0.88);backdrop-filter:blur(10px);">
   <div id="hardAskInner" style="position:absolute;bottom:0;left:0;right:0;max-width:520px;margin:0 auto;background:#13101F;border:1px solid rgba(251,184,36,0.2);border-radius:24px 24px 0 0;padding:28px 20px 36px;box-shadow:0 -16px 60px rgba(0,0,0,0.6);transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);max-height:92vh;overflow-y:auto;">
 
@@ -9789,7 +9801,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v5.17</div>
+  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v5.18</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -9933,7 +9945,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
           <div class="ms-voice-bar" id="msVoiceBar">
             <span></span><span></span><span></span><span></span><span></span>
             <span></span><span></span><span></span><span></span><span></span>
-            <span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
           </div>
           <!-- Button floats in slowly after response -->
           <div class="ms-go-btn-wrap" id="msGoBtnWrap" style="display:none;">
@@ -10720,7 +10732,7 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v5.17
+// SOFT POPUP v5.18
 // ══════════════════════════════════════════════════════════════════════════════
 const TOOL_META = {
   pulse:     { emoji:'🎯', title:'Now try Spark.', sub:'Generate 5 scroll-stopping ideas built for your niche.', id:'spark' },
@@ -10777,7 +10789,7 @@ function closeSoftPopupAndScroll() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// HARD ASK v5.17
+// HARD ASK v5.18
 // ══════════════════════════════════════════════════════════════════════════════
 function showHardAsk() {
   const el = document.getElementById('hardAskOverlay');
