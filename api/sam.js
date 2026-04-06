@@ -2,8 +2,8 @@ module.exports.config = { api: { bodyParser: { sizeLimit: "10mb" } } };
 
 // ── TIER LIMITS ────────────────────────────────────────────────────────────
 const TIER_LIMITS = {
-  free:    { playbooks: 2,  nextTools: 2,  chatMessages: 5  },
-  starter: { playbooks: 3,  nextTools: 10, chatMessages: 20 },
+  free:    { playbooks: 1,  nextTools: 3,  chatMessages: 5  },
+  starter: { playbooks: 3,  nextTools: 15, chatMessages: 20 },
   pro:     { playbooks: 10, nextTools: 50, chatMessages: 100 },
   studio:  { playbooks: 999,nextTools: 999,chatMessages: 999 },
 };
@@ -115,8 +115,8 @@ PERSONALITY: Confident, direct, warm. Keep responses to 2-4 sentences max. No ja
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-6',
-          max_tokens: 3000,   // ← KEY FIX: enough room for email sequences, calendars, lead magnets
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 3000,   // Haiku: fast + cheap for structured JSON tools
           stream: true,
           system: 'You are SAM — Strategic Assistant for Making. Return ONLY valid JSON. No markdown. No backticks. No explanation outside the JSON.',
           messages: [{ role: 'user', content: trimmedPrompt }]
@@ -367,7 +367,7 @@ CRITICAL: Return ONLY valid JSON. Keep ALL fields concise — the JSON must be c
 Build a 7-day content posting plan. Rotate across: ${platList.join(', ')}.
 Each caption must respect that platform's character limit exactly.
 Return ONLY: {"days":[{"platform":"platform name","post_type":"Reel OR Short OR Post OR Video","content":"ready-to-post caption respecting character limit with hashtags"}]}`;
-      return await streamCall(prompt, moment, 1600);
+      return await streamCall(prompt, moment, 1600, 'claude-haiku-4-5-20251001');
     }
 
     // ── IDEAS ─────────────────────────────────────────────────────────────────
@@ -401,7 +401,7 @@ CRITICAL: Return ONLY valid JSON.`;
         const userContent = imageBase64
           ? [{ type: 'image', source: { type: 'base64', media_type: imageType, data: imageBase64 } }, { type: 'text', text: moment || 'Analyse this image.' }]
           : moment;
-        return await streamCall(photoSystem, userContent, 1400);
+        return await streamCall(photoSystem, userContent, 1400, 'claude-haiku-4-5-20251001');
       }
 
       if (forceType === 'analytics') {
@@ -414,11 +414,11 @@ CRITICAL: Return ONLY valid JSON.`;
         const userContent = imageBase64
           ? [{ type: 'image', source: { type: 'base64', media_type: imageType, data: imageBase64 } }, { type: 'text', text: moment || 'Analyse my analytics.' }]
           : moment;
-        return await streamCall(analyticsSystem, userContent, 900);
+        return await streamCall(analyticsSystem, userContent, 900, 'claude-haiku-4-5-20251001');
       }
 
       const textSystem = `${base} Analyse this content idea. Return ONLY: {"type":"text_only","diagnosis":"what this idea is really about and why it has potential — 2 sentences","hook_ideas":["hook 1","hook 2","hook 3"],"content_angle":"the strongest angle to take","best_platform":"single best platform","next_action":"the one most important thing to do with this idea right now"}`;
-      return await streamCall(textSystem, moment, 700);
+      return await streamCall(textSystem, moment, 700, 'claude-haiku-4-5-20251001');
     }
 
     // ── CONCEPT ───────────────────────────────────────────────────────────────
@@ -430,7 +430,7 @@ CRITICAL: Return ONLY valid JSON.`;
 Generate ONE bold, specific video concept for this creator to actually make.
 Assign a real virality_score 60-100 based on genuine concept strength — not always 90+.
 Return ONLY: {"title":"6-10 word concept title","format":"Reel OR Short OR YouTube video OR etc","premise":"2-3 sentences","why_it_works":"2 sentences","production_notes":["practical filming note 1","practical filming note 2","practical filming note 3"],"hook_line":"exact first sentence the creator speaks on camera","twist":"the unexpected angle that makes this memorable","virality_score":72}`;
-      return await streamCall(prompt, moment, 1000);
+      return await streamCall(prompt, moment, 1000, 'claude-haiku-4-5-20251001');
     }
 
     // ── THE PULSE ─────────────────────────────────────────────────────────────
