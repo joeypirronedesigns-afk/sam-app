@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v5.22)
+       UNIFIED HERO (v5.23)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4295,7 +4295,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v5.22
+       CINEMATIC MEET SAM — v5.23
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4660,6 +4660,39 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
     }
     .meet-sam-go-btn:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(167,139,250,0.5); }
 
+  
+    .ms-main-cta-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      padding-top: 8px;
+      padding-left: 56px;
+      position: relative;
+      z-index: 1;
+    }
+    .ms-main-cta-btn {
+      font-size: 18px;
+      padding: 20px 40px;
+      box-shadow: 0 0 40px rgba(167,139,250,0.4), 0 0 80px rgba(244,114,182,0.2);
+    }
+    .ms-main-cta-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 60px rgba(167,139,250,0.6), 0 0 100px rgba(244,114,182,0.3);
+    }
+    .ms-talk-link {
+      font-size: 13px;
+      color: var(--text3);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: color 0.2s;
+      padding: 4px 0;
+    }
+    .ms-talk-link:hover { color: var(--text2); }
+
   </style>
 </head>
 <body>
@@ -4669,7 +4702,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
 <nav>
   <div class="nav-logo" onclick="goHome()" style="cursor:pointer;">S<span class="nav-logo-dot">.</span>A<span class="nav-logo-dot">.</span>M<span class="nav-logo-dot">.</span></div>
-  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v5.22</div>
+  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v5.23</div>
   <div class="nav-right">
     <div class="trial-nav-badge" id="trialBadge" onclick="openProPage()" style="display:none;">
       <div class="trial-nav-dot"></div>
@@ -4690,7 +4723,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 <main>
 
 
-  <!-- ── UNIFIED HERO v5.22 ── -->
+  <!-- ── UNIFIED HERO v5.23 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -6642,7 +6675,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v5.22 ──
+// ── RUN TRACKING v5.23 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 5;
@@ -7164,7 +7197,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v5.22
+  // CINEMATIC MEET SAM — v5.23
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -7233,6 +7266,10 @@ function initWizard() {
           const mainCTA = document.getElementById('msMainCTA');
           if (mainCTA) {
             mainCTA.style.display = 'flex';
+            setTimeout(() => {
+              mainCTA.style.opacity = '1';
+              mainCTA.style.transform = 'translateY(0)';
+            }, 80);
           }
           // Stop opening ring
           const openWrap = document.getElementById('msOpeningAvatarWrap');
@@ -9668,7 +9705,7 @@ function openWizardFromNav() {
 </div>
 
 
-<!-- ── SOFT POPUP v5.22 ── -->
+<!-- ── SOFT POPUP v5.23 ── -->
 <div id="softPopup" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9000;padding:16px;pointer-events:none;">
   <div id="softPopupInner" style="max-width:480px;margin:0 auto;background:#13101F;border:1px solid rgba(167,139,250,0.25);border-radius:20px 20px 16px 16px;padding:20px 20px 18px;box-shadow:0 -8px 40px rgba(0,0,0,0.5);pointer-events:auto;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
@@ -9687,7 +9724,7 @@ function openWizardFromNav() {
   </div>
 </div>
 
-<!-- ── HARD ASK v5.22 ── -->
+<!-- ── HARD ASK v5.23 ── -->
 <div id="hardAskOverlay" style="display:none;position:fixed;inset:0;z-index:9100;background:rgba(9,8,15,0.88);backdrop-filter:blur(10px);">
   <div id="hardAskInner" style="position:absolute;bottom:0;left:0;right:0;max-width:520px;margin:0 auto;background:#13101F;border:1px solid rgba(251,184,36,0.2);border-radius:24px 24px 0 0;padding:28px 20px 36px;box-shadow:0 -16px 60px rgba(0,0,0,0.6);transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);max-height:92vh;overflow-y:auto;">
 
@@ -9874,7 +9911,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v5.22</div>
+  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v5.23</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -9966,13 +10003,15 @@ if (localStorage.getItem('sam_dev') === 'true') {
         </div>
 
         <!-- Single CTA — floats in after opening line -->
-        <div class="ms-main-cta-wrap" id="msMainCTA" style="display:none;">
+        <div class="ms-main-cta-wrap" id="msMainCTA" style="display:none;opacity:0;transform:translateY(20px);transition:opacity 0.8s ease,transform 0.8s cubic-bezier(0.34,1.2,0.64,1);">
           <button class="meet-sam-go-btn ms-main-cta-btn" onclick="meetSamHandoff()">
             ✦ Let's find your story →
           </button>
-          <button class="ms-talk-link" onclick="meetSamChooseTalk()">
-            Want to tell SAM about yourself first?
-          </button>
+          <div style="text-align:center;margin-top:4px;">
+            <button class="ms-talk-link" onclick="meetSamChooseTalk()">
+              or tell SAM your story first
+            </button>
+          </div>
         </div>
 
         <!-- TALK PATH: story input — hidden by default -->
@@ -10805,7 +10844,7 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v5.22
+// SOFT POPUP v5.23
 // ══════════════════════════════════════════════════════════════════════════════
 const TOOL_META = {
   pulse:     { emoji:'🎯', title:'Now try Spark.', sub:'Generate 5 scroll-stopping ideas built for your niche.', id:'spark' },
@@ -10862,7 +10901,7 @@ function closeSoftPopupAndScroll() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// HARD ASK v5.22
+// HARD ASK v5.23
 // ══════════════════════════════════════════════════════════════════════════════
 function showHardAsk() {
   const el = document.getElementById('hardAskOverlay');
