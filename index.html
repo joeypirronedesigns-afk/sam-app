@@ -4109,7 +4109,7 @@
 
 <nav>
   <div class="nav-logo">S<span class="nav-logo-dot">.</span>A<span class="nav-logo-dot">.</span>M<span class="nav-logo-dot">.</span></div>
-  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v4.4</div>
+  <div style="font-size:9px;font-weight:800;letter-spacing:0.1em;background:rgba(109,40,217,0.7);color:#fff;padding:2px 8px;border-radius:20px;margin-left:8px;">v4.5</div>
   <div class="nav-right">
     <div class="trial-nav-badge" id="trialBadge" onclick="openProPage()">
       <div class="trial-nav-dot"></div>
@@ -8462,64 +8462,109 @@ function openWizardFromNav() {
 
   <!-- HERO -->
   <div class="pro-hero">
-    <div class="pro-hero-badge">✦ Limited launch pricing</div>
-    <div class="pro-hero-title">Your content strategy.<br/><em>Automated.</em></div>
-    <div class="pro-hero-sub">SAM writes the hooks that stop the scroll, scripts that hold attention, and captions that drive follows — across every platform you care about. For less than a coffee a week.</div>
+    <div class="pro-hero-badge">✦ Simple, honest pricing</div>
+    <div class="pro-hero-title">Your complete social media team.<br/><em>No payroll.</em></div>
+    <div class="pro-hero-sub">SAM thinks, plans, writes and builds your audience — across every platform, in 12 languages — in under 60 seconds. The first AI content tool with a lead magnet builder built in.</div>
     <div class="pro-value-row">
-      <div class="pro-value-pill">⚡ Unlimited runs</div>
-      <div class="pro-value-pill">🎯 5 powerful tools</div>
-      <div class="pro-value-pill">📱 7 platforms</div>
+      <div class="pro-value-pill">✦ Content Playbook</div>
+      <div class="pro-value-pill">🎯 5 AI tools</div>
+      <div class="pro-value-pill">🌐 12 languages</div>
       <div class="pro-value-pill">🔒 Cancel anytime</div>
     </div>
   </div>
 
   <!-- PRICING CARDS -->
-  <div class="pro-plans">
+  <div class="pro-plans" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));max-width:1100px;margin:0 auto;">
 
     <!-- FREE -->
     <div class="pro-card">
-      <div class="pro-card-badge badge-free">Free forever</div>
-      <div class="pro-card-name">Starter</div>
+      <div class="pro-card-badge badge-free">No paywall · No card</div>
+      <div class="pro-card-name">Free</div>
       <div class="pro-price-block">
         <div class="pro-price-dollar" style="color:var(--text2);font-size:42px;">$0</div>
         <div class="pro-price-period">/ month</div>
       </div>
-      <div class="pro-price-note">Always free, no card needed</div>
+      <div class="pro-price-note">Try everything free for 3 days</div>
       <div class="pro-divider-line"></div>
       <div class="pro-feat-list">
-        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>3 runs per day across all tools</div>
-        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>All 5 tools included</div>
-        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>All 7 platforms</div>
-        <div class="pro-feat-row"><div class="pro-feat-icon fi-no"></div><span class="feat-muted">Unlimited runs</span></div>
-        <div class="pro-feat-row"><div class="pro-feat-icon fi-no"></div><span class="feat-muted">Priority generation speed</span></div>
-        <div class="pro-feat-row"><div class="pro-feat-icon fi-no"></div><span class="feat-muted">New tools as they drop</span></div>
-        <div class="pro-feat-row"><div class="pro-feat-icon fi-no"></div><span class="feat-muted">Early access to SAM features</span></div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>3 complete Content Playbooks</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>10 tool runs across all 5 tools</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>3 days full unlimited access</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>1 lead magnet per playbook</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-no"></div><span class="feat-muted">Unlimited playbooks</span></div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-no"></div><span class="feat-muted">Lead magnet rebuilds</span></div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-no"></div><span class="feat-muted">Priority speed</span></div>
       </div>
-      <button class="pro-btn pro-btn-ghost" onclick="closeProPage()">Continue with Free</button>
+      <button class="pro-btn pro-btn-ghost" onclick="closeProPage()">Try it free →</button>
+    </div>
+
+    <!-- CREATOR -->
+    <div class="pro-card">
+      <div class="pro-card-badge" style="background:rgba(244,114,182,0.15);color:#F472B6;">For creators &amp; coaches</div>
+      <div class="pro-card-name">Creator</div>
+      <div class="pro-price-block">
+        <div class="pro-price-dollar grad-pink">$19</div>
+        <div class="pro-price-period">/ month</div>
+      </div>
+      <div class="pro-price-note">5 playbooks · 30 tool runs · 5 rebuilds</div>
+      <div class="pro-divider-line"></div>
+      <div class="pro-feat-list">
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>5 complete Content Playbooks/month</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>30 tool runs across all 5 tools</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>5 lead magnet rebuilds</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>All 7 platforms · 12 languages</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Your brand on every document</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Download everything as PDF</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-no"></div><span class="feat-muted">Unlimited runs</span></div>
+      </div>
+      <button class="pro-btn pro-btn-grad" style="background:linear-gradient(135deg,#F472B6,#A78BFA);" onclick="handleProSignup()">Get Creator — $19/month →</button>
+      <div class="pro-guarantee-row">7-day money-back · Cancel anytime</div>
     </div>
 
     <!-- PRO -->
     <div class="pro-card featured">
-      <div class="pro-card-badge badge-pro">⚡ Most popular — launch price</div>
-      <div class="pro-card-name">SAM Pro</div>
+      <div class="pro-card-badge badge-pro">⚡ Most popular</div>
+      <div class="pro-card-name">Pro</div>
       <div class="pro-price-block">
-        <div class="pro-price-dollar grad-purple">$19</div>
+        <div class="pro-price-dollar grad-purple">$39</div>
         <div class="pro-price-period">/ month</div>
-        <div class="pro-price-orig">$19</div>
       </div>
-      <div class="pro-price-note" style="color:var(--text3);">All 5 tools · Content Wizard · 7 platforms · 12 languages</div>
+      <div class="pro-price-note">Unlimited everything</div>
       <div class="pro-divider-line"></div>
       <div class="pro-feat-list">
-        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div><strong>Unlimited runs</strong> — no daily cap, ever</div>
-        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>All 5 tools: Pulse, Spark, Blueprint, Vision &amp; Lens</div>
-        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>All 7 platforms — TikTok, YouTube, IG, LinkedIn + more</div>
-        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div><strong>Priority speed</strong> — your requests jump the queue</div>
-        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Every new SAM tool the moment it launches</div>
-        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Thumbnail canvas downloads (16:9 + 9:16)</div>
-        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Cancel anytime — no contracts, no tricks</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div><strong>Unlimited</strong> playbooks + tool runs</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div><strong>Unlimited</strong> lead magnet rebuilds</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>All 7 platforms · 12 languages</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div><strong>Priority speed</strong> — jump the queue</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Every new tool the moment it drops</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Full brand customization</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Thumbnail concept creator included</div>
       </div>
-      <button class="pro-btn pro-btn-grad" onclick="handleProSignup()">Get SAM Creator — $19/month →</button>
-      <div class="pro-guarantee-row">🔒 7-day money-back guarantee. Zero questions.</div>
+      <button class="pro-btn pro-btn-grad" onclick="handleProSignup()">Get Pro — $39/month →</button>
+      <div class="pro-guarantee-row">🔒 7-day money-back · Cancel anytime</div>
+    </div>
+
+    <!-- STUDIO -->
+    <div class="pro-card">
+      <div class="pro-card-badge" style="background:rgba(251,184,36,0.15);color:#FBB824;">For agencies &amp; teams</div>
+      <div class="pro-card-name">Studio</div>
+      <div class="pro-price-block">
+        <div class="pro-price-dollar" style="color:#FBB824;">$99</div>
+        <div class="pro-price-period">/ month</div>
+      </div>
+      <div class="pro-price-note">All you can eat — every brand</div>
+      <div class="pro-divider-line"></div>
+      <div class="pro-feat-list">
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Everything in Pro, unlimited</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Multiple brand profiles</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Every doc branded as YOUR client</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Run SAM for every client you have</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>12 languages across all profiles</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Dedicated support</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Team seats <span style="font-size:10px;opacity:0.6;">(coming Q3 2026)</span></div>
+      </div>
+      <button class="pro-btn pro-btn-grad" style="background:linear-gradient(135deg,#FBB824,#F472B6);" onclick="handleProSignup()">Get Studio — $99/month →</button>
+      <div class="pro-guarantee-row">7-day money-back · Cancel anytime</div>
     </div>
 
   </div>
@@ -8529,8 +8574,8 @@ function openWizardFromNav() {
     <div class="pro-annual-inner">
       <div style="font-size:26px;">💛</div>
       <div class="pro-annual-text">
-        <div class="pro-annual-title">Annual plan — coming soon</div>
-        <div class="pro-annual-sub">Pay once a year, save 40% ($65/year vs $108). Get on the early list now.</div>
+        <div class="pro-annual-title">Annual plans — 2 months free</div>
+        <div class="pro-annual-sub">Pay once a year and get 2 months free. Creator $190/yr · Pro $390/yr · Studio $990/yr. Coming soon.</div>
       </div>
       <button class="pro-annual-btn" onclick="handleAnnualNotify()">Notify me →</button>
     </div>
@@ -8538,7 +8583,7 @@ function openWizardFromNav() {
 
   <!-- WHAT YOU GET -->
   <div class="pro-features-section">
-    <div class="pro-section-label">Everything inside SAM Pro</div>
+    <div class="pro-section-label">Everything inside SAM</div>
     <div class="pro-tools-grid">
       <div class="pro-tool-card tc-pulse">
         <div class="pro-tool-icon">🎯</div>
@@ -8581,43 +8626,22 @@ function openWizardFromNav() {
 
   <!-- SOCIAL PROOF -->
   <div class="pro-reviews-section">
-    <div class="pro-section-label">What creators are saying</div>
+    <div class="pro-section-label">What SAM actually builds for you</div>
     <div class="pro-reviews-grid">
 
       <div class="pro-review-card">
-        <div class="pro-review-stars">★★★★★</div>
-        <div class="pro-review-text">"I used to spend 3 hours on Sunday planning my content week. SAM does it in 40 seconds and the hooks are actually better than what I was writing."</div>
-        <div class="pro-review-author">
-          <div class="pro-review-avatar" style="background:rgba(244,114,182,0.15);color:#F472B6;">MR</div>
-          <div>
-            <div class="pro-review-name">Maya R.</div>
-            <div class="pro-review-handle">DIY home creator · 47K TikTok</div>
-          </div>
-        </div>
+        <div style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#A78BFA;margin-bottom:10px;">✦ In 60 seconds</div>
+        <div class="pro-review-text">A complete content playbook — hook, word-for-word script, platform strategy, captions and hashtags. Built from one real moment or story you shared with SAM.</div>
       </div>
 
       <div class="pro-review-card">
-        <div class="pro-review-stars">★★★★★</div>
-        <div class="pro-review-text">"The Pulse literally saved my content career. I had no idea how to turn what I do into content. Now I just type what happened and SAM does the rest."</div>
-        <div class="pro-review-author">
-          <div class="pro-review-avatar" style="background:rgba(167,139,250,0.15);color:#A78BFA;">DJ</div>
-          <div>
-            <div class="pro-review-name">Derek J.</div>
-            <div class="pro-review-handle">Renovation creator · 23K YouTube</div>
-          </div>
-        </div>
+        <div style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#F472B6;margin-bottom:10px;">✦ Built into every playbook</div>
+        <div class="pro-review-text">A branded lead magnet your audience trades their email for — checklist, guide or planner — with your logo, your colors, your name. Your list grows while you sleep.</div>
       </div>
 
       <div class="pro-review-card">
-        <div class="pro-review-stars">★★★★★</div>
-        <div class="pro-review-text">"I'm 58 and not tech savvy at all. SAM is the first AI tool I've actually been able to use. The output sounds like ME — not a robot."</div>
-        <div class="pro-review-author">
-          <div class="pro-review-avatar" style="background:rgba(56,189,248,0.15);color:#38BDF8;">SL</div>
-          <div>
-            <div class="pro-review-name">Sandra L.</div>
-            <div class="pro-review-handle">Lifestyle creator · 12K Instagram</div>
-          </div>
-        </div>
+        <div style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#FBB824;margin-bottom:10px;">✦ 12 languages</div>
+        <div class="pro-review-text">SAM doesn't translate your content after the fact. It thinks and writes in your language from the start — English, Spanish, French, Portuguese, German, Japanese and more.</div>
       </div>
 
     </div>
@@ -8822,7 +8846,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v4.4</div>
+  <div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(109,40,217,0.9);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.12em;padding:3px 12px;border-radius:20px;z-index:9999;pointer-events:none;">v4.5</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -9683,3 +9707,4 @@ if (localStorage.getItem('sam_dev') === 'true') {
 <div class="ib-toast" id="ibToast"></div>
 </body>
 </html>
+v4.5
