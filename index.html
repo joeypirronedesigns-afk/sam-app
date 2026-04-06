@@ -7112,6 +7112,21 @@ function initWizard() {
     document.querySelector('.ms-orb-2').style.background = '#A78BFA';
   }
 
+  
+  function meetSamHandoff() {
+    // Store what SAM learned into WS
+    WS.storyRaw = MS.storyRaw || '';
+    WS.platforms = [];
+    WS.audienceHint = '';
+    WS.toneHint = '';
+
+    // Mark first run done so nav updates
+    localStorage.setItem('samFirstRunDone', '1');
+
+    // Hand off to wizard step 0
+    startWizard('new');
+  }
+
   function meetSamChooseWizard() {
     // Hide path choice, go straight to wizard step 0
     document.getElementById('msPathChoice').style.display = 'none';
