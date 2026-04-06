@@ -4274,6 +4274,262 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
       box-shadow: 0 0 50px rgba(167,139,250,0.45);
     }
 
+  
+    /* ══════════════════════════════════════════════════════
+       CINEMATIC MEET SAM — v5.9
+    ══════════════════════════════════════════════════════ */
+
+    .meet-sam-wrap {
+      position: relative;
+      min-height: 100vh;
+      padding: 48px 24px 120px;
+      max-width: 600px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    @media(min-width:768px){ .meet-sam-wrap { padding: 72px 40px 120px; } }
+
+    /* Ambient orbs */
+    .ms-ambient { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+    .ms-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0;
+      transition: opacity 1.5s ease;
+    }
+    .ms-orb-1 { width: 500px; height: 500px; background: #A78BFA; top: -100px; left: -100px; animation: ms-orb-drift-1 8s ease-in-out infinite; }
+    .ms-orb-2 { width: 400px; height: 400px; background: #F472B6; bottom: 0; right: -100px; animation: ms-orb-drift-2 10s ease-in-out infinite; }
+    .ms-orb-3 { width: 300px; height: 300px; background: #38BDF8; top: 50%; left: 50%; transform: translate(-50%,-50%); animation: ms-orb-drift-3 12s ease-in-out infinite; }
+    .ms-orb.glow { opacity: 0.18; }
+    .ms-orb-2.glow { opacity: 0.14; }
+    .ms-orb-3.glow { opacity: 0.07; }
+
+    @keyframes ms-orb-drift-1 {
+      0%,100% { transform: translate(0,0); }
+      50% { transform: translate(30px, 20px); }
+    }
+    @keyframes ms-orb-drift-2 {
+      0%,100% { transform: translate(0,0); }
+      50% { transform: translate(-20px, -30px); }
+    }
+    @keyframes ms-orb-drift-3 {
+      0%,100% { transform: translate(-50%,-50%); }
+      50% { transform: translate(-48%,-52%); }
+    }
+
+    /* Bubbles */
+    .meet-sam-bubble-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+      animation: fade-up 0.4s cubic-bezier(0.34,1.2,0.64,1);
+    }
+    .meet-sam-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, #F472B6);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Sora', sans-serif;
+      font-size: 14px; font-weight: 800;
+      color: #fff;
+      flex-shrink: 0;
+      box-shadow: 0 0 20px rgba(167,139,250,0.4);
+    }
+    .ms-avatar-pulse {
+      animation: avatar-pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes avatar-pulse {
+      0%,100% { box-shadow: 0 0 20px rgba(167,139,250,0.4); }
+      50% { box-shadow: 0 0 40px rgba(167,139,250,0.8), 0 0 60px rgba(244,114,182,0.4); }
+    }
+    .meet-sam-bubble {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 4px 18px 18px 18px;
+      padding: 14px 18px;
+      font-size: 17px;
+      line-height: 1.6;
+      color: var(--text);
+      max-width: 480px;
+      backdrop-filter: blur(10px);
+    }
+    .ms-response-bubble {
+      font-size: 18px;
+      line-height: 1.7;
+      border-color: rgba(167,139,250,0.25);
+      background: rgba(167,139,250,0.06);
+    }
+
+    /* Typewriter cursor */
+    .ms-cursor {
+      display: inline-block;
+      width: 2px; height: 1em;
+      background: #A78BFA;
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: ms-blink 0.8s step-end infinite;
+    }
+    @keyframes ms-blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* Path choice */
+    .ms-path-choice {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-left: 48px;
+      position: relative;
+      z-index: 1;
+      animation: fade-up 0.4s cubic-bezier(0.34,1.2,0.64,1);
+    }
+    .ms-path-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      padding: 16px 20px;
+      border-radius: 16px;
+      border: 1px solid var(--border2);
+      background: var(--surface);
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.34,1.2,0.64,1);
+      text-align: left;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .ms-path-btn:hover { transform: translateY(-3px); border-color: rgba(167,139,250,0.5); background: rgba(167,139,250,0.08); }
+    .ms-path-talk:hover { box-shadow: 0 8px 30px rgba(167,139,250,0.2); }
+    .ms-path-wizard:hover { box-shadow: 0 8px 30px rgba(56,189,248,0.15); }
+    .ms-path-icon { font-size: 20px; margin-bottom: 2px; }
+    .ms-path-talk .ms-path-icon { background: linear-gradient(135deg,#A78BFA,#F472B6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .ms-path-wizard .ms-path-icon { color: #38BDF8; }
+    .ms-path-label { font-family: 'Sora', sans-serif; font-size: 16px; font-weight: 700; color: var(--text); }
+    .ms-path-sub { font-size: 13px; color: var(--text2); line-height: 1.4; }
+
+    /* Talk path */
+    .ms-talk-path {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      z-index: 1;
+      animation: fade-up 0.4s cubic-bezier(0.34,1.2,0.64,1);
+    }
+    .ms-story-input-wrap {
+      position: relative;
+      padding-left: 48px;
+    }
+    .meet-sam-textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border2);
+      border-radius: 16px;
+      padding: 16px 52px 16px 18px;
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      color: var(--text);
+      line-height: 1.6;
+      resize: none;
+      min-height: 120px;
+      transition: all 0.2s;
+      -webkit-appearance: none;
+    }
+    .meet-sam-textarea:focus {
+      outline: none;
+      border-color: rgba(167,139,250,0.5);
+      background: rgba(255,255,255,0.06);
+      box-shadow: 0 0 0 3px rgba(167,139,250,0.1);
+    }
+    .meet-sam-textarea::placeholder { color: var(--text3); }
+    .ms-send-btn {
+      position: absolute;
+      bottom: 12px; right: 12px;
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, #F472B6);
+      color: #fff;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+      box-shadow: 0 0 16px rgba(167,139,250,0.4);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .ms-send-btn:hover { transform: scale(1.1); box-shadow: 0 0 24px rgba(167,139,250,0.6); }
+
+    /* Thinking */
+    .ms-thinking {
+      position: relative;
+      z-index: 1;
+      animation: fade-up 0.4s cubic-bezier(0.34,1.2,0.64,1);
+    }
+    .ms-thinking-bubble {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(167,139,250,0.2);
+      border-radius: 4px 18px 18px 18px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      max-width: 320px;
+    }
+    .ms-thinking-dots {
+      display: flex;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+    .ms-thinking-dots span {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #A78BFA, #F472B6);
+      animation: ms-dot-bounce 1.2s ease-in-out infinite;
+    }
+    .ms-thinking-dots span:nth-child(2) { animation-delay: 0.15s; }
+    .ms-thinking-dots span:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes ms-dot-bounce {
+      0%,60%,100% { transform: translateY(0); opacity:0.4; }
+      30% { transform: translateY(-6px); opacity:1; }
+    }
+    .ms-thinking-text {
+      font-size: 14px;
+      color: var(--text2);
+      font-style: italic;
+      transition: opacity 0.3s;
+    }
+
+    /* Response wrap */
+    .ms-response-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+      z-index: 1;
+      animation: fade-up 0.5s cubic-bezier(0.34,1.2,0.64,1);
+    }
+
+    /* Go btn */
+    .meet-sam-go-btn {
+      margin-left: 48px;
+      padding: 16px 32px;
+      border-radius: 50px;
+      border: none;
+      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, #F472B6);
+      color: #fff;
+      font-family: 'Sora', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s;
+      box-shadow: 0 0 30px rgba(167,139,250,0.3);
+      letter-spacing: 0.02em;
+      -webkit-tap-highlight-color: transparent;
+      animation: fade-up 0.4s cubic-bezier(0.34,1.2,0.64,1);
+    }
+    .meet-sam-go-btn:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(167,139,250,0.5); }
+
   </style>
 </head>
 <body>
@@ -6776,10 +7032,205 @@ function initWizard() {
   if (navBtn) navBtn.style.display = 'flex';
 }
 
-function openWizardPage() {
+
+  // ══════════════════════════════════════════════════════
+  // CINEMATIC MEET SAM — v5.9
+  // ══════════════════════════════════════════════════════
+
+  const MS = {
+    storyRaw: '',
+    samResponse: ''
+  };
+
+  const MS_THINKING_LINES = [
+    'Reading your story...',
+    'Finding the content in it...',
+    'Understanding your voice...',
+    'Mapping your audience...',
+    'Building your profile...'
+  ];
+
+  function meetSamInit() {
+    // Start ambient glow
+    setTimeout(() => {
+      document.querySelectorAll('.ms-orb').forEach(o => o.classList.add('glow'));
+    }, 300);
+
+    // Typewriter opening line
+    const bubble = document.getElementById('msOpeningBubble');
+    if (!bubble) return;
+    const text = 'Everything amazing in life comes from stories. What\'s yours? Let\'s tell it.';
+    bubble.innerHTML = '';
+    let i = 0;
+    const cursor = document.createElement('span');
+    cursor.className = 'ms-cursor';
+    bubble.appendChild(cursor);
+
+    const type = () => {
+      if (i < text.length) {
+        cursor.insertAdjacentText('beforebegin', text[i]);
+        i++;
+        setTimeout(type, i < 20 ? 40 : 28);
+      } else {
+        // Done typing — remove cursor, show path choice
+        cursor.remove();
+        setTimeout(() => {
+          const choice = document.getElementById('msPathChoice');
+          if (choice) choice.style.display = 'flex';
+        }, 500);
+      }
+    };
+    setTimeout(type, 600);
+  }
+
+  function meetSamChooseTalk() {
+    document.getElementById('msPathChoice').style.display = 'none';
+    const talkPath = document.getElementById('msTalkPath');
+    talkPath.style.display = 'flex';
+
+    // Type SAM's talk prompt
+    const prompt = document.getElementById('msTalkPrompt');
+    const promptText = 'Tell me your story. Start anywhere — I\'ll find the content in it.';
+    let i = 0;
+    const cursor = document.createElement('span');
+    cursor.className = 'ms-cursor';
+    prompt.appendChild(cursor);
+    const type = () => {
+      if (i < promptText.length) {
+        cursor.insertAdjacentText('beforebegin', promptText[i]);
+        i++;
+        setTimeout(type, 25);
+      } else {
+        cursor.remove();
+        document.getElementById('meetSamStoryInput').focus();
+      }
+    };
+    setTimeout(type, 300);
+
+    // Shift ambient to pink
+    document.querySelector('.ms-orb-1').style.background = '#F472B6';
+    document.querySelector('.ms-orb-2').style.background = '#A78BFA';
+  }
+
+  function meetSamChooseWizard() {
+    // Hide path choice, go straight to wizard step 0
+    document.getElementById('msPathChoice').style.display = 'none';
+    startWizard('new');
+  }
+
+  function meetSamSendStory() {
+    const input = document.getElementById('meetSamStoryInput');
+    const story = input.value.trim();
+    if (!story || story.length < 5) {
+      input.focus();
+      input.style.borderColor = 'rgba(244,114,182,0.6)';
+      setTimeout(() => input.style.borderColor = '', 1500);
+      return;
+    }
+    MS.storyRaw = story;
+
+    // Hide input, show thinking
+    document.getElementById('msTalkPath').style.display = 'none';
+    const thinking = document.getElementById('msThinking');
+    thinking.style.display = 'block';
+
+    // Shift ambient to cyan while thinking
+    document.querySelector('.ms-orb-1').style.background = '#38BDF8';
+    document.querySelector('.ms-orb-3').style.opacity = '0.12';
+
+    // Rotate thinking text
+    let tIdx = 0;
+    const thinkingTextEl = document.getElementById('msThinkingText');
+    const thinkInterval = setInterval(() => {
+      tIdx = (tIdx + 1) % MS_THINKING_LINES.length;
+      thinkingTextEl.style.opacity = '0';
+      setTimeout(() => {
+        thinkingTextEl.textContent = MS_THINKING_LINES[tIdx];
+        thinkingTextEl.style.opacity = '1';
+      }, 300);
+    }, 2000);
+
+    // Call Anthropic API
+    meetSamCallAPI(story, thinkInterval);
+  }
+
+  async function meetSamCallAPI(story, thinkInterval) {
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 200,
+          system: `You are SAM — a creative intelligence who finds the real story inside what creators share. You are warm, sharp, and direct. You do not use filler phrases. When someone tells you their story, you reflect back the emotional core in 2-3 sentences — what makes them unique, what their audience will connect with. End with one sentence that makes them feel ready to build. Never use bullet points. Never say "I can see that" or "It sounds like". Speak directly, as if you already know them.`,
+          messages: [{ role: 'user', content: story }]
+        })
+      });
+      const data = await res.json();
+      clearInterval(thinkInterval);
+
+      let responseText = 'You have a real story here. Let\'s build something with it.';
+      if (data.content && data.content[0] && data.content[0].text) {
+        responseText = data.content[0].text;
+      }
+      MS.samResponse = responseText;
+      meetSamShowResponse(responseText);
+
+    } catch(err) {
+      clearInterval(thinkInterval);
+      // Fallback if API fails
+      meetSamShowResponse('You have a real story here. Let\'s make sure the right people hear it.');
+    }
+  }
+
+  function meetSamShowResponse(text) {
+    // Hide thinking
+    document.getElementById('msThinking').style.display = 'none';
+
+    // Shift ambient back to purple/pink
+    document.querySelector('.ms-orb-1').style.background = '#A78BFA';
+    document.querySelector('.ms-orb-2').style.background = '#F472B6';
+
+    // Show response wrap
+    const wrap = document.getElementById('msResponseWrap');
+    wrap.style.display = 'flex';
+
+    // Typewriter response
+    const bubble = document.getElementById('msResponseBubble');
+    bubble.innerHTML = '';
+    let i = 0;
+    const cursor = document.createElement('span');
+    cursor.className = 'ms-cursor';
+    bubble.appendChild(cursor);
+
+    const type = () => {
+      if (i < text.length) {
+        cursor.insertAdjacentText('beforebegin', text[i]);
+        i++;
+        setTimeout(type, 22);
+      } else {
+        cursor.remove();
+        // Show go button
+        setTimeout(() => {
+          const btn = document.getElementById('msGoBtn');
+          btn.style.display = 'block';
+          btn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 400);
+      }
+    };
+    setTimeout(type, 200);
+
+    wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  const _origOpenWizardPage = typeof openWizardPage === 'function' ? openWizardPage : null;
+
+
+  function openWizardPage() {
   document.getElementById('wizardPage').classList.add('open');
   document.body.style.overflow = 'hidden';
   showWizardStep('entry');
+  setTimeout(() => { if(typeof meetSamInit === 'function') meetSamInit(); }, 100);
 }
 
 function closeWizard() {
@@ -9171,87 +9622,78 @@ if (localStorage.getItem('sam_dev') === 'true') {
     <div class="wizard-step active" id="wiz-entry">
       <div class="meet-sam-wrap">
 
-        <!-- SAM opening line -->
-        <div class="meet-sam-bubble-row">
+        <!-- Ambient glow orbs — animated behind content -->
+        <div class="ms-ambient" id="msAmbient">
+          <div class="ms-orb ms-orb-1"></div>
+          <div class="ms-orb ms-orb-2"></div>
+          <div class="ms-orb ms-orb-3"></div>
+        </div>
+
+        <!-- SAM opening line — typewriter -->
+        <div class="meet-sam-bubble-row" id="msBubble1">
           <div class="meet-sam-avatar">S</div>
-          <div class="meet-sam-bubble">
-            Everything amazing in life comes from stories. What's yours? Let's tell it.
-          </div>
+          <div class="meet-sam-bubble" id="msOpeningBubble"></div>
         </div>
 
-        <!-- User story input -->
-        <div class="meet-sam-input-wrap" id="meetSamInputWrap">
-          <textarea
-            id="meetSamStoryInput"
-            class="meet-sam-textarea"
-            placeholder="Start anywhere. I'll find the content in it."
-            rows="4"
-            oninput="if(typeof meetSamCheckInput==='function')meetSamCheckInput()"
-          ></textarea>
+        <!-- Path choice — appears after opening line types out -->
+        <div class="ms-path-choice" id="msPathChoice" style="display:none;">
+          <button class="ms-path-btn ms-path-talk" onclick="meetSamChooseTalk()">
+            <span class="ms-path-icon">✦</span>
+            <span class="ms-path-label">Let's talk</span>
+            <span class="ms-path-sub">Tell me your story — I'll find the content in it</span>
+          </button>
+          <button class="ms-path-btn ms-path-wizard" onclick="meetSamChooseWizard()">
+            <span class="ms-path-icon">→</span>
+            <span class="ms-path-label">Take me through it</span>
+            <span class="ms-path-sub">Step by step — structured setup</span>
+          </button>
         </div>
 
-        <!-- Follow-up bubbles — appear one at a time after story typed -->
-        <div class="meet-sam-followups" id="meetSamFollowups" style="display:none;">
-
-          <!-- Q1: Platform -->
-          <div class="meet-sam-followup" id="msq1">
-            <div class="meet-sam-bubble-row">
-              <div class="meet-sam-avatar">S</div>
-              <div class="meet-sam-bubble">Where do you want this story to land?</div>
-            </div>
-            <div class="meet-sam-pills" id="msq1pills">
-              <button class="meet-sam-pill" onclick="meetSamSelect(this,'platform','TikTok')">TikTok</button>
-              <button class="meet-sam-pill" onclick="meetSamSelect(this,'platform','Instagram')">Instagram</button>
-              <button class="meet-sam-pill" onclick="meetSamSelect(this,'platform','YouTube')">YouTube</button>
-              <button class="meet-sam-pill" onclick="meetSamSelect(this,'platform','LinkedIn')">LinkedIn</button>
-              <button class="meet-sam-pill" onclick="meetSamSelect(this,'platform','Pinterest')">Pinterest</button>
-              <button class="meet-sam-pill" onclick="meetSamSelect(this,'platform','X')">X</button>
-            </div>
-          </div>
-
-          <!-- Q2: Audience — appears after Q1 answered -->
-          <div class="meet-sam-followup" id="msq2" style="display:none;">
-            <div class="meet-sam-bubble-row">
-              <div class="meet-sam-avatar">S</div>
-              <div class="meet-sam-bubble">Who needs to hear this most?</div>
-            </div>
-            <div class="meet-sam-pills">
-              <button class="meet-sam-pill" onclick="meetSamSelect(this,'audience','Beginners finding their footing')">Beginners finding their footing</button>
-              <button class="meet-sam-pill" onclick="meetSamSelect(this,'audience','People who've tried everything')">People who've tried everything</button>
-              <button class="meet-sam-pill" onclick="meetSamSelect(this,'audience','Builders &amp; creators')">Builders &amp; creators</button>
-              <button class="meet-sam-pill" onclick="meetSamSelect(this,'audience','People just like me')">People just like me</button>
-            </div>
-          </div>
-
-          <!-- Q3: Tone — appears after Q2 answered -->
-          <div class="meet-sam-followup" id="msq3" style="display:none;">
-            <div class="meet-sam-bubble-row">
-              <div class="meet-sam-avatar">S</div>
-              <div class="meet-sam-bubble">How do you want to sound?</div>
-            </div>
-            <div class="meet-sam-pills">
-              <button class="meet-sam-pill" onclick="meetSamSelect(this,'tone','Raw &amp; real')">Raw &amp; real</button>
-              <button class="meet-sam-pill" onclick="meetSamSelect(this,'tone','Warm &amp; encouraging')">Warm &amp; encouraging</button>
-              <button class="meet-sam-pill" onclick="meetSamSelect(this,'tone','Bold &amp; direct')">Bold &amp; direct</button>
-              <button class="meet-sam-pill" onclick="meetSamSelect(this,'tone','Smart &amp; composed')">Smart &amp; composed</button>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- CTA — appears after all 3 answered -->
-        <div class="meet-sam-cta-wrap" id="meetSamCTA" style="display:none;">
+        <!-- TALK PATH: story input -->
+        <div class="ms-talk-path" id="msTalkPath" style="display:none;">
           <div class="meet-sam-bubble-row">
             <div class="meet-sam-avatar">S</div>
-            <div class="meet-sam-bubble">I've got what I need. Let's build something real.</div>
+            <div class="meet-sam-bubble" id="msTalkPrompt"></div>
           </div>
-          <button class="meet-sam-go-btn" onclick="meetSamHandoff()">
-            ✦ Let's go →
+          <div class="ms-story-input-wrap">
+            <textarea
+              id="meetSamStoryInput"
+              class="meet-sam-textarea"
+              placeholder="Start anywhere. I'll find the content in it."
+              rows="5"
+            ></textarea>
+            <button class="ms-send-btn" onclick="meetSamSendStory()" id="msSendBtn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- SAM THINKING state -->
+        <div class="ms-thinking" id="msThinking" style="display:none;">
+          <div class="meet-sam-bubble-row">
+            <div class="meet-sam-avatar ms-avatar-pulse">S</div>
+            <div class="ms-thinking-bubble">
+              <div class="ms-thinking-dots">
+                <span></span><span></span><span></span>
+              </div>
+              <div class="ms-thinking-text" id="msThinkingText">Reading your story...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SAM RESPONSE — types out after thinking -->
+        <div class="ms-response-wrap" id="msResponseWrap" style="display:none;">
+          <div class="meet-sam-bubble-row">
+            <div class="meet-sam-avatar">S</div>
+            <div class="meet-sam-bubble ms-response-bubble" id="msResponseBubble"></div>
+          </div>
+          <button class="meet-sam-go-btn" id="msGoBtn" style="display:none;" onclick="meetSamHandoff()">
+            ✦ Let's build this →
           </button>
         </div>
 
         <!-- Skip link -->
-        <button class="wizard-entry-ghost" onclick="closeWizard()" style="margin-top:24px;">
+        <button class="wizard-entry-ghost" onclick="closeWizard()" style="margin-top:32px;display:block;text-align:center;">
           Open advanced tools instead
         </button>
 
