@@ -367,8 +367,58 @@ Return ONLY this JSON — be CONCISE in every field to fit within token limits:
 
 CRITICAL: Return ONLY valid JSON. Keep ALL fields concise — the JSON must be complete and valid.`;
 
-      // ← KEY FIX: increased from 6000 to 8000 to prevent truncation
+        // ← KEY FIX: increased from 6000 to 8000 to prevent truncation
       return await streamCall(playbookPrompt, moment, 12000);
+    }
+
+    // ── PLAYBOOK ROUTING — non-moment storyTypes branch to correct tool ───────
+    const storyTypeRouted = req.body.storyType || 'moment';
+
+    if (storyTypeRouted === 'plan') {
+      // "I need a content plan" → Blueprint (calendar)
+      const platList = req.body.platforms && req.body.platforms.length > 0
+        ? req.body.platforms
+        : ['TikTok', 'Instagram Reels', 'YouTube Shorts'];
+      const calPrompt = `${base}
+WIZARD CONTEXT: ${req.body.wizardContext || ''}
+Build a 7-day content posting plan tailored to this creator. Rotate across: ${platList.join(', ')}.
+Each caption must respect that platform's exact character limit.
+Return ONLY: {"days":[{"platform":"platform name","post_type":"Reel OR Short OR Post OR Video","content":"ready-to-post caption with hashtags"}]}`;
+      return await streamCall(calPrompt, moment || req.body.wizardContext || '', 2400);
+    }
+
+    if (storyTypeRouted === 'idea') {
+      // "I have a content idea" → Spark (ideas)
+      const platList = req.body.platforms && req.body.platforms.length > 0
+        ? req.body.platforms
+        : ['TikTok', 'Instagram Reels', 'YouTube'];
+      const ideasPrompt = `${base}
+WIZARD CONTEXT: ${req.body.wizardContext || ''}
+Generate exactly 5 specific, compelling content ideas this creator could actually make based on their context.
+Return ONLY: {"ideas":[{"title":"specific content idea","why":"one sentence on why this resonates with their specific audience","best_platform":"single platform name"}]}`;
+      return await streamCall(ideasPrompt, moment || req.body.wizardContext || '', 1200);
+    }
+
+    if (storyTypeRouted === 'concept') {
+      // "I want a unique video concept" → Vision (concept)
+      const conceptPlatforms = req.body.platforms && req.body.platforms.length > 0
+        ? req.body.platforms
+        : ['TikTok', 'YouTube Shorts'];
+      const conceptPrompt = `${base}
+WIZARD CONTEXT: ${req.body.wizardContext || ''}
+Generate ONE bold, specific video concept for this creator to actually make.
+Assign a real virality_score 60-100 based on genuine concept strength.
+Return ONLY: {"title":"6-10 word concept title","format":"Reel OR Short OR YouTube video OR etc","premise":"2-3 sentences","why_it_works":"2 sentences","production_notes":["note 1","note 2","note 3"],"hook_line":"exact first sentence the creator speaks on camera","twist":"the unexpected angle that makes this memorable","virality_score":72}`;
+      return await streamCall(conceptPrompt, moment || req.body.wizardContext || '', 1200);
+    }
+
+    if (storyTypeRouted === 'analyse') {
+      // "I want to analyse what's working" → Lens (analytics text mode)
+      const analysePrompt = `${base}
+WIZARD CONTEXT: ${req.body.wizardContext || ''}
+Based on this creator's context, analyse what content strategy is likely working and what to improve.
+Return ONLY: {"type":"analytics","headline":"the single biggest strategic insight in one punchy sentence","whats_working":["specific observation 1","specific observation 2","specific observation 3"],"whats_not":["specific area to improve 1","specific area to improve 2"],"post_next":["specific content idea 1","specific content idea 2","specific content idea 3"],"growth_move":"one bold, specific strategic move to make this week"}`;
+      return await streamCall(analysePrompt, moment || req.body.wizardContext || '', 1000);
     }
 
     // ── CALENDAR ─────────────────────────────────────────────────────────────
