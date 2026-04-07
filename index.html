@@ -5079,7 +5079,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
     <p style="font-size:clamp(15px,2vw,20px);line-height:1.7;color:var(--text2);max-width:540px;margin:0 auto 36px;">Other tools hand you hashtags.<br/>SAM gives your stories life.</p>
 
     <!-- CTA -->
-    <button onclick="openWizardPage()" style="background:linear-gradient(135deg,#FBB824,#F472B6);color:#09080F;font-family:'Sora',sans-serif;font-size:clamp(15px,2vw,18px);font-weight:800;padding:16px 36px;border:none;border-radius:50px;cursor:pointer;box-shadow:0 0 40px rgba(251,184,36,0.3);letter-spacing:-0.01em;margin-bottom:16px;transition:all 0.25s;">&#10022; Run the SAM Engine free &rarr;</button>
+    <button onclick="(getTrialState().email?openWizardPage():openTrialCapture())" style="background:linear-gradient(135deg,#FBB824,#F472B6);color:#09080F;font-family:'Sora',sans-serif;font-size:clamp(15px,2vw,18px);font-weight:800;padding:16px 36px;border:none;border-radius:50px;cursor:pointer;box-shadow:0 0 40px rgba(251,184,36,0.3);letter-spacing:-0.01em;margin-bottom:16px;transition:all 0.25s;">&#10022; Run the SAM Engine free &rarr;</button>
 
     <!-- See plans link -->
     <div style="margin-bottom:60px;">
@@ -5245,8 +5245,8 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
         <div class="char-hint"><span id="pulseChar">0</span> / 1000</div>
         <div class="chips">
           <span class="chips-label">Try:</span>
-          <button class="chip" onclick="fillInp('pulseInp','My parents flew in and saw the cottage renovation for the first time. They saw the big white blooming tree in the front yard and both said wow. I had my camera. Most emotional moment in 6 months.')">Parents + tree</button>
-          <button class="chip" onclick="fillInp('pulseInp','Found termite damage halfway through the renovation. Set me back two weeks and cost more than planned. Fixed it entirely myself — nobody taught me how.')">Termite setback</button>
+          <button class="chip" onclick="fillInp('pulseInp','I almost quit last month. Three months of posting and my best video had 200 views. Then a stranger DMed me saying my video helped them through their divorce.')">Almost quit</button>
+          <button class="chip" onclick="fillInp('pulseInp','Taught myself something I had no business learning. Made every mistake possible. Finally got it right — here is what I wish someone told me.')">Self-taught lesson</button>
         </div>
         <div class="loader" id="pulseLoader"><div class="loader-dots"><span style="background:var(--pulse)"></span><span style="background:var(--pulse)"></span><span style="background:var(--pulse)"></span></div><div class="loader-text" id="pulseLoaderText">SAM is reading your moment...</div></div>
         <div class="err-box" id="pulseErr"></div>
@@ -10401,7 +10401,7 @@ function openWizardFromNav() {
         <div class="pro-feat-row"><div class="pro-feat-icon fi-no"></div><span class="feat-muted">Lead magnet rebuilds</span></div>
         <div class="pro-feat-row"><div class="pro-feat-icon fi-no"></div><span class="feat-muted">Priority speed</span></div>
       </div>
-      <button class="pro-btn pro-btn-ghost" onclick="closeProPage()">Try it free →</button>
+      <button class="pro-btn pro-btn-ghost" onclick="closeProPage();openTrialCapture();">Try it free →</button>
     </div>
 
     <!-- CREATOR -->
@@ -10563,7 +10563,7 @@ function openWizardFromNav() {
   <div class="pro-bottom-cta">
     <div class="pro-bottom-title">Your next piece of content<br/>is 60 seconds away.</div>
     <div class="pro-bottom-sub">Try SAM free — no card, no paywall, no catch.</div>
-    <button class="pro-bottom-btn" onclick="handleProSignup()">Try SAM free →</button>
+    <button class="pro-bottom-btn" onclick="closeProPage();openTrialCapture();">Try SAM free →</button>
     <div class="pro-bottom-note">48 hours full access · All 5 tools · No card needed · Cancel anytime</div>
   </div>
 
@@ -10641,7 +10641,7 @@ function openWizardFromNav() {
       <div class="trial-success-icon">🎉</div>
       <div class="trial-success-title">You're in — 48hrs free!</div>
       <div class="trial-success-sub">All 5 tools, unlimited runs, zero limits. Your clock starts now.<br/><br/>We'll email you before your trial ends with everything you need to keep going.</div>
-      <button class="trial-success-btn" onclick="closeTrial()">Let's go create something →</button>
+      <button class="trial-success-btn" onclick="closeTrial();openWizardPage();">Let's go create something →</button>
     </div>
 
   </div>
@@ -11789,15 +11789,15 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
           <div style="flex:1;height:1px;background:rgba(255,255,255,0.08);"></div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;width:100%;">
-          <button onclick="window.location.href='#go-pro';closeTourSplash();"
+          <button onclick="closeTourSplash();setTimeout(()=>openProPage(),200);"
             style="padding:10px 6px;border:1px solid rgba(244,114,182,0.3);border-radius:12px;background:rgba(244,114,182,0.08);color:#F472B6;font-family:'Sora',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;line-height:1.3;">
             Creator<br/><span style="font-size:13px;">$19/mo</span>
           </button>
-          <button onclick="window.location.href='#go-pro';closeTourSplash();"
+          <button onclick="closeTourSplash();setTimeout(()=>openProPage(),200);"
             style="padding:10px 6px;border:1px solid rgba(167,139,250,0.4);border-radius:12px;background:rgba(167,139,250,0.12);color:#A78BFA;font-family:'Sora',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;line-height:1.3;box-shadow:0 0 16px rgba(167,139,250,0.2);">
             Pro<br/><span style="font-size:13px;">$39/mo</span>
           </button>
-          <button onclick="window.location.href='#go-pro';closeTourSplash();"
+          <button onclick="closeTourSplash();setTimeout(()=>openProPage(),200);"
             style="padding:10px 6px;border:1px solid rgba(251,191,36,0.3);border-radius:12px;background:rgba(251,191,36,0.08);color:#FBBF24;font-family:'Sora',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;line-height:1.3;">
             Studio<br/><span style="font-size:13px;">$99/mo</span>
           </button>
