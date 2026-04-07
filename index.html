@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v5.86)
+       UNIFIED HERO (v5.87)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4301,7 +4301,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v5.86
+       CINEMATIC MEET SAM — v5.87
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4751,7 +4751,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v5.86
+       SAM GUIDED TOUR SPLASH — v5.87
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5053,7 +5053,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 <main>
 
 
-  <!-- ── UNIFIED HERO v5.86 ── -->
+  <!-- ── UNIFIED HERO v5.87 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7130,7 +7130,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v5.86 ──
+// ── RUN TRACKING v5.87 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 5;
@@ -7612,6 +7612,87 @@ function printToolOutput(outputId, toolName) {
     </div>
   </div>
 
+
+<!-- ══ SAM ECOSYSTEM OVERLAY ══ -->
+<div id="ecosystemOverlay" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(9,8,15,0.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);animation:fade-in 0.3s ease;">
+  <div style="max-width:520px;width:100%;margin:0 auto;padding:40px 24px;display:flex;flex-direction:column;gap:24px;height:100%;justify-content:center;">
+    
+    <!-- Header -->
+    <div style="text-align:center;">
+      <div style="font-size:11px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:rgba(167,139,250,0.6);margin-bottom:10px;">✦ THE SAM ECOSYSTEM</div>
+      <div style="font-family:'Sora',sans-serif;font-size:26px;font-weight:700;color:#F0ECFF;line-height:1.2;margin-bottom:8px;">Five tools. One story.<br/>All working together.</div>
+      <div style="font-size:14px;color:rgba(240,236,255,0.5);line-height:1.6;">You're currently inside the <strong style="color:#A78BFA;">SAM Engine</strong> — the story builder.<br/>Here's everything else SAM can do with your story.</div>
+    </div>
+
+    <!-- Tools grid -->
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      
+      <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);border-radius:14px;">
+        <div style="width:40px;height:40px;border-radius:12px;background:rgba(244,114,182,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><path d="M5 8h18M5 13h11M5 18h14" stroke="#F472B6" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div style="flex:1;">
+          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#F0ECFF;">The Pulse</div>
+          <div style="font-size:12px;color:rgba(240,236,255,0.5);">Any moment → hook, script & captions</div>
+        </div>
+        <div style="font-size:10px;font-weight:700;color:#A78BFA;background:rgba(167,139,250,0.15);padding:3px 8px;border-radius:20px;">You are here</div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:14px;">
+        <div style="width:40px;height:40px;border-radius:12px;background:rgba(167,139,250,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><path d="M14 4v3M14 21v3M3 14H6M22 14h3M14 9a5 5 0 100 10 5 5 0 000-10z" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#F0ECFF;">The Spark</div>
+          <div style="font-size:12px;color:rgba(240,236,255,0.5);">Never run out of things to post</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.15);border-radius:14px;">
+        <div style="width:40px;height:40px;border-radius:12px;background:rgba(56,189,248,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><rect x="5" y="7" width="18" height="16" rx="2" stroke="#38BDF8" stroke-width="1.8"/><path d="M5 12h18M10 5v4M18 5v4" stroke="#38BDF8" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#F0ECFF;">Blueprint</div>
+          <div style="font-size:12px;color:rgba(240,236,255,0.5);">Your whole week planned in 30 seconds</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.15);border-radius:14px;">
+        <div style="width:40px;height:40px;border-radius:12px;background:rgba(52,211,153,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><polygon points="11,8 22,14 11,20" fill="#34D399"/><rect x="6" y="8" width="2.5" height="12" rx="1" fill="#34D399"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#F0ECFF;">The Vision</div>
+          <div style="font-size:12px;color:rgba(240,236,255,0.5);">One bold concept nobody else has made</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:14px;">
+        <div style="width:40px;height:40px;border-radius:12px;background:rgba(251,191,36,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="13" r="5" stroke="#FBBF24" stroke-width="1.8"/><circle cx="14" cy="13" r="2" fill="#FBBF24"/><path d="M14 4v3M14 19v3M4 13H7M21 13h3" stroke="#FBBF24" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#F0ECFF;">The Lens</div>
+          <div style="font-size:12px;color:rgba(240,236,255,0.5);">Make people stop scrolling instantly</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Buttons -->
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <button onclick="closeEcosystemOverlay()" style="width:100%;padding:16px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">
+        ← Keep building my story
+      </button>
+      <button onclick="closeEcosystemOverlay();closeWizard();setTimeout(()=>window.scrollTo({top:document.getElementById('tools').offsetTop,behavior:'smooth'}),300);" style="width:100%;padding:14px;background:transparent;border:1px solid rgba(255,255,255,0.12);border-radius:50px;font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:rgba(240,236,255,0.6);cursor:pointer;">
+        Explore all tools →
+      </button>
+    </div>
+
+  </div>
+</div>
+
 </body></html>`);
   win.document.close();
 }
@@ -7657,7 +7738,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v5.86
+  // CINEMATIC MEET SAM — v5.87
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -9448,6 +9529,87 @@ function printPlaybookOnly() {
     </div>
   </div>
 
+
+<!-- ══ SAM ECOSYSTEM OVERLAY ══ -->
+<div id="ecosystemOverlay" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(9,8,15,0.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);animation:fade-in 0.3s ease;">
+  <div style="max-width:520px;width:100%;margin:0 auto;padding:40px 24px;display:flex;flex-direction:column;gap:24px;height:100%;justify-content:center;">
+    
+    <!-- Header -->
+    <div style="text-align:center;">
+      <div style="font-size:11px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:rgba(167,139,250,0.6);margin-bottom:10px;">✦ THE SAM ECOSYSTEM</div>
+      <div style="font-family:'Sora',sans-serif;font-size:26px;font-weight:700;color:#F0ECFF;line-height:1.2;margin-bottom:8px;">Five tools. One story.<br/>All working together.</div>
+      <div style="font-size:14px;color:rgba(240,236,255,0.5);line-height:1.6;">You're currently inside the <strong style="color:#A78BFA;">SAM Engine</strong> — the story builder.<br/>Here's everything else SAM can do with your story.</div>
+    </div>
+
+    <!-- Tools grid -->
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      
+      <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);border-radius:14px;">
+        <div style="width:40px;height:40px;border-radius:12px;background:rgba(244,114,182,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><path d="M5 8h18M5 13h11M5 18h14" stroke="#F472B6" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div style="flex:1;">
+          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#F0ECFF;">The Pulse</div>
+          <div style="font-size:12px;color:rgba(240,236,255,0.5);">Any moment → hook, script & captions</div>
+        </div>
+        <div style="font-size:10px;font-weight:700;color:#A78BFA;background:rgba(167,139,250,0.15);padding:3px 8px;border-radius:20px;">You are here</div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:14px;">
+        <div style="width:40px;height:40px;border-radius:12px;background:rgba(167,139,250,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><path d="M14 4v3M14 21v3M3 14H6M22 14h3M14 9a5 5 0 100 10 5 5 0 000-10z" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#F0ECFF;">The Spark</div>
+          <div style="font-size:12px;color:rgba(240,236,255,0.5);">Never run out of things to post</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.15);border-radius:14px;">
+        <div style="width:40px;height:40px;border-radius:12px;background:rgba(56,189,248,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><rect x="5" y="7" width="18" height="16" rx="2" stroke="#38BDF8" stroke-width="1.8"/><path d="M5 12h18M10 5v4M18 5v4" stroke="#38BDF8" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#F0ECFF;">Blueprint</div>
+          <div style="font-size:12px;color:rgba(240,236,255,0.5);">Your whole week planned in 30 seconds</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.15);border-radius:14px;">
+        <div style="width:40px;height:40px;border-radius:12px;background:rgba(52,211,153,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><polygon points="11,8 22,14 11,20" fill="#34D399"/><rect x="6" y="8" width="2.5" height="12" rx="1" fill="#34D399"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#F0ECFF;">The Vision</div>
+          <div style="font-size:12px;color:rgba(240,236,255,0.5);">One bold concept nobody else has made</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:14px;">
+        <div style="width:40px;height:40px;border-radius:12px;background:rgba(251,191,36,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="13" r="5" stroke="#FBBF24" stroke-width="1.8"/><circle cx="14" cy="13" r="2" fill="#FBBF24"/><path d="M14 4v3M14 19v3M4 13H7M21 13h3" stroke="#FBBF24" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#F0ECFF;">The Lens</div>
+          <div style="font-size:12px;color:rgba(240,236,255,0.5);">Make people stop scrolling instantly</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Buttons -->
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <button onclick="closeEcosystemOverlay()" style="width:100%;padding:16px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">
+        ← Keep building my story
+      </button>
+      <button onclick="closeEcosystemOverlay();closeWizard();setTimeout(()=>window.scrollTo({top:document.getElementById('tools').offsetTop,behavior:'smooth'}),300);" style="width:100%;padding:14px;background:transparent;border:1px solid rgba(255,255,255,0.12);border-radius:50px;font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:rgba(240,236,255,0.6);cursor:pointer;">
+        Explore all tools →
+      </button>
+    </div>
+
+  </div>
+</div>
+
 </body></html>`;
   const win = window.open('', '_blank', 'width=900,height=700');
   if (!win) { document.body.classList.add('print-playbook-only'); window.print(); setTimeout(()=>document.body.classList.remove('print-playbook-only'),1000); return; }
@@ -9467,6 +9629,87 @@ function printLeadMagnetOnly() {
       <!-- Content injected by JS -->
     </div>
   </div>
+
+
+<!-- ══ SAM ECOSYSTEM OVERLAY ══ -->
+<div id="ecosystemOverlay" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(9,8,15,0.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);animation:fade-in 0.3s ease;">
+  <div style="max-width:520px;width:100%;margin:0 auto;padding:40px 24px;display:flex;flex-direction:column;gap:24px;height:100%;justify-content:center;">
+    
+    <!-- Header -->
+    <div style="text-align:center;">
+      <div style="font-size:11px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:rgba(167,139,250,0.6);margin-bottom:10px;">✦ THE SAM ECOSYSTEM</div>
+      <div style="font-family:'Sora',sans-serif;font-size:26px;font-weight:700;color:#F0ECFF;line-height:1.2;margin-bottom:8px;">Five tools. One story.<br/>All working together.</div>
+      <div style="font-size:14px;color:rgba(240,236,255,0.5);line-height:1.6;">You're currently inside the <strong style="color:#A78BFA;">SAM Engine</strong> — the story builder.<br/>Here's everything else SAM can do with your story.</div>
+    </div>
+
+    <!-- Tools grid -->
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      
+      <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);border-radius:14px;">
+        <div style="width:40px;height:40px;border-radius:12px;background:rgba(244,114,182,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><path d="M5 8h18M5 13h11M5 18h14" stroke="#F472B6" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div style="flex:1;">
+          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#F0ECFF;">The Pulse</div>
+          <div style="font-size:12px;color:rgba(240,236,255,0.5);">Any moment → hook, script & captions</div>
+        </div>
+        <div style="font-size:10px;font-weight:700;color:#A78BFA;background:rgba(167,139,250,0.15);padding:3px 8px;border-radius:20px;">You are here</div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:14px;">
+        <div style="width:40px;height:40px;border-radius:12px;background:rgba(167,139,250,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><path d="M14 4v3M14 21v3M3 14H6M22 14h3M14 9a5 5 0 100 10 5 5 0 000-10z" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#F0ECFF;">The Spark</div>
+          <div style="font-size:12px;color:rgba(240,236,255,0.5);">Never run out of things to post</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.15);border-radius:14px;">
+        <div style="width:40px;height:40px;border-radius:12px;background:rgba(56,189,248,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><rect x="5" y="7" width="18" height="16" rx="2" stroke="#38BDF8" stroke-width="1.8"/><path d="M5 12h18M10 5v4M18 5v4" stroke="#38BDF8" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#F0ECFF;">Blueprint</div>
+          <div style="font-size:12px;color:rgba(240,236,255,0.5);">Your whole week planned in 30 seconds</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.15);border-radius:14px;">
+        <div style="width:40px;height:40px;border-radius:12px;background:rgba(52,211,153,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><polygon points="11,8 22,14 11,20" fill="#34D399"/><rect x="6" y="8" width="2.5" height="12" rx="1" fill="#34D399"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#F0ECFF;">The Vision</div>
+          <div style="font-size:12px;color:rgba(240,236,255,0.5);">One bold concept nobody else has made</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:14px;">
+        <div style="width:40px;height:40px;border-radius:12px;background:rgba(251,191,36,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="13" r="5" stroke="#FBBF24" stroke-width="1.8"/><circle cx="14" cy="13" r="2" fill="#FBBF24"/><path d="M14 4v3M14 19v3M4 13H7M21 13h3" stroke="#FBBF24" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#F0ECFF;">The Lens</div>
+          <div style="font-size:12px;color:rgba(240,236,255,0.5);">Make people stop scrolling instantly</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Buttons -->
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <button onclick="closeEcosystemOverlay()" style="width:100%;padding:16px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">
+        ← Keep building my story
+      </button>
+      <button onclick="closeEcosystemOverlay();closeWizard();setTimeout(()=>window.scrollTo({top:document.getElementById('tools').offsetTop,behavior:'smooth'}),300);" style="width:100%;padding:14px;background:transparent;border:1px solid rgba(255,255,255,0.12);border-radius:50px;font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:rgba(240,236,255,0.6);cursor:pointer;">
+        Explore all tools →
+      </button>
+    </div>
+
+  </div>
+</div>
 
 </body></html>`;
   const win = window.open('', '_blank', 'width=900,height=700');
@@ -10450,7 +10693,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v5.86</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v5.87</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -10485,12 +10728,13 @@ if (localStorage.getItem('sam_dev') === 'true') {
 }
 </script>
 <div class="wizard-progress-top" style="position:relative;z-index:850;">
-      <div class="wizard-progress-label" id="wizardProgressLabel">
+      <div class="wizard-progress-label" id="wizardProgressLabel" style="display:flex;align-items:center;gap:10px;">
         <span id="wizardUserIdentity" style="display:none;align-items:center;gap:8px;">
           <img id="wizardHeaderPhoto" src="" style="width:24px;height:24px;border-radius:50%;object-fit:cover;display:none;" />
           <span id="wizardHeaderName" style="font-size:13px;font-weight:700;color:var(--text);"></span>
         </span>
         <span id="wizardDefaultLabel">Building your story</span>
+        <button onclick="openEcosystemOverlay()" style="display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#A78BFA;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);border-radius:20px;padding:3px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.background='rgba(167,139,250,0.2)'" onmouseout="this.style.background='rgba(167,139,250,0.1)'">✦ SAM Ecosystem</button>
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
         <button onclick="devSaveSession()" id="devSaveBtn" style="display:none;font-size:10px;font-weight:700;background:rgba(109,40,217,0.3);color:#A78BFA;border:1px solid rgba(167,139,250,0.3);border-radius:8px;padding:5px 10px;cursor:pointer;">💾 Session</button>
@@ -11388,9 +11632,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v5.86
+// SOFT POPUP v5.87
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v5.86
+// soft popup system removed v5.87
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -11399,7 +11643,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v5.86
+  // SAM GUIDED TOUR — v5.87
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
@@ -11716,6 +11960,15 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
   // Check for magic link token on load
   checkMagicLinkToken();
 
+
+  function openEcosystemOverlay() {
+    const el = document.getElementById('ecosystemOverlay');
+    if (el) { el.style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+  }
+  function closeEcosystemOverlay() {
+    const el = document.getElementById('ecosystemOverlay');
+    if (el) { el.style.display = 'none'; document.body.style.overflow = ''; }
+  }
 </script>
 <div class="ib-toast" id="ibToast"></div>
 
@@ -11726,6 +11979,87 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
       <!-- Content injected by JS -->
     </div>
   </div>
+
+
+<!-- ══ SAM ECOSYSTEM OVERLAY ══ -->
+<div id="ecosystemOverlay" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(9,8,15,0.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);animation:fade-in 0.3s ease;">
+  <div style="max-width:520px;width:100%;margin:0 auto;padding:40px 24px;display:flex;flex-direction:column;gap:24px;height:100%;justify-content:center;">
+    
+    <!-- Header -->
+    <div style="text-align:center;">
+      <div style="font-size:11px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:rgba(167,139,250,0.6);margin-bottom:10px;">✦ THE SAM ECOSYSTEM</div>
+      <div style="font-family:'Sora',sans-serif;font-size:26px;font-weight:700;color:#F0ECFF;line-height:1.2;margin-bottom:8px;">Five tools. One story.<br/>All working together.</div>
+      <div style="font-size:14px;color:rgba(240,236,255,0.5);line-height:1.6;">You're currently inside the <strong style="color:#A78BFA;">SAM Engine</strong> — the story builder.<br/>Here's everything else SAM can do with your story.</div>
+    </div>
+
+    <!-- Tools grid -->
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      
+      <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);border-radius:14px;">
+        <div style="width:40px;height:40px;border-radius:12px;background:rgba(244,114,182,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><path d="M5 8h18M5 13h11M5 18h14" stroke="#F472B6" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div style="flex:1;">
+          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#F0ECFF;">The Pulse</div>
+          <div style="font-size:12px;color:rgba(240,236,255,0.5);">Any moment → hook, script & captions</div>
+        </div>
+        <div style="font-size:10px;font-weight:700;color:#A78BFA;background:rgba(167,139,250,0.15);padding:3px 8px;border-radius:20px;">You are here</div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:14px;">
+        <div style="width:40px;height:40px;border-radius:12px;background:rgba(167,139,250,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><path d="M14 4v3M14 21v3M3 14H6M22 14h3M14 9a5 5 0 100 10 5 5 0 000-10z" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#F0ECFF;">The Spark</div>
+          <div style="font-size:12px;color:rgba(240,236,255,0.5);">Never run out of things to post</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.15);border-radius:14px;">
+        <div style="width:40px;height:40px;border-radius:12px;background:rgba(56,189,248,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><rect x="5" y="7" width="18" height="16" rx="2" stroke="#38BDF8" stroke-width="1.8"/><path d="M5 12h18M10 5v4M18 5v4" stroke="#38BDF8" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#F0ECFF;">Blueprint</div>
+          <div style="font-size:12px;color:rgba(240,236,255,0.5);">Your whole week planned in 30 seconds</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.15);border-radius:14px;">
+        <div style="width:40px;height:40px;border-radius:12px;background:rgba(52,211,153,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><polygon points="11,8 22,14 11,20" fill="#34D399"/><rect x="6" y="8" width="2.5" height="12" rx="1" fill="#34D399"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#F0ECFF;">The Vision</div>
+          <div style="font-size:12px;color:rgba(240,236,255,0.5);">One bold concept nobody else has made</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:14px;">
+        <div style="width:40px;height:40px;border-radius:12px;background:rgba(251,191,36,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="13" r="5" stroke="#FBBF24" stroke-width="1.8"/><circle cx="14" cy="13" r="2" fill="#FBBF24"/><path d="M14 4v3M14 19v3M4 13H7M21 13h3" stroke="#FBBF24" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#F0ECFF;">The Lens</div>
+          <div style="font-size:12px;color:rgba(240,236,255,0.5);">Make people stop scrolling instantly</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Buttons -->
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <button onclick="closeEcosystemOverlay()" style="width:100%;padding:16px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">
+        ← Keep building my story
+      </button>
+      <button onclick="closeEcosystemOverlay();closeWizard();setTimeout(()=>window.scrollTo({top:document.getElementById('tools').offsetTop,behavior:'smooth'}),300);" style="width:100%;padding:14px;background:transparent;border:1px solid rgba(255,255,255,0.12);border-radius:50px;font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:rgba(240,236,255,0.6);cursor:pointer;">
+        Explore all tools →
+      </button>
+    </div>
+
+  </div>
+</div>
 
 </body>
 </html>
