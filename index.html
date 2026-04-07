@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v5.78)
+       UNIFIED HERO (v5.79)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4299,7 +4299,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v5.78
+       CINEMATIC MEET SAM — v5.79
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4749,7 +4749,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v5.78
+       SAM GUIDED TOUR SPLASH — v5.79
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5051,7 +5051,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 <main>
 
 
-  <!-- ── UNIFIED HERO v5.78 ── -->
+  <!-- ── UNIFIED HERO v5.79 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7128,7 +7128,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v5.78 ──
+// ── RUN TRACKING v5.79 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 5;
@@ -7655,7 +7655,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v5.78
+  // CINEMATIC MEET SAM — v5.79
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -9294,19 +9294,6 @@ function savePlaybookHistory(data) {
 }
 
 // ── UTILS ─────────────────────────────────────────────────────────────────────
-// Copy text registry — avoids JSON escaping issues in innerHTML
-window._samCopyRegistry = {};
-window._samCopyId = 0;
-function registerCopy(text) {
-  const id = 'cp_' + (++window._samCopyId);
-  window._samCopyRegistry[id] = text;
-  return id;
-}
-function wizCopyById(btn, id) {
-  const text = window._samCopyRegistry[id] || '';
-  wizCopy(btn, text);
-}
-
 function wizCopy(btn, text) {
   navigator.clipboard.writeText(text).then(() => {
     const orig = btn.textContent;
@@ -9315,6 +9302,19 @@ function wizCopy(btn, text) {
     setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
   });
 }
+
+// Event delegation for next-tool copy buttons
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('.nt-copy-btn');
+  if (!btn) return;
+  const card = btn.closest('[data-copy]');
+  if (card) {
+    wizCopy(btn, card.dataset.copy);
+  } else {
+    const prev = btn.previousElementSibling;
+    if (prev) wizCopy(btn, prev.innerText || prev.textContent);
+  }
+});
 
 function wizCopyEl(btn) {
   const block = btn.closest('.playbook-section') || btn.closest('.out-block') || btn.parentElement;
@@ -9795,7 +9795,7 @@ Return ONLY valid JSON:
     if (el) { _ntIdx = (_ntIdx + 1) % _ntMsgs.length; el.textContent = _ntMsgs[_ntIdx]; }
   }, 2200);
 
-  outputArea.innerHTML = `<div style="padding:18px 20px;max-width:420px;margin:40px auto;background:linear-gradient(135deg,${cfg.color}0d,var(--surface));border:1px solid ${cfg.color}44;border-radius:var(--radius-xl);text-align:center;position:relative;overflow:hidden;">
+  outputArea.innerHTML = `<div style="padding:18px 20px;max-width:420px;margin:80px auto 40px;background:linear-gradient(135deg,${cfg.color}0d,var(--surface));border:1px solid ${cfg.color}44;border-radius:var(--radius-xl);text-align:center;position:relative;overflow:hidden;">
     <div style="position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,${cfg.color}10,transparent);animation:samSweep 2s ease-in-out infinite;pointer-events:none;"></div>
     <div style="font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:${cfg.color};margin-bottom:10px;opacity:0.8;">✦ SAM IS BUILDING</div>
     <div style="font-size:14px;font-weight:600;color:transparent;background:linear-gradient(90deg,#A78BFA,#F472B6,#FBB824,#A78BFA);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;animation:samTextShimmer 2.5s ease infinite;margin-bottom:18px;" id="nextToolLoaderText">SAM is building your ${cfg.label.replace(/^[^ ]+ /, '')}...</div>
@@ -9877,10 +9877,10 @@ Return ONLY valid JSON:
 
     if (tool === 'email' && actualData.sequence) {
       actualData.sequence.forEach(email => {
-        html += `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;">
+        html += `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;" data-copy="${email.subject}\n\n${email.body}">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
             <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${cfg.color};">${email.day}</span>
-            <button class="playbook-copy-btn" onclick="wizCopyById(this, registerCopy(${JSON.stringify(email.subject + '\n\n' + email.body)}))">Copy</button>
+            <button class="playbook-copy-btn nt-copy-btn">Copy</button>
           </div>
           <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;">Subject: ${email.subject}</div>
           <div style="font-size:13px;color:var(--text2);line-height:1.65;white-space:pre-line;">${email.body}</div>
@@ -9888,7 +9888,7 @@ Return ONLY valid JSON:
       });
     } else if (tool === 'week' && actualData.week) {
       actualData.week.forEach(day => {
-        html += `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;display:grid;grid-template-columns:80px 1fr;gap:12px;align-items:start;">
+        html += `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;display:grid;grid-template-columns:80px 1fr;gap:12px;align-items:start;" data-copy="${day.hook}\n\n${day.caption_preview}">
           <div style="text-align:center;">
             <div style="font-size:11px;font-weight:700;color:${cfg.color};text-transform:uppercase;">${day.day}</div>
             <div style="font-size:10px;color:var(--text3);margin-top:3px;">${day.platform}</div>
@@ -9898,13 +9898,13 @@ Return ONLY valid JSON:
             <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;">${day.topic}</div>
             <div style="font-size:12px;color:var(--spark);font-style:italic;margin-bottom:6px;">"${day.hook}"</div>
             <div style="font-size:12px;color:var(--text3);margin-bottom:8px;">${day.caption_preview}</div>
-            <button class="playbook-copy-btn" onclick="wizCopyById(this, registerCopy(${JSON.stringify(day.hook + '\n\n' + day.caption_preview)}))">Copy</button>
+            <button class="playbook-copy-btn nt-copy-btn">Copy</button>
           </div>
         </div>`;
       });
     } else if (tool === 'idea' && actualData.ideas) {
       actualData.ideas.forEach((idea, i) => {
-        html += `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;">
+        html += `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;" data-copy="${idea.title}\n${idea.hook}\n${idea.why}">
           <div style="display:flex;gap:12px;align-items:flex-start;">
             <div style="width:28px;height:28px;border-radius:50%;background:${cfg.color};display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:12px;flex-shrink:0;">${i+1}</div>
             <div style="flex:1;">
@@ -9914,7 +9914,7 @@ Return ONLY valid JSON:
               <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
                 <span style="font-size:10px;padding:2px 8px;background:${cfg.color}22;color:${cfg.color};border-radius:20px;">${idea.platform}</span>
                 <span style="font-size:10px;padding:2px 8px;background:rgba(255,255,255,0.05);color:var(--text3);border-radius:20px;">${idea.format}</span>
-                <button class="playbook-copy-btn" onclick="wizCopyById(this, registerCopy(${JSON.stringify(idea.title + '\n' + idea.hook + '\n' + idea.why)}))">Copy</button>
+                <button class="playbook-copy-btn nt-copy-btn">Copy</button>
               </div>
             </div>
           </div>
@@ -9922,7 +9922,7 @@ Return ONLY valid JSON:
       });
     } else if (tool === 'concept' && actualData.concept) {
       const c2 = actualData.concept;
-      html += `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;">
+      html += `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;" data-copy="${c2.title}\n\n${c2.hook}\n\n${c2.premise}">
         <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${cfg.color};margin-bottom:6px;">Video Title</div>
         <div style="font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--text);margin-bottom:16px;">${c2.title}</div>
         <div style="font-size:13px;color:var(--spark);font-style:italic;padding:12px;background:rgba(167,139,250,0.08);border-radius:var(--radius);margin-bottom:16px;">"${c2.hook}"</div>
@@ -9930,7 +9930,7 @@ Return ONLY valid JSON:
         ${c2.structure ? `<div style="margin-bottom:16px;"><div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;">Structure</div>${c2.structure.map((b,i)=>`<div style="display:flex;gap:10px;margin-bottom:6px;"><span style="color:${cfg.color};font-weight:700;font-size:12px;">${i+1}.</span><span style="font-size:13px;color:var(--text2);">${b}</span></div>`).join('')}</div>` : ''}
         <div style="font-size:12px;color:var(--text3);padding:10px;background:rgba(255,255,255,0.03);border-radius:var(--radius);margin-bottom:10px;"><strong style="color:var(--text2);">Why it works:</strong> ${c2.why_it_works}</div>
         <div style="font-size:12px;color:var(--text3);margin-bottom:16px;"><strong style="color:var(--text2);">Thumbnail:</strong> ${c2.thumbnail_direction}</div>
-        <button class="playbook-copy-btn" onclick="wizCopyById(this, registerCopy(${JSON.stringify(c2.title + '\n\n' + c2.hook + '\n\n' + c2.premise)}))">Copy concept</button>
+        <button class="playbook-copy-btn nt-copy-btn">Copy concept</button>
       </div>`;
     }
 
@@ -10426,7 +10426,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v5.78</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v5.79</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -11295,9 +11295,6 @@ if (localStorage.getItem('sam_dev') === 'true') {
     </button>
   </div>
 
-  <!-- NEXT TOOL OUTPUT — permanent container so DOM insertion always works -->
-  <div id="nextToolOutput" style="margin:0 0 8px;"></div>
-
   <!-- PLAYBOOK PRINT BAR -->
   <div class="playbook-print-bar" id="playbookPrintBar" style="display:none;flex-wrap:wrap;gap:8px;">
     <button class="playbook-new-btn" onclick="showWizardStep('10')" style="flex-shrink:0;">← Back</button>
@@ -11312,7 +11309,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
   </div>
 
   <!-- What's next banner — slim top notification bar -->
-  <div id="tourNextBanner" style="display:none;position:fixed;top:0;left:0;right:0;z-index:840;background:linear-gradient(135deg,#6D28D9,#A78BFA 50%,#F472B6);padding:0;">
+  <div id="tourNextBanner" style="display:none;position:fixed;top:48px;left:0;right:0;z-index:840;background:linear-gradient(135deg,#6D28D9,#A78BFA 50%,#F472B6);padding:0;">
     <button onclick="closeWizard();setTimeout(()=>fireTourSplash(0),400);"
       style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 20px;background:none;border:none;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#fff;cursor:pointer;letter-spacing:0.02em;">
       <div style="width:7px;height:7px;border-radius:50%;background:#fff;animation:pulse-dot 1.5s ease-in-out infinite;flex-shrink:0;"></div>
@@ -11363,9 +11360,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v5.78
+// SOFT POPUP v5.79
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v5.78
+// soft popup system removed v5.79
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -11374,7 +11371,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v5.78
+  // SAM GUIDED TOUR — v5.79
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
