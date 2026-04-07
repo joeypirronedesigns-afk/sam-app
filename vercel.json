@@ -22,8 +22,7 @@
       "maxDuration": 10
     },
     "api/stripe-webhook.js": {
-      "maxDuration": 10,
-      "bodyParser": false
+      "maxDuration": 10
     },
     "api/auth.js": {
       "maxDuration": 10
