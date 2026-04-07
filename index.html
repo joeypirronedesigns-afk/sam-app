@@ -5194,7 +5194,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
           <div style="font-size:13px;color:var(--text3);line-height:1.6;">Script, captions for every platform, b-roll cues, audience profile, and a lead magnet. Ready to post.</div>
         </div>
       </div>
-      <button onclick="openWizardPage()" style="margin-top:40px;background:linear-gradient(135deg,#FBB824,#F472B6);color:#09080F;font-family:'Sora',sans-serif;font-size:16px;font-weight:800;padding:16px 36px;border:none;border-radius:50px;cursor:pointer;box-shadow:0 0 30px rgba(251,184,36,0.25);">&#10022; Start free — no card needed &rarr;</button>
+      <button onclick="getTrialState().email?openWizardPage():openTrialCapture()" style="margin-top:40px;background:linear-gradient(135deg,#FBB824,#F472B6);color:#09080F;font-family:'Sora',sans-serif;font-size:16px;font-weight:800;padding:16px 36px;border:none;border-radius:50px;cursor:pointer;box-shadow:0 0 30px rgba(251,184,36,0.25);">&#10022; Start free — no card needed &rarr;</button>
     </div>
 
     <!-- THE PULSE -->
