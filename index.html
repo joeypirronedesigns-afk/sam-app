@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v5.79)
+       UNIFIED HERO (v5.80)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -2598,6 +2598,7 @@
     @media(min-width:768px){ .wizard-progress-wrap { padding: 16px 48px 14px; } }
 
     .wizard-progress-top {
+      padding-top: 52px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -4299,7 +4300,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v5.79
+       CINEMATIC MEET SAM — v5.80
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4749,7 +4750,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v5.79
+       SAM GUIDED TOUR SPLASH — v5.80
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5051,7 +5052,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 <main>
 
 
-  <!-- ── UNIFIED HERO v5.79 ── -->
+  <!-- ── UNIFIED HERO v5.80 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7128,7 +7129,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v5.79 ──
+// ── RUN TRACKING v5.80 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 5;
@@ -7655,7 +7656,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v5.79
+  // CINEMATIC MEET SAM — v5.80
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -9414,8 +9415,11 @@ async function downloadPDF(type) {
 function printPlaybookOnly() {
   const playbookEl = document.getElementById('wizardPlaybook');
   if (!playbookEl) { window.print(); return; }
+  const nextToolEl = document.getElementById('nextToolOutput');
+  const nextToolHTML = nextToolEl && nextToolEl.innerHTML.trim() ? 
+    `<div style="margin-top:32pt;padding-top:24pt;border-top:2px solid #e8e4f0;"><div style="font-family:'Sora',Arial;font-size:14pt;font-weight:700;color:#09080F;margin-bottom:16pt;">What SAM built next</div>${nextToolEl.innerHTML}</div>` : '';
   const brandColor = (document.getElementById('leadMagnetDoc')||{}).getAttribute?.('data-brand-color')||'#7C3AED';
-  const printHTML = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><title>SAM Engine Output</title><link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/><style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}@page{size:A4;margin:12mm 16mm}@page :first{margin-top:0}body{font-family:'Inter',Arial,sans-serif;font-size:10.5pt;line-height:1.6;color:#1a1a2e;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}.playbook-cover{background:linear-gradient(135deg,#09080F 0%,#1a0a2e 50%,#0d0527 100%)!important;color:white;padding:60px 48px;page-break-after:always;min-height:200mm;display:flex;flex-direction:column;justify-content:center}.playbook-cover-badge{background:rgba(167,139,250,0.2);border:1px solid rgba(167,139,250,0.4);color:#A78BFA;padding:6px 16px;border-radius:30px;display:inline-block;font-size:9pt;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:24px}.playbook-cover-title{font-family:'Sora',Arial;font-size:36pt;font-weight:800;color:#fff;line-height:1.05;margin-bottom:20px}.playbook-cover-title em{color:#A78BFA;font-style:normal}.playbook-cover-meta{font-size:11pt;color:rgba(240,236,255,0.6);margin-top:32px;padding-top:24px;border-top:1px solid rgba(255,255,255,0.1)}.playbook-section{page-break-inside:avoid;margin-bottom:22pt;padding-bottom:22pt;border-bottom:1px solid #e8e4f0}.playbook-section:last-child{border-bottom:none}.playbook-section-num{font-size:8pt;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#A78BFA;margin-bottom:4pt}.playbook-section-title{font-family:'Sora',Arial;font-size:16pt;font-weight:700;color:#09080F;margin-bottom:10pt}.playbook-card{background:#f7f5ff;border:1px solid #e0d9f7;border-radius:8pt;padding:12pt 14pt;margin-bottom:8pt;page-break-inside:avoid}.playbook-card-label{font-size:7.5pt;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#7C3AED;margin-bottom:6pt}.playbook-card-text{font-size:10pt;color:#1a1a2e;line-height:1.65}.playbook-hook{background:linear-gradient(135deg,rgba(109,40,217,.08),rgba(244,114,182,.05));border:1px solid rgba(109,40,217,.2);border-left:4px solid #7C3AED;border-radius:0 8pt 8pt 0;padding:14pt 18pt;font-size:14pt;font-weight:700;color:#09080F;line-height:1.3;margin-bottom:8pt}.playbook-script{background:#fafafa;border:1px solid #e8e4f0;border-radius:8pt;padding:14pt;font-size:10pt;line-height:1.9;color:#1a1a2e;white-space:pre-wrap}.script-beat{color:#7C3AED;font-weight:700;font-size:8pt;letter-spacing:.08em;display:block;margin-top:10pt;margin-bottom:3pt}.script-note{display:block;font-size:9pt;color:#666;font-style:italic;padding-left:10pt;border-left:2px solid #e0d9f7;margin:3pt 0}.script-line{display:block}.playbook-arch-grid{display:grid;grid-template-columns:1fr 1fr;gap:8pt}.playbook-arch-card{background:#f7f5ff;border:1px solid #e0d9f7;border-radius:6pt;padding:10pt 12pt}.arch-opening{border-top:2.5px solid #38BDF8}.arch-setup{border-top:2.5px solid #A78BFA}.arch-risk{border-top:2.5px solid #F472B6}.arch-turn{border-top:2.5px solid #FBBF24}.arch-payoff{border-top:2.5px solid #34D399}.arch-cta{border-top:2.5px solid #F472B6}.playbook-arch-beat{font-size:7pt;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#666;margin-bottom:4pt}.playbook-arch-text{font-size:10pt;color:#1a1a2e;line-height:1.5}.playbook-arch-time{font-size:8pt;color:#999;margin-top:3pt}.platform-strategy{background:#f7f5ff;border:1px solid #e0d9f7;border-radius:8pt;padding:10pt 12pt;margin-bottom:8pt;page-break-inside:avoid}.ps-header{display:flex;align-items:center;margin-bottom:5pt}.ps-name{font-weight:700;font-size:11pt;color:#09080F}.ps-caption{font-size:10pt;color:#1a1a2e;line-height:1.6;margin-bottom:4pt}.ps-hashtags{font-size:9pt;color:#7C3AED}.wizard-audience-card{background:#f7f5ff;border:1px solid #e0d9f7;border-radius:8pt;padding:10pt 14pt}.wizard-audience-row{display:flex;gap:10pt;padding:7pt 0;border-bottom:1px solid #e8e4f0}.wizard-audience-row:last-child{border-bottom:none}.wizard-audience-key{font-size:8pt;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#7C3AED;min-width:60pt;padding-top:2pt}.wizard-audience-val{font-size:10pt;color:#1a1a2e;line-height:1.55}.wizard-why{background:#f7f5ff;border-left:3px solid #A78BFA;border-radius:0 6pt 6pt 0;padding:8pt 12pt;font-size:9.5pt;color:#333;line-height:1.65;margin-bottom:10pt}.playbook-lead-magnet{page-break-before:always;background:#fff;border:none;padding:0;margin:0}.playbook-lead-badge{display:inline-block;background:#FEF3C7;border:1px solid #FCD34D;color:#92400E;padding:4pt 12pt;border-radius:20pt;font-size:8pt;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14pt}.playbook-lead-title{font-family:'Sora',Arial;font-size:22pt;font-weight:800;color:#09080F;line-height:1.1;margin-bottom:14pt}.playbook-lead-why{background:#f7f5ff;border-left:3px solid ${brandColor};border-radius:0 6pt 6pt 0;padding:10pt 14pt;font-size:10pt;color:#333;margin-bottom:16pt}.playbook-lead-items{display:flex;flex-direction:column;gap:10pt}.playbook-lead-item{display:flex;gap:12pt;background:#fafafa;border:1px solid #e8e4f0;border-radius:8pt;padding:12pt 14pt;page-break-inside:avoid}.playbook-lead-num{font-family:'Sora',Arial;font-size:18pt;font-weight:800;color:${brandColor};min-width:24pt;flex-shrink:0}.playbook-lead-item div{font-size:10pt;color:#1a1a2e;line-height:1.6}.playbook-lead-item strong{color:#09080F}.playbook-focus{background:linear-gradient(135deg,rgba(109,40,217,.08),rgba(244,114,182,.05));border:1.5px solid rgba(109,40,217,.2);border-radius:8pt;padding:14pt 18pt}.playbook-focus-eyebrow{font-size:8pt;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#7C3AED;margin-bottom:6pt}.playbook-focus-text{font-family:'Sora',Arial;font-size:13pt;font-weight:700;color:#09080F;line-height:1.4}.wl-doc-header{display:flex!important;align-items:center;justify-content:space-between;padding-bottom:14pt;margin-bottom:18pt;border-bottom:2.5px solid ${brandColor}}.no-print,button,.copy-btn,.playbook-copy-btn,.hook-retry,.playbook-lead-comment,.wizard-advanced-link,.lm-controls,#lmRegenStatus,.save-to-ideas-btn,.playbook-print-bar{display:none!important}em{font-style:normal;color:#A78BFA}</style></head><body>${playbookEl.innerHTML}<script>document.querySelectorAll('.no-print,button,.copy-btn,.playbook-lead-comment').forEach(el=>el.style.display='none');window.onload=function(){setTimeout(function(){window.print();},700)};<\/script>
+  const printHTML = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><title>SAM Engine Output</title><link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/><style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}@page{size:A4;margin:12mm 16mm}@page :first{margin-top:0}body{font-family:'Inter',Arial,sans-serif;font-size:10.5pt;line-height:1.6;color:#1a1a2e;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}.playbook-cover{background:linear-gradient(135deg,#09080F 0%,#1a0a2e 50%,#0d0527 100%)!important;color:white;padding:60px 48px;page-break-after:always;min-height:200mm;display:flex;flex-direction:column;justify-content:center}.playbook-cover-badge{background:rgba(167,139,250,0.2);border:1px solid rgba(167,139,250,0.4);color:#A78BFA;padding:6px 16px;border-radius:30px;display:inline-block;font-size:9pt;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:24px}.playbook-cover-title{font-family:'Sora',Arial;font-size:36pt;font-weight:800;color:#fff;line-height:1.05;margin-bottom:20px}.playbook-cover-title em{color:#A78BFA;font-style:normal}.playbook-cover-meta{font-size:11pt;color:rgba(240,236,255,0.6);margin-top:32px;padding-top:24px;border-top:1px solid rgba(255,255,255,0.1)}.playbook-section{page-break-inside:avoid;margin-bottom:22pt;padding-bottom:22pt;border-bottom:1px solid #e8e4f0}.playbook-section:last-child{border-bottom:none}.playbook-section-num{font-size:8pt;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#A78BFA;margin-bottom:4pt}.playbook-section-title{font-family:'Sora',Arial;font-size:16pt;font-weight:700;color:#09080F;margin-bottom:10pt}.playbook-card{background:#f7f5ff;border:1px solid #e0d9f7;border-radius:8pt;padding:12pt 14pt;margin-bottom:8pt;page-break-inside:avoid}.playbook-card-label{font-size:7.5pt;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#7C3AED;margin-bottom:6pt}.playbook-card-text{font-size:10pt;color:#1a1a2e;line-height:1.65}.playbook-hook{background:linear-gradient(135deg,rgba(109,40,217,.08),rgba(244,114,182,.05));border:1px solid rgba(109,40,217,.2);border-left:4px solid #7C3AED;border-radius:0 8pt 8pt 0;padding:14pt 18pt;font-size:14pt;font-weight:700;color:#09080F;line-height:1.3;margin-bottom:8pt}.playbook-script{background:#fafafa;border:1px solid #e8e4f0;border-radius:8pt;padding:14pt;font-size:10pt;line-height:1.9;color:#1a1a2e;white-space:pre-wrap}.script-beat{color:#7C3AED;font-weight:700;font-size:8pt;letter-spacing:.08em;display:block;margin-top:10pt;margin-bottom:3pt}.script-note{display:block;font-size:9pt;color:#666;font-style:italic;padding-left:10pt;border-left:2px solid #e0d9f7;margin:3pt 0}.script-line{display:block}.playbook-arch-grid{display:grid;grid-template-columns:1fr 1fr;gap:8pt}.playbook-arch-card{background:#f7f5ff;border:1px solid #e0d9f7;border-radius:6pt;padding:10pt 12pt}.arch-opening{border-top:2.5px solid #38BDF8}.arch-setup{border-top:2.5px solid #A78BFA}.arch-risk{border-top:2.5px solid #F472B6}.arch-turn{border-top:2.5px solid #FBBF24}.arch-payoff{border-top:2.5px solid #34D399}.arch-cta{border-top:2.5px solid #F472B6}.playbook-arch-beat{font-size:7pt;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#666;margin-bottom:4pt}.playbook-arch-text{font-size:10pt;color:#1a1a2e;line-height:1.5}.playbook-arch-time{font-size:8pt;color:#999;margin-top:3pt}.platform-strategy{background:#f7f5ff;border:1px solid #e0d9f7;border-radius:8pt;padding:10pt 12pt;margin-bottom:8pt;page-break-inside:avoid}.ps-header{display:flex;align-items:center;margin-bottom:5pt}.ps-name{font-weight:700;font-size:11pt;color:#09080F}.ps-caption{font-size:10pt;color:#1a1a2e;line-height:1.6;margin-bottom:4pt}.ps-hashtags{font-size:9pt;color:#7C3AED}.wizard-audience-card{background:#f7f5ff;border:1px solid #e0d9f7;border-radius:8pt;padding:10pt 14pt}.wizard-audience-row{display:flex;gap:10pt;padding:7pt 0;border-bottom:1px solid #e8e4f0}.wizard-audience-row:last-child{border-bottom:none}.wizard-audience-key{font-size:8pt;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#7C3AED;min-width:60pt;padding-top:2pt}.wizard-audience-val{font-size:10pt;color:#1a1a2e;line-height:1.55}.wizard-why{background:#f7f5ff;border-left:3px solid #A78BFA;border-radius:0 6pt 6pt 0;padding:8pt 12pt;font-size:9.5pt;color:#333;line-height:1.65;margin-bottom:10pt}.playbook-lead-magnet{page-break-before:always;background:#fff;border:none;padding:0;margin:0}.playbook-lead-badge{display:inline-block;background:#FEF3C7;border:1px solid #FCD34D;color:#92400E;padding:4pt 12pt;border-radius:20pt;font-size:8pt;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14pt}.playbook-lead-title{font-family:'Sora',Arial;font-size:22pt;font-weight:800;color:#09080F;line-height:1.1;margin-bottom:14pt}.playbook-lead-why{background:#f7f5ff;border-left:3px solid ${brandColor};border-radius:0 6pt 6pt 0;padding:10pt 14pt;font-size:10pt;color:#333;margin-bottom:16pt}.playbook-lead-items{display:flex;flex-direction:column;gap:10pt}.playbook-lead-item{display:flex;gap:12pt;background:#fafafa;border:1px solid #e8e4f0;border-radius:8pt;padding:12pt 14pt;page-break-inside:avoid}.playbook-lead-num{font-family:'Sora',Arial;font-size:18pt;font-weight:800;color:${brandColor};min-width:24pt;flex-shrink:0}.playbook-lead-item div{font-size:10pt;color:#1a1a2e;line-height:1.6}.playbook-lead-item strong{color:#09080F}.playbook-focus{background:linear-gradient(135deg,rgba(109,40,217,.08),rgba(244,114,182,.05));border:1.5px solid rgba(109,40,217,.2);border-radius:8pt;padding:14pt 18pt}.playbook-focus-eyebrow{font-size:8pt;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#7C3AED;margin-bottom:6pt}.playbook-focus-text{font-family:'Sora',Arial;font-size:13pt;font-weight:700;color:#09080F;line-height:1.4}.wl-doc-header{display:flex!important;align-items:center;justify-content:space-between;padding-bottom:14pt;margin-bottom:18pt;border-bottom:2.5px solid ${brandColor}}.no-print,button,.copy-btn,.playbook-copy-btn,.hook-retry,.playbook-lead-comment,.wizard-advanced-link,.lm-controls,#lmRegenStatus,.save-to-ideas-btn,.playbook-print-bar{display:none!important}em{font-style:normal;color:#A78BFA}</style></head><body>${playbookEl.innerHTML}${nextToolHTML}<script>document.querySelectorAll('.no-print,button,.copy-btn,.playbook-lead-comment').forEach(el=>el.style.display='none');window.onload=function(){setTimeout(function(){window.print();},700)};<\/script>
 
   <!-- ══ SAM GUIDED TOUR SPLASH ══ -->
   <div class="tour-splash" id="tourSplash">
@@ -9795,7 +9799,7 @@ Return ONLY valid JSON:
     if (el) { _ntIdx = (_ntIdx + 1) % _ntMsgs.length; el.textContent = _ntMsgs[_ntIdx]; }
   }, 2200);
 
-  outputArea.innerHTML = `<div style="padding:18px 20px;max-width:420px;margin:80px auto 40px;background:linear-gradient(135deg,${cfg.color}0d,var(--surface));border:1px solid ${cfg.color}44;border-radius:var(--radius-xl);text-align:center;position:relative;overflow:hidden;">
+  outputArea.innerHTML = `<div style="padding:18px 20px;max-width:420px;margin:120px auto 40px;background:linear-gradient(135deg,${cfg.color}0d,var(--surface));border:1px solid ${cfg.color}44;border-radius:var(--radius-xl);text-align:center;position:relative;overflow:hidden;">
     <div style="position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,${cfg.color}10,transparent);animation:samSweep 2s ease-in-out infinite;pointer-events:none;"></div>
     <div style="font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:${cfg.color};margin-bottom:10px;opacity:0.8;">✦ SAM IS BUILDING</div>
     <div style="font-size:14px;font-weight:600;color:transparent;background:linear-gradient(90deg,#A78BFA,#F472B6,#FBB824,#A78BFA);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;animation:samTextShimmer 2.5s ease infinite;margin-bottom:18px;" id="nextToolLoaderText">SAM is building your ${cfg.label.replace(/^[^ ]+ /, '')}...</div>
@@ -10426,7 +10430,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v5.79</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v5.80</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -11360,9 +11364,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v5.79
+// SOFT POPUP v5.80
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v5.79
+// soft popup system removed v5.80
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -11371,7 +11375,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v5.79
+  // SAM GUIDED TOUR — v5.80
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
