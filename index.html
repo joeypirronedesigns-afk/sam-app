@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v5.51)
+       UNIFIED HERO (v5.52)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4295,7 +4295,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v5.51
+       CINEMATIC MEET SAM — v5.52
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4720,7 +4720,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v5.51
+       SAM GUIDED TOUR SPLASH — v5.52
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5004,7 +5004,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
   <div class="nav-right">
     <div class="trial-nav-badge" id="trialBadge" onclick="openProPage()" style="display:none;">
       <div class="trial-nav-dot"></div>
-      <span id="trialBadgeText">3 days free</span>
+      <span id="trialBadgeText">48hrs free</span>
     </div>
     <button class="nav-setup-btn" onclick="openWizardPage()" style="background:linear-gradient(135deg,rgba(109,40,217,0.2),rgba(244,114,182,0.1));border-color:rgba(167,139,250,0.3);color:var(--text);display:none;" id="navWizardBtn">
       ✦ My Story
@@ -5021,7 +5021,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 <main>
 
 
-  <!-- ── UNIFIED HERO v5.51 ── -->
+  <!-- ── UNIFIED HERO v5.52 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -6935,7 +6935,7 @@ function updateTrialBadge(state) {
   const days  = Math.floor(hours / 24);
   const hrs   = hours % 24;
 
-  if (days > 0) text.textContent = days === 2 ? '2 days left' : days === 1 ? '1 day left' : '3 days free';
+  if (days > 0) text.textContent = days === 2 ? '2 days left' : days === 1 ? '1 day left' : '48hrs free';
   else text.textContent = hrs > 0 ? hrs + 'h left' : 'Trial ending';
 
   badge.classList.add('show');
@@ -6996,7 +6996,7 @@ async function submitTrialEmail() {
     fetch('/api/waitlist', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, notifyEmail: SAM_NOTIFY_EMAIL, source: '3-day-trial' })
+      body: JSON.stringify({ name, email, notifyEmail: SAM_NOTIFY_EMAIL, source: '48hr-trial' })
     });
   } catch(e) {}
 
@@ -7024,7 +7024,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v5.51 ──
+// ── RUN TRACKING v5.52 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 5;
@@ -7117,7 +7117,7 @@ THE 5 TOOLS:
 5. The Lens — Two modes: (A) Drop a photo → SAM builds thumbnail strategy: safe + bold headline options, layout direction, face-aware composition, color palette, and platform captions. (B) Drop analytics screenshot → SAM reads the numbers and tells you exactly what's working, what to fix, and 3 posts to make this week.
 
 PRICING:
-- Free: 3 runs/day across all tools — always free, no card
+- Free: 5 SAM Engine runs + 15 tool runs, 48hr trial, no card
 - SAM Creator: $19/month — 10 SAM Engine runs, 70 tool runs, 5 lead magnet rebuilds, all tools, all platforms, 12 languages, branded PDFs
 - SAM Pro: $39/month — unlimited everything, priority speed, every new tool first, full brand customization
 - SAM Studio: $99/month — everything in Pro, multiple brand profiles, white label documents, team seats coming Q3
@@ -7551,7 +7551,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v5.51
+  // CINEMATIC MEET SAM — v5.52
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -10143,13 +10143,13 @@ function openWizardFromNav() {
     <div class="pro-bottom-title">Your next piece of content<br/>is 60 seconds away.</div>
     <div class="pro-bottom-sub">Try SAM free — no card, no paywall, no catch.</div>
     <button class="pro-bottom-btn" onclick="handleProSignup()">Try SAM free →</button>
-    <div class="pro-bottom-note">3 days full access · All 5 tools · No card needed · Cancel anytime</div>
+    <div class="pro-bottom-note">48 hours full access · All 5 tools · No card needed · Cancel anytime</div>
   </div>
 
 </div>
 
 
-<!-- ── SOFT POPUP v5.51 ── -->
+<!-- ── SOFT POPUP v5.52 ── -->
 <div id="softPopup" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9000;padding:16px;pointer-events:none;">
   <div id="softPopupInner" style="max-width:480px;margin:0 auto;background:#13101F;border:1px solid rgba(167,139,250,0.25);border-radius:20px 20px 16px 16px;padding:20px 20px 18px;box-shadow:0 -8px 40px rgba(0,0,0,0.5);pointer-events:auto;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
@@ -10168,7 +10168,7 @@ function openWizardFromNav() {
   </div>
 </div>
 
-<!-- ── HARD ASK v5.51 ── -->
+<!-- ── HARD ASK v5.52 ── -->
 <div id="hardAskOverlay" style="display:none;position:fixed;inset:0;z-index:9100;background:rgba(9,8,15,0.88);backdrop-filter:blur(10px);">
   <div id="hardAskInner" style="position:absolute;bottom:0;left:0;right:0;max-width:520px;margin:0 auto;background:#13101F;border:1px solid rgba(251,184,36,0.2);border-radius:24px 24px 0 0;padding:28px 20px 36px;box-shadow:0 -16px 60px rgba(0,0,0,0.6);transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);max-height:92vh;overflow-y:auto;">
 
@@ -10215,7 +10215,7 @@ function openWizardFromNav() {
     <div id="wlFormState">
       <div class="wl-icon">🚀</div>
       <div class="wl-title">Start free — no card, no paywall</div>
-      <div class="wl-sub">3 days full access. All 5 tools. The complete Content Wizard. No card needed.</div>
+      <div class="wl-sub">48 hours full access. All 5 tools. No card needed.</div>
 
       <div class="wl-perks">
         <div class="wl-perk"><div class="wl-perk-dot">✓</div>First access when Pro goes live</div>
@@ -10239,7 +10239,7 @@ function openWizardFromNav() {
     <div class="wl-success" id="wlSuccess">
       <div class="wl-success-icon">🎉</div>
       <div class="wl-success-title">You're on the list!</div>
-      <div class="wl-success-sub">You're in. Use everything — all 5 tools, the full Content Wizard, unlimited access for 3 days. No card, no paywall, no catch.</div>
+      <div class="wl-success-sub">You're in. Use everything — all 5 tools, full access for 48 hours. No card, no paywall, no catch.</div>
     </div>
 
   </div>
@@ -10252,7 +10252,7 @@ function openWizardFromNav() {
 
     <div id="trialFormState">
       <div class="trial-sam-logo">S · A · M</div>
-      <div class="trial-headline">SAM's on <em>us</em><br/>for 3 days.</div>
+      <div class="trial-headline">SAM's on <em>us</em><br/>for 48 hours.</div>
 
       <div class="trial-perks-bar">
         <div class="trial-perk">3 Full Days</div>
@@ -10261,7 +10261,7 @@ function openWizardFromNav() {
         <div class="trial-perk">No Card Ever</div>
       </div>
 
-      <div class="trial-sub">Drop your email and we unlock everything — completely free, no strings, no card. Just SAM doing what SAM does.</div>
+      <div class="trial-sub">Drop your email and we unlock everything for 48 hours — completely free, no strings, no card.</div>
 
       <div class="trial-form">
         <input class="trial-input" type="text" id="trialName" placeholder="Your first name" autocomplete="given-name" />
@@ -10276,7 +10276,7 @@ function openWizardFromNav() {
 
     <div class="trial-success" id="trialSuccess">
       <div class="trial-success-icon">🎉</div>
-      <div class="trial-success-title">You're in — 3 days free!</div>
+      <div class="trial-success-title">You're in — 48hrs free!</div>
       <div class="trial-success-sub">All 5 tools, unlimited runs, zero limits. Your clock starts now.<br/><br/>We'll email you before your trial ends with everything you need to keep going.</div>
       <button class="trial-success-btn" onclick="closeTrial()">Let's go create something →</button>
     </div>
@@ -10355,7 +10355,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v5.51</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v5.52</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -11294,7 +11294,7 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v5.51
+// SOFT POPUP v5.52
 // ══════════════════════════════════════════════════════════════════════════════
 const TOOL_META = {
   pulse:     { emoji:'🎯', title:'Now try Spark.', sub:'Generate 5 scroll-stopping ideas built for your niche.', id:'spark' },
@@ -11351,7 +11351,7 @@ function closeSoftPopupAndScroll() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// HARD ASK v5.51
+// HARD ASK v5.52
 // ══════════════════════════════════════════════════════════════════════════════
 function showHardAsk() {
   const el = document.getElementById('hardAskOverlay');
@@ -11485,7 +11485,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v5.51
+  // SAM GUIDED TOUR — v5.52
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
