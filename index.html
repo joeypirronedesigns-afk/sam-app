@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v5.84)
+       UNIFIED HERO (v5.85)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4301,7 +4301,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v5.84
+       CINEMATIC MEET SAM — v5.85
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4751,7 +4751,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v5.84
+       SAM GUIDED TOUR SPLASH — v5.85
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5053,7 +5053,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 <main>
 
 
-  <!-- ── UNIFIED HERO v5.84 ── -->
+  <!-- ── UNIFIED HERO v5.85 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7130,7 +7130,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v5.84 ──
+// ── RUN TRACKING v5.85 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 5;
@@ -7657,7 +7657,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v5.84
+  // CINEMATIC MEET SAM — v5.85
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -10450,7 +10450,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v5.84</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v5.85</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -10479,6 +10479,11 @@ if (localStorage.getItem('sam_dev') === 'true') {
   document.addEventListener('DOMContentLoaded', () => {
     const tb = document.getElementById('devToolbar');
     if (tb) tb.style.display = 'flex';
+    // Also show inline session buttons in progress bar
+    const sb = document.getElementById('devSaveBtn');
+    const rb = document.getElementById('devRestoreBtn');
+    if (sb) sb.style.display = 'inline-flex';
+    if (rb) rb.style.display = 'inline-flex';
   });
 }
 </script>
@@ -10491,6 +10496,8 @@ if (localStorage.getItem('sam_dev') === 'true') {
         <span id="wizardDefaultLabel">Building your story</span>
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
+        <button onclick="devSaveSession()" id="devSaveBtn" style="display:none;font-size:10px;font-weight:700;background:rgba(109,40,217,0.3);color:#A78BFA;border:1px solid rgba(167,139,250,0.3);border-radius:8px;padding:5px 10px;cursor:pointer;">💾 Session</button>
+        <button onclick="devRestoreSession()" id="devRestoreBtn" style="display:none;font-size:10px;font-weight:700;background:rgba(5,150,105,0.3);color:#34D399;border:1px solid rgba(52,211,153,0.3);border-radius:8px;padding:5px 10px;cursor:pointer;">⚡ Restore</button>
         <div class="wizard-progress-step" id="wizardStepLabel">Step 1 of 10</div>
         <button id="wizardSaveBtn" onclick="manualSaveSession()" title="Save your progress" style="font-size:16px;background:none;border:none;cursor:pointer;padding:2px 6px;opacity:0.5;transition:all 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity=this.dataset.saved?'1':'0.5'">🔖</button>
         <div id="wizardStepJumper" style="position:relative;">
@@ -11384,9 +11391,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v5.84
+// SOFT POPUP v5.85
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v5.84
+// soft popup system removed v5.85
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -11395,7 +11402,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v5.84
+  // SAM GUIDED TOUR — v5.85
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
