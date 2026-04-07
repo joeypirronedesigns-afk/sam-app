@@ -2,10 +2,10 @@ module.exports.config = { api: { bodyParser: { sizeLimit: "10mb" } } };
 
 // ── TIER LIMITS ────────────────────────────────────────────────────────────
 const TIER_LIMITS = {
-  free:    { playbooks: 3,  nextTools: 10, chatMessages: 20 },
-  starter: { playbooks: 5,  nextTools: 25, chatMessages: 40 },
-  pro:     { playbooks: 10, nextTools: 50, chatMessages: 100 },
-  studio:  { playbooks: 999,nextTools: 999,chatMessages: 999 },
+  free:    { playbooks: 5,  nextTools: 15,  chatMessages: 20 },
+  creator: { playbooks: 10, nextTools: 70,  chatMessages: 50 },
+  pro:     { playbooks: 20, nextTools: 200, chatMessages: 150 },
+  studio:  { playbooks: 100,nextTools: 999, chatMessages: 999 },
 };
 
 async function checkLimit(userId, tier, action, tourStep) {
