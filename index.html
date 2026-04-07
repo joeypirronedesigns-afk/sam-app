@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v5.48)
+       UNIFIED HERO (v5.49)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -3991,8 +3991,8 @@
 
 
         /* ── SELECTIVE PRINT MODES ── */
-    /* body.print-playbook-only = Download Playbook PDF was clicked */
-    /* body.print-leadmagnet-only = Download Lead Magnet PDF was clicked */
+    /* body.print-playbook-only = Download PDF was clicked */
+    /* body.print-leadmagnet-only = Download Lead Magnet was clicked */
     @media print {
       body.print-playbook-only #leadMagnetSection,
       body.print-playbook-only #leadMagnetSection * { display: none !important; }
@@ -4295,7 +4295,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v5.48
+       CINEMATIC MEET SAM — v5.49
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4720,7 +4720,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v5.48
+       SAM GUIDED TOUR SPLASH — v5.49
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5021,7 +5021,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 <main>
 
 
-  <!-- ── UNIFIED HERO v5.48 ── -->
+  <!-- ── UNIFIED HERO v5.49 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7024,7 +7024,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v5.48 ──
+// ── RUN TRACKING v5.49 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 5;
@@ -7125,7 +7125,7 @@ THE 5 TOOLS:
 
 PRICING:
 - Free: 3 runs/day across all tools — always free, no card
-- SAM Creator: $19/month — 5 playbooks, 30 tool runs, 5 lead magnet rebuilds, all tools, all platforms, 12 languages, branded PDFs
+- SAM Creator: $19/month — 10 SAM Engine runs, 70 tool runs, 5 lead magnet rebuilds, all tools, all platforms, 12 languages, branded PDFs
 - SAM Pro: $39/month — unlimited everything, priority speed, every new tool first, full brand customization
 - SAM Studio: $99/month — everything in Pro, multiple brand profiles, white label documents, team seats coming Q3
 - Trial: New users get 3 full free days, all tools, unlimited runs — just needs email to unlock
@@ -7558,7 +7558,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v5.48
+  // CINEMATIC MEET SAM — v5.49
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -8866,7 +8866,7 @@ function renderPlaybook(data) {
 
   let html = `
     <div class="playbook-cover">
-      <div class="playbook-cover-badge">✦ SAM Content Playbook</div>
+      <div class="playbook-cover-badge">✦ SAM Engine Output</div>
       <div class="playbook-cover-title">Your <em>Complete</em><br/>Content Strategy</div>
       <div class="playbook-cover-meta">${today} &nbsp;·&nbsp; Built by SAM for you</div>
     </div>
@@ -9273,7 +9273,7 @@ async function downloadPDF(type) {
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
     a.href     = url;
-    a.download = type === 'playbook' ? 'SAM_Content_Playbook.pdf' : 'SAM_Lead_Magnet.pdf';
+    a.download = type === 'playbook' ? 'SAM_Engine_Output.pdf' : 'SAM_Lead_Magnet.pdf';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -9296,7 +9296,7 @@ function printPlaybookOnly() {
   const playbookEl = document.getElementById('wizardPlaybook');
   if (!playbookEl) { window.print(); return; }
   const brandColor = (document.getElementById('leadMagnetDoc')||{}).getAttribute?.('data-brand-color')||'#7C3AED';
-  const printHTML = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><title>SAM Content Playbook</title><link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/><style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}@page{size:A4;margin:12mm 16mm}@page :first{margin-top:0}body{font-family:'Inter',Arial,sans-serif;font-size:10.5pt;line-height:1.6;color:#1a1a2e;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}.playbook-cover{background:linear-gradient(135deg,#09080F 0%,#1a0a2e 50%,#0d0527 100%)!important;color:white;padding:60px 48px;page-break-after:always;min-height:200mm;display:flex;flex-direction:column;justify-content:center}.playbook-cover-badge{background:rgba(167,139,250,0.2);border:1px solid rgba(167,139,250,0.4);color:#A78BFA;padding:6px 16px;border-radius:30px;display:inline-block;font-size:9pt;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:24px}.playbook-cover-title{font-family:'Sora',Arial;font-size:36pt;font-weight:800;color:#fff;line-height:1.05;margin-bottom:20px}.playbook-cover-title em{color:#A78BFA;font-style:normal}.playbook-cover-meta{font-size:11pt;color:rgba(240,236,255,0.6);margin-top:32px;padding-top:24px;border-top:1px solid rgba(255,255,255,0.1)}.playbook-section{page-break-inside:avoid;margin-bottom:22pt;padding-bottom:22pt;border-bottom:1px solid #e8e4f0}.playbook-section:last-child{border-bottom:none}.playbook-section-num{font-size:8pt;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#A78BFA;margin-bottom:4pt}.playbook-section-title{font-family:'Sora',Arial;font-size:16pt;font-weight:700;color:#09080F;margin-bottom:10pt}.playbook-card{background:#f7f5ff;border:1px solid #e0d9f7;border-radius:8pt;padding:12pt 14pt;margin-bottom:8pt;page-break-inside:avoid}.playbook-card-label{font-size:7.5pt;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#7C3AED;margin-bottom:6pt}.playbook-card-text{font-size:10pt;color:#1a1a2e;line-height:1.65}.playbook-hook{background:linear-gradient(135deg,rgba(109,40,217,.08),rgba(244,114,182,.05));border:1px solid rgba(109,40,217,.2);border-left:4px solid #7C3AED;border-radius:0 8pt 8pt 0;padding:14pt 18pt;font-size:14pt;font-weight:700;color:#09080F;line-height:1.3;margin-bottom:8pt}.playbook-script{background:#fafafa;border:1px solid #e8e4f0;border-radius:8pt;padding:14pt;font-size:10pt;line-height:1.9;color:#1a1a2e;white-space:pre-wrap}.script-beat{color:#7C3AED;font-weight:700;font-size:8pt;letter-spacing:.08em;display:block;margin-top:10pt;margin-bottom:3pt}.script-note{display:block;font-size:9pt;color:#666;font-style:italic;padding-left:10pt;border-left:2px solid #e0d9f7;margin:3pt 0}.script-line{display:block}.playbook-arch-grid{display:grid;grid-template-columns:1fr 1fr;gap:8pt}.playbook-arch-card{background:#f7f5ff;border:1px solid #e0d9f7;border-radius:6pt;padding:10pt 12pt}.arch-opening{border-top:2.5px solid #38BDF8}.arch-setup{border-top:2.5px solid #A78BFA}.arch-risk{border-top:2.5px solid #F472B6}.arch-turn{border-top:2.5px solid #FBBF24}.arch-payoff{border-top:2.5px solid #34D399}.arch-cta{border-top:2.5px solid #F472B6}.playbook-arch-beat{font-size:7pt;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#666;margin-bottom:4pt}.playbook-arch-text{font-size:10pt;color:#1a1a2e;line-height:1.5}.playbook-arch-time{font-size:8pt;color:#999;margin-top:3pt}.platform-strategy{background:#f7f5ff;border:1px solid #e0d9f7;border-radius:8pt;padding:10pt 12pt;margin-bottom:8pt;page-break-inside:avoid}.ps-header{display:flex;align-items:center;margin-bottom:5pt}.ps-name{font-weight:700;font-size:11pt;color:#09080F}.ps-caption{font-size:10pt;color:#1a1a2e;line-height:1.6;margin-bottom:4pt}.ps-hashtags{font-size:9pt;color:#7C3AED}.wizard-audience-card{background:#f7f5ff;border:1px solid #e0d9f7;border-radius:8pt;padding:10pt 14pt}.wizard-audience-row{display:flex;gap:10pt;padding:7pt 0;border-bottom:1px solid #e8e4f0}.wizard-audience-row:last-child{border-bottom:none}.wizard-audience-key{font-size:8pt;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#7C3AED;min-width:60pt;padding-top:2pt}.wizard-audience-val{font-size:10pt;color:#1a1a2e;line-height:1.55}.wizard-why{background:#f7f5ff;border-left:3px solid #A78BFA;border-radius:0 6pt 6pt 0;padding:8pt 12pt;font-size:9.5pt;color:#333;line-height:1.65;margin-bottom:10pt}.playbook-lead-magnet{page-break-before:always;background:#fff;border:none;padding:0;margin:0}.playbook-lead-badge{display:inline-block;background:#FEF3C7;border:1px solid #FCD34D;color:#92400E;padding:4pt 12pt;border-radius:20pt;font-size:8pt;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14pt}.playbook-lead-title{font-family:'Sora',Arial;font-size:22pt;font-weight:800;color:#09080F;line-height:1.1;margin-bottom:14pt}.playbook-lead-why{background:#f7f5ff;border-left:3px solid ${brandColor};border-radius:0 6pt 6pt 0;padding:10pt 14pt;font-size:10pt;color:#333;margin-bottom:16pt}.playbook-lead-items{display:flex;flex-direction:column;gap:10pt}.playbook-lead-item{display:flex;gap:12pt;background:#fafafa;border:1px solid #e8e4f0;border-radius:8pt;padding:12pt 14pt;page-break-inside:avoid}.playbook-lead-num{font-family:'Sora',Arial;font-size:18pt;font-weight:800;color:${brandColor};min-width:24pt;flex-shrink:0}.playbook-lead-item div{font-size:10pt;color:#1a1a2e;line-height:1.6}.playbook-lead-item strong{color:#09080F}.playbook-focus{background:linear-gradient(135deg,rgba(109,40,217,.08),rgba(244,114,182,.05));border:1.5px solid rgba(109,40,217,.2);border-radius:8pt;padding:14pt 18pt}.playbook-focus-eyebrow{font-size:8pt;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#7C3AED;margin-bottom:6pt}.playbook-focus-text{font-family:'Sora',Arial;font-size:13pt;font-weight:700;color:#09080F;line-height:1.4}.wl-doc-header{display:flex!important;align-items:center;justify-content:space-between;padding-bottom:14pt;margin-bottom:18pt;border-bottom:2.5px solid ${brandColor}}.no-print,button,.copy-btn,.playbook-copy-btn,.hook-retry,.playbook-lead-comment,.wizard-advanced-link,.lm-controls,#lmRegenStatus,.save-to-ideas-btn,#nextToolOutput,.playbook-print-bar{display:none!important}em{font-style:normal;color:#A78BFA}</style></head><body>${playbookEl.innerHTML}<script>document.querySelectorAll('.no-print,button,.copy-btn,.playbook-lead-comment,#nextToolOutput').forEach(el=>el.style.display='none');window.onload=function(){setTimeout(function(){window.print();},700)};<\/script>
+  const printHTML = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><title>SAM Engine Output</title><link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/><style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}@page{size:A4;margin:12mm 16mm}@page :first{margin-top:0}body{font-family:'Inter',Arial,sans-serif;font-size:10.5pt;line-height:1.6;color:#1a1a2e;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}.playbook-cover{background:linear-gradient(135deg,#09080F 0%,#1a0a2e 50%,#0d0527 100%)!important;color:white;padding:60px 48px;page-break-after:always;min-height:200mm;display:flex;flex-direction:column;justify-content:center}.playbook-cover-badge{background:rgba(167,139,250,0.2);border:1px solid rgba(167,139,250,0.4);color:#A78BFA;padding:6px 16px;border-radius:30px;display:inline-block;font-size:9pt;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:24px}.playbook-cover-title{font-family:'Sora',Arial;font-size:36pt;font-weight:800;color:#fff;line-height:1.05;margin-bottom:20px}.playbook-cover-title em{color:#A78BFA;font-style:normal}.playbook-cover-meta{font-size:11pt;color:rgba(240,236,255,0.6);margin-top:32px;padding-top:24px;border-top:1px solid rgba(255,255,255,0.1)}.playbook-section{page-break-inside:avoid;margin-bottom:22pt;padding-bottom:22pt;border-bottom:1px solid #e8e4f0}.playbook-section:last-child{border-bottom:none}.playbook-section-num{font-size:8pt;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#A78BFA;margin-bottom:4pt}.playbook-section-title{font-family:'Sora',Arial;font-size:16pt;font-weight:700;color:#09080F;margin-bottom:10pt}.playbook-card{background:#f7f5ff;border:1px solid #e0d9f7;border-radius:8pt;padding:12pt 14pt;margin-bottom:8pt;page-break-inside:avoid}.playbook-card-label{font-size:7.5pt;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#7C3AED;margin-bottom:6pt}.playbook-card-text{font-size:10pt;color:#1a1a2e;line-height:1.65}.playbook-hook{background:linear-gradient(135deg,rgba(109,40,217,.08),rgba(244,114,182,.05));border:1px solid rgba(109,40,217,.2);border-left:4px solid #7C3AED;border-radius:0 8pt 8pt 0;padding:14pt 18pt;font-size:14pt;font-weight:700;color:#09080F;line-height:1.3;margin-bottom:8pt}.playbook-script{background:#fafafa;border:1px solid #e8e4f0;border-radius:8pt;padding:14pt;font-size:10pt;line-height:1.9;color:#1a1a2e;white-space:pre-wrap}.script-beat{color:#7C3AED;font-weight:700;font-size:8pt;letter-spacing:.08em;display:block;margin-top:10pt;margin-bottom:3pt}.script-note{display:block;font-size:9pt;color:#666;font-style:italic;padding-left:10pt;border-left:2px solid #e0d9f7;margin:3pt 0}.script-line{display:block}.playbook-arch-grid{display:grid;grid-template-columns:1fr 1fr;gap:8pt}.playbook-arch-card{background:#f7f5ff;border:1px solid #e0d9f7;border-radius:6pt;padding:10pt 12pt}.arch-opening{border-top:2.5px solid #38BDF8}.arch-setup{border-top:2.5px solid #A78BFA}.arch-risk{border-top:2.5px solid #F472B6}.arch-turn{border-top:2.5px solid #FBBF24}.arch-payoff{border-top:2.5px solid #34D399}.arch-cta{border-top:2.5px solid #F472B6}.playbook-arch-beat{font-size:7pt;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#666;margin-bottom:4pt}.playbook-arch-text{font-size:10pt;color:#1a1a2e;line-height:1.5}.playbook-arch-time{font-size:8pt;color:#999;margin-top:3pt}.platform-strategy{background:#f7f5ff;border:1px solid #e0d9f7;border-radius:8pt;padding:10pt 12pt;margin-bottom:8pt;page-break-inside:avoid}.ps-header{display:flex;align-items:center;margin-bottom:5pt}.ps-name{font-weight:700;font-size:11pt;color:#09080F}.ps-caption{font-size:10pt;color:#1a1a2e;line-height:1.6;margin-bottom:4pt}.ps-hashtags{font-size:9pt;color:#7C3AED}.wizard-audience-card{background:#f7f5ff;border:1px solid #e0d9f7;border-radius:8pt;padding:10pt 14pt}.wizard-audience-row{display:flex;gap:10pt;padding:7pt 0;border-bottom:1px solid #e8e4f0}.wizard-audience-row:last-child{border-bottom:none}.wizard-audience-key{font-size:8pt;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#7C3AED;min-width:60pt;padding-top:2pt}.wizard-audience-val{font-size:10pt;color:#1a1a2e;line-height:1.55}.wizard-why{background:#f7f5ff;border-left:3px solid #A78BFA;border-radius:0 6pt 6pt 0;padding:8pt 12pt;font-size:9.5pt;color:#333;line-height:1.65;margin-bottom:10pt}.playbook-lead-magnet{page-break-before:always;background:#fff;border:none;padding:0;margin:0}.playbook-lead-badge{display:inline-block;background:#FEF3C7;border:1px solid #FCD34D;color:#92400E;padding:4pt 12pt;border-radius:20pt;font-size:8pt;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14pt}.playbook-lead-title{font-family:'Sora',Arial;font-size:22pt;font-weight:800;color:#09080F;line-height:1.1;margin-bottom:14pt}.playbook-lead-why{background:#f7f5ff;border-left:3px solid ${brandColor};border-radius:0 6pt 6pt 0;padding:10pt 14pt;font-size:10pt;color:#333;margin-bottom:16pt}.playbook-lead-items{display:flex;flex-direction:column;gap:10pt}.playbook-lead-item{display:flex;gap:12pt;background:#fafafa;border:1px solid #e8e4f0;border-radius:8pt;padding:12pt 14pt;page-break-inside:avoid}.playbook-lead-num{font-family:'Sora',Arial;font-size:18pt;font-weight:800;color:${brandColor};min-width:24pt;flex-shrink:0}.playbook-lead-item div{font-size:10pt;color:#1a1a2e;line-height:1.6}.playbook-lead-item strong{color:#09080F}.playbook-focus{background:linear-gradient(135deg,rgba(109,40,217,.08),rgba(244,114,182,.05));border:1.5px solid rgba(109,40,217,.2);border-radius:8pt;padding:14pt 18pt}.playbook-focus-eyebrow{font-size:8pt;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#7C3AED;margin-bottom:6pt}.playbook-focus-text{font-family:'Sora',Arial;font-size:13pt;font-weight:700;color:#09080F;line-height:1.4}.wl-doc-header{display:flex!important;align-items:center;justify-content:space-between;padding-bottom:14pt;margin-bottom:18pt;border-bottom:2.5px solid ${brandColor}}.no-print,button,.copy-btn,.playbook-copy-btn,.hook-retry,.playbook-lead-comment,.wizard-advanced-link,.lm-controls,#lmRegenStatus,.save-to-ideas-btn,#nextToolOutput,.playbook-print-bar{display:none!important}em{font-style:normal;color:#A78BFA}</style></head><body>${playbookEl.innerHTML}<script>document.querySelectorAll('.no-print,button,.copy-btn,.playbook-lead-comment,#nextToolOutput').forEach(el=>el.style.display='none');window.onload=function(){setTimeout(function(){window.print();},700)};<\/script>
 
   <!-- ══ SAM GUIDED TOUR SPLASH ══ -->
   <div class="tour-splash" id="tourSplash">
@@ -9982,7 +9982,7 @@ function openWizardFromNav() {
         <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>5 SAM Engine runs</div>
         <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>15 tool runs across all 5 tools</div>
         <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>48 hours full access</div>
-        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>1 lead magnet per playbook</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>1 lead magnet per run</div>
         <div class="pro-feat-row"><div class="pro-feat-icon fi-no"></div><span class="feat-muted">Unlimited SAM runs</span></div>
         <div class="pro-feat-row"><div class="pro-feat-icon fi-no"></div><span class="feat-muted">Lead magnet rebuilds</span></div>
         <div class="pro-feat-row"><div class="pro-feat-icon fi-no"></div><span class="feat-muted">Priority speed</span></div>
@@ -10003,11 +10003,11 @@ function openWizardFromNav() {
       <div class="pro-feat-list">
         <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>10 SAM Engine runs/month</div>
         <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>70 tool runs across all 5 tools</div>
-        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Lead magnet with every playbook</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Lead magnet with every run</div>
         <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>All 7 platforms · 12 languages</div>
         <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Your brand on every document</div>
         <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Download everything as PDF</div>
-        <div class="pro-feat-row"><div class="pro-feat-icon fi-no"></div><span class="feat-muted">Unlimited runs</span></div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-no"></div><span class="feat-muted">Unlimited tool runs</span></div>
       </div>
       <button class="pro-btn pro-btn-grad" style="background:linear-gradient(135deg,#F472B6,#A78BFA);" onclick="handleProSignup()">Get Creator — $19/month →</button>
       <div class="pro-guarantee-row">🔒 Founding rate · 7-day money-back · Cancel anytime</div>
@@ -10105,7 +10105,7 @@ function openWizardFromNav() {
 
     <div class="pro-faq-item" onclick="toggleFaq(this)">
       <div class="pro-faq-q">What exactly is a "run"? <span class="pro-faq-arrow">+</span></div>
-      <div class="pro-faq-a">A run is one press of any SAM tool's button — Run The Pulse, Generate ideas, Build 7-day plan, etc. Free gives you 10 tool runs and 3 full Content Playbooks. Creator gets 30 runs and 5 playbooks. Pro and Studio are unlimited.</div>
+      <div class="pro-faq-a">A run is one press of any SAM tool's button — Run The Pulse, Generate ideas, Build 7-day plan, etc. Free gives you 10 tool runs and 3 full SAM Engine Runs. Creator gets 30 runs and 5 playbooks. Pro and Studio are unlimited.</div>
     </div>
 
     <div class="pro-faq-item" onclick="toggleFaq(this)">
@@ -10135,7 +10135,7 @@ function openWizardFromNav() {
 
     <div class="pro-faq-item" onclick="toggleFaq(this)">
       <div class="pro-faq-q">What's a lead magnet and why does SAM build one? <span class="pro-faq-arrow">+</span></div>
-      <div class="pro-faq-a">A lead magnet is a free downloadable resource your audience trades their email address to receive — a checklist, planner, guide or workbook. SAM builds one for you automatically with every Content Playbook, branded with your name and logo. It's how you turn viewers into subscribers. No other AI content tool does this.</div>
+      <div class="pro-faq-a">A lead magnet is a free downloadable resource your audience trades their email address to receive — a checklist, planner, guide or workbook. SAM builds one for you automatically with every SAM Engine Run, branded with your name and logo. It's how you turn viewers into subscribers. No other AI content tool does this.</div>
     </div>
 
     <div class="pro-faq-item" onclick="toggleFaq(this)">
@@ -10156,7 +10156,7 @@ function openWizardFromNav() {
 </div>
 
 
-<!-- ── SOFT POPUP v5.48 ── -->
+<!-- ── SOFT POPUP v5.49 ── -->
 <div id="softPopup" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9000;padding:16px;pointer-events:none;">
   <div id="softPopupInner" style="max-width:480px;margin:0 auto;background:#13101F;border:1px solid rgba(167,139,250,0.25);border-radius:20px 20px 16px 16px;padding:20px 20px 18px;box-shadow:0 -8px 40px rgba(0,0,0,0.5);pointer-events:auto;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
@@ -10175,7 +10175,7 @@ function openWizardFromNav() {
   </div>
 </div>
 
-<!-- ── HARD ASK v5.48 ── -->
+<!-- ── HARD ASK v5.49 ── -->
 <div id="hardAskOverlay" style="display:none;position:fixed;inset:0;z-index:9100;background:rgba(9,8,15,0.88);backdrop-filter:blur(10px);">
   <div id="hardAskInner" style="position:absolute;bottom:0;left:0;right:0;max-width:520px;margin:0 auto;background:#13101F;border:1px solid rgba(251,184,36,0.2);border-radius:24px 24px 0 0;padding:28px 20px 36px;box-shadow:0 -16px 60px rgba(0,0,0,0.6);transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);max-height:92vh;overflow-y:auto;">
 
@@ -10362,7 +10362,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;right:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v5.48</div>
+  <div style="position:fixed;bottom:6px;right:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v5.49</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -11241,10 +11241,10 @@ if (localStorage.getItem('sam_dev') === 'true') {
     <button class="playbook-new-btn" onclick="showWizardStep('10')" style="flex-shrink:0;">← Back</button>
     <button class="playbook-new-btn" onclick="wizardNewPlaybook()" style="flex-shrink:0;">+ New</button>
     <button class="playbook-print-btn" id="playbookPdfBtn" onclick="downloadPDF('playbook')" style="flex:1;min-width:140px;font-size:12px;">
-      ⬇️ Download Playbook PDF
+      ⬇️ Download PDF
     </button>
     <button class="playbook-print-btn" id="leadMagnetPdfBtn" onclick="downloadPDF('leadmagnet')" style="flex:1;min-width:140px;font-size:12px;background:linear-gradient(135deg,#92400E,#FBBF24,#F59E0B);">
-      ⬇️ Download Lead Magnet PDF
+      ⬇️ Download Lead Magnet
     </button>
     <div style="width:100%;text-align:center;font-size:11px;color:rgba(240,236,255,0.4);margin-top:4px;">Uncheck "Headers and footers" in the print dialog for a clean PDF</div>
   </div>
@@ -11301,7 +11301,7 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v5.48
+// SOFT POPUP v5.49
 // ══════════════════════════════════════════════════════════════════════════════
 const TOOL_META = {
   pulse:     { emoji:'🎯', title:'Now try Spark.', sub:'Generate 5 scroll-stopping ideas built for your niche.', id:'spark' },
@@ -11358,7 +11358,7 @@ function closeSoftPopupAndScroll() {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// HARD ASK v5.48
+// HARD ASK v5.49
 // ══════════════════════════════════════════════════════════════════════════════
 function showHardAsk() {
   const el = document.getElementById('hardAskOverlay');
@@ -11492,7 +11492,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v5.48
+  // SAM GUIDED TOUR — v5.49
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
