@@ -292,6 +292,8 @@ PERSONALITY: Confident, direct, warm. Keep responses to 2-4 sentences max. No ja
       const wizContext = req.body.wizardContext || '';
       const delivery   = req.body.delivery || 'camera';
       const pace       = req.body.pace || 'natural';
+      const imageBase64 = req.body.imageBase64 || null;
+      const imageType   = req.body.imageType || 'image/jpeg';
 
       const scriptStyle = {
         camera:    "Write a punchy, conversational on-camera script. Direct, personal, natural rhythm.",
@@ -368,7 +370,10 @@ Return ONLY this JSON — be CONCISE in every field to fit within token limits:
 CRITICAL: Return ONLY valid JSON. Keep ALL fields concise — the JSON must be complete and valid.`;
 
         // ← KEY FIX: increased from 6000 to 8000 to prevent truncation
-      return await streamCall(playbookPrompt, moment, 12000);
+      const playbookUserContent = imageBase64
+        ? [{ type: 'image', source: { type: 'base64', media_type: imageType, data: imageBase64 } }, { type: 'text', text: moment }]
+        : moment;
+      return await streamCall(playbookPrompt, playbookUserContent, 12000);
     }
 
     // ── PLAYBOOK ROUTING — non-moment storyTypes branch to correct tool ───────
