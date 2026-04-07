@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v5.60)
+       UNIFIED HERO (v5.61)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4295,7 +4295,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v5.60
+       CINEMATIC MEET SAM — v5.61
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4720,7 +4720,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v5.60
+       SAM GUIDED TOUR SPLASH — v5.61
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5014,6 +5014,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
       About me
     </button>
+    <button class="nav-signin-btn" onclick="openSignInModal()" style="background:none;border:1px solid rgba(255,255,255,0.15);color:var(--text2);font-family:'Sora',sans-serif;font-size:13px;font-weight:600;padding:8px 18px;border-radius:50px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.5)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.15)';this.style.color='var(--text2)'">Sign in</button>
     <button class="nav-pro-btn" onclick="openProPage()">✦ Go Pro</button>
   </div>
 </nav>
@@ -5021,7 +5022,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 <main>
 
 
-  <!-- ── UNIFIED HERO v5.60 ── -->
+  <!-- ── UNIFIED HERO v5.61 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -6785,10 +6786,33 @@ function closeProPage() {
 }
 function openProModal() { openProPage(); }  // alias for all existing calls
 
-function handleProSignup() {
-  // Open waitlist instead of Stripe until payment is ready
-  closeProPage();
-  openWaitlist();
+async function handleProSignup(plan) {
+  // Determine plan from context if not passed
+  if (!plan) {
+    // Check which button was clicked — default to creator
+    plan = window._selectedPlan || 'creator';
+  }
+
+  const trialState = getTrialState();
+  const email = trialState.email || '';
+  const name = trialState.name || '';
+
+  try {
+    const res = await fetch('/api/stripe-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ plan, email, name })
+    });
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      alert('Something went wrong. Please try again.');
+    }
+  } catch(e) {
+    console.error('Checkout error:', e);
+    alert('Something went wrong. Please try again.');
+  }
 }
 
 function handleAnnualNotify() {
@@ -7024,7 +7048,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v5.60 ──
+// ── RUN TRACKING v5.61 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 5;
@@ -7551,7 +7575,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v5.60
+  // CINEMATIC MEET SAM — v5.61
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -10002,7 +10026,7 @@ function openWizardFromNav() {
         <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Download everything as PDF</div>
         <div class="pro-feat-row"><div class="pro-feat-icon fi-no"></div><span class="feat-muted">Unlimited tool runs</span></div>
       </div>
-      <button class="pro-btn pro-btn-grad" style="background:linear-gradient(135deg,#F472B6,#A78BFA);" onclick="handleProSignup()">Get Creator — $19/month →</button>
+      <button class="pro-btn pro-btn-grad" style="background:linear-gradient(135deg,#F472B6,#A78BFA);" onclick="window._selectedPlan='creator';handleProSignup('creator')">Get Creator — $19/month →</button>
       <div class="pro-guarantee-row">🔒 Founding rate · 7-day money-back · Cancel anytime</div>
     </div>
 
@@ -10025,7 +10049,7 @@ function openWizardFromNav() {
         <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Every new tool the moment it drops</div>
         <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Full brand customization</div>
       </div>
-      <button class="pro-btn pro-btn-grad" onclick="handleProSignup()">Get Pro — $39/month →</button>
+      <button class="pro-btn pro-btn-grad" onclick="window._selectedPlan='pro';handleProSignup('pro')">Get Pro — $39/month →</button>
       <div class="pro-guarantee-row">🔒 Founding rate · 7-day money-back · Cancel anytime</div>
     </div>
 
@@ -10048,7 +10072,7 @@ function openWizardFromNav() {
         <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div><strong>Priority speed</strong> — jump the queue</div>
         <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Every new tool the moment it drops</div>
       </div>
-      <button class="pro-btn pro-btn-grad" style="background:linear-gradient(135deg,#FBB824,#F472B6);" onclick="handleProSignup()">Get Studio — $99/month →</button>
+      <button class="pro-btn pro-btn-grad" style="background:linear-gradient(135deg,#FBB824,#F472B6);" onclick="window._selectedPlan='studio';handleProSignup('studio')">Get Studio — $99/month →</button>
       <div class="pro-guarantee-row">🔒 Founding rate · 7-day money-back · Cancel anytime</div>
     </div>
 
@@ -10149,7 +10173,7 @@ function openWizardFromNav() {
 </div>
 
 
-<!-- soft popup removed v5.60 -->
+<!-- soft popup removed v5.61 -->
 
   <div class="wl-inner">
     <button class="wl-close" onclick="closeWaitlist()">✕</button>
@@ -10242,7 +10266,7 @@ function openWizardFromNav() {
 
     <div class="paywall-urgency">🔒 Lock in $19 forever — founding rate ends at launch</div>
 
-    <button class="paywall-btn" onclick="handleProSignup()">Become a founding member →</button>
+    <button class="paywall-btn" onclick="handleProSignup('creator')">Become a founding member →</button>
     <div class="paywall-guarantee">7-day money-back guarantee · Cancel anytime</div>
   </div>
 </div>
@@ -10298,7 +10322,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v5.60</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v5.61</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -11237,9 +11261,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v5.60
+// SOFT POPUP v5.61
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v5.60
+// soft popup system removed v5.61
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -11248,7 +11272,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v5.60
+  // SAM GUIDED TOUR — v5.61
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
@@ -11440,6 +11464,130 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 
   // ── TOOL LOCK STATE ──────────────────────────────────────────────────────
   // Tools are always visible — trial system handles access
+
+
+  // ── MAGIC LINK + AUTH ─────────────────────────────────────────────────────
+  async function checkMagicLinkToken() {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    const payment = params.get('payment');
+    const plan = params.get('plan');
+
+    // Handle successful payment redirect
+    if (payment === 'success' && plan) {
+      showToastMsg('Payment successful! Check your email for your login link. 🎉', '#34D399');
+      window.history.replaceState({}, '', '/');
+      return;
+    }
+
+    // Handle magic link token
+    if (token) {
+      showToastMsg('Signing you in...', '#A78BFA');
+      window.history.replaceState({}, '', '/');
+      try {
+        const res = await fetch('/api/auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'verify_token', token })
+        });
+        const data = await res.json();
+        if (data.success && data.user) {
+          // Set trial state from KV user
+          const trialObj = {
+            email: data.user.email,
+            name: data.user.name,
+            tier: data.user.tier,
+            paid: data.user.paid,
+            trialStart: data.user.trialStart
+          };
+          localStorage.setItem('sam-trial', JSON.stringify(trialObj));
+          showToastMsg('Welcome back' + (data.user.name ? ', ' + data.user.name : '') + '! 🎉', '#34D399');
+          setTimeout(() => location.reload(), 1500);
+        } else {
+          showToastMsg('This link has expired. Use Sign in to get a new one.', '#F472B6');
+        }
+      } catch(e) {
+        showToastMsg('Sign in failed. Try again.', '#F472B6');
+      }
+    }
+  }
+
+  function showToastMsg(msg, color) {
+    const t = document.createElement('div');
+    t.style.cssText = 'position:fixed;top:24px;left:50%;transform:translateX(-50%);background:' + (color||'#A78BFA') + ';color:#09080F;font-family:Sora,sans-serif;font-size:13px;font-weight:700;padding:12px 24px;border-radius:50px;z-index:9999;white-space:nowrap;box-shadow:0 4px 24px rgba(0,0,0,0.4);';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity 0.5s'; setTimeout(() => t.remove(), 500); }, 3500);
+  }
+
+  async function sendMagicLink(email) {
+    try {
+      const res = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'send_magic_link', email })
+      });
+      const data = await res.json();
+      if (data.success) {
+        return { success: true };
+      } else if (data.error === 'no_account') {
+        return { success: false, noAccount: true };
+      }
+      return { success: false };
+    } catch(e) {
+      return { success: false };
+    }
+  }
+
+  function openSignInModal() {
+    const m = document.createElement('div');
+    m.id = 'signInModal';
+    m.style.cssText = 'position:fixed;inset:0;background:rgba(9,8,15,0.92);z-index:999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(20px);';
+    m.innerHTML = `<div style="max-width:400px;width:90%;background:rgba(13,11,22,0.98);border:1px solid rgba(255,255,255,0.08);border-radius:28px;padding:40px 32px;text-align:center;display:flex;flex-direction:column;gap:16px;">
+      <div style="font-family:'Sora',sans-serif;font-size:22px;font-weight:700;color:#F0ECFF;">Welcome back.</div>
+      <div style="font-size:14px;color:rgba(240,236,255,0.55);line-height:1.6;">Enter your email and we'll send you a sign-in link.</div>
+      <input type="email" id="signInEmail" placeholder="your@email.com"
+        style="padding:14px 18px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:50px;color:#F0ECFF;font-size:14px;outline:none;font-family:'Sora',sans-serif;text-align:center;"
+        onkeydown="if(event.key==='Enter')document.getElementById('signInSubmit').click()" />
+      <button id="signInSubmit" onclick="handleSignInSubmit()"
+        style="padding:14px 32px;border:none;border-radius:50px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">
+        Send sign-in link →
+      </button>
+      <div id="signInMsg" style="font-size:13px;color:rgba(240,236,255,0.5);min-height:20px;"></div>
+      <button onclick="document.getElementById('signInModal').remove();"
+        style="background:none;border:none;color:rgba(240,236,255,0.3);font-size:13px;cursor:pointer;">
+        Cancel
+      </button>
+    </div>`;
+    document.body.appendChild(m);
+    m.addEventListener('click', e => { if(e.target===m) m.remove(); });
+    setTimeout(() => document.getElementById('signInEmail')?.focus(), 100);
+  }
+
+  async function handleSignInSubmit() {
+    const email = document.getElementById('signInEmail')?.value?.trim();
+    const msg = document.getElementById('signInMsg');
+    const btn = document.getElementById('signInSubmit');
+    if (!email || !email.includes('@')) {
+      if(msg) msg.textContent = 'Please enter a valid email.';
+      return;
+    }
+    if(btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+    const result = await sendMagicLink(email);
+    if (result.success) {
+      if(msg) { msg.style.color = '#34D399'; msg.textContent = 'Check your email — link sent! ✓'; }
+      if(btn) btn.textContent = 'Sent!';
+    } else if (result.noAccount) {
+      if(msg) { msg.style.color = '#F472B6'; msg.textContent = 'No account found. Start a free trial first.'; }
+      if(btn) { btn.disabled = false; btn.textContent = 'Send sign-in link →'; }
+    } else {
+      if(msg) { msg.style.color = '#F472B6'; msg.textContent = 'Something went wrong. Try again.'; }
+      if(btn) { btn.disabled = false; btn.textContent = 'Send sign-in link →'; }
+    }
+  }
+
+  // Check for magic link token on load
+  checkMagicLinkToken();
 
 </script>
 <div class="ib-toast" id="ibToast"></div>

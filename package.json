@@ -5,6 +5,7 @@
   "dependencies": {
     "@sparticuz/chromium-min": "^123.0.1",
     "puppeteer-core": "^22.15.0",
-    "@vercel/kv": "^1.0.0"
+    "@vercel/kv": "^1.0.0",
+    "stripe": "^14.0.0"
   }
 }
