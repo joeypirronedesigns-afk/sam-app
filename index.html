@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v5.83)
+       UNIFIED HERO (v5.84)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -2598,8 +2598,8 @@
     @media(min-width:768px){ .wizard-progress-wrap { padding: 16px 48px 14px; } }
 
     .wizard-progress-top {
-      padding-top: 20px;
-      padding-bottom: 8px;
+      padding-top: 32px;
+      padding-bottom: 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -4301,7 +4301,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v5.83
+       CINEMATIC MEET SAM — v5.84
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4751,7 +4751,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v5.83
+       SAM GUIDED TOUR SPLASH — v5.84
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5053,7 +5053,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 <main>
 
 
-  <!-- ── UNIFIED HERO v5.83 ── -->
+  <!-- ── UNIFIED HERO v5.84 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7130,7 +7130,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v5.83 ──
+// ── RUN TRACKING v5.84 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 5;
@@ -7657,7 +7657,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v5.83
+  // CINEMATIC MEET SAM — v5.84
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -8177,6 +8177,11 @@ function setupWizardStep(step) {
 }
 
 function wizardNext() {
+  // Save steer text if leaving step 10
+  if (wizardCurrentStep === '10') {
+    const steerTa = document.getElementById('wiz10text');
+    if (steerTa) WS.steerText = steerTa.value.trim();
+  }
   const stepOrder = ['1','2','3','4','5','6','7','8','9','10','11','12'];
   const idx = stepOrder.indexOf(wizardCurrentStep);
   if (idx < stepOrder.length - 1) {
@@ -8205,8 +8210,10 @@ function wizardBack() {
 }
 
 function wizardBackFromPlaybook() {
-  // Go back to step 11 (steer SAM) — force rebuild on next forward
+  // Going back from step 12 — always force rebuild
   window._forceRebuild = true;
+  window._savedPlaybookHTML = null;
+  window._savedPlaybookData = null;
   // Store current playbook HTML so we can restore it if they go forward again
   const wizOutput = document.getElementById('wizardOutput');
   if (wizOutput) {
@@ -9214,10 +9221,13 @@ function renderPlaybook(data) {
   </div>
 
   <!-- WHAT SAM CAN BUILD NEXT -->
-  <div class="playbook-section no-print" style="border:1px solid rgba(167,139,250,0.2);border-radius:var(--radius-xl);background:linear-gradient(135deg,rgba(109,40,217,0.08),rgba(244,114,182,0.05));padding:28px;">
-    <div style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#6D28D9,#A78BFA 50%,#F472B6);border-radius:50px;padding:6px 16px;margin-bottom:14px;">
-      <span style="font-size:11px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#fff;">✦ SAM knows your full story — keep building</span>
+  <div class="no-print" style="margin-bottom:16px;">
+    <div style="background:linear-gradient(135deg,#6D28D9,#A78BFA 50%,#F472B6);border-radius:14px;padding:16px 20px;cursor:pointer;" onclick="document.getElementById('samNextSection').scrollIntoView({behavior:'smooth'})">
+      <div style="font-size:11px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:4px;">✦ SAM knows your full story</div>
+      <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:#fff;">Keep building — email sequence, content plan, video concept & more →</div>
     </div>
+  </div>
+  <div class="playbook-section no-print" id="samNextSection" style="border:1px solid rgba(167,139,250,0.2);border-radius:var(--radius-xl);background:linear-gradient(135deg,rgba(109,40,217,0.08),rgba(244,114,182,0.05));padding:28px;">
     <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:var(--text);margin-bottom:8px;letter-spacing:-0.01em;">What do you want to create next?</div>
     <div style="font-size:13px;color:var(--text3);margin-bottom:24px;line-height:1.6;">No starting over. No re-explaining. SAM uses everything from this session to build the next piece instantly. Each output can be copied or saved to your PDF.</div>
     <div style="display:flex;flex-direction:column;gap:10px;">
@@ -9259,8 +9269,7 @@ function renderPlaybook(data) {
   document.getElementById('playbookPrintBar').style.display = 'flex';
   // Show "what's next" banner if tour not complete
   if (!localStorage.getItem('samTourComplete')) {
-    const banner = document.getElementById('tourNextBanner');
-    if (banner) setTimeout(() => { banner.style.display = 'block'; }, 1500);
+    // banner disabled — value surfaced inline on page 12
   }
   // Store playbook data for PDF generation
   window._lastPlaybookData = data;
@@ -10441,7 +10450,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v5.83</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v5.84</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -11324,7 +11333,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
   </div>
 
   <!-- What's next banner — disabled, value surfaced inline on page 12 -->
-  <div id="tourNextBanner" style="display:none;position:sticky;top:0;left:0;right:0;z-index:840;background:linear-gradient(135deg,#6D28D9,#A78BFA 50%,#F472B6);padding:0;">
+  <div id="tourNextBanner" style="display:none !important;position:sticky;top:0;left:0;right:0;z-index:840;background:linear-gradient(135deg,#6D28D9,#A78BFA 50%,#F472B6);padding:0;">
     <button onclick="closeWizard();setTimeout(()=>fireTourSplash(0),400);"
       style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 20px;background:none;border:none;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#fff;cursor:pointer;letter-spacing:0.02em;">
       <div style="width:7px;height:7px;border-radius:50%;background:#fff;animation:pulse-dot 1.5s ease-in-out infinite;flex-shrink:0;"></div>
@@ -11375,9 +11384,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v5.83
+// SOFT POPUP v5.84
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v5.83
+// soft popup system removed v5.84
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -11386,7 +11395,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v5.83
+  // SAM GUIDED TOUR — v5.84
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
