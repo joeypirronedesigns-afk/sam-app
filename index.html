@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v6.13)
+       UNIFIED HERO (v6.15)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4306,7 +4306,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v6.13
+       CINEMATIC MEET SAM — v6.15
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4756,7 +4756,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v6.13
+       SAM GUIDED TOUR SPLASH — v6.15
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5056,10 +5056,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.13</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.15</div>
 
 
-  <!-- ── UNIFIED HERO v6.13 ── -->
+  <!-- ── UNIFIED HERO v6.15 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7135,7 +7135,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v6.13 ──
+// ── RUN TRACKING v6.15 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -7812,7 +7812,7 @@ function printToolOutput(outputId, toolName) {
     <!-- Tools grid -->
     <div style="display:flex;flex-direction:column;gap:10px;">
       
-      <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(244,114,182,0.1));border:1.5px solid rgba(167,139,250,0.4);border-radius:12px;">
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(244,114,182,0.1));border:1.5px solid rgba(167,139,250,0.4);border-radius:12px;cursor:pointer;" onclick="samReturnToWizard()">
         <div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#6D28D9,#A78BFA);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Sora',sans-serif;font-size:14px;font-weight:800;color:#fff;">S</div>
         <div style="flex:1;">
           <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#F0ECFF;">SAM Story Engine</div>
@@ -7821,7 +7821,7 @@ function printToolOutput(outputId, toolName) {
         <div style="font-size:10px;font-weight:700;color:#A78BFA;background:rgba(167,139,250,0.2);border:1px solid rgba(167,139,250,0.3);padding:3px 10px;border-radius:20px;white-space:nowrap;">← You are here</div>
       </div>
 
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);border-radius:14px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);border-radius:14px;cursor:pointer;" onclick="closeEcosystemOverlay();openTool('pulse')">
         <div style="width:34px;height:34px;border-radius:10px;background:rgba(244,114,182,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><path d="M5 8h18M5 13h11M5 18h14" stroke="#F472B6" stroke-width="2" stroke-linecap="round"/></svg>
         </div>
@@ -7831,7 +7831,7 @@ function printToolOutput(outputId, toolName) {
         </div>
       </div>
 
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:12px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemOverlay();openTool('spark')">
         <div style="width:34px;height:34px;border-radius:10px;background:rgba(167,139,250,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><path d="M14 4v3M14 21v3M3 14H6M22 14h3M14 9a5 5 0 100 10 5 5 0 000-10z" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round"/></svg>
         </div>
@@ -7841,7 +7841,7 @@ function printToolOutput(outputId, toolName) {
         </div>
       </div>
 
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.15);border-radius:12px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemOverlay();openTool('blueprint')">
         <div style="width:34px;height:34px;border-radius:10px;background:rgba(56,189,248,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><rect x="5" y="7" width="18" height="16" rx="2" stroke="#38BDF8" stroke-width="1.8"/><path d="M5 12h18M10 5v4M18 5v4" stroke="#38BDF8" stroke-width="1.8" stroke-linecap="round"/></svg>
         </div>
@@ -7851,7 +7851,7 @@ function printToolOutput(outputId, toolName) {
         </div>
       </div>
 
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.15);border-radius:12px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemOverlay();openTool('vision')">
         <div style="width:34px;height:34px;border-radius:10px;background:rgba(52,211,153,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><polygon points="11,8 22,14 11,20" fill="#34D399"/><rect x="6" y="8" width="2.5" height="12" rx="1" fill="#34D399"/></svg>
         </div>
@@ -7861,7 +7861,7 @@ function printToolOutput(outputId, toolName) {
         </div>
       </div>
 
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:12px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemOverlay();openTool('lens')">
         <div style="width:34px;height:34px;border-radius:10px;background:rgba(251,191,36,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="13" r="5" stroke="#FBBF24" stroke-width="1.8"/><circle cx="14" cy="13" r="2" fill="#FBBF24"/><path d="M14 4v3M14 19v3M4 13H7M21 13h3" stroke="#FBBF24" stroke-width="1.5" stroke-linecap="round"/></svg>
         </div>
@@ -7875,7 +7875,7 @@ function printToolOutput(outputId, toolName) {
 
     <!-- Buttons -->
     <div style="display:flex;flex-direction:column;gap:8px;padding-top:4px;">
-      <button onclick="closeEcosystemOverlay()" style="width:100%;padding:13px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">
+      <button onclick="samReturnToWizard()" style="width:100%;padding:13px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">
         ← Keep building my story
       </button>
       <button onclick="samExploreTools()" style="width:100%;padding:11px;background:transparent;border:1px solid rgba(255,255,255,0.12);border-radius:50px;font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:rgba(240,236,255,0.6);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,236,255,0.6)'">
@@ -7931,7 +7931,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v6.13
+  // CINEMATIC MEET SAM — v6.15
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -8050,6 +8050,212 @@ function initWizard() {
       if (bubble1) bubble1.style.display = '';
       meetSamInit();
     }, 350);
+  }
+
+
+  function samReturnToWizard() {
+    closeEcosystemOverlay();
+    // Small delay to let overlay fade, then fire check-in
+    setTimeout(() => {
+      const hasSaved = localStorage.getItem('sam_session_v2');
+      const step = localStorage.getItem('sam_session_step') || '0';
+      const stepNum = parseInt(step);
+
+      // Show the entry screen
+      document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
+      const entry = document.getElementById('wiz-entry');
+      if (entry) entry.classList.add('active');
+
+      // Hide normal Meet SAM elements
+      const bubble1 = document.getElementById('msBubble1');
+      if (bubble1) bubble1.style.display = 'none';
+      const mainCTA = document.getElementById('msMainCTA');
+      if (mainCTA) mainCTA.style.display = 'none';
+      const talkPath = document.getElementById('msTalkPath');
+      if (talkPath) talkPath.style.display = 'none';
+      const responseWrap = document.getElementById('msResponseWrap');
+      if (responseWrap) responseWrap.style.display = 'none';
+
+      // Remove any existing check-in card
+      const existing = document.getElementById('msCheckinCard');
+      if (existing) existing.remove();
+
+      // Fire ambient orbs
+      setTimeout(() => {
+        document.querySelectorAll('.ms-orb').forEach(o => o.classList.add('glow'));
+      }, 150);
+
+      // Build check-in card
+      const wrap = document.querySelector('.meet-sam-wrap');
+      if (!wrap) return;
+
+      const card = document.createElement('div');
+      card.id = 'msCheckinCard';
+      card.style.cssText = 'opacity:0;transform:translateY(12px);transition:opacity 0.6s ease,transform 0.6s cubic-bezier(0.34,1.2,0.64,1);';
+
+      const stepLabels = {
+        '0':'Brand Profile','1':'What to Create','2':'Your Moment',
+        '3':'SAM Reflects','4':'Delivery Style','5':'Your Pace',
+        '6':'Your Audience','7':'Platforms','8':'Format',
+        '9':'Your Photo','10':'Steer SAM','11':'Language','12':'Full Output'
+      };
+      const label = stepLabels[step] || 'Step ' + step;
+
+      card.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+          <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#F472B6,#A78BFA);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;color:#09080F;flex-shrink:0;">S</div>
+          <div>
+            <div style="font-size:13px;font-weight:500;color:#F0ECFF;">SAM</div>
+            <div style="font-size:11px;color:rgba(240,236,255,0.35);">Strategic Assistant for Making</div>
+          </div>
+          <div style="margin-left:auto;width:7px;height:7px;border-radius:50%;background:#34D399;flex-shrink:0;"></div>
+        </div>
+        <div id="msCheckinText" style="font-size:15px;line-height:1.7;color:rgba(240,236,255,0.85);margin-bottom:20px;min-height:60px;"></div>
+        <div id="msCheckinInputWrap" style="display:none;">
+          <div style="position:relative;">
+            <textarea id="msCheckinInput" placeholder="Tell me what's on your mind..." rows="3" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:12px 48px 12px 14px;font-size:14px;color:#F0ECFF;font-family:inherit;resize:none;box-sizing:border-box;line-height:1.5;"></textarea>
+            <button onclick="msCheckinSend()" style="position:absolute;right:10px;bottom:10px;background:linear-gradient(135deg,#A78BFA,#F472B6);border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+        </div>
+        <div id="msCheckinThinking" style="display:none;">
+          <div style="display:flex;gap:6px;align-items:center;padding:8px 0;">
+            <div style="width:7px;height:7px;border-radius:50%;background:#A78BFA;animation:ms-dot-bounce 1.2s ease infinite;"></div>
+            <div style="width:7px;height:7px;border-radius:50%;background:#A78BFA;animation:ms-dot-bounce 1.2s ease infinite 0.2s;"></div>
+            <div style="width:7px;height:7px;border-radius:50%;background:#A78BFA;animation:ms-dot-bounce 1.2s ease infinite 0.4s;"></div>
+          </div>
+        </div>
+        <div id="msCheckinResponse" style="display:none;font-size:15px;line-height:1.7;color:rgba(240,236,255,0.85);margin-bottom:20px;"></div>
+        <div id="msCheckinActions" style="display:none;display:flex;gap:10px;flex-wrap:wrap;">
+          <button onclick="msCheckinResume()" style="display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:999px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid rgba(167,139,250,0.5);background:linear-gradient(90deg,rgba(244,114,182,0.15),rgba(167,139,250,0.15),rgba(56,189,248,0.15));color:#A78BFA;font-family:inherit;">↩ Jump back in</button>
+          <button onclick="msCheckinAskMore()" style="display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:999px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:rgba(240,236,255,0.6);font-family:inherit;">I have a question</button>
+        </div>
+      `;
+
+      const ambient = document.getElementById('msAmbient');
+      if (ambient) wrap.insertBefore(card, ambient.nextSibling);
+      else wrap.insertBefore(card, wrap.firstChild);
+
+      setTimeout(() => { card.style.opacity='1'; card.style.transform='translateY(0)'; }, 250);
+
+      // Typewriter the check-in question
+      const textEl = document.getElementById('msCheckinText');
+      const question = hasSaved && stepNum >= 1
+        ? 'Hey — good to see you back. You were on Step ' + stepNum + ' of 12 (' + label + '). Before we jump back in — how are you feeling about everything so far? Anything you want to think through, or are you ready to keep going?'
+        : 'Hey — welcome back. How can I help you right now? Tell me what's on your mind and I'll point you in the right direction.';
+
+      let i = 0;
+      const typeCheckin = () => {
+        if (i < question.length) {
+          textEl.textContent += question[i];
+          i++;
+          const ch = question[i-1];
+          const d = ch==='.'?480:ch===','?200:ch==='?'?420:ch===' '?55:38;
+          setTimeout(typeCheckin, d);
+        } else {
+          // Show input after typing
+          setTimeout(() => {
+            const inp = document.getElementById('msCheckinInputWrap');
+            if (inp) { inp.style.display='block'; document.getElementById('msCheckinInput').focus(); }
+          }, 400);
+        }
+      };
+      setTimeout(typeCheckin, 500);
+
+    }, 350);
+  }
+
+  async function msCheckinSend() {
+    const input = document.getElementById('msCheckinInput');
+    const val = input ? input.value.trim() : '';
+    if (!val) return;
+
+    input.disabled = true;
+    const inputWrap = document.getElementById('msCheckinInputWrap');
+    if (inputWrap) inputWrap.style.display = 'none';
+    const thinking = document.getElementById('msCheckinThinking');
+    if (thinking) thinking.style.display = 'block';
+
+    const step = localStorage.getItem('sam_session_step') || '0';
+    const stepLabels = {
+      '0':'Brand Profile','1':'What to Create','2':'Your Moment',
+      '3':'SAM Reflects','4':'Delivery Style','5':'Your Pace',
+      '6':'Your Audience','7':'Platforms','8':'Format',
+      '9':'Your Photo','10':'Steer SAM','11':'Language','12':'Full Output'
+    };
+    const label = stepLabels[step] || 'Step ' + step;
+    const name = (typeof WS !== 'undefined' && WS.name) ? WS.name : '';
+
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 220,
+          system: `You are SAM — Strategic Assistant for Making. You are a warm, sharp content creation guide built for self-taught creators, DIY builders, coaches and business owners. The user is returning to the SAM Story Engine wizard (currently on Step ${step} of 12: ${label}). SAM has 5 standalone tools: The Pulse (moment → full script), The Spark (niche → 5 video ideas), Blueprint (7-day content calendar), The Vision (one bold unique concept), The Lens (thumbnail strategy + analytics decoder). Respond in 2-3 sentences max. Be warm, specific, and human. Either reassure them and encourage them to continue, help them think through their concern, or suggest which SAM tool would help them right now. Never be generic. End with a gentle nudge toward action.${name ? ' Their name is ' + name + '.' : ''}`,
+          messages: [{ role: 'user', content: val }]
+        })
+      });
+      const data = await res.json();
+      const reply = data.content?.[0]?.text || "You're closer than you think. Let's keep going — your story is worth telling.";
+
+      if (thinking) thinking.style.display = 'none';
+      const responseEl = document.getElementById('msCheckinResponse');
+      if (responseEl) {
+        responseEl.style.display = 'block';
+        // Typewriter the response
+        let i = 0;
+        const typeReply = () => {
+          if (i < reply.length) {
+            responseEl.textContent += reply[i];
+            i++;
+            setTimeout(typeReply, 28);
+          } else {
+            // Show action buttons
+            setTimeout(() => {
+              const actions = document.getElementById('msCheckinActions');
+              if (actions) { actions.style.display = 'flex'; }
+            }, 300);
+          }
+        };
+        setTimeout(typeReply, 200);
+      }
+    } catch(e) {
+      if (thinking) thinking.style.display = 'none';
+      const responseEl = document.getElementById('msCheckinResponse');
+      if (responseEl) {
+        responseEl.style.display = 'block';
+        responseEl.textContent = "You're closer than you think. Let's keep going — your story is worth telling.";
+        setTimeout(() => {
+          const actions = document.getElementById('msCheckinActions');
+          if (actions) actions.style.display = 'flex';
+        }, 300);
+      }
+    }
+  }
+
+  function msCheckinResume() {
+    const card = document.getElementById('msCheckinCard');
+    if (card) { card.style.opacity='0'; card.style.transform='translateY(-8px)'; setTimeout(() => card.remove(), 400); }
+    setTimeout(() => {
+      if (typeof restoreSessionFull === 'function') restoreSessionFull();
+      else if (typeof restoreSessionIfAvailable === 'function') restoreSessionIfAvailable();
+    }, 350);
+  }
+
+  function msCheckinAskMore() {
+    const actions = document.getElementById('msCheckinActions');
+    if (actions) actions.style.display = 'none';
+    const responseEl = document.getElementById('msCheckinResponse');
+    if (responseEl) responseEl.style.display = 'none';
+    const inputWrap = document.getElementById('msCheckinInputWrap');
+    if (inputWrap) {
+      inputWrap.style.display = 'block';
+      const inp = document.getElementById('msCheckinInput');
+      if (inp) { inp.disabled = false; inp.value = ''; inp.focus(); }
+    }
   }
 
   function meetSamInit() {
@@ -9858,7 +10064,7 @@ function printPlaybookOnly() {
     <!-- Tools grid -->
     <div style="display:flex;flex-direction:column;gap:10px;">
       
-      <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(244,114,182,0.1));border:1.5px solid rgba(167,139,250,0.4);border-radius:12px;">
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(244,114,182,0.1));border:1.5px solid rgba(167,139,250,0.4);border-radius:12px;cursor:pointer;" onclick="samReturnToWizard()">
         <div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#6D28D9,#A78BFA);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Sora',sans-serif;font-size:14px;font-weight:800;color:#fff;">S</div>
         <div style="flex:1;">
           <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#F0ECFF;">SAM Story Engine</div>
@@ -9867,7 +10073,7 @@ function printPlaybookOnly() {
         <div style="font-size:10px;font-weight:700;color:#A78BFA;background:rgba(167,139,250,0.2);border:1px solid rgba(167,139,250,0.3);padding:3px 10px;border-radius:20px;white-space:nowrap;">← You are here</div>
       </div>
 
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);border-radius:14px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);border-radius:14px;cursor:pointer;" onclick="closeEcosystemOverlay();openTool('pulse')">
         <div style="width:34px;height:34px;border-radius:10px;background:rgba(244,114,182,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><path d="M5 8h18M5 13h11M5 18h14" stroke="#F472B6" stroke-width="2" stroke-linecap="round"/></svg>
         </div>
@@ -9877,7 +10083,7 @@ function printPlaybookOnly() {
         </div>
       </div>
 
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:12px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemOverlay();openTool('spark')">
         <div style="width:34px;height:34px;border-radius:10px;background:rgba(167,139,250,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><path d="M14 4v3M14 21v3M3 14H6M22 14h3M14 9a5 5 0 100 10 5 5 0 000-10z" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round"/></svg>
         </div>
@@ -9887,7 +10093,7 @@ function printPlaybookOnly() {
         </div>
       </div>
 
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.15);border-radius:12px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemOverlay();openTool('blueprint')">
         <div style="width:34px;height:34px;border-radius:10px;background:rgba(56,189,248,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><rect x="5" y="7" width="18" height="16" rx="2" stroke="#38BDF8" stroke-width="1.8"/><path d="M5 12h18M10 5v4M18 5v4" stroke="#38BDF8" stroke-width="1.8" stroke-linecap="round"/></svg>
         </div>
@@ -9897,7 +10103,7 @@ function printPlaybookOnly() {
         </div>
       </div>
 
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.15);border-radius:12px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemOverlay();openTool('vision')">
         <div style="width:34px;height:34px;border-radius:10px;background:rgba(52,211,153,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><polygon points="11,8 22,14 11,20" fill="#34D399"/><rect x="6" y="8" width="2.5" height="12" rx="1" fill="#34D399"/></svg>
         </div>
@@ -9907,7 +10113,7 @@ function printPlaybookOnly() {
         </div>
       </div>
 
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:12px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemOverlay();openTool('lens')">
         <div style="width:34px;height:34px;border-radius:10px;background:rgba(251,191,36,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="13" r="5" stroke="#FBBF24" stroke-width="1.8"/><circle cx="14" cy="13" r="2" fill="#FBBF24"/><path d="M14 4v3M14 19v3M4 13H7M21 13h3" stroke="#FBBF24" stroke-width="1.5" stroke-linecap="round"/></svg>
         </div>
@@ -9921,7 +10127,7 @@ function printPlaybookOnly() {
 
     <!-- Buttons -->
     <div style="display:flex;flex-direction:column;gap:8px;padding-top:4px;">
-      <button onclick="closeEcosystemOverlay()" style="width:100%;padding:13px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">
+      <button onclick="samReturnToWizard()" style="width:100%;padding:13px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">
         ← Keep building my story
       </button>
       <button onclick="samExploreTools()" style="width:100%;padding:11px;background:transparent;border:1px solid rgba(255,255,255,0.12);border-radius:50px;font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:rgba(240,236,255,0.6);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,236,255,0.6)'">
@@ -9967,7 +10173,7 @@ function printLeadMagnetOnly() {
     <!-- Tools grid -->
     <div style="display:flex;flex-direction:column;gap:10px;">
       
-      <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(244,114,182,0.1));border:1.5px solid rgba(167,139,250,0.4);border-radius:12px;">
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(244,114,182,0.1));border:1.5px solid rgba(167,139,250,0.4);border-radius:12px;cursor:pointer;" onclick="samReturnToWizard()">
         <div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#6D28D9,#A78BFA);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Sora',sans-serif;font-size:14px;font-weight:800;color:#fff;">S</div>
         <div style="flex:1;">
           <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#F0ECFF;">SAM Story Engine</div>
@@ -9976,7 +10182,7 @@ function printLeadMagnetOnly() {
         <div style="font-size:10px;font-weight:700;color:#A78BFA;background:rgba(167,139,250,0.2);border:1px solid rgba(167,139,250,0.3);padding:3px 10px;border-radius:20px;white-space:nowrap;">← You are here</div>
       </div>
 
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);border-radius:14px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);border-radius:14px;cursor:pointer;" onclick="closeEcosystemOverlay();openTool('pulse')">
         <div style="width:34px;height:34px;border-radius:10px;background:rgba(244,114,182,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><path d="M5 8h18M5 13h11M5 18h14" stroke="#F472B6" stroke-width="2" stroke-linecap="round"/></svg>
         </div>
@@ -9986,7 +10192,7 @@ function printLeadMagnetOnly() {
         </div>
       </div>
 
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:12px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemOverlay();openTool('spark')">
         <div style="width:34px;height:34px;border-radius:10px;background:rgba(167,139,250,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><path d="M14 4v3M14 21v3M3 14H6M22 14h3M14 9a5 5 0 100 10 5 5 0 000-10z" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round"/></svg>
         </div>
@@ -9996,7 +10202,7 @@ function printLeadMagnetOnly() {
         </div>
       </div>
 
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.15);border-radius:12px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemOverlay();openTool('blueprint')">
         <div style="width:34px;height:34px;border-radius:10px;background:rgba(56,189,248,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><rect x="5" y="7" width="18" height="16" rx="2" stroke="#38BDF8" stroke-width="1.8"/><path d="M5 12h18M10 5v4M18 5v4" stroke="#38BDF8" stroke-width="1.8" stroke-linecap="round"/></svg>
         </div>
@@ -10006,7 +10212,7 @@ function printLeadMagnetOnly() {
         </div>
       </div>
 
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.15);border-radius:12px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemOverlay();openTool('vision')">
         <div style="width:34px;height:34px;border-radius:10px;background:rgba(52,211,153,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><polygon points="11,8 22,14 11,20" fill="#34D399"/><rect x="6" y="8" width="2.5" height="12" rx="1" fill="#34D399"/></svg>
         </div>
@@ -10016,7 +10222,7 @@ function printLeadMagnetOnly() {
         </div>
       </div>
 
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:12px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemOverlay();openTool('lens')">
         <div style="width:34px;height:34px;border-radius:10px;background:rgba(251,191,36,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="13" r="5" stroke="#FBBF24" stroke-width="1.8"/><circle cx="14" cy="13" r="2" fill="#FBBF24"/><path d="M14 4v3M14 19v3M4 13H7M21 13h3" stroke="#FBBF24" stroke-width="1.5" stroke-linecap="round"/></svg>
         </div>
@@ -10030,7 +10236,7 @@ function printLeadMagnetOnly() {
 
     <!-- Buttons -->
     <div style="display:flex;flex-direction:column;gap:8px;padding-top:4px;">
-      <button onclick="closeEcosystemOverlay()" style="width:100%;padding:13px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">
+      <button onclick="samReturnToWizard()" style="width:100%;padding:13px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">
         ← Keep building my story
       </button>
       <button onclick="samExploreTools()" style="width:100%;padding:11px;background:transparent;border:1px solid rgba(255,255,255,0.12);border-radius:50px;font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:rgba(240,236,255,0.6);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,236,255,0.6)'">
@@ -11155,7 +11361,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.13</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.15</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -12096,9 +12302,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v6.13
+// SOFT POPUP v6.15
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v6.13
+// soft popup system removed v6.15
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -12107,7 +12313,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v6.13
+  // SAM GUIDED TOUR — v6.15
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
@@ -12546,7 +12752,7 @@ function openEcosystemOverlay() {
     <!-- Tools grid -->
     <div style="display:flex;flex-direction:column;gap:10px;">
       
-      <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(244,114,182,0.1));border:1.5px solid rgba(167,139,250,0.4);border-radius:12px;">
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(244,114,182,0.1));border:1.5px solid rgba(167,139,250,0.4);border-radius:12px;cursor:pointer;" onclick="samReturnToWizard()">
         <div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#6D28D9,#A78BFA);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Sora',sans-serif;font-size:14px;font-weight:800;color:#fff;">S</div>
         <div style="flex:1;">
           <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#F0ECFF;">SAM Story Engine</div>
@@ -12555,7 +12761,7 @@ function openEcosystemOverlay() {
         <div style="font-size:10px;font-weight:700;color:#A78BFA;background:rgba(167,139,250,0.2);border:1px solid rgba(167,139,250,0.3);padding:3px 10px;border-radius:20px;white-space:nowrap;">← You are here</div>
       </div>
 
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);border-radius:14px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);border-radius:14px;cursor:pointer;" onclick="closeEcosystemOverlay();openTool('pulse')">
         <div style="width:34px;height:34px;border-radius:10px;background:rgba(244,114,182,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><path d="M5 8h18M5 13h11M5 18h14" stroke="#F472B6" stroke-width="2" stroke-linecap="round"/></svg>
         </div>
@@ -12565,7 +12771,7 @@ function openEcosystemOverlay() {
         </div>
       </div>
 
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:12px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemOverlay();openTool('spark')">
         <div style="width:34px;height:34px;border-radius:10px;background:rgba(167,139,250,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><path d="M14 4v3M14 21v3M3 14H6M22 14h3M14 9a5 5 0 100 10 5 5 0 000-10z" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round"/></svg>
         </div>
@@ -12575,7 +12781,7 @@ function openEcosystemOverlay() {
         </div>
       </div>
 
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.15);border-radius:12px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemOverlay();openTool('blueprint')">
         <div style="width:34px;height:34px;border-radius:10px;background:rgba(56,189,248,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><rect x="5" y="7" width="18" height="16" rx="2" stroke="#38BDF8" stroke-width="1.8"/><path d="M5 12h18M10 5v4M18 5v4" stroke="#38BDF8" stroke-width="1.8" stroke-linecap="round"/></svg>
         </div>
@@ -12585,7 +12791,7 @@ function openEcosystemOverlay() {
         </div>
       </div>
 
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.15);border-radius:12px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemOverlay();openTool('vision')">
         <div style="width:34px;height:34px;border-radius:10px;background:rgba(52,211,153,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><polygon points="11,8 22,14 11,20" fill="#34D399"/><rect x="6" y="8" width="2.5" height="12" rx="1" fill="#34D399"/></svg>
         </div>
@@ -12595,7 +12801,7 @@ function openEcosystemOverlay() {
         </div>
       </div>
 
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:12px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemOverlay();openTool('lens')">
         <div style="width:34px;height:34px;border-radius:10px;background:rgba(251,191,36,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="13" r="5" stroke="#FBBF24" stroke-width="1.8"/><circle cx="14" cy="13" r="2" fill="#FBBF24"/><path d="M14 4v3M14 19v3M4 13H7M21 13h3" stroke="#FBBF24" stroke-width="1.5" stroke-linecap="round"/></svg>
         </div>
@@ -12609,7 +12815,7 @@ function openEcosystemOverlay() {
 
     <!-- Buttons -->
     <div style="display:flex;flex-direction:column;gap:8px;padding-top:4px;">
-      <button onclick="closeEcosystemOverlay()" style="width:100%;padding:13px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">
+      <button onclick="samReturnToWizard()" style="width:100%;padding:13px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">
         ← Keep building my story
       </button>
       <button onclick="samExploreTools()" style="width:100%;padding:11px;background:transparent;border:1px solid rgba(255,255,255,0.12);border-radius:50px;font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:rgba(240,236,255,0.6);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,236,255,0.6)'">
