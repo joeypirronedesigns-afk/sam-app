@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v6.19)
+       UNIFIED HERO (v6.21)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4306,7 +4306,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v6.19
+       CINEMATIC MEET SAM — v6.21
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4756,7 +4756,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v6.19
+       SAM GUIDED TOUR SPLASH — v6.21
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5056,10 +5056,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.19</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.21</div>
 
 
-  <!-- ── UNIFIED HERO v6.19 ── -->
+  <!-- ── UNIFIED HERO v6.21 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7135,7 +7135,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v6.19 ──
+// ── RUN TRACKING v6.21 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -7931,7 +7931,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v6.19
+  // CINEMATIC MEET SAM — v6.21
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -8188,18 +8188,29 @@ function initWizard() {
     const name = (typeof WS !== 'undefined' && WS.name) ? WS.name : '';
 
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const systemPrompt = `You are SAM — Strategic Assistant for Making. You are a warm, sharp content creation guide built for self-taught creators, DIY builders, coaches and business owners. The user is returning to the SAM Story Engine wizard (currently on Step ${step} of 12: ${label}). SAM has 5 standalone tools: The Pulse (moment to full script), The Spark (niche to 5 video ideas), Blueprint (7-day content calendar), The Vision (one bold unique concept), The Lens (thumbnail strategy + analytics decoder). Respond in 2-3 sentences max. Be warm, specific, and human. Either reassure them and encourage them to continue, help them think through their concern, or suggest which SAM tool would help them right now. Never be generic. End with a gentle nudge toward action.${name ? ' Their name is ' + name + '.' : ''}`;
+      const checkinRes = await fetch('/api/sam', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 220,
-          system: `You are SAM — Strategic Assistant for Making. You are a warm, sharp content creation guide built for self-taught creators, DIY builders, coaches and business owners. The user is returning to the SAM Story Engine wizard (currently on Step ${step} of 12: ${label}). SAM has 5 standalone tools: The Pulse (moment → full script), The Spark (niche → 5 video ideas), Blueprint (7-day content calendar), The Vision (one bold unique concept), The Lens (thumbnail strategy + analytics decoder). Respond in 2-3 sentences max. Be warm, specific, and human. Either reassure them and encourage them to continue, help them think through their concern, or suggest which SAM tool would help them right now. Never be generic. End with a gentle nudge toward action.${name ? ' Their name is ' + name + '.' : ''}`,
-          messages: [{ role: 'user', content: val }]
-        })
+        body: JSON.stringify({ mode: 'chat', userId: 'anon', messages: [{ role: 'user', content: val }], systemPrompt })
       });
-      const data = await res.json();
-      const reply = data.content?.[0]?.text || "You're closer than you think. Let's keep going — your story is worth telling.";
+      const checkinReader = checkinRes.body.getReader();
+      const checkinDecoder = new TextDecoder();
+      let reply = '';
+      while (true) {
+        const { done, value } = await checkinReader.read();
+        if (done) break;
+        const chunk = checkinDecoder.decode(value, { stream: true });
+        for (const line of chunk.split('\n')) {
+          if (!line.startsWith('data: ')) continue;
+          try {
+            const evt = JSON.parse(line.slice(6).trim());
+            if (evt.done && evt.result && evt.result.reply) reply = evt.result.reply;
+            else if (evt.t) reply += evt.t;
+          } catch(_) {}
+        }
+      }
+      if (!reply) reply = "You\'re closer than you think. Let\'s keep going — your story is worth telling.";
 
       if (thinking) thinking.style.display = 'none';
       const responseEl = document.getElementById('msCheckinResponse');
@@ -11361,7 +11372,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.19</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.21</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -12302,9 +12313,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v6.19
+// SOFT POPUP v6.21
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v6.19
+// soft popup system removed v6.21
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -12313,7 +12324,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v6.19
+  // SAM GUIDED TOUR — v6.21
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
