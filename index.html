@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v6.12)
+       UNIFIED HERO (v6.13)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4306,7 +4306,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v6.12
+       CINEMATIC MEET SAM — v6.13
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4756,7 +4756,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v6.12
+       SAM GUIDED TOUR SPLASH — v6.13
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5056,10 +5056,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.12</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.13</div>
 
 
-  <!-- ── UNIFIED HERO v6.12 ── -->
+  <!-- ── UNIFIED HERO v6.13 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7135,7 +7135,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v6.12 ──
+// ── RUN TRACKING v6.13 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -7931,7 +7931,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v6.12
+  // CINEMATIC MEET SAM — v6.13
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -7946,6 +7946,111 @@ function initWizard() {
     'Mapping your audience...',
     'Building your profile...'
   ];
+
+
+  function meetSamCheckReturning() {
+    const session = localStorage.getItem('sam_session_v2');
+    const step = localStorage.getItem('sam_session_step') || '0';
+    const stepNum = parseInt(step);
+    if (!session || stepNum < 1) return false;
+
+    const stepLabels = {
+      '0':'Brand Profile','1':'What to Create','2':'Your Moment',
+      '3':'SAM Reflects','4':'Delivery Style','5':'Your Pace',
+      '6':'Your Audience','7':'Platforms','8':'Format',
+      '9':'Your Photo','10':'Steer SAM','11':'Language','12':'Full Output'
+    };
+    const label = stepLabels[step] || 'Step ' + step;
+
+    const bubble1 = document.getElementById('msBubble1');
+    if (bubble1) bubble1.style.display = 'none';
+    const mainCTA = document.getElementById('msMainCTA');
+    if (mainCTA) mainCTA.style.display = 'none';
+
+    const wrap = document.querySelector('.meet-sam-wrap');
+    if (!wrap) return false;
+
+    const card = document.createElement('div');
+    card.id = 'msReturningCard';
+    card.style.cssText = 'opacity:0;transform:translateY(12px);transition:opacity 0.6s ease,transform 0.6s cubic-bezier(0.34,1.2,0.64,1);';
+    card.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+        <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#F472B6,#A78BFA);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;color:#09080F;flex-shrink:0;">S</div>
+        <div>
+          <div style="font-size:13px;font-weight:500;color:#F0ECFF;">SAM</div>
+          <div style="font-size:11px;color:rgba(240,236,255,0.35);">Strategic Assistant for Making</div>
+        </div>
+        <div style="margin-left:auto;width:7px;height:7px;border-radius:50%;background:#34D399;flex-shrink:0;"></div>
+      </div>
+      <div style="font-size:15px;line-height:1.7;color:rgba(240,236,255,0.85);margin-bottom:6px;">Hey — welcome back.</div>
+      <div style="font-size:15px;line-height:1.7;color:rgba(240,236,255,0.85);margin-bottom:6px;">Looks like you were working on something. Your story&#39;s still saved.</div>
+      <div style="font-size:15px;line-height:1.7;color:rgba(240,236,255,0.85);margin-bottom:20px;">Want to pick up where you left off — or open one of the other tools in our ecosystem?</div>
+      <div style="background:rgba(167,139,250,0.07);border:1px solid rgba(167,139,250,0.2);border-radius:10px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+        <div>
+          <div style="font-size:11px;color:rgba(240,236,255,0.35);margin-bottom:3px;letter-spacing:0.05em;text-transform:uppercase;">Story Engine</div>
+          <div style="font-size:13px;color:#F0ECFF;font-weight:500;">Step ${stepNum} of 12 · ${label}</div>
+        </div>
+        <div style="font-size:11px;color:#A78BFA;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.2);padding:4px 10px;border-radius:999px;flex-shrink:0;">Saved ✓</div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button onclick="msReturningContinue()" style="display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:999px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid rgba(167,139,250,0.5);background:linear-gradient(90deg,rgba(244,114,182,0.15),rgba(167,139,250,0.15),rgba(56,189,248,0.15));color:#A78BFA;font-family:inherit;">↩ Continue my story</button>
+        <button onclick="msReturningExplore()" style="display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:999px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:rgba(240,236,255,0.6);font-family:inherit;">⬡ Explore the tools</button>
+      </div>
+      <div style="margin-top:20px;padding-top:18px;border-top:1px solid rgba(255,255,255,0.06);">
+        <button onclick="msReturningFresh()" style="background:none;border:none;font-size:12px;color:rgba(240,236,255,0.25);cursor:pointer;font-family:inherit;padding:0;">Start fresh instead →</button>
+      </div>
+    `;
+
+    const ambient = document.getElementById('msAmbient');
+    if (ambient) {
+      wrap.insertBefore(card, ambient.nextSibling);
+    } else {
+      wrap.insertBefore(card, wrap.firstChild);
+    }
+
+    setTimeout(() => {
+      document.querySelectorAll('.ms-orb').forEach(o => o.classList.add('glow'));
+    }, 200);
+
+    setTimeout(() => {
+      card.style.opacity = '1';
+      card.style.transform = 'translateY(0)';
+    }, 300);
+
+    return true;
+  }
+
+  function msReturningContinue() {
+    const card = document.getElementById('msReturningCard');
+    if (card) { card.style.opacity = '0'; card.style.transform = 'translateY(-8px)'; setTimeout(() => card.remove(), 400); }
+    setTimeout(() => {
+      if (typeof restoreSessionFull === 'function') { restoreSessionFull(); }
+      else if (typeof restoreSessionIfAvailable === 'function') { restoreSessionIfAvailable(); }
+    }, 350);
+  }
+
+  function msReturningExplore() {
+    const card = document.getElementById('msReturningCard');
+    if (card) { card.style.opacity = '0'; card.style.transform = 'translateY(-8px)'; setTimeout(() => card.remove(), 400); }
+    setTimeout(() => {
+      if (typeof openEcosystemOverlay === 'function') { openEcosystemOverlay(); }
+      else {
+        const bubble1 = document.getElementById('msBubble1');
+        if (bubble1) bubble1.style.display = '';
+        meetSamInit();
+      }
+    }, 350);
+  }
+
+  function msReturningFresh() {
+    const card = document.getElementById('msReturningCard');
+    if (card) { card.style.opacity = '0'; card.style.transform = 'translateY(-8px)'; setTimeout(() => card.remove(), 400); }
+    setTimeout(() => {
+      const bubble1 = document.getElementById('msBubble1');
+      if (bubble1) bubble1.style.display = '';
+      meetSamInit();
+    }, 350);
+  }
 
   function meetSamInit() {
     // Reset state
@@ -8313,7 +8418,7 @@ Rules: Max 3 sentences total. Never use bullet points. Never say "I can see that
     document.getElementById('wizardPage').classList.add('open');
     document.body.style.overflow = 'hidden';
     showWizardStep('entry');
-    setTimeout(() => { if(typeof meetSamInit === 'function') meetSamInit(); }, 100);
+    setTimeout(() => { if(typeof meetSamCheckReturning === 'function' && meetSamCheckReturning()) { /* returning user card shown */ } else if(typeof meetSamInit === 'function') meetSamInit(); }, 100);
   }
 
   // Auto-open wizard for new visitors (no saved session)
@@ -11050,7 +11155,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.12</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.13</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -11991,9 +12096,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v6.12
+// SOFT POPUP v6.13
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v6.12
+// soft popup system removed v6.13
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -12002,7 +12107,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v6.12
+  // SAM GUIDED TOUR — v6.13
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
