@@ -43,7 +43,7 @@ async function checkLimit(userId, tier, action, tourStep) {
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage, emojiPreference } = req.body;
+  const { mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage, emojiPreference, voiceProfile } = req.body;
   const userId = req.body.userId || req.headers['x-forwarded-for'] || 'anon';
   const tier = req.body.tier || 'free';
 
@@ -227,10 +227,13 @@ PERSONALITY: Confident, direct, warm. Keep responses to 2-4 sentences max. No ja
   const languageLine = outputLanguage ? `Write the ENTIRE output in ${outputLanguage}. JSON field names stay in English.` : '';
   const platformContext = platforms && platforms.length > 0 ? `PLATFORM SPECS (follow exactly): ${getPlatformContext(platforms)}` : '';
   const formatContext = contentType ? `Content format requested: ${contentType}.` : '';
+  const voiceLine = voiceProfile
+    ? `VOICE PROFILE (critical — match this exactly): The creator has a specific voice. Here are their voice traits: ${voiceProfile}. Every hook, script, caption and line of copy must sound like THEM — not generic AI. Mirror their natural cadence, word choices, energy level and personality as described.`
+    : '';
 
   const samIdentity = `You are S.A.M. — Strategic Assistant for Making. You are an AI content strategist that helps creators write better scripts, hooks, captions, strategies and content plans.`;
 
-  const base = `${samIdentity} ${toneContext} ${emojiLine} ${creatorLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatContext} CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No explanation outside the JSON.`;
+  const base = `${samIdentity} ${toneContext} ${emojiLine} ${creatorLine} ${voiceLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatContext} CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No explanation outside the JSON.`;
 
   const streamCall = async (system, userContent, maxTokens) => {
     const r = await fetch('https://api.anthropic.com/v1/messages', {
