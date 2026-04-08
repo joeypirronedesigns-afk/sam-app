@@ -7212,14 +7212,16 @@ function guardedRunFn(originalFn) {
     showPaywall(); return;
   }
 
-  // No trial started yet — allow up to MAX_FREE_RUNS then ask for email
-  const total = getTotalRuns();
-  if (total >= MAX_FREE_RUNS) {
+  // No trial started yet — each tool gets 1 free run
+  const toolKey = getCurrentToolKey(originalFn);
+  const tried = getTriedTools();
+
+  // If this specific tool has already been run — ask for email
+  if (toolKey && tried.includes(toolKey)) {
     openTrialCapture(); return;
   }
 
-  // Record and run
-  const toolKey = getCurrentToolKey(originalFn);
+  // First run on this tool — allow it
   recordRun(toolKey);
   originalFn();
 
