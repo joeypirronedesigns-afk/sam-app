@@ -2192,9 +2192,10 @@
       background: rgba(0,0,0,0.9);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
-      padding: 20px;
+      padding: 16px;
+      overflow-y: auto;
     }
     .paywall-overlay.open { display: flex; }
     .paywall-inner {
@@ -10669,7 +10670,7 @@ function openWizardFromNav() {
 
 <!-- ── DAY 4 PAYWALL ── -->
 <div class="paywall-overlay" id="paywallOverlay">
-  <div class="paywall-inner" style="max-width:480px;width:100%;margin:0 auto;padding:36px 28px 32px;display:flex;flex-direction:column;align-items:center;gap:0;box-sizing:border-box;">
+  <div class="paywall-inner" style="max-width:480px;width:100%;margin:16px auto;padding:24px 20px 24px;display:flex;flex-direction:column;align-items:center;gap:0;box-sizing:border-box;">
 
     <!-- SAM avatar -->
     <div style="width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#6D28D9,#A78BFA);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-size:22px;font-weight:800;color:#fff;margin-bottom:20px;box-shadow:0 0 32px rgba(167,139,250,0.3);">S</div>
@@ -10729,7 +10730,7 @@ function openWizardFromNav() {
     </div>
 
     <!-- See plans -->
-    <div onclick="document.getElementById('paywallOverlay').classList.remove('open');document.body.style.overflow='';openProPage();" style="font-size:12px;color:#A78BFA;cursor:pointer;margin-bottom:12px;transition:color 0.2s;text-align:center;" onmouseover="this.style.color='#F472B6'" onmouseout="this.style.color='#A78BFA'">See all plan details →</div>
+    <div onclick="openProPage();" style="font-size:12px;color:#A78BFA;cursor:pointer;margin-bottom:12px;transition:color 0.2s;text-align:center;" onmouseover="this.style.color='#F472B6'" onmouseout="this.style.color='#A78BFA'">See all plan details →</div>
 
     <!-- Sign in -->
     <button onclick="document.getElementById('paywallOverlay').classList.remove('open');document.body.style.overflow='';openSignIn();" style="width:100%;padding:12px;background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:50px;font-size:13px;font-weight:600;color:rgba(240,236,255,0.5);cursor:pointer;margin-bottom:12px;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(255,255,255,0.25)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.5)'">Already a member? Sign in</button>
