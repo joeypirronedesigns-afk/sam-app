@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v6.17)
+       UNIFIED HERO (v6.18)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4306,7 +4306,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v6.17
+       CINEMATIC MEET SAM — v6.18
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4756,7 +4756,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v6.17
+       SAM GUIDED TOUR SPLASH — v6.18
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5056,10 +5056,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.17</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.18</div>
 
 
-  <!-- ── UNIFIED HERO v6.17 ── -->
+  <!-- ── UNIFIED HERO v6.18 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -5083,7 +5083,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
     <p style="font-size:clamp(15px,2vw,20px);line-height:1.7;color:var(--text2);max-width:560px;margin:0 auto 36px;">Every upload demands 15 decisions you never signed up to make — hook, script, platform, caption, hashtags, format, duration. SAM handles all of them. You just show up, film, and upload.</p>
 
     <!-- CTA -->
-    <button onclick="if(typeof getTrialState==='function'){getTrialState().email?openWizardPage():openTrialCapture();}else{openTrialCapture();}" style="background:linear-gradient(135deg,#FBB824,#F472B6);color:#09080F;font-family:'Sora',sans-serif;font-size:clamp(15px,2vw,18px);font-weight:800;padding:16px 36px;border:none;border-radius:50px;cursor:pointer;box-shadow:0 0 40px rgba(251,184,36,0.3);letter-spacing:-0.01em;margin-bottom:16px;transition:all 0.25s;">&#10022; Tell SAM your story — it's free &rarr;</button>
+    <button onclick="setTimeout(function(){if(typeof getTrialState==='function'&&typeof openWizardPage==='function'){getTrialState().email?openWizardPage():openTrialCapture();}else if(typeof openTrialCapture==='function'){openTrialCapture();}},0)" style="background:linear-gradient(135deg,#FBB824,#F472B6);color:#09080F;font-family:'Sora',sans-serif;font-size:clamp(15px,2vw,18px);font-weight:800;padding:16px 36px;border:none;border-radius:50px;cursor:pointer;box-shadow:0 0 40px rgba(251,184,36,0.3);letter-spacing:-0.01em;margin-bottom:16px;transition:all 0.25s;">&#10022; Tell SAM your story — it's free &rarr;</button>
 
     <!-- See plans link -->
     <div style="margin-bottom:60px;">
@@ -5198,7 +5198,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
           <div style="font-size:13px;color:var(--text3);line-height:1.6;">Script, captions for every platform, b-roll cues, audience profile, and a lead magnet. Ready to post.</div>
         </div>
       </div>
-      <button onclick="if(typeof getTrialState==='function'){getTrialState().email?openWizardPage():openTrialCapture();}else{openTrialCapture();}" style="margin-top:40px;background:linear-gradient(135deg,#FBB824,#F472B6);color:#09080F;font-family:'Sora',sans-serif;font-size:16px;font-weight:800;padding:16px 36px;border:none;border-radius:50px;cursor:pointer;box-shadow:0 0 30px rgba(251,184,36,0.25);">&#10022; Try SAM free — no card, no catch &rarr;</button>
+      <button onclick="setTimeout(function(){if(typeof getTrialState==='function'&&typeof openWizardPage==='function'){getTrialState().email?openWizardPage():openTrialCapture();}else if(typeof openTrialCapture==='function'){openTrialCapture();}},0)" style="margin-top:40px;background:linear-gradient(135deg,#FBB824,#F472B6);color:#09080F;font-family:'Sora',sans-serif;font-size:16px;font-weight:800;padding:16px 36px;border:none;border-radius:50px;cursor:pointer;box-shadow:0 0 30px rgba(251,184,36,0.25);">&#10022; Try SAM free — no card, no catch &rarr;</button>
     </div>
 
     <!-- THE PULSE -->
@@ -7135,7 +7135,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v6.17 ──
+// ── RUN TRACKING v6.18 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -7931,7 +7931,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v6.17
+  // CINEMATIC MEET SAM — v6.18
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -11361,7 +11361,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.17</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.18</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -12302,9 +12302,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v6.17
+// SOFT POPUP v6.18
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v6.17
+// soft popup system removed v6.18
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -12313,7 +12313,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v6.17
+  // SAM GUIDED TOUR — v6.18
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
