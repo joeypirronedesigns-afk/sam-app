@@ -7134,7 +7134,24 @@ function checkTrialBeforeRun() {
 // ── RUN TRACKING v5.94 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
-const MAX_FREE_RUNS = 5;
+const MAX_FREE_RUNS = 1;
+const MAX_FREE_WIZARD_RUNS = 2;
+
+function getWizardRuns() {
+  try { return parseInt(localStorage.getItem('sam-wizard-runs') || '0'); } catch { return 0; }
+}
+function recordWizardRun() {
+  localStorage.setItem('sam-wizard-runs', String(getWizardRuns() + 1));
+}
+function checkWizardLimit() {
+  const state = getTrialState();
+  if (state.paid) return true;
+  if (state.trialStart && (Date.now() - state.trialStart) < TRIAL_DURATION_MS) return true;
+  if (state.trialStart && (Date.now() - state.trialStart) >= TRIAL_DURATION_MS) { showPaywall(); return false; }
+  if (getWizardRuns() >= MAX_FREE_WIZARD_RUNS) { openTrialCapture(); return false; }
+  recordWizardRun();
+  return true;
+}
 
 function getRunData() {
   try { return JSON.parse(localStorage.getItem('sam-runs') || '{}'); } catch { return {}; }
@@ -8911,6 +8928,7 @@ async function generateAudienceDiagnosis() {
 const LOADER_STEPS = ['lstep-1','lstep-2','lstep-3','lstep-4','lstep-5','lstep-6','lstep-7','lstep-8'];
 
 async function buildPlaybook() {
+  if (!checkWizardLimit()) return;
   window._forceRebuild = false;
   // Animate loader steps
   let stepIdx = 0;
