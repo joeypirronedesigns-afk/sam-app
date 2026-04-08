@@ -9495,7 +9495,7 @@ async function downloadPDF(type) {
 
     if (res.status === 429) {
       const err = await res.json();
-      alert(err.message || 'Daily PDF limit reached. Upgrade your plan for more downloads.');
+      showPaywall();
       btn.innerHTML = originalText;
       btn.disabled = false;
       return;
