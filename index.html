@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v6.27)
+       UNIFIED HERO (v6.28)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4315,7 +4315,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v6.27
+       CINEMATIC MEET SAM — v6.28
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4765,7 +4765,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v6.27
+       SAM GUIDED TOUR SPLASH — v6.28
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5065,10 +5065,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.27</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.28</div>
 
 
-  <!-- ── UNIFIED HERO v6.27 ── -->
+  <!-- ── UNIFIED HERO v6.28 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7144,7 +7144,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v6.27 ──
+// ── RUN TRACKING v6.28 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -7940,7 +7940,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v6.27
+  // CINEMATIC MEET SAM — v6.28
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -8317,6 +8317,196 @@ function initWizard() {
     }
   }
 
+
+  // ── VOICE CALIBRATION ─────────────────────────────────────────────
+  function showVoiceCalibration() {
+    const goBtnWrap = document.getElementById('msGoBtnWrap');
+    if (goBtnWrap) goBtnWrap.style.display = 'none';
+
+    const wrap = document.querySelector('.meet-sam-wrap');
+    if (!wrap) return;
+
+    // Remove existing if any
+    const existing = document.getElementById('msVoiceCalib');
+    if (existing) existing.remove();
+
+    const card = document.createElement('div');
+    card.id = 'msVoiceCalib';
+    card.style.cssText = 'opacity:0;transform:translateY(12px);transition:opacity 0.6s ease,transform 0.6s cubic-bezier(0.34,1.2,0.64,1);margin-top:20px;';
+    card.innerHTML = `
+      <div style="font-size:13px;font-weight:600;color:rgba(240,236,255,0.5);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;">✦ One more thing</div>
+      <div style="font-size:16px;line-height:1.7;color:rgba(240,236,255,0.9);margin-bottom:6px;font-weight:500;">I want to sound like <em style="color:#A78BFA;font-style:normal;">you</em> — not like AI.</div>
+      <div style="font-size:14px;line-height:1.65;color:rgba(240,236,255,0.6);margin-bottom:18px;">Give me a few sentences. Don't think about it — just type how you actually talk. The messier the better.</div>
+      <div style="position:relative;margin-bottom:12px;">
+        <textarea id="msVoiceInput" rows="4" placeholder="just type how u talk lol... or be all formal if thats you.. whatever is real" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:14px 50px 14px 16px;font-size:14px;color:#F0ECFF;font-family:inherit;resize:none;box-sizing:border-box;line-height:1.6;outline:none;" onfocus="this.style.borderColor='rgba(167,139,250,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"></textarea>
+        <button onclick="submitVoiceCalibration()" id="msVoiceSendBtn" style="position:absolute;right:10px;bottom:10px;background:linear-gradient(135deg,#A78BFA,#F472B6);border:none;border-radius:8px;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <button onclick="startVoiceCalibMic()" style="display:inline-flex;align-items:center;gap:6px;background:none;border:1px solid rgba(255,255,255,0.1);border-radius:999px;padding:7px 14px;font-size:12px;color:rgba(240,236,255,0.5);cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(244,114,182,0.4)';this.style.color='#F472B6'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.5)'">🎙 Let me hear you instead</button>
+        <button onclick="skipVoiceCalibration()" style="background:none;border:none;font-size:12px;color:rgba(240,236,255,0.25);cursor:pointer;font-family:inherit;padding:0;transition:color 0.2s;" onmouseover="this.style.color='rgba(240,236,255,0.5)'" onmouseout="this.style.color='rgba(240,236,255,0.25)'">Skip for now →</button>
+      </div>
+    `;
+
+    // Insert after response wrap
+    const responseWrap = document.getElementById('msResponseWrap');
+    if (responseWrap && responseWrap.parentNode) {
+      responseWrap.parentNode.insertBefore(card, responseWrap.nextSibling);
+    } else {
+      wrap.appendChild(card);
+    }
+
+    setTimeout(() => { card.style.opacity='1'; card.style.transform='translateY(0)'; }, 200);
+    setTimeout(() => { document.getElementById('msVoiceInput')?.focus(); }, 600);
+  }
+
+  async function submitVoiceCalibration() {
+    const input = document.getElementById('msVoiceInput');
+    const val = input ? input.value.trim() : '';
+    if (!val || val.length < 10) {
+      if (input) { input.style.borderColor='rgba(244,114,182,0.5)'; setTimeout(()=>input.style.borderColor='rgba(255,255,255,0.1)',1500); }
+      return;
+    }
+
+    // Store raw sample
+    if (typeof WS !== 'undefined') WS.voiceSample = val;
+
+    // Hide input, show thinking
+    const card = document.getElementById('msVoiceCalib');
+    if (card) {
+      card.innerHTML = `
+        <div style="display:flex;gap:8px;align-items:center;padding:12px 0;">
+          <div style="width:8px;height:8px;border-radius:50%;background:#A78BFA;animation:ms-dot-bounce 1.2s ease infinite;"></div>
+          <div style="width:8px;height:8px;border-radius:50%;background:#A78BFA;animation:ms-dot-bounce 1.2s ease infinite 0.2s;"></div>
+          <div style="width:8px;height:8px;border-radius:50%;background:#A78BFA;animation:ms-dot-bounce 1.2s ease infinite 0.4s;"></div>
+          <span style="font-size:13px;color:rgba(240,236,255,0.4);margin-left:8px;">Reading how you write...</span>
+        </div>`;
+    }
+
+    try {
+      const res = await fetch('/api/sam', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mode: 'chat',
+          userId: 'anon',
+          messages: [{ role: 'user', content: val }],
+          systemPrompt: `You are SAM analyzing someone's writing voice. Study this sample carefully.
+
+Return EXACTLY this format — nothing else:
+Line 1: "You're [specific trait]. You [specific trait]. You [specific trait]. And you [specific trait]."
+Line 2: "I've got you — everything I build is going to sound like YOU wrote it, not a robot."
+
+Rules for the traits:
+- Be HYPER specific. Not "conversational" — say "skip punctuation when you get excited"
+- Not "authentic" — say "use short sentences like a punch"  
+- Look for: sentence length, punctuation style, word choices, humor, how they start sentences, filler words, energy level, formality
+- If they use lowercase: mention it. If they use dashes: mention it. If they curse: mention it warmly.
+- Make them feel SEEN. Like you actually read them.
+- Never be generic. Never say "authentic voice" or "conversational tone".
+- Max 12 words per trait.`
+        })
+      });
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let reply = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        for (const line of chunk.split('\n')) {
+          if (!line.startsWith('data: ')) continue;
+          try {
+            const evt = JSON.parse(line.slice(6).trim());
+            if (evt.done && evt.result && evt.result.reply) reply = evt.result.reply;
+            else if (evt.t) reply += evt.t;
+          } catch(_) {}
+        }
+      }
+
+      if (!reply) reply = "You write the way you think — fast, direct, no fluff. And you know exactly what you mean. I\'ve got you — everything I build is going to sound like YOU wrote it, not a robot.";
+
+      // Store voice profile
+      if (typeof WS !== 'undefined') {
+        WS.voiceProfile = reply;
+        WS.voiceCalibrated = true;
+        if (typeof saveWizardState === 'function') saveWizardState();
+      }
+
+      // Show the locked-in card
+      showVoiceLockedCard(reply);
+
+    } catch(e) {
+      skipVoiceCalibration();
+    }
+  }
+
+  function showVoiceLockedCard(profile) {
+    const card = document.getElementById('msVoiceCalib');
+    if (!card) return;
+
+    // Split profile into the two lines
+    const lines = profile.split('\n').filter(l => l.trim());
+    const traits = lines[0] || profile;
+    const confirm = lines[1] || "I\'ve got you — everything I build is going to sound like YOU wrote it.";
+
+    card.style.transition = 'opacity 0.3s ease';
+    card.style.opacity = '0';
+    setTimeout(() => {
+      card.innerHTML = `
+        <div style="background:linear-gradient(135deg,rgba(167,139,250,0.1),rgba(244,114,182,0.06));border:1px solid rgba(167,139,250,0.25);border-radius:16px;padding:20px 22px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+            <div style="font-size:11px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#A78BFA;">🎙 Your Voice — Locked In</div>
+          </div>
+          <div style="font-size:15px;line-height:1.7;color:rgba(240,236,255,0.9);margin-bottom:12px;">${traits}</div>
+          <div style="font-size:13px;color:rgba(240,236,255,0.5);line-height:1.6;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06);">${confirm}</div>
+        </div>
+      `;
+      card.style.opacity = '1';
+
+      // Show the go button after a beat
+      setTimeout(() => {
+        const goBtnWrap = document.getElementById('msGoBtnWrap');
+        if (goBtnWrap) {
+          const goBtn = document.getElementById('msGoBtn');
+          if (goBtn) goBtn.textContent = '✦ Let\'s build your story — in your voice →';
+          goBtnWrap.style.display = 'block';
+          setTimeout(() => goBtnWrap.classList.add('revealed'), 80);
+        }
+      }, 1200);
+    }, 300);
+  }
+
+  function startVoiceCalibMic() {
+    // Use existing mic infrastructure — transcribe then run calibration
+    const input = document.getElementById('msVoiceInput');
+    if (input) input.placeholder = 'Listening... just talk naturally for 20-30 seconds';
+    if (typeof toggleMicFor === 'function') {
+      toggleMicFor('msVoiceInput', null);
+      // After 3 seconds check if we got something
+      setTimeout(() => {
+        const val = document.getElementById('msVoiceInput')?.value?.trim();
+        if (val && val.length > 20) submitVoiceCalibration();
+      }, 4000);
+    } else {
+      // Fallback — just focus the textarea
+      if (input) { input.focus(); input.placeholder = 'Tell me about your week, your project — anything. Just talk.'; }
+    }
+  }
+
+  function skipVoiceCalibration() {
+    const card = document.getElementById('msVoiceCalib');
+    if (card) { card.style.opacity='0'; setTimeout(()=>card.remove(),300); }
+    const goBtnWrap = document.getElementById('msGoBtnWrap');
+    if (goBtnWrap) {
+      goBtnWrap.style.display = 'block';
+      setTimeout(() => goBtnWrap.classList.add('revealed'), 80);
+    }
+  }
+  // ── END VOICE CALIBRATION ──────────────────────────────────────────
+
   function meetSamInit() {
     // Reset state
     const bubble = document.getElementById('msOpeningBubble');
@@ -8421,6 +8611,8 @@ function initWizard() {
     WS.platforms = MS.platform ? [MS.platform] : [];
     WS.audienceHint = MS.audience || '';
     WS.toneHint = MS.tone || '';
+    // Preserve voice calibration if set
+    if (WS.voiceProfile) WS.voiceCalibrated = true;
 
     // Mark first run done so nav updates
     localStorage.setItem('samFirstRunDone', '1');
@@ -8660,14 +8852,16 @@ Rules: Max 3 sentences total. Never use bullet points. Never say "I can see that
         // Stop avatar pulse and ring
         avatars.forEach(a => a.classList.remove('ms-avatar-pulse'));
         if (respWrap) respWrap.classList.remove('speaking');
-        // Slow float-in button reveal
+        // Show voice calibration instead of go button
         setTimeout(() => {
-          const wrap2 = document.getElementById('msGoBtnWrap');
-          if (wrap2) {
-            wrap2.style.display = 'block';
-            setTimeout(() => {
-              wrap2.classList.add('revealed');
-            }, 80);
+          if (typeof showVoiceCalibration === 'function') {
+            showVoiceCalibration();
+          } else {
+            const wrap2 = document.getElementById('msGoBtnWrap');
+            if (wrap2) {
+              wrap2.style.display = 'block';
+              setTimeout(() => { wrap2.classList.add('revealed'); }, 80);
+            }
           }
         }, 800);
       }
@@ -11423,7 +11617,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.27</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.28</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -12364,9 +12558,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v6.27
+// SOFT POPUP v6.28
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v6.27
+// soft popup system removed v6.28
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -12375,7 +12569,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v6.27
+  // SAM GUIDED TOUR — v6.28
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
