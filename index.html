@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v6.09)
+       UNIFIED HERO (v6.10)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4306,7 +4306,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v6.09
+       CINEMATIC MEET SAM — v6.10
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4756,7 +4756,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v6.09
+       SAM GUIDED TOUR SPLASH — v6.10
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5056,10 +5056,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.09</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.10</div>
 
 
-  <!-- ── UNIFIED HERO v6.09 ── -->
+  <!-- ── UNIFIED HERO v6.10 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7135,7 +7135,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v6.09 ──
+// ── RUN TRACKING v6.10 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -7432,11 +7432,10 @@ function exportIdeas(){
   const state=getTrialState();
   const isMobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-  // No email yet — gate with trial capture
+  // No email yet — show export capture modal
   if(!state.email){
     closeIdeasPanel();
-    setTimeout(()=>openTrialCapture(),200);
-    showIbToast('Sign up free to export your ideas!');
+    setTimeout(()=>openExportCapture(),200);
     return;
   }
 
@@ -7914,7 +7913,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v6.09
+  // CINEMATIC MEET SAM — v6.10
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -11033,7 +11032,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.09</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.10</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -11974,9 +11973,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v6.09
+// SOFT POPUP v6.10
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v6.09
+// soft popup system removed v6.10
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -11985,7 +11984,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v6.09
+  // SAM GUIDED TOUR — v6.10
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
@@ -12303,7 +12302,80 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
   checkMagicLinkToken();
 
 
-  function openEcosystemOverlay() {
+  function openExportCapture() {
+  const el = document.getElementById('exportCaptureOverlay');
+  if (el) { el.style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+  setTimeout(() => {
+    const n = document.getElementById('exportCaptureName');
+    if (n) n.focus();
+  }, 300);
+}
+function closeExportCapture() {
+  const el = document.getElementById('exportCaptureOverlay');
+  if (el) { el.style.display = 'none'; document.body.style.overflow = ''; }
+}
+async function submitExportCapture() {
+  const name = document.getElementById('exportCaptureName').value.trim();
+  const email = document.getElementById('exportCaptureEmail').value.trim();
+  const err = document.getElementById('exportCaptureErr');
+  const btn = document.getElementById('exportCaptureBtn');
+
+  if (!name) { err.textContent = 'Add your name so SAM knows who to send it to.'; err.style.display='block'; return; }
+  if (!email || !email.includes('@')) { err.textContent = 'Need a valid email to send your ideas.'; err.style.display='block'; return; }
+
+  err.style.display = 'none';
+  btn.textContent = '📧 Sending...';
+  btn.disabled = true;
+
+  // Save trial state
+  const trialObj = { email, name, trialStart: Date.now(), source: 'export' };
+  localStorage.setItem('sam-trial', JSON.stringify(trialObj));
+
+  // Send ideas via email
+  const ideas = IB.load();
+  if (ideas.length) {
+    const lines = ideas.map((idea,i) => {
+      const label = idea.label || idea.type || 'Idea';
+      const date = idea.date ? new Date(idea.date).toLocaleDateString() : 'Today';
+      return '<div style="margin-bottom:24px;padding:20px;background:#f7f5ff;border-left:4px solid #7C3AED;border-radius:8px;">'
+        +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#7C3AED;margin-bottom:8px;">'+label+' · '+date+'</div>'
+        +'<div style="font-size:14px;color:#1a1a2e;line-height:1.7;white-space:pre-wrap;">'+idea.text.substring(0,800)+(idea.text.length>800?'...':'')+'</div>'
+        +'</div>';
+    }).join('');
+
+    const bodyHtml = '<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:32px 24px;">'
+      +'<div style="background:linear-gradient(135deg,#09080F,#1a0a2e);padding:32px;border-radius:12px;margin-bottom:24px;text-align:center;">'
+      +'<div style="font-size:28px;font-weight:800;color:#F0ECFF;margin-bottom:8px;">S · A · M</div>'
+      +'<div style="font-size:14px;color:rgba(240,236,255,0.6);">Your Ideas Export · '+new Date().toLocaleDateString()+'</div>'
+      +'</div>'
+      +'<div style="font-size:15px;color:#333;margin-bottom:24px;">Hey '+name+' — here are your '+ideas.length+' saved idea'+(ideas.length===1?'':'s')+' from SAM.</div>'
+      +lines
+      +'<div style="margin-top:32px;text-align:center;"><a href="https://samforcreators.com" style="display:inline-block;padding:14px 32px;background:#7C3AED;color:#fff;text-decoration:none;border-radius:50px;font-weight:700;">Open SAM — 48hrs free →</a></div>'
+      +'<div style="margin-top:24px;padding:16px;background:#f7f5ff;border-radius:8px;font-size:13px;color:#666;text-align:center;">Your 48-hour free trial is now active. All 5 tools, no card needed.</div>'
+      +'</div>';
+
+    try {
+      await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name, email,
+          source: 'ideas_export',
+          subject: 'Your SAM Ideas — '+new Date().toLocaleDateString(),
+          customBody: bodyHtml
+        })
+      });
+    } catch(e) {}
+  }
+
+  closeExportCapture();
+  showIbToast('📧 Sent! Check your inbox. 48hrs unlocked!');
+
+  // Update trial badge
+  if (typeof updateTrialBadge === 'function') updateTrialBadge({ email, name, trialStart: Date.now() });
+}
+
+function openEcosystemOverlay() {
     const el = document.getElementById('ecosystemOverlay');
     if (el) { el.style.display = 'flex'; document.body.style.overflow = 'hidden'; }
   }
