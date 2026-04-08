@@ -10651,21 +10651,71 @@ function openWizardFromNav() {
 
 <!-- ── DAY 4 PAYWALL ── -->
 <div class="paywall-overlay" id="paywallOverlay">
-  <div class="paywall-inner">
-    <div class="paywall-emoji">⏰</div>
-    <div class="paywall-title">Your 48 hours<br/>are up.</div>
-    <div class="paywall-sub">You've seen what SAM can do. Lock in your founding member rate before we raise the price at public launch.</div>
+  <div class="paywall-inner" style="max-width:480px;width:100%;margin:0 auto;padding:36px 28px 32px;display:flex;flex-direction:column;align-items:center;gap:0;box-sizing:border-box;">
 
-    <div class="paywall-price-block">
-      <div class="paywall-price">$19</div>
-      <div class="paywall-price-note">/ month — founding member rate</div>
-      <div class="paywall-price-orig">Raising to $39 at public launch</div>
+    <!-- SAM avatar -->
+    <div style="width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#6D28D9,#A78BFA);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-size:22px;font-weight:800;color:#fff;margin-bottom:20px;box-shadow:0 0 32px rgba(167,139,250,0.3);">S</div>
+
+    <!-- Headline -->
+    <div style="font-family:'Sora',sans-serif;font-size:28px;font-weight:800;color:#F0ECFF;text-align:center;line-height:1.15;margin-bottom:10px;">You just found<br/>your story.</div>
+
+    <!-- Chest punch -->
+    <div style="font-size:15px;font-weight:600;color:#A78BFA;text-align:center;margin-bottom:8px;">Most people never get this far. You did.</div>
+
+    <!-- Urgency without pressure -->
+    <div style="font-size:13px;color:rgba(240,236,255,0.55);text-align:center;line-height:1.6;margin-bottom:28px;">SAM has everything you built — your story, your voice, your strategy.<br/>It's all here waiting.</div>
+
+    <!-- Question -->
+    <div style="font-size:11px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:rgba(240,236,255,0.4);margin-bottom:14px;">Ready to keep going?</div>
+
+    <!-- Plan rows -->
+    <div style="width:100%;display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
+
+      <!-- Creator -->
+      <button onclick="handleProSignup('creator')" style="width:100%;display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.25);border-radius:14px;cursor:pointer;text-align:left;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.5)';this.style.background='rgba(167,139,250,0.14)'" onmouseout="this.style.borderColor='rgba(167,139,250,0.25)';this.style.background='rgba(167,139,250,0.08)'">
+        <div style="flex:1;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
+            <span style="font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#F0ECFF;">Creator</span>
+            <span style="font-size:10px;font-weight:700;color:#A78BFA;background:rgba(167,139,250,0.15);padding:2px 8px;border-radius:20px;">$19/mo</span>
+          </div>
+          <div style="font-size:12px;color:rgba(240,236,255,0.45);">For people who post consistently and want to show up with confidence.</div>
+        </div>
+        <div style="color:rgba(240,236,255,0.3);font-size:16px;">→</div>
+      </button>
+
+      <!-- Pro -->
+      <button onclick="handleProSignup('pro')" style="width:100%;display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(244,114,182,0.08);border:1.5px solid rgba(244,114,182,0.35);border-radius:14px;cursor:pointer;text-align:left;transition:all 0.2s;position:relative;" onmouseover="this.style.borderColor='rgba(244,114,182,0.6)';this.style.background='rgba(244,114,182,0.14)'" onmouseout="this.style.borderColor='rgba(244,114,182,0.35)';this.style.background='rgba(244,114,182,0.08)'">
+        <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#F472B6,#A78BFA);color:#fff;font-size:9px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;padding:3px 12px;border-radius:20px;white-space:nowrap;">Most Popular</div>
+        <div style="flex:1;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
+            <span style="font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#F0ECFF;">Pro</span>
+            <span style="font-size:10px;font-weight:700;color:#F472B6;background:rgba(244,114,182,0.15);padding:2px 8px;border-radius:20px;">$39/mo</span>
+          </div>
+          <div style="font-size:12px;color:rgba(240,236,255,0.45);">For people serious about growth — unlimited runs, priority speed.</div>
+        </div>
+        <div style="color:rgba(240,236,255,0.3);font-size:16px;">→</div>
+      </button>
+
+      <!-- Studio -->
+      <button onclick="handleProSignup('studio')" style="width:100%;display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.2);border-radius:14px;cursor:pointer;text-align:left;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(56,189,248,0.45)';this.style.background='rgba(56,189,248,0.12)'" onmouseout="this.style.borderColor='rgba(56,189,248,0.2)';this.style.background='rgba(56,189,248,0.06)'">
+        <div style="flex:1;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
+            <span style="font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#F0ECFF;">Studio</span>
+            <span style="font-size:10px;font-weight:700;color:#38BDF8;background:rgba(56,189,248,0.15);padding:2px 8px;border-radius:20px;">$99/mo</span>
+          </div>
+          <div style="font-size:12px;color:rgba(240,236,255,0.45);">For teams and agencies running multiple creators at once.</div>
+        </div>
+        <div style="color:rgba(240,236,255,0.3);font-size:16px;">→</div>
+      </button>
+
     </div>
 
-    <div class="paywall-urgency">🔒 Lock in $19 forever — founding rate ends at launch</div>
+    <!-- Sign in -->
+    <button onclick="document.getElementById('paywallOverlay').classList.remove('open');document.body.style.overflow='';openSignIn();" style="width:100%;padding:12px;background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:50px;font-size:13px;font-weight:600;color:rgba(240,236,255,0.5);cursor:pointer;margin-bottom:12px;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(255,255,255,0.25)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.5)'">Already a member? Sign in</button>
 
-    <button class="paywall-btn" onclick="handleProSignup('creator')">Become a founding member →</button>
-    <div class="paywall-guarantee">7-day money-back guarantee · Cancel anytime</div>
+    <!-- Maybe later -->
+    <div onclick="document.getElementById('paywallOverlay').classList.remove('open');document.body.style.overflow='';" style="font-size:12px;color:rgba(240,236,255,0.3);cursor:pointer;transition:color 0.2s;" onmouseover="this.style.color='rgba(240,236,255,0.6)'" onmouseout="this.style.color='rgba(240,236,255,0.3)'">Maybe later — remind me next time</div>
+
   </div>
 </div>
 
