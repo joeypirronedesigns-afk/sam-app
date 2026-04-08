@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v6.02)
+       UNIFIED HERO (v6.03)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4306,7 +4306,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v6.02
+       CINEMATIC MEET SAM — v6.03
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4756,7 +4756,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v6.02
+       SAM GUIDED TOUR SPLASH — v6.03
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5056,10 +5056,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.02</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.03</div>
 
 
-  <!-- ── UNIFIED HERO v6.02 ── -->
+  <!-- ── UNIFIED HERO v6.03 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7135,7 +7135,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v6.02 ──
+// ── RUN TRACKING v6.03 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -7190,6 +7190,33 @@ function getCurrentToolKey(fn) {
   if (s.includes('runVision') || s.includes('Vision')) return 'vision';
   if (s.includes('runLens') || s.includes('Lens') || s.includes('lens')) return 'lens';
   return null;
+}
+
+function saveWizardItem(text, label, type) {
+  if (!text || !text.trim()) return;
+  const idea = {
+    id: 'wiz_' + Date.now(),
+    text: text.trim(),
+    label: label || 'From SAM Engine',
+    type: type || 'wizard',
+    source: 'wizard',
+    saved: Date.now()
+  };
+  const existing = IB.load();
+  existing.unshift(idea);
+  localStorage.setItem('sam-ideas', JSON.stringify(existing));
+  // Update badge count
+  const badge = document.getElementById('ideasNavBadge');
+  if (badge) {
+    badge.textContent = existing.length;
+    badge.style.display = 'flex';
+  }
+  // Flash confirmation
+  const toast = document.createElement('div');
+  toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#6D28D9,#A78BFA);color:#fff;font-size:13px;font-weight:700;padding:10px 20px;border-radius:50px;z-index:9999;pointer-events:none;animation:fade-in 0.3s ease;';
+  toast.textContent = '💜 Saved to My Ideas';
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2000);
 }
 
 function guardedRunFn(originalFn) {
@@ -7772,7 +7799,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v6.02
+  // CINEMATIC MEET SAM — v6.03
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -9103,6 +9130,9 @@ function renderPlaybook(data) {
   const userName = WS.storyText ? (s.niche ? s.niche.split(' ').slice(0,3).join(' ') : 'Your') : 'Your';
 
   let html = `
+    <div style="display:flex;justify-content:flex-end;margin-bottom:12px;">
+      <button onclick="saveWizardItem(document.getElementById('wizardPlaybook').innerText,'Full Playbook — ' + new Date().toLocaleDateString(),'wizard')" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--spark);background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);border-radius:50px;padding:7px 14px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(167,139,250,0.2)'" onmouseout="this.style.background='rgba(167,139,250,0.1)'">💜 Save full playbook to My Ideas</button>
+    </div>
     <div class="playbook-cover">
       <div class="playbook-cover-badge">✦ SAM Engine Output</div>
       <div class="playbook-cover-title">Your <em>Complete</em><br/>Content Strategy</div>
@@ -9148,7 +9178,10 @@ function renderPlaybook(data) {
       <div class="wizard-why" style="margin-bottom:16px;">This is the first thing your audience hears or reads. You have 1-3 seconds. This line was chosen because it creates an open loop — a question in the viewer's mind they have to stay to answer.</div>
       <div class="playbook-hook">${data.hook}</div>
       ${data.hook_why ? `<div class="wizard-why" style="margin-top:12px;"><strong>Why this hook:</strong> ${data.hook_why}</div>` : ''}
-      <button class="playbook-copy-btn" onclick="wizCopy(this,'${escQ(data.hook)}')">Copy hook</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+        <button class="playbook-copy-btn" style="margin-top:0;" onclick="wizCopy(this,'${escQ(data.hook)}')">Copy hook</button>
+        <button class="playbook-copy-btn" style="margin-top:0;background:rgba(167,139,250,0.12);border-color:rgba(167,139,250,0.3);color:var(--spark);" onclick="saveWizardItem('${escQ(data.hook)}','Hook: ${escQ(data.hook).substring(0,40)}...','wizard')">💜 Save to Ideas</button>
+      </div>
     </div>`;
   }
 
@@ -9175,7 +9208,10 @@ function renderPlaybook(data) {
       <div class="wizard-why" style="margin-bottom:16px;">${scriptNote}</div>
       <div class="playbook-script">${formattedScript}</div>
       ${data.pacing_note ? `<div class="wizard-why" style="margin-top:12px;"><strong>Delivery note:</strong> ${data.pacing_note}</div>` : ''}
-      <button class="playbook-copy-btn" onclick="wizCopyEl(this)">Copy script</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+        <button class="playbook-copy-btn" style="margin-top:0;" onclick="wizCopyEl(this)">Copy script</button>
+        <button class="playbook-copy-btn" style="margin-top:0;background:rgba(167,139,250,0.12);border-color:rgba(167,139,250,0.3);color:var(--spark);" onclick="saveWizardItem(this.closest('.playbook-section').querySelector('.playbook-script').innerText,'Full script','wizard')">💜 Save to Ideas</button>
+      </div>
     </div>`;
   }
 
@@ -9192,6 +9228,7 @@ function renderPlaybook(data) {
         <div class="ps-header">
           <div class="ps-name">${ps.platform}</div>
           <button class="copy-btn" style="float:none;margin:0;" onclick="wizCopy(this,'${escQ((ps.caption||'') + '\n' + (ps.hashtags||''))}')">Copy</button>
+          <button class="copy-btn" style="float:none;margin:0;background:rgba(167,139,250,0.1);border-color:rgba(167,139,250,0.3);color:var(--spark);" onclick="saveWizardItem('${escQ((ps.caption||'') + '\n' + (ps.hashtags||''))}','${escQ(ps.platform||'')} caption','wizard')">💜 Save</button>
         </div>
         <div class="ps-body">
           ${ps.strategy ? `<div style="font-size:13px;color:var(--text3);margin-bottom:8px;font-style:italic;">${ps.strategy}</div>` : ''}
@@ -9292,6 +9329,9 @@ function renderPlaybook(data) {
         </div>
         <button onclick="regenerateLeadMagnet()" style="padding:10px 18px;background:linear-gradient(135deg,#7C3AED,#EC4899);border:none;border-radius:var(--radius);color:white;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;height:60px;">
           🔄 Regenerate
+        </button>
+        <button onclick="saveWizardItem(document.getElementById('leadMagnetSection').innerText,'Lead Magnet: ' + (WS.brandName||'My Brand'),'wizard')" style="padding:10px 18px;background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.3);border-radius:var(--radius);color:var(--spark);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;height:60px;">
+          💜 Save to Ideas
         </button>
       </div>
       <div id="lmRegenStatus" style="display:none;margin-top:10px;align-items:center;gap:12px;padding:12px 16px;background:linear-gradient(135deg,rgba(167,139,250,0.1),rgba(244,114,182,0.06));border:1px solid rgba(167,139,250,0.4);border-radius:var(--radius);position:relative;overflow:hidden;">
@@ -10876,7 +10916,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.02</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.03</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -11816,9 +11856,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v6.02
+// SOFT POPUP v6.03
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v6.02
+// soft popup system removed v6.03
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -11827,7 +11867,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v6.02
+  // SAM GUIDED TOUR — v6.03
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
