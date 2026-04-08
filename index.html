@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v6.24)
+       UNIFIED HERO (v6.25)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -1647,6 +1647,14 @@
       gap: 12px;
     }
     @media(min-width:480px){ .pro-tools-grid { grid-template-columns: 1fr 1fr; } }
+    .pro-tools-showcase-grid {
+      grid-template-columns: 1fr !important;
+    }
+    @media(min-width:600px) {
+      .pro-tools-showcase-grid {
+        grid-template-columns: repeat(2,1fr) !important;
+      }
+    }
     @media(min-width:640px){ .pro-tools-grid { grid-template-columns: repeat(3, 1fr); } }
 
     .pro-tool-card {
@@ -4307,7 +4315,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v6.24
+       CINEMATIC MEET SAM — v6.25
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4757,7 +4765,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v6.24
+       SAM GUIDED TOUR SPLASH — v6.25
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5057,10 +5065,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.24</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.25</div>
 
 
-  <!-- ── UNIFIED HERO v6.24 ── -->
+  <!-- ── UNIFIED HERO v6.25 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7136,7 +7144,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v6.24 ──
+// ── RUN TRACKING v6.25 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -7932,7 +7940,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v6.24
+  // CINEMATIC MEET SAM — v6.25
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -10819,7 +10827,7 @@ function openWizardFromNav() {
       <div style="font-family:'Sora',sans-serif;font-size:clamp(30px,4vw,48px);font-weight:800;color:var(--text);line-height:1.15;">Five tools. One <span style="background:linear-gradient(90deg,#F472B6,#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">ecosystem.</span></div>
       <div style="font-size:16px;color:var(--text2);margin-top:14px;max-width:560px;margin-left:auto;margin-right:auto;">Every part of SAM was built to do one job perfectly — and hand off to the next.</div>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:24px;align-items:stretch;">
+    <div class="pro-tools-showcase-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:24px;align-items:stretch;">
 
       <!-- PULSE -->
       <div style="background:var(--pulse-bg);border:1px solid var(--pulse-border);border-radius:24px;padding:36px 32px;display:flex;flex-direction:column;gap:0;position:relative;overflow:hidden;">
@@ -11385,7 +11393,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.24</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.25</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -12326,9 +12334,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v6.24
+// SOFT POPUP v6.25
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v6.24
+// soft popup system removed v6.25
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -12337,7 +12345,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v6.24
+  // SAM GUIDED TOUR — v6.25
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
