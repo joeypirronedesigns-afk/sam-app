@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v6.28)
+       UNIFIED HERO (v6.29)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4315,7 +4315,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v6.28
+       CINEMATIC MEET SAM — v6.29
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4765,7 +4765,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v6.28
+       SAM GUIDED TOUR SPLASH — v6.29
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5065,10 +5065,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.28</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.29</div>
 
 
-  <!-- ── UNIFIED HERO v6.28 ── -->
+  <!-- ── UNIFIED HERO v6.29 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7144,7 +7144,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v6.28 ──
+// ── RUN TRACKING v6.29 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -7721,6 +7721,12 @@ function doRestoreSession() {
 }
 
 function updateWizardHeader() {
+  // Show voice calibrated badge if profile exists
+  const vbadge = document.getElementById('voiceCalibBadge');
+  if (vbadge) {
+    const calibrated = typeof WS !== 'undefined' && WS.voiceCalibrated;
+    vbadge.style.display = calibrated ? 'inline-flex' : 'none';
+  }
   const name = WS.brandName || '';
   const photo = WS.brandLogo || '';
   const identity = document.getElementById('wizardUserIdentity');
@@ -7940,7 +7946,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v6.28
+  // CINEMATIC MEET SAM — v6.29
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -8466,12 +8472,17 @@ Rules for the traits:
       `;
       card.style.opacity = '1';
 
-      // Show the go button after a beat
+      // Move go button BELOW the voice card, then show it
       setTimeout(() => {
         const goBtnWrap = document.getElementById('msGoBtnWrap');
+        const voiceCard = document.getElementById('msVoiceCalib');
         if (goBtnWrap) {
           const goBtn = document.getElementById('msGoBtn');
           if (goBtn) goBtn.textContent = '✦ Let\'s build your story — in your voice →';
+          // Move after voice card
+          if (voiceCard && voiceCard.parentNode) {
+            voiceCard.parentNode.insertBefore(goBtnWrap, voiceCard.nextSibling);
+          }
           goBtnWrap.style.display = 'block';
           setTimeout(() => goBtnWrap.classList.add('revealed'), 80);
         }
@@ -8506,6 +8517,28 @@ Rules for the traits:
     }
   }
   // ── END VOICE CALIBRATION ──────────────────────────────────────────
+
+
+  function showVoiceProfilePopover(btn) {
+    const existing = document.getElementById('voicePopover');
+    if (existing) { existing.remove(); return; }
+    const profile = (typeof WS !== 'undefined' && WS.voiceProfile) ? WS.voiceProfile : 'Your voice is locked in — everything SAM builds sounds like you wrote it.';
+    const lines = profile.split('\n').filter(l => l.trim());
+    const traits = lines[0] || profile;
+    const pop = document.createElement('div');
+    pop.id = 'voicePopover';
+    pop.style.cssText = 'position:absolute;top:32px;left:0;z-index:999;background:rgba(13,11,22,0.98);border:1px solid rgba(52,211,153,0.25);border-radius:14px;padding:16px 18px;min-width:280px;max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.5);';
+    pop.innerHTML = `
+      <div style="font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#34D399;margin-bottom:10px;">🎙 Your Voice — Locked In</div>
+      <div style="font-size:13px;line-height:1.65;color:rgba(240,236,255,0.85);margin-bottom:10px;">${traits}</div>
+      <div style="font-size:11px;color:rgba(240,236,255,0.35);border-top:1px solid rgba(255,255,255,0.06);padding-top:8px;">SAM gets more accurate every time you use it.</div>
+    `;
+    btn.parentNode.style.position = 'relative';
+    btn.parentNode.appendChild(pop);
+    setTimeout(() => document.addEventListener('click', function closePop(e) {
+      if (!pop.contains(e.target) && e.target !== btn) { pop.remove(); document.removeEventListener('click', closePop); }
+    }), 100);
+  }
 
   function meetSamInit() {
     // Reset state
@@ -11617,7 +11650,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.28</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.29</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -11659,6 +11692,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
         </span>
         <span id="wizardDefaultLabel">Building your story</span>
         <button onclick="openEcosystemOverlay()" style="display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#A78BFA;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);border-radius:20px;padding:3px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.background='rgba(167,139,250,0.2)'" onmouseout="this.style.background='rgba(167,139,250,0.1)'">✦ SAM Ecosystem</button>
+        <button id="voiceCalibBadge" onclick="showVoiceProfilePopover(this)" style="display:none;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#34D399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.25);border-radius:20px;padding:3px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.background='rgba(52,211,153,0.2)'" onmouseout="this.style.background='rgba(52,211,153,0.1)'">🎙 Voice locked in</button>
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
         <button onclick="devSaveSession()" id="devSaveBtn" style="display:none;font-size:10px;font-weight:700;background:rgba(109,40,217,0.3);color:#A78BFA;border:1px solid rgba(167,139,250,0.3);border-radius:8px;padding:5px 10px;cursor:pointer;">💾 Session</button>
@@ -12558,9 +12592,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v6.28
+// SOFT POPUP v6.29
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v6.28
+// soft popup system removed v6.29
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -12569,7 +12603,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v6.28
+  // SAM GUIDED TOUR — v6.29
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
