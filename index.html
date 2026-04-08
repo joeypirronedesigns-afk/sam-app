@@ -7410,9 +7410,11 @@ function initHeroVisibility() {
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', function() {
     initTrial(); initChat(); initWizard(); initHeroVisibility();
+    if (typeof meetSamInit === 'function') setTimeout(() => meetSamInit(), 100);
   });
 } else {
   initTrial(); initChat(); initWizard(); initHeroVisibility();
+  if (typeof meetSamInit === 'function') setTimeout(() => meetSamInit(), 100);
 }
 
 
