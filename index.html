@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v6.03)
+       UNIFIED HERO (v6.04)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4306,7 +4306,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v6.03
+       CINEMATIC MEET SAM — v6.04
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4756,7 +4756,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v6.03
+       SAM GUIDED TOUR SPLASH — v6.04
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5056,10 +5056,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.03</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.04</div>
 
 
-  <!-- ── UNIFIED HERO v6.03 ── -->
+  <!-- ── UNIFIED HERO v6.04 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7135,7 +7135,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v6.03 ──
+// ── RUN TRACKING v6.04 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -7205,12 +7205,11 @@ function saveWizardItem(text, label, type) {
   const existing = IB.load();
   existing.unshift(idea);
   localStorage.setItem('sam-ideas', JSON.stringify(existing));
-  // Update badge count
+  // Update badge count — both nav and wizard header
   const badge = document.getElementById('ideasNavBadge');
-  if (badge) {
-    badge.textContent = existing.length;
-    badge.style.display = 'flex';
-  }
+  if (badge) { badge.textContent = existing.length; badge.style.display = 'flex'; }
+  const wizBadge = document.getElementById('wizardIdeasBadge');
+  if (wizBadge) { wizBadge.textContent = existing.length; wizBadge.style.display = 'flex'; }
   // Flash confirmation
   const toast = document.createElement('div');
   toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#6D28D9,#A78BFA);color:#fff;font-size:13px;font-weight:700;padding:10px 20px;border-radius:50px;z-index:9999;pointer-events:none;animation:fade-in 0.3s ease;';
@@ -7799,7 +7798,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v6.03
+  // CINEMATIC MEET SAM — v6.04
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -10916,7 +10915,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.03</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.04</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -10965,6 +10964,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
         <div class="wizard-progress-step" id="wizardStepLabel">Step 1 of 10</div>
         <button id="wizardSaveBtn" onclick="manualSaveSession()" style="font-size:10px;font-weight:700;color:#34D399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.25);border-radius:8px;padding:4px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.background='rgba(52,211,153,0.2)'" onmouseout="this.style.background='rgba(52,211,153,0.1)'">Save Session</button>
         <button onclick="doRestoreSession()" style="font-size:10px;font-weight:700;color:#34D399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.25);border-radius:8px;padding:4px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.background='rgba(52,211,153,0.2)'" onmouseout="this.style.background='rgba(52,211,153,0.1)'">Reload Session</button>
+        <button onclick="openIdeasPanel()" style="font-size:10px;font-weight:700;color:#A78BFA;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);border-radius:8px;padding:4px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;position:relative;" onmouseover="this.style.background='rgba(167,139,250,0.2)'" onmouseout="this.style.background='rgba(167,139,250,0.1)'">💜 My Ideas<span id="wizardIdeasBadge" style="display:none;position:absolute;top:-5px;right:-5px;width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#A78BFA,#F472B6);color:#fff;font-size:9px;font-weight:700;align-items:center;justify-content:center;border:2px solid var(--bg);"></span></button>
         <div id="wizardStepJumper" style="position:relative;">
           <button onclick="toggleStepJumper()" style="font-size:10px;font-weight:600;color:var(--text3);background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:3px 10px;cursor:pointer;letter-spacing:0.04em;">Jump ▾</button>
           <div id="stepJumperMenu" style="display:none;position:absolute;right:0;top:28px;background:rgba(13,11,22,0.98);border:1px solid var(--border2);border-radius:12px;padding:6px;z-index:500;min-width:180px;box-shadow:0 8px 32px rgba(0,0,0,0.5);">
@@ -11856,9 +11856,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v6.03
+// SOFT POPUP v6.04
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v6.03
+// soft popup system removed v6.04
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -11867,7 +11867,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v6.03
+  // SAM GUIDED TOUR — v6.04
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
