@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v6.05)
+       UNIFIED HERO (v6.06)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4306,7 +4306,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v6.05
+       CINEMATIC MEET SAM — v6.06
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4756,7 +4756,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v6.05
+       SAM GUIDED TOUR SPLASH — v6.06
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5056,10 +5056,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.05</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.06</div>
 
 
-  <!-- ── UNIFIED HERO v6.05 ── -->
+  <!-- ── UNIFIED HERO v6.06 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7135,7 +7135,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v6.05 ──
+// ── RUN TRACKING v6.06 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -7410,7 +7410,13 @@ async function sendChatMessage() {
 
 // ══ SAM IDEAS BANK ══
 const IB={currentFilter:'all',currentStatusFilter:null,load(){try{return JSON.parse(localStorage.getItem('sam-ideas')||'[]')}catch{return[]}},save(ideas){try{localStorage.setItem('sam-ideas',JSON.stringify(ideas))}catch{}this.updateNavBadge()},add(idea){const ideas=this.load();const entry={id:Date.now()+'_'+Math.random().toString(36).slice(2,7),text:idea.text||'',type:idea.type||'pulse',subtype:idea.subtype||'',platform:idea.platform||'',status:'saved',date:new Date().toISOString()};ideas.unshift(entry);this.save(ideas);this.updateNavBadge();showIbToast('Saved to Ideas');return entry.id},updateStatus(id,status){const ideas=this.load();const idx=ideas.findIndex(i=>i.id===id);if(idx!==-1){ideas[idx].status=status;this.save(ideas)}},delete(id){this.save(this.load().filter(i=>i.id!==id));renderIdeasList();this.updateNavBadge()},updateNavBadge(){const count=this.load().filter(i=>i.status!=='posted').length;const b=document.getElementById('ideasNavBadge');if(b){b.textContent=count>9?'9+':count;b.classList.toggle('show',count>0)}const l=document.getElementById('ideasCountLabel');if(l){const t=this.load().length;l.textContent=t===0?'0 saved':t+' idea'+(t!==1?'s':'')}},getFiltered(){let ideas=this.load();const q=(document.getElementById('ideasSearchInput')?.value||'').trim().toLowerCase();if(q)ideas=ideas.filter(i=>(i.text||'').toLowerCase().includes(q)||(i.platform||'').toLowerCase().includes(q)||(i.subtype||'').toLowerCase().includes(q));if(this.currentFilter!=='all')ideas=ideas.filter(i=>i.type===this.currentFilter);if(this.currentStatusFilter)ideas=ideas.filter(i=>i.status===this.currentStatusFilter);return ideas}};
-function openIdeasPanel(){document.getElementById('ideasOverlay').classList.add('open');document.getElementById('ideasPanel').classList.add('open');document.body.style.overflow='hidden';IB.updateNavBadge();renderIdeasList()}
+function openIdeasPanel(){
+  // Set export button label based on device
+  const btn = document.getElementById('ideasExportBtn');
+  if(btn){
+    const isMobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    btn.innerHTML = isMobile ? '📧 Email my ideas' : '↓ Export PDF';
+  }document.getElementById('ideasOverlay').classList.add('open');document.getElementById('ideasPanel').classList.add('open');document.body.style.overflow='hidden';IB.updateNavBadge();renderIdeasList()}
 function closeIdeasPanel(){document.getElementById('ideasOverlay').classList.remove('open');document.getElementById('ideasPanel').classList.remove('open');document.body.style.overflow=''}
 function setIdeasFilter(f,btn){IB.currentFilter=f;document.querySelectorAll('.ideas-filter-btn[data-filter]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderIdeasList()}
 function setIdeasStatusFilter(s,btn){if(IB.currentStatusFilter===s){IB.currentStatusFilter=null;btn.classList.remove('active')}else{IB.currentStatusFilter=s;document.querySelectorAll('.ideas-filter-btn[data-sf]').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}renderIdeasList()}
@@ -7420,7 +7426,114 @@ function ibDel(id){const card=document.getElementById('ibc-'+id);if(card){card.s
 function ibCopy(text){navigator.clipboard.writeText(text.replace(/\\n/g,'\n')).then(()=>showIbToast('Copied!'))}
 function ibUse(id){const idea=IB.load().find(i=>i.id===id);if(!idea)return;closeIdeasPanel();setTimeout(()=>{if(idea.type==='wizard')openWizardPage();else if(idea.type==='vision')sendToVision(idea.text);else if(idea.type==='blueprint'){openTool('blueprint');setTimeout(()=>{const el=document.getElementById('blueprintInp');if(el){el.value=idea.text;el.focus()}},300)}else sendToPulse(idea.text)},300)}
 function clearPostedIdeas(){if(!confirm('Remove all ideas marked as Posted?'))return;IB.save(IB.load().filter(i=>i.status!=='posted'));renderIdeasList();showIbToast('Cleared')}
-function exportIdeas(){const ideas=IB.load();if(!ideas.length){showIbToast('No ideas to export');return}const lines=ideas.map((idea,i)=>'--- Idea '+(i+1)+' ['+idea.type.toUpperCase()+'] '+(idea.platform?'· '+idea.platform:'')+' · '+idea.status.toUpperCase()+' · '+new Date(idea.date).toLocaleDateString()+' ---\n'+idea.text+'\n');const blob=new Blob(['SAM Ideas Export\n'+new Date().toLocaleDateString()+'\n\n'+lines.join('\n')],{type:'text/plain'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='SAM_Ideas_'+new Date().toISOString().slice(0,10)+'.txt';document.body.appendChild(a);a.click();setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},1000);showIbToast('✅ Exported! Check your downloads.')}
+function exportIdeas(){
+  const ideas=IB.load();
+  if(!ideas.length){showIbToast('No ideas to export');return;}
+  const state=getTrialState();
+  const isMobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+  // No email yet — gate with trial capture
+  if(!state.email){
+    closeIdeasPanel();
+    setTimeout(()=>openTrialCapture(),200);
+    showIbToast('Sign up free to export your ideas!');
+    return;
+  }
+
+  if(isMobile){
+    // Mobile — email their ideas
+    exportIdeasByEmail(ideas, state.email, state.name||'Creator');
+  } else {
+    // Desktop — PDF via print
+    exportIdeasAsPDF(ideas);
+  }
+}
+
+async function exportIdeasByEmail(ideas, email, name){
+  showIbToast('📧 Sending your ideas...');
+  const lines = ideas.map((idea,i)=>{
+    const label = idea.label || idea.type || 'Idea';
+    const date = idea.date ? new Date(idea.date).toLocaleDateString() : 'Today';
+    return '<div style="margin-bottom:24px;padding:20px;background:#f7f5ff;border-left:4px solid #7C3AED;border-radius:8px;">'
+      +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#7C3AED;margin-bottom:8px;">'+label+' · '+date+'</div>'
+      +'<div style="font-size:14px;color:#1a1a2e;line-height:1.7;white-space:pre-wrap;">'+idea.text.substring(0,800)+(idea.text.length>800?'...':'')+'</div>'
+      +'</div>';
+  }).join('');
+
+  const bodyHtml = '<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:32px 24px;">'
+    +'<div style="background:linear-gradient(135deg,#09080F,#1a0a2e);padding:32px;border-radius:12px;margin-bottom:24px;text-align:center;">'
+    +'<div style="font-family:Georgia,serif;font-size:28px;font-weight:800;color:#F0ECFF;margin-bottom:8px;">S · A · M</div>'
+    +'<div style="font-size:14px;color:rgba(240,236,255,0.6);">Your Ideas Export · '+new Date().toLocaleDateString()+'</div>'
+    +'</div>'
+    +'<div style="font-size:15px;color:#333;margin-bottom:24px;">Hey '+name+' — here are your '+ideas.length+' saved idea'+(ideas.length===1?'':'s')+' from SAM.</div>'
+    +lines
+    +'<div style="margin-top:32px;padding:20px;background:#f0f0f0;border-radius:8px;text-align:center;font-size:13px;color:#666;">'
+    +'Built by SAM · <a href="https://samforcreators.com" style="color:#7C3AED;">samforcreators.com</a>'
+    +'</div></div>';
+
+  try {
+    const res = await fetch('/api/waitlist', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        name: name,
+        email: email,
+        source: 'ideas_export',
+        plan: 'ideas_export',
+        customBody: bodyHtml,
+        subject: 'Your SAM Ideas Export — '+new Date().toLocaleDateString()
+      })
+    });
+    if(res.ok){
+      showIbToast('📧 Sent! Check your inbox.');
+    } else {
+      // Fallback to txt download
+      exportIdeasAsTxt(ideas);
+    }
+  } catch(e){
+    exportIdeasAsTxt(ideas);
+  }
+}
+
+function exportIdeasAsPDF(ideas){
+  const lines = ideas.map((idea,i)=>{
+    const label = idea.label || idea.type || 'Idea';
+    const date = idea.date ? new Date(idea.date).toLocaleDateString() : 'Today';
+    return '<div style="margin-bottom:28px;padding:24px 28px;background:#f7f5ff;border-left:4px solid #7C3AED;border-radius:0 8px 8px 0;page-break-inside:avoid;">'
+      +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;color:#7C3AED;letter-spacing:0.1em;margin-bottom:10px;">'+label+' · '+date+'</div>'
+      +'<div style="font-size:13px;color:#1a1a2e;line-height:1.8;white-space:pre-wrap;">'+idea.text+'</div>'
+      +'</div>';
+  }).join('');
+
+  const printHTML = '<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>SAM Ideas Export</title>'
+    +'<style>@page{size:A4;margin:16mm 18mm}body{font-family:Arial,sans-serif;color:#1a1a2e;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}'
+    +'.cover{background:linear-gradient(135deg,#09080F 0%,#1a0a2e 100%)!important;color:white;padding:60px 48px;min-height:120px;margin-bottom:40px;border-radius:12px;}'
+    +'h1{font-size:28pt;font-weight:800;color:#fff;margin:0 0 8px;}h2{font-size:11pt;color:rgba(240,236,255,0.6);font-weight:400;margin:0;}'
+    +'</style></head><body>'
+    +'<div class="cover"><h1>My SAM Ideas</h1><h2>'+ideas.length+' saved idea'+(ideas.length===1?'':'s')+' · Exported '+new Date().toLocaleDateString()+'</h2></div>'
+    +lines
+    +'<div style="margin-top:40px;text-align:center;font-size:11px;color:#999;border-top:1px solid #eee;padding-top:16px;">Built with SAM · samforcreators.com</div>'
+    +'</body></html>';
+
+  const w = window.open('','_blank');
+  if(w){
+    w.document.write(printHTML);
+    w.document.close();
+    setTimeout(()=>w.print(),600);
+    showIbToast('🖨️ Print dialog opening — save as PDF!');
+  }
+}
+
+function exportIdeasAsTxt(ideas){
+  const lines=ideas.map((idea,i)=>'--- '+(idea.label||'Idea '+(i+1))+' · '+new Date(idea.date).toLocaleDateString()+' ---\n'+idea.text+'\n');
+  const blob=new Blob(['SAM Ideas Export\n'+new Date().toLocaleDateString()+'\n\n'+lines.join('\n')],{type:'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='SAM_Ideas_'+new Date().toISOString().slice(0,10)+'.txt';
+  document.body.appendChild(a);a.click();
+  setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},1000);
+  showIbToast('✅ Exported to downloads!');
+}
 let ibToastTimer=null;
 function showIbToast(msg){const t=document.getElementById('ibToast');if(!t)return;t.textContent=msg;t.classList.add('show');clearTimeout(ibToastTimer);ibToastTimer=setTimeout(()=>t.classList.remove('show'),2500)}
 function saveToIdeas(opts){return IB.add(opts)}
@@ -7801,7 +7914,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v6.05
+  // CINEMATIC MEET SAM — v6.06
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -9151,7 +9264,8 @@ function renderPlaybook(data) {
         <div class="playbook-card-text">${data.diagnosis}</div>
       </div>
       ${data.diagnosis_why ? `<div class="wizard-why" style="margin-top:12px;"><strong>Why this matters:</strong> ${data.diagnosis_why}</div>` : ''}
-    </div>`;
+      <button class="playbook-copy-btn" style="margin-top:12px;background:rgba(167,139,250,0.12);border-color:rgba(167,139,250,0.3);color:var(--spark);" onclick="saveWizardItem(this.closest('.playbook-section').innerText,'Story Diagnosis','wizard')">💜 Save to Ideas</button>
+    </div>\`;
   }
 
   // ② STORY ARCHITECTURE
@@ -9169,7 +9283,8 @@ function renderPlaybook(data) {
         ${arch.payoff ? `<div class="playbook-arch-card arch-payoff"><div class="playbook-arch-beat">The Payoff (50–70s)</div><div class="playbook-arch-text">${arch.payoff}</div><div class="playbook-arch-time">The emotional resolution</div></div>` : ''}
         ${arch.cta ? `<div class="playbook-arch-card arch-cta"><div class="playbook-arch-beat">Your Call (final 5s)</div><div class="playbook-arch-text">${arch.cta}</div><div class="playbook-arch-time">What you want them to do</div></div>` : ''}
       </div>
-    </div>`;
+      <button class="playbook-copy-btn" style="margin-top:12px;background:rgba(167,139,250,0.12);border-color:rgba(167,139,250,0.3);color:var(--spark);" onclick="saveWizardItem(this.closest('.playbook-section').innerText,'Story Architecture','wizard')">💜 Save to Ideas</button>
+    </div>\`;
   }
 
   // ③ HOOK
@@ -10918,7 +11033,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.05</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.06</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -11846,7 +11961,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
   </div>
   <div class="ideas-list" id="ideasList"></div>
   <div class="ideas-panel-footer">
-    <button class="ideas-footer-btn ideas-footer-export" onclick="exportIdeas()">&#8595; Export all</button>
+    <button class="ideas-footer-btn ideas-footer-export" onclick="exportIdeas()" id="ideasExportBtn">&#8595; Export all</button>
     <button class="ideas-footer-btn ideas-footer-clear" onclick="clearPostedIdeas()">Clear posted</button>
   </div>
 </div>
@@ -11859,9 +11974,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v6.05
+// SOFT POPUP v6.06
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v6.05
+// soft popup system removed v6.06
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -11870,7 +11985,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v6.05
+  // SAM GUIDED TOUR — v6.06
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
