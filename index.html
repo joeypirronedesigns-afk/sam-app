@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v6.11)
+       UNIFIED HERO (v6.12)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4306,7 +4306,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v6.11
+       CINEMATIC MEET SAM — v6.12
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4756,7 +4756,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v6.11
+       SAM GUIDED TOUR SPLASH — v6.12
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5056,10 +5056,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.11</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.12</div>
 
 
-  <!-- ── UNIFIED HERO v6.11 ── -->
+  <!-- ── UNIFIED HERO v6.12 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7135,7 +7135,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v6.11 ──
+// ── RUN TRACKING v6.12 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -7780,6 +7780,24 @@ function printToolOutput(outputId, toolName) {
   </div>
 
 
+<!-- ── EXPORT CAPTURE MODAL ── -->
+<div id="exportCaptureOverlay" style="display:none;position:fixed;inset:0;z-index:3500;background:rgba(9,8,15,0.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);align-items:center;justify-content:center;padding:20px;overflow-y:auto;">
+  <div style="max-width:480px;width:100%;margin:0 auto;background:rgba(13,11,22,0.99);border:1px solid rgba(167,139,250,0.3);border-radius:28px;padding:40px 32px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#A78BFA,#F472B6,#38BDF8);"></div>
+    <div style="width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#6D28D9,#A78BFA);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 20px;">💜</div>
+    <div style="font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:#F0ECFF;text-align:center;line-height:1.2;margin-bottom:10px;">Your ideas are ready<br/>to export.</div>
+    <div style="font-size:14px;color:rgba(240,236,255,0.55);text-align:center;line-height:1.65;margin-bottom:28px;">Drop your email and SAM sends them straight to your inbox — plus unlocks <strong style="color:#A78BFA;">48 hours free</strong> across all 5 tools.</div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;">
+      <input id="exportCaptureName" type="text" placeholder="Your first name" autocomplete="given-name" style="width:100%;padding:14px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:14px;font-size:15px;color:#F0ECFF;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(167,139,250,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />
+      <input id="exportCaptureEmail" type="email" placeholder="Your email address" autocomplete="email" inputmode="email" style="width:100%;padding:14px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:14px;font-size:15px;color:#F0ECFF;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(167,139,250,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />
+      <div id="exportCaptureErr" style="display:none;font-size:13px;color:#F472B6;text-align:center;"></div>
+      <button onclick="submitExportCapture()" id="exportCaptureBtn" style="width:100%;padding:16px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">📧 Send my ideas + unlock 48hrs free →</button>
+    </div>
+    <div style="text-align:center;font-size:13px;color:rgba(240,236,255,0.35);">Already have an account? <span onclick="closeExportCapture();openSignInModal();" style="color:#A78BFA;cursor:pointer;">Sign in</span></div>
+    <button onclick="closeExportCapture()" style="position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.08);border:none;border-radius:50%;width:32px;height:32px;color:rgba(255,255,255,0.4);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;">×</button>
+  </div>
+</div>
+
 <!-- ══ SAM ECOSYSTEM OVERLAY ══ -->
 <div id="ecosystemOverlay" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(9,8,15,0.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);animation:fade-in 0.3s ease;overflow-y:auto;">
   <div style="max-width:480px;width:100%;margin:0 auto;padding:16px 20px;display:flex;flex-direction:column;gap:8px;min-height:100%;justify-content:center;box-sizing:border-box;">
@@ -7913,7 +7931,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v6.11
+  // CINEMATIC MEET SAM — v6.12
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -11032,7 +11050,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.11</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.12</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -11973,9 +11991,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v6.11
+// SOFT POPUP v6.12
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v6.11
+// soft popup system removed v6.12
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -11984,7 +12002,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v6.11
+  // SAM GUIDED TOUR — v6.12
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
