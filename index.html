@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v6.32)
+       UNIFIED HERO (v6.33)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4315,7 +4315,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v6.32
+       CINEMATIC MEET SAM — v6.33
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4765,7 +4765,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v6.32
+       SAM GUIDED TOUR SPLASH — v6.33
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5065,10 +5065,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.32</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.33</div>
 
 
-  <!-- ── UNIFIED HERO v6.32 ── -->
+  <!-- ── UNIFIED HERO v6.33 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7149,7 +7149,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v6.32 ──
+// ── RUN TRACKING v6.33 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -7951,7 +7951,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v6.32
+  // CINEMATIC MEET SAM — v6.33
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -8349,7 +8349,7 @@ function initWizard() {
       <div style="font-size:16px;line-height:1.7;color:rgba(240,236,255,0.9);margin-bottom:6px;font-weight:500;">I want to sound like <em style="color:#A78BFA;font-style:normal;">you</em> — not like AI.</div>
       <div style="font-size:14px;line-height:1.65;color:rgba(240,236,255,0.6);margin-bottom:18px;">Give me a few sentences. Don't think about it — just type how you actually talk. The messier the better.</div>
       <div style="position:relative;margin-bottom:12px;">
-        <textarea id="msVoiceInput" rows="4" placeholder="just type how u talk lol... or be all formal if thats you.. whatever is real" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:14px 50px 14px 16px;font-size:14px;color:#F0ECFF;font-family:inherit;resize:none;box-sizing:border-box;line-height:1.6;outline:none;" onfocus="this.style.borderColor='rgba(167,139,250,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"></textarea>
+        <textarea id="msVoiceInput" rows="4" placeholder="" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:14px 50px 14px 16px;font-size:14px;color:#F0ECFF;font-family:inherit;resize:none;box-sizing:border-box;line-height:1.6;outline:none;" onfocus="this.style.borderColor='rgba(167,139,250,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"></textarea>
         <button onclick="submitVoiceCalibration()" id="msVoiceSendBtn" style="position:absolute;right:10px;bottom:10px;background:linear-gradient(135deg,#A78BFA,#F472B6);border:none;border-radius:8px;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
@@ -8369,7 +8369,20 @@ function initWizard() {
     }
 
     setTimeout(() => { card.style.opacity='1'; card.style.transform='translateY(0)'; }, 200);
-    setTimeout(() => { document.getElementById('msVoiceInput')?.focus(); }, 600);
+    setTimeout(() => {
+      const inp = document.getElementById('msVoiceInput');
+      if (inp) {
+        const prompts = [
+          "Pretend you're leaving a voice note for your best friend about what you're building right now. Go.",
+          "Text me like I'm your friend who just asked 'so what are you actually working on these days?' — don't overthink it.",
+          "Voice note to a friend — what's going on with your project right now? The real version, not the polished one.",
+          "If you were texting your friend on the way home today, what would you say about what you've been working on?",
+          "Catch me up like I'm your friend who's been off the grid for a month. What's the thing you can't stop thinking about?"
+        ];
+        inp.placeholder = prompts[Math.floor(Math.random() * prompts.length)];
+        inp.focus();
+      }
+    }, 600);
   }
 
   async function submitVoiceCalibration() {
@@ -8552,7 +8565,7 @@ Rules for the traits:
           <div style="font-size:11px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#A78BFA;margin-bottom:12px;">🎙 Let's try that again</div>
           <p style="font-size:14px;color:rgba(240,236,255,0.7);margin:0 0 14px;">No worries — just talk or type for a bit longer this time. Ums and ahs are fine. I'm listening for how you actually sound, not what you say.</p>
           <div style="position:relative;">
-            <textarea id="msVoiceInput" rows="4" placeholder="just type how u talk lol... or be all formal if thats you.. whatever is real" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:14px 50px 14px 16px;font-size:14px;color:#F0ECFF;font-family:inherit;resize:none;box-sizing:border-box;line-height:1.6;outline:none;" onfocus="this.style.borderColor='rgba(167,139,250,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"></textarea>
+            <textarea id="msVoiceInput" rows="4" placeholder="" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:14px 50px 14px 16px;font-size:14px;color:#F0ECFF;font-family:inherit;resize:none;box-sizing:border-box;line-height:1.6;outline:none;" onfocus="this.style.borderColor='rgba(167,139,250,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"></textarea>
             <button onclick="submitVoiceCalibration()" style="position:absolute;right:10px;bottom:10px;background:linear-gradient(135deg,#A78BFA,#F472B6);border:none;border-radius:8px;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
             </button>
@@ -8563,7 +8576,20 @@ Rules for the traits:
           </div>
         </div>`;
       card.style.opacity = '1';
-      setTimeout(() => document.getElementById('msVoiceInput')?.focus(), 300);
+      setTimeout(() => {
+        const inp = document.getElementById('msVoiceInput');
+        if (inp) {
+          const prompts = [
+            "Pretend you're leaving a voice note for your best friend about what you're building right now. Go.",
+            "Text me like I'm your friend who just asked 'so what are you actually working on these days?' — don't overthink it.",
+            "Voice note to a friend — what's going on with your project right now? The real version, not the polished one.",
+            "If you were texting your friend on the way home today, what would you say about what you've been working on?",
+            "Catch me up like I'm your friend who's been off the grid for a month. What's the thing you can't stop thinking about?"
+          ];
+          inp.placeholder = prompts[Math.floor(Math.random() * prompts.length)];
+          inp.focus();
+        }
+      }, 300);
     }, 300);
   }
   // ── END VOICE CALIBRATION ──────────────────────────────────────────
@@ -11701,7 +11727,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.32</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.33</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -12643,9 +12669,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v6.32
+// SOFT POPUP v6.33
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v6.32
+// soft popup system removed v6.33
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -12654,7 +12680,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v6.32
+  // SAM GUIDED TOUR — v6.33
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
