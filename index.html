@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v6.65)
+       UNIFIED HERO (v6.66)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -593,6 +593,114 @@
       #persistentSAMPanel { right: 12px; bottom: 80px; width: calc(100vw - 24px); }
       #persistentSAMFab { right: 12px; bottom: 16px; }
     }
+
+
+    /* ── SUPER SAM INLINE OUTPUT CARDS ── */
+    .psam-tool-output {
+      width: 100%;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(167,139,250,0.15);
+      border-radius: 14px;
+      overflow: hidden;
+      margin: 4px 0;
+    }
+    .psam-output-label {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(240,236,255,0.5);
+      padding: 10px 14px 6px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .psam-output-section {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .psam-output-section:last-child { border-bottom: none; }
+    .psam-output-sec-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(167,139,250,0.7);
+      margin-bottom: 6px;
+    }
+    .psam-output-hook {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.4;
+      border-left: 3px solid #A78BFA;
+      padding-left: 10px;
+      margin-bottom: 8px;
+    }
+    .psam-output-script {
+      font-size: 12px;
+      color: var(--text2);
+      line-height: 1.7;
+      white-space: pre-wrap;
+      max-height: 160px;
+      overflow-y: auto;
+      background: rgba(0,0,0,0.2);
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-bottom: 8px;
+    }
+    .psam-output-why {
+      font-size: 12px;
+      color: var(--text2);
+      line-height: 1.6;
+      margin-bottom: 6px;
+    }
+    .psam-output-platform {
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .psam-output-platform:last-child { border-bottom: none; }
+    .psam-platform-name {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #38BDF8;
+      margin-bottom: 4px;
+    }
+    .psam-platform-caption {
+      font-size: 12px;
+      color: var(--text2);
+      line-height: 1.55;
+      margin-bottom: 4px;
+    }
+    .psam-platform-hashtags {
+      font-size: 11px;
+      color: #A78BFA;
+      margin-bottom: 6px;
+    }
+    .psam-output-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+    .psam-act-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 11px;
+      border-radius: 50px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04);
+      color: rgba(240,236,255,0.6);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .psam-act-btn:hover { border-color: rgba(167,139,250,0.4); color: #fff; background: rgba(167,139,250,0.1); }
+    .psam-act-save { color: #A78BFA !important; border-color: rgba(167,139,250,0.25) !important; }
+    .psam-act-save:hover { background: rgba(167,139,250,0.15) !important; }
 
     /* ── TOOL SECTION ── */
     .tool-section {
@@ -4539,7 +4647,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v6.65
+       CINEMATIC MEET SAM — v6.66
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4989,7 +5097,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v6.65
+       SAM GUIDED TOUR SPLASH — v6.66
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5290,10 +5398,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.65</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.66</div>
 
 
-  <!-- ── UNIFIED HERO v6.65 ── -->
+  <!-- ── UNIFIED HERO v6.66 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7414,7 +7522,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v6.65 ──
+// ── RUN TRACKING v6.66 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -7868,13 +7976,64 @@ async function sendPersistentMessage() {
   input.value = '';
   addPersistentMessage('user', text, true);
 
-  // Show typing
   const typing = document.getElementById('persistentSAMTyping');
   if (typing) typing.style.display = 'flex';
   if (btn) btn.disabled = true;
   scrollPersistentToBottom();
 
-  // Build messages — last 20 for context
+  const msgs = document.getElementById('persistentSAMMessages');
+
+  // ── Check ideas bank for similarity first ──
+  const similar = checkIdeaSimilarity(text);
+  if (similar) {
+    const simMsg = "Hold up — you saved something similar on " + similar.date + ": \"" + similar.preview + "...\" Want to build on that instead, or keep going with this new angle?";
+    addPersistentMessage('sam', simMsg, true);
+    if (typing) typing.style.display = 'none';
+    if (btn) btn.disabled = false;
+    return;
+  }
+
+  // ── Detect intent ──
+  const intent = detectSAMIntent(text);
+
+  if (intent) {
+    // Announce tool run
+    const announcements = {
+      pulse: "On it — running The Pulse on your story now...",
+      spark: "Let me spark some ideas for you...",
+      blueprint: "Building your content week...",
+      vision: "Creating a bold concept for you...",
+      lens: "Reading your situation..."
+    };
+    addPersistentMessage('sam', announcements[intent], false);
+    scrollPersistentToBottom();
+
+    // Run tool inline
+    const data = await runToolInline(intent, text);
+
+    if (typing) typing.style.display = 'none';
+    if (btn) btn.disabled = false;
+
+    if (data) {
+      renderInlineToolOutput(intent, data, msgs);
+      scrollPersistentToBottom();
+
+      // Follow-up message
+      const followups = {
+        pulse: "There it is. Want me to punch up the hook, adjust for a specific platform, or try a different angle?",
+        spark: "Five ideas — all built for your niche. Want me to run The Pulse on any of them?",
+        blueprint: "Your week is mapped out. Want to adjust the tone, swap any days, or go deeper on any post?",
+        vision: "That concept is ready to film. Want me to write the full script for it?",
+        lens: "That is the picture. Want to dig into any of those points?"
+      };
+      addPersistentMessage('sam', followups[intent], true);
+    } else {
+      addPersistentMessage('sam', "Hit a snag — try again or give me a bit more detail.", true);
+    }
+    return;
+  }
+
+  // ── No intent detected — conversational response ──
   const messages = persistentSAMHistory.slice(-20).map(m => ({
     role: m.role,
     content: m.content
@@ -7887,7 +8046,7 @@ async function sendPersistentMessage() {
       body: JSON.stringify({
         mode: 'chat',
         messages: messages,
-        systemPrompt: getSAMPersistentPrompt()
+        systemPrompt: getSuperSAMPrompt()
       })
     });
 
@@ -7901,7 +8060,22 @@ async function sendPersistentMessage() {
 
     const result = await readStream(r);
     const reply = result?.reply || result?.content || result?.text || "Try me again!";
-    addPersistentMessage('sam', reply, true);
+
+    // Check for inline run signal from SAM
+    const runMatch = reply.match(/\[RUN:(\w+)\]/);
+    if (runMatch) {
+      const tool = runMatch[1];
+      const cleanReply = reply.replace(/\[RUN:\w+\]/g, '').trim();
+      if (cleanReply) addPersistentMessage('sam', cleanReply, true);
+
+      const data = await runToolInline(tool, text);
+      if (data) {
+        renderInlineToolOutput(tool, data, msgs);
+        scrollPersistentToBottom();
+      }
+    } else {
+      addPersistentMessage('sam', reply, true);
+    }
 
   } catch(e) {
     if (typing) typing.style.display = 'none';
@@ -7918,6 +8092,338 @@ function clearPersistentHistory() {
   const state = getTrialState();
   const name = state.name ? ', ' + state.name.split(' ')[0] : '';
   addPersistentMessage('sam', "Fresh start. What are we building" + name + "?", true);
+}
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// SUPER SAM — Full inline tool execution + awareness layer
+// ══════════════════════════════════════════════════════════════════════════════
+
+function getSAMContext() {
+  // Build full context snapshot for SAM awareness
+  const state = getTrialState();
+  const s = typeof getSetup === 'function' ? getSetup() : {};
+  const voiceProfile = localStorage.getItem('sam-voice-profile') || '';
+  const ideas = (typeof IB !== 'undefined' ? IB.load() : []).slice(0, 8);
+  const wizState = (() => { try { return JSON.parse(localStorage.getItem('sam-wizard-state') || '{}'); } catch { return {}; } })();
+
+  const ideasSummary = ideas.length > 0
+    ? ideas.map((idea, i) => {
+        const date = new Date(idea.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        const preview = (idea.text || '').slice(0, 120).replace(/\n/g, ' ');
+        return (i+1) + '. [' + (idea.type||'idea') + '] ' + date + ' — ' + preview;
+      }).join('\n')
+    : 'No ideas saved yet.';
+
+  return {
+    name: state.name || '',
+    niche: s.niche || '',
+    platforms: (wizState.platforms || []).join(', ') || s.platforms || '',
+    voiceProfile: voiceProfile.slice(0, 500),
+    ideasSummary,
+    ideaCount: ideas.length,
+    tier: state.tier || 'free'
+  };
+}
+
+function getSuperSAMPrompt() {
+  const ctx = getSAMContext();
+  const name = ctx.name ? ctx.name.split(' ')[0] : 'there';
+
+  return `You are SAM — ${name}'s always-on creative director. You are not a chatbot. You are the most useful person they have ever worked with.
+
+WHO THEY ARE:
+Name: ${ctx.name || 'Unknown'}
+Niche: ${ctx.niche || 'creator'}
+Platforms: ${ctx.platforms || 'not set'}
+${ctx.voiceProfile ? 'Voice DNA: ' + ctx.voiceProfile : ''}
+
+THEIR SAVED IDEAS (${ctx.ideaCount} total — most recent first):
+${ctx.ideasSummary}
+
+YOUR CAPABILITIES — you can run any of these inline:
+- PULSE: Turns a real moment/story into hook + script + captions. Triggers when they share something that happened to them.
+- SPARK: Generates 5 content ideas for their niche. Triggers when they are stuck or ask what to post.
+- BLUEPRINT: Builds a 7-day content calendar. Triggers when they mention planning or scheduling.
+- VISION: Creates one bold unique video concept. Triggers when they want something different or creative.
+- LENS: Analyses their content strategy. Triggers when they mention analytics or what is working.
+
+AWARENESS RULES:
+- If their message sounds like something already in their saved ideas, mention it. Be specific: "Hey — you saved something similar on [date], want me to pull that up instead?"
+- If they seem stuck in the same content loop, suggest a new direction.
+- If they ask a question you can answer directly, answer it — do not always run a tool.
+- If they share a moment or story, run Pulse immediately without asking.
+- If they seem overwhelmed, simplify. One thing at a time.
+
+RESPONSE FORMAT:
+- Keep conversational replies to 2-4 sentences max.
+- When running a tool, announce it first in one short sentence, then output the result.
+- Use their name occasionally but not every message.
+- Match their energy and writing style exactly.
+- Never use words like: journey, authentic, powerful story, resonate, leverage, impactful.
+
+TOOL EXECUTION SIGNALS — end your message with ONE of these tags when executing a tool (never ask permission first if intent is clear):
+[RUN:pulse] [RUN:spark] [RUN:blueprint] [RUN:vision] [RUN:lens]
+
+SUGGESTION SIGNALS — use these when referencing saved content:
+[IDEA_EXISTS:text preview here]`;
+}
+
+// ── INTENT DETECTION ─────────────────────────────────────────────────────────
+function detectSAMIntent(text) {
+  const t = text.toLowerCase();
+
+  // Pulse triggers — moment/story/something happened
+  if (t.match(/i (just|was|went|did|tried|had|made|got|lost|found|built|fixed|broke|started|finished|quit|almost|nearly)|today i|yesterday i|last (week|night|month)|this morning|this week|someone (dm|messaged|commented|said)|my (wife|husband|kid|dog|boss|client|customer)|we (just|finally|actually)/)) return 'pulse';
+
+  // Spark triggers — stuck, ideas, what to post
+  if (t.match(/stuck|no idea|what (should|do) i post|content idea|run out|blank|nothing to post|help me (think|brainstorm|come up)/)) return 'spark';
+
+  // Blueprint triggers — planning, schedule, week
+  if (t.match(/content (plan|calendar|schedule|week)|plan (my|the|out)|what to post (this week|all week|every day)|posting schedule|batch/)) return 'blueprint';
+
+  // Vision triggers — concept, bold, different, unique
+  if (t.match(/bold|unique|concept|different (kind|type|style)|never (done|seen|tried)|stand out|viral idea|big idea/)) return 'vision';
+
+  // Lens triggers — analytics, thumbnail, what is working
+  if (t.match(/analytics|what.s working|views (are|were)|thumbnail|my (stats|numbers|views|reach)|not (growing|getting views)/)) return 'lens';
+
+  return null;
+}
+
+// ── CHECK IDEAS BANK FOR SIMILARITY ──────────────────────────────────────────
+function checkIdeaSimilarity(text) {
+  const ideas = typeof IB !== 'undefined' ? IB.load() : [];
+  if (!ideas.length) return null;
+
+  const words = text.toLowerCase().split(/\s+/).filter(w => w.length > 4);
+  for (const idea of ideas.slice(0, 15)) {
+    const ideaText = (idea.text || '').toLowerCase();
+    const matches = words.filter(w => ideaText.includes(w));
+    if (matches.length >= 3) {
+      return {
+        type: idea.type,
+        date: new Date(idea.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        preview: idea.text.slice(0, 80)
+      };
+    }
+  }
+  return null;
+}
+
+// ── INLINE TOOL RUNNER ────────────────────────────────────────────────────────
+async function runToolInline(tool, userMessage) {
+  const ctx = getSAMContext();
+  const s = typeof getSetup === 'function' ? getSetup() : {};
+  const wizState = (() => { try { return JSON.parse(localStorage.getItem('sam-wizard-state') || '{}'); } catch { return {}; } })();
+  const platforms = wizState.platforms || [];
+  const voiceProfile = localStorage.getItem('sam-voice-profile') || '';
+
+  const base = typeof getBase === 'function' ? getBase() : {};
+
+  let payload = {};
+
+  if (tool === 'pulse') {
+    payload = {
+      mode: 'pulse',
+      moment: userMessage,
+      platforms: platforms.length ? platforms : ['TikTok', 'Instagram Reels', 'YouTube Shorts'],
+      contentType: 'short-form video',
+      tone: s.tone || 'Authentic/Natural',
+      creatorContext: ctx.niche || '',
+      outputLanguage: 'English',
+      userId: (localStorage.getItem('sam_uid') || 'anon').replace(/^dev-/, ''),
+      tier: ctx.tier || 'free',
+      voiceProfile: voiceProfile
+    };
+  } else if (tool === 'spark') {
+    payload = {
+      mode: 'chat',
+      messages: [{ role: 'user', content: 'Generate 5 specific content ideas for: ' + (ctx.niche || userMessage) }],
+      systemPrompt: 'You are SAM. Generate exactly 5 specific content ideas. Return JSON: {"ideas":[{"title":"idea","why":"reason","best_platform":"platform"}]}. Creator niche: ' + (ctx.niche || '') + '. Return ONLY JSON.'
+    };
+  } else if (tool === 'blueprint') {
+    payload = {
+      mode: 'calendar',
+      moment: userMessage,
+      platforms: platforms.length ? platforms : ['TikTok', 'Instagram Reels', 'YouTube Shorts'],
+      creatorContext: ctx.niche || '',
+      userId: (localStorage.getItem('sam_uid') || 'anon').replace(/^dev-/, ''),
+      tier: ctx.tier || 'free'
+    };
+  } else if (tool === 'vision') {
+    payload = {
+      mode: 'concept',
+      moment: userMessage,
+      platforms: platforms.length ? platforms : ['TikTok', 'YouTube'],
+      creatorContext: ctx.niche || '',
+      userId: (localStorage.getItem('sam_uid') || 'anon').replace(/^dev-/, ''),
+      tier: ctx.tier || 'free'
+    };
+  } else if (tool === 'lens') {
+    payload = {
+      mode: 'chat',
+      messages: [{ role: 'user', content: userMessage }],
+      systemPrompt: 'You are SAM. Analyse this creator situation and give specific, actionable advice on what is working and what to improve. Creator niche: ' + (ctx.niche || '') + '. Be direct, specific, 3-5 bullet points max.'
+    };
+  }
+
+  try {
+    const r = await fetch('/api/sam', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!r.ok) return null;
+    return await readStream(r);
+  } catch(e) {
+    return null;
+  }
+}
+
+// ── RENDER INLINE TOOL OUTPUT ─────────────────────────────────────────────────
+function renderInlineToolOutput(tool, data, msgs) {
+  if (!data) return;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'psam-tool-output';
+
+  let html = '';
+
+  if (tool === 'pulse') {
+    const hook = data.hook || '';
+    const script = data.full_script || data.narration_script || '';
+    const platforms = data.platform_strategies || [];
+
+    html += '<div class="psam-output-label">🔴 THE PULSE</div>';
+
+    if (hook) {
+      html += '<div class="psam-output-section">';
+      html += '<div class="psam-output-sec-title">Hook</div>';
+      html += '<div class="psam-output-hook">' + hook + '</div>';
+      html += '<div class="psam-output-actions">';
+      html += '<button class="psam-act-btn" onclick="psamCopy(this,'' + hook.replace(/'/g, "\'").replace(/
+/g, '\n') + '')">📋 Copy</button>';
+      html += '<button class="psam-act-btn psam-act-save" onclick="psamSave('' + hook.replace(/'/g, "\'").replace(/
+/g, '\n') + '','Hook','pulse')">💜 Save</button>';
+      html += '</div></div>';
+    }
+
+    if (script) {
+      const scriptPreview = script.slice(0, 200) + (script.length > 200 ? '...' : '');
+      html += '<div class="psam-output-section">';
+      html += '<div class="psam-output-sec-title">Script</div>';
+      html += '<div class="psam-output-script" id="psamScript_' + Date.now() + '">' + script.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/
+/g,'<br>') + '</div>';
+      html += '<div class="psam-output-actions">';
+      html += '<button class="psam-act-btn" onclick="psamCopyEl(this)">📋 Copy script</button>';
+      html += '<button class="psam-act-btn psam-act-save" onclick="psamSave('' + script.replace(/'/g, "\'").replace(/
+/g, '\n').slice(0,500) + '','Script','pulse')">💜 Save</button>';
+      html += '</div></div>';
+    }
+
+    if (platforms.length) {
+      html += '<div class="psam-output-section">';
+      html += '<div class="psam-output-sec-title">Captions</div>';
+      platforms.forEach(ps => {
+        if (!ps?.platform) return;
+        const cap = (ps.caption || '') + (ps.hashtags ? '
+' + ps.hashtags : '');
+        html += '<div class="psam-output-platform"><span class="psam-platform-name">' + ps.platform + '</span>';
+        html += '<div class="psam-platform-caption">' + (ps.caption||'').replace(/</g,'&lt;') + '</div>';
+        if (ps.hashtags) html += '<div class="psam-platform-hashtags">' + ps.hashtags + '</div>';
+        html += '<button class="psam-act-btn" onclick="psamCopy(this,'' + cap.replace(/'/g,"\'").replace(/
+/g,'\n') + '')">📋 Copy</button>';
+        html += '</div>';
+      });
+      html += '</div>';
+    }
+
+  } else if (tool === 'spark') {
+    const ideas = data.ideas || [];
+    html += '<div class="psam-output-label">🟣 THE SPARK — 5 Ideas</div>';
+    ideas.forEach((idea, i) => {
+      html += '<div class="psam-output-section">';
+      html += '<div class="psam-output-sec-title">' + (i+1) + '. ' + (idea.title||'') + '</div>';
+      if (idea.why) html += '<div class="psam-output-why">' + idea.why + '</div>';
+      if (idea.best_platform) html += '<div class="psam-platform-name">' + idea.best_platform + '</div>';
+      html += '<div class="psam-output-actions">';
+      html += '<button class="psam-act-btn psam-act-save" onclick="psamSave('' + (idea.title||'').replace(/'/g,"\'") + '','Content Idea','spark')">💜 Save</button>';
+      html += '<button class="psam-act-btn" onclick="psamRunPulse('' + (idea.title||'').replace(/'/g,"\'") + '')">▶ Run Pulse</button>';
+      html += '</div></div>';
+    });
+
+  } else if (tool === 'blueprint') {
+    const days = data.days || [];
+    html += '<div class="psam-output-label">🔵 BLUEPRINT — 7-Day Plan</div>';
+    days.forEach((day, i) => {
+      html += '<div class="psam-output-section">';
+      html += '<div class="psam-output-sec-title">Day ' + (i+1) + ' — ' + (day.platform||'') + '</div>';
+      html += '<div class="psam-platform-caption">' + (day.content||'').replace(/</g,'&lt;') + '</div>';
+      html += '<button class="psam-act-btn psam-act-save" onclick="psamSave('' + (day.content||'').replace(/'/g,"\'").replace(/
+/g,'\n').slice(0,300) + '','Day ' + (i+1) + ' Blueprint','blueprint')">💜 Save</button>';
+      html += '</div>';
+    });
+
+  } else if (tool === 'vision') {
+    html += '<div class="psam-output-label">🟢 THE VISION</div>';
+    if (data.title) html += '<div class="psam-output-hook">' + data.title + '</div>';
+    if (data.premise) html += '<div class="psam-output-section"><div class="psam-output-sec-title">Premise</div><div class="psam-output-why">' + data.premise + '</div></div>';
+    if (data.hook_line) {
+      html += '<div class="psam-output-section"><div class="psam-output-sec-title">Hook line</div>';
+      html += '<div class="psam-output-hook" style="font-size:14px;">' + data.hook_line + '</div>';
+      html += '<button class="psam-act-btn" onclick="psamCopy(this,'' + (data.hook_line||'').replace(/'/g,"\'") + '')">📋 Copy</button></div>';
+    }
+    if (data.virality_score) html += '<div class="psam-platform-name">Virality score: ' + data.virality_score + '/100</div>';
+    html += '<div class="psam-output-actions">';
+    html += '<button class="psam-act-btn psam-act-save" onclick="psamSave('' + (data.title||'').replace(/'/g,"\'") + ': ' + (data.premise||'').replace(/'/g,"\'").slice(0,200) + '','Vision Concept','vision')">💜 Save</button>';
+    html += '</div>';
+
+  } else if (tool === 'lens') {
+    const reply = data.reply || data.content || data.text || '';
+    html += '<div class="psam-output-label">🟡 THE LENS</div>';
+    html += '<div class="psam-output-section"><div class="psam-output-why">' + mdToHtml(reply) + '</div></div>';
+  }
+
+  wrap.innerHTML = html;
+  msgs.appendChild(wrap);
+}
+
+// ── HELPER FUNCTIONS FOR INLINE OUTPUTS ──────────────────────────────────────
+function psamCopy(btn, text) {
+  navigator.clipboard.writeText(text.replace(/\\n/g, '\n')).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!';
+    btn.style.color = '#34D399';
+    setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
+  });
+}
+
+function psamCopyEl(btn) {
+  const section = btn.closest('.psam-output-section');
+  const scriptEl = section ? section.querySelector('.psam-output-script') : null;
+  if (scriptEl) {
+    navigator.clipboard.writeText(scriptEl.innerText).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = '✓ Copied!';
+      btn.style.color = '#34D399';
+      setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
+    });
+  }
+}
+
+function psamSave(text, label, type) {
+  if (typeof saveWizardItem === 'function') {
+    saveWizardItem(text.replace(/\\n/g, '\n'), label, type);
+  }
+}
+
+function psamRunPulse(ideaText) {
+  const input = document.getElementById('persistentSAMInput');
+  if (input) {
+    input.value = ideaText;
+    sendPersistentMessage();
+  }
 }
 
 // ══ SAM IDEAS BANK ══
@@ -8557,7 +9063,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v6.65
+  // CINEMATIC MEET SAM — v6.66
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -12462,7 +12968,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.65</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.66</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -13421,9 +13927,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v6.65
+// SOFT POPUP v6.66
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v6.65
+// soft popup system removed v6.66
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -13432,7 +13938,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v6.65
+  // SAM GUIDED TOUR — v6.66
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
