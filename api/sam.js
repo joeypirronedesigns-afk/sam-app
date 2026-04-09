@@ -393,6 +393,62 @@ CRITICAL: Return ONLY valid JSON. Keep ALL fields concise — the JSON must be c
       return await streamCall(playbookPrompt, playbookUserContent, 12000);
     }
 
+
+    // ── REGEN SECTION MODE ────────────────────────────────────────────────────
+    if (mode === 'regen_section') {
+      const section = req.body.section || '';
+      const sectionLabel = req.body.sectionLabel || section;
+      const wizContext = req.body.wizardContext || '';
+      const steer = req.body.steer || '';
+      const delivery = req.body.delivery || 'camera';
+      const pace = req.body.pace || 'natural';
+      const platforms = req.body.platforms || [];
+
+      const sectionPrompts = {
+        diagnosis: `Rewrite ONLY the story diagnosis for this creator's moment.
+Return ONLY: {"diagnosis":"2-3 sentences — what this story is really about beneath the surface","diagnosis_why":"1 sentence on why this framing will resonate"}`,
+
+        architecture: `Rewrite ONLY the story architecture — the 6-beat structure.
+Return ONLY: {"story_architecture":{"opening":"hook action/line for 0-3s","setup":"context beat for 3-15s","risk":"stakes beat for 15-30s","turn":"pivot moment for 30-50s","payoff":"resolution for 50-70s","cta":"call to action for final 5s"}}`,
+
+        hook: `Rewrite ONLY the opening hook — the single line that stops the scroll.
+${steer ? 'CREATOR DIRECTION: ' + steer : ''}
+Return ONLY: {"hook":"the hook line — punchy, specific, creates an open loop","hook_why":"1 sentence on why this hook works for this story and audience"}`,
+
+        script: `Rewrite ONLY the full script for this creator's story.
+Delivery style: ${delivery}. Pace: ${pace}.
+${steer ? 'CREATOR DIRECTION: ' + steer : ''}
+Format script lines as plain text. Use [BEAT] for pause markers. Use (note) for delivery notes.
+Return ONLY: {"full_script":"the complete script","pacing_note":"one delivery tip"}`,
+
+        platforms: `Rewrite ONLY the platform strategy — captions and hashtags for each platform.
+Platforms: ${platforms.join(', ')}.
+${steer ? 'CREATOR DIRECTION: ' + steer : ''}
+Return ONLY: {"platform_strategies":[{"platform":"platform name","strategy":"1 sentence approach","caption":"ready-to-post caption","hashtags":"hashtags"}]}`,
+
+        audience: `Rewrite ONLY the audience profile — deep psychographic breakdown of the ideal viewer.
+${steer ? 'CREATOR DIRECTION: ' + steer : ''}
+Return ONLY: {"audience_profile":{"who":"who they are in 1-2 sentences","pain_points":"their real frustrations","secret_want":"what they actually want","where":"where they spend time online","what_hooks_them":"what stops their scroll","what_loses_them":"what makes them leave","voice":"how to talk to them","why":"why this audience for this creator"}}`,
+
+        focus: `Rewrite ONLY the focus directive — the single next move this creator should take.
+${steer ? 'CREATOR DIRECTION: ' + steer : ''}
+Return ONLY: {"focus_directive":"2-4 sentences. Direct, specific, actionable. No fluff. Tell them exactly what to do next and why."}`
+      };
+
+      const sectionPrompt = sectionPrompts[section];
+      if (!sectionPrompt) return res.status(400).json({ error: 'Unknown section: ' + section });
+
+      const fullPrompt = `${base}
+WIZARD CONTEXT: ${wizContext}
+MOMENT: ${moment || ''}
+
+TASK: ${sectionPrompt}
+
+CRITICAL: Return ONLY valid JSON. No preamble, no explanation, no markdown fences.`;
+
+      return await streamCall(fullPrompt, moment || wizContext || '', 2000);
+    }
+
     // ── PLAYBOOK ROUTING — non-moment storyTypes branch to correct tool ───────
     const storyTypeRouted = req.body.storyType || 'moment';
 
