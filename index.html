@@ -7556,8 +7556,7 @@ async function sendPlaybookEmail(idea, email, name){
   const raw = idea.text || '';
   const sections = raw.split(/SECTION \d+/i).filter(s => s.trim().length > 0);
   const sectionHTML = sections.map((s, i) => {
-    const lines = s.trim().split('
-').filter(l => l.trim());
+    const lines = s.trim().split('\n').filter(l => l.trim());
     const title = lines[0] || `Section ${i+1}`;
     const body = lines.slice(1).join('<br>');
     return `<div style="margin-bottom:20px;padding:20px;background:#f7f5ff;border-left:4px solid #7C3AED;border-radius:8px;">
