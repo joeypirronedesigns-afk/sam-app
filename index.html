@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v6.33)
+       UNIFIED HERO (v6.34)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4315,7 +4315,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v6.33
+       CINEMATIC MEET SAM — v6.34
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4765,7 +4765,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v6.33
+       SAM GUIDED TOUR SPLASH — v6.34
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5065,10 +5065,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.33</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.34</div>
 
 
-  <!-- ── UNIFIED HERO v6.33 ── -->
+  <!-- ── UNIFIED HERO v6.34 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7149,7 +7149,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v6.33 ──
+// ── RUN TRACKING v6.34 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -7951,7 +7951,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v6.33
+  // CINEMATIC MEET SAM — v6.34
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -8416,21 +8416,28 @@ function initWizard() {
           mode: 'chat',
           userId: 'anon',
           messages: [{ role: 'user', content: val }],
-          systemPrompt: `You are SAM analyzing someone's writing voice. Study this sample carefully.
+          systemPrompt: `You are SAM — a voice fingerprinting engine. Your only job is to read this writing sample and extract the person's exact voice DNA. You are not summarizing. You are not being nice. You are being a forensic reader.
 
-Return EXACTLY this format — nothing else:
-Line 1: "You're [specific trait]. You [specific trait]. You [specific trait]. And you [specific trait]."
-Line 2: "I've got you — everything I build is going to sound like YOU wrote it, not a robot."
+Analyze the sample for ALL of the following and store them internally:
+1. RHYTHM — How long are their sentences? Do they vary? Do they punch short then breathe long? Do they trail off with ellipses or cut hard?
+2. PUNCTUATION PERSONALITY — Do they use dashes? Ellipses? Skip periods? Use ALL CAPS for emphasis? Double exclamation? No caps at all?
+3. ENERGY SIGNATURE — Are they hype? Dry? Earnest? Self-deprecating? Do they open sentences with "okay so" or "look" or "here's the thing"?
+4. DIALECT + SLANG — Regional flavor, filler words (like, literally, honestly, okay, so), contractions they lean on, words they'd never say
+5. EMOTIONAL REGISTER — Do they minimize ("just", "kind of", "sort of") or maximize ("absolutely", "completely", "literally")? Do they curse? Are they vulnerable or guarded?
+6. THEIR "TELL" — The one thing that is unmistakably them. The move they make that no one else makes exactly that way.
 
-Rules for the traits:
-- Be HYPER specific. Not "conversational" — say "skip punctuation when you get excited"
-- Not "authentic" — say "use short sentences like a punch"  
-- Look for: sentence length, punctuation style, word choices, humor, how they start sentences, filler words, energy level, formality
-- If they use lowercase: mention it. If they use dashes: mention it. If they curse: mention it warmly.
-- Make them feel SEEN. Like you actually read them.
-- Never be generic. Never say "authentic voice" or "conversational tone".
-- Max 12 words per trait.`
-        })
+Then return EXACTLY this format — nothing else:
+
+Line 1 (the mirror — make them feel seen): "You're [specific]. You [specific]. You [specific]. And you [specific]."
+Line 2 (the commitment): "I've got you — everything I build is going to sound like YOU wrote it, not a robot."
+
+Rules:
+- Every trait must be so specific that if you showed it to them they'd say "holy shit that's exactly right"
+- NEVER say: authentic, conversational, genuine, real, natural, engaging, relatable
+- DO say things like: "start sentences mid-thought like you're already in the middle of talking", "use dashes the way other people use a deep breath", "drop the subject of a sentence when you're excited — just verb straight into it"
+- If they use lowercase: name it. If they trail off: name it. If they write like they're texting: name it.
+- Max 14 words per trait.
+- The second line is always exactly: "I've got you — everything I build is going to sound like YOU wrote it, not a robot."`
       });
 
       const reader = res.body.getReader();
@@ -11727,7 +11734,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.33</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.34</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -12669,9 +12676,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v6.33
+// SOFT POPUP v6.34
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v6.33
+// soft popup system removed v6.34
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -12680,7 +12687,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v6.33
+  // SAM GUIDED TOUR — v6.34
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
