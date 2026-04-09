@@ -23,10 +23,19 @@ module.exports = async function handler(req, res) {
     try {
       const kv = await getKV();
       
-      // Check if user exists
-      const user = await kv.get(`user:${email.toLowerCase()}`);
+      // Check if user exists — create account if not found (returning user who lost session)
+      let user = await kv.get(`user:${email.toLowerCase()}`);
       if (!user) {
-        return res.status(404).json({ error: 'no_account', message: 'No account found for this email. Start a free trial first.' });
+        user = {
+          email: email.toLowerCase(),
+          name: '',
+          tier: 'free',
+          paid: false,
+          trialStart: Date.now(),
+          createdAt: Date.now(),
+          updatedAt: Date.now()
+        };
+        await kv.set(`user:${email.toLowerCase()}`, user);
       }
 
       // Generate magic link token
