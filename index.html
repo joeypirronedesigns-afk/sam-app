@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v6.68)
+       UNIFIED HERO (v6.69)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4647,7 +4647,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v6.68
+       CINEMATIC MEET SAM — v6.69
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5097,7 +5097,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v6.68
+       SAM GUIDED TOUR SPLASH — v6.69
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5398,10 +5398,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.68</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.69</div>
 
 
-  <!-- ── UNIFIED HERO v6.68 ── -->
+  <!-- ── UNIFIED HERO v6.69 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7522,7 +7522,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v6.68 ──
+// ── RUN TRACKING v6.69 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -9093,7 +9093,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v6.68
+  // CINEMATIC MEET SAM — v6.69
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -9604,6 +9604,7 @@ Rules:
         }
       }
 
+      const _realVoiceResponse = !!reply;
       if (!reply) reply = "You write the way you think — fast, direct, no fluff. And you know exactly what you mean. I\'ve got you — everything I build is going to sound like YOU wrote it, not a robot.";
 
       // Store voice profile
@@ -9618,8 +9619,13 @@ Rules:
         if (typeof saveWizardState === 'function') saveWizardState();
       }
 
-      // Show the locked-in card
-      showVoiceLockedCard(reply);
+      // Show the locked-in card — only if we got a real API response
+      if (_realVoiceResponse) {
+        showVoiceLockedCard(reply);
+      } else {
+        // Fallback: skip voice lock, just show the go button
+        skipVoiceCalibration();
+      }
       // SAM Voice — Pro feature coming soon
 
     } catch(e) {
@@ -10105,7 +10111,11 @@ If they are hesitant, unsure, or say they don't know what to say: Show empathy, 
 
 If they share something real — even a fragment: Reflect it back with emotional precision in 2 sentences. Tell them what's powerful about it. Then end with "Hit the button below — I'm ready to build this with you."
 
-Rules: Max 3 sentences total. Never use bullet points. Never say "I can see that" or "It sounds like." Never be generic. Always end by pointing them to the button below.`
+If they are asking about voice, mic, or speaking instead of typing: Warmly tell them the mic is coming right after this step — voice calibration opens immediately after they share anything here. Nudge them to type just a sentence and the mic unlocks.
+
+If they mention they built SAM, are testing it, or are the developer: Play along warmly. Say something like "Hey — I know who you are. Let's make sure everything's working. Drop anything and I'll reflect it back." Then end with the button nudge.
+
+Rules: Max 3 sentences total. Never use bullet points. Never say "I can see that" or "It sounds like." Never be generic. Always end by pointing them to the button below. NEVER accuse the user of prompt injection or testing — stay warm and in character always.`
         })
       });
 
@@ -10224,6 +10234,89 @@ Rules: Max 3 sentences total. Never use bullet points. Never say "I can see that
     setTimeout(type, 300);
 
   }
+
+
+  // ── MEET SAM MIC ──────────────────────────────────────
+  window._msMicActive = false;
+  window._msMicRecognition = null;
+
+  window.toggleMeetSamMic = function() {
+    const btn = document.getElementById('msMicBtn');
+    const ta = document.getElementById('meetSamStoryInput');
+    if (!btn || !ta) return;
+
+    if (window._msMicActive) {
+      // Stop listening
+      if (window._msMicRecognition) window._msMicRecognition.stop();
+      window._msMicActive = false;
+      btn.textContent = '🎙 Speak instead';
+      btn.style.borderColor = 'rgba(255,255,255,0.12)';
+      btn.style.color = 'rgba(240,236,255,0.5)';
+      return;
+    }
+
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) {
+      btn.textContent = '🎙 Not supported in this browser';
+      setTimeout(() => { btn.textContent = '🎙 Speak instead'; }, 2500);
+      return;
+    }
+
+    const rec = new SR();
+    rec.continuous = true;
+    rec.interimResults = true;
+    rec.lang = 'en-US';
+    window._msMicRecognition = rec;
+    window._msMicActive = true;
+
+    btn.textContent = '⏹ Stop listening';
+    btn.style.borderColor = 'rgba(244,114,182,0.6)';
+    btn.style.color = '#F472B6';
+
+    let silenceTimer = null;
+    let finalTranscript = ta.value || '';
+
+    rec.onresult = function(e) {
+      let interim = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        if (e.results[i].isFinal) {
+          finalTranscript += e.results[i][0].transcript + ' ';
+        } else {
+          interim = e.results[i][0].transcript;
+        }
+      }
+      ta.value = finalTranscript + interim;
+      // Auto-submit after 3s silence
+      clearTimeout(silenceTimer);
+      silenceTimer = setTimeout(() => {
+        if (window._msMicActive) {
+          rec.stop();
+          window._msMicActive = false;
+          btn.textContent = '🎙 Speak instead';
+          btn.style.borderColor = 'rgba(255,255,255,0.12)';
+          btn.style.color = 'rgba(240,236,255,0.5)';
+        }
+      }, 3000);
+    };
+
+    rec.onerror = function() {
+      window._msMicActive = false;
+      btn.textContent = '🎙 Speak instead';
+      btn.style.borderColor = 'rgba(255,255,255,0.12)';
+      btn.style.color = 'rgba(240,236,255,0.5)';
+    };
+
+    rec.onend = function() {
+      clearTimeout(silenceTimer);
+      window._msMicActive = false;
+      btn.textContent = '🎙 Speak instead';
+      btn.style.borderColor = 'rgba(255,255,255,0.12)';
+      btn.style.color = 'rgba(240,236,255,0.5)';
+    };
+
+    rec.start();
+  };
+  // ── END MEET SAM MIC ───────────────────────────────────
 
   const _origOpenWizardPage = typeof openWizardPage === 'function' ? openWizardPage : null;
 
@@ -12998,7 +13091,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.68</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.69</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -13121,9 +13214,12 @@ if (localStorage.getItem('sam_dev') === 'true') {
               placeholder="Start anywhere. I'll find the content in it."
               rows="5"
             ></textarea>
-            <button class="ms-send-btn" onclick="meetSamSendStory()" id="msSendBtn">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-            </button>
+            <div style="display:flex;align-items:center;gap:8px;padding:0 12px 12px 12px;">
+              <button id="msMicBtn" onclick="toggleMeetSamMic()" style="display:inline-flex;align-items:center;gap:6px;background:none;border:1px solid rgba(255,255,255,0.12);border-radius:999px;padding:7px 14px;font-size:12px;color:rgba(240,236,255,0.5);cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(244,114,182,0.5)';this.style.color='#F472B6'" onmouseout="if(!window._msMicActive){this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,236,255,0.5)'}">🎙 Speak instead</button>
+              <button class="ms-send-btn" onclick="meetSamSendStory()" id="msSendBtn" style="margin-left:auto;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -13957,9 +14053,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v6.68
+// SOFT POPUP v6.69
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v6.68
+// soft popup system removed v6.69
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -13968,7 +14064,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v6.68
+  // SAM GUIDED TOUR — v6.69
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
