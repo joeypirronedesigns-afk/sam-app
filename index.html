@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v6.61)
+       UNIFIED HERO (v6.62)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4323,7 +4323,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v6.61
+       CINEMATIC MEET SAM — v6.62
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4773,7 +4773,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v6.61
+       SAM GUIDED TOUR SPLASH — v6.62
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5074,10 +5074,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.61</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.62</div>
 
 
-  <!-- ── UNIFIED HERO v6.61 ── -->
+  <!-- ── UNIFIED HERO v6.62 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7193,7 +7193,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v6.61 ──
+// ── RUN TRACKING v6.62 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -8109,7 +8109,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v6.61
+  // CINEMATIC MEET SAM — v6.62
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -10194,6 +10194,147 @@ Include complete reasoning (WHY) for every recommendation.
 }
 
 // ── RENDER PLAYBOOK ────────────────────────────────────────────────────────────
+
+// ── SECTION REGENERATE ──────────────────────────────────────────────────────
+async function regenSection(sectionKey, btnEl) {
+  const sectionEl = document.getElementById('playbook-sec-' + sectionKey);
+  if (!sectionEl) return;
+
+  // Show loading state on button
+  const originalHTML = btnEl.innerHTML;
+  btnEl.disabled = true;
+  btnEl.innerHTML = '<span style="opacity:0.6;">Rewriting...</span>';
+
+  // Add shimmer overlay to section
+  sectionEl.style.opacity = '0.4';
+  sectionEl.style.pointerEvents = 'none';
+
+  const s = getSetup();
+  const steerInput = document.getElementById('sec-steer-' + sectionKey);
+  const steer = steerInput ? steerInput.value.trim() : '';
+
+  const sectionLabels = {
+    'diagnosis': 'story diagnosis — what this story is really about',
+    'architecture': 'story architecture — the 6-beat structure (opening, setup, risk, turn, payoff, CTA)',
+    'hook': 'the opening hook — the first line that stops the scroll',
+    'script': 'the full script — written for delivery in the creator's voice',
+    'platforms': 'platform strategy — caption and hashtags for each selected platform',
+    'audience': 'audience profile — deep psychographic profile of the ideal viewer',
+    'focus': 'focus directive — the one next move the creator should take'
+  };
+
+  const label = sectionLabels[sectionKey] || sectionKey;
+
+  const context = `
+CREATOR: ${s.niche || ''} ${WS.brandName || ''}
+DELIVERY: ${WS.delivery || 'on camera'} | PACE: ${WS.pace || 'natural'}
+PLATFORMS: ${(WS.platforms||[]).join(', ')}
+FORMAT: ${WS.format || 'short-form video'}
+LANGUAGE: ${WS.language || 'English'}
+STORY: ${(WS.storyText||'').slice(0,600)}
+${steer ? 'CREATOR DIRECTION: ' + steer : ''}
+  `.trim();
+
+  try {
+    const payload = {
+      mode: 'regen_section',
+      section: sectionKey,
+      sectionLabel: label,
+      wizardContext: context,
+      moment: WS.storyText || '',
+      platforms: WS.platforms || [],
+      delivery: WS.delivery || 'camera',
+      pace: WS.pace || 'natural',
+      storyType: WS.storyType || 'moment',
+      tone: s.tone || 'Authentic/Natural',
+      outputLanguage: WS.language || '',
+      creatorContext: s.niche || '',
+      steer: steer,
+      userId: (localStorage.getItem('sam_uid') || 'anon').replace(/^dev-/, ''),
+      tier: WS.tier || 'free'
+    };
+
+    const data = await callAPI(payload);
+
+    // Re-render just this section
+    regenRenderSection(sectionKey, sectionEl, data);
+
+  } catch(err) {
+    btnEl.disabled = false;
+    btnEl.innerHTML = originalHTML;
+    sectionEl.style.opacity = '';
+    sectionEl.style.pointerEvents = '';
+    alert('SAM hit a snag — try again.');
+  }
+}
+
+function regenRenderSection(key, sectionEl, data) {
+  // Find the content area (everything after the header, before the action buttons)
+  const contentArea = sectionEl.querySelector('.regen-content');
+  if (!contentArea) { location.reload(); return; }
+
+  let html = '';
+
+  if (key === 'diagnosis' && data.diagnosis) {
+    html = `<div class="playbook-card"><div class="playbook-card-text">${data.diagnosis}</div></div>
+    ${data.diagnosis_why ? '<div class="wizard-why" style="margin-top:12px;"><strong>Why this matters:</strong> ' + data.diagnosis_why + '</div>' : ''}`;
+  } else if (key === 'architecture' && data.story_architecture) {
+    const arch = data.story_architecture;
+    html = `<div class="playbook-arch-grid">
+      ${arch.opening ? '<div class="playbook-arch-card arch-opening"><div class="playbook-arch-beat">Opening (0–3s)</div><div class="playbook-arch-text">'+arch.opening+'</div><div class="playbook-arch-time">Stop the scroll</div></div>' : ''}
+      ${arch.setup ? '<div class="playbook-arch-card arch-setup"><div class="playbook-arch-beat">Setup (3–15s)</div><div class="playbook-arch-text">'+arch.setup+'</div><div class="playbook-arch-time">Make them care</div></div>' : ''}
+      ${arch.risk ? '<div class="playbook-arch-card arch-risk"><div class="playbook-arch-beat">The Risk (15–30s)</div><div class="playbook-arch-text">'+arch.risk+'</div><div class="playbook-arch-time">Raise the stakes</div></div>' : ''}
+      ${arch.turn ? '<div class="playbook-arch-card arch-turn"><div class="playbook-arch-beat">The Turn (30–50s)</div><div class="playbook-arch-text">'+arch.turn+'</div><div class="playbook-arch-time">The moment everything changes</div></div>' : ''}
+      ${arch.payoff ? '<div class="playbook-arch-card arch-payoff"><div class="playbook-arch-beat">The Payoff (50–70s)</div><div class="playbook-arch-text">'+arch.payoff+'</div><div class="playbook-arch-time">The emotional resolution</div></div>' : ''}
+      ${arch.cta ? '<div class="playbook-arch-card arch-cta"><div class="playbook-arch-beat">Your Call (final 5s)</div><div class="playbook-arch-text">'+arch.cta+'</div><div class="playbook-arch-time">What you want them to do</div></div>' : ''}
+    </div>`;
+  } else if (key === 'hook' && data.hook) {
+    html = `<div class="playbook-hook">${data.hook}</div>
+    ${data.hook_why ? '<div class="wizard-why" style="margin-top:12px;"><strong>Why this hook:</strong> ' + data.hook_why + '</div>' : ''}`;
+  } else if (key === 'script' && (data.full_script || data.narration_script)) {
+    const script = data.narration_script || data.full_script;
+    const formatted = (typeof script === 'string' ? script : JSON.stringify(script))
+      .split('\n').map(line => {
+        const t = line.trim();
+        if (!t) return '';
+        if (t.match(/^\[.*\]$/)) return '<span class="script-beat">'+t+'</span>';
+        if (t.startsWith('(') && t.endsWith(')')) return '<span class="script-note">'+t+'</span>';
+        return '<span class="script-line">'+t+'</span>';
+      }).filter(Boolean).join('\n');
+    html = `<div class="playbook-script">${formatted}</div>
+    ${data.pacing_note ? '<div class="wizard-why" style="margin-top:12px;"><strong>Delivery note:</strong> ' + data.pacing_note + '</div>' : ''}`;
+  } else if (key === 'platforms' && data.platform_strategies) {
+    html = data.platform_strategies.map(ps => {
+      if (!ps?.platform) return '';
+      return '<div class="platform-strategy" style="margin-bottom:10px;"><div class="ps-header"><div class="ps-name">'+ps.platform+'</div></div><div class="ps-body">'+(ps.strategy?'<div style="font-size:13px;color:var(--text3);margin-bottom:8px;font-style:italic;">'+ps.strategy+'</div>':'')+(ps.caption?'<div class="ps-caption">'+ps.caption+'</div>':'')+(ps.hashtags?'<div class="ps-hashtags">'+ps.hashtags+'</div>':'')+'</div></div>';
+    }).join('');
+  } else if (key === 'audience' && data.audience_profile) {
+    const ap = data.audience_profile;
+    const row = (k, label, icon) => ap[k] ? '<div class="wizard-audience-row"><div class="wizard-audience-key">'+(icon?icon+' ':'')+label+'</div><div class="wizard-audience-val">'+ap[k]+'</div></div>' : '';
+    html = '<div class="wizard-audience-card">'+row('who','Who They Are','👤')+row('pain_points','Their Pain Points','😤')+row('secret_want','What They Secretly Want','💭')+row('where','Where They Spend Time','📍')+row('what_hooks_them','What Makes Them Stop Scrolling','🎯')+row('what_loses_them','What Loses Them Fast','⚠️')+row('voice','How to Talk to Them','🗣️')+'</div>';
+  } else if (key === 'focus' && data.focus_directive) {
+    html = '<div class="playbook-focus"><div class="playbook-focus-eyebrow">Stop. Focus.</div><div class="playbook-focus-text">'+data.focus_directive+'</div></div>';
+  } else {
+    // Fallback — data came back but key mismatch
+    sectionEl.style.opacity = '';
+    sectionEl.style.pointerEvents = '';
+    return;
+  }
+
+  contentArea.innerHTML = html;
+  sectionEl.style.opacity = '';
+  sectionEl.style.pointerEvents = '';
+
+  // Flash green to signal success
+  sectionEl.style.transition = 'box-shadow 0.3s';
+  sectionEl.style.boxShadow = '0 0 0 2px rgba(52,211,153,0.5)';
+  setTimeout(() => { sectionEl.style.boxShadow = ''; }, 1200);
+
+  // Reset button
+  const btn = sectionEl.querySelector('.sec-regen-btn');
+  if (btn) { btn.disabled = false; btn.innerHTML = '↺ Redo'; }
+}
+
 function renderPlaybook(data) {
   const container = document.getElementById('wizardPlaybook');
   const today = new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
@@ -10213,49 +10354,68 @@ function renderPlaybook(data) {
 
   // ① STORY DIAGNOSIS
   if (data.diagnosis) {
-    html += `<div class="playbook-section">
+    html += `<div class="playbook-section" id="playbook-sec-diagnosis">
       <div class="playbook-section-num">Section 01</div>
       <div class="playbook-section-title">What this story is really about</div>
-      <div class="playbook-card">
-        <div class="playbook-card-text">${data.diagnosis}</div>
+      <div class="regen-content">
+        <div class="playbook-card"><div class="playbook-card-text">${data.diagnosis}</div></div>
+        ${data.diagnosis_why ? `<div class="wizard-why" style="margin-top:12px;"><strong>Why this matters:</strong> ${data.diagnosis_why}</div>` : ''}
       </div>
-      ${data.diagnosis_why ? `<div class="wizard-why" style="margin-top:12px;"><strong>Why this matters:</strong> ${data.diagnosis_why}</div>` : ''}
-      <button class="playbook-copy-btn" style="margin-top:12px;background:rgba(167,139,250,0.12);border-color:rgba(167,139,250,0.3);color:var(--spark);" onclick="saveWizardItem(this.closest('.playbook-section').innerText,'Story Diagnosis','wizard')">💜 Save to Ideas</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center;">
+        <button class="playbook-copy-btn" style="margin-top:0;background:rgba(167,139,250,0.12);border-color:rgba(167,139,250,0.3);color:var(--spark);" onclick="saveWizardItem(this.closest('.playbook-section').innerText,'Story Diagnosis','wizard')">💜 Save</button>
+      </div>
+      <div class="no-print" style="margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+      <button class="sec-regen-btn" onclick="regenSection('diagnosis',this)" style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:rgba(240,236,255,0.5);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:6px 13px;cursor:pointer;transition:all 0.2s;font-family:inherit;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.5)'">↺ Redo</button>
+      <input id="sec-steer-diagnosis" type="text" placeholder="Optional: steer SAM differently..." style="flex:1;min-width:160px;max-width:340px;padding:6px 11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:50px;font-size:11px;color:var(--text2);font-family:inherit;outline:none;" onfocus="this.style.borderColor='rgba(167,139,250,0.35)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'">
+    </div>
     </div>`;
   }
 
   // ② STORY ARCHITECTURE
   if (data.story_architecture) {
     const arch = data.story_architecture;
-    html += `<div class="playbook-section">
+    html += `<div class="playbook-section" id="playbook-sec-architecture">
       <div class="playbook-section-num">Section 02</div>
       <div class="playbook-section-title">Your story architecture</div>
       <div class="wizard-why" style="margin-bottom:16px;">Every story that holds attention follows a structure. This is yours — mapped out so you know exactly where you're going before you press record.</div>
-      <div class="playbook-arch-grid">
-        ${arch.opening ? `<div class="playbook-arch-card arch-opening"><div class="playbook-arch-beat">Opening (0–3s)</div><div class="playbook-arch-text">${arch.opening}</div><div class="playbook-arch-time">Stop the scroll</div></div>` : ''}
-        ${arch.setup ? `<div class="playbook-arch-card arch-setup"><div class="playbook-arch-beat">Setup (3–15s)</div><div class="playbook-arch-text">${arch.setup}</div><div class="playbook-arch-time">Make them care</div></div>` : ''}
-        ${arch.risk ? `<div class="playbook-arch-card arch-risk"><div class="playbook-arch-beat">The Risk (15–30s)</div><div class="playbook-arch-text">${arch.risk}</div><div class="playbook-arch-time">Raise the stakes</div></div>` : ''}
-        ${arch.turn ? `<div class="playbook-arch-card arch-turn"><div class="playbook-arch-beat">The Turn (30–50s)</div><div class="playbook-arch-text">${arch.turn}</div><div class="playbook-arch-time">The moment everything changes</div></div>` : ''}
-        ${arch.payoff ? `<div class="playbook-arch-card arch-payoff"><div class="playbook-arch-beat">The Payoff (50–70s)</div><div class="playbook-arch-text">${arch.payoff}</div><div class="playbook-arch-time">The emotional resolution</div></div>` : ''}
-        ${arch.cta ? `<div class="playbook-arch-card arch-cta"><div class="playbook-arch-beat">Your Call (final 5s)</div><div class="playbook-arch-text">${arch.cta}</div><div class="playbook-arch-time">What you want them to do</div></div>` : ''}
+      <div class="regen-content">
+        <div class="playbook-arch-grid">
+          ${arch.opening ? `<div class="playbook-arch-card arch-opening"><div class="playbook-arch-beat">Opening (0–3s)</div><div class="playbook-arch-text">${arch.opening}</div><div class="playbook-arch-time">Stop the scroll</div></div>` : ''}
+          ${arch.setup ? `<div class="playbook-arch-card arch-setup"><div class="playbook-arch-beat">Setup (3–15s)</div><div class="playbook-arch-text">${arch.setup}</div><div class="playbook-arch-time">Make them care</div></div>` : ''}
+          ${arch.risk ? `<div class="playbook-arch-card arch-risk"><div class="playbook-arch-beat">The Risk (15–30s)</div><div class="playbook-arch-text">${arch.risk}</div><div class="playbook-arch-time">Raise the stakes</div></div>` : ''}
+          ${arch.turn ? `<div class="playbook-arch-card arch-turn"><div class="playbook-arch-beat">The Turn (30–50s)</div><div class="playbook-arch-text">${arch.turn}</div><div class="playbook-arch-time">The moment everything changes</div></div>` : ''}
+          ${arch.payoff ? `<div class="playbook-arch-card arch-payoff"><div class="playbook-arch-beat">The Payoff (50–70s)</div><div class="playbook-arch-text">${arch.payoff}</div><div class="playbook-arch-time">The emotional resolution</div></div>` : ''}
+          ${arch.cta ? `<div class="playbook-arch-card arch-cta"><div class="playbook-arch-beat">Your Call (final 5s)</div><div class="playbook-arch-text">${arch.cta}</div><div class="playbook-arch-time">What you want them to do</div></div>` : ''}
+        </div>
       </div>
-      <button class="playbook-copy-btn" style="margin-top:12px;background:rgba(167,139,250,0.12);border-color:rgba(167,139,250,0.3);color:var(--spark);" onclick="saveWizardItem(this.closest('.playbook-section').innerText,'Story Architecture','wizard')">💜 Save to Ideas</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center;">
+        <button class="playbook-copy-btn" style="margin-top:0;background:rgba(167,139,250,0.12);border-color:rgba(167,139,250,0.3);color:var(--spark);" onclick="saveWizardItem(this.closest('.playbook-section').innerText,'Story Architecture','wizard')">💜 Save</button>
+      </div>
+      <div class="no-print" style="margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+      <button class="sec-regen-btn" onclick="regenSection('architecture',this)" style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:rgba(240,236,255,0.5);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:6px 13px;cursor:pointer;transition:all 0.2s;font-family:inherit;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.5)'">↺ Redo</button>
+      <input id="sec-steer-architecture" type="text" placeholder="Optional: steer SAM differently..." style="flex:1;min-width:160px;max-width:340px;padding:6px 11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:50px;font-size:11px;color:var(--text2);font-family:inherit;outline:none;" onfocus="this.style.borderColor='rgba(167,139,250,0.35)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'">
+    </div>
     </div>`;
   }
 
   // ③ HOOK
   if (data.hook) {
-    html += `<div class="playbook-section">
+    html += `<div class="playbook-section" id="playbook-sec-hook">
       <div class="playbook-section-num">Section 03</div>
       <div class="playbook-section-title">Your hook</div>
       <div class="wizard-why" style="margin-bottom:16px;">This is the first thing your audience hears or reads. You have 1-3 seconds. This line was chosen because it creates an open loop — a question in the viewer's mind they have to stay to answer.</div>
-      <div class="playbook-hook">${data.hook}</div>
-      <button onclick="if(typeof SAM_VOICE!=='undefined')SAM_VOICE.speak('${escQ(data.hook)}')" style="margin-top:10px;background:none;border:1px solid rgba(167,139,250,0.2);border-radius:999px;padding:6px 14px;font-size:11px;color:rgba(240,236,255,0.4);cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(167,139,250,0.2)';this.style.color='rgba(240,236,255,0.4)'">🔊 Hear this hook</button>
-      ${data.hook_why ? `<div class="wizard-why" style="margin-top:12px;"><strong>Why this hook:</strong> ${data.hook_why}</div>` : ''}
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
-        <button class="playbook-copy-btn" style="margin-top:0;" onclick="wizCopy(this,'${escQ(data.hook)}')">Copy hook</button>
-        <button class="playbook-copy-btn" style="margin-top:0;background:rgba(167,139,250,0.12);border-color:rgba(167,139,250,0.3);color:var(--spark);" onclick="saveWizardItem('${escQ(data.hook)}','Hook: ${escQ(data.hook).substring(0,40)}...','wizard')">💜 Save to Ideas</button>
+      <div class="regen-content">
+        <div class="playbook-hook">${data.hook}</div>
+        ${data.hook_why ? `<div class="wizard-why" style="margin-top:12px;"><strong>Why this hook:</strong> ${data.hook_why}</div>` : ''}
       </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center;">
+        <button class="playbook-copy-btn" style="margin-top:0;" onclick="wizCopy(this,'${escQ(data.hook)}')">Copy hook</button>
+        <button class="playbook-copy-btn" style="margin-top:0;background:rgba(167,139,250,0.12);border-color:rgba(167,139,250,0.3);color:var(--spark);" onclick="saveWizardItem('${escQ(data.hook)}','Hook: ${escQ(data.hook).substring(0,40)}...','wizard')">💜 Save</button>
+      </div>
+      <div class="no-print" style="margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+      <button class="sec-regen-btn" onclick="regenSection('hook',this)" style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:rgba(240,236,255,0.5);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:6px 13px;cursor:pointer;transition:all 0.2s;font-family:inherit;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.5)'">↺ Redo</button>
+      <input id="sec-steer-hook" type="text" placeholder="Optional: steer SAM differently..." style="flex:1;min-width:160px;max-width:340px;padding:6px 11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:50px;font-size:11px;color:var(--text2);font-family:inherit;outline:none;" onfocus="this.style.borderColor='rgba(167,139,250,0.35)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'">
+    </div>
     </div>`;
   }
 
@@ -10276,26 +10436,29 @@ function renderPlaybook(data) {
         return `<span class="script-line">${t}</span>`;
       }).filter(Boolean).join('\n');
 
-    html += `<div class="playbook-section">
+    html += `<div class="playbook-section" id="playbook-sec-script">
       <div class="playbook-section-num">Section 04</div>
       <div class="playbook-section-title">${scriptLabel}</div>
       <div class="wizard-why" style="margin-bottom:16px;">${scriptNote}</div>
-      <div class="playbook-script">${formattedScript}</div>
-      <button onclick="if(typeof SAM_VOICE!=='undefined')SAM_VOICE.speak(document.querySelector('.playbook-script').innerText)" style="margin-top:10px;background:none;border:1px solid rgba(167,139,250,0.2);border-radius:999px;padding:6px 14px;font-size:11px;color:rgba(240,236,255,0.4);cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(167,139,250,0.2)';this.style.color='rgba(240,236,255,0.4)'">🔊 Hear this script</button>
-      ${data.pacing_note ? `<div class="wizard-why" style="margin-top:12px;"><strong>Delivery note:</strong> ${data.pacing_note}</div>` : ''}
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
-        <button class="playbook-copy-btn" style="margin-top:0;" onclick="wizCopyEl(this)">Copy script</button>
-        <button class="playbook-copy-btn" style="margin-top:0;background:rgba(167,139,250,0.12);border-color:rgba(167,139,250,0.3);color:var(--spark);" onclick="saveWizardItem(this.closest('.playbook-section').querySelector('.playbook-script').innerText,'Full script','wizard')">💜 Save to Ideas</button>
+      <div class="regen-content">
+        <div class="playbook-script">${formattedScript}</div>
+        ${data.pacing_note ? `<div class="wizard-why" style="margin-top:12px;"><strong>Delivery note:</strong> ${data.pacing_note}</div>` : ''}
       </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center;">
+        <button class="playbook-copy-btn" style="margin-top:0;" onclick="wizCopyEl(this)">Copy script</button>
+        <button class="playbook-copy-btn" style="margin-top:0;background:rgba(167,139,250,0.12);border-color:rgba(167,139,250,0.3);color:var(--spark);" onclick="saveWizardItem(this.closest('.playbook-section').querySelector('.playbook-script').innerText,'Full script','wizard')">💜 Save</button>
+      </div>
+      <div class='no-print' style='margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;'><button class='sec-regen-btn' onclick="regenSection('script',this)" style='display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:rgba(240,236,255,0.5);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:6px 13px;cursor:pointer;transition:all 0.2s;font-family:inherit;' onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.5)'">↺ Redo</button><input id='sec-steer-script' type='text' placeholder='Optional: steer SAM differently...' style='flex:1;min-width:160px;max-width:340px;padding:6px 11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:50px;font-size:11px;color:var(--text2);font-family:inherit;outline:none;' onfocus="this.style.borderColor='rgba(167,139,250,0.35)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'"></div>
     </div>`;
   }
 
   // ⑤ PLATFORM STRATEGY
   if (data.platform_strategies && Array.isArray(data.platform_strategies) && data.platform_strategies.length) {
-    html += `<div class="playbook-section">
+    html += `<div class="playbook-section" id="playbook-sec-platforms">
       <div class="playbook-section-num">Section 05</div>
       <div class="playbook-section-title">Your platform strategy</div>
-      <div class="wizard-why" style="margin-bottom:16px;">These are the platforms SAM selected for this story and this audience — with the specific approach for each one. Every platform is different. Same content posted the same way everywhere performs worse than content adapted to where it lives.</div>`;
+      <div class="wizard-why" style="margin-bottom:16px;">These are the platforms SAM selected for this story and this audience — with the specific approach for each one. Every platform is different. Same content posted the same way everywhere performs worse than content adapted to where it lives.</div>
+      <div class="regen-content">`;
 
     data.platform_strategies.forEach(ps => {
       if (!ps?.platform) return;
@@ -10312,7 +10475,7 @@ function renderPlaybook(data) {
         </div>
       </div>`;
     });
-    html += `</div>`;
+    html += `</div>`; html += `<div class='no-print' style='margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;'><button class='sec-regen-btn' onclick="regenSection('platforms',this)" style='display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:rgba(240,236,255,0.5);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:6px 13px;cursor:pointer;transition:all 0.2s;font-family:inherit;' onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.5)'">↺ Redo</button><input id='sec-steer-platforms' type='text' placeholder='Optional: steer SAM differently...' style='flex:1;min-width:160px;max-width:340px;padding:6px 11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:50px;font-size:11px;color:var(--text2);font-family:inherit;outline:none;' onfocus="this.style.borderColor='rgba(167,139,250,0.35)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'"></div></div>`;
   }
 
   // ⑥ AUDIENCE PROFILE — deep psychographic
@@ -10322,7 +10485,7 @@ function renderPlaybook(data) {
       ? `<div class="wizard-audience-row"><div class="wizard-audience-key">${icon ? icon + ' ' : ''}${label}</div><div class="wizard-audience-val">${audienceProfile[key]}</div></div>`
       : '';
 
-    html += `<div class="playbook-section">
+    html += `<div class="playbook-section" id="playbook-sec-audience">
       <div class="playbook-section-num">Section 06</div>
       <div class="playbook-section-title">Your ideal audience</div>
       <div class="wizard-why" style="margin-bottom:16px;">This isn't a demographic report. This is a real person — the one who needs your story most. When SAM knows exactly who they are, every word in your story is written for them.</div>
@@ -10336,6 +10499,7 @@ function renderPlaybook(data) {
         ${apRow('voice', 'How to Talk to Them', '🗣️')}
       </div>
       ${audienceProfile.why ? `<div class="wizard-why" style="margin-top:12px;border-left:3px solid var(--spark);padding-left:14px;"><strong>Why SAM sees this for you:</strong> ${audienceProfile.why}</div>` : ''}
+      <div class='no-print' style='margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;'><button class='sec-regen-btn' onclick="regenSection('audience',this)" style='display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:rgba(240,236,255,0.5);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:6px 13px;cursor:pointer;transition:all 0.2s;font-family:inherit;' onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.5)'">↺ Redo</button><input id='sec-steer-audience' type='text' placeholder='Optional: steer SAM differently...' style='flex:1;min-width:160px;max-width:340px;padding:6px 11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:50px;font-size:11px;color:var(--text2);font-family:inherit;outline:none;' onfocus="this.style.borderColor='rgba(167,139,250,0.35)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'"></div>
     </div>`;
   }
 
@@ -10442,13 +10606,14 @@ function renderPlaybook(data) {
   }
 
   // ⑨ FOCUS DIRECTIVE
-  html += `<div class="playbook-section">
+  html += `<div class="playbook-section" id="playbook-sec-focus">
     <div class="playbook-section-num">Section 09</div>
     <div class="playbook-section-title">Your next move</div>
-    <div class="playbook-focus">
+    <div class="regen-content"><div class="playbook-focus">
       <div class="playbook-focus-eyebrow">Stop. Focus.</div>
       <div class="playbook-focus-text">${data.focus_directive || 'You have everything you need. The only thing left is to show up and do the work. Go.'}</div>
-    </div>
+    </div></div>
+    <div class='no-print' style='margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;'><button class='sec-regen-btn' onclick="regenSection('focus',this)" style='display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:rgba(240,236,255,0.5);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:6px 13px;cursor:pointer;transition:all 0.2s;font-family:inherit;' onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.5)'">↺ Redo</button><input id='sec-steer-focus' type='text' placeholder='Optional: steer SAM differently...' style='flex:1;min-width:160px;max-width:340px;padding:6px 11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:50px;font-size:11px;color:var(--text2);font-family:inherit;outline:none;' onfocus="this.style.borderColor='rgba(167,139,250,0.35)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'"></div>
   </div>
 
   <!-- WHAT SAM CAN BUILD NEXT -->
@@ -11819,7 +11984,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.61</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.62</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -12778,9 +12943,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v6.61
+// SOFT POPUP v6.62
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v6.61
+// soft popup system removed v6.62
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -12789,7 +12954,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v6.61
+  // SAM GUIDED TOUR — v6.62
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
