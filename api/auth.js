@@ -88,7 +88,7 @@ module.exports = async function handler(req, res) {
       }
 
       // Delete used token
-      await kv.delete(`session:${token}`);
+      await kv.del(`session:${token}`);
 
       return res.status(200).json({ success: true, user });
     } catch(e) {

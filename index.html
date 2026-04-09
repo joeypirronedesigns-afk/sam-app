@@ -12968,7 +12968,12 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
   // ── MAGIC LINK + AUTH ─────────────────────────────────────────────────────
   async function checkMagicLinkToken() {
     const params = new URLSearchParams(window.location.search);
-    const token = params.get('token');
+    let token = params.get('token');
+    // Fallback: extract token from full URL in case proxy encoded the ?
+    if (!token) {
+      const match = window.location.href.match(/[?&]token=([a-f0-9]+)/i);
+      if (match) token = match[1];
+    }
     const payment = params.get('payment');
     const plan = params.get('plan');
 
