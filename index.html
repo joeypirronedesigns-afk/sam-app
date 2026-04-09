@@ -8377,7 +8377,7 @@ function initWizard() {
       <div style="font-size:16px;line-height:1.7;color:rgba(240,236,255,0.9);margin-bottom:6px;font-weight:500;">I want to sound like <em style="color:#A78BFA;font-style:normal;">you</em> — not like AI.</div>
       <div style="font-size:14px;line-height:1.65;color:rgba(240,236,255,0.6);margin-bottom:18px;">Give me a few sentences. Don't think about it — just type how you actually talk. The messier the better.</div>
       <div style="position:relative;margin-bottom:12px;">
-        <textarea id="msVoiceInput" rows="4" placeholder="" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:14px 50px 14px 16px;font-size:14px;color:#F0ECFF;font-family:inherit;resize:none;box-sizing:border-box;line-height:1.6;outline:none;" onfocus="this.style.borderColor='rgba(167,139,250,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"></textarea>
+        <textarea id="msVoiceInput" rows="4" placeholder="" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:14px 50px 14px 16px;font-size:14px;color:#F0ECFF;font-family:inherit;resize:none;box-sizing:border-box;line-height:1.6;outline:none;" onfocus="this.style.borderColor='rgba(167,139,250,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'" oninput="window.msVoiceInputMethod='text'"></textarea>
         <button onclick="submitVoiceCalibration()" id="msVoiceSendBtn" style="position:absolute;right:10px;bottom:10px;background:linear-gradient(135deg,#A78BFA,#F472B6);border:none;border-radius:8px;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
@@ -8445,6 +8445,8 @@ function initWizard() {
           userId: 'anon',
           messages: [{ role: 'user', content: val }],
           systemPrompt: `You are SAM — a voice fingerprinting engine. Your only job is to read this writing sample and extract the person's exact voice DNA. You are not summarizing. You are not being nice. You are being a forensic reader.
+
+IMPORTANT CONTEXT: This sample was captured via ${window.msVoiceInputMethod === 'voice' ? 'SPOKEN VOICE — the person was thinking out loud, talking naturally, not writing. Analyze it as speech: fragments, trailing thoughts, and rough edges are not flaws — they are the signal. Do NOT read punctuation patterns that were never there. Focus on their verbal rhythm, how they structure a thought mid-sentence, their spoken energy, filler patterns, and the way they talk when they are not performing.' : 'TYPED TEXT — analyze as written voice.'}.
 
 Analyze the sample for ALL of the following and store them internally:
 1. RHYTHM — How long are their sentences? Do they vary? Do they punch short then breathe long? Do they trail off with ellipses or cut hard?
@@ -8598,7 +8600,8 @@ Rules:
     if (micBtn) micBtn.textContent = '⏹ Stop listening';
 
     input.placeholder = '🎙 Listening — just talk naturally...';
-    input.value = '';
+    if (!input.value.trim()) input.value = '';
+    window.msVoiceInputMethod = 'voice';
 
     rec.onresult = (e) => {
       let interim = '';
@@ -8680,7 +8683,7 @@ Rules:
           <div style="font-size:11px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#A78BFA;margin-bottom:12px;">🎙 Let's try that again</div>
           <p style="font-size:14px;color:rgba(240,236,255,0.7);margin:0 0 14px;">No worries — just talk or type for a bit longer this time. Ums and ahs are fine. I'm listening for how you actually sound, not what you say.</p>
           <div style="position:relative;">
-            <textarea id="msVoiceInput" rows="4" placeholder="" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:14px 50px 14px 16px;font-size:14px;color:#F0ECFF;font-family:inherit;resize:none;box-sizing:border-box;line-height:1.6;outline:none;" onfocus="this.style.borderColor='rgba(167,139,250,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"></textarea>
+            <textarea id="msVoiceInput" rows="4" placeholder="" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:14px 50px 14px 16px;font-size:14px;color:#F0ECFF;font-family:inherit;resize:none;box-sizing:border-box;line-height:1.6;outline:none;" onfocus="this.style.borderColor='rgba(167,139,250,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'" oninput="window.msVoiceInputMethod='text'"></textarea>
             <button onclick="submitVoiceCalibration()" style="position:absolute;right:10px;bottom:10px;background:linear-gradient(135deg,#A78BFA,#F472B6);border:none;border-radius:8px;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
             </button>
