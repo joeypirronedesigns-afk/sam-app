@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v6.72)
+       UNIFIED HERO (v6.73)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4647,7 +4647,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v6.72
+       CINEMATIC MEET SAM — v6.73
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5097,7 +5097,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v6.72
+       SAM GUIDED TOUR SPLASH — v6.73
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5398,10 +5398,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.72</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.73</div>
 
 
-  <!-- ── UNIFIED HERO v6.72 ── -->
+  <!-- ── UNIFIED HERO v6.73 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7522,7 +7522,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v6.72 ──
+// ── RUN TRACKING v6.73 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -8861,7 +8861,11 @@ function doRestoreSession() {
     // Re-populate brand inputs
     const bn = document.getElementById('brandName');
     const bh = document.getElementById('brandHandle');
-    if (bn && WS.brandName) bn.value = WS.brandName;
+    if (bn && WS.brandName) { bn.value = WS.brandName; }
+    // Also pre-fill from MS learned context
+    if (bn && !bn.value && window._msLearnedContext && window._msLearnedContext.name) {
+      bn.value = window._msLearnedContext.name;
+    }
     if (bh && WS.brandHandle) bh.value = WS.brandHandle;
     if (typeof updateWizardHeader === 'function') updateWizardHeader();
   } catch(e) { console.error('Restore failed:', e); }
@@ -9093,7 +9097,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v6.72
+  // CINEMATIC MEET SAM — v6.73
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -9661,15 +9665,35 @@ Rules:
       .replace(/\*\*(.+?)\*\*/g, '$1')
       .trim();
     const lines = cleaned.split('\n').filter(l => l.trim());
-    let traitsLine = '';
+
+    // NEW FORMAT: numbered list "1. trait" or "1) trait"
+    const numberedTraits = [];
     let confirmLine = '';
     for (const line of lines) {
       const l = line.trim();
-      if (l.toLowerCase().startsWith('you\'re') || l.toLowerCase().startsWith('you are')) traitsLine = l;
-      else if (l.toLowerCase().startsWith('i\'ve got')) confirmLine = l;
+      const numbered = l.match(/^\d+[\.\)\:]\s+(.+)/);
+      if (numbered) {
+        numberedTraits.push(numbered[1].trim());
+      } else if (l.toLowerCase().startsWith("i've got") || l.toLowerCase().startsWith("ive got")) {
+        confirmLine = l;
+      }
+    }
+
+    // If numbered format found, use it
+    if (numberedTraits.length > 0) {
+      if (!confirmLine) confirmLine = "I've got you — everything I build is going to sound like YOU wrote it, not a robot.";
+      return { traits: numberedTraits, confirm: confirmLine };
+    }
+
+    // FALLBACK: old "You're X. You Y." format
+    let traitsLine = '';
+    for (const line of lines) {
+      const l = line.trim();
+      if (l.toLowerCase().startsWith("you're") || l.toLowerCase().startsWith("you are")) traitsLine = l;
+      else if (l.toLowerCase().startsWith("i've got")) confirmLine = l;
     }
     if (!traitsLine) traitsLine = lines[0] || profile;
-    if (!confirmLine) confirmLine = lines[1] || "I've got you — everything I build is going to sound like YOU wrote it, not a robot.";
+    if (!confirmLine) confirmLine = "I've got you — everything I build is going to sound like YOU wrote it, not a robot.";
     const traitParts = traitsLine.split(/\.\s+(?=You\s)/i).map(s => s.trim().replace(/\.$/, '')).filter(Boolean);
     return { traits: traitParts.length > 1 ? traitParts : [traitsLine], confirm: confirmLine };
   }
@@ -10053,12 +10077,58 @@ Rules:
     }, 80);
   }
 
+  function meetSamExtractContext() {
+    // Extract everything SAM can infer from the conversation
+    const story = MS.storyRaw || '';
+    const ctx = {};
+
+    // Extract name — look for "I'm [Name]" or "my name is [Name]"
+    const nameMatch = story.match(/(?:i'm|i am|my name is|call me)\s+([A-Z][a-z]+)/i);
+    if (nameMatch) ctx.name = nameMatch[1];
+
+    // Extract series name — quoted or "called X" or "series called X"
+    const seriesMatch = story.match(/(?:series|show|called|named)\s+["\'"]?([A-Z][\w\s]+(?:to[\w\s]+)?)["\'"]?/i);
+    if (seriesMatch) ctx.series = seriesMatch[1].trim();
+
+    // Extract platform mentions
+    const platformKeywords = {
+      youtube: 'YouTube', instagram: 'Instagram', tiktok: 'TikTok',
+      facebook: 'Facebook', pinterest: 'Pinterest', twitter: 'Twitter', x: 'X'
+    };
+    ctx.platforms = [];
+    const storyLower = story.toLowerCase();
+    for (const [key, val] of Object.entries(platformKeywords)) {
+      if (storyLower.includes(key)) ctx.platforms.push(val);
+    }
+
+    // Extract niche/topic
+    const nicheMatch = story.match(/(?:posting about|documenting|content about|renovating|renovation|remodel|cottage|house|home|builder|contractor|diy|travel|food|fitness|coach|business)/i);
+    if (nicheMatch) ctx.niche = nicheMatch[0];
+
+    // Extract creator type hints
+    if (story.match(/self.taught|not a contractor|diy|builder|maker/i)) ctx.creatorType = 'personal';
+    if (story.match(/coach|coaching|clients|course/i)) ctx.creatorType = 'coach';
+    if (story.match(/business|product|service|sell/i)) ctx.creatorType = 'business';
+
+    return ctx;
+  }
+
   function meetSamHandoffExecute() {
+    // Extract everything SAM learned from the conversation
+    const learned = meetSamExtractContext();
+
     // Store what SAM learned into WS
     WS.storyRaw = MS.storyRaw || '';
-    WS.platforms = MS.platform ? [MS.platform] : [];
+    WS.platforms = learned.platforms.length ? learned.platforms : (MS.platform ? [MS.platform] : []);
     WS.audienceHint = MS.audience || '';
     WS.toneHint = MS.tone || '';
+    if (learned.name && !WS.brandName) WS.brandName = learned.name;
+    if (learned.creatorType && !WS.creatorType) WS.creatorType = learned.creatorType;
+    if (learned.series) WS.seriesName = learned.series;
+
+    // Store learned context for wizard toast
+    window._msLearnedContext = learned;
+
     // Preserve voice calibration if set
     if (WS.voiceProfile) WS.voiceCalibrated = true;
 
@@ -10085,6 +10155,37 @@ Rules:
   function meetSamPreFillWizard() {
     const story = MS.storyRaw || '';
     if (!story) return;
+
+    // Show "I learned a lot" toast
+    const learned = window._msLearnedContext || {};
+    const prefilledItems = [];
+    if (learned.name) prefilledItems.push('your name');
+    if (learned.platforms && learned.platforms.length) prefilledItems.push('your platforms');
+    if (learned.creatorType) prefilledItems.push('your creator type');
+    if (learned.series) prefilledItems.push('your series');
+
+    const toast = document.createElement('div');
+    toast.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-10px);background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(56,189,248,0.1));border:1px solid rgba(167,139,250,0.3);border-radius:14px;padding:14px 20px;max-width:480px;width:90%;z-index:9999;opacity:0;transition:all 0.5s cubic-bezier(0.34,1.2,0.64,1);box-shadow:0 8px 32px rgba(0,0,0,0.4);';
+    toast.innerHTML = `
+      <div style="display:flex;align-items:flex-start;gap:12px;">
+        <div style="font-size:20px;flex-shrink:0;">🧠</div>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:#F0ECFF;margin-bottom:4px;">I picked up a lot from our conversation.</div>
+          <div style="font-size:12px;color:rgba(240,236,255,0.6);line-height:1.6;">${prefilledItems.length ? 'I've pre-loaded ' + prefilledItems.join(', ') + ' for you. ' : ''}Make sure to fill out each page fully — the more you give me, the more precisely I can build for you.</div>
+        </div>
+        <button onclick="this.parentElement.parentElement.remove()" style="background:none;border:none;color:rgba(240,236,255,0.3);cursor:pointer;font-size:16px;flex-shrink:0;padding:0;line-height:1;">✕</button>
+      </div>
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateX(-50%) translateY(0)';
+    }, 600);
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(-50%) translateY(-10px)';
+      setTimeout(() => toast.remove(), 500);
+    }, 6000);
 
     // Auto-select step 1: "I have a real moment to share" (moment)
     const momentBtn = document.querySelector('#wiz1choices .wizard-choice[data-value="moment"]');
@@ -13183,7 +13284,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.72</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.73</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -14141,9 +14242,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v6.72
+// SOFT POPUP v6.73
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v6.72
+// soft popup system removed v6.73
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -14152,7 +14253,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v6.72
+  // SAM GUIDED TOUR — v6.73
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
