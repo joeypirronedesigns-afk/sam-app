@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v6.64)
+       UNIFIED HERO (v6.65)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -377,6 +377,222 @@
     .grad-purple { background: linear-gradient(135deg, #A78BFA, #818CF8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .grad-cyan { background: linear-gradient(135deg, #67E8F9, #38BDF8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .grad-green { background: linear-gradient(135deg, #6EE7B7, #34D399); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+
+    /* ── PERSISTENT SAM PANEL ── */
+    #persistentSAMFab {
+      display: none;
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9000;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+    .psam-fab-btn {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6D28D9, #A78BFA);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 4px 24px rgba(109,40,217,0.5);
+      transition: all 0.2s;
+      position: relative;
+    }
+    .psam-fab-btn:hover { transform: scale(1.08); box-shadow: 0 6px 32px rgba(109,40,217,0.7); }
+    .psam-fab-dot {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #34D399;
+      border: 2px solid var(--bg);
+    }
+    .psam-fab-label {
+      background: rgba(13,11,22,0.95);
+      border: 1px solid rgba(167,139,250,0.3);
+      border-radius: 50px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .psam-fab-label:hover { border-color: rgba(167,139,250,0.6); }
+    #persistentSAMPanel {
+      position: fixed;
+      bottom: 90px;
+      right: 24px;
+      width: 360px;
+      max-width: calc(100vw - 32px);
+      height: 520px;
+      max-height: calc(100vh - 120px);
+      background: rgba(13,11,22,0.97);
+      border: 1px solid rgba(167,139,250,0.25);
+      border-radius: 20px;
+      box-shadow: 0 8px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(167,139,250,0.1);
+      display: none;
+      flex-direction: column;
+      z-index: 8999;
+      overflow: hidden;
+      transform: translateY(16px);
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    #persistentSAMPanel.open {
+      display: flex;
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .psam-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      flex-shrink: 0;
+    }
+    .psam-header-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #6D28D9, #A78BFA);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .psam-header-info { flex: 1; }
+    .psam-header-name { font-size: 13px; font-weight: 700; color: var(--text); }
+    .psam-header-status { font-size: 11px; color: #34D399; display: flex; align-items: center; gap: 4px; }
+    .psam-header-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #34D399; display: inline-block; }
+    .psam-header-actions { display: flex; gap: 6px; }
+    .psam-header-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: rgba(240,236,255,0.35);
+      font-size: 13px;
+      padding: 4px 6px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .psam-header-btn:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+    .psam-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 14px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      scroll-behavior: smooth;
+    }
+    .psam-messages::-webkit-scrollbar { width: 3px; }
+    .psam-messages::-webkit-scrollbar-track { background: transparent; }
+    .psam-messages::-webkit-scrollbar-thumb { background: rgba(167,139,250,0.2); border-radius: 3px; }
+    .psam-msg { display: flex; flex-direction: column; gap: 4px; }
+    .psam-sam { align-items: flex-start; }
+    .psam-user { align-items: flex-end; }
+    .psam-bubble {
+      max-width: 88%;
+      padding: 10px 13px;
+      border-radius: 14px;
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--text);
+    }
+    .psam-sam .psam-bubble {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 4px 14px 14px 14px;
+    }
+    .psam-user-bubble {
+      background: linear-gradient(135deg, rgba(109,40,217,0.35), rgba(167,139,250,0.2));
+      border: 1px solid rgba(167,139,250,0.25);
+      border-radius: 14px 4px 14px 14px;
+    }
+    .psam-tool-btn {
+      margin-top: 6px;
+      padding: 7px 13px;
+      background: linear-gradient(135deg, rgba(109,40,217,0.2), rgba(244,114,182,0.1));
+      border: 1px solid rgba(167,139,250,0.35);
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #A78BFA;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .psam-tool-btn:hover { background: linear-gradient(135deg, rgba(109,40,217,0.35), rgba(244,114,182,0.2)); border-color: rgba(167,139,250,0.6); color: #fff; }
+    .psam-typing {
+      display: none;
+      align-items: center;
+      gap: 4px;
+      padding: 0 14px 8px;
+      flex-shrink: 0;
+    }
+    .psam-typing span {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: rgba(167,139,250,0.5);
+      animation: psamPulse 1.2s ease infinite;
+    }
+    .psam-typing span:nth-child(2) { animation-delay: 0.2s; }
+    .psam-typing span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes psamPulse { 0%,80%,100% { transform: scale(0.6); opacity: 0.4; } 40% { transform: scale(1); opacity: 1; } }
+    .psam-input-row {
+      display: flex;
+      gap: 8px;
+      padding: 10px 12px 12px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      flex-shrink: 0;
+    }
+    .psam-input {
+      flex: 1;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 50px;
+      padding: 9px 14px;
+      font-size: 13px;
+      color: var(--text);
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .psam-input:focus { border-color: rgba(167,139,250,0.4); }
+    .psam-input::placeholder { color: rgba(240,236,255,0.3); }
+    .psam-send-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6D28D9, #A78BFA);
+      border: none;
+      cursor: pointer;
+      color: #fff;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .psam-send-btn:hover { transform: scale(1.08); }
+    .psam-send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+    @media(max-width:480px) {
+      #persistentSAMPanel { right: 12px; bottom: 80px; width: calc(100vw - 24px); }
+      #persistentSAMFab { right: 12px; bottom: 16px; }
+    }
 
     /* ── TOOL SECTION ── */
     .tool-section {
@@ -4323,7 +4539,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v6.64
+       CINEMATIC MEET SAM — v6.65
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4773,7 +4989,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v6.64
+       SAM GUIDED TOUR SPLASH — v6.65
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5074,10 +5290,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.64</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.65</div>
 
 
-  <!-- ── UNIFIED HERO v6.64 ── -->
+  <!-- ── UNIFIED HERO v6.65 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7198,7 +7414,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v6.64 ──
+// ── RUN TRACKING v6.65 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -7476,6 +7692,233 @@ async function sendChatMessage() {
   }
 }
 
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PERSISTENT SAM — Always-on creative partner
+// ══════════════════════════════════════════════════════════════════════════════
+
+const SAM_PERSISTENT_HISTORY_KEY = 'sam-persistent-history';
+const SAM_PERSISTENT_OPEN_KEY = 'sam-persistent-open';
+let persistentSAMOpen = false;
+let persistentSAMHistory = [];
+
+function getSAMPersistentPrompt() {
+  const state = getTrialState();
+  const name = state.name || 'there';
+  const voiceProfile = localStorage.getItem('sam-voice-profile') || '';
+  const s = typeof getSetup === 'function' ? getSetup() : {};
+
+  return `You are SAM — not a chatbot, not a support assistant. You are ${name}'s personal creative director. You know how they think, how they talk, and everything you build sounds like THEM on their best day — not AI slop.
+
+WHO YOU ARE TALKING TO:
+Name: ${name}
+Niche/focus: ${s.niche || 'a creator building their audience'}
+${voiceProfile ? 'Their voice DNA: ' + voiceProfile.slice(0, 400) : ''}
+
+YOUR ROLE:
+You are their answer to EVERYTHING. Stuck on what to post? Talk to SAM. Want to spitball ideas? SAM. Need a hook that actually sounds like them? SAM. You are always here, always paying attention, always building a sharper picture of how they communicate.
+
+Every conversation makes you better at sounding like them. Notice how they write. Notice their rhythm, their words, their energy. The goal: when you build something for them, their audience should think THEY wrote it — not a robot.
+
+THE 5 TOOLS YOU CAN TRIGGER:
+- The Pulse — real moment → hook + full script + platform captions. Say "want me to run The Pulse on this?" when they share a story or moment.
+- The Spark — niche → 5 specific content ideas. Say "want me to spark some ideas?" when they seem stuck or need direction.
+- The Blueprint — niche + platforms → full 7-day content calendar. Say "want me to build your content week?" when they talk about planning.
+- The Vision — → one bold unique video concept. Say "want me to build a Vision concept?" when they want something different or bold.
+- The Lens — photo or analytics screenshot → thumbnail strategy or analytics breakdown. Say "want me to run The Lens on that?" when they mention thumbnails or analytics.
+
+PERSONALITY:
+Direct. Warm. Specific. Never fluffy. Talk like a trusted creative director who genuinely gives a damn — not a support bot reading from a script. Use their name occasionally. Keep responses tight — 2-4 sentences unless they need more. Match their energy. If they write casually, you write casually. If they write with urgency, you match it.
+
+THE ENEMY:
+Smooth, balanced, professionally warm AI voice. Words like "journey", "authentic", "powerful story", "resonate". Generic advice that could apply to anyone. You are specific to THEM, always.
+
+TOOL TRIGGERING:
+When you detect they want to create something specific, end your message with a tool suggestion on its own line formatted exactly like:
+[TRIGGER:pulse] or [TRIGGER:spark] or [TRIGGER:blueprint] or [TRIGGER:vision] or [TRIGGER:lens]
+Only suggest one tool per message. Only trigger when genuinely relevant.`;
+}
+
+function loadPersistentHistory() {
+  try {
+    return JSON.parse(localStorage.getItem(SAM_PERSISTENT_HISTORY_KEY) || '[]');
+  } catch { return []; }
+}
+
+function savePersistentHistory(history) {
+  try {
+    // Keep last 40 messages
+    const trimmed = history.slice(-40);
+    localStorage.setItem(SAM_PERSISTENT_HISTORY_KEY, JSON.stringify(trimmed));
+  } catch {}
+}
+
+function initPersistentSAM() {
+  const panel = document.getElementById('persistentSAMPanel');
+  const fab = document.getElementById('persistentSAMFab');
+  if (!panel || !fab) return;
+
+  fab.style.display = 'flex';
+
+  // Load history
+  persistentSAMHistory = loadPersistentHistory();
+
+  // Restore messages to UI
+  if (persistentSAMHistory.length > 0) {
+    persistentSAMHistory.forEach(msg => {
+      addPersistentMessage(msg.role, msg.content, false);
+    });
+  } else {
+    // First time — send personalized opener
+    const state = getTrialState();
+    const name = state.name ? ', ' + state.name.split(' ')[0] : '';
+    const opener = "Hey" + name + " — I\'m SAM, your creative director. I\'m here anytime you get stuck, want to spitball ideas, need a hook, or just want to think through your next move. The more we talk, the more I sound like you. What\'s on your mind?";
+    addPersistentMessage('sam', opener, true);
+  }
+
+  // Restore open state
+  if (localStorage.getItem(SAM_PERSISTENT_OPEN_KEY) === 'true') {
+    openPersistentSAM();
+  }
+}
+
+function togglePersistentSAM() {
+  persistentSAMOpen ? closePersistentSAM() : openPersistentSAM();
+}
+
+function openPersistentSAM() {
+  persistentSAMOpen = true;
+  localStorage.setItem(SAM_PERSISTENT_OPEN_KEY, 'true');
+  document.getElementById('persistentSAMPanel').classList.add('open');
+  setTimeout(() => {
+    const input = document.getElementById('persistentSAMInput');
+    if (input) input.focus();
+    scrollPersistentToBottom();
+  }, 100);
+}
+
+function closePersistentSAM() {
+  persistentSAMOpen = false;
+  localStorage.setItem(SAM_PERSISTENT_OPEN_KEY, 'false');
+  document.getElementById('persistentSAMPanel').classList.remove('open');
+}
+
+function addPersistentMessage(role, text, save) {
+  const msgs = document.getElementById('persistentSAMMessages');
+  if (!msgs) return;
+
+  // Strip tool trigger tag from display
+  const triggerMatch = text.match(/\[TRIGGER:(\w+)\]/);
+  const cleanText = text.replace(/\[TRIGGER:\w+\]/g, '').trim();
+
+  const div = document.createElement('div');
+  div.className = 'psam-msg ' + (role === 'sam' ? 'psam-sam' : 'psam-user');
+
+  if (role === 'sam') {
+    div.innerHTML = '<div class="psam-bubble">' + mdToHtml(cleanText) + '</div>';
+    // Add tool trigger button if detected
+    if (triggerMatch) {
+      const tool = triggerMatch[1];
+      const toolLabels = {
+        pulse: '🔴 Run The Pulse on this',
+        spark: '🟣 Spark some ideas',
+        blueprint: '🔵 Build my content week',
+        vision: '🟢 Build a Vision concept',
+        lens: '🟡 Run The Lens'
+      };
+      const btn = document.createElement('button');
+      btn.className = 'psam-tool-btn';
+      btn.textContent = toolLabels[tool] || 'Run ' + tool;
+      btn.onclick = () => {
+        closePersistentSAM();
+        setTimeout(() => closeEcosystemAndOpenTool(tool), 200);
+      };
+      div.appendChild(btn);
+    }
+  } else {
+    div.innerHTML = '<div class="psam-bubble psam-user-bubble">' + cleanText.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>';
+  }
+
+  msgs.appendChild(div);
+
+  if (save) {
+    persistentSAMHistory.push({ role: role === 'sam' ? 'assistant' : 'user', content: text });
+    savePersistentHistory(persistentSAMHistory);
+  }
+
+  scrollPersistentToBottom();
+}
+
+function scrollPersistentToBottom() {
+  const msgs = document.getElementById('persistentSAMMessages');
+  if (msgs) setTimeout(() => msgs.scrollTop = msgs.scrollHeight, 50);
+}
+
+function handlePersistentKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendPersistentMessage(); }
+}
+
+async function sendPersistentMessage() {
+  const input = document.getElementById('persistentSAMInput');
+  const btn = document.getElementById('persistentSAMSend');
+  const text = input.value.trim();
+  if (!text) return;
+
+  input.value = '';
+  addPersistentMessage('user', text, true);
+
+  // Show typing
+  const typing = document.getElementById('persistentSAMTyping');
+  if (typing) typing.style.display = 'flex';
+  if (btn) btn.disabled = true;
+  scrollPersistentToBottom();
+
+  // Build messages — last 20 for context
+  const messages = persistentSAMHistory.slice(-20).map(m => ({
+    role: m.role,
+    content: m.content
+  }));
+
+  try {
+    const r = await fetch('/api/sam', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        mode: 'chat',
+        messages: messages,
+        systemPrompt: getSAMPersistentPrompt()
+      })
+    });
+
+    if (typing) typing.style.display = 'none';
+    if (btn) btn.disabled = false;
+
+    if (!r.ok) {
+      addPersistentMessage('sam', "One sec — hit me again!", true);
+      return;
+    }
+
+    const result = await readStream(r);
+    const reply = result?.reply || result?.content || result?.text || "Try me again!";
+    addPersistentMessage('sam', reply, true);
+
+  } catch(e) {
+    if (typing) typing.style.display = 'none';
+    if (btn) btn.disabled = false;
+    addPersistentMessage('sam', "One sec — try again!", true);
+  }
+}
+
+function clearPersistentHistory() {
+  persistentSAMHistory = [];
+  localStorage.removeItem(SAM_PERSISTENT_HISTORY_KEY);
+  const msgs = document.getElementById('persistentSAMMessages');
+  if (msgs) msgs.innerHTML = '';
+  const state = getTrialState();
+  const name = state.name ? ', ' + state.name.split(' ')[0] : '';
+  addPersistentMessage('sam', "Fresh start. What are we building" + name + "?", true);
+}
 
 // ══ SAM IDEAS BANK ══
 const IB={currentFilter:'all',currentStatusFilter:null,load(){try{return JSON.parse(localStorage.getItem('sam-ideas')||'[]')}catch{return[]}},save(ideas){try{localStorage.setItem('sam-ideas',JSON.stringify(ideas))}catch{}this.updateNavBadge()},add(idea){const ideas=this.load();const entry={id:Date.now()+'_'+Math.random().toString(36).slice(2,7),text:idea.text||'',type:idea.type||'pulse',subtype:idea.subtype||'',platform:idea.platform||'',status:'saved',date:new Date().toISOString()};ideas.unshift(entry);this.save(ideas);this.updateNavBadge();showIbToast('Saved to Ideas');return entry.id},updateStatus(id,status){const ideas=this.load();const idx=ideas.findIndex(i=>i.id===id);if(idx!==-1){ideas[idx].status=status;this.save(ideas)}},delete(id){this.save(this.load().filter(i=>i.id!==id));renderIdeasList();this.updateNavBadge()},updateNavBadge(){const count=this.load().filter(i=>i.status!=='posted').length;const b=document.getElementById('ideasNavBadge');if(b){b.textContent=count>9?'9+':count;b.classList.toggle('show',count>0)}const l=document.getElementById('ideasCountLabel');if(l){const t=this.load().length;l.textContent=t===0?'0 saved':t+' idea'+(t!==1?'s':'')}},getFiltered(){let ideas=this.load();const q=(document.getElementById('ideasSearchInput')?.value||'').trim().toLowerCase();if(q)ideas=ideas.filter(i=>(i.text||'').toLowerCase().includes(q)||(i.platform||'').toLowerCase().includes(q)||(i.subtype||'').toLowerCase().includes(q));if(this.currentFilter!=='all')ideas=ideas.filter(i=>i.type===this.currentFilter);if(this.currentStatusFilter)ideas=ideas.filter(i=>i.status===this.currentStatusFilter);return ideas}};
@@ -8114,7 +8557,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v6.64
+  // CINEMATIC MEET SAM — v6.65
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -11938,6 +12381,36 @@ function openWizardFromNav() {
   </div>
 </div>
 
+
+<!-- ── PERSISTENT SAM PANEL ── -->
+<div id="persistentSAMFab">
+  <div id="persistentSAMPanel">
+    <div class="psam-header">
+      <div class="psam-header-avatar">🤖</div>
+      <div class="psam-header-info">
+        <div class="psam-header-name">SAM</div>
+        <div class="psam-header-status">Your creative director</div>
+      </div>
+      <div class="psam-header-actions">
+        <button class="psam-header-btn" onclick="clearPersistentHistory()" title="New conversation">↺</button>
+        <button class="psam-header-btn" onclick="closePersistentSAM()" title="Close">✕</button>
+      </div>
+    </div>
+    <div class="psam-messages" id="persistentSAMMessages"></div>
+    <div class="psam-typing" id="persistentSAMTyping">
+      <span></span><span></span><span></span>
+    </div>
+    <div class="psam-input-row">
+      <input class="psam-input" id="persistentSAMInput" placeholder="Talk to SAM..." onkeydown="handlePersistentKey(event)" />
+      <button class="psam-send-btn" id="persistentSAMSend" onclick="sendPersistentMessage()">➤</button>
+    </div>
+  </div>
+  <button class="psam-fab-btn" onclick="togglePersistentSAM()" title="Talk with SAM">
+    🤖
+    <div class="psam-fab-dot"></div>
+  </button>
+</div>
+
 <!-- ── SAM CHATBOT ── -->
 <div class="chat-fab" id="chatFab">
   <div class="chat-hint" id="chatHint" onclick="openChat()">
@@ -11989,7 +12462,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.64</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.65</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -12948,9 +13421,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v6.64
+// SOFT POPUP v6.65
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v6.64
+// soft popup system removed v6.65
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -12959,7 +13432,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v6.64
+  // SAM GUIDED TOUR — v6.65
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
