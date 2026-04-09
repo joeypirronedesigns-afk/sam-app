@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v6.42)
+       UNIFIED HERO (v6.43)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4315,7 +4315,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v6.42
+       CINEMATIC MEET SAM — v6.43
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4765,7 +4765,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v6.42
+       SAM GUIDED TOUR SPLASH — v6.43
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5066,10 +5066,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.42</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.43</div>
 
 
-  <!-- ── UNIFIED HERO v6.42 ── -->
+  <!-- ── UNIFIED HERO v6.43 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7150,7 +7150,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v6.42 ──
+// ── RUN TRACKING v6.43 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -7651,6 +7651,14 @@ function loadWizardState() {
     const saved = JSON.parse(localStorage.getItem('sam-wizard-state') || '{}');
     Object.assign(WS, saved);
   } catch(e) {}
+  // Restore voice profile from dedicated key if not already in WS
+  try {
+    if (!WS.voiceProfile) {
+      const vp = localStorage.getItem('sam-voice-profile');
+      const vc = localStorage.getItem('sam-voice-calibrated');
+      if (vp) { WS.voiceProfile = vp; WS.voiceCalibrated = vc === 'true'; }
+    }
+  } catch(e) {}
 }
 
 function saveWizardState() {
@@ -7956,7 +7964,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v6.42
+  // CINEMATIC MEET SAM — v6.43
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -8469,6 +8477,11 @@ Rules:
       if (typeof WS !== 'undefined') {
         WS.voiceProfile = reply;
         WS.voiceCalibrated = true;
+        // Persist voice profile independently so it survives across sessions
+        try {
+          localStorage.setItem('sam-voice-profile', reply);
+          localStorage.setItem('sam-voice-calibrated', 'true');
+        } catch(e) {}
         if (typeof saveWizardState === 'function') saveWizardState();
       }
 
@@ -8641,6 +8654,7 @@ Rules:
     if (goBtnWrap) { goBtnWrap.classList.remove('revealed'); goBtnWrap.style.display = 'none'; }
     // Reset voice state
     if (typeof WS !== 'undefined') { WS.voiceProfile = null; WS.voiceCalibrated = false; WS.voiceSample = null; }
+    try { localStorage.removeItem('sam-voice-profile'); localStorage.removeItem('sam-voice-calibrated'); } catch(e) {}
     // Rebuild the calibration card
     const card = document.getElementById('msVoiceCalib');
     if (!card) return;
@@ -8705,6 +8719,13 @@ Rules:
 
   function meetSamInit() {
     // SAM Voice auto-on removed — Pro feature coming soon
+    // Restore voice profile from localStorage if available
+    try {
+      if (!WS.voiceProfile) {
+        const vp = localStorage.getItem('sam-voice-profile');
+        if (vp) { WS.voiceProfile = vp; WS.voiceCalibrated = true; }
+      }
+    } catch(e) {}
     // Reset state
     const bubble = document.getElementById('msOpeningBubble');
     const choice = document.getElementById('msPathChoice');
@@ -11817,7 +11838,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.42</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.43</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -12762,9 +12783,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v6.42
+// SOFT POPUP v6.43
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v6.42
+// soft popup system removed v6.43
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -12773,7 +12794,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v6.42
+  // SAM GUIDED TOUR — v6.43
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
