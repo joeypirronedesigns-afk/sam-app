@@ -40,7 +40,7 @@ module.exports = async function handler(req, res) {
 
       // Generate magic link token
       const magicToken = crypto.randomBytes(32).toString('hex');
-      await kv.set(`session:${magicToken}`, { email: email.toLowerCase() }, { ex: 900 }); // 15 min expiry
+      await kv.set(`session:${magicToken}`, { email: email.toLowerCase() }, { ex: 3600 }); // 60 min expiry
 
       // Send magic link email
       if (process.env.RESEND_API_KEY) {
