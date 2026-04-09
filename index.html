@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v6.91)
+       UNIFIED HERO (v6.92)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -431,29 +431,40 @@
     .psam-fab-label:hover { border-color: rgba(167,139,250,0.6); }
     #persistentSAMPanel {
       position: fixed;
-      bottom: 90px;
-      right: 24px;
-      width: 360px;
-      max-width: calc(100vw - 32px);
-      height: 520px;
-      max-height: calc(100vh - 120px);
-      background: rgba(13,11,22,0.97);
-      border: 1px solid rgba(167,139,250,0.25);
-      border-radius: 20px;
-      box-shadow: 0 8px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(167,139,250,0.1);
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 480px;
+      max-width: 100vw;
+      height: 100vh;
+      background: rgba(9,8,15,0.99);
+      border-left: 1px solid rgba(167,139,250,0.2);
+      border-radius: 0;
+      box-shadow: -8px 0 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(167,139,250,0.08);
       display: none;
       flex-direction: column;
       z-index: 8999;
       overflow: hidden;
-      transform: translateY(16px);
+      transform: translateX(100%);
       opacity: 0;
-      transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+      transition: transform 0.35s cubic-bezier(0.34,1.1,0.64,1), opacity 0.25s ease;
     }
     #persistentSAMPanel.open {
       display: flex;
-      transform: translateY(0);
+      transform: translateX(0);
       opacity: 1;
     }
+    #persistentSAMBackdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 8998;
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+      animation: fade-in 0.25s ease;
+    }
+    #persistentSAMBackdrop.open { display: block; }
     .psam-header {
       display: flex;
       align-items: center;
@@ -4647,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v6.91
+       CINEMATIC MEET SAM — v6.92
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5097,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v6.91
+       SAM GUIDED TOUR SPLASH — v6.92
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5383,10 +5394,9 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
       <div class="trial-nav-dot"></div>
       <span id="trialBadgeText">48hrs free</span>
     </div>
-    <button class="nav-setup-btn" onclick="openWizardPage()" style="background:linear-gradient(135deg,rgba(109,40,217,0.2),rgba(244,114,182,0.1));border-color:rgba(167,139,250,0.3);color:var(--text);display:none;" id="navWizardBtn">
-      ✦ Talk with SAM?
-    </button>
-    <button class="ideas-nav-btn" onclick="if(typeof openIdeasPanel==='function')openIdeasPanel();" style="display:inline-flex;" id="ideasNavBtn">💡 My Ideas<span class="ideas-count-badge" id="ideasNavBadge">0</span></button>
+    <button onclick="openMeetSAMOverlay()" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:#F0ECFF;background:linear-gradient(135deg,rgba(109,40,217,0.3),rgba(244,114,182,0.15));border:1px solid rgba(167,139,250,0.4);border-radius:50px;padding:7px 16px;cursor:pointer;transition:all 0.2s;font-family:'Sora',sans-serif;white-space:nowrap;" onmouseover="this.style.background='linear-gradient(135deg,rgba(109,40,217,0.5),rgba(244,114,182,0.25))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(109,40,217,0.3),rgba(244,114,182,0.15))'">✦ Talk with SAM</button>
+    <button id="navStoryEngineBtn" onclick="openWizardPage()" style="display:none;align-items:center;gap:5px;font-size:12px;font-weight:700;color:#A78BFA;background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.25);border-radius:50px;padding:7px 16px;cursor:pointer;transition:all 0.2s;font-family:'Sora',sans-serif;white-space:nowrap;" onmouseover="this.style.background='rgba(167,139,250,0.15)'" onmouseout="this.style.background='rgba(167,139,250,0.08)'">📖 Story Engine</button>
+    <button class="ideas-nav-btn" onclick="if(typeof openIdeasPanel==='function')openIdeasPanel();" style="display:inline-flex;" id="ideasNavBtn">💜 My Ideas<span class="ideas-count-badge" id="ideasNavBadge">0</span></button>
     <button class="nav-setup-btn" onclick="openSetup()" style="display:none;" id="aboutMeNavBtn">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
       About me
@@ -5398,10 +5408,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.91</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.92</div>
 
 
-  <!-- ── UNIFIED HERO v6.91 ── -->
+  <!-- ── UNIFIED HERO v6.92 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7571,7 +7581,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v6.91 ──
+// ── RUN TRACKING v6.92 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -9082,7 +9092,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v6.91
+  // CINEMATIC MEET SAM — v6.92
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -10540,6 +10550,58 @@ Rules: Max 3 sentences total. Never use bullet points. Never say "I can see that
       if (typeof openWizardPage === 'function') openWizardPage(window._trialExpired);
     }
   }, 800);
+
+// ── OPEN MEET SAM FROM ANYWHERE ──────────────────────────────────────────────
+function openMeetSAMOverlay() {
+  // Open wizard page and land on Meet SAM entry
+  document.getElementById('wizardPage').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  showWizardStep('entry');
+
+  // Load conversation history
+  setTimeout(() => {
+    if (typeof meetSamInit === 'function') meetSamInit();
+    
+    // Show Story Engine btn in nav if wizard has been started
+    const hasWizard = localStorage.getItem('sam_session_v2') || localStorage.getItem('samFirstRunDone');
+    const storyBtn = document.getElementById('navStoryEngineBtn');
+    if (storyBtn && hasWizard) storyBtn.style.display = 'inline-flex';
+
+    // Smart returning greeting
+    const history = MS && MS.messages && MS.messages.length > 0;
+    if (history && typeof addMeetSamBubble === 'function') {
+      const state = getTrialState();
+      const name = state.name ? state.name.split(' ')[0] : null;
+      const greetings = name ? [
+        name + '! Your playbook is just sitting there. You filming yet or still in the chaos?',
+        'Hey ' + name + ' — back again. Good. What are we building today?',
+        'What's the move today ' + name + '? Refine something or start something new?',
+        name + '! Missed you. What's happening?',
+        'Back again. Good. What broke today ' + name + '?'
+      ] : [
+        'Back again. Good. What are we building?',
+        'Hey — missed you. What's the move today?',
+        'Welcome back. What are we making?'
+      ];
+      const greeting = greetings[Math.floor(Math.random() * greetings.length)];
+      setTimeout(() => {
+        if (typeof addMeetSamBubble === 'function') addMeetSamBubble(greeting, true);
+      }, 600);
+    }
+  }, 100);
+}
+
+// Show Story Engine btn when wizard has been used
+(function initStoryEngineBtn() {
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+      const hasWizard = localStorage.getItem('sam_session_v2') || localStorage.getItem('samFirstRunDone');
+      const storyBtn = document.getElementById('navStoryEngineBtn');
+      if (storyBtn && hasWizard) storyBtn.style.display = 'inline-flex';
+    }, 500);
+  });
+})();
+
 
 function closeWizard() {
   document.getElementById('wizardPage').classList.remove('open');
@@ -13405,7 +13467,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.91</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.92</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -13447,6 +13509,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
         </span>
         <span id="wizardDefaultLabel">Building your story</span>
         <button onclick="openEcosystemOverlay()" style="display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#A78BFA;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);border-radius:20px;padding:3px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.background='rgba(167,139,250,0.2)'" onmouseout="this.style.background='rgba(167,139,250,0.1)'">⇄ Switch tools</button>
+        <button onclick="closeWizard();openMeetSAMOverlay();" style="display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#F472B6;background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.25);border-radius:20px;padding:3px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.background='rgba(244,114,182,0.18)'" onmouseout="this.style.background='rgba(244,114,182,0.08)'">✦ Talk with SAM</button>
         <button id="voiceCalibBadge" onclick="showVoiceProfilePopover(this)" style="display:none;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#34D399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.25);border-radius:20px;padding:3px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.background='rgba(52,211,153,0.2)'" onmouseout="this.style.background='rgba(52,211,153,0.1)'">🎙 Voice locked in</button>
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
@@ -14363,9 +14426,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v6.91
+// SOFT POPUP v6.92
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v6.91
+// soft popup system removed v6.92
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -14374,7 +14437,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v6.91
+  // SAM GUIDED TOUR — v6.92
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
