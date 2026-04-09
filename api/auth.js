@@ -50,7 +50,7 @@ module.exports = async function handler(req, res) {
           body: JSON.stringify({
             from: 'Joey at SAM <joey@samforcreators.com>',
             to: [email],
-            subject: 'Your SAM login link — click to get back in',
+            subject: 'Here\'s your link to get back into SAM',
             html: `<div style="font-family:Arial;padding:40px 32px;background:#09080F;color:#F0ECFF;border-radius:12px;max-width:520px;margin:0 auto;">
               <h2 style="color:#A78BFA;">Welcome back.</h2>
               <p style="color:rgba(240,236,255,0.7);">Click the button below to sign back into SAM. This link expires in 15 minutes.</p>
