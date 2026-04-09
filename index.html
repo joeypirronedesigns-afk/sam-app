@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v6.54)
+       UNIFIED HERO (v6.55)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4323,7 +4323,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v6.54
+       CINEMATIC MEET SAM — v6.55
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4773,7 +4773,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v6.54
+       SAM GUIDED TOUR SPLASH — v6.55
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5074,10 +5074,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.54</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.55</div>
 
 
-  <!-- ── UNIFIED HERO v6.54 ── -->
+  <!-- ── UNIFIED HERO v6.55 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7175,7 +7175,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v6.54 ──
+// ── RUN TRACKING v6.55 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -7466,19 +7466,22 @@ function openIdeasPanel(){
 function closeIdeasPanel(){document.getElementById('ideasOverlay').classList.remove('open');document.getElementById('ideasPanel').classList.remove('open');document.body.style.overflow=''}
 function setIdeasFilter(f,btn){IB.currentFilter=f;document.querySelectorAll('.ideas-filter-btn[data-filter]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderIdeasList()}
 function setIdeasStatusFilter(s,btn){if(IB.currentStatusFilter===s){IB.currentStatusFilter=null;btn.classList.remove('active')}else{IB.currentStatusFilter=s;document.querySelectorAll('.ideas-filter-btn[data-sf]').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}renderIdeasList()}
-function renderIdeasList(){const list=document.getElementById('ideasList');if(!list)return;const ideas=IB.getFiltered();if(!ideas.length){const empty=IB.load().length===0;list.innerHTML='<div class="ideas-empty"><div class="ideas-empty-icon">'+(empty?'&#128161;':'&#128269;')+'</div><div class="ideas-empty-title">'+(empty?'No ideas saved yet':'Nothing matches')+'</div><div class="ideas-empty-sub">'+(empty?'Every time SAM generates a hook, script, or concept — tap Save to Ideas.':'Try a different search or clear your filters.')+'</div></div>';return}const sL={saved:'Saved',scripting:'Scripting',filmed:'Filmed',posted:'Posted'};const tL={pulse:'The Pulse',spark:'The Spark',wizard:'Playbook',vision:'The Vision',blueprint:'Blueprint',lens:'The Lens'};list.innerHTML=ideas.map(idea=>{const date=new Date(idea.date).toLocaleDateString('en-US',{month:'short',day:'numeric'});const sb=['saved','scripting','filmed','posted'].map(s=>'<button class="idea-status-btn'+(idea.status===s?' active-'+s:'')+'" onclick="ibUpdateStatus(\''+idea.id+'\',\''+s+'\',this)">'+sL[s]+'</button>').join('');const ul=idea.type==='wizard'?'Open playbook':idea.type==='vision'?'Script it':'Build this';const txt=(idea.text||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');const esc=(idea.text||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,'\\n').slice(0,300);return'<div class="idea-bank-card type-'+idea.type+'" id="ibc-'+idea.id+'"><div class="idea-bank-card-top"><div><span class="idea-bank-type-badge badge-'+idea.type+'">'+(tL[idea.type]||idea.type)+'</span>'+(idea.subtype?'<span style="font-size:10px;color:var(--text3);margin-left:6px;">'+idea.subtype+'</span>':'')+(idea.platform?'<span style="font-size:10px;color:var(--text3);margin-left:4px;">&#183; '+idea.platform+'</span>':'')+'</div><div class="idea-bank-card-actions"><button class="ib-action-btn" onclick="ibCopy(\''+esc+'\')" title="Copy">&#128203;</button><button class="ib-action-btn" onclick="ibUse(\''+idea.id+'\')" style="font-size:11px;font-weight:600;width:auto;padding:0 10px;color:var(--spark);">'+ul+' &#8594;</button><button class="ib-action-btn danger" onclick="ibDel(\''+idea.id+'\')" title="Delete">&#10005;</button></div></div><div class="idea-bank-text" id="ibt-'+idea.id+'" onclick="document.getElementById(\'ibt-'+idea.id+'\').classList.toggle(\'expanded\')">'+txt+'</div><div class="idea-bank-card-footer"><div class="idea-status-select">'+sb+'</div><div class="idea-bank-date">'+date+'</div></div></div>'}).join('');IB.updateNavBadge()}
+function renderIdeasList(){const list=document.getElementById('ideasList');if(!list)return;const ideas=IB.getFiltered();if(!ideas.length){const empty=IB.load().length===0;list.innerHTML='<div class="ideas-empty"><div class="ideas-empty-icon">'+(empty?'&#128161;':'&#128269;')+'</div><div class="ideas-empty-title">'+(empty?'No ideas saved yet':'Nothing matches')+'</div><div class="ideas-empty-sub">'+(empty?'Every time SAM generates a hook, script, or concept — tap Save to Ideas.':'Try a different search or clear your filters.')+'</div></div>';return}const sL={saved:'Saved',scripting:'Scripting',filmed:'Filmed',posted:'Posted'};const tL={pulse:'The Pulse',spark:'The Spark',wizard:'Playbook',vision:'The Vision',blueprint:'Blueprint',lens:'The Lens'};list.innerHTML=ideas.map(idea=>{const date=new Date(idea.date).toLocaleDateString('en-US',{month:'short',day:'numeric'});const sb=['saved','scripting','filmed','posted'].map(s=>'<button class="idea-status-btn'+(idea.status===s?' active-'+s:'')+'" onclick="ibUpdateStatus(\''+idea.id+'\',\''+s+'\',this)">'+sL[s]+'</button>').join('');const ul=idea.type==='wizard'?'Open playbook':idea.type==='vision'?'Script it':'Build this';
+      const isMobileDevice=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)||window.innerWidth<600;const txt=(idea.text||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');const esc=(idea.text||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,'\\n').slice(0,300);return'<div class="idea-bank-card type-'+idea.type+'" id="ibc-'+idea.id+'"><div class="idea-bank-card-top"><div><span class="idea-bank-type-badge badge-'+idea.type+'">'+(tL[idea.type]||idea.type)+'</span>'+(idea.subtype?'<span style="font-size:10px;color:var(--text3);margin-left:6px;">'+idea.subtype+'</span>':'')+(idea.platform?'<span style="font-size:10px;color:var(--text3);margin-left:4px;">&#183; '+idea.platform+'</span>':'')+'</div><div class="idea-bank-card-actions"><button class="ib-action-btn" onclick="ibCopy(\''+esc+'\')" title="Copy">&#128203;</button><button class="ib-action-btn" onclick="ibUse(\''+idea.id+'\')" style="font-size:11px;font-weight:600;width:auto;padding:0 10px;color:var(--spark);">'+ul+' &#8594;</button>'+(idea.type==="wizard"&&isMobileDevice?'<button class="ib-action-btn" onclick="emailPlaybookIdea(\''+idea.id+'\')" style="font-size:11px;font-weight:600;width:auto;padding:0 10px;color:#F472B6;">📧</button>':'')+'<button class="ib-action-btn danger" onclick="ibDel(\''+idea.id+'\')" title="Delete">&#10005;</button></div></div><div class="idea-bank-text" id="ibt-'+idea.id+'" onclick="document.getElementById(\'ibt-'+idea.id+'\').classList.toggle(\'expanded\')">'+txt+'</div><div class="idea-bank-card-footer"><div class="idea-status-select">'+sb+'</div><div class="idea-bank-date">'+date+'</div></div></div>'}).join('');IB.updateNavBadge()}
 function ibUpdateStatus(id,status){IB.updateStatus(id,status);const card=document.getElementById('ibc-'+id);if(card)card.querySelectorAll('.idea-status-btn').forEach(b=>{const s=b.getAttribute('onclick').match(/'(\w+)'/g)?.[1]?.replace(/'/g,'');b.className='idea-status-btn'+(s===status?' active-'+status:'')});IB.updateNavBadge();if(status==='posted')showIbToast('Marked as posted!')}
 function ibDel(id){const card=document.getElementById('ibc-'+id);if(card){card.style.opacity='0';card.style.transform='translateX(30px)';card.style.transition='all 0.25s';setTimeout(()=>{IB.delete(id);renderIdeasList()},250)}else{IB.delete(id);renderIdeasList()}}
 function ibCopy(text){navigator.clipboard.writeText(text.replace(/\\n/g,'\n')).then(()=>showIbToast('Copied!'))}
 function ibUse(id){const idea=IB.load().find(i=>i.id===id);if(!idea)return;closeIdeasPanel();setTimeout(()=>{if(idea.type==='wizard')openWizardPage();else if(idea.type==='vision')sendToVision(idea.text);else if(idea.type==='blueprint'){openTool('blueprint');setTimeout(()=>{const el=document.getElementById('blueprintInp');if(el){el.value=idea.text;el.focus()}},300)}else sendToPulse(idea.text)},300)}
 function clearPostedIdeas(){if(!confirm('Remove all ideas marked as Posted?'))return;IB.save(IB.load().filter(i=>i.status!=='posted'));renderIdeasList();showIbToast('Cleared')}
+// ── EMAIL CONFIRM STATE ──
+let _ibEmailPending = null;
+
 function exportIdeas(){
   const ideas=IB.load();
   if(!ideas.length){showIbToast('No ideas to export');return;}
   const state=(typeof getTrialState==='function')?getTrialState():{};
   const isMobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)||window.innerWidth<600;
 
-  // No email yet — show export capture modal
   if(!state.email){
     closeIdeasPanel();
     setTimeout(()=>openExportCapture(),200);
@@ -7486,12 +7489,107 @@ function exportIdeas(){
   }
 
   if(isMobile){
-    // Mobile — email their ideas
-    exportIdeasByEmail(ideas, state.email, state.name||'Creator');
+    // Show confirmation before sending
+    showIbEmailConfirm('ideas', ideas, state.email, state.name||'Creator');
   } else {
-    // Desktop — PDF via print
     exportIdeasAsPDF(ideas);
   }
+}
+
+function emailPlaybookIdea(ideaId){
+  const ideas = IB.load();
+  const idea = ideas.find(i => i.id === ideaId);
+  if(!idea) return;
+  const state=(typeof getTrialState==='function')?getTrialState():{};
+  if(!state.email){
+    closeIdeasPanel();
+    setTimeout(()=>openExportCapture(),200);
+    return;
+  }
+  showIbEmailConfirm('playbook', idea, state.email, state.name||'Creator');
+}
+
+function showIbEmailConfirm(type, data, email, name){
+  const modal = document.getElementById('ibEmailConfirm');
+  if(!modal) return;
+  _ibEmailPending = { type, data, email, name };
+  const shortEmail = email.length > 28 ? email.substring(0,25)+'...' : email;
+  if(type === 'playbook'){
+    document.getElementById('ibEmailConfirmTitle').textContent = 'Email this playbook';
+    document.getElementById('ibEmailConfirmDesc').textContent = 'Your full playbook will be sent as a formatted email — easy to read on any device.';
+  } else {
+    const count = data.length;
+    document.getElementById('ibEmailConfirmTitle').textContent = 'Email your ideas';
+    document.getElementById('ibEmailConfirmDesc').textContent = `Your ${count} saved idea${count===1?'':'s'} will be sent as a formatted email.`;
+  }
+  document.getElementById('ibEmailConfirmAddr').textContent = '📬 Sending to: ' + shortEmail;
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeIbEmailConfirm(){
+  const modal = document.getElementById('ibEmailConfirm');
+  if(modal) modal.style.display = 'none';
+  document.body.style.overflow = '';
+  _ibEmailPending = null;
+}
+
+async function executeIbEmailSend(){
+  if(!_ibEmailPending) return;
+  const { type, data, email, name } = _ibEmailPending;
+  const btn = document.getElementById('ibEmailConfirmBtn');
+  if(btn){ btn.textContent = '📧 Sending...'; btn.disabled = true; }
+
+  if(type === 'playbook'){
+    await sendPlaybookEmail(data, email, name);
+  } else {
+    await exportIdeasByEmail(data, email, name);
+  }
+
+  closeIbEmailConfirm();
+  const shortEmail = email.length > 28 ? email.substring(0,25)+'...' : email;
+  showIbToast(`📧 Sent to ${shortEmail} — check spam if it doesn't arrive in 2 min`);
+}
+
+async function sendPlaybookEmail(idea, email, name){
+  // Parse playbook text into sections
+  const raw = idea.text || '';
+  const sections = raw.split(/SECTION \d+/i).filter(s => s.trim().length > 0);
+  const sectionHTML = sections.map((s, i) => {
+    const lines = s.trim().split('
+').filter(l => l.trim());
+    const title = lines[0] || `Section ${i+1}`;
+    const body = lines.slice(1).join('<br>');
+    return `<div style="margin-bottom:20px;padding:20px;background:#f7f5ff;border-left:4px solid #7C3AED;border-radius:8px;">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#7C3AED;margin-bottom:8px;">Section ${i+1}</div>
+      <div style="font-size:14px;font-weight:700;color:#09080F;margin-bottom:8px;">${title}</div>
+      <div style="font-size:13px;color:#1a1a2e;line-height:1.7;">${body}</div>
+    </div>`;
+  }).join('');
+
+  const bodyHtml = `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:32px 24px;">
+    <div style="background:linear-gradient(135deg,#09080F,#1a0a2e);padding:32px;border-radius:12px;margin-bottom:24px;text-align:center;">
+      <div style="font-size:28px;font-weight:800;color:#F0ECFF;margin-bottom:8px;">S · A · M</div>
+      <div style="font-size:14px;color:rgba(240,236,255,0.6);">Your Content Playbook · ${new Date().toLocaleDateString()}</div>
+    </div>
+    <div style="font-size:15px;color:#333;margin-bottom:24px;">Hey ${name} — here's your full SAM playbook.</div>
+    ${sectionHTML.length > 0 ? sectionHTML : `<div style="font-size:14px;color:#1a1a2e;line-height:1.7;white-space:pre-wrap;">${raw.substring(0,3000)}</div>`}
+    <div style="margin-top:32px;text-align:center;"><a href="https://samforcreators.com" style="display:inline-block;padding:14px 32px;background:#7C3AED;color:#fff;text-decoration:none;border-radius:50px;font-weight:700;">Open SAM →</a></div>
+    <div style="margin-top:24px;padding:16px;background:#f7f5ff;border-radius:8px;font-size:12px;color:#666;text-align:center;">If this landed in spam, mark it as safe so future emails reach your inbox.</div>
+  </div>`;
+
+  try {
+    await fetch('/api/waitlist', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name, email,
+        source: 'playbook_export',
+        subject: 'Your SAM Playbook — ' + new Date().toLocaleDateString(),
+        customBody: bodyHtml
+      })
+    });
+  } catch(e) {}
 }
 
 async function exportIdeasByEmail(ideas, email, name){
@@ -7994,7 +8092,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v6.54
+  // CINEMATIC MEET SAM — v6.55
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -11703,7 +11801,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.54</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.55</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -12635,8 +12733,22 @@ if (localStorage.getItem('sam_dev') === 'true') {
   </div>
   <div class="ideas-list" id="ideasList"></div>
   <div class="ideas-panel-footer">
-    <button class="ideas-footer-btn ideas-footer-export" onclick="exportIdeas()" id="ideasExportBtn">&#8595; Export all</button>
+    <button class="ideas-footer-btn ideas-footer-export" onclick="exportIdeas()" id="ideasExportBtn">📧 Email my ideas</button>
     <button class="ideas-footer-btn ideas-footer-clear" onclick="clearPostedIdeas()">Clear posted</button>
+  </div>
+</div>
+
+<!-- Email confirmation modal -->
+<div id="ibEmailConfirm" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(9,8,15,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);display:none;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;">
+  <div style="background:#1a1428;border:1px solid rgba(167,139,250,0.3);border-radius:20px;padding:28px 24px;max-width:380px;width:100%;box-sizing:border-box;">
+    <div style="font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:#F0ECFF;margin-bottom:8px;" id="ibEmailConfirmTitle">Send your ideas</div>
+    <div style="font-size:14px;color:rgba(240,236,255,0.6);margin-bottom:20px;line-height:1.5;" id="ibEmailConfirmDesc">Loading...</div>
+    <div style="background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);border-radius:12px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:#A78BFA;" id="ibEmailConfirmAddr">...</div>
+    <div style="display:flex;gap:10px;">
+      <button onclick="closeIbEmailConfirm()" style="flex:1;padding:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:50px;font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:rgba(240,236,255,0.6);cursor:pointer;">Cancel</button>
+      <button id="ibEmailConfirmBtn" onclick="executeIbEmailSend()" style="flex:2;padding:12px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#fff;cursor:pointer;">📧 Send now</button>
+    </div>
+    <div style="text-align:center;margin-top:12px;font-size:11px;color:rgba(240,236,255,0.3);">Check spam if it doesn't arrive in 2 minutes</div>
   </div>
 </div>
 <script>
@@ -12648,9 +12760,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v6.54
+// SOFT POPUP v6.55
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v6.54
+// soft popup system removed v6.55
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -12659,7 +12771,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v6.54
+  // SAM GUIDED TOUR — v6.55
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
