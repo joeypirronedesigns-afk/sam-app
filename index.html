@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v6.35)
+       UNIFIED HERO (v6.36)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4315,7 +4315,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v6.35
+       CINEMATIC MEET SAM — v6.36
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4765,7 +4765,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v6.35
+       SAM GUIDED TOUR SPLASH — v6.36
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5065,10 +5065,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.35</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.36</div>
 
 
-  <!-- ── UNIFIED HERO v6.35 ── -->
+  <!-- ── UNIFIED HERO v6.36 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7149,7 +7149,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v6.35 ──
+// ── RUN TRACKING v6.36 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -7951,7 +7951,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v6.35
+  // CINEMATIC MEET SAM — v6.36
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -8475,42 +8475,62 @@ Rules:
     }
   }
 
+  function parseVoiceProfile(profile) {
+    let cleaned = profile
+      .replace(/\*\*VOICE DNA EXTRACTED:\*\*/gi, '')
+      .replace(/VOICE DNA EXTRACTED:/gi, '')
+      .replace(/\*\*(.+?)\*\*/g, '$1')
+      .trim();
+    const lines = cleaned.split('\n').filter(l => l.trim());
+    let traitsLine = '';
+    let confirmLine = '';
+    for (const line of lines) {
+      const l = line.trim();
+      if (l.toLowerCase().startsWith('you\'re') || l.toLowerCase().startsWith('you are')) traitsLine = l;
+      else if (l.toLowerCase().startsWith('i\'ve got')) confirmLine = l;
+    }
+    if (!traitsLine) traitsLine = lines[0] || profile;
+    if (!confirmLine) confirmLine = lines[1] || "I've got you — everything I build is going to sound like YOU wrote it, not a robot.";
+    const traitParts = traitsLine.split(/\.\s+(?=You\s)/i).map(s => s.trim().replace(/\.$/, '')).filter(Boolean);
+    return { traits: traitParts.length > 1 ? traitParts : [traitsLine], confirm: confirmLine };
+  }
+
   function showVoiceLockedCard(profile) {
     const card = document.getElementById('msVoiceCalib');
     if (!card) return;
 
-    // Split profile into the two lines
-    const lines = profile.split('\n').filter(l => l.trim());
-    const rawTraits = lines[0] || profile;
-    const confirm = lines[1] || "I\'ve got you — everything I build is going to sound like YOU wrote it.";
-    const traits = rawTraits.replace(/\*\*(.+?)\*\*/g, '<strong style="color:#F0ECFF;">$1</strong>').replace(/\*(.+?)\*/g, '<em style="color:#A78BFA;font-style:normal;font-weight:600;">$1</em>');
+    const { traits, confirm } = parseVoiceProfile(profile);
+    const traitRows = traits.map((t, i) => {
+      const styled = t.replace(/\*(.+?)\*/g, '<em style="color:#A78BFA;font-style:normal;font-weight:600;">$1</em>');
+      return `<div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+        <div style="font-size:10px;font-weight:800;color:#A78BFA;opacity:0.5;padding-top:3px;min-width:20px;">0${i+1}</div>
+        <div style="font-size:14px;line-height:1.6;color:rgba(240,236,255,0.88);">${styled}</div>
+      </div>`;
+    }).join('');
 
     card.style.transition = 'opacity 0.3s ease';
     card.style.opacity = '0';
     setTimeout(() => {
       card.innerHTML = `
-        <div style="background:linear-gradient(135deg,rgba(167,139,250,0.1),rgba(244,114,182,0.06));border:1px solid rgba(167,139,250,0.25);border-radius:16px;padding:20px 22px;">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
-            <div style="font-size:11px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#A78BFA;">🎙 Your Voice — Locked In</div>
+        <div style="background:linear-gradient(135deg,rgba(167,139,250,0.08),rgba(56,189,248,0.04));border:1px solid rgba(167,139,250,0.2);border-radius:16px;padding:20px 22px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C12 2 8 6 8 10C8 12.2 9.8 14 12 14C14.2 14 16 12.2 16 10C16 6 12 2 12 2Z" stroke="#A78BFA" stroke-width="1.5" fill="none"/><path d="M8 10C6 10 4 11 4 13C4 15 6 16 8 16" stroke="#A78BFA" stroke-width="1.5" stroke-linecap="round"/><path d="M16 10C18 10 20 11 20 13C20 15 18 16 16 16" stroke="#A78BFA" stroke-width="1.5" stroke-linecap="round"/><path d="M8 16C8 18 10 20 12 22C14 20 16 18 16 16" stroke="#F472B6" stroke-width="1.5" stroke-linecap="round"/><path d="M4 13H20" stroke="rgba(167,139,250,0.3)" stroke-width="1" stroke-dasharray="2 2"/></svg>
+            <div style="font-size:11px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;background:linear-gradient(90deg,#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Voice DNA Extracted</div>
           </div>
-          <div style="font-size:15px;line-height:1.7;color:rgba(240,236,255,0.9);margin-bottom:12px;">${traits}</div>
-          <div style="font-size:13px;color:rgba(240,236,255,0.5);line-height:1.6;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06);">${confirm}</div>
+          <div style="margin-bottom:14px;">${traitRows}</div>
+          <div style="font-size:13px;color:rgba(240,236,255,0.45);line-height:1.6;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06);">${confirm}</div>
           <button onclick="retryVoiceCalibration()" style="margin-top:14px;background:none;border:1px solid rgba(255,255,255,0.1);border-radius:999px;padding:7px 16px;font-size:12px;color:rgba(240,236,255,0.4);cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(244,114,182,0.4)';this.style.color='#F472B6'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.4)'">↩ That didn't sound like me — try again</button>
         </div>
       `;
       card.style.opacity = '1';
 
-      // Move go button BELOW the voice card, then show it
       setTimeout(() => {
         const goBtnWrap = document.getElementById('msGoBtnWrap');
         const voiceCard = document.getElementById('msVoiceCalib');
         if (goBtnWrap) {
           const goBtn = document.getElementById('msGoBtn');
           if (goBtn) goBtn.textContent = '✦ Let\'s build your story — in your voice →';
-          // Move after voice card
-          if (voiceCard && voiceCard.parentNode) {
-            voiceCard.parentNode.insertBefore(goBtnWrap, voiceCard.nextSibling);
-          }
+          if (voiceCard && voiceCard.parentNode) voiceCard.parentNode.insertBefore(goBtnWrap, voiceCard.nextSibling);
           goBtnWrap.style.display = 'block';
           setTimeout(() => goBtnWrap.classList.add('revealed'), 80);
         }
@@ -8519,32 +8539,84 @@ Rules:
   }
 
   function startVoiceCalibMic() {
-    // Use existing mic infrastructure — transcribe then run calibration
     const input = document.getElementById('msVoiceInput');
-    if (input) input.placeholder = 'Listening... just talk naturally for 20-30 seconds';
-    if (typeof toggleMicFor === 'function') {
-      toggleMicFor('msVoiceInput', null);
-      // After 15 seconds check if we got enough
-      setTimeout(() => {
-        const val = document.getElementById('msVoiceInput')?.value?.trim();
-        const wordCount = val ? val.split(/\s+/).filter(Boolean).length : 0;
-        if (val && wordCount >= 15) {
-          submitVoiceCalibration();
-        } else if (val && wordCount > 0) {
-          // Too short — show gentle retry
-          const input = document.getElementById('msVoiceInput');
-          if (input) {
-            input.style.borderColor = 'rgba(244,114,182,0.5)';
-            input.placeholder = "Sorry — I need just a little more to work with. Tell me anything — your week, your project, a rant. 20 seconds is plenty.";
-            input.value = '';
-            setTimeout(() => input.style.borderColor = 'rgba(255,255,255,0.1)', 2000);
-          }
-        }
-      }, 15000);
-    } else {
-      // Fallback — just focus the textarea
-      if (input) { input.focus(); input.placeholder = 'Tell me about your week, your project — anything. Just talk.'; }
+    if (!input) return;
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      input.focus();
+      input.placeholder = 'Voice not supported — just type how you talk.';
+      return;
     }
+
+    const rec = new SpeechRecognition();
+    rec.continuous = true;
+    rec.interimResults = true;
+    rec.lang = 'en-US';
+
+    let finalTranscript = '';
+    let silenceTimer = null;
+    let hasStarted = false;
+    let submitted = false;
+
+    // Update mic button state
+    const micBtn = document.querySelector('[onclick="startVoiceCalibMic()"]');
+    if (micBtn) micBtn.textContent = '⏹ Stop listening';
+
+    input.placeholder = '🎙 Listening — just talk naturally...';
+    input.value = '';
+
+    rec.onresult = (e) => {
+      let interim = '';
+      finalTranscript = '';
+      for (let i = 0; i < e.results.length; i++) {
+        if (e.results[i].isFinal) finalTranscript += e.results[i][0].transcript + ' ';
+        else interim += e.results[i][0].transcript;
+      }
+      input.value = (finalTranscript + interim).trim();
+
+      // Reset silence timer on every new word
+      clearTimeout(silenceTimer);
+      silenceTimer = setTimeout(() => {
+        // 3 seconds of silence — stop and evaluate
+        rec.stop();
+      }, 3000);
+    };
+
+    rec.onstart = () => {
+      hasStarted = true;
+    };
+
+    rec.onend = () => {
+      clearTimeout(silenceTimer);
+      if (micBtn) micBtn.textContent = '🎙 Let me hear you instead';
+      if (submitted) return;
+      submitted = true;
+
+      const val = input.value.trim();
+      const wordCount = val ? val.split(/\s+/).filter(Boolean).length : 0;
+
+      if (wordCount >= 12) {
+        input.placeholder = '';
+        submitVoiceCalibration();
+      } else if (wordCount > 0) {
+        input.style.borderColor = 'rgba(244,114,182,0.5)';
+        input.placeholder = "Almost — just a little more. Hit the mic and keep going, or type the rest.";
+        setTimeout(() => input.style.borderColor = 'rgba(255,255,255,0.1)', 2500);
+      } else {
+        input.placeholder = "Didn't catch anything — try again or just type.";
+      }
+    };
+
+    rec.onerror = (e) => {
+      clearTimeout(silenceTimer);
+      if (micBtn) micBtn.textContent = '🎙 Let me hear you instead';
+      if (e.error !== 'no-speech') {
+        input.placeholder = 'Mic error — try typing instead.';
+      }
+    };
+
+    rec.start();
   }
 
   function skipVoiceCalibration() {
@@ -11735,7 +11807,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.35</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.36</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -12677,9 +12749,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v6.35
+// SOFT POPUP v6.36
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v6.35
+// soft popup system removed v6.36
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -12688,7 +12760,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v6.35
+  // SAM GUIDED TOUR — v6.36
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
