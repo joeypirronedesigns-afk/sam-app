@@ -48,7 +48,7 @@ module.exports = async function handler(req, res) {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            from: 'Joey at SAM <onboarding@resend.dev>',
+            from: 'Joey at SAM <joey@samforcreators.com>',
             to: [email],
             subject: 'Your SAM login link — click to get back in',
             html: `<div style="font-family:Arial;padding:40px 32px;background:#09080F;color:#F0ECFF;border-radius:12px;max-width:520px;margin:0 auto;">
