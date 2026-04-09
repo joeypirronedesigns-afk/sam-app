@@ -56,8 +56,9 @@ module.exports = async function handler(req, res) {
         : `<div style="font-family:Arial,sans-serif;padding:40px 32px;background:#09080F;color:#F0ECFF;border-radius:12px;max-width:520px;margin:0 auto;">
             <div style="text-align:center;margin-bottom:24px;">
               <div style="font-size:40px;">🎉</div>
+              <p style="color:rgba(240,236,255,0.4);font-size:12px;margin:0 0 16px;">If you don't see future emails from us, check your junk or spam folder and mark us as safe.</p>
               <h1 style="color:#A78BFA;font-size:24px;margin:12px 0 8px;">You're in, ${name}!</h1>
-              <p style="color:rgba(240,236,255,0.7);margin:0;">48 hours. All 5 tools. Zero limits. No card ever.</p>
+              <p style="color:rgba(240,236,255,0.7);margin:0;">48 hours. All 5 tools. No card ever.</p>
             </div>
             <div style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.25);border-radius:12px;padding:16px;text-align:center;margin-bottom:24px;">
               <p style="color:#FBBF24;font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin:0 0 6px;">Your free access includes</p>
