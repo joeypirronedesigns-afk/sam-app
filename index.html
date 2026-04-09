@@ -7143,6 +7143,15 @@ async function submitTrialEmail() {
     });
   } catch(e) {}
 
+  // Save user to KV so sign-in works later (non-blocking)
+  try {
+    fetch('/api/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'save_user', email, name, tier: 'free', paid: false, trialStart: Date.now() })
+    });
+  } catch(e) {}
+
   // Show success
   document.getElementById('trialFormState').style.display = 'none';
   document.getElementById('trialSuccess').classList.add('show');
