@@ -32,7 +32,7 @@ module.exports = async function handler(req, res) {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          from: 'SAM <onboarding@resend.dev>',
+          from: 'SAM <joey@samforcreators.com>',
           to: [owner],
           reply_to: email,
           subject: isIdeasExport ? `Ideas export request — ${name}` : `New SAM signup — ${name}`,
@@ -84,7 +84,7 @@ module.exports = async function handler(req, res) {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          from: 'Joey at SAM <onboarding@resend.dev>',
+          from: 'Joey at SAM <joey@samforcreators.com>',
           to: [email],
           subject: userSubject,
           html: userHtml
