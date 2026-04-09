@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v6.36)
+       UNIFIED HERO (v6.37)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4315,7 +4315,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v6.36
+       CINEMATIC MEET SAM — v6.37
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -4765,7 +4765,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v6.36
+       SAM GUIDED TOUR SPLASH — v6.37
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5059,16 +5059,17 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
       About me
     </button>
-    <button class="nav-signin-btn" onclick="openSignInModal()" style="background:none;border:1px solid rgba(255,255,255,0.15);color:var(--text2);font-family:'Sora',sans-serif;font-size:13px;font-weight:600;padding:8px 18px;border-radius:50px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.5)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.15)';this.style.color='var(--text2)'">Sign in</button>
+    <button id="samVoiceToggle" onclick="toggleSAMVoice()" title="SAM Voice" style="background:none;border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:7px 13px;font-size:13px;cursor:pointer;color:rgba(240,236,255,0.5);font-family:'Sora',sans-serif;font-weight:600;transition:all 0.2s;display:inline-flex;align-items:center;gap:5px;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.5)'">🔇 SAM Voice</button>
+    <button class="nav-signin-btn" onclick="openSignInModal()"  style="background:none;border:1px solid rgba(255,255,255,0.15);color:var(--text2);font-family:'Sora',sans-serif;font-size:13px;font-weight:600;padding:8px 18px;border-radius:50px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.5)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.15)';this.style.color='var(--text2)'">Sign in</button>
     <button class="nav-pro-btn" onclick="openProPage()">✦ Go Pro</button>
   </div>
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.36</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.37</div>
 
 
-  <!-- ── UNIFIED HERO v6.36 ── -->
+  <!-- ── UNIFIED HERO v6.37 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7149,7 +7150,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v6.36 ──
+// ── RUN TRACKING v6.37 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -7343,10 +7344,17 @@ function addChatMessage(role, text) {
     ? '<div class="chat-msg-avatar">🤖</div>'
     : '<div class="chat-msg-avatar" style="background:linear-gradient(135deg,#A78BFA,#F472B6);">👤</div>';
 
-  div.innerHTML = avatar + '<div class="chat-bubble">' + text.replace(/\n/g,'<br/>') + '</div>';
+  // Add speaker button for SAM messages
+  const speakBtn = role === 'sam'
+    ? '<button onclick="if(typeof SAM_VOICE!=='undefined')SAM_VOICE.speak(this.closest('.chat-msg').querySelector('.chat-bubble').innerText)" style="background:none;border:none;cursor:pointer;color:rgba(240,236,255,0.3);font-size:11px;padding:2px 6px;transition:color 0.2s;" onmouseover="this.style.color='#A78BFA'" onmouseout="this.style.color='rgba(240,236,255,0.3)'" title="Read aloud">🔊</button>'
+    : '';
+
+  div.innerHTML = avatar + '<div class="chat-bubble">' + text.replace(/\n/g,'<br/>') + '</div>' + speakBtn;
   msgs.appendChild(div);
   chatHistory.push({ role: role === 'sam' ? 'assistant' : 'user', content: text });
   scrollChatToBottom();
+  // Auto-speak SAM replies
+  if (role === 'sam' && typeof SAM_VOICE !== 'undefined') SAM_VOICE.speak(text);
 }
 
 function scrollChatToBottom() {
@@ -7951,7 +7959,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v6.36
+  // CINEMATIC MEET SAM — v6.37
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -8469,6 +8477,8 @@ Rules:
 
       // Show the locked-in card
       showVoiceLockedCard(reply);
+      // Speak the voice DNA
+      setTimeout(() => { if (typeof SAM_VOICE !== 'undefined') SAM_VOICE.speak(reply); }, 800);
 
     } catch(e) {
       skipVoiceCalibration();
@@ -9007,6 +9017,11 @@ Rules: Max 3 sentences total. Never use bullet points. Never say "I can see that
     // Fire response avatar ring + pulse
     const respWrap = document.getElementById('msResponseAvatarWrap');
     if (respWrap) respWrap.classList.add('speaking');
+    // Speak Meet SAM response
+    setTimeout(() => {
+      const respText = document.getElementById('msResponseText');
+      if (respText && typeof SAM_VOICE !== 'undefined') SAM_VOICE.speak(respText.innerText || respText.textContent);
+    }, 600);
 
     // Show voice waveform IMMEDIATELY — mouth moves from first word
     const voiceBar = document.getElementById('msVoiceBar');
@@ -10068,6 +10083,7 @@ function renderPlaybook(data) {
       <div class="playbook-section-title">Your hook</div>
       <div class="wizard-why" style="margin-bottom:16px;">This is the first thing your audience hears or reads. You have 1-3 seconds. This line was chosen because it creates an open loop — a question in the viewer's mind they have to stay to answer.</div>
       <div class="playbook-hook">${data.hook}</div>
+      <button onclick="if(typeof SAM_VOICE!=='undefined')SAM_VOICE.speak('${escQ(data.hook)}')" style="margin-top:10px;background:none;border:1px solid rgba(167,139,250,0.2);border-radius:999px;padding:6px 14px;font-size:11px;color:rgba(240,236,255,0.4);cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(167,139,250,0.2)';this.style.color='rgba(240,236,255,0.4)'">🔊 Hear this hook</button>
       ${data.hook_why ? `<div class="wizard-why" style="margin-top:12px;"><strong>Why this hook:</strong> ${data.hook_why}</div>` : ''}
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
         <button class="playbook-copy-btn" style="margin-top:0;" onclick="wizCopy(this,'${escQ(data.hook)}')">Copy hook</button>
@@ -10098,6 +10114,7 @@ function renderPlaybook(data) {
       <div class="playbook-section-title">${scriptLabel}</div>
       <div class="wizard-why" style="margin-bottom:16px;">${scriptNote}</div>
       <div class="playbook-script">${formattedScript}</div>
+      <button onclick="if(typeof SAM_VOICE!=='undefined')SAM_VOICE.speak(document.querySelector('.playbook-script').innerText)" style="margin-top:10px;background:none;border:1px solid rgba(167,139,250,0.2);border-radius:999px;padding:6px 14px;font-size:11px;color:rgba(240,236,255,0.4);cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(167,139,250,0.2)';this.style.color='rgba(240,236,255,0.4)'">🔊 Hear this script</button>
       ${data.pacing_note ? `<div class="wizard-why" style="margin-top:12px;"><strong>Delivery note:</strong> ${data.pacing_note}</div>` : ''}
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
         <button class="playbook-copy-btn" style="margin-top:0;" onclick="wizCopyEl(this)">Copy script</button>
@@ -11807,7 +11824,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.36</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v6.37</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -12749,9 +12766,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v6.36
+// SOFT POPUP v6.37
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v6.36
+// soft popup system removed v6.37
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -12760,7 +12777,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v6.36
+  // SAM GUIDED TOUR — v6.37
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
@@ -13173,6 +13190,86 @@ function openEcosystemOverlay() {
       if (toolsEl) toolsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 400);
   }
+
+// ── SAM VOICE ENGINE ─────────────────────────────────────────────────────────
+const SAM_VOICE = {
+  enabled: localStorage.getItem('sam-voice-on') === 'true',
+  synth: window.speechSynthesis,
+  voice: null,
+  rate: 0.93,
+  pitch: 1.05,
+  volume: 0.95,
+
+  init() {
+    const load = () => {
+      const voices = this.synth.getVoices();
+      const preferred = ['Google US English','Samantha','Karen','Moira','Tessa','Fiona','Victoria'];
+      for (const name of preferred) {
+        const v = voices.find(v => v.name.includes(name));
+        if (v) { this.voice = v; break; }
+      }
+      if (!this.voice) {
+        this.voice = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('female'))
+          || voices.find(v => v.lang.startsWith('en') && !v.name.toLowerCase().includes('male'))
+          || voices[0];
+      }
+    };
+    if (this.synth.getVoices().length) load();
+    else this.synth.addEventListener('voiceschanged', load);
+    this.updateToggle();
+  },
+
+  speak(text, onEnd) {
+    if (!this.enabled) return;
+    this.synth.cancel();
+    const clean = text
+      .replace(/<[^>]+>/g, '')
+      .replace(/\[BEAT[^\]]*\]/gi, '')
+      .replace(/\*\*(.+?)\*\*/g, '$1')
+      .replace(/\*(.+?)\*/g, '$1')
+      .replace(/#{1,3}\s/g, '')
+      .replace(/[\u{1F300}-\u{1FFFF}]/gu, '')
+      .trim();
+    if (!clean) return;
+    const utt = new SpeechSynthesisUtterance(clean);
+    if (this.voice) utt.voice = this.voice;
+    utt.rate = this.rate;
+    utt.pitch = this.pitch;
+    utt.volume = this.volume;
+    if (onEnd) utt.onend = onEnd;
+    this.synth.speak(utt);
+  },
+
+  stop() { this.synth.cancel(); },
+
+  updateToggle() {
+    const btn = document.getElementById('samVoiceToggle');
+    if (!btn) return;
+    if (this.enabled) {
+      btn.innerHTML = '🔊 SAM Voice';
+      btn.style.borderColor = 'rgba(167,139,250,0.4)';
+      btn.style.color = '#A78BFA';
+    } else {
+      btn.innerHTML = '🔇 SAM Voice';
+      btn.style.borderColor = 'rgba(255,255,255,0.1)';
+      btn.style.color = 'rgba(240,236,255,0.5)';
+    }
+  }
+};
+
+function toggleSAMVoice() {
+  SAM_VOICE.enabled = !SAM_VOICE.enabled;
+  localStorage.setItem('sam-voice-on', SAM_VOICE.enabled);
+  SAM_VOICE.updateToggle();
+  if (SAM_VOICE.enabled) {
+    SAM_VOICE.speak("SAM voice is on. I've got you.");
+  } else {
+    SAM_VOICE.stop();
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
+// ── END SAM VOICE ENGINE ──────────────────────────────────────────────────────
 </script>
 <div class="ib-toast" id="ibToast"></div>
 
