@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.20)
+       UNIFIED HERO (v7.21)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.20
+       CINEMATIC MEET SAM — v7.21
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.20
+       SAM GUIDED TOUR SPLASH — v7.21
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5420,10 +5420,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.20</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.21</div>
 
 
-  <!-- ── UNIFIED HERO v7.20 ── -->
+  <!-- ── UNIFIED HERO v7.21 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7593,7 +7593,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v7.20 ──
+// ── RUN TRACKING v7.21 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -9148,7 +9148,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.20
+  // CINEMATIC MEET SAM — v7.21
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -10019,38 +10019,6 @@ Rules:
     setTimeout(type, 800);
   }
 
-  function meetSamChooseTalk() {
-    const mainCTA = document.getElementById('msMainCTA');
-    if (mainCTA) mainCTA.style.display = 'none';
-    const talkPath = document.getElementById('msTalkPath');
-    if (!talkPath) return;
-    talkPath.style.display = 'flex';
-
-    // Type SAM's talk prompt
-    const prompt = document.getElementById('msTalkPrompt');
-    if (!prompt) return;
-    const promptText = 'Tell me your story. Start anywhere — I\'ll find the content in it.';
-    let i = 0;
-    const cursor = document.createElement('span');
-    cursor.className = 'ms-cursor';
-    prompt.appendChild(cursor);
-    const type = () => {
-      if (i < promptText.length) {
-        cursor.insertAdjacentText('beforebegin', promptText[i]);
-        i++;
-        setTimeout(type, 25);
-      } else {
-        cursor.remove();
-        document.getElementById('meetSamStoryInput').focus();
-      }
-    };
-    setTimeout(type, 300);
-
-    // Shift ambient to pink
-    const orb1 = document.querySelector('.ms-orb-1');
-    const orb2 = document.querySelector('.ms-orb-2');
-    if (orb1) orb1.style.background = '#F472B6';
-    if (orb2) orb2.style.background = '#A78BFA';
   }
 
   
@@ -13488,7 +13456,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.20</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.21</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -14443,9 +14411,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v7.20
+// SOFT POPUP v7.21
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v7.20
+// soft popup system removed v7.21
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -14454,7 +14422,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v7.20
+  // SAM GUIDED TOUR — v7.21
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
@@ -14960,7 +14928,7 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
 <script>
 
 /* ═══════════════════════════════════════════════
-   iMESSAGE THREAD ENGINE — v7.20
+   iMESSAGE THREAD ENGINE — v7.21
    ═══════════════════════════════════════════════ */
 
 // ── History persistence ──────────────────────────
@@ -15052,6 +15020,19 @@ function msOpenThread() {
   const inputRow = document.getElementById('msInputRow');
   if (thread) { thread.style.display = 'flex'; }
   if (inputRow) { inputRow.style.display = 'flex'; }
+  // Lock wrap to viewport height so input stays pinned at bottom
+  const wrap = document.querySelector('.meet-sam-wrap');
+  if (wrap) {
+    wrap.style.minHeight = '100vh';
+    wrap.style.height = '100vh';
+    wrap.style.position = 'fixed';
+    wrap.style.top = '0';
+    wrap.style.left = '0';
+    wrap.style.right = '0';
+    wrap.style.padding = '24px 24px 0 24px';
+    wrap.style.gap = '0';
+    wrap.style.overflow = 'hidden';
+  }
 
   // Load and render history
   const history = msLoadHistory();
@@ -15289,6 +15270,11 @@ function meetSamChooseTalk() {
   // Clear history for fresh start
   msClearHistory();
   msOpenThread();
+  // Shift ambient to pink — SAM's world opens
+  const orb1 = document.querySelector('.ms-orb-1');
+  const orb2 = document.querySelector('.ms-orb-2');
+  if (orb1) orb1.style.background = '#F472B6';
+  if (orb2) orb2.style.background = '#A78BFA';
   // Add SAM opening bubble
   setTimeout(function() {
     const samBubble = msAddBubble('sam', '');
