@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.74)
+       UNIFIED HERO (v7.75)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.74
+       CINEMATIC MEET SAM — v7.75
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.74
+       SAM GUIDED TOUR SPLASH — v7.75
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5420,10 +5420,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.74</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.75</div>
 
 
-  <!-- ── UNIFIED HERO v7.74 ── -->
+  <!-- ── UNIFIED HERO v7.75 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -8783,20 +8783,49 @@ function printPlaybookOnly() {
   const nextToolEl = document.getElementById('nextToolOutput');
   const nextToolHTML = nextToolEl && nextToolEl.innerHTML.trim() ?
     '<div style="margin-top:32pt;padding-top:24pt;border-top:2px solid #e8e4f0;"><div style="font-family:Sora,Arial;font-size:14pt;font-weight:700;color:#09080F;margin-bottom:16pt;">What SAM built next</div>' + nextToolEl.innerHTML + '</div>' : '';
-  // Grab all styles from current document
-  let styles = '';
-  for (let i = 0; i < document.styleSheets.length; i++) {
-    try {
-      const rules = document.styleSheets[i].cssRules || document.styleSheets[i].rules;
-      if (rules) { for (let j = 0; j < rules.length; j++) { styles += rules[j].cssText + '\n'; } }
-    } catch(e) {}
-  }
   const win = window.open('', '_blank', 'width=900,height=700');
   if (!win) { document.body.classList.add('print-playbook-only'); window.print(); setTimeout(function(){document.body.classList.remove('print-playbook-only');},1000); return; }
+  const cleanStyles = `
+    @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap');
+    *{box-sizing:border-box;margin:0;padding:0;}
+    :root{--text:#09080F;--text2:#3d3a52;--text3:#7a7890;--border:#e8e4f0;--surface:#f7f5ff;--accent:#7C3AED;}
+    body{font-family:'Sora',Arial,sans-serif;color:var(--text);background:#fff;padding:0;margin:0;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    @page{size:A4;margin:16mm 18mm;}
+    .no-print,.playbook-section-controls,.playbook-regen-bar,.lm-controls,.save-to-ideas-btn,.playbook-steer-row{display:none!important;}
+    .playbook-cover{background:linear-gradient(135deg,#09080F 0%,#1a0a2e 100%)!important;color:#fff;padding:60px 48px;min-height:200px;margin-bottom:40px;border-radius:0;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .playbook-cover-label{font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:rgba(240,236,255,0.4);margin-bottom:16px;}
+    .playbook-cover-title{font-size:36px;font-weight:800;color:#fff;line-height:1.1;margin-bottom:8px;}
+    .playbook-cover-title span{color:#A78BFA;}
+    .playbook-cover-sub{font-size:13px;color:rgba(240,236,255,0.45);margin-top:16px;}
+    .playbook-section{padding:32px 0;border-bottom:1px solid var(--border);}
+    .playbook-section-num{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+    .playbook-section-title{font-size:22px;font-weight:700;color:var(--text);margin-bottom:16px;}
+    .playbook-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:16px;font-size:14px;line-height:1.7;color:var(--text2);}
+    .playbook-hook-main{font-size:18px;font-weight:700;color:var(--text);border-left:4px solid var(--accent);padding-left:16px;margin:16px 0;}
+    .playbook-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;}
+    .playbook-grid-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;}
+    .playbook-grid-label{font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;}
+    .playbook-grid-text{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;}
+    .playbook-grid-sub{font-size:11px;color:var(--text3);}
+    .playbook-script{font-size:14px;line-height:1.9;color:var(--text2);white-space:pre-wrap;}
+    .playbook-beat{font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin:12px 0 4px;}
+    .playbook-audience-grid{display:grid;grid-template-columns:1fr;gap:12px;}
+    .playbook-audience-row{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border);}
+    .playbook-audience-icon{font-size:18px;flex-shrink:0;width:28px;}
+    .playbook-audience-label{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:4px;}
+    .playbook-audience-text{font-size:13px;color:var(--text2);line-height:1.6;}
+    .playbook-platform-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin-bottom:12px;}
+    .playbook-platform-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;}
+    .playbook-platform-caption{font-size:13px;color:var(--text2);line-height:1.7;font-style:italic;margin-bottom:8px;}
+    .playbook-cta-box{background:linear-gradient(135deg,rgba(124,58,237,0.08),rgba(167,139,250,0.05));border:1.5px solid rgba(124,58,237,0.2);border-radius:12px;padding:24px 28px;margin-top:16px;}
+    .playbook-cta-label{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+    .playbook-cta-text{font-size:15px;font-weight:700;color:var(--text);line-height:1.5;}
+    .playbook-why-sam{background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:16px 20px;margin-top:16px;font-size:13px;color:#0369a1;line-height:1.6;}
+  `;
   win.document.open();
   win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>SAM Output</title>');
-  win.document.write('<style>' + styles + '</style>');
-  win.document.write('</head><body class="print-playbook-only" style="background:#fff;padding:0;margin:0;">');
+  win.document.write('<style>' + cleanStyles + '</style>');
+  win.document.write('</head><body>');
   win.document.write('<div id="wizardPlaybook">' + playbookEl.innerHTML + '</div>');
   win.document.write(nextToolHTML);
   win.document.write('<scr' + 'ipt>window.onload=function(){setTimeout(function(){window.print();},700)};</' + 'script>');
@@ -8809,20 +8838,36 @@ function printLeadMagnetOnly() {
   const docEl = document.getElementById('leadMagnetDoc');
   if (!docEl) { window.print(); return; }
   const brandColor = docEl.getAttribute('data-brand-color') || '#7C3AED';
-  // Grab all styles from current document
-  let styles = '';
-  for (let i = 0; i < document.styleSheets.length; i++) {
-    try {
-      const rules = document.styleSheets[i].cssRules || document.styleSheets[i].rules;
-      if (rules) { for (let j = 0; j < rules.length; j++) { styles += rules[j].cssText + '\n'; } }
-    } catch(e) {}
-  }
   const win = window.open('', '_blank', 'width=900,height=700');
   if (!win) { document.body.classList.add('print-leadmagnet-only'); window.print(); setTimeout(function(){document.body.classList.remove('print-leadmagnet-only');},1000); return; }
+  const cleanStyles = `
+    @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap');
+    *{box-sizing:border-box;margin:0;padding:0;}
+    :root{--brand:${brandColor};}
+    body{font-family:'Sora',Arial,sans-serif;color:#09080F;background:#fff;padding:0;margin:0;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    @page{size:A4;margin:0;}
+    .no-print,.lm-controls{display:none!important;}
+    .playbook-lead-magnet{max-width:100%;margin:0 auto;}
+    .lm-header{background:${brandColor};color:#fff;padding:28px 40px 24px;display:flex;align-items:center;justify-content:space-between;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .lm-brand-logo{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#fff;}
+    .lm-brand-name{font-size:14px;font-weight:700;color:#fff;margin-left:10px;}
+    .lm-badge{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;background:rgba(255,255,255,0.2);color:#fff;padding:4px 12px;border-radius:20px;}
+    .lm-body{padding:40px;}
+    .lm-tag{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:${brandColor};margin-bottom:10px;}
+    .lm-title{font-size:24px;font-weight:800;color:#09080F;line-height:1.2;margin-bottom:16px;}
+    .lm-why{font-size:13px;color:#6b7280;line-height:1.6;margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid #f0edfa;}
+    .lm-item{display:flex;gap:20px;margin-bottom:28px;padding-bottom:28px;border-bottom:1px solid #f7f5ff;align-items:flex-start;}
+    .lm-item-num{font-size:28px;font-weight:800;color:${brandColor};opacity:0.25;flex-shrink:0;line-height:1;width:36px;}
+    .lm-item-heading{font-size:15px;font-weight:700;color:#09080F;margin-bottom:6px;}
+    .lm-item-body{font-size:13px;color:#4b5563;line-height:1.7;}
+    .lm-footer{margin-top:32px;padding-top:20px;border-top:1px solid #f0edfa;}
+    .lm-comment-label{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#9ca3af;margin-bottom:8px;}
+    .lm-comment-text{font-size:13px;color:#6b7280;font-style:italic;line-height:1.6;}
+  `;
   win.document.open();
   win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>SAM Lead Magnet</title>');
-  win.document.write('<style>' + styles + '</style>');
-  win.document.write('</head><body class="print-leadmagnet-only" style="background:#fff;padding:0;margin:0;">');
+  win.document.write('<style>' + cleanStyles + '</style>');
+  win.document.write('</head><body>');
   win.document.write('<div id="leadMagnetDoc" data-brand-color="' + brandColor + '">' + docEl.innerHTML + '</div>');
   win.document.write('<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},600);};</'+'script>');
   win.document.write('</body></html>');
@@ -9200,7 +9245,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.74
+  // CINEMATIC MEET SAM — v7.75
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -12250,9 +12295,8 @@ async function downloadPDF(type) {
     }
 
     if (res.status === 404 || res.status === 500) {
-      // PDF API not ready yet — silently use browser print
-      if (type === 'playbook') printPlaybookOnly();
-      else printLeadMagnetOnly();
+      // PDF API not available — show paywall to upgrade
+      showPaywall('pdf', true);
       btn.innerHTML = originalText;
       btn.disabled = false;
       return;
@@ -13545,7 +13589,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.74</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.75</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
