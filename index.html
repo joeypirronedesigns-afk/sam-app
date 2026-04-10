@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.82)
+       UNIFIED HERO (v7.83)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.82
+       CINEMATIC MEET SAM — v7.83
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.82
+       SAM GUIDED TOUR SPLASH — v7.83
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5420,10 +5420,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.82</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.83</div>
 
 
-  <!-- ── UNIFIED HERO v7.82 ── -->
+  <!-- ── UNIFIED HERO v7.83 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -9258,7 +9258,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.82
+  // CINEMATIC MEET SAM — v7.83
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -9807,16 +9807,21 @@ Rules:
       const _realVoiceResponse = !!reply;
       if (!reply) reply = "You write the way you think — fast, direct, no fluff. And you know exactly what you mean. I\'ve got you — everything I build is going to sound like YOU wrote it, not a robot.";
 
-      // Store voice profile
+      // Store voice profile — append to existing, never overwrite
       if (typeof WS !== 'undefined') {
-        WS.voiceProfile = reply;
-        WS.voiceCalibrated = true;
-        // Persist voice profile independently so it survives across sessions
         try {
-localStorage.setItem('sam-voice-profile', JSON.stringify({raw: reply}));
+          const _existing = localStorage.getItem('sam-voice-profile');
+          const _existingRaw = _existing ? (JSON.parse(_existing).raw || '') : '';
+          const _combined = _existingRaw ? _existingRaw + '\n' + reply : reply;
+          WS.voiceProfile = _combined;
+          WS.voiceCalibrated = true;
+          localStorage.setItem('sam-voice-profile', JSON.stringify({raw: _combined}));
           localStorage.setItem('sam-voice-calibrated', 'true');
+          const _rc = parseInt(localStorage.getItem('sam-voice-recal-count')||'0');
+          localStorage.setItem('sam-voice-recal-count', (_rc+1).toString());
         } catch(e) {}
         if (typeof saveWizardState === 'function') saveWizardState();
+        if (typeof updateWizardHeader === 'function') updateWizardHeader();
       }
 
       // Show the locked-in card — only if we got a real API response
@@ -13617,7 +13622,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.82</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.83</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
