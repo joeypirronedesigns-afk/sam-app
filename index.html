@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.02)
+       UNIFIED HERO (v7.03)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.02
+       CINEMATIC MEET SAM — v7.03
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.02
+       SAM GUIDED TOUR SPLASH — v7.03
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5408,10 +5408,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.02</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.03</div>
 
 
-  <!-- ── UNIFIED HERO v7.02 ── -->
+  <!-- ── UNIFIED HERO v7.03 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7581,7 +7581,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v7.02 ──
+// ── RUN TRACKING v7.03 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -8729,7 +8729,7 @@ function exportIdeasAsPDF(ideas){
     +'<script>
 
 /* ═══════════════════════════════════════════════
-   iMESSAGE THREAD ENGINE — v7.02
+   iMESSAGE THREAD ENGINE — v7.03
    ═══════════════════════════════════════════════ */
 
 // ── History persistence ──────────────────────────
@@ -9064,6 +9064,24 @@ function printPlaybookOnly() {
   win.document.write(playbookEl.innerHTML);
   win.document.write(nextToolHTML);
   win.document.write('<scr' + 'ipt>window.onload=function(){setTimeout(function(){window.print();},700)};</' + 'script>');
+<script>
+function printLeadMagnetOnly() {
+  const docEl = document.getElementById('leadMagnetDoc');
+  if (!docEl) { window.print(); return; }
+  const brandColor = docEl.getAttribute('data-brand-color') || '#7C3AED';
+  const content = docEl.innerHTML;
+  const win = window.open('', '_blank', 'width=900,height=700');
+  if (!win) { document.body.classList.add('print-leadmagnet-only'); window.print(); setTimeout(function(){document.body.classList.remove('print-leadmagnet-only');},1000); return; }
+  win.document.open();
+  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>SAM Lead Magnet</title>');
+  win.document.write('<style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}body{font-family:Inter,Arial,sans-serif;font-size:10.5pt;line-height:1.6;color:#1a1a2e;background:#fff}.no-print,.playbook-lead-comment,button,.playbook-copy-btn{display:none!important}</style>');
+  win.document.write('</head><body>');
+  win.document.write(content);
+  win.document.write('<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},600);};</'+'script>');
+  win.document.write('</body></html>');
+  win.document.close();
+}
+</script>
   win.document.write('</body></html>');
   win.document.close();
 }
@@ -9444,7 +9462,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.02
+  // CINEMATIC MEET SAM — v7.03
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -12539,117 +12557,6 @@ async function downloadPDF(type) {
 }
 
 
-function printLeadMagnetOnly() {
-  const docEl = document.getElementById('leadMagnetDoc');
-  if (!docEl) { window.print(); return; }
-  const brandColor = docEl.getAttribute('data-brand-color') || '#7C3AED';
-  const content = docEl.innerHTML;
-  const printHTML = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><title>SAM Lead Magnet</title><link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/><style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}@page{size:A4;margin:12mm 16mm}body{font-family:'Inter',Arial,sans-serif;font-size:10.5pt;line-height:1.6;color:#1a1a2e;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}.wl-doc-header{display:flex!important;align-items:center;justify-content:space-between;padding-bottom:14pt;margin-bottom:20pt;border-bottom:2.5px solid ${brandColor}}.playbook-lead-badge{display:none!important}.playbook-lead-title{font-family:'Sora',Arial;font-size:26pt;font-weight:800;color:#09080F;line-height:1.1;margin-bottom:16pt;letter-spacing:-.02em}.playbook-lead-why{display:none!important}.playbook-lead-items{display:flex;flex-direction:column;gap:10pt}.playbook-lead-item{display:flex;gap:12pt;align-items:flex-start;background:#fafafa;border:1px solid #e8e4f0;border-radius:8pt;padding:12pt 14pt;page-break-inside:avoid}.playbook-lead-num{font-family:'Sora',Arial;font-size:20pt;font-weight:800;color:${brandColor};min-width:24pt;flex-shrink:0;line-height:1;padding-top:2pt}.playbook-lead-item div{font-size:10pt;color:#1a1a2e;line-height:1.6}.playbook-lead-item strong{color:#09080F}.no-print,.playbook-lead-comment,button,.playbook-copy-btn{display:none!important}.sam-print-footer{margin-top:32pt;padding-top:12pt;border-top:1px solid #eee;text-align:center;font-size:7.5pt;color:#999}
-/* ── iMESSAGE THREAD ───────────────────────────── */
-#msThread {
-  display: none;
-  flex-direction: column;
-  gap: 12px;
-  overflow-y: auto;
-  flex: 1;
-  min-height: 0;
-  padding: 8px 0 16px 0;
-  scroll-behavior: smooth;
-}
-#msThread::-webkit-scrollbar { width: 3px; }
-#msThread::-webkit-scrollbar-track { background: transparent; }
-#msThread::-webkit-scrollbar-thumb { background: rgba(167,139,250,0.2); border-radius: 3px; }
-
-/* SAM bubble — left, purple gradient */
-.ms-thread-sam-row {
-  display: flex;
-  align-items: flex-end;
-  gap: 8px;
-  padding: 0 4px;
-}
-.ms-thread-sam-avatar {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: linear-gradient(135deg,#F472B6,#A78BFA);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 700;
-  color: #09080F;
-  flex-shrink: 0;
-}
-.ms-thread-sam-bubble {
-  background: linear-gradient(135deg,rgba(167,139,250,0.18),rgba(244,114,182,0.10));
-  border: 1px solid rgba(167,139,250,0.22);
-  border-radius: 18px 18px 18px 4px;
-  padding: 11px 15px;
-  font-size: 14px;
-  line-height: 1.65;
-  color: rgba(240,236,255,0.9);
-  max-width: 82%;
-  word-wrap: break-word;
-}
-
-/* User bubble — right, green */
-.ms-thread-user-row {
-  display: flex;
-  justify-content: flex-end;
-  padding: 0 4px;
-}
-.ms-thread-user-bubble {
-  background: linear-gradient(135deg,#22c55e,#16a34a);
-  border-radius: 18px 18px 4px 18px;
-  padding: 11px 15px;
-  font-size: 14px;
-  line-height: 1.65;
-  color: #fff;
-  max-width: 78%;
-  word-wrap: break-word;
-}
-
-/* Photo thumbnail bubble */
-.ms-thread-photo-bubble {
-  max-width: 200px;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.1);
-}
-.ms-thread-photo-bubble img {
-  width: 100%;
-  display: block;
-}
-
-/* meet-sam-wrap needs flex column to let thread grow */
-.meet-sam-wrap {
-  display: flex !important;
-  flex-direction: column;
-}
-
-/* Input row textarea auto-grow feel */
-#meetSamStoryInput.meet-sam-textarea {
-  transition: height 0.1s ease;
-}
-/* ── END iMESSAGE THREAD ────────────────────────── */
-
-</style></head><body>${content}<script>document.querySelectorAll('.no-print,.playbook-lead-comment,button').forEach(el=>el.style.display='none');window.onload=function(){setTimeout(function(){window.print();},600)};<\/script>
-
-  <!-- ══ SAM GUIDED TOUR SPLASH ══ -->
-  <div class="tour-splash" id="tourSplash">
-    <div class="tour-splash-inner" id="tourSplashInner">
-      <!-- Content injected by JS -->
-    </div>
-  </div>
-
-
-<!-- ══ SAM ECOSYSTEM OVERLAY ══ -->
-
-</body></html>`;
-  const win = window.open('', '_blank', 'width=900,height=700');
-  if (!win) { document.body.classList.add('print-leadmagnet-only'); window.print(); setTimeout(()=>document.body.classList.remove('print-leadmagnet-only'),1000); return; }
-  win.document.open(); win.document.write(printHTML); win.document.close();
-}
 
 function printPlaybook() {
   printPlaybookOnly();
@@ -13904,7 +13811,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.02</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.03</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -14859,9 +14766,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v7.02
+// SOFT POPUP v7.03
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v7.02
+// soft popup system removed v7.03
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -14870,7 +14777,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v7.02
+  // SAM GUIDED TOUR — v7.03
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
