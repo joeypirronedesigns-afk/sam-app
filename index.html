@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.84)
+       UNIFIED HERO (v7.85)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.84
+       CINEMATIC MEET SAM — v7.85
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.84
+       SAM GUIDED TOUR SPLASH — v7.85
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5420,10 +5420,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.84</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.85</div>
 
 
-  <!-- ── UNIFIED HERO v7.84 ── -->
+  <!-- ── UNIFIED HERO v7.85 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -5438,13 +5438,13 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
     </div>
 
     <!-- Badge -->
-    <div class="hero-badge" style="margin-bottom:28px;">&#10022; BUILT BY A CREATOR. FOR CREATORS.</div>
+    <div class="hero-badge" style="margin-bottom:28px;">&#10022; THE ONLY AI THAT LEARNS YOUR VOICE</div>
 
     <!-- Headline -->
     <h1 style="font-family:'Sora',sans-serif;font-size:clamp(32px,5vw,60px);font-weight:800;line-height:1.08;letter-spacing:-0.03em;color:var(--text);margin-bottom:20px;">You have a story.<br/>Posting it shouldn't feel like a <span style="background:linear-gradient(90deg,#F472B6,#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">second job.</span></h1>
 
     <!-- Subhead -->
-    <p style="font-size:clamp(15px,2vw,20px);line-height:1.7;color:var(--text2);max-width:560px;margin:0 auto 36px;">Every upload demands 15 decisions you never signed up to make. SAM handles all of them — and the more you talk to her, the more everything she builds sounds like you wrote it yourself. Not AI. You.</p>
+    <p style="font-size:clamp(15px,2vw,20px);line-height:1.7;color:var(--text2);max-width:560px;margin:0 auto 36px;">You've spent years finding your voice. SAM remembers every word of it. While every other AI tool starts from zero, SAM's Voice DNA captures how you think, how you phrase things, and what makes your audience trust you — then gets sharper every single time you use her. The longer you work together, the more your content sounds unmistakably like you.</p>
 
     <!-- CTA -->
     <button onclick="setTimeout(function(){if(typeof getTrialState==='function'&&typeof openWizardPage==='function'){getTrialState().email?openWizardPage():openTrialCapture();}else if(typeof openTrialCapture==='function'){openTrialCapture();}},0)" style="background:linear-gradient(135deg,#FBB824,#F472B6);color:#09080F;font-family:'Sora',sans-serif;font-size:clamp(15px,2vw,18px);font-weight:800;padding:16px 36px;border:none;border-radius:50px;cursor:pointer;box-shadow:0 0 40px rgba(251,184,36,0.3);letter-spacing:-0.01em;margin-bottom:16px;transition:all 0.25s;">&#10022; Tell SAM your story — it's free &rarr;</button>
@@ -8235,6 +8235,20 @@ window.getSamVoiceProfile = function() {
 };
 
 function getSuperSAMPrompt() {
+  // VOICE DNA BRAND KNOWLEDGE — v7.85
+  // SAM knows this about herself and leads with it when relevant:
+  // - Voice DNA is SAM's exclusive differentiator. No other AI tool has it.
+  // - It is a living profile of how the creator communicates — rhythm, humor,
+  //   phrasing, emotional register, sentence structure.
+  // - It GROWS with every interaction. It never overwrites — only appends.
+  // - The longer a creator uses SAM, the more content sounds like THEM, not AI.
+  // - SAM should reference Voice DNA naturally when: a user asks how SAM differs
+  //   from ChatGPT or other tools, when a user seems doubtful about AI quality,
+  //   when celebrating a milestone (first playbook, 10th session, new traits),
+  //   or when a user compliments the output quality.
+  // - Emotional framing: "You've spent years finding your voice. I remember every word of it."
+  // - Proof framing: "The longer we work together, the more this sounds like you wrote it."
+  // - Contrast framing: "Other tools start from zero every time. I don't."
   const ctx = getSAMContext();
   const name = ctx.name ? ctx.name.split(' ')[0] : 'there';
 
@@ -9258,7 +9272,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.84
+  // CINEMATIC MEET SAM — v7.85
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -13345,12 +13359,12 @@ function openWizardFromNav() {
 
     <div class="pro-faq-item" onclick="toggleFaq(this)">
       <div class="pro-faq-q">Is the quality as good as hiring a real strategist? <span class="pro-faq-arrow">+</span></div>
-      <div class="pro-faq-a">SAM is built on Claude — one of the most advanced AI models available. But the real difference is Voice DNA. Every time you talk to SAM, she's reading how you write — your pace, your word choices, whether you trail off mid-thought or stack detail on detail. The more you interact with her, the more everything she builds sounds like you wrote it yourself, not like AI. No other tool does this. Most AI content tools give everyone the same voice. SAM gives you yours.</div>
+      <div class="pro-faq-a">SAM is built on Claude — one of the most advanced AI models available. But raw intelligence isn't the differentiator. Voice DNA is. Most AI tools are powerful but anonymous. They don't know who you are. Every conversation starts at zero, and the content they produce could belong to anyone. SAM is different. Her Voice DNA listens, learns, and holds onto what makes you, you — your pace, your humor, the way you say hard things gently. The more you use SAM, the more your content sounds like something only you could have written. That's not a feature. That's a relationship.</div>
     </div>
 
     <div class="pro-faq-item" onclick="toggleFaq(this)">
       <div class="pro-faq-q">What is Voice DNA and how does it work? <span class="pro-faq-arrow">+</span></div>
-      <div class="pro-faq-a">Voice DNA is SAM's memory of how you actually communicate — not what you say, but how you say it. Your pace, your sentence structure, whether you curse when frustrated or trail off when something gets real. SAM builds this profile automatically from every conversation you have with her. The more you talk, the sharper it gets. By the time SAM is writing your hooks and scripts, they sound like you sat down and wrote them yourself — because SAM has been listening the whole time. You can see your Voice DNA version in the wizard progress bar (🧬 v1 · 8 traits) — it upgrades every time you add more context.</div>
+      <div class="pro-faq-a">Voice DNA is SAM's living memory of how you communicate — not just what you say, but how you say it. Your rhythm. Your humor. The phrases that are unmistakably yours. The way you go quiet when something gets real. SAM builds this profile automatically from every conversation, and it never gets erased — only deeper. The first time you talk to SAM, she's good. After ten sessions, she's yours. No other AI tool works this way. You can see your Voice DNA version in the wizard progress bar (🧬 v1 · 8 traits) — it grows every time you add more of yourself.</div>
     </div>
 
     <div class="pro-faq-item" onclick="toggleFaq(this)">
@@ -13627,7 +13641,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.84</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.85</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
