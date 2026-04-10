@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.71)
+       UNIFIED HERO (v7.72)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.71
+       CINEMATIC MEET SAM — v7.72
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.71
+       SAM GUIDED TOUR SPLASH — v7.72
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5420,10 +5420,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.71</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.72</div>
 
 
-  <!-- ── UNIFIED HERO v7.71 ── -->
+  <!-- ── UNIFIED HERO v7.72 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -9166,7 +9166,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.71
+  // CINEMATIC MEET SAM — v7.72
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -13511,7 +13511,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.71</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.72</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -15292,8 +15292,10 @@ async function meetSamSendStory() {
 
   // Add photo context if pending
   let userMessage = text;
+  let pendingPhotoData = null;
   if (window._msPendingPhoto) {
-    userMessage = (text || 'Please analyze this image') + ' [Image attached — analyze as analytics screenshot or content and give strategy advice]';
+    pendingPhotoData = window._msPendingPhoto;
+    userMessage = text || 'Please analyze this image and give me specific strategy advice.';
     window._msPendingPhoto = null;
   }
 
@@ -15304,8 +15306,17 @@ async function meetSamSendStory() {
 
   // Build payload — match existing API format
   const conversationMessages = messages.slice(-10);
-  // Add current user message at end
-  conversationMessages.push({ role: 'user', content: userMessage });
+  // Add current user message at end — with photo if present
+  if (pendingPhotoData) {
+    const base64 = pendingPhotoData.split(',')[1];
+    const mtype = pendingPhotoData.split(';')[0].split(':')[1] || 'image/jpeg';
+    conversationMessages.push({ role: 'user', content: [
+      { type: 'image', source: { type: 'base64', media_type: mtype, data: base64 }},
+      { type: 'text', text: userMessage }
+    ]});
+  } else {
+    conversationMessages.push({ role: 'user', content: userMessage });
+  }
   const payload = {
     mode: 'chat',
     userId: 'dev-joey',
