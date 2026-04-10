@@ -9275,15 +9275,14 @@ function initWizard() {
     if (card) { card.style.opacity = '0'; card.style.transform = 'translateY(-8px)'; setTimeout(() => card.remove(), 400); }
     const step = localStorage.getItem('sam_session_step') || '0';
     const saved = localStorage.getItem('sam_session_v2');
-    if (saved && step !== '0' && typeof doRestoreSession === 'function') {
-      setTimeout(() => doRestoreSession(), 450);
-      return;
-    }
     setTimeout(() => {
-      if (typeof showWizardStep === 'function') showWizardStep('entry');
-      setTimeout(() => {
-        if (typeof msOpenThread === 'function') msOpenThread();
-      }, 200);
+      const wp = document.getElementById('wizardPage');
+      if (wp) { wp.classList.add('open'); document.body.style.overflow = 'hidden'; }
+      if (saved && step !== '0' && typeof doRestoreSession === 'function') {
+        doRestoreSession();
+      } else {
+        if (typeof showWizardStep === 'function') showWizardStep('entry');
+      }
     }, 450);
   }
 
