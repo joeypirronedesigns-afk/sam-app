@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.06)
+       UNIFIED HERO (v7.07)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.06
+       CINEMATIC MEET SAM — v7.07
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.06
+       SAM GUIDED TOUR SPLASH — v7.07
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5408,10 +5408,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.06</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.07</div>
 
 
-  <!-- ── UNIFIED HERO v7.06 ── -->
+  <!-- ── UNIFIED HERO v7.07 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7581,7 +7581,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v7.06 ──
+// ── RUN TRACKING v7.07 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -8728,6 +8728,7 @@ function exportIdeasAsPDF(ideas){
     +'<div style="margin-top:40px;text-align:center;font-size:11px;color:#999;border-top:1px solid #eee;padding-top:16px;">Built with SAM · samforcreators.com</div>'
     +'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},600);};</'+'script>'
     +'</body></html>';
+</script>
 <script>
 function printPlaybookOnly() {
   const playbookEl = document.getElementById('wizardPlaybook');
@@ -9145,7 +9146,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.06
+  // CINEMATIC MEET SAM — v7.07
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -13494,7 +13495,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.06</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.07</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -14449,9 +14450,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v7.06
+// SOFT POPUP v7.07
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v7.06
+// soft popup system removed v7.07
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -14460,7 +14461,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v7.06
+  // SAM GUIDED TOUR — v7.07
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
@@ -14966,7 +14967,7 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
 <script>
 
 /* ═══════════════════════════════════════════════
-   iMESSAGE THREAD ENGINE — v7.06
+   iMESSAGE THREAD ENGINE — v7.07
    ═══════════════════════════════════════════════ */
 
 // ── History persistence ──────────────────────────
@@ -15200,21 +15201,12 @@ async function meetSamSendStory() {
   const voiceProfile = (typeof WS !== 'undefined' && WS.voiceProfile) ? WS.voiceProfile : '';
   const sessionCtx = (typeof WS !== 'undefined' && WS.brandHandle) ? 'Creator: ' + WS.brandHandle + '. Series: ' + (WS.seriesName||'') + '. Platforms: ' + (WS.platforms||[]).join(', ') + '.' : '';
 
-  const systemPrompt = 'You are SAM — Strategic Assistant for Making. You help self-taught creators build content strategy and tell their story. Keep responses to 2-4 sentences MAX. Never walls of text. Be direct, warm, and specific. Sound like a brilliant friend who gets it.
-
-' +
-    (sessionCtx ? sessionCtx + '
-
-' : '') +
-    (voiceProfile ? 'Voice profile: ' + voiceProfile + '
-
-' : '') +
-    'Navigation tags (use when needed): [NAV:wizard] = open Story Engine, [NAV:home] = go home, [NAV:close] = close overlay.
-' +
-    'Tool triggers: [RUN:pulse] = run The Pulse, [RUN:spark] = run The Spark.
-' +
-    'For thumbnail creation defer to The Lens. For full calendar defer to Blueprint. For full playbook defer to Story Engine.
-' +
+  const systemPrompt = 'You are SAM — Strategic Assistant for Making. You help self-taught creators build content strategy and tell their story. Keep responses to 2-4 sentences MAX. Never walls of text. Be direct, warm, and specific. Sound like a brilliant friend who gets it.\n\n' +
+    (sessionCtx ? sessionCtx + '\n\n' : '') +
+    (voiceProfile ? 'Voice profile: ' + voiceProfile + '\n\n' : '') +
+    'Navigation tags (use when needed): [NAV:wizard] = open Story Engine, [NAV:home] = go home, [NAV:close] = close overlay.\n' +
+    'Tool triggers: [RUN:pulse] = run The Pulse, [RUN:spark] = run The Spark.\n' +
+    'For thumbnail creation defer to The Lens. For full calendar defer to Blueprint. For full playbook defer to Story Engine.\n' +
     'Handoff line when deferring: "I can sketch that out here, but [Tool] gives you the full picture — want me to take you there?"';
 
   // Add photo context if pending
