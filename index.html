@@ -15207,12 +15207,9 @@ async function msStreamIntoBubble(bubble, apiPayload) {
           const existingRaw = existing ? (JSON.parse(existing).raw || '') : '';
           const existingTraits = existingRaw.match(/^\d+\./gm);
           const startNum = existingTraits ? existingTraits.length + 1 : 1;
-          const newTraits = val.split(/[;
-]+/).map(function(s){ return s.trim(); }).filter(function(s){ return s.length > 10; });
-          const numbered = newTraits.map(function(t,i){ return (startNum+i)+'. '+t; }).join('
-');
-          const combined = existingRaw ? existingRaw+'
-'+numbered : numbered;
+          const newTraits = val.split(/[;\n]+/).map(function(s){ return s.trim(); }).filter(function(s){ return s.length > 10; });
+          const numbered = newTraits.map(function(t,i){ return (startNum+i)+'. '+t; }).join('\n');
+          const combined = existingRaw ? existingRaw+'\n'+numbered : numbered;
           localStorage.setItem('sam-voice-profile', JSON.stringify({raw: combined}));
           localStorage.setItem('sam-voice-calibrated', 'true');
           const rc = parseInt(localStorage.getItem('sam-voice-recal-count')||'0');
