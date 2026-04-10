@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.62)
+       UNIFIED HERO (v7.63)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.62
+       CINEMATIC MEET SAM — v7.63
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.62
+       SAM GUIDED TOUR SPLASH — v7.63
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5420,10 +5420,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.62</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.63</div>
 
 
-  <!-- ── UNIFIED HERO v7.62 ── -->
+  <!-- ── UNIFIED HERO v7.63 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -9183,7 +9183,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.62
+  // CINEMATIC MEET SAM — v7.63
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -13509,7 +13509,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.62</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.63</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -15173,7 +15173,12 @@ async function msStreamIntoBubble(bubble, apiPayload) {
         if (field === 'name') { WS.brandName = val; const el = document.getElementById('brandName'); if (el) el.value = val; }
         else if (field === 'handle') { WS.brandHandle = val; const el = document.getElementById('brandHandle'); if (el) el.value = val; }
         else if (field === 'niche') { WS.creatorType = val; }
-        else if (field === 'story') { WS.storyText = val; }
+        else if (field === 'story') {
+          WS.storyText = val;
+          const t = document.getElementById('wiz2text');
+          if (t) { t.value = val; t.dispatchEvent(new Event('input')); }
+          if (typeof selectInputMethod === 'function') selectInputMethod('type');
+        }
         else if (field === 'platforms') { WS.platforms = val; }
         else if (field === 'audience') { WS.audience = val; }
       });
