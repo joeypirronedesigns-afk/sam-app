@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.34)
+       UNIFIED HERO (v7.35)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.34
+       CINEMATIC MEET SAM — v7.35
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.34
+       SAM GUIDED TOUR SPLASH — v7.35
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5420,10 +5420,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.34</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.35</div>
 
 
-  <!-- ── UNIFIED HERO v7.34 ── -->
+  <!-- ── UNIFIED HERO v7.35 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7593,7 +7593,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v7.34 ──
+// ── RUN TRACKING v7.35 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -8751,12 +8751,21 @@ function printPlaybookOnly() {
   const nextToolEl = document.getElementById('nextToolOutput');
   const nextToolHTML = nextToolEl && nextToolEl.innerHTML.trim() ?
     '<div style="margin-top:32pt;padding-top:24pt;border-top:2px solid #e8e4f0;"><div style="font-family:Sora,Arial;font-size:14pt;font-weight:700;color:#09080F;margin-bottom:16pt;">What SAM built next</div>' + nextToolEl.innerHTML + '</div>' : '';
-  const brandColor = (document.getElementById('leadMagnetDoc')||{}).getAttribute('data-brand-color')||'#7C3AED';
+  // Grab all styles from current document
+  let styles = '';
+  for (let i = 0; i < document.styleSheets.length; i++) {
+    try {
+      const rules = document.styleSheets[i].cssRules || document.styleSheets[i].rules;
+      if (rules) { for (let j = 0; j < rules.length; j++) { styles += rules[j].cssText + '\n'; } }
+    } catch(e) {}
+  }
   const win = window.open('', '_blank', 'width=900,height=700');
   if (!win) { document.body.classList.add('print-playbook-only'); window.print(); setTimeout(function(){document.body.classList.remove('print-playbook-only');},1000); return; }
   win.document.open();
-  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>SAM Output</title></head><body>');
-  win.document.write(playbookEl.innerHTML);
+  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>SAM Output</title>');
+  win.document.write('<style>' + styles + '</style>');
+  win.document.write('</head><body class="print-playbook-only" style="background:#fff;padding:0;margin:0;">');
+  win.document.write('<div id="wizardPlaybook">' + playbookEl.innerHTML + '</div>');
   win.document.write(nextToolHTML);
   win.document.write('<scr' + 'ipt>window.onload=function(){setTimeout(function(){window.print();},700)};</' + 'script>');
   win.document.write('</body></html>');
@@ -8768,14 +8777,21 @@ function printLeadMagnetOnly() {
   const docEl = document.getElementById('leadMagnetDoc');
   if (!docEl) { window.print(); return; }
   const brandColor = docEl.getAttribute('data-brand-color') || '#7C3AED';
-  const content = docEl.innerHTML;
+  // Grab all styles from current document
+  let styles = '';
+  for (let i = 0; i < document.styleSheets.length; i++) {
+    try {
+      const rules = document.styleSheets[i].cssRules || document.styleSheets[i].rules;
+      if (rules) { for (let j = 0; j < rules.length; j++) { styles += rules[j].cssText + '\n'; } }
+    } catch(e) {}
+  }
   const win = window.open('', '_blank', 'width=900,height=700');
   if (!win) { document.body.classList.add('print-leadmagnet-only'); window.print(); setTimeout(function(){document.body.classList.remove('print-leadmagnet-only');},1000); return; }
   win.document.open();
   win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>SAM Lead Magnet</title>');
-  win.document.write('<style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}body{font-family:Inter,Arial,sans-serif;font-size:10.5pt;line-height:1.6;color:#1a1a2e;background:#fff}.no-print,.playbook-lead-comment,button,.playbook-copy-btn{display:none!important}</style>');
-  win.document.write('</head><body>');
-  win.document.write(content);
+  win.document.write('<style>' + styles + '</style>');
+  win.document.write('</head><body class="print-leadmagnet-only" style="background:#fff;padding:0;margin:0;">');
+  win.document.write('<div id="leadMagnetDoc" data-brand-color="' + brandColor + '">' + docEl.innerHTML + '</div>');
   win.document.write('<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},600);};</'+'script>');
   win.document.write('</body></html>');
   win.document.close();
@@ -9148,7 +9164,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.34
+  // CINEMATIC MEET SAM — v7.35
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -10098,7 +10114,6 @@ Rules:
   }
 
   function meetSamExtractContext() {
-    // Read from chat history — the real source of truth now
     const history = JSON.parse(localStorage.getItem('sam-chat-history') || '[]');
     const userMessages = history.filter(function(m){ return m.role === 'user' && !m.photo; });
     const story = userMessages.map(function(m){ return m.content; }).join(' ');
@@ -10108,20 +10123,58 @@ Rules:
     const nameMatch = story.match(/(?:i'm|i am|my name is|call me|it's me)\s+([A-Z][a-z]+)/i);
     if (nameMatch) ctx.name = nameMatch[1];
 
-    // Extract series name
-    const seriesMatch = story.match(/(?:series|show|called|named)\s+["\'\']?([A-Za-z][\w\s]+(?:to[\w\s]+)?)["\'\']?/i);
-    if (seriesMatch) ctx.series = seriesMatch[1].trim().slice(0, 60);
+    // Extract series name — stop at common sentence continuations
+    const seriesMatch = story.match(/(?:series|show)\s+(?:called|named)\s+["\'"]?([^,\.\n]+?)(?:\s+and|\s+have|\s+i've|\s+since|\.|\.{3}|$)/i);
+    if (seriesMatch) ctx.series = seriesMatch[1].trim().replace(/["\']/g,'').slice(0,50);
 
-    // Extract platforms
-    const platformKeywords = {
-      youtube: 'YouTube', instagram: 'Instagram', tiktok: 'TikTok',
-      facebook: 'Facebook', pinterest: 'Pinterest', twitter: 'Twitter'
+    // Extract platforms — case insensitive full word match
+    const platformMap = {
+      'youtube': 'YouTube', 'tiktok': 'TikTok', 'tik tok': 'TikTok',
+      'facebook': 'Facebook', 'instagram': 'Instagram',
+      'pinterest': 'Pinterest', 'twitter': 'Twitter'
     };
     ctx.platforms = [];
     const storyLower = story.toLowerCase();
-    for (const key in platformKeywords) {
-      if (storyLower.includes(key)) ctx.platforms.push(platformKeywords[key]);
+    for (const key in platformMap) {
+      if (storyLower.includes(key) && ctx.platforms.indexOf(platformMap[key]) === -1) {
+        ctx.platforms.push(platformMap[key]);
+      }
     }
+
+    // Extract niche
+    const nicheMatch = story.match(/(?:renovation|remodel|cottage|diy|home|house|travel|food|fitness|coach|business|documenting|building|creator)/i);
+    if (nicheMatch) ctx.niche = nicheMatch[0];
+
+    // Extract creator type — personal wins if self-taught/diy/renovation
+    if (story.match(/self.taught|not a contractor|diy|maker|builder|renovation|remodel/i)) {
+      ctx.creatorType = 'personal';
+    } else if (story.match(/coach|coaching|clients|course/i)) {
+      ctx.creatorType = 'coach';
+    } else if (story.match(/business|product|service|sell/i)) {
+      ctx.creatorType = 'business';
+    }
+
+    ctx.storyRaw = story.slice(0, 2000);
+    return ctx;
+  }
+    }
+
+    // Extract niche
+    const nicheMatch = story.match(/(?:renovation|remodel|cottage|diy|home|house|travel|food|fitness|coach|business|documenting|building|creator)/i);
+    if (nicheMatch) ctx.niche = nicheMatch[0];
+
+    // Extract creator type — personal wins if self-taught/diy/renovation
+    if (story.match(/self.taught|not a contractor|diy|maker|builder|renovation|remodel/i)) {
+      ctx.creatorType = 'personal';
+    } else if (story.match(/coach|coaching|clients|course/i)) {
+      ctx.creatorType = 'coach';
+    } else if (story.match(/business|product|service|sell/i)) {
+      ctx.creatorType = 'business';
+    }
+
+    ctx.storyRaw = story.slice(0, 2000);
+    return ctx;
+  }
 
     // Extract niche
     const nicheMatch = story.match(/(?:renovation|remodel|cottage|diy|home|house|travel|food|fitness|coach|business|documenting|building|creator)/i);
@@ -13470,7 +13523,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.34</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.35</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -14425,9 +14478,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v7.34
+// SOFT POPUP v7.35
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v7.34
+// soft popup system removed v7.35
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -14436,7 +14489,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v7.34
+  // SAM GUIDED TOUR — v7.35
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
@@ -14942,7 +14995,7 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
 <script>
 
 /* ═══════════════════════════════════════════════
-   iMESSAGE THREAD ENGINE — v7.34
+   iMESSAGE THREAD ENGINE — v7.35
    ═══════════════════════════════════════════════ */
 
 // ── History persistence ──────────────────────────
