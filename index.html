@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.85)
+       UNIFIED HERO (v7.86)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.85
+       CINEMATIC MEET SAM — v7.86
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.85
+       SAM GUIDED TOUR SPLASH — v7.86
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5379,6 +5379,52 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
     }
     .tour-lock-btn:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(167,139,250,0.6); }
 
+/* ── MOBILE NAV OVERRIDES ─────────────────────────── */
+@media(max-width:600px){
+  .nav-setup-btn,#samVoiceToggle,.nav-signin-btn,#navStoryEngineBtn,.ideas-nav-btn{display:none!important;}
+  nav{padding:0 14px;height:52px;}
+  .nav-logo{font-size:15px;}
+}
+@media(max-width:380px){
+  .nav-pro-btn{display:none!important;}
+}
+
+/* ── MOBILE HERO OVERRIDES ────────────────────────── */
+@media(max-width:600px){
+  .hero{padding:80px 20px 48px!important;text-align:left!important;}
+  .hero-badge{font-size:9px!important;letter-spacing:0.10em!important;}
+  .hero p{margin-left:0!important;margin-right:0!important;max-width:100%!important;}
+  .hero-cta-primary,button.hero-cta-primary{width:100%!important;box-sizing:border-box!important;font-size:15px!important;padding:15px 20px!important;text-align:center!important;}
+}
+@media(max-width:480px){
+  .hero [style*="inline-flex"][style*="flex-wrap"]{gap:4px!important;padding:8px 12px!important;}
+  .hero [style*="max-width:620px"]{padding:20px 16px!important;margin-left:0!important;margin-right:0!important;max-width:100%!important;box-sizing:border-box!important;}
+}
+
+/* ── MOBILE MEET SAM THREAD ───────────────────────── */
+@media(max-width:600px){
+  #msThread{max-height:calc(55vh - 120px);}
+  .ms-thread-sam-bubble,.ms-thread-user-bubble{font-size:14px!important;padding:10px 13px!important;max-width:88%!important;}
+  #msInputRow{padding:10px 0 0 0!important;padding-bottom:max(10px,env(safe-area-inset-bottom,10px))!important;}
+  #msChatNav{gap:6px!important;padding:8px 0 0 0!important;}
+  #msChatNav button{min-height:38px!important;padding:6px 12px!important;font-size:11px!important;}
+  #msInputRow textarea{font-size:16px!important;}
+}
+
+/* ── MOBILE WIZARD ────────────────────────────────── */
+@media(max-width:600px){
+  .wizard-body{padding:32px 20px 180px!important;}
+  .wizard-progress-wrap{padding:12px 20px 10px!important;}
+  .wizard-nav{padding:12px 16px!important;padding-bottom:max(12px,env(safe-area-inset-bottom,12px))!important;}
+  .wizard-back{padding:10px 16px!important;font-size:13px!important;}
+  #wizardNextBtn{min-height:48px!important;font-size:15px!important;}
+}
+
+/* ── MOBILE SAFE AREA GLOBAL ──────────────────────── */
+@media(max-width:600px){
+  .wl-inner{padding-bottom:max(28px,env(safe-area-inset-bottom,28px))!important;}
+}
+
 /* ── iMESSAGE THREAD STYLES ─────────────────────── */
 #msThread{display:none;flex-direction:column;gap:12px;overflow-y:auto;flex:1;min-height:0;padding:8px 0 16px 0;scroll-behavior:smooth;}
 #msThread::-webkit-scrollbar{width:3px;}
@@ -5420,10 +5466,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.85</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.86</div>
 
 
-  <!-- ── UNIFIED HERO v7.85 ── -->
+  <!-- ── UNIFIED HERO v7.86 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -8235,7 +8281,7 @@ window.getSamVoiceProfile = function() {
 };
 
 function getSuperSAMPrompt() {
-  // VOICE DNA BRAND KNOWLEDGE — v7.85
+  // VOICE DNA BRAND KNOWLEDGE — v7.86
   // SAM knows this about herself and leads with it when relevant:
   // - Voice DNA is SAM's exclusive differentiator. No other AI tool has it.
   // - It is a living profile of how the creator communicates — rhythm, humor,
@@ -9272,7 +9318,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.85
+  // CINEMATIC MEET SAM — v7.86
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -13641,7 +13687,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.85</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.86</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -13787,7 +13833,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
         </div>
 
         <!-- PERSISTENT INPUT ROW -->
-        <div id="msInputRow" style="display:none;align-items:flex-end;gap:8px;padding:12px 0 0 0;border-top:1px solid rgba(255,255,255,0.07);flex-shrink:0;">
+        <div id="msInputRow" style="display:none;align-items:flex-end;gap:8px;padding:12px 0 0 0;border-top:1px solid rgba(255,255,255,0.07);flex-shrink:0;padding-bottom:env(safe-area-inset-bottom,0px);">
           <label for="msPhotoUpload" style="cursor:pointer;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(244,114,182,0.5)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)'">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(240,236,255,0.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           </label>
