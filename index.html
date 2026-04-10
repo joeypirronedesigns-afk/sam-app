@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.81)
+       UNIFIED HERO (v7.82)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.81
+       CINEMATIC MEET SAM — v7.82
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.81
+       SAM GUIDED TOUR SPLASH — v7.82
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5420,10 +5420,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.81</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.82</div>
 
 
-  <!-- ── UNIFIED HERO v7.81 ── -->
+  <!-- ── UNIFIED HERO v7.82 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -8857,27 +8857,23 @@ function printLeadMagnetOnly() {
   if (!win) { document.body.classList.add('print-leadmagnet-only'); window.print(); setTimeout(function(){document.body.classList.remove('print-leadmagnet-only');},1000); return; }
   const cleanStyles = `
     @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap');
-    *{box-sizing:border-box;margin:0;padding:0;}
-    :root{--brand:${brandColor};}
-    body{font-family:'Sora',Arial,sans-serif;color:#09080F;background:#fff;padding:0;margin:0;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-    @page{size:A4;margin:0;}
-    .no-print,.lm-controls{display:none!important;}
-    .playbook-lead-magnet{max-width:100%;margin:0 auto;}
-    .lm-header{background:${brandColor};color:#fff;padding:28px 40px 24px;display:flex;align-items:center;justify-content:space-between;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-    .lm-brand-logo{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#fff;}
-    .lm-brand-name{font-size:14px;font-weight:700;color:#fff;margin-left:10px;}
-    .lm-badge{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;background:rgba(255,255,255,0.2);color:#fff;padding:4px 12px;border-radius:20px;}
-    .lm-body{padding:40px;}
-    .lm-tag{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:${brandColor};margin-bottom:10px;}
-    .lm-title{font-size:24px;font-weight:800;color:#09080F;line-height:1.2;margin-bottom:16px;}
-    .lm-why{font-size:13px;color:#6b7280;line-height:1.6;margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid #f0edfa;}
-    .lm-item{display:flex;gap:20px;margin-bottom:28px;padding-bottom:28px;border-bottom:1px solid #f7f5ff;align-items:flex-start;}
-    .lm-item-num{font-size:28px;font-weight:800;color:${brandColor};opacity:0.25;flex-shrink:0;line-height:1;width:36px;}
-    .lm-item-heading{font-size:15px;font-weight:700;color:#09080F;margin-bottom:6px;}
-    .lm-item-body{font-size:13px;color:#4b5563;line-height:1.7;}
-    .lm-footer{margin-top:32px;padding-top:20px;border-top:1px solid #f0edfa;}
-    .lm-comment-label{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#9ca3af;margin-bottom:8px;}
-    .lm-comment-text{font-size:13px;color:#6b7280;font-style:italic;line-height:1.6;}
+    *{box-sizing:border-box;}
+    :root{--brand:${brandColor};--text:#09080F;--text2:#3d3a4f;--text3:#6b7080;--border:#e8e4f0;--surface:#f7f5ff;--radius:10px;--radius-lg:14px;--radius-xl:18px;--lens:#D97706;}
+    body{font-family:'Sora',Arial,sans-serif;color:#09080F;background:#fff;padding:24px;margin:0;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    @page{size:A4;margin:12mm 14mm;}
+    .no-print,.lm-controls,.playbook-lead-why.no-print{display:none!important;}
+    .playbook-lead-magnet{background:linear-gradient(135deg,rgba(251,191,36,0.08),rgba(251,191,36,0.04));border:1px solid rgba(251,191,36,0.25);border-radius:18px;padding:24px;margin-bottom:12px;position:relative;}
+    .playbook-lead-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#D97706;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.25);padding:3px 10px;border-radius:20px;margin-bottom:14px;}
+    .playbook-lead-title{font-family:'Sora',sans-serif;font-size:22px;font-weight:700;color:#09080F;margin-bottom:8px;letter-spacing:-0.01em;line-height:1.3;}
+    .playbook-lead-why{font-size:14px;color:#3d3a4f;line-height:1.7;margin-bottom:20px;padding:12px 14px;background:rgba(0,0,0,0.03);border-radius:10px;border-left:3px solid ${brandColor};}
+    .playbook-lead-items{display:flex;flex-direction:column;gap:12px;margin-bottom:20px;}
+    .playbook-lead-item{display:flex;gap:16px;align-items:flex-start;font-size:14px;color:#09080F;line-height:1.6;padding:14px 16px;background:#f7f5ff;border:1px solid #e8e4f0;border-radius:12px;}
+    .playbook-lead-num{font-family:'Sora',sans-serif;font-size:20px;font-weight:800;color:${brandColor};flex-shrink:0;min-width:28px;line-height:1.2;}
+    .playbook-lead-item strong{font-weight:700;color:#09080F;}
+    .playbook-lead-comment{background:rgba(0,0,0,0.03);border:1px solid rgba(251,191,36,0.2);border-radius:10px;padding:14px 16px;margin-top:12px;}
+    .playbook-lead-comment-label{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#D97706;margin-bottom:8px;}
+    .playbook-lead-comment-text{font-size:14px;color:#09080F;line-height:1.6;font-style:italic;}
+    .playbook-cover-badge,.playbook-section,.playbook-cover,.save-to-ideas-btn,.playbook-copy-btn,.playbook-print-bar{display:none!important;}
   `;
   win.document.open();
   win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>SAM Lead Magnet</title>');
@@ -9262,7 +9258,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.81
+  // CINEMATIC MEET SAM — v7.82
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -13621,7 +13617,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.81</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.82</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
