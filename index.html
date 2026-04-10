@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.58)
+       UNIFIED HERO (v7.59)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.58
+       CINEMATIC MEET SAM — v7.59
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.58
+       SAM GUIDED TOUR SPLASH — v7.59
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5420,10 +5420,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.58</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.59</div>
 
 
-  <!-- ── UNIFIED HERO v7.58 ── -->
+  <!-- ── UNIFIED HERO v7.59 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -9179,7 +9179,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.58
+  // CINEMATIC MEET SAM — v7.59
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -9532,24 +9532,15 @@ function initWizard() {
     const card = document.getElementById('msCheckinCard');
     if (card) { card.style.opacity='0'; card.style.transform='translateY(-8px)'; setTimeout(() => card.remove(), 400); }
     setTimeout(() => {
-      // Make sure wizard page is open
       const wp = document.getElementById('wizardPage');
-      if (wp && !wp.classList.contains('open')) {
-        wp.classList.add('open');
-        document.body.style.overflow = 'hidden';
-      }
-      // Use doRestoreSession which actually restores state and navigates
-      if (typeof doRestoreSession === 'function') {
+      if (wp) { wp.classList.add('open'); document.body.style.overflow = 'hidden'; }
+      const step = localStorage.getItem('sam_session_step') || '0';
+      const saved = localStorage.getItem('sam_session_v2');
+      if (saved && step !== '0' && typeof doRestoreSession === 'function') {
         doRestoreSession();
-      } else if (typeof restoreSessionFull === 'function') {
-        restoreSessionFull();
       } else {
-        const step = localStorage.getItem('sam_session_step') || '0';
-        const saved = localStorage.getItem('sam_session_v2');
-        if (saved && typeof WS !== 'undefined') {
-          Object.assign(WS, JSON.parse(saved));
-          if (typeof showWizardStep === 'function') showWizardStep(step);
-        }
+        if (typeof startWizard === 'function') startWizard('new');
+        else if (typeof showWizardStep === 'function') showWizardStep('0');
       }
     }, 350);
   }
@@ -13502,7 +13493,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.58</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.59</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
