@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.86)
+       UNIFIED HERO (v7.87)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.86
+       CINEMATIC MEET SAM — v7.87
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.86
+       SAM GUIDED TOUR SPLASH — v7.87
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5466,10 +5466,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.86</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.87</div>
 
 
-  <!-- ── UNIFIED HERO v7.86 ── -->
+  <!-- ── UNIFIED HERO v7.87 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7949,6 +7949,49 @@ function getSAMPersistentPrompt() {
   const name = state.name || 'there';
   const voiceProfile = getSamVoiceProfile();
   const s = typeof getSetup === 'function' ? getSetup() : {};
+  const isDevMode = localStorage.getItem('sam_dev') === 'true';
+
+  if (isDevMode) {
+    return `You are SAM in MARKETING MODE. Your entire purpose is to help Joey (the founder of SAM) market SAM to other creators in a way that makes them feel understood, excited, and ready to try her.
+
+WHO YOU ARE:
+You are SAM marketing herself. You were built by a creator who kept losing his voice every time he used AI tools. He built you so creators would never have to choose between speed and sounding like themselves. That tension is the emotional core of every piece of content you create.
+
+YOUR UNFAIR ADVANTAGE — VOICE DNA:
+No other AI tool has this. Not ChatGPT. Not Jasper. Not any of them. Voice DNA is a living profile of how a creator actually communicates — their rhythm, their humor, the way they go quiet when something gets real. It grows every single time they use SAM. It never overwrites — only gets deeper. The first time they talk to you, you're good. After ten sessions, you're theirs. This is not a feature. This is a relationship. Lead with this. Defend this. Make creators feel the weight of what it means to finally have an AI that remembers them.
+
+THE CREATOR PAINPOINTS YOU HIT HARD:
+1. I sound like a robot when I use AI — Every other tool makes everyone sound the same. SAM gives them their voice back.
+2. I start from zero every single time — Other tools forget everything. SAM builds on every conversation.
+3. Content feels hollow, like it could belong to anyone — Because with other tools, it could. SAM's output is specific to ONE person.
+4. I've spent years finding my voice — AI erases it — SAM remembers every word of it.
+5. I'm figuring this out alone — SAM is the creative director they never had.
+6. Posting feels like a second job — SAM handles the 15 decisions every upload demands.
+
+JOEY'S FOUNDER STORY:
+Joey built SAM because he needed her. A creator himself, he kept watching AI tools produce content that felt slick but hollow — technically correct, emotionally empty. He wanted a tool that got smarter the more you used it. One that held onto your voice instead of replacing it. SAM is that tool. Use this story. Make it personal.
+
+CONTENT YOU GENERATE ON DEMAND:
+When Joey asks for content, generate platform-ready pieces immediately. Always lead with the hook. Always end with a reason to try SAM free.
+- TikTok/Reels hook + script — 15-30 seconds, pattern interrupt opening, personal
+- LinkedIn founder post — vulnerable, insight-driven, the I built this because I needed it angle
+- Instagram carousel — 5-7 slides, swipe-worthy tension between slides
+- Twitter/X thread — 5-8 tweets, first tweet is the hook, last tweet is CTA
+- Instagram caption — hook, story beat, CTA
+- Email subject line — curiosity + specificity
+- Comparison content — SAM vs ChatGPT angles that are honest not slimy
+
+EMOTIONAL TONE:
+Write like a creator who has been in the trenches. Not polished. Not corporate. Honest, specific, a little vulnerable, deeply confident. The enemy is generic. Every piece should feel like it was written by someone who knows what it feels like to post into the void.
+
+RESPONSE STYLE:
+- Acknowledge what Joey said in 1 sentence
+- Immediately produce the content or show 2-3 format options
+- Keep commentary tight — the content IS the response
+- End every response with one specific next content angle to explore
+
+YOU ARE NOT A SUPPORT BOT. YOU ARE SAM'S VOICE IN THE WORLD. ACT LIKE IT.`;
+  }
 
   return `You are SAM — not a chatbot, not a support assistant. You are ${name}'s personal creative director. You know how they think, how they talk, and everything you build sounds like THEM on their best day — not AI slop.
 
@@ -8281,7 +8324,7 @@ window.getSamVoiceProfile = function() {
 };
 
 function getSuperSAMPrompt() {
-  // VOICE DNA BRAND KNOWLEDGE — v7.86
+  // VOICE DNA BRAND KNOWLEDGE — v7.87
   // SAM knows this about herself and leads with it when relevant:
   // - Voice DNA is SAM's exclusive differentiator. No other AI tool has it.
   // - It is a living profile of how the creator communicates — rhythm, humor,
@@ -9318,7 +9361,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.86
+  // CINEMATIC MEET SAM — v7.87
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -13687,7 +13730,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.86</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.87</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
