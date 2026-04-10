@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.14)
+       UNIFIED HERO (v7.15)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.14
+       CINEMATIC MEET SAM — v7.15
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.14
+       SAM GUIDED TOUR SPLASH — v7.15
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5420,10 +5420,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.14</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.15</div>
 
 
-  <!-- ── UNIFIED HERO v7.14 ── -->
+  <!-- ── UNIFIED HERO v7.15 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7593,7 +7593,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v7.14 ──
+// ── RUN TRACKING v7.15 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -9148,7 +9148,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.14
+  // CINEMATIC MEET SAM — v7.15
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -13497,7 +13497,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.14</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.15</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -14452,9 +14452,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v7.14
+// SOFT POPUP v7.15
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v7.14
+// soft popup system removed v7.15
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -14463,7 +14463,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v7.14
+  // SAM GUIDED TOUR — v7.15
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
@@ -14969,7 +14969,7 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
 <script>
 
 /* ═══════════════════════════════════════════════
-   iMESSAGE THREAD ENGINE — v7.14
+   iMESSAGE THREAD ENGINE — v7.15
    ═══════════════════════════════════════════════ */
 
 // ── History persistence ──────────────────────────
@@ -15224,8 +15224,31 @@ async function meetSamSendStory() {
     stream: true
   };
 
-  // Stream response
+  // Stream response then typewrite
   const fullReply = await msStreamIntoBubble(samBubble, payload);
+  if (fullReply && samBubble) {
+    const cleanReply = fullReply.replace(/\[NAV:[^\]]+\]/g,"").replace(/\[RUN:[^\]]+\]/g,"").trim();
+    samBubble.innerHTML = "";
+    let ti = 0;
+    const cur = document.createElement("span");
+    cur.style.cssText = "display:inline-block;width:2px;height:1em;background:#A78BFA;margin-left:1px;vertical-align:middle;";
+    samBubble.appendChild(cur);
+    const type = () => {
+      if (ti < cleanReply.length) {
+        cur.insertAdjacentText("beforebegin", cleanReply[ti]);
+        ti++;
+        const ch = cleanReply[ti-1];
+        const delay = ch==="."?420:ch===","?180:ch==="?"?380:ch==="!"?320:ch===" "?55:32;
+        setTimeout(type, delay);
+        msScrollThread();
+      } else {
+        cur.remove();
+        if (typeof mdToHtml==="function") samBubble.innerHTML = mdToHtml(cleanReply);
+        msScrollThread();
+      }
+    };
+    type();
+  }
 
   // Save SAM response to history
   if (fullReply) {
