@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.76)
+       UNIFIED HERO (v7.77)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.76
+       CINEMATIC MEET SAM — v7.77
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.76
+       SAM GUIDED TOUR SPLASH — v7.77
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5420,10 +5420,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.76</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.77</div>
 
 
-  <!-- ── UNIFIED HERO v7.76 ── -->
+  <!-- ── UNIFIED HERO v7.77 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -9245,7 +9245,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.76
+  // CINEMATIC MEET SAM — v7.77
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -12305,8 +12305,13 @@ async function downloadPDF(type) {
     }
 
     if (res.status === 404 || res.status === 500) {
-      // PDF API not available — show paywall to upgrade
-      showPaywall('pdf', true);
+      // PDF API not available — use browser print for dev, paywall for others
+      if (localStorage.getItem('sam_dev') === 'true') {
+        if (type === 'playbook') printPlaybookOnly();
+        else printLeadMagnetOnly();
+      } else {
+        showPaywall('pdf', true);
+      }
       btn.innerHTML = originalText;
       btn.disabled = false;
       return;
@@ -13599,7 +13604,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.76</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.77</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
