@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.33)
+       UNIFIED HERO (v7.34)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.33
+       CINEMATIC MEET SAM — v7.34
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.33
+       SAM GUIDED TOUR SPLASH — v7.34
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5420,10 +5420,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.33</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.34</div>
 
 
-  <!-- ── UNIFIED HERO v7.33 ── -->
+  <!-- ── UNIFIED HERO v7.34 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7593,7 +7593,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v7.33 ──
+// ── RUN TRACKING v7.34 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -9148,7 +9148,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.33
+  // CINEMATIC MEET SAM — v7.34
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -10098,53 +10098,62 @@ Rules:
   }
 
   function meetSamExtractContext() {
-    // Extract everything SAM can infer from the conversation
-    const story = MS.storyRaw || '';
+    // Read from chat history — the real source of truth now
+    const history = JSON.parse(localStorage.getItem('sam-chat-history') || '[]');
+    const userMessages = history.filter(function(m){ return m.role === 'user' && !m.photo; });
+    const story = userMessages.map(function(m){ return m.content; }).join(' ');
     const ctx = {};
 
-    // Extract name — look for "I'm [Name]" or "my name is [Name]"
-    const nameMatch = story.match(/(?:i'm|i am|my name is|call me)\s+([A-Z][a-z]+)/i);
+    // Extract name
+    const nameMatch = story.match(/(?:i'm|i am|my name is|call me|it's me)\s+([A-Z][a-z]+)/i);
     if (nameMatch) ctx.name = nameMatch[1];
 
-    // Extract series name — quoted or "called X" or "series called X"
-    const seriesMatch = story.match(/(?:series|show|called|named)\s+["\'"]?([A-Z][\w\s]+(?:to[\w\s]+)?)["\'"]?/i);
-    if (seriesMatch) ctx.series = seriesMatch[1].trim();
+    // Extract series name
+    const seriesMatch = story.match(/(?:series|show|called|named)\s+["\'\']?([A-Za-z][\w\s]+(?:to[\w\s]+)?)["\'\']?/i);
+    if (seriesMatch) ctx.series = seriesMatch[1].trim().slice(0, 60);
 
-    // Extract platform mentions
+    // Extract platforms
     const platformKeywords = {
       youtube: 'YouTube', instagram: 'Instagram', tiktok: 'TikTok',
-      facebook: 'Facebook', pinterest: 'Pinterest', twitter: 'Twitter', x: 'X'
+      facebook: 'Facebook', pinterest: 'Pinterest', twitter: 'Twitter'
     };
     ctx.platforms = [];
     const storyLower = story.toLowerCase();
-    for (const [key, val] of Object.entries(platformKeywords)) {
-      if (storyLower.includes(key)) ctx.platforms.push(val);
+    for (const key in platformKeywords) {
+      if (storyLower.includes(key)) ctx.platforms.push(platformKeywords[key]);
     }
 
-    // Extract niche/topic
-    const nicheMatch = story.match(/(?:posting about|documenting|content about|renovating|renovation|remodel|cottage|house|home|builder|contractor|diy|travel|food|fitness|coach|business)/i);
+    // Extract niche
+    const nicheMatch = story.match(/(?:renovation|remodel|cottage|diy|home|house|travel|food|fitness|coach|business|documenting|building|creator)/i);
     if (nicheMatch) ctx.niche = nicheMatch[0];
 
-    // Extract creator type hints
-    if (story.match(/self.taught|not a contractor|diy|builder|maker/i)) ctx.creatorType = 'personal';
+    // Extract creator type
+    if (story.match(/self.taught|not a contractor|diy|maker|builder/i)) ctx.creatorType = 'personal';
     if (story.match(/coach|coaching|clients|course/i)) ctx.creatorType = 'coach';
     if (story.match(/business|product|service|sell/i)) ctx.creatorType = 'business';
 
+    // Store full story for wizard pre-fill
+    ctx.storyRaw = story.slice(0, 2000);
+
     return ctx;
   }
+
 
   function meetSamHandoffExecute() {
     // Extract everything SAM learned from the conversation
     const learned = meetSamExtractContext();
 
-    // Store what SAM learned into WS
-    WS.storyRaw = MS.storyRaw || '';
-    WS.platforms = learned.platforms.length ? learned.platforms : (MS.platform ? [MS.platform] : []);
-    WS.audienceHint = MS.audience || '';
-    WS.toneHint = MS.tone || '';
+    // Store what SAM learned into WS — from chat history
+    WS.storyRaw = learned.storyRaw || '';
+    WS.platforms = learned.platforms.length ? learned.platforms : [];
+    WS.audienceHint = '';
+    WS.toneHint = '';
     if (learned.name && !WS.brandName) WS.brandName = learned.name;
+    if (learned.niche && !WS.storyType) WS.storyType = learned.niche;
     if (learned.creatorType && !WS.creatorType) WS.creatorType = learned.creatorType;
     if (learned.series) WS.seriesName = learned.series;
+    // Save to localStorage immediately so wizard can read it
+    if (typeof saveWizardState === 'function') saveWizardState();
 
     // Store learned context for wizard toast
     window._msLearnedContext = learned;
@@ -10173,11 +10182,10 @@ Rules:
   }
 
   function meetSamPreFillWizard() {
-    const story = MS.storyRaw || '';
-    if (!story) return;
+    const learned = window._msLearnedContext || {};
+    const story = learned.storyRaw || '';
 
     // Pre-fill brand name field directly
-    const learned = window._msLearnedContext || {};
     const tryFillName = () => {
       const bn = document.getElementById('brandName');
       if (bn && !bn.value) {
@@ -13462,7 +13470,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.33</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.34</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -14417,9 +14425,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v7.33
+// SOFT POPUP v7.34
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v7.33
+// soft popup system removed v7.34
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -14428,7 +14436,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v7.33
+  // SAM GUIDED TOUR — v7.34
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
@@ -14934,7 +14942,7 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
 <script>
 
 /* ═══════════════════════════════════════════════
-   iMESSAGE THREAD ENGINE — v7.33
+   iMESSAGE THREAD ENGINE — v7.34
    ═══════════════════════════════════════════════ */
 
 // ── History persistence ──────────────────────────
