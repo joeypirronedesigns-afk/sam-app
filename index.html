@@ -13,7 +13,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="S.A.M." />
-  <meta name="description" content="SAM turns any real moment into a complete content strategy — hook, script, captions, and platform plan. Built for creators who are figuring it out themselves." />
+  <meta name="description" content="SAM turns your story into a complete content strategy — hook, script, captions, and platform plan. The more you talk to SAM, the more she sounds like you. Built for creators who are figuring it out themselves." />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.83)
+       UNIFIED HERO (v7.84)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.83
+       CINEMATIC MEET SAM — v7.84
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.83
+       SAM GUIDED TOUR SPLASH — v7.84
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5420,10 +5420,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.83</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.84</div>
 
 
-  <!-- ── UNIFIED HERO v7.83 ── -->
+  <!-- ── UNIFIED HERO v7.84 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -5444,7 +5444,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
     <h1 style="font-family:'Sora',sans-serif;font-size:clamp(32px,5vw,60px);font-weight:800;line-height:1.08;letter-spacing:-0.03em;color:var(--text);margin-bottom:20px;">You have a story.<br/>Posting it shouldn't feel like a <span style="background:linear-gradient(90deg,#F472B6,#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">second job.</span></h1>
 
     <!-- Subhead -->
-    <p style="font-size:clamp(15px,2vw,20px);line-height:1.7;color:var(--text2);max-width:560px;margin:0 auto 36px;">Every upload demands 15 decisions you never signed up to make — hook, script, platform, caption, hashtags, format, duration. SAM handles all of them. You just show up, film, and upload.</p>
+    <p style="font-size:clamp(15px,2vw,20px);line-height:1.7;color:var(--text2);max-width:560px;margin:0 auto 36px;">Every upload demands 15 decisions you never signed up to make. SAM handles all of them — and the more you talk to her, the more everything she builds sounds like you wrote it yourself. Not AI. You.</p>
 
     <!-- CTA -->
     <button onclick="setTimeout(function(){if(typeof getTrialState==='function'&&typeof openWizardPage==='function'){getTrialState().email?openWizardPage():openTrialCapture();}else if(typeof openTrialCapture==='function'){openTrialCapture();}},0)" style="background:linear-gradient(135deg,#FBB824,#F472B6);color:#09080F;font-family:'Sora',sans-serif;font-size:clamp(15px,2vw,18px);font-weight:800;padding:16px 36px;border:none;border-radius:50px;cursor:pointer;box-shadow:0 0 40px rgba(251,184,36,0.3);letter-spacing:-0.01em;margin-bottom:16px;transition:all 0.25s;">&#10022; Tell SAM your story — it's free &rarr;</button>
@@ -9258,7 +9258,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.83
+  // CINEMATIC MEET SAM — v7.84
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -13345,7 +13345,12 @@ function openWizardFromNav() {
 
     <div class="pro-faq-item" onclick="toggleFaq(this)">
       <div class="pro-faq-q">Is the quality as good as hiring a real strategist? <span class="pro-faq-arrow">+</span></div>
-      <div class="pro-faq-a">SAM is built on Claude — one of the most advanced AI models available. It doesn't just write — it thinks, plans and strategizes before it writes a word. The outputs are built for your specific story, your specific audience and your specific platforms. That's what makes it different from every other AI writing tool.</div>
+      <div class="pro-faq-a">SAM is built on Claude — one of the most advanced AI models available. But the real difference is Voice DNA. Every time you talk to SAM, she's reading how you write — your pace, your word choices, whether you trail off mid-thought or stack detail on detail. The more you interact with her, the more everything she builds sounds like you wrote it yourself, not like AI. No other tool does this. Most AI content tools give everyone the same voice. SAM gives you yours.</div>
+    </div>
+
+    <div class="pro-faq-item" onclick="toggleFaq(this)">
+      <div class="pro-faq-q">What is Voice DNA and how does it work? <span class="pro-faq-arrow">+</span></div>
+      <div class="pro-faq-a">Voice DNA is SAM's memory of how you actually communicate — not what you say, but how you say it. Your pace, your sentence structure, whether you curse when frustrated or trail off when something gets real. SAM builds this profile automatically from every conversation you have with her. The more you talk, the sharper it gets. By the time SAM is writing your hooks and scripts, they sound like you sat down and wrote them yourself — because SAM has been listening the whole time. You can see your Voice DNA version in the wizard progress bar (🧬 v1 · 8 traits) — it upgrades every time you add more context.</div>
     </div>
 
     <div class="pro-faq-item" onclick="toggleFaq(this)">
@@ -13622,7 +13627,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.83</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.84</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
