@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.68)
+       UNIFIED HERO (v7.69)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.68
+       CINEMATIC MEET SAM — v7.69
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.68
+       SAM GUIDED TOUR SPLASH — v7.69
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5420,10 +5420,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.68</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.69</div>
 
 
-  <!-- ── UNIFIED HERO v7.68 ── -->
+  <!-- ── UNIFIED HERO v7.69 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -9166,7 +9166,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.68
+  // CINEMATIC MEET SAM — v7.69
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -11948,7 +11948,7 @@ function renderPlaybook(data) {
   // ⑧ AUDIENCE RESOURCE — THE LEAD MAGNET ⭐
   if (data.lead_magnet) {
     const lm = data.lead_magnet;
-    const brandName = WS.brandName || 'Your Brand';
+    const brandName = (WS.brandName || (document.getElementById('brandName') && document.getElementById('brandName').value) || (()=>{try{return JSON.parse(localStorage.getItem('sam-wizard-state')||'{}').brandName||'';}catch(e){return '';}})() || (()=>{try{return JSON.parse(localStorage.getItem('sam_session_v2')||'{}').brandName||'';}catch(e){return '';}})() || 'Your Brand');
     const brandHandle = WS.brandHandle || '';
     const brandLogo = WS.brandLogo || null;
     const brandColor = WS.brandColor || '#7C3AED';
@@ -12320,7 +12320,7 @@ async function regenerateLeadMagnet() {
     WS.audienceCustom || '',
   ].filter(Boolean).join(', ');
 
-  const brandName = WS.brandName || 'Your Brand';
+  const brandName = (WS.brandName || (document.getElementById('brandName') && document.getElementById('brandName').value) || (()=>{try{return JSON.parse(localStorage.getItem('sam-wizard-state')||'{}').brandName||'';}catch(e){return '';}})() || (()=>{try{return JSON.parse(localStorage.getItem('sam_session_v2')||'{}').brandName||'';}catch(e){return '';}})() || 'Your Brand');
   const brandHandle = WS.brandHandle || '';
   const brandColor = WS.brandColor || '#7C3AED';
   const brandLogo = WS.brandLogo || null;
@@ -13511,7 +13511,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.68</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.69</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
