@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.72)
+       UNIFIED HERO (v7.73)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.72
+       CINEMATIC MEET SAM — v7.73
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.72
+       SAM GUIDED TOUR SPLASH — v7.73
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5420,10 +5420,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.72</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.73</div>
 
 
-  <!-- ── UNIFIED HERO v7.72 ── -->
+  <!-- ── UNIFIED HERO v7.73 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7549,15 +7549,49 @@ function showTrialExpiredCard() {
   setTimeout(() => { overlay.style.opacity = '1'; }, 50);
 }
 
-function showPaywall() {
+function showPaywall(context) {
   // Never show paywall to signed-in users — send them to sign in instead
   const _state = getTrialState();
   if (_state.email) {
-    // They're signed in — don't block them, just make sure badge is updated
     updateTrialBadge(_state);
     return;
   }
-  document.getElementById('paywallOverlay').classList.add('open');
+  const overlay = document.getElementById('paywallOverlay');
+  if (!overlay) return;
+
+  const apos = String.fromCharCode(39);
+  const messages = {
+    'pdf': {
+      headline: 'Your playbook is ready.<br/>Let' + apos + 's get it off my screen and into yours.',
+      sub: 'You built something real here. PDF downloads are part of paid plans — and honestly, $19/month is less than a single coaching session.',
+      urgency: 'Your story. Your voice. Your brand. Ready to download.'
+    },
+    'lead_magnet': {
+      headline: 'Your lead magnet is built.<br/>Time to actually use it.',
+      sub: 'You just created a free resource your audience would trade their email for. Downloading it requires a paid plan — starting at $19/month.',
+      urgency: 'This is how you grow your list while you sleep.'
+    },
+    'tool': {
+      headline: 'You' + apos + 've hit your free limit.<br/>You' + apos + 're clearly not messing around.',
+      sub: 'Free accounts get a taste. Paid accounts get the whole thing — unlimited runs, every tool, every time. Starting at $19/month.',
+      urgency: 'Pick a plan and keep building.'
+    },
+    'wizard': {
+      headline: 'You just found<br/>your story.',
+      sub: 'SAM has everything you built — your story, your voice, your strategy. It' + apos + 's all here waiting.',
+      urgency: 'Ready to keep going?'
+    }
+  };
+
+  const ctx = messages[context] || messages['wizard'];
+  const headlineEl = overlay.querySelector('[data-paywall="headline"]');
+  const subEl = overlay.querySelector('[data-paywall="sub"]');
+  const urgencyEl = overlay.querySelector('[data-paywall="urgency"]');
+  if (headlineEl) headlineEl.innerHTML = ctx.headline;
+  if (subEl) subEl.textContent = ctx.sub;
+  if (urgencyEl) urgencyEl.textContent = ctx.urgency;
+
+  overlay.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 
@@ -7567,7 +7601,7 @@ function checkTrialBeforeRun() {
   if (state.paid) return true;
   if (state.email && state.trialStart) {
     if ((Date.now() - state.trialStart) > TRIAL_DURATION_MS) {
-      showPaywall(); return false;
+      showPaywall('pdf'); return false;
     }
     return true;
   }
@@ -7591,7 +7625,7 @@ function checkWizardLimit() {
   const state = getTrialState();
   if (state.paid || state.email) return true;
   if (state.trialStart && (Date.now() - state.trialStart) < TRIAL_DURATION_MS) return true;
-  if (state.trialStart && (Date.now() - state.trialStart) >= TRIAL_DURATION_MS) { showPaywall(); return false; }
+  if (state.trialStart && (Date.now() - state.trialStart) >= TRIAL_DURATION_MS) { showPaywall('wizard'); return false; }
   if (getWizardRuns() >= MAX_FREE_WIZARD_RUNS) { openTrialCapture(); return false; }
   recordWizardRun();
   return true;
@@ -7681,7 +7715,7 @@ function guardedRunFn(originalFn) {
 
   // Trial expired — show paywall
   if (state.trialStart && (Date.now() - state.trialStart) >= TRIAL_DURATION_MS) {
-    showPaywall(); return;
+    showPaywall('tool'); return;
   }
 
   // No trial started yet — each tool gets 1 free run
@@ -9166,7 +9200,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.72
+  // CINEMATIC MEET SAM — v7.73
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -12209,7 +12243,7 @@ async function downloadPDF(type) {
 
     if (res.status === 429) {
       const err = await res.json();
-      showPaywall();
+      showPaywall('pdf');
       btn.innerHTML = originalText;
       btn.disabled = false;
       return;
@@ -13365,16 +13399,16 @@ function openWizardFromNav() {
     <div style="width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#6D28D9,#A78BFA);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-size:22px;font-weight:800;color:#fff;margin-bottom:20px;box-shadow:0 0 32px rgba(167,139,250,0.3);">S</div>
 
     <!-- Headline -->
-    <div style="font-family:'Sora',sans-serif;font-size:28px;font-weight:800;color:#F0ECFF;text-align:center;line-height:1.15;margin-bottom:10px;">You just found<br/>your story.</div>
+    <div data-paywall="headline" style="font-family:'Sora',sans-serif;font-size:28px;font-weight:800;color:#F0ECFF;text-align:center;line-height:1.15;margin-bottom:10px;">You just found<br/>your story.</div>
 
     <!-- Chest punch -->
     <div style="font-size:15px;font-weight:600;color:#A78BFA;text-align:center;margin-bottom:8px;">Most people never get this far. You did.</div>
 
     <!-- Urgency without pressure -->
-    <div style="font-size:13px;color:rgba(240,236,255,0.55);text-align:center;line-height:1.6;margin-bottom:28px;">SAM has everything you built — your story, your voice, your strategy.<br/>It's all here waiting.</div>
+    <div data-paywall="sub" style="font-size:13px;color:rgba(240,236,255,0.55);text-align:center;line-height:1.6;margin-bottom:28px;">SAM has everything you built — your story, your voice, your strategy.<br/>It's all here waiting.</div>
 
     <!-- Question -->
-    <div style="font-size:11px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:rgba(240,236,255,0.4);margin-bottom:14px;">Ready to keep going?</div>
+    <div data-paywall="urgency" style="font-size:11px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:rgba(240,236,255,0.4);margin-bottom:14px;">Ready to keep going?</div>
 
     <!-- Plan rows -->
     <div style="width:100%;display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
@@ -13511,7 +13545,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.72</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.73</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
