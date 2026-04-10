@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.61)
+       UNIFIED HERO (v7.62)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.61
+       CINEMATIC MEET SAM — v7.62
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.61
+       SAM GUIDED TOUR SPLASH — v7.62
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5420,10 +5420,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.61</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.62</div>
 
 
-  <!-- ── UNIFIED HERO v7.61 ── -->
+  <!-- ── UNIFIED HERO v7.62 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -8257,6 +8257,10 @@ RESPONSE FORMAT:
 TOOL EXECUTION SIGNALS — end your message with ONE of these tags when executing a tool (never ask permission first if intent is clear):
 [RUN:pulse] [RUN:spark] [RUN:blueprint] [RUN:vision] [RUN:lens]
 
+MEMORY SAVE SIGNALS — when the user shares personal info in conversation, silently save it to their profile by appending these tags (invisible to user, comma separate multiple):
+[SAVE:name:their name] [SAVE:handle:their handle] [SAVE:niche:their niche/topic] [SAVE:story:one sentence summary of their story] [SAVE:platforms:platforms they post on] [SAVE:audience:who they create for]
+Only save when confident. Never ask permission. Never mention you are saving. Just do it.
+
 SUGGESTION SIGNALS — use these when referencing saved content:
 [IDEA_EXISTS:text preview here]`;
 }
@@ -9179,7 +9183,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.61
+  // CINEMATIC MEET SAM — v7.62
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -13505,7 +13509,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.61</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.62</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -15159,6 +15163,24 @@ async function msStreamIntoBubble(bubble, apiPayload) {
     else if (fullText.includes('[NAV:home]')) { setTimeout(function(){ goHome(); }, 600); }
     else if (fullText.includes('[NAV:close]')) { setTimeout(function(){ closeWizard(); }, 600); }
 
+    // Handle SAVE tags — write chat context into wizard fields
+    const saveMatches = fullText.match(/\[SAVE:([a-z]+):([^\]]+)\]/g);
+    if (saveMatches && typeof WS !== 'undefined') {
+      saveMatches.forEach(function(tag) {
+        const m = tag.match(/\[SAVE:([a-z]+):([^\]]+)\]/);
+        if (!m) return;
+        const field = m[1]; const val = m[2].trim();
+        if (field === 'name') { WS.brandName = val; const el = document.getElementById('brandName'); if (el) el.value = val; }
+        else if (field === 'handle') { WS.brandHandle = val; const el = document.getElementById('brandHandle'); if (el) el.value = val; }
+        else if (field === 'niche') { WS.creatorType = val; }
+        else if (field === 'story') { WS.storyText = val; }
+        else if (field === 'platforms') { WS.platforms = val; }
+        else if (field === 'audience') { WS.audience = val; }
+      });
+      if (typeof saveWizardState === 'function') saveWizardState();
+      if (typeof updateWizardHeader === 'function') updateWizardHeader();
+    }
+
     // Show voice bar + handoff after first real response
     const vb = document.getElementById('msVoiceBar');
     if (vb && WS && WS.voiceCalibrated) vb.style.display = 'flex';
@@ -15272,7 +15294,7 @@ async function meetSamSendStory() {
   // Stream response then typewrite
   const fullReply = await msStreamIntoBubble(samBubble, payload);
   if (fullReply && samBubble) {
-    const cleanReply = fullReply.replace(/\[NAV:[^\]]+\]/g,"").replace(/\[RUN:[^\]]+\]/g,"").trim();
+    const cleanReply = fullReply.replace(/\[NAV:[^\]]+\]/g,"").replace(/\[RUN:[^\]]+\]/g,"").replace(/\[SAVE:[^\]]+\]/g,"").trim();
     samBubble.innerHTML = "";
     if (samBubble) {
       samTypeIntoBubble(samBubble, cleanReply, function() {
