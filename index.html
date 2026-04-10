@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.25)
+       UNIFIED HERO (v7.26)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.25
+       CINEMATIC MEET SAM — v7.26
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.25
+       SAM GUIDED TOUR SPLASH — v7.26
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5420,10 +5420,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.25</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.26</div>
 
 
-  <!-- ── UNIFIED HERO v7.25 ── -->
+  <!-- ── UNIFIED HERO v7.26 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7593,7 +7593,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v7.25 ──
+// ── RUN TRACKING v7.26 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -9148,7 +9148,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.25
+  // CINEMATIC MEET SAM — v7.26
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -13456,7 +13456,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.25</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.26</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -14411,9 +14411,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v7.25
+// SOFT POPUP v7.26
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v7.25
+// soft popup system removed v7.26
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -14422,7 +14422,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v7.25
+  // SAM GUIDED TOUR — v7.26
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
@@ -14928,7 +14928,7 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
 <script>
 
 /* ═══════════════════════════════════════════════
-   iMESSAGE THREAD ENGINE — v7.25
+   iMESSAGE THREAD ENGINE — v7.26
    ═══════════════════════════════════════════════ */
 
 // ── History persistence ──────────────────────────
@@ -15169,19 +15169,9 @@ async function meetSamSendStory() {
   const userMsgs = msLoadHistory().filter(function(m){return m.role==='user' && !m.photo;}).slice(-5);
   const userVoiceSample = userMsgs.map(function(m){return m.content;}).join(' ');
   
-  const apos = String.fromCharCode(39);
-  const systemPrompt = 'You are SAM — Strategic Assistant for Making. You are ' + nameCtx + apos + 's always-on creative director and the most useful person they have ever worked with.' +
-    '\n\nYOU SOUND LIKE THEM ON THEIR BEST DAY. Study how they write — their rhythm, words, energy, punctuation, emojis, grammar quirks, sentence length. Mirror that voice back in everything you create for them. Not AI slop. Not a template. THEM — clearer, sharper, more compelling.' +
-    (voiceCtx ? '\n\nVOICE DNA: ' + voiceCtx : '') +
-    (userVoiceSample ? '\n\nHOW THEY ACTUALLY WRITE (learn this): ' + userVoiceSample : '') +
-    (nicheCtx ? '\n\nNICHE/FOCUS: ' + nicheCtx : '') +
-    (platformCtx ? '\n\nPLATFORMS: ' + platformCtx : '') +
-    (ideasCtx ? '\n\nRECENT SAVED IDEAS: ' + ideasCtx : '') +
-    '\n\nPERSONALITY: Warm, direct, specific. Never fluffy. Talk like a trusted creative director who genuinely gives a damn. Use their name occasionally. Match their energy exactly.' +
-    '\n\nRESPONSE RULES: 2-4 sentences MAX always. Never walls of text. No bullet points in conversation. Never say journey, authentic, powerful story, resonate, leverage, impactful.' +
-    '\n\nWHEN THEY SHARE SOMETHING REAL: Lead with ONE gut-punch sentence that names exactly what is powerful. No warmup. No "I can see that." Just the thing.' +
-    '\n\nTOOL TRIGGERS (end message with one when relevant): [NAV:wizard] = open Story Engine, [NAV:home] = go home, [RUN:pulse] = run The Pulse, [RUN:spark] = run The Spark.' +
-    '\n\nNEVER: argue, debate, be generic, write more than 4 sentences, use AI-sounding language.';
+  // Use SAM's full brain — getSuperSAMPrompt() has voice DNA, tools, saved ideas, awareness rules
+  const systemPrompt = (typeof getSuperSAMPrompt === 'function') ? getSuperSAMPrompt() :
+    'You are SAM — always-on creative director. Be direct, specific, warm. 2-4 sentences max.';
 
   // Add photo context if pending
   let userMessage = text;
@@ -15236,11 +15226,11 @@ async function meetSamSendStory() {
     h2.push({ role: 'sam', content: fullReply });
     msSaveHistory(h2);
 
-    // After first SAM reply — trigger voice DNA capture if not yet calibrated
-    const isFirstReply = h2.filter(function(m){return m.role==='sam';}).length === 1;
+    // Trigger voice DNA capture after SAM's first reply — if not yet calibrated
+    const samReplyCount = h2.filter(function(m){return m.role==='sam';}).length;
     const alreadyCalibrated = localStorage.getItem('sam-voice-calibrated') === 'true' ||
       (typeof WS !== 'undefined' && WS.voiceCalibrated);
-    if (isFirstReply && !alreadyCalibrated) {
+    if (samReplyCount === 1 && !alreadyCalibrated) {
       setTimeout(function() {
         if (typeof showVoiceCalibration === 'function') showVoiceCalibration();
       }, 1200);
