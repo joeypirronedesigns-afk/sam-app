@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.30)
+       UNIFIED HERO (v7.31)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.30
+       CINEMATIC MEET SAM — v7.31
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.30
+       SAM GUIDED TOUR SPLASH — v7.31
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5420,10 +5420,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.30</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.31</div>
 
 
-  <!-- ── UNIFIED HERO v7.30 ── -->
+  <!-- ── UNIFIED HERO v7.31 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7593,7 +7593,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v7.30 ──
+// ── RUN TRACKING v7.31 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -9148,7 +9148,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.30
+  // CINEMATIC MEET SAM — v7.31
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -13462,7 +13462,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.30</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.31</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -14417,9 +14417,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v7.30
+// SOFT POPUP v7.31
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v7.30
+// soft popup system removed v7.31
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -14428,7 +14428,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v7.30
+  // SAM GUIDED TOUR — v7.31
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
@@ -14934,7 +14934,7 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
 <script>
 
 /* ═══════════════════════════════════════════════
-   iMESSAGE THREAD ENGINE — v7.30
+   iMESSAGE THREAD ENGINE — v7.31
    ═══════════════════════════════════════════════ */
 
 // ── History persistence ──────────────────────────
@@ -15054,14 +15054,14 @@ function msOpenThread() {
 
 // ── Stream SAM response into a bubble ───────────
 async function msStreamIntoBubble(bubble, apiPayload) {
-  msShowThinking();
+  samShowThinking();
   try {
     const res = await fetch('/api/sam', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(apiPayload)
     });
-    msHideThinking();
+    samHideThinking();
 
     if (!res.ok) {
       bubble.textContent = 'Something went wrong. Try again.';
@@ -15145,12 +15145,8 @@ async function meetSamSendStory() {
   inp.style.height = '';
   inp.placeholder = 'Ask SAM anything...';
 
-  // Make sure thread is open
-  const thread = document.getElementById('msThread');
-  if (thread && thread.style.display !== 'flex') msOpenThread();
-
-  // Add user bubble
-  if (text) msAddBubble('user', text, false);
+  // Inject user bubble into SAM's world
+  if (text) samInjectUserBubble(text);
 
   // Save to history
   const history = msLoadHistory();
@@ -15192,8 +15188,10 @@ async function meetSamSendStory() {
     window._msPendingPhoto = null;
   }
 
-  // Create SAM bubble to stream into
-  const samBubble = msAddBubble('sam', '');
+  // Create SAM bubble in native interface
+  const samEl = samInjectSAMBubble();
+  const samBubble = samEl ? samEl.bubble : null;
+  const samAvatarWrap = samEl ? samEl.avatarWrap : null;
 
   // Build payload — match existing API format
   const conversationMessages = messages.slice(-10);
@@ -15211,25 +15209,11 @@ async function meetSamSendStory() {
   if (fullReply && samBubble) {
     const cleanReply = fullReply.replace(/\[NAV:[^\]]+\]/g,"").replace(/\[RUN:[^\]]+\]/g,"").trim();
     samBubble.innerHTML = "";
-    let ti = 0;
-    const cur = document.createElement("span");
-    cur.style.cssText = "display:inline-block;width:2px;height:1em;background:#A78BFA;margin-left:1px;vertical-align:middle;";
-    samBubble.appendChild(cur);
-    const type = () => {
-      if (ti < cleanReply.length) {
-        cur.insertAdjacentText("beforebegin", cleanReply[ti]);
-        ti++;
-        const ch = cleanReply[ti-1];
-        const delay = ch==="."?420:ch===","?180:ch==="?"?380:ch==="!"?320:ch===" "?55:32;
-        setTimeout(type, delay);
-        msScrollThread();
-      } else {
-        cur.remove();
-        if (typeof mdToHtml==="function") samBubble.innerHTML = mdToHtml(cleanReply);
-        msScrollThread();
-      }
-    };
-    type();
+    if (samBubble) {
+      samTypeIntoBubble(samBubble, cleanReply, function() {
+        if (samAvatarWrap) samAvatarWrap.classList.remove('speaking');
+      });
+    }
   }
 
   // Save SAM response to history
@@ -15268,32 +15252,150 @@ function msCheckinAskMore() {
    PATCH: meetSamChooseTalk — opens thread for new users
    ═══════════════════════════════════════════════ */
 function meetSamChooseTalk() {
-  // Clear history for fresh start
   msClearHistory();
-  msOpenThread();
-  // Shift ambient to pink — SAM's world opens
+  // Hide CTA, show input
+  const mainCTA = document.getElementById('msMainCTA');
+  if (mainCTA) mainCTA.style.display = 'none';
+  const inputRow = document.getElementById('msInputRow');
+  if (inputRow) inputRow.style.display = 'flex';
+  // Shift ambient to pink
   const orb1 = document.querySelector('.ms-orb-1');
   const orb2 = document.querySelector('.ms-orb-2');
   if (orb1) orb1.style.background = '#F472B6';
   if (orb2) orb2.style.background = '#A78BFA';
-  // Add SAM opening bubble
+  // SAM opening bubble with typewriter
   setTimeout(function() {
-    const samBubble = msAddBubble('sam', '');
-    if (samBubble) {
-      const apos = String.fromCharCode(39);
-      const opening = 'Everything amazing in life comes from stories. What' + apos + 's yours? Start anywhere — I' + apos + 'll find the content in it.';
-      samBubble.innerHTML = opening;
+    const apos = String.fromCharCode(39);
+    const opening = 'Everything amazing in life comes from stories. What' + apos + 's yours? Start anywhere — I' + apos + 'll find the content in it.';
+    const el = document.getElementById('msOpeningBubble');
+    if (el) {
+      el.innerHTML = '';
       const h = msLoadHistory();
       h.push({ role: 'sam', content: opening });
       msSaveHistory(h);
-      msScrollThread();
+      const wrap = document.getElementById('msOpeningAvatarWrap');
+      if (wrap) wrap.classList.add('speaking');
+      samTypeIntoBubble(el, opening, function() {
+        if (wrap) wrap.classList.remove('speaking');
+      });
     }
+    const inp = document.getElementById('meetSamStoryInput');
+    if (inp) setTimeout(function(){ inp.focus(); }, 800);
   }, 200);
 }
 
 /* ═══════════════════════════════════════════════
    END iMESSAGE THREAD ENGINE
    ═══════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════
+   SAM CONVERSATION ENGINE v2 — native interface
+   ═══════════════════════════════════════════════ */
+
+function samInjectUserBubble(text) {
+  const wrap = document.querySelector('.meet-sam-wrap');
+  const inputRow = document.getElementById('msInputRow');
+  if (!wrap) return;
+  const row = document.createElement('div');
+  row.style.cssText = 'display:flex;justify-content:flex-end;margin-bottom:20px;opacity:0;transform:translateY(10px);transition:opacity 0.4s ease,transform 0.4s ease;';
+  const bubble = document.createElement('div');
+  bubble.style.cssText = 'background:linear-gradient(135deg,rgba(56,189,248,0.15),rgba(167,139,250,0.1));border:1px solid rgba(56,189,248,0.2);border-radius:18px 4px 18px 18px;padding:13px 17px;max-width:78%;font-size:15px;line-height:1.75;color:rgba(240,236,255,0.88);word-wrap:break-word;';
+  bubble.textContent = text;
+  row.appendChild(bubble);
+  if (inputRow && inputRow.parentNode === wrap) {
+    wrap.insertBefore(row, inputRow);
+  } else {
+    wrap.appendChild(row);
+  }
+  setTimeout(function() { row.style.opacity='1'; row.style.transform='translateY(0)'; }, 30);
+  return row;
+}
+
+function samInjectSAMBubble() {
+  const wrap = document.querySelector('.meet-sam-wrap');
+  const inputRow = document.getElementById('msInputRow');
+  if (!wrap) return null;
+  const row = document.createElement('div');
+  row.className = 'meet-sam-bubble-row';
+  row.style.cssText = 'opacity:0;transform:translateY(10px);transition:opacity 0.5s ease,transform 0.5s cubic-bezier(0.34,1.2,0.64,1);margin-bottom:20px;';
+  const avatarWrap = document.createElement('div');
+  avatarWrap.className = 'ms-avatar-wrap';
+  avatarWrap.style.cssText = 'flex-shrink:0;';
+  avatarWrap.innerHTML = '<div class="ms-avatar-ring"></div><div class="meet-sam-avatar">S</div>';
+  const bubble = document.createElement('div');
+  bubble.className = 'meet-sam-bubble';
+  row.appendChild(avatarWrap);
+  row.appendChild(bubble);
+  if (inputRow && inputRow.parentNode === wrap) {
+    wrap.insertBefore(row, inputRow);
+  } else {
+    wrap.appendChild(row);
+  }
+  setTimeout(function() { row.style.opacity='1'; row.style.transform='translateY(0)'; }, 30);
+  avatarWrap.classList.add('speaking');
+  return { row: row, bubble: bubble, avatarWrap: avatarWrap };
+}
+
+function samTypeIntoBubble(bubble, text, onDone) {
+  bubble.innerHTML = '';
+  let i = 0;
+  const cur = document.createElement('span');
+  cur.className = 'ms-cursor';
+  bubble.appendChild(cur);
+  const tick = function() {
+    if (i < text.length) {
+      if (text[i] === '
+') {
+        const br = document.createElement('br');
+        bubble.insertBefore(br, cur);
+        i++;
+      } else {
+        bubble.insertBefore(document.createTextNode(text[i]), cur);
+        i++;
+      }
+      const ch = text[i-1];
+      const d = ch==='.'?500:ch===','?200:ch==='?'?450:ch==='!'?380:ch===' '?62:36;
+      setTimeout(tick, d);
+      samScrollToBottom();
+    } else {
+      cur.remove();
+      if (typeof mdToHtml === 'function') bubble.innerHTML = mdToHtml(bubble.textContent);
+      samScrollToBottom();
+      if (onDone) onDone();
+    }
+  };
+  setTimeout(tick, 120);
+}
+
+function samScrollToBottom() {
+  const wrap = document.querySelector('.meet-sam-wrap');
+  if (wrap) wrap.scrollTop = wrap.scrollHeight;
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
+function samShowThinking() {
+  const wrap = document.querySelector('.meet-sam-wrap');
+  const inputRow = document.getElementById('msInputRow');
+  if (!wrap) return;
+  const existing = document.getElementById('samThinkingDots');
+  if (existing) existing.remove();
+  const row = document.createElement('div');
+  row.id = 'samThinkingDots';
+  row.className = 'meet-sam-bubble-row';
+  row.style.marginBottom = '20px';
+  row.innerHTML = '<div class="ms-avatar-wrap speaking" style="flex-shrink:0;"><div class="ms-avatar-ring"></div><div class="meet-sam-avatar">S</div></div><div class="meet-sam-bubble" style="padding:14px 18px;"><div style="display:flex;gap:6px;align-items:center;"><div style="width:7px;height:7px;border-radius:50%;background:#A78BFA;animation:ms-dot-bounce 1.2s ease infinite;"></div><div style="width:7px;height:7px;border-radius:50%;background:#A78BFA;animation:ms-dot-bounce 1.2s ease infinite 0.2s;"></div><div style="width:7px;height:7px;border-radius:50%;background:#A78BFA;animation:ms-dot-bounce 1.2s ease infinite 0.4s;"></div></div></div>';
+  if (inputRow && inputRow.parentNode === wrap) {
+    wrap.insertBefore(row, inputRow);
+  } else {
+    wrap.appendChild(row);
+  }
+  samScrollToBottom();
+}
+
+function samHideThinking() {
+  const el = document.getElementById('samThinkingDots');
+  if (el) el.remove();
+}
 
 </script>
 </body>
