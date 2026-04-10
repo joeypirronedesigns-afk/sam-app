@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.23)
+       UNIFIED HERO (v7.24)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.23
+       CINEMATIC MEET SAM — v7.24
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.23
+       SAM GUIDED TOUR SPLASH — v7.24
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5420,10 +5420,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.23</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.24</div>
 
 
-  <!-- ── UNIFIED HERO v7.23 ── -->
+  <!-- ── UNIFIED HERO v7.24 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -7593,7 +7593,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v7.23 ──
+// ── RUN TRACKING v7.24 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -9148,7 +9148,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.23
+  // CINEMATIC MEET SAM — v7.24
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -9558,10 +9558,10 @@ function initWizard() {
       </div>
     `;
 
-    // Insert after response wrap
-    const responseWrap = document.getElementById('msResponseWrap');
-    if (responseWrap && responseWrap.parentNode) {
-      responseWrap.parentNode.insertBefore(card, responseWrap.nextSibling);
+    // Insert after thread (before input row)
+    const inputRow = document.getElementById('msInputRow');
+    if (inputRow && inputRow.parentNode) {
+      inputRow.parentNode.insertBefore(card, inputRow);
     } else {
       wrap.appendChild(card);
     }
@@ -13456,7 +13456,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.23</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.24</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -14411,9 +14411,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v7.23
+// SOFT POPUP v7.24
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v7.23
+// soft popup system removed v7.24
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -14422,7 +14422,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v7.23
+  // SAM GUIDED TOUR — v7.24
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
@@ -14928,7 +14928,7 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
 <script>
 
 /* ═══════════════════════════════════════════════
-   iMESSAGE THREAD ENGINE — v7.23
+   iMESSAGE THREAD ENGINE — v7.24
    ═══════════════════════════════════════════════ */
 
 // ── History persistence ──────────────────────────
@@ -15248,6 +15248,16 @@ async function meetSamSendStory() {
     const h2 = msLoadHistory();
     h2.push({ role: 'sam', content: fullReply });
     msSaveHistory(h2);
+
+    // After first SAM reply — trigger voice DNA capture if not yet calibrated
+    const isFirstReply = h2.filter(function(m){return m.role==='sam';}).length === 1;
+    const alreadyCalibrated = localStorage.getItem('sam-voice-calibrated') === 'true' ||
+      (typeof WS !== 'undefined' && WS.voiceCalibrated);
+    if (isFirstReply && !alreadyCalibrated) {
+      setTimeout(function() {
+        if (typeof showVoiceCalibration === 'function') showVoiceCalibration();
+      }, 1200);
+    }
   }
 
   msScrollThread();
