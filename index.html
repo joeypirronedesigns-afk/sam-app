@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.75)
+       UNIFIED HERO (v7.76)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.75
+       CINEMATIC MEET SAM — v7.76
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.75
+       SAM GUIDED TOUR SPLASH — v7.76
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5420,10 +5420,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.75</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.76</div>
 
 
-  <!-- ── UNIFIED HERO v7.75 ── -->
+  <!-- ── UNIFIED HERO v7.76 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -9245,7 +9245,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.75
+  // CINEMATIC MEET SAM — v7.76
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -10880,8 +10880,13 @@ function setupWizardStep(step) {
   }
 
   if (step === '12') {
+    // Restore from localStorage if available
+    if (!window._savedPlaybookHTML) {
+      const saved = localStorage.getItem('sam-playbook-html');
+      if (saved) window._savedPlaybookHTML = saved;
+    }
     // Always rebuild if coming from step 11 (user may have edited answers)
-    if (window._savedPlaybookHTML && window._savedPlaybookData && !window._forceRebuild) {
+    if (window._savedPlaybookHTML && !window._forceRebuild) {
       const wizOutput = document.getElementById('wizardOutput');
       if (wizOutput) {
         wizOutput.innerHTML = window._savedPlaybookHTML;
@@ -11541,6 +11546,11 @@ const LOADER_STEPS = ['lstep-1','lstep-2','lstep-3','lstep-4','lstep-5','lstep-6
 async function buildPlaybook() {
   if (!checkWizardLimit()) return;
   window._forceRebuild = false;
+  // Persist playbook HTML to localStorage so it survives refresh
+  try {
+    const wizOut = document.getElementById('wizardOutput');
+    if (wizOut && wizOut.innerHTML) localStorage.setItem('sam-playbook-html', wizOut.innerHTML);
+  } catch(e) {}
   // Animate loader steps
   let stepIdx = 0;
   let stillBuildingShown = false;
@@ -13589,7 +13599,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.75</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.76</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
