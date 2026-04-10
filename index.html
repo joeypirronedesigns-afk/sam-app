@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.67)
+       UNIFIED HERO (v7.68)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.67
+       CINEMATIC MEET SAM — v7.68
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.67
+       SAM GUIDED TOUR SPLASH — v7.68
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5420,10 +5420,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.67</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.68</div>
 
 
-  <!-- ── UNIFIED HERO v7.67 ── -->
+  <!-- ── UNIFIED HERO v7.68 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -6706,23 +6706,7 @@ function _doLensUpdate() {
     renderThumbnailCanvases(hl2, sub2, ac, imgSrc, 'thumb169b', 'thumb916b', '', bold, true, textSide);
   }
 }
-function lensLiveUpdate() {
-  const hl1 = document.getElementById('lensEditHL1')?.value || window._currentLensHeadline || '';
-  const hl2 = document.getElementById('lensEditHL2')?.value || window._currentLensHL2 || hl1;
-  const sub1 = document.getElementById('lensEditSub1')?.value || window._currentLensSubtext || '';
-  const sub2 = window._currentLensSub2 || sub1;
-  const ac = document.getElementById('lensEditColor')?.value || window._currentLensAc || '#F472B6';
-  const colorLabel = document.getElementById('lensColorLabel');
-  if (colorLabel) colorLabel.textContent = ac;
-  const imgSrc = window._currentLensImgSrc || window._lensImgSrc || '';
-  const safe = window._currentLensSafeTemplate || 'cinematic';
-  const bold = window._currentLensBoldTemplate || 'cornerBurst';
-  const textSide = window._currentLensTextSide || 'bottom';
-  if (typeof renderThumbnailCanvases === 'function') {
-    renderThumbnailCanvases(hl1, sub1, ac, imgSrc, 'thumb169s', 'thumb916s', '', safe, false, textSide);
-    renderThumbnailCanvases(hl2, sub2, ac, imgSrc, 'thumb169b', 'thumb916b', '', bold, true, textSide);
-  }
-}
+// lensLiveUpdate — duplicate removed
 function handleDragOver(e) { e.preventDefault(); document.getElementById('dropZone').style.borderColor = 'var(--lens)'; }
 function handleDragLeave() { document.getElementById('dropZone').style.borderColor = ''; }
 function handleDrop(e) { e.preventDefault(); document.getElementById('dropZone').style.borderColor = ''; const file = e.dataTransfer.files?.[0]; if (file && file.type.startsWith('image/')) processFile(file); }
@@ -7282,9 +7266,7 @@ async function handleProSignup(plan) {
   }
 }
 
-function handleAnnualNotify() {
-  alert("You're on the early list! We'll email you when annual billing launches. 💛");
-}
+// handleAnnualNotify — duplicate removed
 
 function toggleFaq(item) {
   const isOpen = item.classList.contains('open');
@@ -9184,7 +9166,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.67
+  // CINEMATIC MEET SAM — v7.68
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -13529,7 +13511,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.67</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.68</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -15370,14 +15352,6 @@ async function meetSamSendStory() {
 /* ═══════════════════════════════════════════════
    PATCH: msCheckinAskMore — opens thread instead of showing old input
    ═══════════════════════════════════════════════ */
-function msCheckinAskMore() {
-  msOpenThread();
-  setTimeout(function() {
-    const inp = document.getElementById('meetSamStoryInput');
-    if (inp) inp.focus();
-  }, 400);
-}
-
 /* ═══════════════════════════════════════════════
    PATCH: meetSamChooseTalk — opens thread for new users
    ═══════════════════════════════════════════════ */
