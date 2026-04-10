@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.57)
+       UNIFIED HERO (v7.58)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.57
+       CINEMATIC MEET SAM — v7.58
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.57
+       SAM GUIDED TOUR SPLASH — v7.58
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5420,10 +5420,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.57</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.58</div>
 
 
-  <!-- ── UNIFIED HERO v7.57 ── -->
+  <!-- ── UNIFIED HERO v7.58 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -9179,7 +9179,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.57
+  // CINEMATIC MEET SAM — v7.58
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -9243,7 +9243,7 @@ function initWizard() {
         <div style="font-size:11px;color:#A78BFA;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.2);padding:4px 10px;border-radius:999px;flex-shrink:0;">Saved ✓</div>
       </div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;">
-        <button onclick="msReturningContinue()" style="display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:999px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid rgba(167,139,250,0.5);background:linear-gradient(90deg,rgba(244,114,182,0.15),rgba(167,139,250,0.15),rgba(56,189,248,0.15));color:#A78BFA;font-family:inherit;">↩ Continue my story</button>
+        <button onclick="msOpenStoryEngine()" style="display:inline-flex;align-items:center;gap:8px;padding:12px 26px;border-radius:999px;font-size:14px;font-weight:700;cursor:pointer;border:none;background:linear-gradient(135deg,#A78BFA,#F472B6);color:#09080F;font-family:inherit;box-shadow:0 0 24px rgba(167,139,250,0.35);">📖 Open Story Engine</button>
         <button onclick="msReturningExplore()" style="display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:999px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:rgba(240,236,255,0.6);font-family:inherit;">⬡ Explore the tools</button>
       </div>
       <div style="margin-top:20px;padding-top:18px;border-top:1px solid rgba(255,255,255,0.06);">
@@ -9307,6 +9307,23 @@ function initWizard() {
     if (card) { card.style.opacity = '0'; card.style.transform = 'translateY(-8px)'; setTimeout(() => card.remove(), 400); }
     setTimeout(() => { meetSamChooseTalk(); }, 400);
   }
+
+  window.msOpenStoryEngine = function msOpenStoryEngine() {
+    const card = document.getElementById('msReturningCard');
+    if (card) { card.style.opacity = '0'; card.style.transform = 'translateY(-8px)'; setTimeout(() => card.remove(), 400); }
+    setTimeout(() => {
+      const wp = document.getElementById('wizardPage');
+      if (wp) { wp.classList.add('open'); document.body.style.overflow = 'hidden'; }
+      const step = localStorage.getItem('sam_session_step') || '0';
+      const saved = localStorage.getItem('sam_session_v2');
+      if (saved && step !== '0' && typeof doRestoreSession === 'function') {
+        doRestoreSession();
+      } else {
+        if (typeof startWizard === 'function') startWizard('new');
+        else if (typeof showWizardStep === 'function') showWizardStep('0');
+      }
+    }, 300);
+  };
 
 
   function samReturnToWizard() {
@@ -13485,7 +13502,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.57</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.58</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
