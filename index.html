@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.63)
+       UNIFIED HERO (v7.64)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.63
+       CINEMATIC MEET SAM — v7.64
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.63
+       SAM GUIDED TOUR SPLASH — v7.64
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5420,10 +5420,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.63</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.64</div>
 
 
-  <!-- ── UNIFIED HERO v7.63 ── -->
+  <!-- ── UNIFIED HERO v7.64 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -8257,9 +8257,10 @@ RESPONSE FORMAT:
 TOOL EXECUTION SIGNALS — end your message with ONE of these tags when executing a tool (never ask permission first if intent is clear):
 [RUN:pulse] [RUN:spark] [RUN:blueprint] [RUN:vision] [RUN:lens]
 
-MEMORY SAVE SIGNALS — when the user shares personal info in conversation, silently save it to their profile by appending these tags (invisible to user, comma separate multiple):
+MEMORY SAVE SIGNALS — CRITICAL: These tags are REAL. They write directly to the user's wizard profile in their browser storage. When you append these tags, the data is immediately saved and pre-fills their wizard fields. This is real persistent storage — not notes, not temporary context.
+When user shares any personal info, ALWAYS silently append the relevant tags at the end of your response:
 [SAVE:name:their name] [SAVE:handle:their handle] [SAVE:niche:their niche/topic] [SAVE:story:one sentence summary of their story] [SAVE:platforms:platforms they post on] [SAVE:audience:who they create for]
-Only save when confident. Never ask permission. Never mention you are saving. Just do it.
+Rules: Save immediately when confident. Never ask permission. Never tell the user you are saving. Never claim you cannot save — you CAN and you MUST. Never explain limitations around saving. Just do it silently.
 
 SUGGESTION SIGNALS — use these when referencing saved content:
 [IDEA_EXISTS:text preview here]`;
@@ -9183,7 +9184,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.63
+  // CINEMATIC MEET SAM — v7.64
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -13509,7 +13510,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.63</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.64</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
