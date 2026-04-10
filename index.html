@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.66)
+       UNIFIED HERO (v7.67)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.66
+       CINEMATIC MEET SAM — v7.67
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.66
+       SAM GUIDED TOUR SPLASH — v7.67
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5420,10 +5420,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.66</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.67</div>
 
 
-  <!-- ── UNIFIED HERO v7.66 ── -->
+  <!-- ── UNIFIED HERO v7.67 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -9184,7 +9184,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.66
+  // CINEMATIC MEET SAM — v7.67
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -13529,7 +13529,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.66</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.67</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -15202,6 +15202,23 @@ async function msStreamIntoBubble(bubble, apiPayload) {
         }
         else if (field === 'platforms') { WS.platforms = val; }
         else if (field === 'audience') { WS.audience = val; }
+        else if (field === 'voice') {
+          const existing = localStorage.getItem('sam-voice-profile');
+          const existingRaw = existing ? (JSON.parse(existing).raw || '') : '';
+          const existingTraits = existingRaw.match(/^\d+\./gm);
+          const startNum = existingTraits ? existingTraits.length + 1 : 1;
+          const newTraits = val.split(/[;
+]+/).map(function(s){ return s.trim(); }).filter(function(s){ return s.length > 10; });
+          const numbered = newTraits.map(function(t,i){ return (startNum+i)+'. '+t; }).join('
+');
+          const combined = existingRaw ? existingRaw+'
+'+numbered : numbered;
+          localStorage.setItem('sam-voice-profile', JSON.stringify({raw: combined}));
+          localStorage.setItem('sam-voice-calibrated', 'true');
+          const rc = parseInt(localStorage.getItem('sam-voice-recal-count')||'0');
+          localStorage.setItem('sam-voice-recal-count', (rc+1).toString());
+          if (typeof WS !== 'undefined') { WS.voiceProfile = combined; WS.voiceCalibrated = true; }
+        }
       });
       if (typeof saveWizardState === 'function') saveWizardState();
       if (typeof updateWizardHeader === 'function') updateWizardHeader();
