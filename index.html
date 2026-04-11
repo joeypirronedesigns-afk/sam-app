@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.90)
+       UNIFIED HERO (v7.91)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.90
+       CINEMATIC MEET SAM — v7.91
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.90
+       SAM GUIDED TOUR SPLASH — v7.91
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5466,10 +5466,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.90</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.91</div>
 
 
-  <!-- ── UNIFIED HERO v7.90 ── -->
+  <!-- ── UNIFIED HERO v7.91 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -8345,7 +8345,7 @@ window.getSamVoiceProfile = function() {
 };
 
 function getSuperSAMPrompt() {
-  // VOICE DNA BRAND KNOWLEDGE — v7.90
+  // VOICE DNA BRAND KNOWLEDGE — v7.91
   // SAM knows this about herself and leads with it when relevant:
   // - Voice DNA is SAM's exclusive differentiator. No other AI tool has it.
   // - It is a living profile of how the creator communicates — rhythm, humor,
@@ -9061,6 +9061,7 @@ function initHeroVisibility() {
 }
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', function() {
+    initPersistentSAM();
     initTrial(); initChat(); initWizard(); initHeroVisibility();
     setTimeout(() => { if (typeof updateWizardHeader === 'function') updateWizardHeader(); }, 300);
   });
@@ -9382,7 +9383,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.90
+  // CINEMATIC MEET SAM — v7.91
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -13751,7 +13752,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.90</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.91</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
