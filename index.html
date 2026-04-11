@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.93)
+       UNIFIED HERO (v7.95)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.93
+       CINEMATIC MEET SAM — v7.95
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.93
+       SAM GUIDED TOUR SPLASH — v7.95
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5467,10 +5467,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.93</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.95</div>
 
 
-  <!-- ── UNIFIED HERO v7.93 ── -->
+  <!-- ── UNIFIED HERO v7.95 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -5533,7 +5533,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   <!-- ── TOOL SECTION ── -->
   <div class="tool-section" 
-<!-- ✦ PHOTO WIZARD SECTION v7.94 -->
+<!-- ✦ PHOTO WIZARD SECTION v7.95 -->
 <section id="photo-wizard" style="display:none; padding:60px 24px; max-width:860px; margin:0 auto;">
   <div style="text-align:center; margin-bottom:40px;">
     <p style="font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:#888; margin-bottom:10px;">NEW TOOL</p>
@@ -8643,7 +8643,7 @@ window.getSamVoiceProfile = function() {
 };
 
 function getSuperSAMPrompt() {
-  // VOICE DNA BRAND KNOWLEDGE — v7.93
+  // VOICE DNA BRAND KNOWLEDGE — v7.95
   // SAM knows this about herself and leads with it when relevant:
   // - Voice DNA is SAM's exclusive differentiator. No other AI tool has it.
   // - It is a living profile of how the creator communicates — rhythm, humor,
@@ -9690,7 +9690,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.93
+  // CINEMATIC MEET SAM — v7.95
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -13410,6 +13410,14 @@ function openWizardFromNav() {
         </div>
       </div>
 
+              <div onclick="showPhotoWizard()" style="display:flex; align-items:center; gap:14px; padding:16px 20px; background:#1a1a2e; border:1px solid #2a2a3e; border-radius:12px; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.borderColor='#a78bfa'" onmouseout="this.style.borderColor='#2a2a3e'">
+                <div style="width:36px; height:36px; border-radius:10px; background:#2a1a4e; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;">📸</div>
+                <div>
+                  <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">Photo Wizard</p>
+                  <p style="font-size:12px; color:#888; margin:0;">Upload a photo · SAM writes every caption</p>
+                </div>
+              </div>
+
     </div>
 
     <!-- Buttons -->
@@ -13418,7 +13426,15 @@ function openWizardFromNav() {
         ← Keep building my story
       </button>
       <button onclick="samExploreTools()" style="width:100%;padding:11px;background:transparent;border:1px solid rgba(255,255,255,0.12);border-radius:50px;font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:rgba(240,236,255,0.6);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,236,255,0.6)'">
-        Explore all tools → SAM brings your story with you
+        
+              <div onclick="showPhotoWizard()" style="display:flex; align-items:center; gap:14px; padding:16px 20px; background:#1a1a2e; border:1px solid #2a2a3e; border-radius:12px; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.borderColor='#a78bfa'" onmouseout="this.style.borderColor='#2a2a3e'">
+                <div style="width:36px; height:36px; border-radius:10px; background:#2a1a4e; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;">📸</div>
+                <div>
+                  <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">Photo Wizard</p>
+                  <p style="font-size:12px; color:#888; margin:0;">Upload a photo · SAM writes every caption</p>
+                </div>
+              </div>
+              <a Explore all tools → SAM brings your story with you
       </button>
     </div>
 
@@ -14059,7 +14075,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.93</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.95</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
