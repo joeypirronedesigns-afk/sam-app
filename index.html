@@ -16037,7 +16037,7 @@ function msOpenThread() {
   const inputRow = document.getElementById('msInputRow');
   if (thread) { thread.innerHTML = ''; thread.style.display = 'flex'; }
   if (inputRow) { inputRow.style.display = 'flex'; }
-  const _chatNav1 = document.getElementById('msChatNav'); if (_chatNav1) _chatNav1.style.display = 'flex';
+  const _chatNav1 = document.getElementById('msChatNav'); if (_chatNav1) _chatNav1.style.display = localStorage.getItem('sam_uid') ? 'flex' : 'none';
 
   // Build context-aware opening
   const name = (typeof WS !== 'undefined' && WS.brandName) ? WS.brandName.split(' ')[0] : null;
@@ -16326,7 +16326,7 @@ function meetSamChooseTalk() {
   if (mainCTA) mainCTA.style.display = 'none';
   const inputRow = document.getElementById('msInputRow');
   if (inputRow) inputRow.style.display = 'flex';
-  const _chatNav2 = document.getElementById('msChatNav'); if (_chatNav2) _chatNav2.style.display = 'flex';
+  const _chatNav2 = document.getElementById('msChatNav'); if (_chatNav2) _chatNav2.style.display = localStorage.getItem('sam_uid') ? 'flex' : 'none';
   // Shift ambient to pink
   const orb1 = document.querySelector('.ms-orb-1');
   const orb2 = document.querySelector('.ms-orb-2');
