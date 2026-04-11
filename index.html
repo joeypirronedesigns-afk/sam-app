@@ -5460,8 +5460,9 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
       About me
     </button>
     <button id="samVoiceToggle" onclick="toggleSAMVoice()" title="SAM Voice" style="background:none;border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:7px 13px;font-size:13px;cursor:pointer;color:rgba(240,236,255,0.5);font-family:'Sora',sans-serif;font-weight:600;transition:all 0.2s;display:inline-flex;align-items:center;gap:5px;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.5)'">🔇 SAM Voice</button>
+<button onclick="showPhotoWizard()" id="samVoiceToggle" title="SAM Voice" style="background:none;border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:7px 13px;font-size:13px;cursor:pointer;color:rgba(240,236,255,0.5);font-family:'Sora',sans-serif;font-weight:600;transition:all 0.2s;display:inline-flex;align-items:center;gap:5px;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.5)'">📸 Photo Wizard</button>
     <button class="nav-signin-btn" onclick="openSignInModal()"  style="background:none;border:1px solid rgba(255,255,255,0.15);color:var(--text2);font-family:'Sora',sans-serif;font-size:13px;font-weight:600;padding:8px 18px;border-radius:50px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.5)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.15)';this.style.color='var(--text2)'">Sign in</button>
-    <button class="nav-pro-btn" onclick="openProPage()">✦ Go Pro</button>
+    <button class="nav-pro-btn" onclick="openProPage()">See plans →</button>
   </div>
 </nav>
 
@@ -5531,7 +5532,305 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
   </div>
 
   <!-- ── TOOL SECTION ── -->
-  <div class="tool-section" id="tools">
+  <div class="tool-section" 
+<!-- ✦ PHOTO WIZARD SECTION v7.94 -->
+<section id="photo-wizard" style="display:none; padding:60px 24px; max-width:860px; margin:0 auto;">
+  <div style="text-align:center; margin-bottom:40px;">
+    <p style="font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:#888; margin-bottom:10px;">NEW TOOL</p>
+    <h2 style="font-size:clamp(28px,4vw,42px); font-weight:700; color:#fff; margin:0 0 12px;">Photo Post Wizard</h2>
+    <p style="font-size:15px; color:#aaa; max-width:520px; margin:0 auto;">Upload a photo. Pick your platforms. SAM writes every caption, description, and hashtag — platform-perfect, ready to post.</p>
+  </div>
+
+  <div style="background:#111; border:1px solid #222; border-radius:16px; padding:28px; margin-bottom:20px;">
+    <p style="font-size:11px; font-weight:600; letter-spacing:0.1em; color:#a78bfa; text-transform:uppercase; margin:0 0 16px;">STEP 1 — YOUR PHOTO</p>
+    <div id="upload-zone" onclick="document.getElementById('photo-input').click()" style="border:2px dashed #333; border-radius:12px; padding:40px; text-align:center; cursor:pointer;" onmouseover="this.style.borderColor='#a78bfa'" onmouseout="this.style.borderColor='#333'">
+      <div id="upload-placeholder">
+        <div style="font-size:32px; margin-bottom:8px;">📷</div>
+        <p style="color:#ccc; font-size:15px; font-weight:500; margin:0 0 4px;">Click to upload your photo</p>
+        <p style="color:#666; font-size:13px; margin:0;">JPG, PNG, WEBP up to 10MB</p>
+      </div>
+      <img id="photo-preview" style="display:none; max-width:100%; max-height:320px; border-radius:8px; object-fit:contain;" alt="Preview">
+    </div>
+    <input type="file" id="photo-input" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
+    <div id="enhance-option" style="display:none; margin-top:20px; background:#1a1a2e; border:1px solid #2a2a3e; border-radius:12px; padding:16px;">
+      <label style="display:flex; align-items:flex-start; gap:12px; cursor:pointer;">
+        <input type="checkbox" id="ai-enhance" style="margin-top:2px; accent-color:#a78bfa; width:16px; height:16px;">
+        <div>
+          <p style="font-size:14px; font-weight:600; color:#fff; margin:0 0 4px;">Enhance with AI</p>
+          <p style="font-size:13px; color:#888; margin:0;">SAM adds visual polish — lighting, color grading, background enhancement — before writing your copy.</p>
+        </div>
+      </label>
+      <div id="enhance-style-row" style="display:none; margin-top:14px; display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="enhance-style-btn" data-style="professional" onclick="selectEnhanceStyle(this)" style="font-size:12px; padding:6px 14px; border-radius:20px; border:1px solid #a78bfa; background:#1a1040; color:#a78bfa; cursor:pointer;">Professional</button>
+        <button class="enhance-style-btn" data-style="vibrant" onclick="selectEnhanceStyle(this)" style="font-size:12px; padding:6px 14px; border-radius:20px; border:1px solid #333; background:transparent; color:#888; cursor:pointer;">Vibrant</button>
+        <button class="enhance-style-btn" data-style="cinematic" onclick="selectEnhanceStyle(this)" style="font-size:12px; padding:6px 14px; border-radius:20px; border:1px solid #333; background:transparent; color:#888; cursor:pointer;">Cinematic</button>
+        <button class="enhance-style-btn" data-style="warm" onclick="selectEnhanceStyle(this)" style="font-size:12px; padding:6px 14px; border-radius:20px; border:1px solid #333; background:transparent; color:#888; cursor:pointer;">Warm</button>
+        <button class="enhance-style-btn" data-style="clean" onclick="selectEnhanceStyle(this)" style="font-size:12px; padding:6px 14px; border-radius:20px; border:1px solid #333; background:transparent; color:#888; cursor:pointer;">Clean</button>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:#111; border:1px solid #222; border-radius:16px; padding:28px; margin-bottom:20px;">
+    <p style="font-size:11px; font-weight:600; letter-spacing:0.1em; color:#a78bfa; text-transform:uppercase; margin:0 0 16px;">STEP 2 — PLATFORMS</p>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <label class="platform-pill" data-platform="instagram" style="display:flex; align-items:center; gap:8px; padding:10px 18px; border:1px solid #333; border-radius:30px; cursor:pointer;">
+        <input type="checkbox" style="display:none;" onchange="togglePlatform(this)"><span>📸</span><span style="color:#ccc; font-size:14px; font-weight:500;">Instagram</span>
+      </label>
+      <label class="platform-pill" data-platform="facebook" style="display:flex; align-items:center; gap:8px; padding:10px 18px; border:1px solid #333; border-radius:30px; cursor:pointer;">
+        <input type="checkbox" style="display:none;" onchange="togglePlatform(this)"><span>👥</span><span style="color:#ccc; font-size:14px; font-weight:500;">Facebook</span>
+      </label>
+      <label class="platform-pill" data-platform="linkedin" style="display:flex; align-items:center; gap:8px; padding:10px 18px; border:1px solid #333; border-radius:30px; cursor:pointer;">
+        <input type="checkbox" style="display:none;" onchange="togglePlatform(this)"><span>💼</span><span style="color:#ccc; font-size:14px; font-weight:500;">LinkedIn</span>
+      </label>
+      <label class="platform-pill" data-platform="twitter" style="display:flex; align-items:center; gap:8px; padding:10px 18px; border:1px solid #333; border-radius:30px; cursor:pointer;">
+        <input type="checkbox" style="display:none;" onchange="togglePlatform(this)"><span>𝕏</span><span style="color:#ccc; font-size:14px; font-weight:500;">X / Twitter</span>
+      </label>
+      <label class="platform-pill" data-platform="tiktok" style="display:flex; align-items:center; gap:8px; padding:10px 18px; border:1px solid #333; border-radius:30px; cursor:pointer;">
+        <input type="checkbox" style="display:none;" onchange="togglePlatform(this)"><span>🎵</span><span style="color:#ccc; font-size:14px; font-weight:500;">TikTok</span>
+      </label>
+      <label class="platform-pill" data-platform="threads" style="display:flex; align-items:center; gap:8px; padding:10px 18px; border:1px solid #333; border-radius:30px; cursor:pointer;">
+        <input type="checkbox" style="display:none;" onchange="togglePlatform(this)"><span>🧵</span><span style="color:#ccc; font-size:14px; font-weight:500;">Threads</span>
+      </label>
+    </div>
+  </div>
+
+  <div style="background:#111; border:1px solid #222; border-radius:16px; padding:28px; margin-bottom:20px;">
+    <p style="font-size:11px; font-weight:600; letter-spacing:0.1em; color:#a78bfa; text-transform:uppercase; margin:0 0 16px;">STEP 3 — WHAT TO GENERATE</p>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:10px;">
+      <label style="display:flex; align-items:center; gap:10px; padding:12px 16px; border:1px solid #333; border-radius:10px; cursor:pointer;">
+        <input type="checkbox" id="gen-title" checked style="accent-color:#a78bfa;">
+        <div><p style="font-size:13px; font-weight:600; color:#fff; margin:0;">Title / Headline</p><p style="font-size:11px; color:#666; margin:0;">Hook that stops the scroll</p></div>
+      </label>
+      <label style="display:flex; align-items:center; gap:10px; padding:12px 16px; border:1px solid #333; border-radius:10px; cursor:pointer;">
+        <input type="checkbox" id="gen-caption" checked style="accent-color:#a78bfa;">
+        <div><p style="font-size:13px; font-weight:600; color:#fff; margin:0;">Caption</p><p style="font-size:11px; color:#666; margin:0;">Platform-appropriate, your voice</p></div>
+      </label>
+      <label style="display:flex; align-items:center; gap:10px; padding:12px 16px; border:1px solid #333; border-radius:10px; cursor:pointer;">
+        <input type="checkbox" id="gen-description" style="accent-color:#a78bfa;">
+        <div><p style="font-size:13px; font-weight:600; color:#fff; margin:0;">Description</p><p style="font-size:11px; color:#666; margin:0;">1-4 sentences, platform-matched</p></div>
+      </label>
+      <label style="display:flex; align-items:center; gap:10px; padding:12px 16px; border:1px solid #333; border-radius:10px; cursor:pointer;">
+        <input type="checkbox" id="gen-cta" checked style="accent-color:#a78bfa;">
+        <div><p style="font-size:13px; font-weight:600; color:#fff; margin:0;">Call to Action</p><p style="font-size:11px; color:#666; margin:0;">Specific, not generic</p></div>
+      </label>
+      <label style="display:flex; align-items:center; gap:10px; padding:12px 16px; border:1px solid #333; border-radius:10px; cursor:pointer;">
+        <input type="checkbox" id="gen-hashtags" checked style="accent-color:#a78bfa;">
+        <div><p style="font-size:13px; font-weight:600; color:#fff; margin:0;">Hashtags</p><p style="font-size:11px; color:#666; margin:0;">Photo and platform appropriate</p></div>
+      </label>
+      <label style="display:flex; align-items:center; gap:10px; padding:12px 16px; border:1px solid #333; border-radius:10px; cursor:pointer;">
+        <input type="checkbox" id="gen-alttext" style="accent-color:#a78bfa;">
+        <div><p style="font-size:13px; font-weight:600; color:#fff; margin:0;">Alt Text</p><p style="font-size:11px; color:#666; margin:0;">Accessibility description</p></div>
+      </label>
+    </div>
+    <div style="margin-top:20px;">
+      <p style="font-size:12px; color:#888; text-transform:uppercase; letter-spacing:0.08em; font-weight:600; margin:0 0 8px;">TELL SAM ABOUT THIS PHOTO <span style="color:#555; font-weight:400; text-transform:none;">(optional)</span></p>
+      <textarea id="photo-context" placeholder="e.g. This is from my workshop last Tuesday. The energy was intense. I want the caption to feel vulnerable but strong." style="width:100%; min-height:80px; background:#0a0a0a; border:1px solid #333; border-radius:10px; color:#ccc; font-size:14px; padding:12px 14px; resize:vertical; font-family:inherit; box-sizing:border-box;"></textarea>
+    </div>
+  </div>
+
+  <div style="background:#111; border:1px solid #222; border-radius:16px; padding:28px; margin-bottom:32px;">
+    <p style="font-size:11px; font-weight:600; letter-spacing:0.1em; color:#a78bfa; text-transform:uppercase; margin:0 0 6px;">STEP 4 — SCHEDULE (OPTIONAL)</p>
+    <p style="font-size:13px; color:#666; margin:0 0 16px;">Pick which days you plan to post this</p>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <button class="day-btn" data-day="Mon" onclick="toggleDay(this)" style="padding:8px 16px; border-radius:20px; border:1px solid #333; background:transparent; color:#888; font-size:13px; cursor:pointer;">Mon</button>
+      <button class="day-btn" data-day="Tue" onclick="toggleDay(this)" style="padding:8px 16px; border-radius:20px; border:1px solid #333; background:transparent; color:#888; font-size:13px; cursor:pointer;">Tue</button>
+      <button class="day-btn" data-day="Wed" onclick="toggleDay(this)" style="padding:8px 16px; border-radius:20px; border:1px solid #333; background:transparent; color:#888; font-size:13px; cursor:pointer;">Wed</button>
+      <button class="day-btn" data-day="Thu" onclick="toggleDay(this)" style="padding:8px 16px; border-radius:20px; border:1px solid #333; background:transparent; color:#888; font-size:13px; cursor:pointer;">Thu</button>
+      <button class="day-btn" data-day="Fri" onclick="toggleDay(this)" style="padding:8px 16px; border-radius:20px; border:1px solid #333; background:transparent; color:#888; font-size:13px; cursor:pointer;">Fri</button>
+      <button class="day-btn" data-day="Sat" onclick="toggleDay(this)" style="padding:8px 16px; border-radius:20px; border:1px solid #333; background:transparent; color:#888; font-size:13px; cursor:pointer;">Sat</button>
+      <button class="day-btn" data-day="Sun" onclick="toggleDay(this)" style="padding:8px 16px; border-radius:20px; border:1px solid #333; background:transparent; color:#888; font-size:13px; cursor:pointer;">Sun</button>
+    </div>
+  </div>
+
+  <div style="text-align:center; margin-bottom:48px;">
+    <button id="wizard-generate-btn" onclick="runPhotoWizard()" style="background:linear-gradient(135deg,#7c3aed,#a78bfa); color:#fff; font-size:16px; font-weight:600; padding:16px 48px; border-radius:30px; border:none; cursor:pointer;">Generate My Posts</button>
+    <p style="font-size:13px; color:#555; margin:12px 0 0;">SAM writes platform-perfect copy for every platform you selected</p>
+  </div>
+
+  <div id="wizard-loading" style="display:none; text-align:center; padding:48px;">
+    <p id="wizard-loading-msg" style="color:#aaa; font-size:15px; margin:0;">SAM is reading your photo and writing your posts...</p>
+  </div>
+
+  <div id="wizard-output" style="display:none;">
+    <div style="border-top:1px solid #222; padding-top:40px; margin-bottom:20px;">
+      <p style="font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:#4ade80; margin-bottom:8px;">SAM OUTPUT</p>
+      <h3 style="font-size:24px; font-weight:700; color:#fff; margin:0 0 32px;">Your posts are ready.</h3>
+    </div>
+    <div id="enhanced-image-block" style="display:none; margin-bottom:32px;">
+      <p style="font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:#a78bfa; margin-bottom:12px;">AI ENHANCED PHOTO</p>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+        <div><p style="font-size:12px; color:#666; margin:0 0 8px;">Original</p><img id="original-img-compare" style="width:100%; border-radius:10px; border:1px solid #222;" alt="Original"></div>
+        <div><p style="font-size:12px; color:#a78bfa; margin:0 0 8px;">Enhanced</p><img id="enhanced-img-result" style="width:100%; border-radius:10px; border:1px solid #a78bfa44;" alt="Enhanced"></div>
+      </div>
+      <a id="download-enhanced" download="sam-enhanced.jpg" style="display:inline-block; margin-top:12px; font-size:13px; color:#a78bfa; text-decoration:none;">Download enhanced photo</a>
+    </div>
+    <div id="wizard-posts-container"></div>
+  </div>
+</section>
+
+<script>
+var wizardState = { photoFile:null, photoDataUrl:null, photoBase64:null, selectedPlatforms:[], selectedDays:[], enhanceStyle:'professional' };
+
+function showPhotoWizard() {
+  document.querySelectorAll('section[id]').forEach(function(s){ s.style.display='none'; });
+  var el = document.getElementById('photo-wizard');
+  if(el) el.style.display='block';
+  window.scrollTo(0,0);
+}
+
+function handlePhotoUpload(e) {
+  var file = e.target.files[0];
+  if(!file) return;
+  wizardState.photoFile = file;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    wizardState.photoDataUrl = ev.target.result;
+    wizardState.photoBase64 = ev.target.result.split(',')[1];
+    document.getElementById('photo-preview').src = ev.target.result;
+    document.getElementById('photo-preview').style.display = 'block';
+    document.getElementById('upload-placeholder').style.display = 'none';
+    document.getElementById('enhance-option').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+document.addEventListener('change', function(e) {
+  if(e.target && e.target.id === 'ai-enhance') {
+    document.getElementById('enhance-style-row').style.display = e.target.checked ? 'flex' : 'none';
+  }
+});
+
+function selectEnhanceStyle(btn) {
+  document.querySelectorAll('.enhance-style-btn').forEach(function(b){ b.style.borderColor='#333'; b.style.background='transparent'; b.style.color='#888'; });
+  btn.style.borderColor='#a78bfa'; btn.style.background='#1a1040'; btn.style.color='#a78bfa';
+  wizardState.enhanceStyle = btn.dataset.style;
+}
+
+function togglePlatform(cb) {
+  var pill = cb.closest('.platform-pill');
+  var platform = pill.dataset.platform;
+  if(cb.checked) {
+    pill.style.borderColor='#a78bfa'; pill.style.background='#1a1040';
+    pill.querySelector('span:last-child').style.color='#a78bfa';
+    if(!wizardState.selectedPlatforms.includes(platform)) wizardState.selectedPlatforms.push(platform);
+  } else {
+    pill.style.borderColor='#333'; pill.style.background='transparent';
+    pill.querySelector('span:last-child').style.color='#ccc';
+    wizardState.selectedPlatforms = wizardState.selectedPlatforms.filter(function(p){ return p!==platform; });
+  }
+}
+
+function toggleDay(btn) {
+  var day = btn.dataset.day;
+  if(btn.dataset.active==='1') {
+    btn.dataset.active='0'; btn.style.borderColor='#333'; btn.style.background='transparent'; btn.style.color='#888';
+    wizardState.selectedDays = wizardState.selectedDays.filter(function(d){ return d!==day; });
+  } else {
+    btn.dataset.active='1'; btn.style.borderColor='#a78bfa'; btn.style.background='#1a1040'; btn.style.color='#a78bfa';
+    wizardState.selectedDays.push(day);
+  }
+}
+
+async function runPhotoWizard() {
+  if(!wizardState.photoBase64) { alert('Please upload a photo first.'); return; }
+  if(wizardState.selectedPlatforms.length===0) { alert('Please select at least one platform.'); return; }
+  document.getElementById('wizard-generate-btn').style.opacity='0.5';
+  document.getElementById('wizard-loading').style.display='block';
+  document.getElementById('wizard-output').style.display='none';
+  var elements=[];
+  if(document.getElementById('gen-title').checked) elements.push('Title/Headline');
+  if(document.getElementById('gen-caption').checked) elements.push('Caption');
+  if(document.getElementById('gen-description').checked) elements.push('Description');
+  if(document.getElementById('gen-cta').checked) elements.push('Call to Action');
+  if(document.getElementById('gen-hashtags').checked) elements.push('Hashtags');
+  if(document.getElementById('gen-alttext').checked) elements.push('Alt Text');
+  var context = document.getElementById('photo-context').value.trim();
+  var doEnhance = document.getElementById('ai-enhance') && document.getElementById('ai-enhance').checked;
+  var enhancedUrl = null;
+  if(doEnhance) {
+    document.getElementById('wizard-loading-msg').textContent='Enhancing your photo with AI...';
+    try {
+      var stylePrompts = { professional:'professional photography, clean lighting, sharp focus', vibrant:'vibrant colors, high contrast, bold saturation', cinematic:'cinematic color grading, dramatic lighting, film look', warm:'warm tones, golden hour lighting, natural warmth', clean:'clean minimal aesthetic, soft light, neutral tones' };
+      var falRes = await fetch('https://fal.run/fal-ai/flux/dev/image-to-image', { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Key '+window.FAL_API_KEY}, body:JSON.stringify({ image_url:wizardState.photoDataUrl, prompt:stylePrompts[wizardState.enhanceStyle]+', high quality, social media ready', strength:0.35, num_inference_steps:28 }) });
+      if(falRes.ok) { var falData=await falRes.json(); enhancedUrl=falData.images&&falData.images[0]&&falData.images[0].url; }
+    } catch(err) { console.warn('Enhancement failed:', err); }
+  }
+  document.getElementById('wizard-loading-msg').textContent='SAM is writing your posts...';
+  var platformList = wizardState.selectedPlatforms.join(', ');
+  var elementList = elements.join(', ');
+  var daysNote = wizardState.selectedDays.length>0 ? 'Scheduled for: '+wizardState.selectedDays.join(', ')+'.' : '';
+  var userPrompt = 'I uploaded a photo for a social media post.'+(context?' Context: '+context:' No context provided — infer from the image.')+' Generate post copy for: '+platformList+'. For each platform generate: '+elementList+'. '+daysNote+' Format: one section per platform, each element clearly labeled. Write like a real human creator — vulnerable, specific, never corporate. No fake urgency, no generic compliments, no hype.';
+  try {
+    var apiRes = await fetch('/api/agent', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ systemPrompt:'You are SAM, a social media content writer. Analyze the uploaded photo and generate platform-specific post copy. Be specific, human, never corporate. No fake urgency, no hype words like amazing or incredible. Be vulnerable, specific, direct.', messages:[{ role:'user', content:[{ type:'image', source:{ type:'base64', media_type:wizardState.photoFile?wizardState.photoFile.type:'image/jpeg', data:wizardState.photoBase64 } },{ type:'text', text:userPrompt }] }] }) });
+    if(!apiRes.ok) throw new Error('API error '+apiRes.status);
+    var reader2 = apiRes.body.getReader();
+    var decoder = new TextDecoder();
+    var fullText = '';
+    document.getElementById('wizard-loading').style.display='none';
+    document.getElementById('wizard-output').style.display='block';
+    document.getElementById('wizard-generate-btn').style.opacity='1';
+    var container = document.getElementById('wizard-posts-container');
+    container.innerHTML='<div id="stream-output" style="color:#ccc; font-size:14px; line-height:1.8; white-space:pre-wrap;"></div>';
+    while(true) {
+      var result = await reader2.read();
+      if(result.done) break;
+      var chunk = decoder.decode(result.value,{stream:true});
+      var lines = chunk.split('
+');
+      for(var i=0;i<lines.length;i++) {
+        var line=lines[i].trim();
+        if(line.startsWith('data: ')) {
+          var data=line.slice(6);
+          if(data==='[DONE]') break;
+          try { var parsed=JSON.parse(data); var delta=parsed.delta&&parsed.delta.text; if(delta){ fullText+=delta; var el=document.getElementById('stream-output'); if(el) el.textContent=fullText; } } catch(e){}
+        }
+      }
+    }
+    container.innerHTML = renderWizardOutput(fullText, wizardState.selectedPlatforms);
+    if(enhancedUrl) {
+      document.getElementById('enhanced-image-block').style.display='block';
+      document.getElementById('original-img-compare').src=wizardState.photoDataUrl;
+      document.getElementById('enhanced-img-result').src=enhancedUrl;
+      document.getElementById('download-enhanced').href=enhancedUrl;
+    }
+  } catch(err) {
+    document.getElementById('wizard-loading').style.display='none';
+    document.getElementById('wizard-generate-btn').style.opacity='1';
+    document.getElementById('wizard-output').style.display='block';
+    document.getElementById('wizard-posts-container').innerHTML='<p style="color:#f87171;">Error: '+err.message+'</p>';
+  }
+}
+
+function renderWizardOutput(text, platforms) {
+  var colors={instagram:'#e1306c',facebook:'#1877f2',linkedin:'#0a66c2',twitter:'#1da1f2',tiktok:'#ff0050',threads:'#aaa'};
+  var emojis={instagram:'📸',facebook:'👥',linkedin:'💼',twitter:'𝕏',tiktok:'🎵',threads:'🧵'};
+  var out='<div style="display:grid; gap:16px;">';
+  platforms.forEach(function(p) {
+    var color=colors[p]||'#a78bfa'; var emoji=emojis[p]||''; var name=p.charAt(0).toUpperCase()+p.slice(1);
+    var regex=new RegExp('(?:'+name+'|'+p+')[\s\S]*?(?=\n\n[A-Z]|$)','i');
+    var match=text.match(regex); var content=match?match[0]:text;
+    out+='<div style="background:#111; border:1px solid #222; border-left:3px solid '+color+'; border-radius:12px; padding:20px;">';
+    out+='<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">';
+    out+='<p style="font-size:13px; font-weight:600; color:'+color+'; margin:0; text-transform:uppercase; letter-spacing:0.05em;">'+emoji+' '+name+'</p>';
+    out+='<button onclick="copyWizardPost(this)" style="font-size:12px; color:#888; background:transparent; border:1px solid #333; border-radius:20px; padding:4px 12px; cursor:pointer;">Copy</button>';
+    out+='</div><div class="post-copy" style="font-size:14px; color:#ccc; line-height:1.7; white-space:pre-wrap;">'+escHtml(content)+'</div></div>';
+  });
+  out+='<details style="margin-top:8px;"><summary style="font-size:13px; color:#666; cursor:pointer; padding:8px 0;">Full SAM output</summary>';
+  out+='<div style="margin-top:12px; background:#0a0a0a; border-radius:10px; padding:16px; font-size:13px; color:#888; white-space:pre-wrap; line-height:1.7;">'+escHtml(text)+'</div></details>';
+  out+='</div>';
+  return out;
+}
+
+function copyWizardPost(btn) {
+  var content=btn.closest('div').querySelector('.post-copy').textContent;
+  navigator.clipboard.writeText(content).then(function(){ var o=btn.textContent; btn.textContent='Copied!'; btn.style.color='#4ade80'; setTimeout(function(){ btn.textContent=o; btn.style.color='#888'; },2000); });
+}
+
+function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+</script>
+<!-- END PHOTO WIZARD -->
+
+<div id="tools">
 
     <!-- HOME GRID -->
     <div id="homeView">
@@ -11854,7 +12153,7 @@ Include complete reasoning (WHY) for every recommendation.
         <div style="font-size:13px;color:var(--spark);background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.2);border-radius:var(--radius);padding:12px 16px;margin-bottom:28px;line-height:1.6;">💡 ${errTip}</div>
         <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
           <button onclick="retryPlaybook()" style="padding:14px 32px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);color:#fff;border:none;border-radius:var(--radius);font-family:'Sora',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">↻ Try again</button>
-          ${isRateLimit ? '<button onclick="openProModal()" style="padding:14px 24px;background:linear-gradient(135deg,rgba(251,191,36,0.2),rgba(251,191,36,0.1));border:1px solid rgba(251,191,36,0.4);border-radius:var(--radius);font-family:\'Sora\',sans-serif;font-size:14px;font-weight:600;color:var(--lens);cursor:pointer;">✦ Go Pro</button>' : ''}
+          ${isRateLimit ? '<button onclick="openProModal()" style="padding:14px 24px;background:linear-gradient(135deg,rgba(251,191,36,0.2),rgba(251,191,36,0.1));border:1px solid rgba(251,191,36,0.4);border-radius:var(--radius);font-family:\'Sora\',sans-serif;font-size:14px;font-weight:600;color:var(--lens);cursor:pointer;">See plans →</button>' : ''}
           <button onclick="showWizardStep('10')" style="padding:14px 24px;background:transparent;color:var(--text3);border:1px solid var(--border);border-radius:var(--radius);font-family:'Sora',sans-serif;font-size:14px;cursor:pointer;">← Edit my answers</button>
         </div>
         <div style="margin-top:20px;font-size:12px;color:var(--text3);">Your story is saved. Nothing is lost.</div>
