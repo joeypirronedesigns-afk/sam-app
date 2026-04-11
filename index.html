@@ -13838,94 +13838,6 @@ function openWizardFromNav() {
   </div>
 </div>
 
-<!-- ══ SAM ECOSYSTEM OVERLAY ══ -->
-<div id="ecosystemOverlay" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(9,8,15,0.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);animation:fade-in 0.3s ease;overflow-y:auto;">
-  <div style="max-width:480px;width:100%;margin:0 auto;padding:16px 20px;display:flex;flex-direction:column;gap:8px;min-height:100%;justify-content:center;box-sizing:border-box;">
-    
-    <!-- Header -->
-    <div style="text-align:center;padding-bottom:4px;">
-      <div style="font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:rgba(167,139,250,0.6);margin-bottom:6px;">✦ THE SAM ECOSYSTEM</div>
-      <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:#F0ECFF;line-height:1.2;margin-bottom:5px;">Five tools. <span style="background:linear-gradient(90deg,#F472B6,#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">One story.</span> All working together.</div>
-      <div style="font-size:11px;color:rgba(240,236,255,0.5);line-height:1.4;">You're inside the <strong style="color:#A78BFA;">SAM Engine</strong> — here's everything else SAM can do.</div>
-    </div>
-
-    <!-- Tools grid -->
-    <div style="display:flex;flex-direction:column;gap:10px;">
-      
-      <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(244,114,182,0.1));border:1.5px solid rgba(167,139,250,0.4);border-radius:12px;cursor:pointer;" onclick="samReturnToWizard()">
-        <div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#6D28D9,#A78BFA);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Sora',sans-serif;font-size:14px;font-weight:800;color:#fff;">S</div>
-        <div style="flex:1;">
-          <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#F0ECFF;">SAM Story Engine</div>
-          <div style="font-size:11px;color:rgba(240,236,255,0.5);">Your full content strategy — built from your story</div>
-        </div>
-        <div style="font-size:10px;font-weight:700;color:#A78BFA;background:rgba(167,139,250,0.2);border:1px solid rgba(167,139,250,0.3);padding:3px 10px;border-radius:20px;white-space:nowrap;">← You are here</div>
-      </div>
-
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);border-radius:14px;cursor:pointer;" onclick="closeEcosystemAndOpenTool('pulse')">
-        <div style="width:34px;height:34px;border-radius:10px;background:rgba(244,114,182,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><path d="M5 8h18M5 13h11M5 18h14" stroke="#F472B6" stroke-width="2" stroke-linecap="round"/></svg>
-        </div>
-        <div>
-          <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#F0ECFF;">The Pulse</div>
-          <div style="font-size:11px;color:rgba(240,236,255,0.5);">Any moment → hook, script & captions</div>
-        </div>
-      </div>
-
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemAndOpenTool('spark')">
-        <div style="width:34px;height:34px;border-radius:10px;background:rgba(167,139,250,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><path d="M14 4v3M14 21v3M3 14H6M22 14h3M14 9a5 5 0 100 10 5 5 0 000-10z" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </div>
-        <div>
-          <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#F0ECFF;">The Spark</div>
-          <div style="font-size:11px;color:rgba(240,236,255,0.5);">Never run out of things to post</div>
-        </div>
-      </div>
-
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemAndOpenTool('blueprint')">
-        <div style="width:34px;height:34px;border-radius:10px;background:rgba(56,189,248,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><rect x="5" y="7" width="18" height="16" rx="2" stroke="#38BDF8" stroke-width="1.8"/><path d="M5 12h18M10 5v4M18 5v4" stroke="#38BDF8" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </div>
-        <div>
-          <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#F0ECFF;">Blueprint</div>
-          <div style="font-size:11px;color:rgba(240,236,255,0.5);">Your whole week planned in 30 seconds</div>
-        </div>
-      </div>
-
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemAndOpenTool('vision')">
-        <div style="width:34px;height:34px;border-radius:10px;background:rgba(52,211,153,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><polygon points="11,8 22,14 11,20" fill="#34D399"/><rect x="6" y="8" width="2.5" height="12" rx="1" fill="#34D399"/></svg>
-        </div>
-        <div>
-          <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#F0ECFF;">The Vision</div>
-          <div style="font-size:11px;color:rgba(240,236,255,0.5);">One bold concept nobody else has made</div>
-        </div>
-      </div>
-
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemAndOpenTool('lens')">
-        <div style="width:34px;height:34px;border-radius:10px;background:rgba(251,191,36,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="13" r="5" stroke="#FBBF24" stroke-width="1.8"/><circle cx="14" cy="13" r="2" fill="#FBBF24"/><path d="M14 4v3M14 19v3M4 13H7M21 13h3" stroke="#FBBF24" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </div>
-        <div>
-          <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#F0ECFF;">The Lens <span style="font-size:9px;font-weight:700;background:rgba(251,191,36,0.2);color:#FBBF24;border-radius:20px;padding:2px 7px;vertical-align:middle;margin-left:4px;">2-IN-1</span></div>
-          <div style="font-size:11px;color:rgba(240,236,255,0.5);">Thumbnail strategy from your photo · Decode your analytics & know exactly what to do next</div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Buttons -->
-    <div style="display:flex;flex-direction:column;gap:8px;padding-top:4px;">
-      <button onclick="samReturnToWizard()" style="width:100%;padding:13px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">
-        ← Keep building my story
-      </button>
-      <button onclick="samExploreTools()" style="width:100%;padding:11px;background:transparent;border:1px solid rgba(255,255,255,0.12);border-radius:50px;font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:rgba(240,236,255,0.6);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,236,255,0.6)'">
-        Explore all tools → SAM brings your story with you
-      </button>
-    </div>
-
-  </div>
-</div>
-
 
 
 <!-- ── PRO PAGE ── -->
@@ -16564,6 +16476,96 @@ function samHideThinking() {
   </div>
   <div id="ideasPickerList"></div>
 </div>
+
+
+<!-- ══ SAM ECOSYSTEM OVERLAY ══ -->
+<div id="ecosystemOverlay" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(9,8,15,0.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);animation:fade-in 0.3s ease;overflow-y:auto;">
+  <div style="max-width:480px;width:100%;margin:0 auto;padding:16px 20px;display:flex;flex-direction:column;gap:8px;min-height:100%;justify-content:center;box-sizing:border-box;">
+    
+    <!-- Header -->
+    <div style="text-align:center;padding-bottom:4px;">
+      <div style="font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:rgba(167,139,250,0.6);margin-bottom:6px;">✦ THE SAM ECOSYSTEM</div>
+      <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:#F0ECFF;line-height:1.2;margin-bottom:5px;">Five tools. <span style="background:linear-gradient(90deg,#F472B6,#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">One story.</span> All working together.</div>
+      <div style="font-size:11px;color:rgba(240,236,255,0.5);line-height:1.4;">You're inside the <strong style="color:#A78BFA;">SAM Engine</strong> — here's everything else SAM can do.</div>
+    </div>
+
+    <!-- Tools grid -->
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(244,114,182,0.1));border:1.5px solid rgba(167,139,250,0.4);border-radius:12px;cursor:pointer;" onclick="samReturnToWizard()">
+        <div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#6D28D9,#A78BFA);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Sora',sans-serif;font-size:14px;font-weight:800;color:#fff;">S</div>
+        <div style="flex:1;">
+          <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#F0ECFF;">SAM Story Engine</div>
+          <div style="font-size:11px;color:rgba(240,236,255,0.5);">Your full content strategy — built from your story</div>
+        </div>
+        <div style="font-size:10px;font-weight:700;color:#A78BFA;background:rgba(167,139,250,0.2);border:1px solid rgba(167,139,250,0.3);padding:3px 10px;border-radius:20px;white-space:nowrap;">← You are here</div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);border-radius:14px;cursor:pointer;" onclick="closeEcosystemAndOpenTool('pulse')">
+        <div style="width:34px;height:34px;border-radius:10px;background:rgba(244,114,182,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><path d="M5 8h18M5 13h11M5 18h14" stroke="#F472B6" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#F0ECFF;">The Pulse</div>
+          <div style="font-size:11px;color:rgba(240,236,255,0.5);">Any moment → hook, script & captions</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemAndOpenTool('spark')">
+        <div style="width:34px;height:34px;border-radius:10px;background:rgba(167,139,250,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><path d="M14 4v3M14 21v3M3 14H6M22 14h3M14 9a5 5 0 100 10 5 5 0 000-10z" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#F0ECFF;">The Spark</div>
+          <div style="font-size:11px;color:rgba(240,236,255,0.5);">Never run out of things to post</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemAndOpenTool('blueprint')">
+        <div style="width:34px;height:34px;border-radius:10px;background:rgba(56,189,248,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><rect x="5" y="7" width="18" height="16" rx="2" stroke="#38BDF8" stroke-width="1.8"/><path d="M5 12h18M10 5v4M18 5v4" stroke="#38BDF8" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#F0ECFF;">Blueprint</div>
+          <div style="font-size:11px;color:rgba(240,236,255,0.5);">Your whole week planned in 30 seconds</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemAndOpenTool('vision')">
+        <div style="width:34px;height:34px;border-radius:10px;background:rgba(52,211,153,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><polygon points="11,8 22,14 11,20" fill="#34D399"/><rect x="6" y="8" width="2.5" height="12" rx="1" fill="#34D399"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#F0ECFF;">The Vision</div>
+          <div style="font-size:11px;color:rgba(240,236,255,0.5);">One bold concept nobody else has made</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemAndOpenTool('lens')">
+        <div style="width:34px;height:34px;border-radius:10px;background:rgba(251,191,36,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="13" r="5" stroke="#FBBF24" stroke-width="1.8"/><circle cx="14" cy="13" r="2" fill="#FBBF24"/><path d="M14 4v3M14 19v3M4 13H7M21 13h3" stroke="#FBBF24" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#F0ECFF;">The Lens <span style="font-size:9px;font-weight:700;background:rgba(251,191,36,0.2);color:#FBBF24;border-radius:20px;padding:2px 7px;vertical-align:middle;margin-left:4px;">2-IN-1</span></div>
+          <div style="font-size:11px;color:rgba(240,236,255,0.5);">Thumbnail strategy from your photo · Decode your analytics & know exactly what to do next</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Buttons -->
+    <div style="display:flex;flex-direction:column;gap:8px;padding-top:4px;">
+      <button onclick="samReturnToWizard()" style="width:100%;padding:13px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">
+        ← Keep building my story
+      </button>
+      <button onclick="samExploreTools()" style="width:100%;padding:11px;background:transparent;border:1px solid rgba(255,255,255,0.12);border-radius:50px;font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:rgba(240,236,255,0.6);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,236,255,0.6)'">
+        Explore all tools → SAM brings your story with you
+      </button>
+    </div>
+
+  </div>
+</div>
+
 </body>
 </html>
  
