@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.91)
+       UNIFIED HERO (v7.92)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.91
+       CINEMATIC MEET SAM — v7.92
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.91
+       SAM GUIDED TOUR SPLASH — v7.92
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5466,10 +5466,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.91</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.92</div>
 
 
-  <!-- ── UNIFIED HERO v7.91 ── -->
+  <!-- ── UNIFIED HERO v7.92 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -8053,10 +8053,13 @@ function initPersistentSAM() {
   const fab = document.getElementById('persistentSAMFab');
   if (!panel || !fab) return;
 
+  // Only show FAB in dev mode — Marketing SAM is for Joey only
+  const _isDevMode = localStorage.getItem('sam_dev') === 'true';
+  if (!_isDevMode) return;
   fab.style.display = 'flex';
 
   // Swap quick replies for marketing mode
-  const _devQR = localStorage.getItem('sam_dev') === 'true';
+  const _devQR = true;
   const _qrRow = document.getElementById('psamQuickRow');
   if (_qrRow) {
     _qrRow.style.display = _devQR ? 'flex' : 'none';
@@ -8087,10 +8090,7 @@ function initPersistentSAM() {
     addPersistentMessage('sam', opener, true);
   }
 
-  // Restore open state
-  if (localStorage.getItem(SAM_PERSISTENT_OPEN_KEY) === 'true') {
-    openPersistentSAM();
-  }
+  // Never auto-open on page load — user must click FAB
 }
 
 function togglePersistentSAM() {
@@ -8345,7 +8345,7 @@ window.getSamVoiceProfile = function() {
 };
 
 function getSuperSAMPrompt() {
-  // VOICE DNA BRAND KNOWLEDGE — v7.91
+  // VOICE DNA BRAND KNOWLEDGE — v7.92
   // SAM knows this about herself and leads with it when relevant:
   // - Voice DNA is SAM's exclusive differentiator. No other AI tool has it.
   // - It is a living profile of how the creator communicates — rhythm, humor,
@@ -9383,7 +9383,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.91
+  // CINEMATIC MEET SAM — v7.92
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -13752,7 +13752,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.91</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.92</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
