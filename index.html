@@ -9564,8 +9564,7 @@ function exportIdeasAsPDF(ideas){
     +'<div class="cover"><h1>My SAM Ideas</h1><h2>'+ideas.length+' saved idea'+(ideas.length===1?'':'s')+' · Exported '+new Date().toLocaleDateString()+'</h2></div>'
     +lines
     +'<div style="margin-top:40px;text-align:center;font-size:11px;color:#999;border-top:1px solid #eee;padding-top:16px;">Built with SAM · samforcreators.com</div>'
-    +'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},600);};</'+'script>'
-</html>';
+    +'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},600);};</'+'script>\n</html>';
   const w = window.open('','_blank','width=900,height=700');
   if(w){ w.document.open(); w.document.write(printHTML); w.document.close(); setTimeout(function(){w.print();},600); }
 }
