@@ -6852,6 +6852,51 @@ For each platform write clearly with the platform name as a header. Make every c
         }
       }
     }
+
+    // Parse and render the output
+    const platforms = getSelPills('reachPlatforms');
+    const outputs = getSelPills('reachOutputs');
+    const scheduledDay = document.querySelector('input[name="reachDay"]:checked');
+    let rendered = '';
+    try {
+      // Try to parse as JSON (old photo wizard format)
+      const parsed = JSON.parse(fullText.trim());
+      // Render each selected platform using SAM's analysis
+      platforms.forEach(platform => {
+        rendered += '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(244,114,182,0.2);border-radius:14px;padding:20px;margin-bottom:16px;">';
+        rendered += '<div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#F472B6;margin-bottom:14px;">' + platform + '</div>';
+        if (outputs.includes('Title/Headline')) {
+          rendered += '<div style="margin-bottom:12px;"><div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Headline</div>';
+          rendered += '<div style="font-size:15px;font-weight:700;color:#fff;line-height:1.4;">' + (parsed.headline_safe || parsed.hook_ideas && parsed.hook_ideas[0] || '') + '</div></div>';
+        }
+        if (outputs.includes('Caption')) {
+          rendered += '<div style="margin-bottom:12px;"><div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Caption</div>';
+          rendered += '<div style="font-size:14px;color:rgba(240,236,255,0.8);line-height:1.7;">' + (parsed.content_angle || parsed.diagnosis || '') + '</div></div>';
+        }
+        if (outputs.includes('Description')) {
+          rendered += '<div style="margin-bottom:12px;"><div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Description</div>';
+          rendered += '<div style="font-size:13px;color:rgba(240,236,255,0.7);line-height:1.6;">' + (parsed.next_action || '') + '</div></div>';
+        }
+        if (outputs.includes('Call to Action')) {
+          rendered += '<div style="margin-bottom:12px;"><div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Call to Action</div>';
+          rendered += '<div style="font-size:13px;color:rgba(240,236,255,0.7);">Follow for more behind-the-scenes content.</div></div>';
+        }
+        if (outputs.includes('Hashtags')) {
+          rendered += '<div style="margin-bottom:16px;"><div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Hashtags</div>';
+          rendered += '<div style="font-size:13px;color:#A78BFA;">#CreatorLife #ContentCreator #' + platform.replace(/[^a-zA-Z]/g,'') + '</div></div>';
+        }
+        // Post button — coming soon
+        rendered += '<button style="width:100%;padding:10px;background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);border-radius:8px;color:rgba(244,114,182,0.5);font-size:12px;font-weight:600;cursor:not-allowed;font-family:'Sora',sans-serif;">📲 Post to ' + platform + ' — Connect account →</button>';
+        rendered += '</div>';
+      });
+      if (scheduledDay) {
+        rendered += '<div style="margin-top:8px;padding:12px 16px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:10px;font-size:13px;color:rgba(167,139,250,0.8);">📅 Scheduled for <strong>' + scheduledDay.value + '</strong></div>';
+      }
+    } catch(e) {
+      // Not JSON — render as plain text
+      rendered = '<div style="color:#ccc;font-size:14px;line-height:1.8;white-space:pre-wrap;">' + fullText + '</div>';
+    }
+    document.getElementById('reachBody').innerHTML = rendered;
   } catch(err) {
     document.getElementById('reachLoader').style.display = 'none';
     document.getElementById('reachErr').textContent = 'Something went wrong. Please try again.';
