@@ -5769,8 +5769,7 @@ async function runPhotoWizard() {
       var result = await reader2.read();
       if(result.done) break;
       var chunk = decoder.decode(result.value,{stream:true});
-      var lines = chunk.split('
-');
+      var lines = chunk.split('\n');
       for(var i=0;i<lines.length;i++) {
         var line=lines[i].trim();
         if(line.startsWith('data: ')) {
@@ -6710,7 +6709,7 @@ function openIdeasPicker(targetId) {
     list.innerHTML = ideas.map(idea => {
       const preview = (idea.text || '').slice(0, 120).replace(/</g,'&lt;').replace(/>/g,'&gt;');
       const label = tL[idea.type] || idea.type;
-      return '<div onclick="ideasPickerSelect('' + idea.id + '')" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px;margin-bottom:8px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.background='rgba(167,139,250,0.06)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)';this.style.background='rgba(255,255,255,0.03)'">'
+      return '<div onclick=\"ideasPickerSelect(\'' + idea.id + '\')\" style=\"background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px;margin-bottom:8px;cursor:pointer;transition:all 0.15s;\" onmouseover=\"this.style.borderColor=\'rgba(167,139,250,0.4)\';this.style.background=\'rgba(167,139,250,0.06)\'\" onmouseout=\"this.style.borderColor=\'rgba(255,255,255,0.08)\';this.style.background=\'rgba(255,255,255,0.03)\'">'
         + '<div style="font-size:10px;font-weight:700;color:rgba(167,139,250,0.6);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">' + label + '</div>'
         + '<div style="font-size:13px;color:var(--text2);line-height:1.5;">' + preview + (idea.text.length > 120 ? '...' : '') + '</div>'
         + '</div>';
