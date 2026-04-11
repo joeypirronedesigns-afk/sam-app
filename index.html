@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v8.08)
+       UNIFIED HERO (v7.93)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v8.08
+       CINEMATIC MEET SAM — v7.93
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v8.08
+       SAM GUIDED TOUR SPLASH — v7.93
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5459,18 +5459,18 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
       About me
     </button>
-    
-
+    <button id="samVoiceToggle" onclick="toggleSAMVoice()" title="SAM Voice" style="background:none;border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:7px 13px;font-size:13px;cursor:pointer;color:rgba(240,236,255,0.5);font-family:'Sora',sans-serif;font-weight:600;transition:all 0.2s;display:inline-flex;align-items:center;gap:5px;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.5)'">🔇 SAM Voice</button>
+<button onclick="showPhotoWizard()" id="samVoiceToggle" title="SAM Voice" style="background:none;border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:7px 13px;font-size:13px;cursor:pointer;color:rgba(240,236,255,0.5);font-family:'Sora',sans-serif;font-weight:600;transition:all 0.2s;display:inline-flex;align-items:center;gap:5px;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.5)'">📸 Photo Wizard</button>
     <button class="nav-signin-btn" onclick="openSignInModal()"  style="background:none;border:1px solid rgba(255,255,255,0.15);color:var(--text2);font-family:'Sora',sans-serif;font-size:13px;font-weight:600;padding:8px 18px;border-radius:50px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.5)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.15)';this.style.color='var(--text2)'">Sign in</button>
     <button class="nav-pro-btn" onclick="openProPage()">See plans →</button>
   </div>
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.08</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.93</div>
 
 
-  <!-- ── UNIFIED HERO v8.08 ── -->
+  <!-- ── UNIFIED HERO v7.93 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -5494,7 +5494,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
     <p style="font-size:clamp(15px,2vw,20px);line-height:1.7;color:var(--text2);max-width:560px;margin:0 auto 36px;">You've spent years finding your voice. SAM remembers every word of it. While every other AI tool starts from zero, SAM's Voice DNA captures how you think, how you phrase things, and what makes your audience trust you — then gets sharper every single time you use her. The longer you work together, the more your content sounds unmistakably like you.</p>
 
     <!-- CTA -->
-    <button onclick="/* disabled */" style="background:linear-gradient(135deg,#FBB824,#F472B6);color:#09080F;font-family:'Sora',sans-serif;font-size:clamp(15px,2vw,18px);font-weight:800;padding:16px 36px;border:none;border-radius:50px;cursor:pointer;box-shadow:0 0 40px rgba(251,184,36,0.3);letter-spacing:-0.01em;margin-bottom:16px;transition:all 0.25s;">&#10022; Tell SAM your story — it's free &rarr;</button>
+    <button onclick="setTimeout(function(){if(typeof getTrialState==='function'&&typeof openWizardPage==='function'){getTrialState().email?openWizardPage():openTrialCapture();}else if(typeof openTrialCapture==='function'){openTrialCapture();}},0)" style="background:linear-gradient(135deg,#FBB824,#F472B6);color:#09080F;font-family:'Sora',sans-serif;font-size:clamp(15px,2vw,18px);font-weight:800;padding:16px 36px;border:none;border-radius:50px;cursor:pointer;box-shadow:0 0 40px rgba(251,184,36,0.3);letter-spacing:-0.01em;margin-bottom:16px;transition:all 0.25s;">&#10022; Tell SAM your story — it's free &rarr;</button>
 
     <!-- See plans link -->
     <div style="margin-bottom:60px;">
@@ -5532,8 +5532,8 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
   </div>
 
   <!-- ── TOOL SECTION ── -->
-  <div class="tool-section">
-<!-- ✦ PHOTO WIZARD SECTION v8.08 -->
+  <div class="tool-section" 
+<!-- ✦ PHOTO WIZARD SECTION v7.94 -->
 <section id="photo-wizard" style="display:none; padding:60px 24px; max-width:860px; margin:0 auto;">
   <div style="text-align:center; margin-bottom:40px;">
     <p style="font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:#888; margin-bottom:10px;">NEW TOOL</p>
@@ -5672,13 +5672,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 var wizardState = { photoFile:null, photoDataUrl:null, photoBase64:null, selectedPlatforms:[], selectedDays:[], enhanceStyle:'professional' };
 
 function showPhotoWizard() {
+  document.querySelectorAll('section[id]').forEach(function(s){ s.style.display='none'; });
   var el = document.getElementById('photo-wizard');
-  if(!el) { console.error('photo-wizard section not found'); return; }
-  el.style.display = 'block';
-  el.style.visibility = 'visible';
-  setTimeout(function(){ 
-    el.scrollIntoView({behavior:'smooth', block:'start'});
-  }, 150);
+  if(el) el.style.display='block';
+  window.scrollTo(0,0);
 }
 
 function handlePhotoUpload(e) {
@@ -5687,27 +5684,12 @@ function handlePhotoUpload(e) {
   wizardState.photoFile = file;
   var reader = new FileReader();
   reader.onload = function(ev) {
-    var img = new Image();
-    img.onload = function() {
-      var canvas = document.createElement('canvas');
-      var MAX = 1200;
-      var w = img.width, h = img.height;
-      if(w > MAX || h > MAX) {
-        if(w > h) { h = Math.round(h * MAX/w); w = MAX; }
-        else { w = Math.round(w * MAX/h); h = MAX; }
-      }
-      canvas.width = w; canvas.height = h;
-      var ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, w, h);
-      var compressed = canvas.toDataURL('image/jpeg', 0.82);
-      wizardState.photoDataUrl = compressed;
-      wizardState.photoBase64 = compressed.split(',')[1];
-      document.getElementById('photo-preview').src = compressed;
-      document.getElementById('photo-preview').style.display = 'block';
-      document.getElementById('upload-placeholder').style.display = 'none';
-      document.getElementById('enhance-option').style.display = 'block';
-    };
-    img.src = ev.target.result;
+    wizardState.photoDataUrl = ev.target.result;
+    wizardState.photoBase64 = ev.target.result.split(',')[1];
+    document.getElementById('photo-preview').src = ev.target.result;
+    document.getElementById('photo-preview').style.display = 'block';
+    document.getElementById('upload-placeholder').style.display = 'none';
+    document.getElementById('enhance-option').style.display = 'block';
   };
   reader.readAsDataURL(file);
 }
@@ -5779,7 +5761,7 @@ async function runPhotoWizard() {
   var daysNote = wizardState.selectedDays.length>0 ? 'Scheduled for: '+wizardState.selectedDays.join(', ')+'.' : '';
   var userPrompt = 'I uploaded a photo for a social media post.'+(context?' Context: '+context:' No context provided — infer from the image.')+' Generate post copy for: '+platformList+'. For each platform generate: '+elementList+'. '+daysNote+' Format: one section per platform, each element clearly labeled. Write like a real human creator — vulnerable, specific, never corporate. No fake urgency, no generic compliments, no hype.';
   try {
-    var apiRes = await fetch('/api/sam', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ mode:'upload', imageBase64:wizardState.photoBase64, imageType:wizardState.photoFile?wizardState.photoFile.type:'image/jpeg', moment:userPrompt, forceType:'photo' }) });
+    var apiRes = await fetch('/api/agent', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ systemPrompt:'You are SAM, a social media content writer. Analyze the uploaded photo and generate platform-specific post copy. Be specific, human, never corporate. No fake urgency, no hype words like amazing or incredible. Be vulnerable, specific, direct.', messages:[{ role:'user', content:[{ type:'image', source:{ type:'base64', media_type:wizardState.photoFile?wizardState.photoFile.type:'image/jpeg', data:wizardState.photoBase64 } },{ type:'text', text:userPrompt }] }] }) });
     if(!apiRes.ok) throw new Error('API error '+apiRes.status);
     var reader2 = apiRes.body.getReader();
     var decoder = new TextDecoder();
@@ -5793,13 +5775,14 @@ async function runPhotoWizard() {
       var result = await reader2.read();
       if(result.done) break;
       var chunk = decoder.decode(result.value,{stream:true});
-      var lines = chunk.split('\n');
+      var lines = chunk.split('
+');
       for(var i=0;i<lines.length;i++) {
         var line=lines[i].trim();
         if(line.startsWith('data: ')) {
           var data=line.slice(6);
           if(data==='[DONE]') break;
-          try { var parsed=JSON.parse(data); var delta=parsed.t||parsed.delta&&parsed.delta.text; if(delta){ fullText+=delta; var el=document.getElementById('stream-output'); if(el) el.textContent=fullText; } } catch(e){}
+          try { var parsed=JSON.parse(data); var delta=parsed.delta&&parsed.delta.text; if(delta){ fullText+=delta; var el=document.getElementById('stream-output'); if(el) el.textContent=fullText; } } catch(e){}
         }
       }
     }
@@ -5819,50 +5802,27 @@ async function runPhotoWizard() {
 }
 
 function renderWizardOutput(text, platforms) {
-  var colors={instagram:'#e1306c',facebook:'#1877f2',linkedin:'#0a66c2',twitter:'#1da1f2',tiktok:'#ff0050',threads:'#aaa',youtube:'#ff0000'};
-  var emojis={instagram:'📸',facebook:'👥',linkedin:'💼',twitter:'𝕏',tiktok:'🎵',threads:'🧵',youtube:'▶'};
+  var colors={instagram:'#e1306c',facebook:'#1877f2',linkedin:'#0a66c2',twitter:'#1da1f2',tiktok:'#ff0050',threads:'#aaa'};
+  var emojis={instagram:'📸',facebook:'👥',linkedin:'💼',twitter:'𝕏',tiktok:'🎵',threads:'🧵'};
   var out='<div style="display:grid; gap:16px;">';
-  var parsed=null;
-  try { var jm=text.match(/\{[\s\S]*\}/); if(jm) parsed=JSON.parse(jm[0]); } catch(e){}
-  if(parsed && parsed.platforms && parsed.platforms.length>0) {
-    if(parsed.content_angle) {
-      out+='<div style="background:#1a1a2e; border:1px solid #2a2a3e; border-radius:12px; padding:16px 20px; margin-bottom:4px;">';
-      out+='<p style="font-size:11px; color:#a78bfa; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; margin:0 0 6px;">SAM SEES</p>';
-      out+='<p style="font-size:14px; color:#ccc; margin:0; line-height:1.6;">'+escHtml(parsed.content_angle)+'</p>';
-      if(parsed.headline_bold){
-        out+='<div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">';
-        out+='<span style="font-size:12px; background:#2a1a4e; color:#a78bfa; padding:4px 12px; border-radius:20px;">Bold: '+escHtml(parsed.headline_bold)+'</span>';
-        out+='<span style="font-size:12px; background:#1a2a1a; color:#4ade80; padding:4px 12px; border-radius:20px;">Safe: '+escHtml(parsed.headline_safe)+'</span>';
-        out+='</div>';
-      }
-      out+='</div>';
-    }
-    parsed.platforms.forEach(function(p) {
-      var pkey=p.platform.toLowerCase().replace(/\s+/g,'').replace('instagramreels','instagram');
-      var color=colors[pkey]||'#a78bfa'; var emoji=emojis[pkey]||'✦';
-      out+='<div style="background:#111; border:1px solid #222; border-left:3px solid '+color+'; border-radius:12px; padding:20px;">';
-      out+='<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">';
-      out+='<p style="font-size:13px; font-weight:600; color:'+color+'; margin:0; text-transform:uppercase; letter-spacing:0.05em;">'+emoji+' '+escHtml(p.platform)+'</p>';
-      out+='<button onclick="copyWizardPost(this)" style="font-size:12px; color:#888; background:transparent; border:1px solid #333; border-radius:20px; padding:4px 12px; cursor:pointer;">Copy</button>';
-      out+='</div>';
-      if(p.title) out+='<p style="font-size:15px; font-weight:600; color:#fff; margin:0 0 8px;">'+escHtml(p.title)+'</p>';
-      if(p.description) out+='<p class="post-copy" style="font-size:14px; color:#ccc; line-height:1.7; margin:0 0 10px; white-space:pre-wrap;">'+escHtml(p.description)+'</p>';
-      if(p.hashtags) out+='<p style="font-size:13px; color:#a78bfa; margin:0;">'+escHtml(p.hashtags)+'</p>';
-      out+='</div>';
-    });
-  } else {
-    out+='<div style="background:#111; border:1px solid #222; border-radius:12px; padding:20px;">';
-    out+='<p class="post-copy" style="font-size:14px; color:#ccc; line-height:1.8; white-space:pre-wrap;">'+escHtml(text)+'</p>';
-    out+='</div>';
-  }
-  out+='<details style="margin-top:8px;"><summary style="font-size:13px; color:#555; cursor:pointer; padding:8px 0;">Raw SAM output</summary>';
-  out+='<div style="margin-top:12px; background:#0a0a0a; border-radius:10px; padding:16px; font-size:12px; color:#666; white-space:pre-wrap; line-height:1.6;">'+escHtml(text)+'</div></details>';
+  platforms.forEach(function(p) {
+    var color=colors[p]||'#a78bfa'; var emoji=emojis[p]||''; var name=p.charAt(0).toUpperCase()+p.slice(1);
+    var regex=new RegExp('(?:'+name+'|'+p+')[\s\S]*?(?=\n\n[A-Z]|$)','i');
+    var match=text.match(regex); var content=match?match[0]:text;
+    out+='<div style="background:#111; border:1px solid #222; border-left:3px solid '+color+'; border-radius:12px; padding:20px;">';
+    out+='<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">';
+    out+='<p style="font-size:13px; font-weight:600; color:'+color+'; margin:0; text-transform:uppercase; letter-spacing:0.05em;">'+emoji+' '+name+'</p>';
+    out+='<button onclick="copyWizardPost(this)" style="font-size:12px; color:#888; background:transparent; border:1px solid #333; border-radius:20px; padding:4px 12px; cursor:pointer;">Copy</button>';
+    out+='</div><div class="post-copy" style="font-size:14px; color:#ccc; line-height:1.7; white-space:pre-wrap;">'+escHtml(content)+'</div></div>';
+  });
+  out+='<details style="margin-top:8px;"><summary style="font-size:13px; color:#666; cursor:pointer; padding:8px 0;">Full SAM output</summary>';
+  out+='<div style="margin-top:12px; background:#0a0a0a; border-radius:10px; padding:16px; font-size:13px; color:#888; white-space:pre-wrap; line-height:1.7;">'+escHtml(text)+'</div></details>';
   out+='</div>';
   return out;
 }
 
 function copyWizardPost(btn) {
-  var postDiv=btn.closest('[style]'); var pc=postDiv?postDiv.querySelector('.post-copy'):null; if(!pc){alert('Nothing to copy yet');return;} var content=pc.textContent;
+  var content=btn.closest('div').querySelector('.post-copy').textContent;
   navigator.clipboard.writeText(content).then(function(){ var o=btn.textContent; btn.textContent='Copied!'; btn.style.color='#4ade80'; setTimeout(function(){ btn.textContent=o; btn.style.color='#888'; },2000); });
 }
 
@@ -5947,7 +5907,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
           <div style="font-size:13px;color:var(--text3);line-height:1.6;">Script, captions for every platform, b-roll cues, audience profile, and a lead magnet. Ready to post.</div>
         </div>
       </div>
-      <button onclick="/* disabled */" style="margin-top:40px;background:linear-gradient(135deg,#FBB824,#F472B6);color:#09080F;font-family:'Sora',sans-serif;font-size:16px;font-weight:800;padding:16px 36px;border:none;border-radius:50px;cursor:pointer;box-shadow:0 0 30px rgba(251,184,36,0.25);">&#10022; Try SAM free — no card, no catch &rarr;</button>
+      <button onclick="setTimeout(function(){if(typeof getTrialState==='function'&&typeof openWizardPage==='function'){getTrialState().email?openWizardPage():openTrialCapture();}else if(typeof openTrialCapture==='function'){openTrialCapture();}},0)" style="margin-top:40px;background:linear-gradient(135deg,#FBB824,#F472B6);color:#09080F;font-family:'Sora',sans-serif;font-size:16px;font-weight:800;padding:16px 36px;border:none;border-radius:50px;cursor:pointer;box-shadow:0 0 30px rgba(251,184,36,0.25);">&#10022; Try SAM free — no card, no catch &rarr;</button>
     </div>
 
     <!-- THE PULSE -->
@@ -7747,13 +7707,6 @@ const TRIAL_EMAIL_MS    = 24 * 60 * 60 * 1000; // ask for email at 24 hours
 const TRIGGER_DELAY_MS  = 10 * 60 * 1000;       // 10 minutes
 
 function getTrialState() {
-  // Dev bypass — always return paid state for dev accounts
-  var _uid = localStorage.getItem('sam_uid') || '';
-  var _tier = localStorage.getItem('sam_tier') || '';
-  if(_uid.startsWith('dev-') || _tier === 'studio' || _tier === 'pro') {
-    return { email: 'dev@sam.com', paid: true, promptShown: true, trialStart: Date.now(), runs: 0 };
-  }
-
   try { return JSON.parse(localStorage.getItem('sam-trial') || '{}'); } catch { return {}; }
 }
 function saveTrialState(obj) {
@@ -7830,11 +7783,6 @@ function updateTrialBadge(state) {
 }
 
 function openTrialCapture() {
-  // Dev bypass
-  var uid = localStorage.getItem('sam_uid') || '';
-  var tier = localStorage.getItem('sam_tier') || '';
-  if(uid.startsWith('dev-') || tier === 'studio' || tier === 'pro') return;
-
   const state = getTrialState();
   state.promptShown = true;
   saveTrialState(state);
@@ -7905,8 +7853,6 @@ async function submitTrialEmail() {
 }
 
 function showTrialExpiredCard() {
-  var _u=localStorage.getItem('sam_uid')||''; var _t=localStorage.getItem('sam_tier')||''; if(_u.startsWith('dev-')||_t==='studio'||_t==='pro') return;
-
   // Let Meet SAM load first, then show emotional overlay on top
   const existing = document.getElementById('trialExpiredOverlay');
   if (existing) return;
@@ -8008,7 +7954,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v8.08 ──
+// ── RUN TRACKING v7.56 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -8698,7 +8644,7 @@ window.getSamVoiceProfile = function() {
 };
 
 function getSuperSAMPrompt() {
-  // VOICE DNA BRAND KNOWLEDGE — v8.08
+  // VOICE DNA BRAND KNOWLEDGE — v7.93
   // SAM knows this about herself and leads with it when relevant:
   // - Voice DNA is SAM's exclusive differentiator. No other AI tool has it.
   // - It is a living profile of how the creator communicates — rhythm, humor,
@@ -9239,7 +9185,7 @@ function exportIdeasAsPDF(ideas){
       +'</div>';
   }).join('');
 
-  const printHTML = '<!DOCTYPE html><head><meta charset="UTF-8"/><title>SAM Ideas Export</title>'
+  const printHTML = '<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>SAM Ideas Export</title>'
     +'<style>@page{size:A4;margin:16mm 18mm}body{font-family:Arial,sans-serif;color:#1a1a2e;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}'
     +'.cover{background:linear-gradient(135deg,#09080F 0%,#1a0a2e 100%)!important;color:white;padding:60px 48px;min-height:120px;margin-bottom:40px;border-radius:12px;}'
     +'h1{font-size:28pt;font-weight:800;color:#fff;margin:0 0 8px;}h2{font-size:11pt;color:rgba(240,236,255,0.6);font-weight:400;margin:0;}'
@@ -9248,7 +9194,7 @@ function exportIdeasAsPDF(ideas){
     +lines
     +'<div style="margin-top:40px;text-align:center;font-size:11px;color:#999;border-top:1px solid #eee;padding-top:16px;">Built with SAM · samforcreators.com</div>'
     +'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},600);};</'+'script>'
-    +'';
+    +'</body></html>';
   const w = window.open('','_blank','width=900,height=700');
   if(w){ w.document.open(); w.document.write(printHTML); w.document.close(); setTimeout(function(){w.print();},600); }
 }
@@ -9315,13 +9261,13 @@ function printPlaybookOnly() {
     .playbook-lead-why.no-print{display:none!important;}
   `;
   win.document.open();
-  win.document.write('<!DOCTYPE html><head><meta charset="UTF-8"><title>SAM Output</title>');
+  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>SAM Output</title>');
   win.document.write('<style>' + cleanStyles + '</style>');
   win.document.write('</head><body>');
   win.document.write('<div id="wizardPlaybook">' + playbookEl.innerHTML + '</div>');
   win.document.write(nextToolHTML);
   win.document.write('<scr' + 'ipt>window.onload=function(){setTimeout(function(){window.print();},700)};</' + 'script>');
-  win.document.write('');
+  win.document.write('</body></html>');
   win.document.close();
 }
 </script>
@@ -9353,12 +9299,12 @@ function printLeadMagnetOnly() {
     .playbook-cover-badge,.playbook-section,.playbook-cover,.save-to-ideas-btn,.playbook-copy-btn,.playbook-print-bar{display:none!important;}
   `;
   win.document.open();
-  win.document.write('<!DOCTYPE html><head><meta charset="UTF-8"><title>SAM Lead Magnet</title>');
+  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>SAM Lead Magnet</title>');
   win.document.write('<style>' + cleanStyles + '</style>');
   win.document.write('</head><body>');
   win.document.write('<div id="leadMagnetDoc" data-brand-color="' + brandColor + '">' + docEl.innerHTML + '</div>');
   win.document.write('<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},600);};</'+'script>');
-  win.document.write('');
+  win.document.write('</body></html>');
   win.document.close();
 }
 </script>
@@ -9667,7 +9613,7 @@ function printToolOutput(outputId, toolName) {
   const brandName = WS && WS.brandName ? WS.brandName : (document.getElementById('brandName') ? document.getElementById('brandName').value : '');
   const win = window.open('', '_blank');
   if (!win) { window.print(); return; }
-  win.document.write(`<!DOCTYPE html><head><meta charset="UTF-8"/>
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"/>
     <title>${toolName}</title>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
     <style>
@@ -9745,7 +9691,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v8.08
+  // CINEMATIC MEET SAM — v7.93
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -9763,11 +9709,6 @@ function initWizard() {
 
 
   function meetSamCheckReturning() {
-  // Dev bypass — skip MEET SAM for dev accounts
-  var _uid = localStorage.getItem('sam_uid') || '';
-  var _tier = localStorage.getItem('sam_tier') || '';
-  if(_uid.startsWith('dev-') || _tier === 'studio' || _tier === 'pro') return;
-
     const session = localStorage.getItem('sam_session_v2');
     const firstRunDone = localStorage.getItem('samFirstRunDone');
     const hasHistory = JSON.parse(localStorage.getItem('sam-chat-history')||'[]').length > 1;
@@ -11209,10 +11150,7 @@ Rules: Max 3 sentences total. Never use bullet points. Never say "I can see that
   const _origOpenWizardPage = typeof openWizardPage === 'function' ? openWizardPage : null;
 
 
-  function openWizardPage(skipReturningCheck) { return; // temporarily disabled
-
-  var _u=localStorage.getItem('sam_uid')||''; var _t=localStorage.getItem('sam_tier')||''; if(_u.startsWith('dev-')||_t==='studio'||_t==='pro') return;
-
+  function openWizardPage(skipReturningCheck) {
     document.getElementById('wizardPage').classList.add('open');
     document.body.style.overflow = 'hidden';
     const _nwb = document.getElementById('navWizardBtn'); if(_nwb) _nwb.style.display = 'flex';
@@ -11250,8 +11188,7 @@ Rules: Max 3 sentences total. Never use bullet points. Never say "I can see that
   }, 800);
 
 // ── OPEN MEET SAM FROM ANYWHERE ──────────────────────────────────────────────
-function openMeetSAMOverlay() { return; // temporarily disabled
-
+function openMeetSAMOverlay() {
   // Open wizard page and land on Meet SAM entry
   document.getElementById('wizardPage').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -11292,10 +11229,7 @@ function closeWizard() {
 }
 
 // ── NAVIGATION ────────────────────────────────────────────────────────────────
-function showWizardStep(step) { return; // temporarily disabled
-
-  var _u=localStorage.getItem('sam_uid')||''; var _t=localStorage.getItem('sam_tier')||''; if(_u.startsWith('dev-')||_t==='studio'||_t==='pro') return;
-
+function showWizardStep(step) {
   wizardCurrentStep = step;
 
   // Hide all steps
@@ -13477,12 +13411,20 @@ function openWizardFromNav() {
         </div>
       </div>
 
+    </div>
+
     <!-- Buttons -->
     <div style="display:flex;flex-direction:column;gap:8px;padding-top:4px;">
       <button onclick="samReturnToWizard()" style="width:100%;padding:13px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">
         ← Keep building my story
       </button>
       <button onclick="samExploreTools()" style="width:100%;padding:11px;background:transparent;border:1px solid rgba(255,255,255,0.12);border-radius:50px;font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:rgba(240,236,255,0.6);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,236,255,0.6)'">
+        Explore all tools → SAM brings your story with you
+      </button>
+    </div>
+
+  </div>
+</div>
 
 
 
@@ -14118,7 +14060,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.08</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.93</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -14203,7 +14145,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
       <div class="meet-sam-wrap">
 
         <!-- SAM Voice toggle — floating bottom right -->
-        
+        <button id="samVoiceToggleMeetSam" onclick="toggleSAMVoice()" style="position:fixed;bottom:24px;right:24px;z-index:9000;background:rgba(13,11,22,0.7);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:8px 16px;font-size:12px;font-weight:600;color:rgba(240,236,255,0.45);cursor:pointer;font-family:'Sora',sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:6px;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.45)'">🔇 SAM Voice</button>
 
         <!-- Ambient glow orbs — animated behind content -->
         <div class="ms-ambient" id="msAmbient">
@@ -15080,9 +15022,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v8.08
+// SOFT POPUP v7.56
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v8.08
+// soft popup system removed v7.56
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -15091,7 +15033,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v8.08
+  // SAM GUIDED TOUR — v7.56
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
@@ -15597,7 +15539,7 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
 <script>
 
 /* ═══════════════════════════════════════════════
-   iMESSAGE THREAD ENGINE — v8.08
+   iMESSAGE THREAD ENGINE — v7.56
    ═══════════════════════════════════════════════ */
 
 // ── History persistence ──────────────────────────
@@ -16120,14 +16062,6 @@ function samHideThinking() {
 }
 
 </script>
-
-function showHomeView() {
-  var wp = document.getElementById('wizardPage');
-  if(wp) { wp.style.display='none'; wp.classList.remove('open'); }
-  var ms = document.querySelector('.meet-sam-wrap');
-  if(ms) ms.style.display='none';
-  document.body.style.overflow='';
-}
-
 </body>
 </html>
+ 
