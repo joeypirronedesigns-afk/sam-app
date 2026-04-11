@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v8.01)
+       UNIFIED HERO (v8.02)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v8.01
+       CINEMATIC MEET SAM — v8.02
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v8.01
+       SAM GUIDED TOUR SPLASH — v8.02
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5467,10 +5467,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.01</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.02</div>
 
 
-  <!-- ── UNIFIED HERO v8.01 ── -->
+  <!-- ── UNIFIED HERO v8.02 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -5533,7 +5533,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   <!-- ── TOOL SECTION ── -->
   <div class="tool-section">
-<!-- ✦ PHOTO WIZARD SECTION v8.01 -->
+<!-- ✦ PHOTO WIZARD SECTION v8.02 -->
 <section id="photo-wizard" style="display:none; padding:60px 24px; max-width:860px; margin:0 auto;">
   <div style="text-align:center; margin-bottom:40px;">
     <p style="font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:#888; margin-bottom:10px;">NEW TOOL</p>
@@ -7823,6 +7823,11 @@ function updateTrialBadge(state) {
 }
 
 function openTrialCapture() {
+  // Dev bypass
+  var uid = localStorage.getItem('sam_uid') || '';
+  var tier = localStorage.getItem('sam_tier') || '';
+  if(uid.startsWith('dev-') || tier === 'studio' || tier === 'pro') return;
+
   const state = getTrialState();
   state.promptShown = true;
   saveTrialState(state);
@@ -7994,7 +7999,7 @@ function checkTrialBeforeRun() {
   openTrialCapture(); return false;
 }
 
-// ── RUN TRACKING v8.01 ──
+// ── RUN TRACKING v8.02 ──
 // Tools: pulse, spark, blueprint, vision, lens
 const TOOL_KEYS = ['pulse','spark','blueprint','vision','lens'];
 const MAX_FREE_RUNS = 1;
@@ -8684,7 +8689,7 @@ window.getSamVoiceProfile = function() {
 };
 
 function getSuperSAMPrompt() {
-  // VOICE DNA BRAND KNOWLEDGE — v8.01
+  // VOICE DNA BRAND KNOWLEDGE — v8.02
   // SAM knows this about herself and leads with it when relevant:
   // - Voice DNA is SAM's exclusive differentiator. No other AI tool has it.
   // - It is a living profile of how the creator communicates — rhythm, humor,
@@ -9731,7 +9736,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v8.01
+  // CINEMATIC MEET SAM — v8.02
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -14092,7 +14097,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.01</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.02</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -15054,9 +15059,9 @@ var _oo=window.openProPage;
 window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SOFT POPUP v8.01
+// SOFT POPUP v8.02
 // ══════════════════════════════════════════════════════════════════════════════
-// soft popup system removed v8.01
+// soft popup system removed v8.02
 
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -15065,7 +15070,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 })();
 
   // ══════════════════════════════════════════════════════
-  // SAM GUIDED TOUR — v8.01
+  // SAM GUIDED TOUR — v8.02
   // ══════════════════════════════════════════════════════
 
   const TOUR_TOOLS = [
@@ -15571,7 +15576,7 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
 <script>
 
 /* ═══════════════════════════════════════════════
-   iMESSAGE THREAD ENGINE — v8.01
+   iMESSAGE THREAD ENGINE — v8.02
    ═══════════════════════════════════════════════ */
 
 // ── History persistence ──────────────────────────
