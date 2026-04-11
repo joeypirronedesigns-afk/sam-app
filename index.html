@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.97)
+       UNIFIED HERO (v7.98)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.97
+       CINEMATIC MEET SAM — v7.98
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.97
+       SAM GUIDED TOUR SPLASH — v7.98
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5467,10 +5467,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.97</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.98</div>
 
 
-  <!-- ── UNIFIED HERO v7.97 ── -->
+  <!-- ── UNIFIED HERO v7.98 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -5533,7 +5533,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   <!-- ── TOOL SECTION ── -->
   <div class="tool-section" 
-<!-- ✦ PHOTO WIZARD SECTION v7.97 -->
+<!-- ✦ PHOTO WIZARD SECTION v7.98 -->
 <section id="photo-wizard" style="display:none; padding:60px 24px; max-width:860px; margin:0 auto;">
   <div style="text-align:center; margin-bottom:40px;">
     <p style="font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:#888; margin-bottom:10px;">NEW TOOL</p>
@@ -5672,10 +5672,11 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 var wizardState = { photoFile:null, photoDataUrl:null, photoBase64:null, selectedPlatforms:[], selectedDays:[], enhanceStyle:'professional' };
 
 function showPhotoWizard() {
-  document.querySelectorAll('section[id]').forEach(function(s){ s.style.display='none'; });
   var el = document.getElementById('photo-wizard');
-  if(el) el.style.display='block';
-  window.scrollTo(0,0);
+  if(el) {
+    el.style.display='block';
+    setTimeout(function(){ el.scrollIntoView({behavior:'smooth', block:'start'}); }, 100);
+  }
 }
 
 function handlePhotoUpload(e) {
@@ -8666,7 +8667,7 @@ window.getSamVoiceProfile = function() {
 };
 
 function getSuperSAMPrompt() {
-  // VOICE DNA BRAND KNOWLEDGE — v7.97
+  // VOICE DNA BRAND KNOWLEDGE — v7.98
   // SAM knows this about herself and leads with it when relevant:
   // - Voice DNA is SAM's exclusive differentiator. No other AI tool has it.
   // - It is a living profile of how the creator communicates — rhythm, humor,
@@ -9713,7 +9714,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.97
+  // CINEMATIC MEET SAM — v7.98
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -14074,7 +14075,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.97</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.98</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
