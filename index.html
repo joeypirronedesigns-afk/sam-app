@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.99)
+       UNIFIED HERO (v8.00)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.99
+       CINEMATIC MEET SAM — v8.00
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.99
+       SAM GUIDED TOUR SPLASH — v8.00
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5467,10 +5467,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.99</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.00</div>
 
 
-  <!-- ── UNIFIED HERO v7.99 ── -->
+  <!-- ── UNIFIED HERO v8.00 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -5533,7 +5533,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   <!-- ── TOOL SECTION ── -->
   <div class="tool-section" 
-<!-- ✦ PHOTO WIZARD SECTION v7.99 -->
+<!-- ✦ PHOTO WIZARD SECTION v8.00 -->
 <section id="photo-wizard" style="display:none; padding:60px 24px; max-width:860px; margin:0 auto;">
   <div style="text-align:center; margin-bottom:40px;">
     <p style="font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:#888; margin-bottom:10px;">NEW TOOL</p>
@@ -5673,10 +5673,12 @@ var wizardState = { photoFile:null, photoDataUrl:null, photoBase64:null, selecte
 
 function showPhotoWizard() {
   var el = document.getElementById('photo-wizard');
-  if(el) {
-    el.style.display='block';
-    setTimeout(function(){ el.scrollIntoView({behavior:'smooth', block:'start'}); }, 100);
-  }
+  if(!el) { console.error('photo-wizard section not found'); return; }
+  el.style.display = 'block';
+  el.style.visibility = 'visible';
+  setTimeout(function(){ 
+    el.scrollIntoView({behavior:'smooth', block:'start'});
+  }, 150);
 }
 
 function handlePhotoUpload(e) {
@@ -5685,12 +5687,27 @@ function handlePhotoUpload(e) {
   wizardState.photoFile = file;
   var reader = new FileReader();
   reader.onload = function(ev) {
-    wizardState.photoDataUrl = ev.target.result;
-    wizardState.photoBase64 = ev.target.result.split(',')[1];
-    document.getElementById('photo-preview').src = ev.target.result;
-    document.getElementById('photo-preview').style.display = 'block';
-    document.getElementById('upload-placeholder').style.display = 'none';
-    document.getElementById('enhance-option').style.display = 'block';
+    var img = new Image();
+    img.onload = function() {
+      var canvas = document.createElement('canvas');
+      var MAX = 1200;
+      var w = img.width, h = img.height;
+      if(w > MAX || h > MAX) {
+        if(w > h) { h = Math.round(h * MAX/w); w = MAX; }
+        else { w = Math.round(w * MAX/h); h = MAX; }
+      }
+      canvas.width = w; canvas.height = h;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      var compressed = canvas.toDataURL('image/jpeg', 0.82);
+      wizardState.photoDataUrl = compressed;
+      wizardState.photoBase64 = compressed.split(',')[1];
+      document.getElementById('photo-preview').src = compressed;
+      document.getElementById('photo-preview').style.display = 'block';
+      document.getElementById('upload-placeholder').style.display = 'none';
+      document.getElementById('enhance-option').style.display = 'block';
+    };
+    img.src = ev.target.result;
   };
   reader.readAsDataURL(file);
 }
@@ -8667,7 +8684,7 @@ window.getSamVoiceProfile = function() {
 };
 
 function getSuperSAMPrompt() {
-  // VOICE DNA BRAND KNOWLEDGE — v7.99
+  // VOICE DNA BRAND KNOWLEDGE — v8.00
   // SAM knows this about herself and leads with it when relevant:
   // - Voice DNA is SAM's exclusive differentiator. No other AI tool has it.
   // - It is a living profile of how the creator communicates — rhythm, humor,
@@ -9714,7 +9731,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.99
+  // CINEMATIC MEET SAM — v8.00
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -14075,7 +14092,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.99</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.00</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
