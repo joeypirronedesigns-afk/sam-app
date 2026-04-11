@@ -2,9 +2,36 @@
 
 **App:** SAM (Strategic Assistant for Making) at samforcreators.com
 **Single index.html file. Deployed on Vercel. GitHub repo: joeypirronedesigns-afk/sam-app. Mac terminal workflow.**
-**Current version: v7.94**
 **File path:** /Users/giuseppepirrone/Desktop/sam-app/index.html
 **Dev branch:** photo-wizard-dev (ALL WORK HAPPENS HERE ONLY)
+
+---
+
+## GIT STATE — READ THIS FIRST
+
+**main (live site):** 8d6d2fb — ROLLBACK: revert to pre-photo-wizard v7.93
+**photo-wizard-dev (our work):** 536616c — v7.94 in progress, NOT yet merged to main
+
+History of emergency commits (already reverted off main, do not touch):
+- v8.08: EMERGENCY disable all wizard entry points
+- v8.07: EMERGENCY fix site freeze for all users
+- v8.06: fix showHomeView undefined
+- v8.05: bypass openWizardPage for dev
+
+**What this means:**
+- Live site is stable on v7.93 rollback
+- All v7.94 work lives on photo-wizard-dev only
+- Do NOT merge to main until full incognito test pass
+
+---
+
+## LIVE SITE KNOWN ISSUES (v7.93 — pre-existing, not introduced by us)
+
+- SAM giving extremely short responses (likely API/prompt issue)
+- Switch tools button not firing tool cards
+- Voice DNA fires too early in MEET SAM flow
+- Story Wizard playbook PDF hits paywall for active trial users
+- [SAVE:platforms:TBD] tag leaking in SAM responses mid-conversation
 
 ---
 
@@ -19,6 +46,8 @@
 7. Never use single-quoted font names inside JS strings.
 8. Write complex scripts to file first: cat > ~/Desktop/script.py then python3 ~/Desktop/script.py
 9. Scripts go to ~/Desktop/ not /tmp/
+10. Never put literal \n inside JS strings in Python heredocs.
+11. Verify with sed -n before deploying.
 
 ---
 
@@ -51,7 +80,7 @@ The Reach - Upload photo, SAM auto-fills content, user reviews/edits, schedule, 
 
 ---
 
-## THE REACH — FULL VISION (TOP PRIORITY NEXT SESSION)
+## THE REACH — TOP PRIORITY NEXT SESSION
 
 The Reach is a smart publishing tool powered by everything SAM knows about the user.
 
@@ -61,7 +90,7 @@ WHAT IT SHOULD DO:
 3. SAM auto-fills every field per platform (headline, caption, description, CTA, hashtags)
 4. User reviews SAM pre-filled content
 5. User edits any field inline
-6. User taps the heart icon on any field to swap in a saved idea from My Ideas
+6. User taps heart icon on any field to swap in a saved idea from My Ideas
 7. User schedules and posts
 
 The user's job is review and approve, not create from scratch.
@@ -87,29 +116,30 @@ CURRENT STATE v7.94:
 
 Every tool reads from different data sources. Need one unified context object:
 
-SAM_PROFILE contains: name, niche, audience, platforms, tone, voiceDNA, savedIdeas
+SAM_PROFILE = { name, niche, audience, platforms, tone, voiceDNA, savedIdeas }
 
-Every tool reads SAM_PROFILE before generating. This makes all outputs compound and personalized.
+Every tool reads SAM_PROFILE before generating. Makes all outputs compound and personalized.
 
 ---
 
 ## STILL TO DO
 
 High priority:
-- Add heart Ideas picker button to each Reach output field
+- Add heart Ideas picker to each Reach output field
 - Build SAM_PROFILE unified context object
 - The Reach auto-fills from user profile
 - SAM-generated hashtags from profile niche and audience
 
 Medium priority:
-- Story Wizard playbook PDF gated for active trial users (pre-existing bug)
-- Voice DNA fires too early in MEET SAM (pre-existing bug)
-- Switch tools button not firing (pre-existing bug)
+- Investigate SAM short responses on live site (v7.93 API/prompt issue)
+- Story Wizard playbook PDF gated for active trial users (pre-existing)
+- Voice DNA fires too early in MEET SAM (pre-existing)
+- Switch tools button not firing (pre-existing)
 - Update pricing copy to $19/$39/$99
 
 Low priority:
-- Remove dead photo-wizard section (line 5537)
-- Remove showPhotoWizard function (line 5674)
+- Remove dead photo-wizard section (line ~5537)
+- Remove showPhotoWizard function (line ~5674)
 - Merge photo-wizard-dev to main after full test pass
 
 ---
@@ -121,15 +151,9 @@ creator = Creator, $19/mo, all tools + The Reach
 pro = Broadcaster, $39/mo, everything + video when ready
 studio = Publisher/Agency, $99/mo, unlimited, multiple voice profiles
 
-Current code limits:
-free: 5 playbooks, 15 next-tool uses, 20 chat messages
-creator: 10 playbooks, 70 next-tool uses, 50 chat messages
-pro: 20 playbooks, 200 next-tool uses, 150 chat messages
-studio: 100 playbooks, 999 next-tool uses, 999 chat messages
-
 ---
 
-## KEY FUNCTIONS
+## KEY FUNCTIONS (v7.94)
 
 openWorkshop() - hides hero and howItWorks, shows Workshop grid
 openIdeasPicker(targetInputId) - opens floating ideas picker panel
@@ -173,8 +197,8 @@ Deploy: cd ~/Desktop/sam-hq && git add -A && git commit -m "message" && git push
 
 ## HOW TO START NEXT SESSION
 
-1. Drag this HANDOFF.md file into new Claude chat
-2. Say: "Read this handoff doc and lets continue building the SAM app"
+1. Drag HANDOFF.md into new Claude chat
+2. Say: "Read this handoff and let's continue building the SAM app"
 3. Claude reads it and picks up exactly where we left off
 
-Last updated: v7.94 session - Workshop restructure, The Reach tool, Ideas Picker, Reach vision defined
+Last updated: Post-v7.94 session — git state clarified, live issues documented, Reach vision defined
