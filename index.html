@@ -9185,7 +9185,7 @@ function exportIdeasAsPDF(ideas){
       +'</div>';
   }).join('');
 
-  const printHTML = '<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>SAM Ideas Export</title>'
+  const printHTML = '<!DOCTYPE html><head><meta charset="UTF-8"/><title>SAM Ideas Export</title>'
     +'<style>@page{size:A4;margin:16mm 18mm}body{font-family:Arial,sans-serif;color:#1a1a2e;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}'
     +'.cover{background:linear-gradient(135deg,#09080F 0%,#1a0a2e 100%)!important;color:white;padding:60px 48px;min-height:120px;margin-bottom:40px;border-radius:12px;}'
     +'h1{font-size:28pt;font-weight:800;color:#fff;margin:0 0 8px;}h2{font-size:11pt;color:rgba(240,236,255,0.6);font-weight:400;margin:0;}'
@@ -9194,7 +9194,7 @@ function exportIdeasAsPDF(ideas){
     +lines
     +'<div style="margin-top:40px;text-align:center;font-size:11px;color:#999;border-top:1px solid #eee;padding-top:16px;">Built with SAM · samforcreators.com</div>'
     +'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},600);};</'+'script>'
-    +'</body></html>';
+    +'';
   const w = window.open('','_blank','width=900,height=700');
   if(w){ w.document.open(); w.document.write(printHTML); w.document.close(); setTimeout(function(){w.print();},600); }
 }
@@ -9261,13 +9261,13 @@ function printPlaybookOnly() {
     .playbook-lead-why.no-print{display:none!important;}
   `;
   win.document.open();
-  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>SAM Output</title>');
+  win.document.write('<!DOCTYPE html><head><meta charset="UTF-8"><title>SAM Output</title>');
   win.document.write('<style>' + cleanStyles + '</style>');
   win.document.write('</head><body>');
   win.document.write('<div id="wizardPlaybook">' + playbookEl.innerHTML + '</div>');
   win.document.write(nextToolHTML);
   win.document.write('<scr' + 'ipt>window.onload=function(){setTimeout(function(){window.print();},700)};</' + 'script>');
-  win.document.write('</body></html>');
+  win.document.write('');
   win.document.close();
 }
 </script>
@@ -9299,12 +9299,12 @@ function printLeadMagnetOnly() {
     .playbook-cover-badge,.playbook-section,.playbook-cover,.save-to-ideas-btn,.playbook-copy-btn,.playbook-print-bar{display:none!important;}
   `;
   win.document.open();
-  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>SAM Lead Magnet</title>');
+  win.document.write('<!DOCTYPE html><head><meta charset="UTF-8"><title>SAM Lead Magnet</title>');
   win.document.write('<style>' + cleanStyles + '</style>');
   win.document.write('</head><body>');
   win.document.write('<div id="leadMagnetDoc" data-brand-color="' + brandColor + '">' + docEl.innerHTML + '</div>');
   win.document.write('<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},600);};</'+'script>');
-  win.document.write('</body></html>');
+  win.document.write('');
   win.document.close();
 }
 </script>
@@ -9613,7 +9613,7 @@ function printToolOutput(outputId, toolName) {
   const brandName = WS && WS.brandName ? WS.brandName : (document.getElementById('brandName') ? document.getElementById('brandName').value : '');
   const win = window.open('', '_blank');
   if (!win) { window.print(); return; }
-  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+  win.document.write(`<!DOCTYPE html><head><meta charset="UTF-8"/>
     <title>${toolName}</title>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
     <style>
@@ -16064,4 +16064,3 @@ function samHideThinking() {
 </script>
 </body>
 </html>
- 
