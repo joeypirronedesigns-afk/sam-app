@@ -5833,6 +5833,18 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
         <h2 style="font-family:'Sora',sans-serif;font-size:clamp(24px,3vw,34px);font-weight:800;color:var(--text);margin:0 0 6px;">Workshop</h2>
         <p style="font-size:14px;color:var(--text3);margin:0 0 32px;line-height:1.6;">Everything SAM has built for you. Pick a tool and keep creating.</p>
       </div>
+      <!-- STORY WIZARD HERO ROW -->
+      <div style="max-width:860px;margin:0 auto 32px;padding:0 24px;">
+        <div style="background:linear-gradient(135deg,rgba(109,40,217,0.15),rgba(244,114,182,0.08));border:1px solid rgba(167,139,250,0.3);border-radius:20px;padding:28px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;">
+          <div style="flex:1;min-width:200px;">
+            <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(167,139,250,0.6);margin-bottom:8px;">✦ Start here</div>
+            <div style="font-family:'Sora',sans-serif;font-size:clamp(18px,2.5vw,24px);font-weight:800;color:var(--text);margin-bottom:6px;">Story Wizard</div>
+            <div style="font-size:14px;color:var(--text2);line-height:1.6;max-width:420px;">Tell SAM one moment. Walk out with a full video script, platform captions, b-roll cues, audience profile, and a lead magnet. This is SAM at full power.</div>
+          </div>
+          <button onclick="openWizardPage(true)" style="background:linear-gradient(135deg,#A78BFA,#F472B6);color:#fff;font-family:'Sora',sans-serif;font-size:15px;font-weight:800;padding:14px 28px;border:none;border-radius:50px;cursor:pointer;white-space:nowrap;box-shadow:0 0 24px rgba(167,139,250,0.3);transition:all 0.2s;flex-shrink:0;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 0 32px rgba(167,139,250,0.5)'" onmouseout="this.style.transform='';this.style.boxShadow='0 0 24px rgba(167,139,250,0.3)'">✦ Launch Story Wizard →</button>
+        </div>
+      </div>
+
       <div class="home-grid" id="homeGrid">
 
         <button class="tool-icon-btn tool-pulse" onclick="previewTool('pulse')">
@@ -6745,7 +6757,7 @@ async function runReach() {
   document.getElementById('reachBtn').disabled = true;
 
   const setup = getSetup();
-  const prompt = `You are SAM, a strategic content assistant. The user has uploaded a photo and wants platform-ready post content.
+  const prompt = `You are SAM, a strategic content assistant. The user has uploaded a photo and wants platform-ready post content. Respond in plain text only — NO JSON, no code blocks, no markdown symbols.
 
 Photo context: ${moment || 'No additional context provided.'}
 Platforms: ${platforms.join(', ')}
@@ -6754,7 +6766,7 @@ ${scheduledDay ? 'Scheduled for: ' + scheduledDay.value : ''}
 ${setup.niche ? 'Creator niche: ' + setup.niche : ''}
 ${setup.tone ? 'Tone: ' + setup.tone : ''}
 
-For each selected platform, write the requested outputs. Format clearly with platform name as header. Make every caption feel personal, story-driven, and native to that platform. Include hashtags that are specific and strategic, not generic.`;
+For each platform write clearly with the platform name as a header. Make every caption feel personal, story-driven, and native to that platform. Hashtags should be specific and strategic, not generic. Write in the creator's voice, not corporate language.`;
 
   try {
     const resp = await fetch('/api/sam', {
