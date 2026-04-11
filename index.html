@@ -5781,7 +5781,7 @@ async function runPhotoWizard() {
         if(line.startsWith('data: ')) {
           var data=line.slice(6);
           if(data==='[DONE]') break;
-          try { var parsed=JSON.parse(data); var delta=parsed.delta&&parsed.delta.text; if(delta){ fullText+=delta; var el=document.getElementById('stream-output'); if(el) el.textContent=fullText; } } catch(e){}
+          try { var parsed=JSON.parse(data); var delta=parsed.t||parsed.delta&&parsed.delta.text; if(delta){ fullText+=delta; var el=document.getElementById('stream-output'); if(el) el.textContent=fullText; } } catch(e){}
         }
       }
     }
@@ -5815,7 +5815,7 @@ function renderWizardOutput(text, platforms) {
     out+='</div><div class="post-copy" style="font-size:14px; color:#ccc; line-height:1.7; white-space:pre-wrap;">'+escHtml(content)+'</div></div>';
   });
   out+='<details style="margin-top:8px;"><summary style="font-size:13px; color:#666; cursor:pointer; padding:8px 0;">Full SAM output</summary>';
-  out+='<div style="margin-top:12px; background:#0a0a0a; border-radius:10px; padding:16px; font-size:13px; color:#888; white-space:pre-wrap; line-height:1.7;">'+escHtml(text)+'</div></details>';
+  out+='<div style="margin-top:12px; background:#0a0a0a; border-radius:10px; padding:16px; font-size:13px; color:#ccc; white-space:pre-wrap; line-height:1.7;">'+escHtml(text)+'</div></details>';
   out+='</div>';
   return out;
 }
