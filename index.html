@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.93)
+       UNIFIED HERO (v7.94)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -6254,6 +6254,132 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
       </div>
     </div>
 
+    <!-- THE REACH -->
+    <div class="tool-wrap" id="tool-reach">
+      <button class="tool-back-btn" onclick="goHome()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        All tools
+      </button>
+      <div class="tool-header-bar">
+        <div class="tool-header-icon" style="background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);">
+          <svg width="22" height="22" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="10" r="4" stroke="#F472B6" stroke-width="1.8"/><path d="M6 24c0-4 3.6-7 8-7s8 3 8 7" stroke="#F472B6" stroke-width="1.8" stroke-linecap="round"/><path d="M21 6l3 3-3 3" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 9H18" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div class="tool-header-title">The Reach</div>
+      </div>
+
+      <div class="glass">
+        <!-- Step 1: Upload photo -->
+        <div style="margin-bottom:20px;">
+          <div class="field-label"><span class="field-label-accent" style="background:#F472B6;"></span>Upload your photo</div>
+          <div id="reachDropZone" onclick="document.getElementById('reachFile').click()" ondragover="event.preventDefault();this.style.borderColor='#F472B6'" ondragleave="this.style.borderColor='#333'" ondrop="reachHandleDrop(event)" style="border:2px dashed #333;border-radius:12px;padding:32px;text-align:center;cursor:pointer;transition:all 0.2s;background:rgba(255,255,255,0.02);">
+            <input type="file" id="reachFile" accept="image/*" style="display:none;" onchange="reachHandleFile(event)">
+            <div id="reachDropInner">
+              <div style="font-size:32px;margin-bottom:8px;">📸</div>
+              <div style="font-size:14px;font-weight:600;color:var(--text2);">Drop a photo or <span style="color:#F472B6;cursor:pointer;">browse</span></div>
+              <div style="font-size:12px;color:var(--text3);margin-top:4px;">JPG, PNG, HEIC — any photo you want to post</div>
+            </div>
+            <div id="reachDropPreview" style="display:none;position:relative;width:100%;">
+              <img id="reachPreviewImg" src="" alt="" style="max-width:100%;max-height:240px;border-radius:8px;object-fit:contain;"/>
+              <button onclick="reachRemoveImg(event)" style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.7);border:none;color:#fff;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:14px;">✕</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Your moment -->
+        <div style="margin-bottom:20px;">
+          <div class="field-label"><span class="field-label-accent" style="background:#F472B6;"></span>What's the story behind this photo? <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3);font-size:12px;">(optional)</span></div>
+          <div class="input-wrap">
+            <textarea id="reachMoment" placeholder="e.g. Just finished the kitchen renovation after 3 months — couldn't believe how it turned out..." style="min-height:80px;"></textarea>
+            <button class="paste-btn" onclick="pasteToEl('reachMoment')" title="Paste">📋</button>
+            <button class="mic-btn" id="micReach" onclick="toggleMicFor('reachMoment','micReach')">🎙</button>
+          </div>
+        </div>
+
+        <!-- Step 3: Select platforms -->
+        <div style="margin-bottom:20px;">
+          <div class="field-label"><span class="field-label-accent" style="background:#F472B6;"></span>Select platforms</div>
+          <div class="platform-grid" id="reachPlatforms">
+            <button class="platform-pill" data-p="Instagram" onclick="togglePill(this,'reachPlatforms')">📸 Instagram</button>
+            <button class="platform-pill" data-p="Facebook" onclick="togglePill(this,'reachPlatforms')">👥 Facebook</button>
+            <button class="platform-pill" data-p="LinkedIn" onclick="togglePill(this,'reachPlatforms')">💼 LinkedIn</button>
+            <button class="platform-pill" data-p="X (Twitter)" onclick="togglePill(this,'reachPlatforms')">✕ X</button>
+            <button class="platform-pill" data-p="TikTok" onclick="togglePill(this,'reachPlatforms')">🎵 TikTok</button>
+            <button class="platform-pill" data-p="Pinterest" onclick="togglePill(this,'reachPlatforms')">📌 Pinterest</button>
+          </div>
+        </div>
+
+        <!-- Step 4: Output options -->
+        <div style="margin-bottom:20px;">
+          <div class="field-label"><span class="field-label-accent" style="background:#F472B6;"></span>What do you need?</div>
+          <div class="platform-grid" id="reachOutputs">
+            <button class="platform-pill sel" data-p="Title/Headline" onclick="togglePill(this,'reachOutputs')">✦ Title/Headline</button>
+            <button class="platform-pill sel" data-p="Caption" onclick="togglePill(this,'reachOutputs')">✍ Caption</button>
+            <button class="platform-pill sel" data-p="Description" onclick="togglePill(this,'reachOutputs')">📝 Description</button>
+            <button class="platform-pill sel" data-p="Call to Action" onclick="togglePill(this,'reachOutputs')">🎯 Call to Action</button>
+            <button class="platform-pill sel" data-p="Hashtags" onclick="togglePill(this,'reachOutputs')">🏷 Hashtags</button>
+          </div>
+        </div>
+
+        <!-- Step 5: Schedule -->
+        <div style="margin-bottom:20px;">
+          <div class="field-label"><span class="field-label-accent" style="background:#F472B6;"></span>Schedule your post <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3);font-size:12px;">(optional)</span></div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;" id="reachScheduler">
+            <label style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;">
+              <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;">Mon</span>
+              <input type="radio" name="reachDay" value="Monday" style="accent-color:#F472B6;">
+              <input type="date" id="reachDateMon" style="width:100%;font-size:9px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text2);padding:3px;text-align:center;">
+            </label>
+            <label style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;">
+              <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;">Tue</span>
+              <input type="radio" name="reachDay" value="Tuesday" style="accent-color:#F472B6;">
+              <input type="date" id="reachDateTue" style="width:100%;font-size:9px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text2);padding:3px;text-align:center;">
+            </label>
+            <label style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;">
+              <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;">Wed</span>
+              <input type="radio" name="reachDay" value="Wednesday" style="accent-color:#F472B6;">
+              <input type="date" id="reachDateWed" style="width:100%;font-size:9px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text2);padding:3px;text-align:center;">
+            </label>
+            <label style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;">
+              <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;">Thu</span>
+              <input type="radio" name="reachDay" value="Thursday" style="accent-color:#F472B6;">
+              <input type="date" id="reachDateThu" style="width:100%;font-size:9px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text2);padding:3px;text-align:center;">
+            </label>
+            <label style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;">
+              <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;">Fri</span>
+              <input type="radio" name="reachDay" value="Friday" style="accent-color:#F472B6;">
+              <input type="date" id="reachDateFri" style="width:100%;font-size:9px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text2);padding:3px;text-align:center;">
+            </label>
+            <label style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;">
+              <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;">Sat</span>
+              <input type="radio" name="reachDay" value="Saturday" style="accent-color:#F472B6;">
+              <input type="date" id="reachDateSat" style="width:100%;font-size:9px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text2);padding:3px;text-align:center;">
+            </label>
+            <label style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;">
+              <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;">Sun</span>
+              <input type="radio" name="reachDay" value="Sunday" style="accent-color:#F472B6;">
+              <input type="date" id="reachDateSun" style="width:100%;font-size:9px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text2);padding:3px;text-align:center;">
+            </label>
+          </div>
+        </div>
+
+        <div class="loader" id="reachLoader" style="display:none;"><div class="loader-dots"><span style="background:#F472B6"></span><span style="background:#F472B6"></span><span style="background:#F472B6"></span></div><div class="loader-text">SAM is writing your post...</div></div>
+        <div class="err-box" id="reachErr"></div>
+        <button class="run-btn" id="reachBtn" onclick="guardedRunFn(runReach)" style="background:linear-gradient(135deg,#F472B6,#A78BFA);margin-top:8px;">✦ Generate my post →</button>
+      </div>
+
+      <!-- Output -->
+      <div class="output-wrap" id="reachOutput" style="display:none;">
+        <div class="output-card">
+          <div class="output-header">
+            <div class="output-label" style="color:#F472B6;">Your post</div>
+            <button class="reset-btn" onclick="resetReach()">← Start over</button>
+          </div>
+          <div class="output-body" id="reachBody"></div>
+          <div class="save-bar"><button class="save-btn" onclick="printToolOutput('reachOutput','The Reach')">↓ Save as PDF</button></div>
+        </div>
+      </div>
+    </div>
+
   </div><!-- end tool-section -->
 </main>
 
@@ -6409,6 +6535,20 @@ const TOOLS = {
       'Safe headline + bold headline, each with a visual layout concept you can take to Canva',
       'Drop analytics screenshot — SAM reads what\'s working and tells you exactly what to post next'
     ]
+  },
+  reach: {
+    name: 'The Reach',
+    tagline: 'Photo Post Publisher',
+    color: '#F472B6',
+    bg: 'rgba(244,114,182,0.08)',
+    border: 'rgba(244,114,182,0.2)',
+    icon: `<svg width="36" height="36" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="10" r="4" stroke="#F472B6" stroke-width="1.8"/><path d="M6 24c0-4 3.6-7 8-7s8 3 8 7" stroke="#F472B6" stroke-width="1.8" stroke-linecap="round"/><path d="M21 6l3 3-3 3" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 9H18" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round"/></svg>`,
+    features: [
+      'Upload any photo and SAM writes platform-perfect captions, headlines and hashtags',
+      'Select which platforms you want — Instagram, Facebook, LinkedIn, X, TikTok, Pinterest',
+      'Choose exactly what you need: headline, caption, description, CTA, hashtags',
+      'Schedule your post for any day of the week — SAM keeps your story reaching people'
+    ]
   }
 };
 
@@ -6536,6 +6676,145 @@ function goHome() {
   document.getElementById('homeView').style.display = 'block';
   document.querySelectorAll('.tool-wrap').forEach(w => w.classList.remove('active'));
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── THE REACH ────────────────────────────────────────────────────────────────
+let reachImgB64 = null;
+let reachImgType = null;
+
+function reachHandleFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  reachImgType = file.type;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    reachImgB64 = ev.target.result.split(',')[1];
+    document.getElementById('reachPreviewImg').src = ev.target.result;
+    document.getElementById('reachDropPreview').style.display = 'block';
+    document.getElementById('reachDropInner').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function reachHandleDrop(e) {
+  e.preventDefault();
+  document.getElementById('reachDropZone').style.borderColor = '#333';
+  const file = e.dataTransfer.files[0];
+  if (!file || !file.type.startsWith('image/')) return;
+  reachImgType = file.type;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    reachImgB64 = ev.target.result.split(',')[1];
+    document.getElementById('reachPreviewImg').src = ev.target.result;
+    document.getElementById('reachDropPreview').style.display = 'block';
+    document.getElementById('reachDropInner').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function reachRemoveImg(e) {
+  e.stopPropagation();
+  reachImgB64 = null;
+  reachImgType = null;
+  document.getElementById('reachPreviewImg').src = '';
+  document.getElementById('reachDropPreview').style.display = 'none';
+  document.getElementById('reachDropInner').style.display = 'block';
+  document.getElementById('reachFile').value = '';
+}
+
+async function runReach() {
+  const moment = document.getElementById('reachMoment').value.trim();
+  const platforms = getSelPills('reachPlatforms');
+  const outputs = getSelPills('reachOutputs');
+  const scheduledDay = document.querySelector('input[name="reachDay"]:checked');
+
+  if (!reachImgB64) {
+    document.getElementById('reachErr').textContent = 'Please upload a photo first.';
+    document.getElementById('reachErr').style.display = 'block';
+    return;
+  }
+  if (platforms.length === 0) {
+    document.getElementById('reachErr').textContent = 'Please select at least one platform.';
+    document.getElementById('reachErr').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('reachErr').style.display = 'none';
+  document.getElementById('reachErr').textContent = '';
+  document.getElementById('reachLoader').style.display = 'flex';
+  document.getElementById('reachBtn').disabled = true;
+
+  const setup = getSetup();
+  const prompt = `You are SAM, a strategic content assistant. The user has uploaded a photo and wants platform-ready post content.
+
+Photo context: ${moment || 'No additional context provided.'}
+Platforms: ${platforms.join(', ')}
+Outputs needed: ${outputs.join(', ')}
+${scheduledDay ? 'Scheduled for: ' + scheduledDay.value : ''}
+${setup.niche ? 'Creator niche: ' + setup.niche : ''}
+${setup.tone ? 'Tone: ' + setup.tone : ''}
+
+For each selected platform, write the requested outputs. Format clearly with platform name as header. Make every caption feel personal, story-driven, and native to that platform. Include hashtags that are specific and strategic, not generic.`;
+
+  try {
+    const resp = await fetch('/api/sam', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        mode: 'upload',
+        imageBase64: reachImgB64,
+        imageType: reachImgType,
+        moment: prompt,
+        forceType: 'reach'
+      })
+    });
+
+    const reader2 = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let fullText = '';
+    document.getElementById('reachLoader').style.display = 'none';
+    document.getElementById('reachOutput').style.display = 'block';
+    document.getElementById('reachBody').innerHTML = '<div id="reachStream" style="color:#ccc;font-size:14px;line-height:1.8;white-space:pre-wrap;"></div>';
+
+    while (true) {
+      const { done, value } = await reader2.read();
+      if (done) break;
+      const chunk = decoder.decode(value);
+      const lines = chunk.split('\n');
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          try {
+            const d = JSON.parse(line.slice(6));
+            if (d.t) {
+              fullText += d.t;
+              document.getElementById('reachStream').textContent = fullText;
+            }
+          } catch {}
+        }
+      }
+    }
+  } catch(err) {
+    document.getElementById('reachLoader').style.display = 'none';
+    document.getElementById('reachErr').textContent = 'Something went wrong. Please try again.';
+    document.getElementById('reachErr').style.display = 'block';
+  } finally {
+    document.getElementById('reachBtn').disabled = false;
+  }
+}
+
+function resetReach() {
+  reachImgB64 = null;
+  reachImgType = null;
+  document.getElementById('reachFile').value = '';
+  document.getElementById('reachPreviewImg').src = '';
+  document.getElementById('reachDropPreview').style.display = 'none';
+  document.getElementById('reachDropInner').style.display = 'block';
+  document.getElementById('reachMoment').value = '';
+  document.getElementById('reachErr').style.display = 'none';
+  document.getElementById('reachOutput').style.display = 'none';
+  document.getElementById('reachBody').innerHTML = '';
+  document.querySelectorAll('#reachPlatforms .platform-pill').forEach(p => p.classList.remove('sel'));
+  document.querySelectorAll('input[name="reachDay"]').forEach(r => r.checked = false);
 }
 
 // ── UI HELPERS ───────────────────────────────────────────────────────────────
