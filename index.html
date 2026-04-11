@@ -5775,8 +5775,7 @@ async function runPhotoWizard() {
       var result = await reader2.read();
       if(result.done) break;
       var chunk = decoder.decode(result.value,{stream:true});
-      var lines = chunk.split('
-');
+      var lines = chunk.split('\n');
       for(var i=0;i<lines.length;i++) {
         var line=lines[i].trim();
         if(line.startsWith('data: ')) {
