@@ -1,4 +1,5 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const { trackUser, trackEvent, trackSignup } = require('./_supabase');
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
@@ -22,6 +23,13 @@ module.exports = async function handler(req, res) {
     const name = session.metadata?.name || '';
 
     console.log('Payment success:', { plan, email, name });
+
+    // Track in Supabase
+    try {
+      await trackUser({ uid: email.toLowerCase(), email: email.toLowerCase(), name, tier: plan });
+      await trackSignup({ email: email.toLowerCase(), name, tier: plan, source: 'stripe' });
+      await trackEvent(email.toLowerCase(), 'payment', { plan, amount: plan === 'creator' ? 19 : plan === 'pro' ? 39 : 99 });
+    } catch(e) { console.error('Supabase payment tracking error:', e.message); }
 
     if (email) {
       try {

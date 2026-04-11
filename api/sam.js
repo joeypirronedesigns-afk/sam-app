@@ -1,4 +1,5 @@
 module.exports.config = { api: { bodyParser: { sizeLimit: "10mb" } } };
+const { trackUser, trackEvent } = require('./_supabase');
 
 // ── TIER LIMITS ────────────────────────────────────────────────────────────
 const TIER_LIMITS = {
@@ -46,6 +47,20 @@ module.exports = async function handler(req, res) {
   const { mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage, emojiPreference, voiceProfile } = req.body;
   const userId = req.body.userId || req.headers['x-forwarded-for'] || 'anon';
   const tier = req.body.tier || 'free';
+
+  // Track user activity in Supabase (non-blocking)
+  if (userId && userId !== 'anon') {
+    trackUser({
+      uid: userId,
+      email: req.body.email || null,
+      name: req.body.name || null,
+      tier,
+      niche: req.body.niche || null,
+      platforms: req.body.platforms || null,
+      voice_calibrated: !!req.body.voiceProfile
+    }).catch(() => {});
+    trackEvent(userId, mode || 'chat', { tier }).catch(() => {});
+  }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'API key not configured' });
