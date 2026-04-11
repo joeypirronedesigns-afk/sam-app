@@ -17,9 +17,10 @@
 5. Always test on `photo-wizard-dev` in incognito before merging to main.
 6. Version bump with every deploy — visible bottom left.
 7. Never put literal \n inside JS strings in Python heredocs.
-8. Always use `python3 << 'PYEOF' ... PYEOF` for inline scripts — or write to file first with `cat > ~/Desktop/script.py << 'EOF'` for complex scripts.
+8. Always write complex scripts to file first: `cat > ~/Desktop/script.py << EOF` then `python3 ~/Desktop/script.py`
 9. Verify with sed -n before deploying.
 10. Scripts go to ~/Desktop/ not /tmp/.
+11. Never use single-quoted font names inside JS strings — use sans-serif instead of Sora in JS-generated HTML.
 
 ---
 
@@ -35,10 +36,69 @@
 | Blueprint | Full weekly content calendar, every platform, every post |
 | The Vision | One bold original campaign concept + execution plan |
 | The Lens | Photo → thumbnail strategy OR analytics screenshot → action plan |
-| The Reach | Upload photo → pick platforms → SAM generates content → schedule → post to socials (posting not built yet) |
+| The Reach | Upload photo → SAM auto-fills content from user profile → user reviews/edits → schedule → post to socials |
 
 ### Site Flow
-### Workshop Layout
+---
+
+## THE REACH — FULL VISION (NEXT BUILD PRIORITY)
+
+The Reach is NOT a form-fill tool. It is a smart publishing tool powered by everything SAM knows about the user.
+
+**What it should do:**
+1. User uploads a photo
+2. SAM analyzes the photo AND pulls from:
+   - Voice DNA (tone, style, how they write)
+   - MEET SAM profile (niche, audience, platform preferences)
+   - Past Story Engine outputs saved in My Ideas
+   - Past hooks, captions, angles that worked
+3. SAM **auto-fills every field** — headline, caption, description, CTA, hashtags — per platform
+4. User reviews SAM's pre-filled content
+5. User can edit any field inline
+6. User can tap 💜 on any field to swap in a saved idea from My Ideas
+7. User schedules and posts
+
+**The user's job is review + approve, not create from scratch.**
+
+**Current state of The Reach (v7.94):**
+- ✅ Photo upload works
+- ✅ Platform selection works
+- ✅ Output selector works (headline/caption/description/CTA/hashtags)
+- ✅ Scheduler (Mon-Sun with date) works
+- ✅ Per-platform output cards render correctly
+- ✅ Copy per field works
+- ✅ Edit per field (contenteditable) works
+- ✅ Copy all per platform works
+- ✅ "Post to [platform] — Connect account →" coming soon button shows
+- ⚠️ Hashtags are generic placeholders — need SAM-generated hashtags from profile
+- ⚠️ Content is from photo analysis only — not pulling from Voice DNA or My Ideas yet
+- ⚠️ 💜 My Ideas picker button not yet on each field in output
+- ❌ Actual posting to socials not built (requires OAuth — future build)
+
+**Next session priorities for The Reach:**
+1. Add 💜 Ideas picker button to each output field
+2. Build unified profile context object
+3. Pass unified profile into The Reach API call so SAM auto-fills from user knowledge
+4. Wire hashtag generation from profile niche/audience
+
+---
+
+## UNIFIED PROFILE — NEXT SESSION CRITICAL BUILD
+
+Every tool currently reads from different data sources. Need one unified context object:
+```javascript
+const SAM_PROFILE = {
+  name: '',        // from MEET SAM / localStorage
+  niche: '',       // from setup / Voice DNA
+  audience: '',    // from MEET SAM
+  platforms: [],   // from MEET SAM
+  tone: '',        // from setup
+  voiceDNA: '',    // from Voice DNA tool
+  savedIdeas: []   // from IB.load()
+}
+```
+Every tool reads from SAM_PROFILE before generating. This makes all outputs compound and personalized.
+
 ---
 
 ## WHAT WAS BUILT THIS SESSION (v7.94)
@@ -50,49 +110,54 @@
 | Workshop header (Your Studio / Workshop) | ✅ Done |
 | Story Wizard hero row in Workshop | ✅ Done |
 | The Reach tool — HTML + JS + TOOLS object | ✅ Done |
+| The Reach — copy/edit/copy-all buttons | ✅ Done |
 | Ideas Picker — 💜 button on every tool input | ✅ Done |
 | My Ideas card in Workshop grid | ✅ Done |
 | Video Coming Soon teaser card | ✅ Done |
-| "← Back to Workshop" button in MEET SAM | ✅ Done |
+| Back to Workshop button in MEET SAM | ✅ Done |
 | howItWorks hidden in Workshop mode | ✅ Done |
-| Remove old broken Photo Wizard nav button | ✅ Done |
+| SAM Voice button removed | ✅ Done |
+| Hero pills updated (48hrs free, no card needed) | ✅ Done |
+| Multiple syntax fixes | ✅ Done |
 
 ## STILL TO DO
-| Task | Notes |
-|------|-------|
-| Remove old `#photo-wizard` section (line ~5537) | Dead code, safe to remove |
-| Remove `showPhotoWizard()` function (line ~5674) | Dead code, safe to remove |
-| Test The Reach output rendering | JSON issue fixed in prompt — needs verification |
-| Merge photo-wizard-dev → main | Only after full incognito test passes |
-| Update pricing copy ($19/$39/$99) | Tier names exist, just copy update needed |
+| Task | Priority |
+|------|----------|
+| 💜 Ideas picker on each Reach output field | High |
+| Unified profile context object | High |
+| The Reach auto-fill from user profile | High |
+| SAM-generated hashtags | Medium |
+| Remove dead `#photo-wizard` section (line ~5537) | Low |
+| Remove `showPhotoWizard()` function (line ~5674) | Low |
+| Story Wizard playbook PDF gated for new users | Medium |
+| Voice DNA fires too early in MEET SAM | Medium |
+| Switch tools button not firing | Medium |
+| Merge photo-wizard-dev → main | After testing |
+| Update pricing copy ($19/$39/$99) | Medium |
+
+---
+
+## PRE-EXISTING BUGS (NOT INTRODUCED THIS SESSION)
+- Voice DNA fires too early in MEET SAM flow
+- Story Wizard playbook PDF hits paywall for active trial users
+- Switch tools button not firing tool cards
+- `[SAVE:platforms:TBD]` tag leaking in SAM responses mid-conversation
 
 ---
 
 ## KEY FUNCTIONS ADDED THIS SESSION
 - `openWorkshop()` — hides hero + howItWorks, shows Workshop
-- `openIdeasPicker(targetInputId)` — opens floating ideas picker panel
+- `openIdeasPicker(targetInputId)` — floating ideas picker panel
 - `closeIdeasPicker()` — closes picker
 - `ideasPickerSelect(id)` — fills target textarea with selected idea
-- `reachHandleFile(e)` — photo upload handler for The Reach
+- `reachHandleFile(e)` — photo upload for The Reach
 - `reachHandleDrop(e)` — drag and drop for The Reach
-- `reachRemoveImg(e)` — remove photo from The Reach
-- `runReach()` — API call + streaming output for The Reach
-- `resetReach()` — reset The Reach tool
-
-## KEY IDs ADDED THIS SESSION
-- `#tool-reach` — The Reach tool wrap
-- `#reachDropZone` — photo drop zone
-- `#reachFile` — file input
-- `#reachMoment` — story textarea
-- `#reachPlatforms` — platform pills
-- `#reachOutputs` — output option pills
-- `#reachScheduler` — day/date picker grid
-- `#reachLoader` — loading state
-- `#reachOutput` — output container
-- `#reachBody` — output body
-- `#ideasPickerOverlay` — picker backdrop
-- `#ideasPickerPanel` — picker panel
-- `#ideasPickerList` — picker ideas list
+- `reachRemoveImg(e)` — remove photo
+- `runReach()` — API call + streaming + JSON renderer
+- `resetReach()` — reset tool
+- `reachCopyField(btn)` — copy individual field
+- `reachEditField(fieldId)` — toggle contenteditable on field
+- `reachCopyAll(platformId)` — copy all fields for a platform
 
 ---
 
@@ -119,13 +184,9 @@ location.reload();
 
 ## DEPLOY COMMANDS
 ```bash
-# Always on dev branch
 cd ~/Desktop/sam-app && git checkout photo-wizard-dev
-
-# Commit and push to dev
 git add -A && git commit -m "message" && git push origin photo-wizard-dev
-
-# Only when confirmed working — merge to main
+# Merge to main only when confirmed stable:
 git checkout main && git merge photo-wizard-dev && git push
 ```
 
@@ -141,10 +202,10 @@ git checkout main && git merge photo-wizard-dev && git push
 ---
 
 ## HOW TO USE THIS FILE
-1. At the start of every new Claude session, drag this file into the chat
+1. Drag this file into new Claude chat at session start
 2. Claude reads it and is immediately up to speed
-3. At the end of each session, update this file to reflect what was built
-4. Commit it: `git add HANDOFF.md && git commit -m "update handoff"`
+3. Update at end of each session
+4. Commit: `git add HANDOFF.md && git commit -m "update handoff"`
 
 ---
-*Last updated: v7.94 — Workshop restructure, The Reach tool, Ideas Picker*
+*Last updated: v7.94 — Workshop restructure, The Reach tool, Ideas Picker, Reach vision defined*
