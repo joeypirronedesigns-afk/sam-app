@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.88)
+       UNIFIED HERO (v7.89)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.88
+       CINEMATIC MEET SAM — v7.89
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.88
+       SAM GUIDED TOUR SPLASH — v7.89
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5466,10 +5466,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.88</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.89</div>
 
 
-  <!-- ── UNIFIED HERO v7.88 ── -->
+  <!-- ── UNIFIED HERO v7.89 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -8055,6 +8055,12 @@ function initPersistentSAM() {
 
   fab.style.display = 'flex';
 
+  // Swap quick replies for marketing mode
+  if (localStorage.getItem('sam_dev') === 'true') {
+    const qr = panel.querySelector('.psam-quick-replies');
+    if (qr) qr.innerHTML = '<button class="psam-qr" onclick="sendPersistentQuickReply(\'Write me a TikTok hook about Voice DNA\')">🎬 TikTok hook</button><button class="psam-qr" onclick="sendPersistentQuickReply(\'Write a LinkedIn founder post about why I built SAM\')">💼 Founder post</button><button class="psam-qr" onclick="sendPersistentQuickReply(\'Write an Instagram carousel about SAM vs ChatGPT\')">📱 Carousel</button><button class="psam-qr" onclick="sendPersistentQuickReply(\'Give me 5 content angles about Voice DNA\')">🧬 Voice DNA angles</button>';
+  }
+
   // Load history
   persistentSAMHistory = loadPersistentHistory();
 
@@ -8169,18 +8175,23 @@ async function sendPersistentMessage() {
 
   const msgs = document.getElementById('persistentSAMMessages');
 
-  // ── Check ideas bank for similarity first ──
-  const similar = checkIdeaSimilarity(text);
-  if (similar) {
-    const simMsg = "Hold up — you saved something similar on " + similar.date + ": \"" + similar.preview + "...\" Want to build on that instead, or keep going with this new angle?";
-    addPersistentMessage('sam', simMsg, true);
-    if (typing) typing.style.display = 'none';
-    if (btn) btn.disabled = false;
-    return;
+  // ── In dev/marketing mode — skip intent detection, go straight to API ──
+  const isMarketingMode = localStorage.getItem('sam_dev') === 'true';
+
+  // ── Check ideas bank for similarity first (non-dev only) ──
+  if (!isMarketingMode) {
+    const similar = checkIdeaSimilarity(text);
+    if (similar) {
+      const simMsg = "Hold up — you saved something similar on " + similar.date + ": \"" + similar.preview + "...\" Want to build on that instead, or keep going with this new angle?";
+      addPersistentMessage('sam', simMsg, true);
+      if (typing) typing.style.display = 'none';
+      if (btn) btn.disabled = false;
+      return;
+    }
   }
 
-  // ── Detect intent ──
-  const intent = detectSAMIntent(text);
+  // ── Detect intent (non-dev only) ──
+  const intent = !isMarketingMode ? detectSAMIntent(text) : null;
 
   if (intent) {
     // Announce tool run
@@ -8324,7 +8335,7 @@ window.getSamVoiceProfile = function() {
 };
 
 function getSuperSAMPrompt() {
-  // VOICE DNA BRAND KNOWLEDGE — v7.88
+  // VOICE DNA BRAND KNOWLEDGE — v7.89
   // SAM knows this about herself and leads with it when relevant:
   // - Voice DNA is SAM's exclusive differentiator. No other AI tool has it.
   // - It is a living profile of how the creator communicates — rhythm, humor,
@@ -9361,7 +9372,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.88
+  // CINEMATIC MEET SAM — v7.89
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -13730,7 +13741,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.88</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.89</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
