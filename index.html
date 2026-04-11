@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.95)
+       UNIFIED HERO (v7.96)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.95
+       CINEMATIC MEET SAM — v7.96
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.95
+       SAM GUIDED TOUR SPLASH — v7.96
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5467,10 +5467,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.95</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.96</div>
 
 
-  <!-- ── UNIFIED HERO v7.95 ── -->
+  <!-- ── UNIFIED HERO v7.96 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -5533,7 +5533,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   <!-- ── TOOL SECTION ── -->
   <div class="tool-section" 
-<!-- ✦ PHOTO WIZARD SECTION v7.95 -->
+<!-- ✦ PHOTO WIZARD SECTION v7.96 -->
 <section id="photo-wizard" style="display:none; padding:60px 24px; max-width:860px; margin:0 auto;">
   <div style="text-align:center; margin-bottom:40px;">
     <p style="font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:#888; margin-bottom:10px;">NEW TOOL</p>
@@ -5761,7 +5761,7 @@ async function runPhotoWizard() {
   var daysNote = wizardState.selectedDays.length>0 ? 'Scheduled for: '+wizardState.selectedDays.join(', ')+'.' : '';
   var userPrompt = 'I uploaded a photo for a social media post.'+(context?' Context: '+context:' No context provided — infer from the image.')+' Generate post copy for: '+platformList+'. For each platform generate: '+elementList+'. '+daysNote+' Format: one section per platform, each element clearly labeled. Write like a real human creator — vulnerable, specific, never corporate. No fake urgency, no generic compliments, no hype.';
   try {
-    var apiRes = await fetch('/api/sam', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ mode:'chat', imageBase64:wizardState.photoBase64, imageType:wizardState.photoFile?wizardState.photoFile.type:'image/jpeg', systemPrompt:'You are SAM, a social media content writer. Analyze the uploaded photo and generate platform-specific post copy. Be specific, human, never corporate. No fake urgency, no hype words like amazing or incredible. Be vulnerable, specific, direct.', messages:[{ role:'user', content:[{ type:'image', source:{ type:'base64', media_type:wizardState.photoFile?wizardState.photoFile.type:'image/jpeg', data:wizardState.photoBase64 } },{ type:'text', text:userPrompt }] }] }) });
+    var apiRes = await fetch('/api/sam', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ mode:'upload', imageBase64:wizardState.photoBase64, imageType:wizardState.photoFile?wizardState.photoFile.type:'image/jpeg', moment:userPrompt, forceType:'photo' }) });
     if(!apiRes.ok) throw new Error('API error '+apiRes.status);
     var reader2 = apiRes.body.getReader();
     var decoder = new TextDecoder();
@@ -5821,7 +5821,7 @@ function renderWizardOutput(text, platforms) {
 }
 
 function copyWizardPost(btn) {
-  var content=btn.closest('div').querySelector('.post-copy').textContent;
+  var postDiv=btn.closest('[style]'); var pc=postDiv?postDiv.querySelector('.post-copy'):null; if(!pc){alert('Nothing to copy yet');return;} var content=pc.textContent;
   navigator.clipboard.writeText(content).then(function(){ var o=btn.textContent; btn.textContent='Copied!'; btn.style.color='#4ade80'; setTimeout(function(){ btn.textContent=o; btn.style.color='#888'; },2000); });
 }
 
@@ -8643,7 +8643,7 @@ window.getSamVoiceProfile = function() {
 };
 
 function getSuperSAMPrompt() {
-  // VOICE DNA BRAND KNOWLEDGE — v7.95
+  // VOICE DNA BRAND KNOWLEDGE — v7.96
   // SAM knows this about herself and leads with it when relevant:
   // - Voice DNA is SAM's exclusive differentiator. No other AI tool has it.
   // - It is a living profile of how the creator communicates — rhythm, humor,
@@ -9690,7 +9690,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.95
+  // CINEMATIC MEET SAM — v7.96
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -14075,7 +14075,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.95</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.96</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
