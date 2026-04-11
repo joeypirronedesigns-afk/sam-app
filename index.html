@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.96)
+       UNIFIED HERO (v7.97)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.96
+       CINEMATIC MEET SAM — v7.97
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.96
+       SAM GUIDED TOUR SPLASH — v7.97
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5467,10 +5467,10 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.96</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.97</div>
 
 
-  <!-- ── UNIFIED HERO v7.96 ── -->
+  <!-- ── UNIFIED HERO v7.97 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
@@ -5533,7 +5533,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   <!-- ── TOOL SECTION ── -->
   <div class="tool-section" 
-<!-- ✦ PHOTO WIZARD SECTION v7.96 -->
+<!-- ✦ PHOTO WIZARD SECTION v7.97 -->
 <section id="photo-wizard" style="display:none; padding:60px 24px; max-width:860px; margin:0 auto;">
   <div style="text-align:center; margin-bottom:40px;">
     <p style="font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:#888; margin-bottom:10px;">NEW TOOL</p>
@@ -5801,21 +5801,44 @@ async function runPhotoWizard() {
 }
 
 function renderWizardOutput(text, platforms) {
-  var colors={instagram:'#e1306c',facebook:'#1877f2',linkedin:'#0a66c2',twitter:'#1da1f2',tiktok:'#ff0050',threads:'#aaa'};
-  var emojis={instagram:'📸',facebook:'👥',linkedin:'💼',twitter:'𝕏',tiktok:'🎵',threads:'🧵'};
+  var colors={instagram:'#e1306c',facebook:'#1877f2',linkedin:'#0a66c2',twitter:'#1da1f2',tiktok:'#ff0050',threads:'#aaa',youtube:'#ff0000'};
+  var emojis={instagram:'📸',facebook:'👥',linkedin:'💼',twitter:'𝕏',tiktok:'🎵',threads:'🧵',youtube:'▶'};
   var out='<div style="display:grid; gap:16px;">';
-  platforms.forEach(function(p) {
-    var color=colors[p]||'#a78bfa'; var emoji=emojis[p]||''; var name=p.charAt(0).toUpperCase()+p.slice(1);
-    var regex=new RegExp('(?:'+name+'|'+p+')[\s\S]*?(?=\n\n[A-Z]|$)','i');
-    var match=text.match(regex); var content=match?match[0]:text;
-    out+='<div style="background:#111; border:1px solid #222; border-left:3px solid '+color+'; border-radius:12px; padding:20px;">';
-    out+='<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">';
-    out+='<p style="font-size:13px; font-weight:600; color:'+color+'; margin:0; text-transform:uppercase; letter-spacing:0.05em;">'+emoji+' '+name+'</p>';
-    out+='<button onclick="copyWizardPost(this)" style="font-size:12px; color:#888; background:transparent; border:1px solid #333; border-radius:20px; padding:4px 12px; cursor:pointer;">Copy</button>';
-    out+='</div><div class="post-copy" style="font-size:14px; color:#ccc; line-height:1.7; white-space:pre-wrap;">'+escHtml(content)+'</div></div>';
-  });
-  out+='<details style="margin-top:8px;"><summary style="font-size:13px; color:#666; cursor:pointer; padding:8px 0;">Full SAM output</summary>';
-  out+='<div style="margin-top:12px; background:#0a0a0a; border-radius:10px; padding:16px; font-size:13px; color:#ccc; white-space:pre-wrap; line-height:1.7;">'+escHtml(text)+'</div></details>';
+  var parsed=null;
+  try { var jm=text.match(/\{[\s\S]*\}/); if(jm) parsed=JSON.parse(jm[0]); } catch(e){}
+  if(parsed && parsed.platforms && parsed.platforms.length>0) {
+    if(parsed.content_angle) {
+      out+='<div style="background:#1a1a2e; border:1px solid #2a2a3e; border-radius:12px; padding:16px 20px; margin-bottom:4px;">';
+      out+='<p style="font-size:11px; color:#a78bfa; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; margin:0 0 6px;">SAM SEES</p>';
+      out+='<p style="font-size:14px; color:#ccc; margin:0; line-height:1.6;">'+escHtml(parsed.content_angle)+'</p>';
+      if(parsed.headline_bold){
+        out+='<div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">';
+        out+='<span style="font-size:12px; background:#2a1a4e; color:#a78bfa; padding:4px 12px; border-radius:20px;">Bold: '+escHtml(parsed.headline_bold)+'</span>';
+        out+='<span style="font-size:12px; background:#1a2a1a; color:#4ade80; padding:4px 12px; border-radius:20px;">Safe: '+escHtml(parsed.headline_safe)+'</span>';
+        out+='</div>';
+      }
+      out+='</div>';
+    }
+    parsed.platforms.forEach(function(p) {
+      var pkey=p.platform.toLowerCase().replace(/\s+/g,'').replace('instagramreels','instagram');
+      var color=colors[pkey]||'#a78bfa'; var emoji=emojis[pkey]||'✦';
+      out+='<div style="background:#111; border:1px solid #222; border-left:3px solid '+color+'; border-radius:12px; padding:20px;">';
+      out+='<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">';
+      out+='<p style="font-size:13px; font-weight:600; color:'+color+'; margin:0; text-transform:uppercase; letter-spacing:0.05em;">'+emoji+' '+escHtml(p.platform)+'</p>';
+      out+='<button onclick="copyWizardPost(this)" style="font-size:12px; color:#888; background:transparent; border:1px solid #333; border-radius:20px; padding:4px 12px; cursor:pointer;">Copy</button>';
+      out+='</div>';
+      if(p.title) out+='<p style="font-size:15px; font-weight:600; color:#fff; margin:0 0 8px;">'+escHtml(p.title)+'</p>';
+      if(p.description) out+='<p class="post-copy" style="font-size:14px; color:#ccc; line-height:1.7; margin:0 0 10px; white-space:pre-wrap;">'+escHtml(p.description)+'</p>';
+      if(p.hashtags) out+='<p style="font-size:13px; color:#a78bfa; margin:0;">'+escHtml(p.hashtags)+'</p>';
+      out+='</div>';
+    });
+  } else {
+    out+='<div style="background:#111; border:1px solid #222; border-radius:12px; padding:20px;">';
+    out+='<p class="post-copy" style="font-size:14px; color:#ccc; line-height:1.8; white-space:pre-wrap;">'+escHtml(text)+'</p>';
+    out+='</div>';
+  }
+  out+='<details style="margin-top:8px;"><summary style="font-size:13px; color:#555; cursor:pointer; padding:8px 0;">Raw SAM output</summary>';
+  out+='<div style="margin-top:12px; background:#0a0a0a; border-radius:10px; padding:16px; font-size:12px; color:#666; white-space:pre-wrap; line-height:1.6;">'+escHtml(text)+'</div></details>';
   out+='</div>';
   return out;
 }
@@ -8643,7 +8666,7 @@ window.getSamVoiceProfile = function() {
 };
 
 function getSuperSAMPrompt() {
-  // VOICE DNA BRAND KNOWLEDGE — v7.96
+  // VOICE DNA BRAND KNOWLEDGE — v7.97
   // SAM knows this about herself and leads with it when relevant:
   // - Voice DNA is SAM's exclusive differentiator. No other AI tool has it.
   // - It is a living profile of how the creator communicates — rhythm, humor,
@@ -9690,7 +9713,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.96
+  // CINEMATIC MEET SAM — v7.97
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -13410,36 +13433,12 @@ function openWizardFromNav() {
         </div>
       </div>
 
-              <div onclick="showPhotoWizard()" style="display:flex; align-items:center; gap:14px; padding:16px 20px; background:#1a1a2e; border:1px solid #2a2a3e; border-radius:12px; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.borderColor='#a78bfa'" onmouseout="this.style.borderColor='#2a2a3e'">
-                <div style="width:36px; height:36px; border-radius:10px; background:#2a1a4e; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;">📸</div>
-                <div>
-                  <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">Photo Wizard</p>
-                  <p style="font-size:12px; color:#888; margin:0;">Upload a photo · SAM writes every caption</p>
-                </div>
-              </div>
-
-    </div>
-
     <!-- Buttons -->
     <div style="display:flex;flex-direction:column;gap:8px;padding-top:4px;">
       <button onclick="samReturnToWizard()" style="width:100%;padding:13px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">
         ← Keep building my story
       </button>
       <button onclick="samExploreTools()" style="width:100%;padding:11px;background:transparent;border:1px solid rgba(255,255,255,0.12);border-radius:50px;font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:rgba(240,236,255,0.6);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,236,255,0.6)'">
-        
-              <div onclick="showPhotoWizard()" style="display:flex; align-items:center; gap:14px; padding:16px 20px; background:#1a1a2e; border:1px solid #2a2a3e; border-radius:12px; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.borderColor='#a78bfa'" onmouseout="this.style.borderColor='#2a2a3e'">
-                <div style="width:36px; height:36px; border-radius:10px; background:#2a1a4e; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;">📸</div>
-                <div>
-                  <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">Photo Wizard</p>
-                  <p style="font-size:12px; color:#888; margin:0;">Upload a photo · SAM writes every caption</p>
-                </div>
-              </div>
-              <a Explore all tools → SAM brings your story with you
-      </button>
-    </div>
-
-  </div>
-</div>
 
 
 
@@ -14075,7 +14074,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.96</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.97</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
