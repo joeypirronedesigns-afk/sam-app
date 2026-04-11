@@ -1,4 +1,5 @@
 // api/waitlist.js
+const { trackSignup, trackEvent } = require('./_supabase');
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -98,6 +99,12 @@ module.exports = async function handler(req, res) {
       console.error('Email send failed:', err.message);
     }
   }
+
+  // Track in Supabase
+  try {
+    await trackSignup({ email, name, tier: 'free', source: source || 'waitlist' });
+    await trackEvent(email, 'signup', { name, source: source || 'waitlist' });
+  } catch(e) { console.error('Supabase tracking error:', e.message); }
 
   return res.status(200).json({ success: true, message: `${name} added`, emailSent: !!process.env.RESEND_API_KEY });
 };
