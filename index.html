@@ -5982,6 +5982,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
           <textarea id="pulseInp" placeholder="Tell me what happened — in your own words, unpolished. The more real and specific, the better." oninput="updateChar('pulseInp','pulseChar')" maxlength="1000"></textarea>
           <button class="paste-btn" onclick="pasteToEl('pulseInp')" title="Paste">📋</button>
           <button class="mic-btn" id="micPulse" onclick="toggleMicFor('pulseInp','micPulse')">🎙</button>
+          <button class="mic-btn" onclick="openIdeasPicker('pulseInp')" title="Use a saved idea" style="color:#A78BFA;">💜</button>
         </div>
         <div class="char-hint"><span id="pulseChar">0</span> / 1000</div>
         <div class="chips">
@@ -6025,6 +6026,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
           <textarea id="sparkInp" placeholder="e.g. Self-taught DIY renovator documenting a full cottage gut renovation. My audience loves real moments, setbacks, and figuring things out without being an expert." style="min-height:90px;"></textarea>
           <button class="paste-btn" onclick="pasteToEl('sparkInp')" title="Paste">📋</button>
           <button class="mic-btn" id="micSpark" onclick="toggleMicFor('sparkInp','micSpark')">🎙</button>
+          <button class="mic-btn" onclick="openIdeasPicker('sparkInp')" title="Use a saved idea" style="color:#A78BFA;">💜</button>
         </div>
         <div class="loader" id="sparkLoader"><div class="loader-dots"><span style="background:var(--spark)"></span><span style="background:var(--spark)"></span><span style="background:var(--spark)"></span></div><div class="loader-text" id="sparkLoaderText">SAM is generating your ideas...</div></div>
         <div class="err-box" id="sparkErr"></div>
@@ -6059,6 +6061,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
           <textarea id="blueprintInp" placeholder="e.g. DIY cottage renovation — emotional moments, setbacks, and wins. Audience loves authenticity." style="min-height:90px;"></textarea>
           <button class="paste-btn" onclick="pasteToEl('blueprintInp')" title="Paste">📋</button>
           <button class="mic-btn" id="micBlueprint" onclick="toggleMicFor('blueprintInp','micBlueprint')">🎙</button>
+          <button class="mic-btn" onclick="openIdeasPicker('blueprintInp')" title="Use a saved idea" style="color:#A78BFA;">💜</button>
         </div>
         <div style="margin-top:14px;">
           <div class="field-label"><span class="field-label-accent" style="background:var(--blueprint);"></span>Platforms to rotate</div>
@@ -6107,6 +6110,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
           <textarea id="visionInp" placeholder="e.g. Self-taught DIY renovator. I want a concept nobody has seen before — something scroll-stopping that people share." style="min-height:90px;"></textarea>
           <button class="paste-btn" onclick="pasteToEl('visionInp')" title="Paste">📋</button>
           <button class="mic-btn" id="micVision" onclick="toggleMicFor('visionInp','micVision')">🎙</button>
+          <button class="mic-btn" onclick="openIdeasPicker('visionInp')" title="Use a saved idea" style="color:#A78BFA;">💜</button>
         </div>
         <div style="margin-top:14px;">
           <div class="field-label"><span class="field-label-accent" style="background:var(--vision);"></span>Platform</div>
@@ -6190,6 +6194,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
             <textarea id="lensInp" placeholder="e.g. This is from my renovation series — help me build a thumbnail that stops the scroll..." style="min-height:70px;padding-right:94px;"></textarea>
             <button class="paste-btn" onclick="pasteToEl('lensInp')" title="Paste">📋</button>
             <button class="mic-btn" id="micLens" onclick="toggleMicFor('lensInp','micLens')">🎙</button>
+            <button class="mic-btn" onclick="openIdeasPicker('lensInp')" title="Use a saved idea" style="color:#A78BFA;">💜</button>
           </div>
         </div>
         <div class="loader" id="lensLoader"><div class="loader-dots"><span style="background:var(--lens)"></span><span style="background:var(--lens)"></span><span style="background:var(--lens)"></span></div><div class="loader-text" id="lensLoaderText">SAM is reading your image...</div></div>
@@ -6304,6 +6309,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
             <textarea id="reachMoment" placeholder="e.g. Just finished the kitchen renovation after 3 months — couldn't believe how it turned out..." style="min-height:80px;"></textarea>
             <button class="paste-btn" onclick="pasteToEl('reachMoment')" title="Paste">📋</button>
             <button class="mic-btn" id="micReach" onclick="toggleMicFor('reachMoment','micReach')">🎙</button>
+            <button class="mic-btn" onclick="openIdeasPicker('reachMoment')" title="Use a saved idea" style="color:#A78BFA;">💜</button>
           </div>
         </div>
 
@@ -6688,6 +6694,50 @@ function goHome() {
   document.getElementById('homeView').style.display = 'block';
   document.querySelectorAll('.tool-wrap').forEach(w => w.classList.remove('active'));
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── IDEAS PICKER ─────────────────────────────────────────────────────────────
+let ideasPickerTarget = null;
+
+function openIdeasPicker(targetId) {
+  ideasPickerTarget = targetId;
+  const ideas = IB.load();
+  const list = document.getElementById('ideasPickerList');
+  if (!ideas || ideas.length === 0) {
+    list.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3);font-size:14px;">No saved ideas yet. Use any tool and save your outputs to Ideas.</div>';
+  } else {
+    const tL = { pulse:'The Pulse', spark:'The Spark', blueprint:'Blueprint', vision:'The Vision', lens:'The Lens', wizard:'Story Wizard', reach:'The Reach' };
+    list.innerHTML = ideas.map(idea => {
+      const preview = (idea.text || '').slice(0, 120).replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      const label = tL[idea.type] || idea.type;
+      return '<div onclick="ideasPickerSelect('' + idea.id + '')" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px;margin-bottom:8px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.background='rgba(167,139,250,0.06)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)';this.style.background='rgba(255,255,255,0.03)'">'
+        + '<div style="font-size:10px;font-weight:700;color:rgba(167,139,250,0.6);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">' + label + '</div>'
+        + '<div style="font-size:13px;color:var(--text2);line-height:1.5;">' + preview + (idea.text.length > 120 ? '...' : '') + '</div>'
+        + '</div>';
+    }).join('');
+  }
+  document.getElementById('ideasPickerOverlay').style.display = 'block';
+  document.getElementById('ideasPickerPanel').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeIdeasPicker() {
+  document.getElementById('ideasPickerOverlay').style.display = 'none';
+  document.getElementById('ideasPickerPanel').style.display = 'none';
+  document.body.style.overflow = '';
+  ideasPickerTarget = null;
+}
+
+function ideasPickerSelect(id) {
+  const idea = IB.load().find(i => i.id === id);
+  if (!idea || !ideasPickerTarget) return;
+  const el = document.getElementById(ideasPickerTarget);
+  if (el) {
+    el.value = idea.text;
+    el.focus();
+    if (ideasPickerTarget === 'pulseInp') updateChar('pulseInp','pulseChar');
+  }
+  closeIdeasPicker();
 }
 
 // ── THE REACH ────────────────────────────────────────────────────────────────
@@ -9516,7 +9566,15 @@ function exportIdeasAsPDF(ideas){
     +lines
     +'<div style="margin-top:40px;text-align:center;font-size:11px;color:#999;border-top:1px solid #eee;padding-top:16px;">Built with SAM · samforcreators.com</div>'
     +'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},600);};</'+'script>'
-    +'</body></html>';
+    +'<div id="ideasPickerOverlay" onclick="closeIdeasPicker()" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);"></div>
+<div id="ideasPickerPanel" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:601;background:rgba(13,11,22,0.98);border-top:1px solid rgba(167,139,250,0.3);border-radius:20px 20px 0 0;padding:20px 20px 32px;max-height:60vh;overflow-y:auto;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+    <div style="font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:var(--text);">💜 Use a saved idea</div>
+    <button onclick="closeIdeasPicker()" style="background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;padding:0;">✕</button>
+  </div>
+  <div id="ideasPickerList"></div>
+</div>
+</body></html>';
   const w = window.open('','_blank','width=900,height=700');
   if(w){ w.document.open(); w.document.write(printHTML); w.document.close(); setTimeout(function(){w.print();},600); }
 }
