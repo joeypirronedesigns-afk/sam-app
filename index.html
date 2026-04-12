@@ -10615,7 +10615,7 @@ function renderPlaybook(data) {
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center;">
         <button class="playbook-copy-btn" style="margin-top:0;" onclick="wizCopy(this,'${escQ(data.hook)}')">Copy hook</button>
-        <button class="playbook-copy-btn" style="margin-top:0;background:rgba(167,139,250,0.12);border-color:rgba(167,139,250,0.3);color:var(--spark);" onclick="saveWizardItem('${escQ(data.hook)}','Hook: ${escQ(data.hook).substring(0,40)}...','wizard')">💜 Save</button>
+        <button class="playbook-copy-btn" style="margin-top:0;background:rgba(167,139,250,0.12);border-color:rgba(167,139,250,0.3);color:var(--spark);" onclick="var _h=this.closest('.psam-output-section')||this.closest('[id^=playbook-sec-]');var _t=_h?(_h.querySelector('.playbook-hook')||_h.querySelector('.psam-copyable')):null;var _txt=_t?_t.innerText.trim():'';if(_txt)saveWizardItem(_txt,'Hook','wizard');">💜 Save</button>
       </div>
       <div class="no-print" style="margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
       <button class="sec-regen-btn" onclick="regenSection('hook',this)" style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:rgba(240,236,255,0.5);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:6px 13px;cursor:pointer;transition:all 0.2s;font-family:inherit;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.5)'">↺ Redo</button>
