@@ -4530,7 +4530,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.19</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.20</div>
 
 
   <!-- ── UNIFIED HERO v7.95 ── -->
@@ -5718,6 +5718,17 @@ function openToolFromSheet() {
 function openTool(tool) {
   currentTool = tool;
   document.getElementById('homeView').style.display = 'none';
+  if (tool === 'reach') {
+    setTimeout(function() {
+      var ta = document.getElementById('reachMoment');
+      if (ta && !ta.value) {
+        var storyRaw = (typeof WS !== 'undefined' && WS.storyRaw) ? WS.storyRaw : '';
+        var meetStory = localStorage.getItem('sam_meet_story') || '';
+        var story = storyRaw || meetStory;
+        if (story) ta.value = story.slice(0, 300);
+      }
+    }, 200);
+  }
   document.getElementById('heroSection').style.display = 'none';
   const hd = document.getElementById('heroDesktop');
   if (hd) hd.style.display = 'none';
@@ -5959,6 +5970,7 @@ For each platform write clearly with the platform name as a header. Make every c
         + '<div style="display:flex;gap:6px;">'
         + '<button onclick="reachCopyField(this)" data-text="' + esc + '" style="background:none;border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:rgba(255,255,255,0.4);font-size:10px;padding:2px 8px;cursor:pointer;">📋 Copy</button>'
         + '<button onclick="reachEditField(\'' + fieldId + '\')" style="background:none;border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:rgba(255,255,255,0.4);font-size:10px;padding:2px 8px;cursor:pointer;">✏️ Edit</button>'
+        + '<button onclick="openIdeasPicker(\'" + fieldId + "\')" style="background:none;border:1px solid rgba(167,139,250,0.3);border-radius:6px;color:#A78BFA;font-size:10px;padding:2px 8px;cursor:pointer;">💜 Ideas</button>'
         + '</div></div>'
         + '<div id="' + fieldId + '" contenteditable="false" style="font-size:14px;color:rgba(240,236,255,0.85);line-height:1.7;padding:8px;border-radius:8px;border:1px solid transparent;transition:all 0.2s;">' + text + '</div>'
         + '</div>';
@@ -12090,7 +12102,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.19</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.20</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
