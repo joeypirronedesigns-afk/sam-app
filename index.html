@@ -9310,7 +9310,6 @@ function printToolOutput(outputId, toolName) {
   const content = el.innerHTML;
   const brandName = WS && WS.brandName ? WS.brandName : (document.getElementById('brandName') ? document.getElementById('brandName').value : '');
   const brandHandle = (WS && WS.brandHandle) ? WS.brandHandle : '';
-  const brandHandle = (WS && WS.brandHandle) ? WS.brandHandle : '';
   const win = window.open('', '_blank');
   if (!win) { window.print(); return; }
   win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"/>
