@@ -10599,7 +10599,17 @@ Rules:
 
   
   function meetSamHandoff() {
-    // Show handoff card instead of jumping straight to wizard
+    // Check voice first — if not calibrated, show Voice DNA before handoff
+    const voiceDone = (typeof getSamVoiceProfile === 'function' && !!getSamVoiceProfile()) || localStorage.getItem('sam-voice-calibrated') === 'true';
+    if (!voiceDone && typeof showVoiceCalibration === 'function') {
+      const goWrap = document.getElementById('msGoBtnWrap');
+      if (goWrap) goWrap.style.display = 'none';
+      showVoiceCalibration();
+      setTimeout(function(){ var c=document.getElementById('msVoiceCalib'); if(c) c.scrollIntoView({behavior:'smooth',block:'center'}); }, 400);
+      return;
+    }
+
+    // Voice done — show handoff card
     const wrap = document.querySelector('.meet-sam-wrap');
     if (!wrap) { meetSamHandoffExecute(); return; }
 
