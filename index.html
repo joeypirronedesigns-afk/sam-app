@@ -6019,7 +6019,7 @@ For each platform write clearly with the platform name as a header. Make every c
         + '<button onclick="reachEditField(\'' + fieldId + '\')" style="background:none;border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:rgba(255,255,255,0.4);font-size:10px;padding:2px 8px;cursor:pointer;">✏️ Edit</button>'
         + '<button onclick="openIdeasPicker(this.getAttribute(\'data-fid\'))" data-fid="' + fieldId + '" style="background:none;border:1px solid rgba(167,139,250,0.3);border-radius:6px;color:#A78BFA;font-size:10px;padding:2px 8px;cursor:pointer;">💜 Ideas</button>'
         + '</div></div>'
-        + '<div id="' + fieldId + '" contenteditable="false" style="font-size:14px;color:rgba(240,236,255,0.85);line-height:1.7;padding:8px;border-radius:8px;border:1px solid transparent;transition:all 0.2s;">' + text + '</div>'
+        + '<div id="' + fieldId + '" data-label="' + label + '" data-text="' + esc + '" contenteditable="false" style="font-size:14px;color:rgba(240,236,255,0.85);line-height:1.7;padding:8px;border-radius:8px;border:1px solid transparent;transition:all 0.2s;">' + text + '</div>'
         + '</div>';
     }
 
@@ -6043,16 +6043,17 @@ For each platform write clearly with the platform name as a header. Make every c
         rendered += '<div id="' + pid + '" style="background:rgba(255,255,255,0.03);border:1px solid rgba(244,114,182,0.2);border-radius:14px;padding:20px;margin-bottom:16px;">';
         rendered += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">';
         rendered += '<div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#F472B6;">' + platformName + '</div>';
-        rendered += '<button onclick="reachCopyAll(\'' + pid + '\')" style="background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.2);border-radius:6px;color:#A78BFA;font-size:11px;font-weight:600;padding:4px 12px;cursor:pointer;">Copy all</button>';
+        rendered += '<button id="copyAll-' + pid + '" onclick="reachCopyAll(\'' + pid + '\')" style="background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.2);border-radius:6px;color:#A78BFA;font-size:11px;font-weight:600;padding:4px 12px;cursor:pointer;">📋 Copy All</button>';
         rendered += '</div>';
         if (outputs.includes('Title/Headline') && hook) rendered += reachField('Hook', hook, pid + '-hook');
         if (outputs.includes('Caption') && caption2) rendered += reachField('Caption', caption2, pid + '-caption');
         if (outputs.includes('Description') && desc2) rendered += reachField('Description', desc2, pid + '-desc');
         if (outputs.includes('Call to Action') && cta2) rendered += reachField('Call to Action', cta2, pid + '-cta');
         if (outputs.includes('Hashtags') && tags2) rendered += reachField('Hashtags', tags2, pid + '-hashtags');
-        rendered += '<div style="display:flex;gap:8px;margin-top:8px;">';
-        rendered += '<button style="flex:1;padding:10px;background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);border-radius:8px;color:rgba(244,114,182,0.5);font-size:12px;font-weight:600;cursor:not-allowed;">Post to ' + platformName + ' - Connect account</button>';
-        rendered += '</div></div>';
+        rendered += '<div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06);">';
+        rendered += '<button id="copyAll-' + pid + '" onclick="reachCopyAll(\'' + pid + '\')" style="flex:1;padding:10px;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);border-radius:8px;color:#A78BFA;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background=\'rgba(167,139,250,0.2)\'" onmouseout="this.style.background=\'rgba(167,139,250,0.1)\'">📋 Copy Post</button>';
+        rendered += '<button onclick="reachOpenPlatform(\'' + platformName + '\')" style="flex:1;padding:10px;background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);border-radius:8px;color:#F472B6;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background=\'rgba(244,114,182,0.15)\'" onmouseout="this.style.background=\'rgba(244,114,182,0.08)\'">↗ Open ' + platformName + '</button>';
+        rendered += '</div>';
       });
     } else {
       rendered = '<div style="color:#ccc;font-size:14px;line-height:1.8;white-space:pre-wrap;">' + fullText + '</div>';
@@ -6071,19 +6072,70 @@ For each platform write clearly with the platform name as a header. Make every c
 }
 
 function reachCopyField(btn) {
-  const text = btn.dataset.text || '';
+  const text = btn.getAttribute('data-text') || '';
   navigator.clipboard.writeText(text).then(function() {
-    const orig = btn.textContent;
-    btn.textContent = '✓ Copied';
-    btn.style.color = '#34D399';
-    btn.style.borderColor = 'rgba(52,211,153,0.3)';
-    setTimeout(function() {
-      btn.textContent = orig;
-      btn.style.color = 'rgba(255,255,255,0.4)';
-      btn.style.borderColor = 'rgba(255,255,255,0.1)';
-    }, 2000);
+    const orig = btn.innerHTML;
+    btn.innerHTML = '✅ Copied!';
+    btn.style.color = '#A78BFA';
+    setTimeout(function() { btn.innerHTML = orig; btn.style.color = ''; }, 2000);
+  }).catch(function() {
+    // fallback
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    const orig = btn.innerHTML;
+    btn.innerHTML = '✅ Copied!';
+    setTimeout(function() { btn.innerHTML = orig; }, 2000);
   });
 }
+function reachCopyAll(platformId) {
+  var container = document.getElementById(platformId);
+  if (!container) return;
+  var fields = container.querySelectorAll('[contenteditable]');
+  var labels = container.querySelectorAll('[data-field-label]');
+  var parts = [];
+  fields.forEach(function(el, i) {
+    var label = el.getAttribute('data-label') || '';
+    var text = (el.textContent || '').trim();
+    if (text) parts.push(label ? label + ':\n' + text : text);
+  });
+  // fallback - just grab all visible text from divs with data-text
+  if (!parts.length) {
+    container.querySelectorAll('[data-text]').forEach(function(el) {
+      var t = el.getAttribute('data-text') || '';
+      if (t) parts.push(t);
+    });
+  }
+  var full = parts.join('\n\n');
+  if (!full) return;
+  navigator.clipboard.writeText(full).then(function() {
+    var btn = document.getElementById('copyAll-' + platformId);
+    if (btn) {
+      var orig = btn.innerHTML;
+      btn.innerHTML = '✅ Copied!';
+      btn.style.background = 'rgba(167,139,250,0.2)';
+      setTimeout(function() { btn.innerHTML = orig; btn.style.background = ''; }, 2500);
+    }
+  }).catch(function() {
+    var ta = document.createElement('textarea');
+    ta.value = full;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  });
+}
+
+var PLATFORM_LINKS = {"Instagram": "https://www.instagram.com/create/story", "Facebook": "https://www.facebook.com/", "TikTok": "https://www.tiktok.com/upload", "LinkedIn": "https://www.linkedin.com/feed/", "Pinterest": "https://www.pinterest.com/pin-builder/", "X": "https://x.com/compose/tweet", "Twitter": "https://x.com/compose/tweet", "YouTube": "https://www.youtube.com/upload", "Threads": "https://www.threads.net/"};
+
+function reachOpenPlatform(platformName) {
+  var url = PLATFORM_LINKS[platformName];
+  if (url) window.open(url, '_blank');
+}
+
 
 function reachEditField(fieldId) {
   const el = document.getElementById(fieldId);
