@@ -9466,14 +9466,31 @@ function openMeetSAMOverlay() { window.location.href = '/meet'; return; // legac
         const meetVoice = localStorage.getItem('sam-voice-profile');
         if (meetName && typeof WS !== 'undefined') WS.brandName = meetName;
         if (meetStory && typeof WS !== 'undefined') WS.storyText = meetStory;
-        if (meetVoice && typeof WS !== 'undefined') { try { WS.voiceProfile = JSON.parse(meetVoice).raw || meetVoice; } catch(e) {} }
+        if (meetVoice && typeof WS !== 'undefined') { try { WS.voiceProfile = JSON.parse(meetVoice).raw || meetVoice; WS.voiceCalibrated = true; } catch(e) {} }
         if (typeof openWizardPage === 'function') openWizardPage(true);
+        // Also populate input directly after wizard opens
+        setTimeout(function() {
+          var inp = document.getElementById('brandName');
+          if (inp && meetName && !inp.value) inp.value = meetName;
+          var storyInp = document.getElementById('wizStoryInput') || document.querySelector('[name="storyText"]');
+          if (storyInp && meetStory && !storyInp.value) storyInp.value = meetStory;
+        }, 800);
       }, 600);
     }
   });
 })();
 
 
+function showVoiceProfilePopover(btn) {
+  const vp = (typeof getSamVoiceProfile === 'function') ? getSamVoiceProfile() : localStorage.getItem('sam-voice-profile');
+  if (!vp) return;
+  let raw = vp;
+  try { raw = JSON.parse(vp).raw || vp; } catch(e) {}
+  const lines = raw.split('
+').filter(l => l.match(/^\d+\./)).slice(0, 8);
+  const html = '<div style="position:fixed;inset:0;z-index:3000;background:rgba(9,8,15,0.8);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;padding:20px;" onclick="this.remove()"><div style="background:rgba(13,11,22,0.98);border:1px solid rgba(52,211,153,0.3);border-radius:20px;padding:24px;max-width:480px;width:100%;" onclick="event.stopPropagation()"><div style="font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:#34D399;margin-bottom:12px;">✦ Your Voice DNA</div>' + lines.map((l,i) => '<div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><div style="font-size:10px;font-weight:800;color:#34D399;opacity:0.5;min-width:20px;">0'+(i+1)+'</div><div style="font-size:13px;line-height:1.6;color:rgba(240,236,255,0.8);">'+l.replace(/^\d+\.\s*/,'')+'</div></div>').join('') + '<button onclick="this.closest('div[style*=fixed]').remove()" style="margin-top:16px;width:100%;padding:10px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:10px;color:#34D399;font-family:inherit;font-size:13px;cursor:pointer;">Close</button></div></div>';
+  document.body.insertAdjacentHTML('beforeend', html);
+}
 function closeWizard() {
   document.getElementById('wizardPage').classList.remove('open');
   document.body.style.overflow = '';
