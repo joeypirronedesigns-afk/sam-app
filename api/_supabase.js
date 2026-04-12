@@ -84,11 +84,14 @@ module.exports = { trackUser, trackEvent, trackSignup, getStats };
 // Save voice profile and SAM context for a user
 async function saveUserProfile(uid, { voice_profile, sam_context }) {
   if (!uid || uid === 'anon') return null;
-  return supabaseQuery('sam_users', 'PATCH', {
+  // Try PATCH first to update existing record
+  const patched = await supabaseQuery('sam_users', 'PATCH', {
     voice_profile: voice_profile || null,
     sam_context: sam_context || null,
+    voice_calibrated: !!voice_profile,
     last_seen: new Date().toISOString()
   }, `uid=eq.${uid}`);
+  return patched;
 }
 
 // Get voice profile and SAM context for a user
