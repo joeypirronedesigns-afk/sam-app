@@ -221,7 +221,7 @@ async function handleSend() {
   const isFirst=(STATE.phase==='talking'||STATE.phase==='greeting');
   if(isFirst) STATE.phase='responded';
   const systemPrompt=isFirst
-    ? 'You are SAM \u2014 a strategic creative director who helps real creators find the content gold in their story. Someone just told you something real. Respond in 3-4 sentences max: name the most powerful thing in what they shared, tell them why it will resonate with an audience, and end with: "Hit the button below and I will build your full content strategy around this \u2014 in your voice, not AI."'
+    ? 'You are SAM \u2014 a sharp creative director. A new user just shared something. Your ONLY job: give ONE gut-punch sentence that names the single most powerful or interesting thing about what they shared. No warmup. No questions. No bullet points. Just the observation \u2014 specific, direct, emotional. Then end with exactly: "Hit the button below and I will build your full content strategy around this story \u2014 in your voice, not AI." Two sentences total.'
     : 'You are SAM \u2014 a warm sharp creative director. Respond naturally in 2-3 sentences. Be specific. If they seem ready, encourage the button below.';
   const reply=await callSAM([{role:'user',content:text}],systemPrompt);
   removeThinking();
