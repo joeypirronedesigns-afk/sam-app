@@ -9456,6 +9456,13 @@ function openMeetSAMOverlay() { window.location.href = '/meet'; return; // legac
       const storyBtn = document.getElementById('navStoryEngineBtn');
       if (storyBtn && hasWizard) storyBtn.style.display = 'inline-flex';
     }, 500);
+    // Handle launch=wizard from meet.html handoff
+    const _params = new URLSearchParams(window.location.search);
+    if (_params.get('launch') === 'wizard') {
+      setTimeout(function() {
+        if (typeof openWizardPage === 'function') openWizardPage(true);
+      }, 600);
+    }
   });
 })();
 
