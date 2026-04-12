@@ -5467,7 +5467,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.99</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.00</div>
 
 
   <!-- ── UNIFIED HERO v7.93 ── -->
@@ -14069,7 +14069,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.99</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.00</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -15894,7 +15894,7 @@ async function meetSamSendStory() {
         const h = msLoadHistory();
         const samReplies = h.filter(function(m){ return m.role === 'sam'; }).length;
         const voiceDone = localStorage.getItem('sam-voice-calibrated') === 'true' || (typeof WS !== 'undefined' && WS.voiceCalibrated);
-        if (samReplies === 2 || (samReplies > 2 && !voiceDone)) {
+        if (samReplies >= 3 && !voiceDone) {
           setTimeout(function() {
             const goWrap = document.getElementById('msGoBtnWrap');
             if (goWrap) { goWrap.style.display = 'block'; setTimeout(function(){ goWrap.classList.add('revealed'); }, 80); }
