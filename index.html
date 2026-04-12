@@ -11395,6 +11395,7 @@ Rules:
     const thinkingTextEl = document.getElementById('msThinkingText');
     const thinkInterval = setInterval(() => {
       tIdx = (tIdx + 1) % MS_THINKING_LINES.length;
+      if (!thinkingTextEl) return;
       thinkingTextEl.style.opacity = '0';
       setTimeout(() => {
         thinkingTextEl.textContent = MS_THINKING_LINES[tIdx];
