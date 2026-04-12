@@ -14488,15 +14488,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-<<<<<<< HEAD
-<<<<<<< HEAD
   <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.05</div>
-=======
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.01</div>
->>>>>>> 7297121 (v8.01 go button injected at bottom of thread, SAM prompt tightened to always nudge button)
-=======
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.02</div>
->>>>>>> df5d42f (v8.02 fix syntax error apostrophe in go button innerHTML)
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -16319,7 +16311,7 @@ async function meetSamSendStory() {
         const h = msLoadHistory();
         const samReplies = h.filter(function(m){ return m.role === 'sam'; }).length;
         const voiceDone = localStorage.getItem('sam-voice-calibrated') === 'true' || (typeof WS !== 'undefined' && WS.voiceCalibrated);
-        if (samReplies >= 3 && !voiceDone) {
+        if (samReplies >= 2 && !voiceDone) {
           setTimeout(function() {
             // Inject go button into thread so it appears at the bottom
             const thread = document.getElementById('msThread');
