@@ -285,7 +285,7 @@ function goToWizard() {
   if(STATE.name) localStorage.setItem('sam_meet_name',STATE.name);
   if(STATE.storyRaw) localStorage.setItem('sam_meet_story',STATE.storyRaw.slice(0,2000));
   if(STATE.voiceProfile){ localStorage.setItem('sam-voice-profile',JSON.stringify({raw:STATE.voiceProfile})); localStorage.setItem('sam-voice-calibrated','true'); }
-  window.location.href='/?launch=wizard';
+  window.location.href='/app?launch=wizard';
 }
 
 function showReturningUser(profile) {
