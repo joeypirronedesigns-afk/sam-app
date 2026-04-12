@@ -4531,7 +4531,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.27</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.28</div>
 
 
   <!-- ── UNIFIED HERO v7.95 ── -->
@@ -5823,29 +5823,40 @@ let ideasPickerTarget = null;
 
 function openIdeasPicker(targetId) {
   ideasPickerTarget = targetId;
-  const ideas = typeof IB !== 'undefined' ? IB.load() : [];
-  const list = document.getElementById('ideasPickerList');
+  var ideas = typeof IB !== 'undefined' ? IB.load() : [];
+  var list = document.getElementById('ideasPickerList');
   if (list) {
     if (ideas.length) {
-      list.innerHTML = ideas.slice(0,20).map(function(idea) {
-        const preview = (idea.text || '').slice(0, 120).replace(/</g, '&lt;');
-        const safe = encodeURIComponent((idea.text || '').slice(0, 500));
-        return '<div onclick="reachInsertIdea(decodeURIComponent(\'' + safe + '\'), \'' + targetId + '\')" style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer;font-size:13px;line-height:1.6;color:rgba(240,236,255,0.8);" onmouseover="this.style.background=\'rgba(167,139,250,0.08)\'" onmouseout="this.style.background=\'\'"><span style="font-size:10px;font-weight:700;color:#A78BFA;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:3px;">' + (idea.type || 'idea') + '</span>' + preview + '</div>';
-      }).join('');
+      list.innerHTML = '';
+      ideas.slice(0,20).forEach(function(idea, i) {
+        var div = document.createElement('div');
+        div.style.cssText = 'padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer;font-size:13px;line-height:1.6;color:rgba(240,236,255,0.8);';
+        div.innerHTML = '<span style="font-size:10px;font-weight:700;color:#A78BFA;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:3px;">' + (idea.type || 'idea') + '</span>' + (idea.text || '').slice(0,120).replace(/</g,'&lt;');
+        div.addEventListener('mouseover', function(){ this.style.background='rgba(167,139,250,0.08)'; });
+        div.addEventListener('mouseout', function(){ this.style.background=''; });
+        div.addEventListener('click', (function(text, tid) {
+          return function() { reachInsertIdea(text, tid); };
+        })(idea.text || '', targetId));
+        list.appendChild(div);
+      });
     } else {
       list.innerHTML = '<div style="padding:20px;text-align:center;color:rgba(240,236,255,0.3);font-size:13px;">No saved ideas yet</div>';
     }
   }
-  const overlay = document.getElementById('ideasPickerOverlay');
-  const panel = document.getElementById('ideasPickerPanel');
+  var overlay = document.getElementById('ideasPickerOverlay');
+  var panel = document.getElementById('ideasPickerPanel');
   if (overlay) overlay.style.display = 'block';
   if (panel) panel.style.display = 'block';
 }
 function reachInsertIdea(text, targetId) {
   var el = document.getElementById(targetId);
   if (el) {
-    el.textContent = text;
-    if (el.hasAttribute('contenteditable')) el.setAttribute('data-text', text);
+    if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') {
+      el.value = text;
+    } else {
+      el.textContent = text;
+      el.setAttribute('data-text', text);
+    }
   }
   closeIdeasPicker();
 }
@@ -12132,7 +12143,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.27</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.28</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
