@@ -4530,7 +4530,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.15</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.16</div>
 
 
   <!-- ── UNIFIED HERO v7.95 ── -->
@@ -5736,6 +5736,25 @@ function openTool(tool) {
     }
   }
 }
+function openWizardPage(skipCheck) {
+  document.getElementById('wizardPage').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  const _nwb = document.getElementById('navWizardBtn'); if(_nwb) _nwb.style.display = 'flex';
+  const step = localStorage.getItem('sam_session_step') || '0';
+  const saved = localStorage.getItem('sam_session_v2');
+  if (saved && step !== '0' && step !== '12' && typeof doRestoreSession === 'function') {
+    doRestoreSession();
+  } else {
+    if (typeof startWizard === 'function') startWizard('new');
+    else if (typeof showWizardStep === 'function') showWizardStep('0');
+  }
+  if (window._trialExpired) { setTimeout(() => showTrialExpiredCard(), 800); }
+}
+function openProPage() {
+  const el = document.getElementById('pricingPage');
+  if (el) { el.classList.add('open'); document.body.style.overflow = 'hidden'; }
+}
+function openMeetSAMOverlay() { window.location.href = '/meet'; }
 function openWorkshop() {
   currentTool = null;
   const _hwb = document.getElementById('navWizardBtn'); if(_hwb) _hwb.style.display = 'none';
