@@ -7,25 +7,17 @@
       "permanent": true
     }
   ],
+  "rewrites": [
+    { "source": "/meet", "destination": "/meet.html" },
+    { "source": "/app", "destination": "/index.html" },
+    { "source": "/", "destination": "/meet.html" }
+  ],
   "functions": {
-    "api/pdf.js": {
-      "memory": 3009,
-      "maxDuration": 60
-    },
-    "api/sam.js": {
-      "maxDuration": 60
-    },
-    "api/waitlist.js": {
-      "maxDuration": 10
-    },
-    "api/stripe-checkout.js": {
-      "maxDuration": 10
-    },
-    "api/stripe-webhook.js": {
-      "maxDuration": 10
-    },
-    "api/auth.js": {
-      "maxDuration": 10
-    }
+    "api/pdf.js": { "memory": 3009, "maxDuration": 60 },
+    "api/sam.js": { "maxDuration": 60 },
+    "api/waitlist.js": { "maxDuration": 10 },
+    "api/stripe-checkout.js": { "maxDuration": 10 },
+    "api/stripe-webhook.js": { "maxDuration": 10 },
+    "api/auth.js": { "maxDuration": 10 }
   }
 }
