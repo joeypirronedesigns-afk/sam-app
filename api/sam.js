@@ -617,7 +617,7 @@ Make every caption feel personal, story-driven, and native to that platform. Wri
         return await streamCall(reachSystem, reachContent, 1800, 'claude-sonnet-4-6');
       }
 
-      const textSystem = \`\${base} Analyse this content idea. Return ONLY: {"type":"text_only","diagnosis":"what this idea is really about and why it has potential — 2 sentences","hook_ideas":["hook 1","hook 2","hook 3"],"content_angle":"the strongest angle to take","best_platform":"single best platform","next_action":"the one most important thing to do with this idea right now"}`;
+      const textSystem = `${base} Analyse this content idea. Return ONLY: {"type":"text_only","diagnosis":"what this idea is really about and why it has potential — 2 sentences","hook_ideas":["hook 1","hook 2","hook 3"],"content_angle":"the strongest angle to take","best_platform":"single best platform","next_action":"the one most important thing to do with this idea right now"}`;
       return await streamCall(textSystem, moment, 700, 'claude-haiku-4-5-20251001');
     }
 
