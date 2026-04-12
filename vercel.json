@@ -1,31 +1,6 @@
 {
-  "redirects": [
-    {
-      "source": "/(.*)",
-      "has": [{ "type": "host", "value": "www.samforcreators.com" }],
-      "destination": "https://samforcreators.com/$1",
-      "permanent": true
-    }
-  ],
-  "functions": {
-    "api/pdf.js": {
-      "memory": 3009,
-      "maxDuration": 60
-    },
-    "api/sam.js": {
-      "maxDuration": 60
-    },
-    "api/waitlist.js": {
-      "maxDuration": 10
-    },
-    "api/stripe-checkout.js": {
-      "maxDuration": 10
-    },
-    "api/stripe-webhook.js": {
-      "maxDuration": 10
-    },
-    "api/auth.js": {
-      "maxDuration": 10
-    }
-  }
+  "rewrites": [
+    { "source": "/meet", "destination": "/meet.html" },
+    { "source": "/", "destination": "/meet.html" }
+  ]
 }
