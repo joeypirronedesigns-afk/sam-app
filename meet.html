@@ -266,7 +266,7 @@ function showVoiceLocked(profile,card) {
   const lines=profile.split('\n').filter(l=>l.match(/^\d+\./));
   const traitsHtml=lines.map((l,i)=>'<div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);"><div style="font-size:10px;font-weight:800;color:#A78BFA;opacity:0.5;padding-top:2px;min-width:20px;">0'+(i+1)+'</div><div style="font-size:13px;line-height:1.6;color:rgba(240,236,255,0.85);">'+escHtml(l.replace(/^\d+\.\s*/,''))+'</div></div>').join('');
   if(card) card.innerHTML='<div style="background:linear-gradient(135deg,rgba(167,139,250,0.08),rgba(56,189,248,0.04));border:1px solid rgba(167,139,250,0.2);border-radius:12px;padding:16px;"><div style="font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;background:linear-gradient(90deg,#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px;">\u2746 Voice DNA Extracted</div>'+traitsHtml+'<div style="font-size:13px;color:var(--text3);padding-top:10px;border-top:1px solid rgba(255,255,255,0.06);margin-top:4px;">I\u2019ve got you \u2014 everything I build is going to sound like YOU wrote it, not a robot.</div></div>';
-  setTimeout(()=>showGoButton('\u2746 Let\u2019s build your story \u2014 in your voice \u2192'),1000);
+  setTimeout(()=>showHandoff(),1000);
   scrollBottom();
 }
 
