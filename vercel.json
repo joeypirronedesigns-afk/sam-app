@@ -2,9 +2,32 @@
   "redirects": [
     {
       "source": "/(.*)",
-      "has": [{ "type": "host", "value": "www.samforcreators.com" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.samforcreators.com"
+        }
+      ],
       "destination": "https://samforcreators.com/$1",
       "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/meet",
+      "destination": "/meet.html"
+    },
+    {
+      "source": "/app",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/app/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/",
+      "destination": "/meet.html"
     }
   ],
   "functions": {

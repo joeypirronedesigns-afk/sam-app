@@ -80,3 +80,25 @@ async function getStats() {
 }
 
 module.exports = { trackUser, trackEvent, trackSignup, getStats };
+
+// Save voice profile and SAM context for a user
+async function saveUserProfile(uid, { voice_profile, sam_context }) {
+  if (!uid || uid === 'anon') return null;
+  // PATCH updates existing row by uid
+  return supabaseQuery('sam_users', 'PATCH', {
+    voice_profile: voice_profile || null,
+    sam_context: sam_context || null,
+    voice_calibrated: voice_profile ? true : false,
+    last_seen: new Date().toISOString()
+  }, `uid=eq.${encodeURIComponent(uid)}`);
+}
+
+// Get voice profile and SAM context for a user
+async function getUserProfile(uid) {
+  if (!uid || uid === 'anon') return null;
+  const result = await supabaseQuery('sam_users', 'GET', null, `uid=eq.${uid}&select=voice_profile,sam_context,name,niche,platforms,tier`);
+  if (!result || !result.length) return null;
+  return result[0];
+}
+
+module.exports = { trackUser, trackEvent, trackSignup, getStats, saveUserProfile, getUserProfile };
