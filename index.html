@@ -14591,66 +14591,72 @@ if (localStorage.getItem('sam_dev') === 'true') {
 
         <!-- Single CTA — floats in after opening line -->
         <div class="ms-main-cta-wrap" id="msMainCTA" style="display:none;opacity:0;transform:translateY(20px);transition:opacity 0.8s ease,transform 0.8s cubic-bezier(0.34,1.2,0.64,1);">
-          <button class="ms-find-story-btn" onclick="meetSamChooseTalk()">
+          <button class="ms-find-story-btn" onclick="meetSamStartTalk()">
             ✦ Let's tell it together →
           </button>
           <div class="ms-find-story-sub">free · no card · 48 hours full access</div>
         </div>
 
-        <!-- iMESSAGE THREAD — persistent conversation -->
-        <div id="msThread" style="display:none;flex-direction:column;gap:16px;overflow-y:auto;flex:1;padding:8px 0 16px 0;scroll-behavior:smooth;min-height:0;"></div>
-
-        <!-- THINKING BUBBLE — floats below thread while SAM processes -->
-        <div id="msThinkingBubble" style="display:none;align-items:flex-end;gap:10px;padding:0 4px;flex-shrink:0;">
-          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#F472B6,#A78BFA);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#09080F;flex-shrink:0;">S</div>
-          <div style="background:linear-gradient(135deg,rgba(167,139,250,0.18),rgba(244,114,182,0.12));border:1px solid rgba(167,139,250,0.25);border-radius:18px 18px 18px 4px;padding:12px 16px;display:flex;gap:6px;align-items:center;">
-            <div style="width:7px;height:7px;border-radius:50%;background:#A78BFA;animation:ms-dot-bounce 1.2s ease infinite;"></div>
-            <div style="width:7px;height:7px;border-radius:50%;background:#A78BFA;animation:ms-dot-bounce 1.2s ease infinite 0.2s;"></div>
-            <div style="width:7px;height:7px;border-radius:50%;background:#A78BFA;animation:ms-dot-bounce 1.2s ease infinite 0.4s;"></div>
+        <!-- TALK PATH — textarea input, shown after CTA click -->
+        <div class="ms-talk-path" id="msTalkPath" style="display:none;">
+          <div class="ms-story-input-wrap">
+            <textarea id="meetSamStoryInput" class="meet-sam-textarea" placeholder="Start anywhere — a moment, a feeling, something you’ve been meaning to say..." rows="4" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();meetSamSendStoryFirstVisit();}"></textarea>
+            <button class="ms-send-btn" onclick="meetSamSendStoryFirstVisit()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
           </div>
         </div>
 
-        <!-- VOICE BAR — shows after first SAM response -->
+        <!-- THINKING — shown while SAM processes -->
+        <div class="ms-thinking" id="msThinking" style="display:none;">
+          <div class="meet-sam-bubble-row">
+            <div class="ms-avatar-wrap speaking">
+              <div class="ms-avatar-ring"></div>
+              <div class="meet-sam-avatar">S</div>
+            </div>
+            <div class="ms-thinking-bubble">
+              <div class="ms-thinking-dots"><span></span><span></span><span></span></div>
+              <div class="ms-thinking-text" id="msThinkingText">Reading your story...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SAM RESPONSE — shown after API returns -->
+        <div class="ms-response-wrap" id="msResponseWrap" style="display:none;">
+          <div class="meet-sam-bubble-row">
+            <div class="ms-avatar-wrap" id="msResponseAvatarWrap">
+              <div class="ms-avatar-ring"></div>
+              <div class="meet-sam-avatar">S</div>
+            </div>
+            <div class="meet-sam-bubble ms-response-bubble" id="msResponseBubble"></div>
+          </div>
+        </div>
+
+        <!-- VOICE BAR — shows while SAM speaks -->
         <div class="ms-voice-bar" id="msVoiceBar" style="display:none;flex-shrink:0;">
           <span></span><span></span><span></span><span></span><span></span>
           <span></span><span></span><span></span><span></span><span></span>
           <span></span><span></span><span></span><span></span><span></span>
         </div>
 
-        <!-- HANDOFF BUTTON -->
-        <div class="ms-go-btn-wrap" id="msGoBtnWrap" style="display:none;flex-shrink:0;">
+        <!-- HANDOFF BUTTON — shown after SAM response typewriter completes -->
+        <div class="ms-go-btn-wrap" id="msGoBtnWrap" style="display:none;">
           <button class="meet-sam-go-btn" id="msGoBtn" onclick="meetSamHandoff()">
-            ✶ Let’s build your story →
+            ❆ Let’s build your story →
           </button>
         </div>
 
-        <!-- CHAT NAV PILLS -->
+        <!-- CHAT NAV PILLS — returning users only -->
         <div id="msChatNav" style="display:none;justify-content:flex-start;gap:8px;padding:10px 0 0 0;flex-shrink:0;flex-wrap:wrap;align-items:center;">
           <button onclick="closeWizard();goHome();" style="display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:999px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:rgba(240,236,255,0.5);font-family:inherit;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(255,255,255,0.25)';this.style.color='rgba(240,236,255,0.8)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,236,255,0.5)'">← Home</button>
           <button onclick="msOpenStoryEngine();" style="display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:999px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid rgba(167,139,250,0.35);background:rgba(167,139,250,0.08);color:#A78BFA;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background='rgba(167,139,250,0.18)'" onmouseout="this.style.background='rgba(167,139,250,0.08)'">📖 Story Engine</button>
           <button onclick="msOpenVoiceCalib();" id="msChatVoiceBtn" style="display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:999px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid rgba(52,211,153,0.35);background:rgba(52,211,153,0.08);color:#34D399;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background='rgba(52,211,153,0.18)'" onmouseout="this.style.background='rgba(52,211,153,0.08)'">🎙 Voice DNA</button>
         </div>
 
-        <!-- PERSISTENT INPUT ROW -->
-        <div id="msInputRow" style="display:none;align-items:flex-end;gap:8px;padding:12px 0 0 0;border-top:1px solid rgba(255,255,255,0.07);flex-shrink:0;padding-bottom:env(safe-area-inset-bottom,0px);">
-          <label for="msPhotoUpload" style="cursor:pointer;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(244,114,182,0.5)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)'">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(240,236,255,0.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          </label>
-          <input type="file" id="msPhotoUpload" accept="image/*" style="display:none;" onchange="msHandlePhotoUpload(this)">
-          <div style="flex:1;position:relative;">
-            <textarea id="meetSamStoryInput" class="meet-sam-textarea" placeholder="Ask SAM anything..." rows="1" style="resize:none;min-height:44px;max-height:120px;overflow-y:auto;padding-right:52px;padding-top:12px;" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();(window._msFirstVisitActive ? meetSamSendStoryFirstVisit : meetSamSendStory)();}"></textarea>
-            <button id="msMicBtn" onclick="toggleMeetSamMic()" style="position:absolute;right:42px;bottom:10px;background:none;border:none;padding:4px;cursor:pointer;opacity:0.4;transition:opacity 0.2s;font-size:14px;" onmouseover="this.style.opacity='1'" onmouseout="if(!window._msMicActive)this.style.opacity='0.4'">&#127897;</button>
-            <button class="ms-send-btn" onclick="(window._msFirstVisitActive ? meetSamSendStoryFirstVisit : meetSamSendStory)()" id="msSendBtn" style="position:absolute;right:8px;bottom:8px;width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- legacy compat stubs — keep IDs alive for old JS references -->
-        <div id="msResponseWrap" style="display:none;"></div>
-        <div id="msResponseBubble" style="display:none;"></div>
-        <div id="msThinking" style="display:none;"></div>
-        <div id="msTalkPath" style="display:none;"></div>
+        <!-- stubs — keep IDs alive for returning user flow -->
+        <div id="msThread" style="display:none;"></div>
+        <div id="msInputRow" style="display:none;"></div>
+        <div id="msThinkingBubble" style="display:none;"></div>
 
         <!-- Skip link -->
 
@@ -16319,6 +16325,22 @@ async function meetSamSendStory() {
 /* ═══════════════════════════════════════════════
    PATCH: msCheckinAskMore — opens thread instead of showing old input
    ═══════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════
+   meetSamStartTalk — bridges CTA button to old flow
+   ═══════════════════════════════════════════════ */
+function meetSamStartTalk() {
+  const mainCTA = document.getElementById('msMainCTA');
+  if (mainCTA) { mainCTA.style.opacity = '0'; mainCTA.style.transform = 'translateY(-8px)'; setTimeout(() => { mainCTA.style.display = 'none'; }, 400); }
+  const talkPath = document.getElementById('msTalkPath');
+  if (talkPath) {
+    setTimeout(() => {
+      talkPath.style.display = 'flex';
+      const ta = document.getElementById('meetSamStoryInput');
+      if (ta) setTimeout(() => ta.focus(), 200);
+    }, 350);
+  }
+}
+
 /* ═══════════════════════════════════════════════
    PATCH: meetSamChooseTalk — opens thread for new users
    ═══════════════════════════════════════════════ */
