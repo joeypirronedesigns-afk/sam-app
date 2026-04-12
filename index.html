@@ -5461,7 +5461,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.10</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.11</div>
 
 
   <!-- ── UNIFIED HERO v7.95 ── -->
@@ -11730,7 +11730,8 @@ Rules: Max 3 sentences total. Never use bullet points. Never say "I can see that
   setTimeout(() => {
     const hasSaved = localStorage.getItem('sam_session_v2');
     const hasEmail = localStorage.getItem('sam_uid');
-    const isReturning = hasSaved || hasEmail;
+    const hasCompletedOnboarding = localStorage.getItem('samFirstRunDone');
+    const isReturning = hasSaved || hasCompletedOnboarding;
     if (!isReturning || window._trialExpired || window._userSignedIn) {
       if (typeof openWizardPage === 'function') openWizardPage(window._trialExpired);
     }
@@ -14521,7 +14522,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.10</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.11</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
