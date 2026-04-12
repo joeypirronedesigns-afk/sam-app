@@ -5461,7 +5461,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.11</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.12</div>
 
 
   <!-- ── UNIFIED HERO v7.95 ── -->
@@ -10212,7 +10212,7 @@ function initWizard() {
     const session = localStorage.getItem('sam_session_v2');
     const firstRunDone = localStorage.getItem('samFirstRunDone');
     const hasHistory = JSON.parse(localStorage.getItem('sam-chat-history')||'[]').length > 1;
-    const isKnownUser = localStorage.getItem('sam_uid');
+    const isKnownUser = localStorage.getItem('samFirstRunDone');
     const step = localStorage.getItem('sam_session_step') || '0';
     const stepNum = parseInt(step);
     if (!session && !firstRunDone && !hasHistory && !isKnownUser) return false;
@@ -11752,7 +11752,7 @@ function openMeetSAMOverlay() {
     if (storyBtn && hasWizard) storyBtn.style.display = 'inline-flex';
 
     // Always open clean thread for returning users (sam_uid = known user)
-    const isReturningUser = localStorage.getItem('sam_uid') || localStorage.getItem('samFirstRunDone') || localStorage.getItem('sam-chat-history');
+    const isReturningUser = localStorage.getItem('samFirstRunDone') || localStorage.getItem('sam-chat-history');
     if (isReturningUser && typeof msOpenThread === 'function') {
       msOpenThread();
     } else if (typeof meetSamInit === 'function') {
@@ -14522,7 +14522,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.11</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.12</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
