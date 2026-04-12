@@ -5461,7 +5461,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.05</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.06</div>
 
 
   <!-- ── UNIFIED HERO v7.95 ── -->
@@ -11193,8 +11193,8 @@ Rules:
     const ctx = {};
 
     // Extract name
-    const nameMatch = story.match(/(?:i'm|i am|my name is|call me|it's me)\s+([A-Z][a-z]+)/i);
-    if (nameMatch) ctx.name = nameMatch[1];
+    const nameMatch = story.match(/(?:i'm|i am|my name is|call me|it's me|i'm)\s+([a-zA-Z]+)/i);
+    if (nameMatch) ctx.name = nameMatch[1].charAt(0).toUpperCase() + nameMatch[1].slice(1).toLowerCase();
 
     // Extract series name — stop at common sentence continuations
     const seriesMatch = story.match(/(?:series|show)\s+(?:called|named)\s+["\'"]?([^,\.\n]+?)(?:\s+and|\s+have|\s+i've|\s+since|\.|\.{3}|$)/i);
@@ -14488,7 +14488,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.05</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.06</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
