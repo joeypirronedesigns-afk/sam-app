@@ -597,7 +597,27 @@ CRITICAL: Return ONLY valid JSON.`;
         return await streamCall(analyticsSystem, userContent, 900, 'claude-haiku-4-5-20251001');
       }
 
-      const textSystem = `${base} Analyse this content idea. Return ONLY: {"type":"text_only","diagnosis":"what this idea is really about and why it has potential — 2 sentences","hook_ideas":["hook 1","hook 2","hook 3"],"content_angle":"the strongest angle to take","best_platform":"single best platform","next_action":"the one most important thing to do with this idea right now"}`;
+      if (forceType === 'reach') {
+        const reachPrompt = req.body.moment || '';
+        const reachContent = imageBase64
+          ? [{ type: 'image', source: { type: 'base64', media_type: imageType, data: imageBase64 } }, { type: 'text', text: reachPrompt }]
+          : reachPrompt;
+        const reachSystem = `You are SAM — a strategic content assistant. Generate platform-ready post content based on the photo and context provided. Write in plain text only. NO JSON, no markdown, no code blocks.
+
+For each platform requested, use this exact format:
+
+PLATFORM: [Platform Name]
+HOOK: [attention-grabbing opening line]
+CAPTION: [full caption text]
+DESCRIPTION: [longer description if needed]
+CTA: [call to action]
+HASHTAGS: [relevant hashtags]
+
+Make every caption feel personal, story-driven, and native to that platform. Write in the creator's voice.`;
+        return await streamCall(reachSystem, reachContent, 1800, 'claude-sonnet-4-6');
+      }
+
+      const textSystem = \`\${base} Analyse this content idea. Return ONLY: {"type":"text_only","diagnosis":"what this idea is really about and why it has potential — 2 sentences","hook_ideas":["hook 1","hook 2","hook 3"],"content_angle":"the strongest angle to take","best_platform":"single best platform","next_action":"the one most important thing to do with this idea right now"}`;
       return await streamCall(textSystem, moment, 700, 'claude-haiku-4-5-20251001');
     }
 
