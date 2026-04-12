@@ -11023,6 +11023,7 @@ Rules:
   }
 
   function meetSamInit() {
+    window._msFirstVisitActive = true;
     // SAM Voice auto-on removed — Pro feature coming soon
     // Restore voice profile from localStorage if available
     try {
@@ -11231,6 +11232,7 @@ Rules:
 
 
   function meetSamHandoffExecute() {
+    window._msFirstVisitActive = false;
     // Extract everything SAM learned from the conversation
     const learned = meetSamExtractContext();
 
@@ -11349,7 +11351,7 @@ Rules:
     startWizard('new');
   }
 
-  function meetSamSendStory() {
+  function meetSamSendStoryFirstVisit() {
     const input = document.getElementById('meetSamStoryInput');
     const story = input.value.trim();
     if (!story || story.length < 5) {
@@ -14635,9 +14637,9 @@ if (localStorage.getItem('sam_dev') === 'true') {
           </label>
           <input type="file" id="msPhotoUpload" accept="image/*" style="display:none;" onchange="msHandlePhotoUpload(this)">
           <div style="flex:1;position:relative;">
-            <textarea id="meetSamStoryInput" class="meet-sam-textarea" placeholder="Ask SAM anything..." rows="1" style="resize:none;min-height:44px;max-height:120px;overflow-y:auto;padding-right:52px;padding-top:12px;" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();meetSamSendStory();}"></textarea>
+            <textarea id="meetSamStoryInput" class="meet-sam-textarea" placeholder="Ask SAM anything..." rows="1" style="resize:none;min-height:44px;max-height:120px;overflow-y:auto;padding-right:52px;padding-top:12px;" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();(window._msFirstVisitActive ? meetSamSendStoryFirstVisit : meetSamSendStory)();}"></textarea>
             <button id="msMicBtn" onclick="toggleMeetSamMic()" style="position:absolute;right:42px;bottom:10px;background:none;border:none;padding:4px;cursor:pointer;opacity:0.4;transition:opacity 0.2s;font-size:14px;" onmouseover="this.style.opacity='1'" onmouseout="if(!window._msMicActive)this.style.opacity='0.4'">&#127897;</button>
-            <button class="ms-send-btn" onclick="meetSamSendStory()" id="msSendBtn" style="position:absolute;right:8px;bottom:8px;width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+            <button class="ms-send-btn" onclick="(window._msFirstVisitActive ? meetSamSendStoryFirstVisit : meetSamSendStory)()" id="msSendBtn" style="position:absolute;right:8px;bottom:8px;width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
             </button>
           </div>
