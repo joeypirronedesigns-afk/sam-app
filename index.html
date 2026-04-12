@@ -5408,43 +5408,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
         <!-- Step 5: Schedule -->
         <div style="margin-bottom:20px;">
           <div class="field-label"><span class="field-label-accent" style="background:#F472B6;"></span>Schedule your post <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3);font-size:12px;">(optional)</span></div>
-          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;" id="reachScheduler">
-            <label style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;">
-              <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;">Mon</span>
-              <input type="radio" name="reachDay" value="Monday" style="accent-color:#F472B6;">
-              <input type="date" id="reachDateMon" style="width:100%;font-size:9px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text2);padding:3px;text-align:center;">
-            </label>
-            <label style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;">
-              <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;">Tue</span>
-              <input type="radio" name="reachDay" value="Tuesday" style="accent-color:#F472B6;">
-              <input type="date" id="reachDateTue" style="width:100%;font-size:9px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text2);padding:3px;text-align:center;">
-            </label>
-            <label style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;">
-              <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;">Wed</span>
-              <input type="radio" name="reachDay" value="Wednesday" style="accent-color:#F472B6;">
-              <input type="date" id="reachDateWed" style="width:100%;font-size:9px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text2);padding:3px;text-align:center;">
-            </label>
-            <label style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;">
-              <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;">Thu</span>
-              <input type="radio" name="reachDay" value="Thursday" style="accent-color:#F472B6;">
-              <input type="date" id="reachDateThu" style="width:100%;font-size:9px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text2);padding:3px;text-align:center;">
-            </label>
-            <label style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;">
-              <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;">Fri</span>
-              <input type="radio" name="reachDay" value="Friday" style="accent-color:#F472B6;">
-              <input type="date" id="reachDateFri" style="width:100%;font-size:9px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text2);padding:3px;text-align:center;">
-            </label>
-            <label style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;">
-              <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;">Sat</span>
-              <input type="radio" name="reachDay" value="Saturday" style="accent-color:#F472B6;">
-              <input type="date" id="reachDateSat" style="width:100%;font-size:9px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text2);padding:3px;text-align:center;">
-            </label>
-            <label style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;">
-              <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;">Sun</span>
-              <input type="radio" name="reachDay" value="Sunday" style="accent-color:#F472B6;">
-              <input type="date" id="reachDateSun" style="width:100%;font-size:9px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text2);padding:3px;text-align:center;">
-            </label>
-          </div>
+          
         </div>
 
         <div class="loader" id="reachLoader" style="display:none;"><div class="loader-dots"><span style="background:#F472B6"></span><span style="background:#F472B6"></span><span style="background:#F472B6"></span></div><div class="loader-text">SAM is writing your post...</div></div>
@@ -6054,6 +6018,9 @@ For each platform write clearly with the platform name as a header. Make every c
         rendered += '<button id="copyAll-' + pid + '" onclick="reachCopyAll(\'' + pid + '\')" style="flex:1;padding:10px;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);border-radius:8px;color:#A78BFA;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background=\'rgba(167,139,250,0.2)\'" onmouseout="this.style.background=\'rgba(167,139,250,0.1)\'">📋 Copy Post</button>';
         rendered += '<button onclick="reachOpenPlatform(\'' + platformName + '\')" style="flex:1;padding:10px;background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);border-radius:8px;color:#F472B6;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background=\'rgba(244,114,182,0.15)\'" onmouseout="this.style.background=\'rgba(244,114,182,0.08)\'">↗ Open ' + platformName + '</button>';
         rendered += '</div>';
+        rendered += '<div style="margin-top:6px;">';
+        rendered += '<button onclick="reachSaveToIdeas(\'' + pid + '\', \'' + platformName + '\')" style="width:100%;padding:8px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:8px;color:rgba(167,139,250,0.6);font-size:11px;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.color=\'#A78BFA\';this.style.borderColor=\'rgba(167,139,250,0.4)\'" onmouseout="this.style.color=\'rgba(167,139,250,0.6)\';this.style.borderColor=\'rgba(167,139,250,0.15)\'">💜 Save to My Ideas</button>';
+        rendered += '</div>';
       });
     } else {
       rendered = '<div style="color:#ccc;font-size:14px;line-height:1.8;white-space:pre-wrap;">' + fullText + '</div>';
@@ -6130,6 +6097,41 @@ function reachCopyAll(platformId) {
 }
 
 var PLATFORM_LINKS = {"Instagram": "https://www.instagram.com/create/story", "Facebook": "https://www.facebook.com/", "TikTok": "https://www.tiktok.com/upload", "LinkedIn": "https://www.linkedin.com/feed/", "Pinterest": "https://www.pinterest.com/pin-builder/", "X": "https://x.com/compose/tweet", "Twitter": "https://x.com/compose/tweet", "YouTube": "https://www.youtube.com/upload", "Threads": "https://www.threads.net/"};
+
+function reachSaveToIdeas(platformId, platformName) {
+  var container = document.getElementById(platformId);
+  if (!container) return;
+  var parts = [];
+  container.querySelectorAll('[data-label]').forEach(function(el) {
+    var label = el.getAttribute('data-label') || '';
+    var text = (el.textContent || el.getAttribute('data-text') || '').trim();
+    if (text) parts.push(label ? label + ': ' + text : text);
+  });
+  if (!parts.length) {
+    container.querySelectorAll('[data-text]').forEach(function(el) {
+      var t = el.getAttribute('data-text') || '';
+      if (t) parts.push(t);
+    });
+  }
+  var full = parts.join('\n');
+  if (!full) return;
+  var existing = typeof IB !== 'undefined' ? IB.load() : [];
+  var key = 'reach-' + platformName;
+  var dupe = existing.some(function(i) {
+    return i.subtype === key && (i.text || '').trim() === full.trim();
+  });
+  if (dupe) { showIbToast('Already saved'); return; }
+  if (typeof IB !== 'undefined') {
+    IB.add({ text: full, type: 'reach', subtype: key, platform: platformName });
+    var btn = event && event.target;
+    if (btn) {
+      var orig = btn.innerHTML;
+      btn.innerHTML = '✅ Saved to My Ideas!';
+      btn.style.color = '#A78BFA';
+      setTimeout(function() { btn.innerHTML = orig; btn.style.color = ''; }, 2500);
+    }
+  }
+}
 
 function reachOpenPlatform(platformName) {
   var url = PLATFORM_LINKS[platformName];
@@ -8681,7 +8683,7 @@ function psamRunPulse(ideaText) {
 }
 
 // ══ SAM IDEAS BANK ══
-const IB={currentFilter:'all',currentStatusFilter:null,load(){try{return JSON.parse(localStorage.getItem('sam-ideas')||'[]')}catch{return[]}},save(ideas){try{localStorage.setItem('sam-ideas',JSON.stringify(ideas))}catch{}this.updateNavBadge()},add(idea){const ideas=this.load();const newText=(idea.text||'').trim();if(ideas.some(i=>(i.text||'').trim()===newText)){showIbToast('Already saved');return null;}const entry={id:Date.now()+'_'+Math.random().toString(36).slice(2,7),text:newText,type:idea.type||'pulse',subtype:idea.subtype||'',platform:idea.platform||'',status:'saved',date:new Date().toISOString()};ideas.unshift(entry);this.save(ideas);this.updateNavBadge();showIbToast('Saved to Ideas');return entry.id},updateStatus(id,status){const ideas=this.load();const idx=ideas.findIndex(i=>i.id===id);if(idx!==-1){ideas[idx].status=status;this.save(ideas)}},delete(id){this.save(this.load().filter(i=>i.id!==id));renderIdeasList();this.updateNavBadge()},updateNavBadge(){const count=this.load().filter(i=>i.status!=='posted').length;const b=document.getElementById('ideasNavBadge');if(b){b.textContent=count>9?'9+':count;b.classList.toggle('show',count>0)}const l=document.getElementById('ideasCountLabel');if(l){const t=this.load().length;l.textContent=t===0?'0 saved':t+' idea'+(t!==1?'s':'')}},getFiltered(){let ideas=this.load();const q=(document.getElementById('ideasSearchInput')?.value||'').trim().toLowerCase();if(q)ideas=ideas.filter(i=>(i.text||'').toLowerCase().includes(q)||(i.platform||'').toLowerCase().includes(q)||(i.subtype||'').toLowerCase().includes(q));if(this.currentFilter!=='all')ideas=ideas.filter(i=>i.type===this.currentFilter);if(this.currentStatusFilter)ideas=ideas.filter(i=>i.status===this.currentStatusFilter);return ideas}};
+const IB={currentFilter:'all',currentStatusFilter:null,load(){try{return JSON.parse(localStorage.getItem('sam-ideas')||'[]')}catch{return[]}},save(ideas){try{localStorage.setItem('sam-ideas',JSON.stringify(ideas))}catch{}this.updateNavBadge()},add(idea){const ideas=this.load();const newText=(idea.text||'').trim();const newType=idea.type||'pulse';const newSub=idea.subtype||'';if(ideas.some(i=>(i.text||'').trim()===newText)){showIbToast('Already saved');return null;}const entry={id:Date.now()+'_'+Math.random().toString(36).slice(2,7),text:newText,type:idea.type||'pulse',subtype:idea.subtype||'',platform:idea.platform||'',status:'saved',date:new Date().toISOString()};ideas.unshift(entry);this.save(ideas);this.updateNavBadge();showIbToast('Saved to Ideas');return entry.id},updateStatus(id,status){const ideas=this.load();const idx=ideas.findIndex(i=>i.id===id);if(idx!==-1){ideas[idx].status=status;this.save(ideas)}},delete(id){this.save(this.load().filter(i=>i.id!==id));renderIdeasList();this.updateNavBadge()},updateNavBadge(){const count=this.load().filter(i=>i.status!=='posted').length;const b=document.getElementById('ideasNavBadge');if(b){b.textContent=count>9?'9+':count;b.classList.toggle('show',count>0)}const l=document.getElementById('ideasCountLabel');if(l){const t=this.load().length;l.textContent=t===0?'0 saved':t+' idea'+(t!==1?'s':'')}},getFiltered(){let ideas=this.load();const q=(document.getElementById('ideasSearchInput')?.value||'').trim().toLowerCase();if(q)ideas=ideas.filter(i=>(i.text||'').toLowerCase().includes(q)||(i.platform||'').toLowerCase().includes(q)||(i.subtype||'').toLowerCase().includes(q));if(this.currentFilter!=='all')ideas=ideas.filter(i=>i.type===this.currentFilter);if(this.currentStatusFilter)ideas=ideas.filter(i=>i.status===this.currentStatusFilter);return ideas}};
 function openIdeasPanel(){
   // Set export button label based on device
   const btn = document.getElementById('ideasExportBtn');
