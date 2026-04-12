@@ -16306,6 +16306,18 @@ async function meetSamSendStory() {
     if (samBubble) {
       samTypeIntoBubble(samBubble, cleanReply, function() {
         if (samAvatarWrap) samAvatarWrap.classList.remove('speaking');
+        // Show go button after SAM's first reply to user's story
+        const h = msLoadHistory();
+        const samReplies = h.filter(function(m){ return m.role === 'sam'; }).length;
+        const voiceDone = localStorage.getItem('sam-voice-calibrated') === 'true' || (typeof WS !== 'undefined' && WS.voiceCalibrated);
+        if (samReplies === 2 || (samReplies > 2 && !voiceDone)) {
+          setTimeout(function() {
+            const goWrap = document.getElementById('msGoBtnWrap');
+            if (goWrap) { goWrap.style.display = 'block'; setTimeout(function(){ goWrap.classList.add('revealed'); }, 80); }
+            const goWrapEl = document.getElementById('msGoBtnWrap');
+            if (goWrapEl) goWrapEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 800);
+        }
       });
     }
   }
