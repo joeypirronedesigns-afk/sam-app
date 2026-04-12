@@ -9123,7 +9123,7 @@ function getSAMContext() {
   return {
     name: state.name || '',
     niche: s.niche || '',
-    platforms: (wizState.platforms || []).join(', ') || s.platforms || '',
+    platforms: Array.isArray(wizState.platforms) ? wizState.platforms.join(', ') : (wizState.platforms || s.platforms || ''),
     voiceProfile: voiceProfile.slice(0, 500),
     ideasSummary,
     ideaCount: ideas.length,
