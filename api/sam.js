@@ -66,15 +66,15 @@ module.exports = async function handler(req, res) {
       voice_calibrated: !!req.body.voiceProfile
     }).catch(() => {});
     trackEvent(userId, mode || 'chat', { tier }).catch(() => {});
-    // Save voice profile + context AFTER trackUser creates the row
-    if (req.body.voiceProfile || req.body.samContext) {
-      setTimeout(() => {
-        saveUserProfile(userId, {
-          voice_profile: req.body.voiceProfile || (userProfile && userProfile.voice_profile) || null,
-          sam_context: req.body.samContext || (userProfile && userProfile.sam_context) || null
-        }).catch(() => {});
-      }, 200);
-    }
+  }
+
+  // Save voice profile + context AFTER trackUser (awaited so row exists first)
+  if (userId && userId !== 'anon' && (req.body.voiceProfile || req.body.samContext)) {
+    await trackUser({ uid: userId, tier, voice_calibrated: !!req.body.voiceProfile }).catch(() => {});
+    await saveUserProfile(userId, {
+      voice_profile: req.body.voiceProfile || (userProfile && userProfile.voice_profile) || null,
+      sam_context: req.body.samContext || (userProfile && userProfile.sam_context) || null
+    }).catch(() => {});
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
