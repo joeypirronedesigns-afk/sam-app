@@ -16101,14 +16101,12 @@ function msOpenThread() {
 
 // ── Stream SAM response into a bubble ───────────
 async function msStreamIntoBubble(bubble, apiPayload) {
-  samShowThinking();
   try {
     const res = await fetch('/api/sam', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(apiPayload)
     });
-    samHideThinking();
 
     if (!res.ok) {
       bubble.textContent = 'Something went wrong. Try again.';
