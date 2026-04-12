@@ -73,13 +73,7 @@ module.exports = async function handler(req, res) {
       platforms: req.body.platforms || null,
       voice_calibrated: !!req.body.voiceProfile
     }).catch(() => {});
-    // Save sam_context (story) when provided
-    if (req.body.samContext) {
-      saveUserProfile(userId, {
-        voice_profile: req.body.voiceProfile || (userProfile && userProfile.voice_profile) || null,
-        sam_context: req.body.samContext
-      }).catch(() => {});
-    }
+    // sam_context saved in the saveUserProfile call above
     trackEvent(userId, mode || 'chat', { tier }).catch(() => {});
   }
 
