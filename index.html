@@ -5461,7 +5461,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.07</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.08</div>
 
 
   <!-- ── UNIFIED HERO v7.95 ── -->
@@ -10679,8 +10679,9 @@ function initWizard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           mode: 'chat',
-          userId: 'anon',
+          userId: (localStorage.getItem('sam_uid') || 'anon').replace(/^dev-/, ''),
           messages: [{ role: 'user', content: val }],
+          samContext: (typeof WS !== 'undefined' && WS.storyRaw) ? WS.storyRaw.slice(0, 800) : undefined,
           systemPrompt: `You are SAM — a voice fingerprinting engine. Your only job is to read this writing sample and extract the person's exact voice DNA. You are not summarizing. You are not being nice. You are being a forensic reader.
 
 IMPORTANT CONTEXT: This sample was captured via ${window.msVoiceInputMethod === 'voice' ? 'SPOKEN VOICE — the person was thinking out loud, talking naturally, not writing. Analyze it as speech: fragments, trailing thoughts, and rough edges are not flaws — they are the signal. Do NOT read punctuation patterns that were never there. Focus on their verbal rhythm, how they structure a thought mid-sentence, their spoken energy, filler patterns, and the way they talk when they are not performing.' : 'TYPED TEXT — analyze as written voice.'}.
@@ -10753,6 +10754,21 @@ Rules:
           localStorage.setItem('sam-voice-calibrated', 'true');
           const _rc = parseInt(localStorage.getItem('sam-voice-recal-count')||'0');
           localStorage.setItem('sam-voice-recal-count', (_rc+1).toString());
+          // Push voice profile to Supabase for persistent memory
+          const _uid = (localStorage.getItem('sam_uid') || '').replace(/^dev-/, '');
+          if (_uid && _uid !== 'anon') {
+            fetch('/api/sam', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                mode: 'chat',
+                userId: _uid,
+                messages: [],
+                voiceProfile: _combined,
+                samContext: WS.storyRaw ? WS.storyRaw.slice(0, 800) : undefined
+              })
+            }).catch(() => {});
+          }
         } catch(e) {}
         if (typeof saveWizardState === 'function') saveWizardState();
         if (typeof updateWizardHeader === 'function') updateWizardHeader();
@@ -11434,8 +11450,10 @@ Rules:
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           mode: 'chat',
-          userId: 'dev-joey',
+          userId: (localStorage.getItem('sam_uid') || 'anon').replace(/^dev-/, ''),
           messages: [{ role: 'user', content: story }],
+          voiceProfile: (typeof getSamVoiceProfile === 'function' ? getSamVoiceProfile() : null) || undefined,
+          samContext: (typeof WS !== 'undefined' && WS.storyRaw) ? WS.storyRaw.slice(0, 800) : undefined,
           systemPrompt: `You are SAM — a warm, sharp creative intelligence. Your job right now is to make this person feel heard and gently guide them toward clicking the button below.
 
 Read what they wrote carefully.
@@ -14497,7 +14515,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.07</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.08</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -16301,9 +16319,11 @@ async function meetSamSendStory() {
   }
   const payload = {
     mode: 'chat',
-    userId: 'dev-joey',
+    userId: (localStorage.getItem('sam_uid') || 'anon').replace(/^dev-/, ''),
     messages: conversationMessages,
-    systemPrompt: systemPrompt
+    systemPrompt: systemPrompt,
+    voiceProfile: (typeof getSamVoiceProfile === 'function' ? getSamVoiceProfile() : null) || undefined,
+    samContext: (typeof WS !== 'undefined' && WS.storyRaw) ? WS.storyRaw.slice(0, 800) : undefined
   };
 
   // Stream response then typewrite

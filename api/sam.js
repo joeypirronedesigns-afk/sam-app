@@ -1,5 +1,5 @@
 module.exports.config = { api: { bodyParser: { sizeLimit: "10mb" } } };
-const { trackUser, trackEvent } = require('./_supabase');
+const { trackUser, trackEvent, saveUserProfile, getUserProfile } = require('./_supabase');
 
 // ── TIER LIMITS ────────────────────────────────────────────────────────────
 const TIER_LIMITS = {
@@ -48,6 +48,20 @@ module.exports = async function handler(req, res) {
   const userId = req.body.userId || req.headers['x-forwarded-for'] || 'anon';
   const tier = req.body.tier || 'free';
 
+  // Load user profile from Supabase (for persistent memory)
+  let userProfile = null;
+  if (userId && userId !== 'anon') {
+    userProfile = await getUserProfile(userId).catch(() => null);
+  }
+
+  // Save voice profile + context to Supabase when provided
+  if (userId && userId !== 'anon' && (req.body.voiceProfile || req.body.samContext)) {
+    saveUserProfile(userId, {
+      voice_profile: req.body.voiceProfile || (userProfile && userProfile.voice_profile) || null,
+      sam_context: req.body.samContext || (userProfile && userProfile.sam_context) || null
+    }).catch(() => {});
+  }
+
   // Track user activity in Supabase (non-blocking)
   if (userId && userId !== 'anon') {
     trackUser({
@@ -94,7 +108,19 @@ module.exports = async function handler(req, res) {
       const hasImage = messages.some(m => Array.isArray(m.content) && m.content.some(c => c.type === 'image'));
       const chatModel = hasImage ? 'claude-sonnet-4-6' : 'claude-haiku-4-5-20251001';
       const chatMaxTokens = hasImage ? 600 : 400;
-      const chatSystem = systemPrompt || `You are SAM — Strategic Assistant for Making — a friendly, sharp creative director built into the SAM app at samforcreators.com. You help creators understand and get the most out of SAM's 5 tools.
+      // Inject stored user profile into system prompt if available
+      let profileContext = '';
+      if (userProfile) {
+        const parts = [];
+        if (userProfile.name) parts.push('User name: ' + userProfile.name);
+        if (userProfile.niche) parts.push('Niche: ' + userProfile.niche);
+        if (userProfile.platforms) parts.push('Platforms: ' + userProfile.platforms);
+        if (userProfile.voice_profile) parts.push('Voice DNA: ' + userProfile.voice_profile.slice(0, 600));
+        if (userProfile.sam_context) parts.push('Story context: ' + userProfile.sam_context.slice(0, 800));
+        if (parts.length) profileContext = '\n\nUSER PROFILE (use this to personalize every response):\n' + parts.join('\n');
+      }
+      const baseSystem = systemPrompt || `You are SAM`;
+      const chatSystem = systemPrompt ? systemPrompt + profileContext : `You are SAM — Strategic Assistant for Making — a friendly, sharp creative director built into the SAM app at samforcreators.com. You help creators understand and get the most out of SAM's 5 tools.
 
 THE 5 TOOLS:
 1. The Pulse — User describes a real moment in their own words. SAM writes: one powerful hook, a full word-for-word script with b-roll cues, platform captions for all selected platforms. Best for: any real moment, story, setback, win, or emotion worth sharing.
@@ -103,7 +129,7 @@ THE 5 TOOLS:
 4. The Vision — User describes their niche or idea. SAM generates one bold unique video concept with premise, hook line, production notes, and a real virality score.
 5. The Lens — Two modes: (A) Drop a photo — SAM builds thumbnail strategy. (B) Drop analytics screenshot — SAM reads what's working.
 
-PERSONALITY: Confident, direct, warm. Keep responses to 2-4 sentences max. No jargon.`;
+PERSONALITY: Confident, direct, warm. Keep responses to 2-4 sentences max. No jargon.` + profileContext;
 
       try {
         const chatRes = await fetch('https://api.anthropic.com/v1/messages', {
