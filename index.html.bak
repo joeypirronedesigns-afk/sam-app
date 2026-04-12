@@ -15916,7 +15916,7 @@ function meetSamChooseTalk() {
   if (mainCTA) mainCTA.style.display = 'none';
   const inputRow = document.getElementById('msInputRow');
   if (inputRow) inputRow.style.display = 'flex';
-  const _chatNav2 = document.getElementById('msChatNav'); if (_chatNav2) _chatNav2.style.display = localStorage.getItem('sam_uid') ? 'flex' : 'none';
+  const _chatNav2 = document.getElementById('msChatNav'); if (_chatNav2) _chatNav2.style.display = 'flex';
   // Shift ambient to pink
   const orb1 = document.querySelector('.ms-orb-1');
   const orb2 = document.querySelector('.ms-orb-2');
@@ -15936,15 +15936,10 @@ function meetSamChooseTalk() {
       if (wrap) wrap.classList.add('speaking');
       samTypeIntoBubble(el, opening, function() {
         if (wrap) wrap.classList.remove('speaking');
-        // Show input only after SAM finishes typing
-        const inputRow = document.getElementById('msInputRow');
-        if (inputRow) {
-          inputRow.style.display = 'flex';
-          const inp = document.getElementById('meetSamStoryInput');
-          if (inp) setTimeout(function(){ inp.focus(); }, 200);
-        }
       });
     }
+    const inp = document.getElementById('meetSamStoryInput');
+    if (inp) setTimeout(function(){ inp.focus(); }, 800);
   }, 200);
 }
 
