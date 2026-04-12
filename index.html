@@ -11031,7 +11031,13 @@ Rules:
         if (vp) { WS.voiceProfile = vp; WS.voiceCalibrated = true; }
       }
     } catch(e) {}
-    // Reset state
+    // Reset state — clear any leftover cards from previous sessions
+    const oldVoiceCalib = document.getElementById('msVoiceCalib');
+    if (oldVoiceCalib) oldVoiceCalib.remove();
+    const oldHandoff = document.getElementById('msHandoffCard');
+    if (oldHandoff) oldHandoff.remove();
+    const goWrapReset = document.getElementById('msGoBtnWrap');
+    if (goWrapReset) { goWrapReset.style.display = 'none'; goWrapReset.classList.remove('revealed'); }
     const bubble = document.getElementById('msOpeningBubble');
     const choice = document.getElementById('msPathChoice');
     const talkPath = document.getElementById('msTalkPath');
