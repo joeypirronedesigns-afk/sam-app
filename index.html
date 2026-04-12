@@ -11101,6 +11101,15 @@ Rules:
 
   
   function meetSamHandoff() {
+    // If voice not calibrated yet, show Voice DNA first
+    const voiceDone = (typeof getSamVoiceProfile === 'function' && !!getSamVoiceProfile()) || localStorage.getItem('sam-voice-calibrated') === 'true';
+    if (!voiceDone && typeof showVoiceCalibration === 'function') {
+      const goWrap = document.getElementById('msGoBtnWrap');
+      if (goWrap) goWrap.style.display = 'none';
+      showVoiceCalibration();
+      setTimeout(function(){ var c=document.getElementById("msVoiceCalib"); if(c) c.scrollIntoView({behavior:"smooth",block:"center"}); }, 400);
+      return;
+    }
     // Show handoff card instead of jumping straight to wizard
     const wrap = document.querySelector('.meet-sam-wrap');
     if (!wrap) { meetSamHandoffExecute(); return; }
@@ -11546,19 +11555,14 @@ Rules: Max 3 sentences total. Never use bullet points. Never say "I can see that
         // Stop avatar pulse and ring
         avatars.forEach(a => a.classList.remove('ms-avatar-pulse'));
         if (respWrap) respWrap.classList.remove('speaking');
-        // Show voice calibration instead of go button
+        // Show go button — Voice DNA fires when user clicks
         setTimeout(() => {
-          if (typeof showVoiceCalibration === 'function') {
-            showVoiceCalibration();
-            setTimeout(function(){ var c=document.getElementById("msVoiceCalib"); if(c) c.scrollIntoView({behavior:"smooth",block:"center"}); }, 400);
-          } else {
-            const wrap2 = document.getElementById('msGoBtnWrap');
-            if (wrap2) {
-              wrap2.style.display = 'block';
-              setTimeout(() => { wrap2.classList.add('revealed'); }, 80);
-            }
+          const wrap2 = document.getElementById('msGoBtnWrap');
+          if (wrap2) {
+            wrap2.style.display = 'block';
+            setTimeout(() => { wrap2.classList.add('revealed'); }, 80);
           }
-        }, 2000);
+        }, 800);
       }
     };
     setTimeout(type, 300);
