@@ -11351,7 +11351,7 @@ Rules:
     startWizard('new');
   }
 
-  function meetSamSendStoryFirstVisit() {
+  window.meetSamSendStoryFirstVisit = function meetSamSendStoryFirstVisit() {
     const input = document.getElementById('meetSamStoryInput');
     const story = input.value.trim();
     if (!story || story.length < 5) {
