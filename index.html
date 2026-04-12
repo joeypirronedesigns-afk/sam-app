@@ -9460,6 +9460,13 @@ function openMeetSAMOverlay() { window.location.href = '/meet'; return; // legac
     const _params = new URLSearchParams(window.location.search);
     if (_params.get('launch') === 'wizard') {
       setTimeout(function() {
+        // Pre-fill WS with data from meet.html
+        const meetName = localStorage.getItem('sam_meet_name');
+        const meetStory = localStorage.getItem('sam_meet_story');
+        const meetVoice = localStorage.getItem('sam-voice-profile');
+        if (meetName && typeof WS !== 'undefined') WS.brandName = meetName;
+        if (meetStory && typeof WS !== 'undefined') WS.storyText = meetStory;
+        if (meetVoice && typeof WS !== 'undefined') { try { WS.voiceProfile = JSON.parse(meetVoice).raw || meetVoice; } catch(e) {} }
         if (typeof openWizardPage === 'function') openWizardPage(true);
       }, 600);
     }
