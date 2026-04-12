@@ -54,15 +54,7 @@ module.exports = async function handler(req, res) {
     userProfile = await getUserProfile(userId).catch(() => null);
   }
 
-  // Save voice profile + context to Supabase when provided
-  if (userId && userId !== 'anon' && (req.body.voiceProfile || req.body.samContext)) {
-    saveUserProfile(userId, {
-      voice_profile: req.body.voiceProfile || (userProfile && userProfile.voice_profile) || null,
-      sam_context: req.body.samContext || (userProfile && userProfile.sam_context) || null
-    }).catch(() => {});
-  }
-
-  // Track user activity in Supabase (non-blocking)
+  // Track user activity in Supabase (non-blocking) — must run BEFORE saveUserProfile
   if (userId && userId !== 'anon') {
     trackUser({
       uid: userId,
@@ -73,8 +65,16 @@ module.exports = async function handler(req, res) {
       platforms: req.body.platforms || null,
       voice_calibrated: !!req.body.voiceProfile
     }).catch(() => {});
-    // sam_context saved in the saveUserProfile call above
     trackEvent(userId, mode || 'chat', { tier }).catch(() => {});
+    // Save voice profile + context AFTER trackUser creates the row
+    if (req.body.voiceProfile || req.body.samContext) {
+      setTimeout(() => {
+        saveUserProfile(userId, {
+          voice_profile: req.body.voiceProfile || (userProfile && userProfile.voice_profile) || null,
+          sam_context: req.body.samContext || (userProfile && userProfile.sam_context) || null
+        }).catch(() => {});
+      }, 200);
+    }
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
