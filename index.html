@@ -11108,16 +11108,24 @@ Rules:
 
   
   function meetSamHandoff() {
-    // If voice not calibrated yet, show Voice DNA first
+    // Check voice first — if not calibrated, show Voice DNA before handoff
     const voiceDone = (typeof getSamVoiceProfile === 'function' && !!getSamVoiceProfile()) || localStorage.getItem('sam-voice-calibrated') === 'true';
     if (!voiceDone && typeof showVoiceCalibration === 'function') {
       const goWrap = document.getElementById('msGoBtnWrap');
       if (goWrap) goWrap.style.display = 'none';
       showVoiceCalibration();
+<<<<<<< HEAD
       setTimeout(function(){ var c=document.getElementById("msVoiceCalib"); if(c) c.scrollIntoView({behavior:"smooth",block:"center"}); }, 400);
       return;
     }
     // Show handoff card instead of jumping straight to wizard
+=======
+      setTimeout(function(){ var c=document.getElementById('msVoiceCalib'); if(c) c.scrollIntoView({behavior:'smooth',block:'center'}); }, 400);
+      return;
+    }
+
+    // Voice done — show handoff card
+>>>>>>> b951136 (v7.98 restore Voice DNA gate in meetSamHandoff)
     const wrap = document.querySelector('.meet-sam-wrap');
     if (!wrap) { meetSamHandoffExecute(); return; }
 
