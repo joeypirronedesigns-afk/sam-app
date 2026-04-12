@@ -15898,12 +15898,7 @@ async function meetSamSendStory() {
     const hasVoiceProfile = !!getSamVoiceProfile();
     const shouldTrigger = !alreadyCalibrated && !hasVoiceProfile &&
       (samReplyCount === 2 || (samReplyCount >= 2 && samReplyCount % 3 === 0));
-    if (shouldTrigger) {
-      setTimeout(function() {
-        const vcFn = window.showVoiceCalibration || (typeof showVoiceCalibration !== 'undefined' ? showVoiceCalibration : null);
-        if (vcFn) vcFn();
-      }, 1200);
-    }
+    // Voice DNA is gated behind the go button — not auto-triggered here
   }
 
   msScrollThread();
