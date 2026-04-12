@@ -5461,7 +5461,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.98</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.99</div>
 
 
   <!-- ── UNIFIED HERO v7.95 ── -->
@@ -11114,18 +11114,11 @@ Rules:
       const goWrap = document.getElementById('msGoBtnWrap');
       if (goWrap) goWrap.style.display = 'none';
       showVoiceCalibration();
-<<<<<<< HEAD
       setTimeout(function(){ var c=document.getElementById("msVoiceCalib"); if(c) c.scrollIntoView({behavior:"smooth",block:"center"}); }, 400);
-      return;
-    }
-    // Show handoff card instead of jumping straight to wizard
-=======
-      setTimeout(function(){ var c=document.getElementById('msVoiceCalib'); if(c) c.scrollIntoView({behavior:'smooth',block:'center'}); }, 400);
       return;
     }
 
     // Voice done — show handoff card
->>>>>>> b951136 (v7.98 restore Voice DNA gate in meetSamHandoff)
     const wrap = document.querySelector('.meet-sam-wrap');
     if (!wrap) { meetSamHandoffExecute(); return; }
 
@@ -14496,10 +14489,14 @@ function openWizardFromNav() {
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
 <<<<<<< HEAD
+<<<<<<< HEAD
   <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.95</div>
 =======
   <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.98</div>
 >>>>>>> d06647f (v7.98 update version tags)
+=======
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.99</div>
+>>>>>>> c3e779f (v7.99 fix go button scroll position)
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -16326,8 +16323,6 @@ async function meetSamSendStory() {
           setTimeout(function() {
             const goWrap = document.getElementById('msGoBtnWrap');
             if (goWrap) { goWrap.style.display = 'block'; setTimeout(function(){ goWrap.classList.add('revealed'); }, 80); }
-            const goWrapEl = document.getElementById('msGoBtnWrap');
-            if (goWrapEl) goWrapEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
           }, 800);
         }
       });
