@@ -4690,19 +4690,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
     </div>
   </div>
 
-  <div style="background:#111; border:1px solid #222; border-radius:16px; padding:28px; margin-bottom:32px;">
-    <p style="font-size:11px; font-weight:600; letter-spacing:0.1em; color:#a78bfa; text-transform:uppercase; margin:0 0 6px;">STEP 4 — SCHEDULE (OPTIONAL)</p>
-    <p style="font-size:13px; color:#666; margin:0 0 16px;">Pick which days you plan to post this</p>
-    <div style="display:flex; gap:8px; flex-wrap:wrap;">
-      <button class="day-btn" data-day="Mon" onclick="toggleDay(this)" style="padding:8px 16px; border-radius:20px; border:1px solid #333; background:transparent; color:#888; font-size:13px; cursor:pointer;">Mon</button>
-      <button class="day-btn" data-day="Tue" onclick="toggleDay(this)" style="padding:8px 16px; border-radius:20px; border:1px solid #333; background:transparent; color:#888; font-size:13px; cursor:pointer;">Tue</button>
-      <button class="day-btn" data-day="Wed" onclick="toggleDay(this)" style="padding:8px 16px; border-radius:20px; border:1px solid #333; background:transparent; color:#888; font-size:13px; cursor:pointer;">Wed</button>
-      <button class="day-btn" data-day="Thu" onclick="toggleDay(this)" style="padding:8px 16px; border-radius:20px; border:1px solid #333; background:transparent; color:#888; font-size:13px; cursor:pointer;">Thu</button>
-      <button class="day-btn" data-day="Fri" onclick="toggleDay(this)" style="padding:8px 16px; border-radius:20px; border:1px solid #333; background:transparent; color:#888; font-size:13px; cursor:pointer;">Fri</button>
-      <button class="day-btn" data-day="Sat" onclick="toggleDay(this)" style="padding:8px 16px; border-radius:20px; border:1px solid #333; background:transparent; color:#888; font-size:13px; cursor:pointer;">Sat</button>
-      <button class="day-btn" data-day="Sun" onclick="toggleDay(this)" style="padding:8px 16px; border-radius:20px; border:1px solid #333; background:transparent; color:#888; font-size:13px; cursor:pointer;">Sun</button>
-    </div>
-  </div>
+
 
   <div style="text-align:center; margin-bottom:48px;">
     <button id="wizard-generate-btn" onclick="runPhotoWizard()" style="background:linear-gradient(135deg,#7c3aed,#a78bfa); color:#fff; font-size:16px; font-weight:600; padding:16px 48px; border-radius:30px; border:none; cursor:pointer;">Generate My Posts</button>
@@ -8622,9 +8610,10 @@ function renderInlineToolOutput(tool, data, msgs) {
 
   wrap.querySelectorAll('[data-save]').forEach(btn => {
     btn.addEventListener('click', function() {
-      const section = this.closest('.psam-output-section, .psam-output-platform');
-      const copyable = section ? section.querySelector('.psam-copyable') : null;
-      const text = copyable ? copyable.innerText : '';
+      const section = this.closest('.psam-output-section, .psam-output-platform, .playbook-sec-content, [id^="playbook-sec-"]');
+      // Try psam-copyable first, then playbook-hook (after Redo), then regen-content
+      const copyable = section ? (section.querySelector('.psam-copyable') || section.querySelector('.playbook-hook') || section.querySelector('.regen-content')) : null;
+      const text = copyable ? copyable.innerText.trim() : '';
       const label = this.dataset.label || 'SAM Output';
       const type = this.dataset.type || 'pulse';
       if (text && typeof saveWizardItem === 'function') {
