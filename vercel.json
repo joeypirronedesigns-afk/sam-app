@@ -22,11 +22,14 @@
       "destination": "/index.html"
     },
     {
+      "source": "/app/:path*",
+      "destination": "/index.html"
+    },
+    {
       "source": "/",
       "destination": "/meet.html"
     }
   ],
-  "cleanUrls": true,
   "functions": {
     "api/pdf.js": {
       "memory": 3009,
