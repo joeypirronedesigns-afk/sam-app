@@ -35,9 +35,9 @@
     .sam-bubble-wrap { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 24px; animation: fadeUp 0.5s cubic-bezier(0.34,1.2,0.64,1) forwards; }
     @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
     .sam-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg,#F472B6,#A78BFA); display: flex; align-items: center; justify-content: center; font-family: 'Sora',sans-serif; font-size: 14px; font-weight: 700; color: #09080F; flex-shrink: 0; position: relative; }
-    .sam-avatar-ring { position: absolute; inset: -3px; border-radius: 50%; border: 1.5px solid rgba(167,139,250,0.6); opacity: 0; transition: opacity 0.3s; }
+    .sam-avatar-ring { position: absolute; inset: -3px; border-radius: 50%; border: 1.5px solid rgba(167,139,250,0.3); opacity: 0; transition: opacity 0.3s; }
     .sam-avatar-wrap.speaking .sam-avatar-ring { opacity: 1; animation: ring-pulse 1.5s ease infinite; }
-    @keyframes ring-pulse { 0%,100%{opacity:0.4;transform:scale(1);} 50%{opacity:1;transform:scale(1.05);} }
+    @keyframes ring-pulse { 0%,100%{opacity:0.3;transform:scale(1);} 50%{opacity:0.6;transform:scale(1);} }
     .sam-bubble { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 4px 18px 18px 18px; padding: 14px 18px; font-size: 16px; line-height: 1.75; color: var(--text); max-width: calc(100% - 48px); word-wrap: break-word; }
     .sam-bubble.large { font-size: 18px; line-height: 1.8; background: rgba(167,139,250,0.05); border-color: rgba(167,139,250,0.15); }
     .user-bubble-wrap { display: flex; justify-content: flex-end; margin-bottom: 24px; animation: fadeUp 0.4s cubic-bezier(0.34,1.2,0.64,1) forwards; }
