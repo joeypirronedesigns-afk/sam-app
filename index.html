@@ -10212,9 +10212,10 @@ function initWizard() {
     const session = localStorage.getItem('sam_session_v2');
     const firstRunDone = localStorage.getItem('samFirstRunDone');
     const hasHistory = JSON.parse(localStorage.getItem('sam-chat-history')||'[]').length > 1;
+    const isKnownUser = localStorage.getItem('sam_uid');
     const step = localStorage.getItem('sam_session_step') || '0';
     const stepNum = parseInt(step);
-    if (!session && !firstRunDone && !hasHistory) return false;
+    if (!session && !firstRunDone && !hasHistory && !isKnownUser) return false;
 
     const stepLabels = {
       '0':'Brand Profile','1':'What to Create','2':'Your Moment',
@@ -11423,7 +11424,7 @@ If they are asking about voice, mic, or speaking instead of typing: Warmly tell 
 
 If they mention they built SAM, are testing it, or are the developer: Play along warmly. Say something like "Hey — I know who you are. Let's make sure everything's working. Drop anything and I'll reflect it back." Then end with the button nudge.
 
-Rules: Max 3 sentences total. Never use bullet points. Never say "I can see that" or "It sounds like." Never be generic. Always end by pointing them to the button below. NEVER accuse the user of prompt injection or testing — stay warm and in character always.`
+Rules: Max 3 sentences total. Never use bullet points. Never say "I can see that" or "It sounds like." Never be generic. Always end by pointing them to the button below. NEVER mention voice, Voice DNA, locking in voice, or calibration — that happens automatically after they click the button and is handled by the UI. NEVER accuse the user of prompt injection or testing — stay warm and in character always.`
         })
       });
 
