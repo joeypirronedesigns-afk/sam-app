@@ -1,5 +1,5 @@
 module.exports.config = { api: { bodyParser: { sizeLimit: "10mb" } } };
-const { trackUser, trackEvent } = require('./_supabase');
+const { trackUser, trackEvent, saveUserProfile, getUserProfile } = require('./_supabase');
 
 // ── TIER LIMITS ────────────────────────────────────────────────────────────
 const TIER_LIMITS = {
@@ -48,9 +48,15 @@ module.exports = async function handler(req, res) {
   const userId = req.body.userId || req.headers['x-forwarded-for'] || 'anon';
   const tier = req.body.tier || 'free';
 
-  // Track user activity in Supabase (non-blocking)
+  // Load user profile from Supabase (for persistent memory)
+  let userProfile = null;
   if (userId && userId !== 'anon') {
-    trackUser({
+    userProfile = await getUserProfile(userId).catch(() => null);
+  }
+
+  // Track user + save voice profile (awaited when voice data present)
+  if (userId && userId !== 'anon') {
+    await trackUser({
       uid: userId,
       email: req.body.email || null,
       name: req.body.name || null,
@@ -60,6 +66,12 @@ module.exports = async function handler(req, res) {
       voice_calibrated: !!req.body.voiceProfile
     }).catch(() => {});
     trackEvent(userId, mode || 'chat', { tier }).catch(() => {});
+    if (req.body.voiceProfile || req.body.samContext) {
+      await saveUserProfile(userId, {
+        voice_profile: req.body.voiceProfile || (userProfile && userProfile.voice_profile) || null,
+        sam_context: req.body.samContext || (userProfile && userProfile.sam_context) || null
+      }).catch(() => {});
+    }
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -94,7 +106,19 @@ module.exports = async function handler(req, res) {
       const hasImage = messages.some(m => Array.isArray(m.content) && m.content.some(c => c.type === 'image'));
       const chatModel = hasImage ? 'claude-sonnet-4-6' : 'claude-haiku-4-5-20251001';
       const chatMaxTokens = hasImage ? 600 : 400;
-      const chatSystem = systemPrompt || `You are SAM — Strategic Assistant for Making — a friendly, sharp creative director built into the SAM app at samforcreators.com. You help creators understand and get the most out of SAM's 5 tools.
+      // Inject stored user profile into system prompt if available
+      let profileContext = '';
+      if (userProfile) {
+        const parts = [];
+        if (userProfile.name) parts.push('User name: ' + userProfile.name);
+        if (userProfile.niche) parts.push('Niche: ' + userProfile.niche);
+        if (userProfile.platforms) parts.push('Platforms: ' + userProfile.platforms);
+        if (userProfile.voice_profile) parts.push('Voice DNA: ' + userProfile.voice_profile.slice(0, 600));
+        if (userProfile.sam_context) parts.push('Story context: ' + userProfile.sam_context.slice(0, 800));
+        if (parts.length) profileContext = '\n\nUSER PROFILE (use this to personalize every response):\n' + parts.join('\n');
+      }
+      const baseSystem = systemPrompt || `You are SAM`;
+      const chatSystem = systemPrompt ? systemPrompt + profileContext : `You are SAM — Strategic Assistant for Making — a friendly, sharp creative director built into the SAM app at samforcreators.com. You help creators understand and get the most out of SAM's 5 tools.
 
 THE 5 TOOLS:
 1. The Pulse — User describes a real moment in their own words. SAM writes: one powerful hook, a full word-for-word script with b-roll cues, platform captions for all selected platforms. Best for: any real moment, story, setback, win, or emotion worth sharing.
@@ -103,7 +127,7 @@ THE 5 TOOLS:
 4. The Vision — User describes their niche or idea. SAM generates one bold unique video concept with premise, hook line, production notes, and a real virality score.
 5. The Lens — Two modes: (A) Drop a photo — SAM builds thumbnail strategy. (B) Drop analytics screenshot — SAM reads what's working.
 
-PERSONALITY: Confident, direct, warm. Keep responses to 2-4 sentences max. No jargon.`;
+PERSONALITY: Confident, direct, warm. Keep responses to 2-4 sentences max. No jargon.` + profileContext;
 
       try {
         const chatRes = await fetch('https://api.anthropic.com/v1/messages', {
@@ -461,7 +485,8 @@ TASK: ${sectionPrompt}
 
 CRITICAL: Return ONLY valid JSON. No preamble, no explanation, no markdown fences.`;
 
-      return await streamCall(fullPrompt, moment || wizContext || '', 2000);
+      const regenMoment = req.body.moment || wizContext || '';
+      return await streamCall(fullPrompt, regenMoment, 2000);
     }
 
     // ── PLAYBOOK ROUTING — non-moment storyTypes branch to correct tool ───────
@@ -569,6 +594,26 @@ CRITICAL: Return ONLY valid JSON.`;
           ? [{ type: 'image', source: { type: 'base64', media_type: imageType, data: imageBase64 } }, { type: 'text', text: moment || 'Analyse my analytics.' }]
           : moment;
         return await streamCall(analyticsSystem, userContent, 900, 'claude-haiku-4-5-20251001');
+      }
+
+      if (forceType === 'reach') {
+        const reachPrompt = req.body.moment || '';
+        const reachContent = imageBase64
+          ? [{ type: 'image', source: { type: 'base64', media_type: imageType, data: imageBase64 } }, { type: 'text', text: reachPrompt }]
+          : reachPrompt;
+        const reachSystem = `You are SAM — a strategic content assistant. Generate platform-ready post content based on the photo and context provided. Write in plain text only. NO JSON, no markdown, no code blocks.
+
+For each platform requested, use this exact format:
+
+PLATFORM: [Platform Name]
+HOOK: [attention-grabbing opening line]
+CAPTION: [full caption text]
+DESCRIPTION: [longer description if needed]
+CTA: [call to action]
+HASHTAGS: [relevant hashtags]
+
+Make every caption feel personal, story-driven, and native to that platform. Write in the creator's voice.`;
+        return await streamCall(reachSystem, reachContent, 1800, 'claude-sonnet-4-6');
       }
 
       const textSystem = `${base} Analyse this content idea. Return ONLY: {"type":"text_only","diagnosis":"what this idea is really about and why it has potential — 2 sentences","hook_ideas":["hook 1","hook 2","hook 3"],"content_angle":"the strongest angle to take","best_platform":"single best platform","next_action":"the one most important thing to do with this idea right now"}`;
