@@ -4531,7 +4531,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.23</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.24</div>
 
 
   <!-- ── UNIFIED HERO v7.95 ── -->
@@ -5805,25 +5805,25 @@ function goHome() {
 let ideasPickerTarget = null;
 
 function openIdeasPicker(targetId) {
-  ideasPickerTarget = targetId;
-  const ideas = IB.load();
+  const overlay = document.getElementById('ideasPickerOverlay');
+  const panel = document.getElementById('ideasPickerPanel');
   const list = document.getElementById('ideasPickerList');
-  if (!ideas || ideas.length === 0) {
-    list.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3);font-size:14px;">No saved ideas yet. Use any tool and save your outputs to Ideas.</div>';
-  } else {
-    const tL = { pulse:'The Pulse', spark:'The Spark', blueprint:'Blueprint', vision:'The Vision', lens:'The Lens', wizard:'Story Wizard', reach:'The Reach' };
-    list.innerHTML = ideas.map(idea => {
-      const preview = (idea.text || '').slice(0, 120).replace(/</g,'&lt;').replace(/>/g,'&gt;');
-      const label = tL[idea.type] || idea.type;
-      return '<div onclick=\"ideasPickerSelect(\'' + idea.id + '\')\" style=\"background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px;margin-bottom:8px;cursor:pointer;transition:all 0.15s;\" onmouseover=\"this.style.borderColor=\'rgba(167,139,250,0.4)\';this.style.background=\'rgba(167,139,250,0.06)\'\" onmouseout=\"this.style.borderColor=\'rgba(255,255,255,0.08)\';this.style.background=\'rgba(255,255,255,0.03)\'">'
-        + '<div style="font-size:10px;font-weight:700;color:rgba(167,139,250,0.6);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">' + label + '</div>'
-        + '<div style="font-size:13px;color:var(--text2);line-height:1.5;">' + preview + (idea.text.length > 120 ? '...' : '') + '</div>'
-        + '</div>';
-    }).join('');
+  if (!overlay || !panel || !list) return;
+  const ideas = typeof IB !== 'undefined' ? IB.load() : [];
+  list.innerHTML = ideas.length ? ideas.slice(0,20).map(function(idea) {
+    const preview = (idea.text||'').slice(0,120).replace(/</g,'&lt;');
+    return '<div onclick="reachInsertIdea(\'' + (idea.text||'').replace(/\\/g,'\\\\').replace(/\'/g,\"\\'\"').replace(/\n/g,' ').slice(0,500) + '\',\'' + targetId + '\')" style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer;font-size:13px;line-height:1.6;color:rgba(240,236,255,0.8);" onmouseover="this.style.background=\'rgba(167,139,250,0.08)\'" onmouseout="this.style.background=\'\'">' + preview + '</div>';
+  }).join('') : '<div style="padding:20px;text-align:center;color:rgba(240,236,255,0.3);font-size:13px;">No saved ideas yet</div>';
+  overlay.style.display = 'block';
+  panel.style.display = 'block';
+}
+function reachInsertIdea(text, targetId) {
+  const el = document.getElementById(targetId);
+  if (el) {
+    el.textContent = text;
+    el.setAttribute('data-text', text);
   }
-  document.getElementById('ideasPickerOverlay').style.display = 'block';
-  document.getElementById('ideasPickerPanel').style.display = 'block';
-  document.body.style.overflow = 'hidden';
+  closeIdeasPicker();
 }
 
 function closeIdeasPicker() {
@@ -12108,7 +12108,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.23</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.24</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
