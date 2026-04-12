@@ -5461,7 +5461,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.09</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.10</div>
 
 
   <!-- ── UNIFIED HERO v7.95 ── -->
@@ -9870,12 +9870,12 @@ if (document.readyState === 'loading') {
     initPersistentSAM();
     initTrial(); initChat(); initWizard(); initHeroVisibility();
     setTimeout(() => { if (typeof updateWizardHeader === 'function') updateWizardHeader(); }, 300);
-    setTimeout(() => { if (localStorage.getItem('sam_uid')) openWorkshop(); }, 400);
+    setTimeout(() => { if (localStorage.getItem('sam_uid') && localStorage.getItem('samFirstRunDone')) openWorkshop(); }, 400);
   });
 } else {
   initTrial(); initChat(); initWizard(); initHeroVisibility();
   setTimeout(() => { if (typeof updateWizardHeader === 'function') updateWizardHeader(); }, 300);
-  setTimeout(() => { if (localStorage.getItem('sam_uid')) openWorkshop(); }, 400);
+  setTimeout(() => { if (localStorage.getItem('sam_uid') && localStorage.getItem('samFirstRunDone')) openWorkshop(); }, 400);
 }
 
 
@@ -14521,7 +14521,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.09</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.10</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
