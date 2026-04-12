@@ -4531,7 +4531,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 </nav>
 
 <main>
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.28</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.29</div>
 
 
   <!-- ── UNIFIED HERO v7.95 ── -->
@@ -5721,8 +5721,15 @@ function openTool(tool) {
   document.getElementById('homeView').style.display = 'none';
   // Autofill tool inputs from wizard story context
   setTimeout(function() {
-    var storyRaw = (typeof WS !== 'undefined' && WS.storyRaw) ? WS.storyRaw : '';
+    var storyRaw = (typeof WS !== 'undefined') ? (WS.storyText || WS.storyRaw || '') : '';
     var meetStory = localStorage.getItem('sam_meet_story') || '';
+    // Also try reading from sam_session_v2
+    if (!storyRaw && !meetStory) {
+      try {
+        var sess = JSON.parse(localStorage.getItem('sam_session_v2') || '{}');
+        storyRaw = sess.storyText || sess.storyRaw || '';
+      } catch(e) {}
+    }
     var story = storyRaw || meetStory;
     var setup = typeof getSetup === 'function' ? getSetup() : {};
     var niche = (typeof WS !== 'undefined' && WS.storyType) ? WS.storyType : (setup.niche || '');
@@ -9087,7 +9094,7 @@ function loadWizardState() {
 }
 
 function saveWizardState() {
-  if (typeof WS !== 'undefined' && WS.storyRaw) localStorage.setItem('sam_meet_story', WS.storyRaw.slice(0,800));
+  if (typeof WS !== 'undefined') { var _st = WS.storyText || WS.storyRaw || ''; if (_st) localStorage.setItem('sam_meet_story', _st.slice(0,800)); }
   try {
     const toSave = Object.assign({}, WS);
     delete toSave.voiceProfile;
@@ -12143,7 +12150,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.28</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v8.29</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
