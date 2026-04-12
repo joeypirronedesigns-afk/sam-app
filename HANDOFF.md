@@ -2,6 +2,7 @@
 
 **App:** SAM (Strategic Assistant for Making) at samforcreators.com
 **Single index.html file. Deployed on Vercel. GitHub repo: joeypirronedesigns-afk/sam-app. Mac terminal workflow.**
+**Current version: v7.95**
 **File path:** /Users/giuseppepirrone/Desktop/sam-app/index.html
 **Dev branch:** photo-wizard-dev (ALL WORK HAPPENS HERE ONLY)
 
@@ -10,28 +11,9 @@
 ## GIT STATE — READ THIS FIRST
 
 **main (live site):** 8d6d2fb — ROLLBACK: revert to pre-photo-wizard v7.93
-**photo-wizard-dev (our work):** 536616c — v7.94 in progress, NOT yet merged to main
+**photo-wizard-dev (our work):** v7.95 — multiple fixes this session, NOT yet merged to main
 
-History of emergency commits (already reverted off main, do not touch):
-- v8.08: EMERGENCY disable all wizard entry points
-- v8.07: EMERGENCY fix site freeze for all users
-- v8.06: fix showHomeView undefined
-- v8.05: bypass openWizardPage for dev
-
-**What this means:**
-- Live site is stable on v7.93 rollback
-- All v7.94 work lives on photo-wizard-dev only
-- Do NOT merge to main until full incognito test pass
-
----
-
-## LIVE SITE KNOWN ISSUES (v7.93 — pre-existing, not introduced by us)
-
-- SAM giving extremely short responses (likely API/prompt issue)
-- Switch tools button not firing tool cards
-- Voice DNA fires too early in MEET SAM flow
-- Story Wizard playbook PDF hits paywall for active trial users
-- [SAVE:platforms:TBD] tag leaking in SAM responses mid-conversation
+Do NOT merge to main until MEET SAM first-visit flow is fully working.
 
 ---
 
@@ -48,6 +30,7 @@ History of emergency commits (already reverted off main, do not touch):
 9. Scripts go to ~/Desktop/ not /tmp/
 10. Never put literal \n inside JS strings in Python heredocs.
 11. Verify with sed -n before deploying.
+12. Use python3 - << 'PYEOF' ... PYEOF for inline Python (avoids zsh ! expansion issues)
 
 ---
 
@@ -60,9 +43,102 @@ NAV (3 items only): Talk with SAM | Workshop | See plans
 
 ---
 
+## MEET SAM — INTENDED FIRST VISIT FLOW (PARTIALLY BROKEN — TOP PRIORITY)
+
+1. SAM greeting bubble: "Everything amazing in life comes from stories. What's yours? Start anywhere — I'll find the content in it."
+2. User types their story in input → clicks send
+3. SAM reflects powerfully — ONE response, specific, emotional, on-brand
+4. "✦ Let's build your story →" CTA button appears AFTER SAM finishes
+5. User clicks button → Voice DNA card slides in ("I want to sound like you — not like AI")
+6. User submits voice sample → button reappears: "✦ Let's build your story — in your voice →"
+7. User clicks → handoff card → Story Wizard launches
+
+RETURNING USER "Talk with SAM":
+- Goes to msOpenThread() — context-aware greeting, NOT first-visit flow
+- Nav pills (← Home, Story Engine, Voice DNA) visible for returning users only
+- Every interaction deepens Voice DNA profile
+
+---
+
+## WHAT WAS FIXED THIS SESSION (v7.95)
+
+| Fix | Status |
+|-----|--------|
+| Switch Tools button — ecosystemOverlay DOM order fix | DONE |
+| Stray });} syntax error breaking openEcosystemOverlay | DONE |
+| msChatNav pills hidden for new visitors | DONE |
+| Returning users routed to msOpenThread via sam_uid check | DONE |
+| Returning card shows simpler message when no session data | DONE |
+| SAM prompt updated — no longer mentions Voice DNA | DONE |
+| Voice DNA auto-trigger removed from persistent chat handler | DONE |
+| meetSamSendStoryFirstVisit renamed + exposed as window global | DONE |
+| _msFirstVisitActive flag routes send button correctly | DONE |
+| null guard for msThinkingText crash | DONE |
+| meetSamInit clears leftover Voice DNA cards on init | DONE |
+| Version bumped to v7.95 | DONE |
+
+---
+
+## CURRENT BUG — MEET SAM FIRST VISIT (TOP PRIORITY)
+
+**Symptom:** Voice DNA card appears immediately after SAM greeting, before user sends story or clicks any button. SAM never responds to user's story. No button appears.
+
+**Root cause investigation so far:**
+- meetSamSendStoryFirstVisit is defined and globally accessible (confirmed)
+- _msFirstVisitActive flag is true (confirmed)
+- Only ONE call to showVoiceCalibration() exists at line 11116 inside meetSamHandoff()
+- meetSamHandoff() is only called from button click at line 14622
+- BUT Voice DNA card appears without button click — source unknown
+
+**Suspected cause:** meetSamInit() cleanup or the 2000ms setTimeout somewhere is still firing showVoiceCalibration. Need fresh eyes to trace the exact trigger path.
+
+**Next step:** Run a clean audit grep on page load sequence:
+grep -n "showVoiceCalibration\|meetSamHandoff\|msVoiceCalib" ~/Desktop/sam-app/index.html
+
+---
+
+## DUPLICATE FUNCTION ISSUE (RELATED)
+
+There are TWO meetSamSendStory functions:
+- Line 11354: meetSamSendStoryFirstVisit (renamed) — first-visit onboarding brain, calls meetSamCallAPI
+- Line 16211: meetSamSendStory — persistent chat handler, different system prompt
+
+The persistent chat handler (16211) was hijacking first-visit flow, causing:
+- Generic SAM responses instead of powerful onboarding reflection
+- Double chat bubbles
+- Voice DNA firing on every message
+
+Fix applied: _msFirstVisitActive flag routes to correct function. But Voice DNA still fires unexpectedly.
+
+---
+
+## STILL TO DO
+
+Critical:
+- Fix Voice DNA appearing before button click in first-visit flow
+- Full end-to-end test of MEET SAM flow once fixed
+- Merge photo-wizard-dev to main once MEET SAM works
+
+High priority:
+- Add heart Ideas picker to each Reach output field
+- Build SAM_PROFILE unified context object
+- The Reach auto-fills from user profile
+- SAM-generated hashtags
+
+Medium priority:
+- Story Wizard playbook PDF gated for active trial users
+- Update pricing copy to $19/$39/$99
+- Mic button missing from MEET SAM input (was removed previously)
+
+Low priority:
+- Remove dead photo-wizard section (line ~5537)
+- Remove showPhotoWizard function (line ~5674)
+
+---
+
 ## WORKSHOP LAYOUT
 
-Top: Story Wizard hero row with "Launch Story Wizard" button (calls openWizardPage(true))
+Top: Story Wizard hero row — "Launch Story Wizard" (calls openWizardPage(true))
 Grid: The Pulse, The Spark, Blueprint, The Vision, The Lens, The Reach, My Ideas, Video Coming Soon
 
 ---
@@ -80,67 +156,17 @@ The Reach - Upload photo, SAM auto-fills content, user reviews/edits, schedule, 
 
 ---
 
-## THE REACH — TOP PRIORITY NEXT SESSION
+## KEY FUNCTIONS
 
-The Reach is a smart publishing tool powered by everything SAM knows about the user.
-
-WHAT IT SHOULD DO:
-1. User uploads a photo
-2. SAM analyzes photo AND pulls from Voice DNA, MEET SAM profile, My Ideas, past outputs
-3. SAM auto-fills every field per platform (headline, caption, description, CTA, hashtags)
-4. User reviews SAM pre-filled content
-5. User edits any field inline
-6. User taps heart icon on any field to swap in a saved idea from My Ideas
-7. User schedules and posts
-
-The user's job is review and approve, not create from scratch.
-
-CURRENT STATE v7.94:
-- Photo upload works
-- Platform selection works
-- Output selector works
-- Scheduler Mon-Sun with date works
-- Per-platform output cards render correctly
-- Copy per field works
-- Edit per field contenteditable works
-- Copy all per platform works
-- Post to platform connect account coming soon button shows
-- Hashtags are generic placeholders - need SAM-generated from profile
-- Content from photo analysis only - not pulling from Voice DNA or My Ideas yet
-- Heart My Ideas picker button not yet on each output field
-- Actual posting to socials not built yet - requires OAuth future build
-
----
-
-## UNIFIED PROFILE — CRITICAL NEXT BUILD
-
-Every tool reads from different data sources. Need one unified context object:
-
-SAM_PROFILE = { name, niche, audience, platforms, tone, voiceDNA, savedIdeas }
-
-Every tool reads SAM_PROFILE before generating. Makes all outputs compound and personalized.
-
----
-
-## STILL TO DO
-
-High priority:
-- Add heart Ideas picker to each Reach output field
-- Build SAM_PROFILE unified context object
-- The Reach auto-fills from user profile
-- SAM-generated hashtags from profile niche and audience
-
-Medium priority:
-- Investigate SAM short responses on live site (v7.93 API/prompt issue)
-- Story Wizard playbook PDF gated for active trial users (pre-existing)
-- Voice DNA fires too early in MEET SAM (pre-existing)
-- Switch tools button not firing (pre-existing)
-- Update pricing copy to $19/$39/$99
-
-Low priority:
-- Remove dead photo-wizard section (line ~5537)
-- Remove showPhotoWizard function (line ~5674)
-- Merge photo-wizard-dev to main after full test pass
+openWorkshop() - hides hero and howItWorks, shows Workshop grid
+meetSamSendStoryFirstVisit() - first-visit story submission (window global)
+meetSamSendStory() - persistent chat handler (line 16211)
+_msFirstVisitActive - flag: true during first-visit flow, false after handoff
+msOpenThread() - returning user chat (context-aware greeting)
+meetSamHandoff() - fires when go button clicked, shows Voice DNA if not calibrated
+openIdeasPicker(targetInputId) - floating ideas picker
+runReach() - The Reach API call + renderer
+reachCopyField/reachEditField/reachCopyAll - Reach output controls
 
 ---
 
@@ -153,20 +179,6 @@ studio = Publisher/Agency, $99/mo, unlimited, multiple voice profiles
 
 ---
 
-## KEY FUNCTIONS (v7.94)
-
-openWorkshop() - hides hero and howItWorks, shows Workshop grid
-openIdeasPicker(targetInputId) - opens floating ideas picker panel
-closeIdeasPicker() - closes picker
-ideasPickerSelect(id) - fills target textarea with selected idea
-runReach() - API call + streaming + JSON renderer for The Reach
-resetReach() - resets The Reach tool
-reachCopyField(btn) - copies individual field
-reachEditField(fieldId) - toggles contenteditable on field
-reachCopyAll(platformId) - copies all fields for a platform
-
----
-
 ## SUPABASE TEST
 
 Run in browser console to test as dev:
@@ -174,13 +186,16 @@ localStorage.setItem('sam_uid', 'dev-joey');
 localStorage.setItem('sam_tier', 'studio');
 location.reload();
 
+New visitor test:
+localStorage.clear(); location.reload();
+
 ---
 
 ## DEPLOY COMMANDS
 
 cd ~/Desktop/sam-app && git checkout photo-wizard-dev
 git add -A && git commit -m "message" && git push origin photo-wizard-dev
-Merge to main only when confirmed stable in incognito:
+Merge to main only when confirmed stable:
 git checkout main && git merge photo-wizard-dev && git push
 
 ---
@@ -190,7 +205,6 @@ git checkout main && git merge photo-wizard-dev && git push
 URL: sam-hq.vercel.app
 GitHub: joeypirronedesigns-afk/sam-hq
 Working directory: ~/Desktop/sam-hq/index.html
-Status: Live, all 6 agents operational
 Deploy: cd ~/Desktop/sam-hq && git add -A && git commit -m "message" && git push
 
 ---
@@ -201,4 +215,4 @@ Deploy: cd ~/Desktop/sam-hq && git add -A && git commit -m "message" && git push
 2. Say: "Read this handoff and let's continue building the SAM app"
 3. Claude reads it and picks up exactly where we left off
 
-Last updated: Post-v7.94 session — git state clarified, live issues documented, Reach vision defined
+Last updated: v7.95 session — Switch Tools fixed, MEET SAM flow partially restored, Voice DNA routing bug active
