@@ -7703,9 +7703,16 @@ function getCurrentToolKey(fn) {
 
 function saveWizardItem(text, label, type) {
   if (!text || !text.trim()) return;
+  const existing = IB.load();
+  const trimmed = text.trim();
+  // Dedup: if same text + same type already exists, skip
+  if (existing.some(i => (i.text||'').trim() === trimmed && (i.type||'') === (type||'wizard'))) {
+    showIbToast('Already saved');
+    return;
+  }
   const idea = {
     id: 'wiz_' + Date.now(),
-    text: text.trim(),
+    text: trimmed,
     label: label || 'From SAM Engine',
     type: type || 'wizard',
     source: 'wizard',
@@ -7714,7 +7721,6 @@ function saveWizardItem(text, label, type) {
     status: 'saved',
     platform: ''
   };
-  const existing = IB.load();
   existing.unshift(idea);
   localStorage.setItem('sam-ideas', JSON.stringify(existing));
   // Update badge count — both nav and wizard header
@@ -9303,6 +9309,8 @@ function printToolOutput(outputId, toolName) {
   if (!el) { window.print(); return; }
   const content = el.innerHTML;
   const brandName = WS && WS.brandName ? WS.brandName : (document.getElementById('brandName') ? document.getElementById('brandName').value : '');
+  const brandHandle = (WS && WS.brandHandle) ? WS.brandHandle : '';
+  const brandHandle = (WS && WS.brandHandle) ? WS.brandHandle : '';
   const win = window.open('', '_blank');
   if (!win) { window.print(); return; }
   win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"/>
@@ -9340,6 +9348,7 @@ function printToolOutput(outputId, toolName) {
     <div class="print-header">
       <div>
         <div class="print-brand">${brandName || 'Your Content'}</div>
+        ${brandHandle ? '<div style="font-size:10pt;color:#7C3AED;font-weight:600;margin-top:2pt;">' + brandHandle + '</div>' : ''}
         <div class="print-title">${toolName}</div>
       </div>
       <div style="font-size:9pt;color:#999;">${new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</div>
