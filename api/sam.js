@@ -487,7 +487,8 @@ TASK: ${sectionPrompt}
 
 CRITICAL: Return ONLY valid JSON. No preamble, no explanation, no markdown fences.`;
 
-      return await streamCall(fullPrompt, moment || wizContext || '', 2000);
+      const regenMoment = req.body.moment || wizContext || '';
+      return await streamCall(fullPrompt, regenMoment, 2000);
     }
 
     // ── PLAYBOOK ROUTING — non-moment storyTypes branch to correct tool ───────
