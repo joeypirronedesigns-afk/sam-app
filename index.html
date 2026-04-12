@@ -16307,19 +16307,7 @@ async function meetSamSendStory() {
     h2.push({ role: 'sam', content: fullReply });
     msSaveHistory(h2);
 
-    // Trigger voice DNA capture after SAM's first reply — if not yet calibrated
-    const samReplyCount = h2.filter(function(m){return m.role==='sam';}).length;
-    const alreadyCalibrated = localStorage.getItem('sam-voice-calibrated') === 'true' ||
-      (typeof WS !== 'undefined' && WS.voiceCalibrated);
-    const hasVoiceProfile = !!getSamVoiceProfile();
-    const shouldTrigger = !alreadyCalibrated && !hasVoiceProfile &&
-      (samReplyCount === 2 || (samReplyCount >= 2 && samReplyCount % 3 === 0));
-    if (shouldTrigger) {
-      setTimeout(function() {
-        const vcFn = window.showVoiceCalibration || (typeof showVoiceCalibration !== 'undefined' ? showVoiceCalibration : null);
-        if (vcFn) vcFn();
-      }, 1200);
-    }
+    // Voice DNA is gated behind the go button in first-visit flow — not auto-triggered here
   }
 
   msScrollThread();
