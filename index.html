@@ -11701,8 +11701,8 @@ function openMeetSAMOverlay() {
     const storyBtn = document.getElementById('navStoryEngineBtn');
     if (storyBtn && hasWizard) storyBtn.style.display = 'inline-flex';
 
-    // Always open clean thread for returning users
-    const isReturningUser = localStorage.getItem('samFirstRunDone') || localStorage.getItem('sam-chat-history');
+    // Always open clean thread for returning users (sam_uid = known user)
+    const isReturningUser = localStorage.getItem('sam_uid') || localStorage.getItem('samFirstRunDone') || localStorage.getItem('sam-chat-history');
     if (isReturningUser && typeof msOpenThread === 'function') {
       msOpenThread();
     } else if (typeof meetSamInit === 'function') {
