@@ -156,7 +156,7 @@
     @media (min-width: 768px) { main { padding-top: 68px; } }
 
     /* ─────────────────────────────────────────
-       UNIFIED HERO (v7.94)
+       UNIFIED HERO (v7.93)
     ───────────────────────────────────────── */
     .hero {
       padding: 48px 24px 40px;
@@ -4658,7 +4658,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       CINEMATIC MEET SAM — v7.95
+       CINEMATIC MEET SAM — v7.93
     ══════════════════════════════════════════════════════ */
 
     .meet-sam-wrap {
@@ -5108,7 +5108,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   
     /* ══════════════════════════════════════════════════════
-       SAM GUIDED TOUR SPLASH — v7.95
+       SAM GUIDED TOUR SPLASH — v7.93
     ══════════════════════════════════════════════════════ */
     .tour-splash {
       display: none;
@@ -5454,24 +5454,32 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
     </div>
     <button onclick="openMeetSAMOverlay()" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:#F0ECFF;background:linear-gradient(135deg,rgba(109,40,217,0.3),rgba(244,114,182,0.15));border:1px solid rgba(167,139,250,0.4);border-radius:50px;padding:7px 16px;cursor:pointer;transition:all 0.2s;font-family:'Sora',sans-serif;white-space:nowrap;" onmouseover="this.style.background='linear-gradient(135deg,rgba(109,40,217,0.5),rgba(244,114,182,0.25))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(109,40,217,0.3),rgba(244,114,182,0.15))'">✦ Talk with SAM</button>
     <button id="navStoryEngineBtn" onclick="openWizardPage(true)" style="display:none;align-items:center;gap:5px;font-size:12px;font-weight:700;color:#A78BFA;background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.25);border-radius:50px;padding:7px 16px;cursor:pointer;transition:all 0.2s;font-family:'Sora',sans-serif;white-space:nowrap;" onmouseover="this.style.background='rgba(167,139,250,0.15)'" onmouseout="this.style.background='rgba(167,139,250,0.08)'">📖 Story Engine</button>
-    <button onclick="openWorkshop()" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:rgba(240,236,255,0.7);background:none;border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:7px 16px;cursor:pointer;transition:all 0.2s;font-family:'Sora',sans-serif;white-space:nowrap;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.7)'">🛠 Workshop</button>
+    <button class="ideas-nav-btn" onclick="if(typeof openIdeasPanel==='function')openIdeasPanel();" style="display:inline-flex;" id="ideasNavBtn">💜 My Ideas<span class="ideas-count-badge" id="ideasNavBadge">0</span></button>
+    <button class="nav-setup-btn" onclick="openSetup()" style="display:none;" id="aboutMeNavBtn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      About me
+    </button>
+    <button id="samVoiceToggle" onclick="toggleSAMVoice()" title="SAM Voice" style="background:none;border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:7px 13px;font-size:13px;cursor:pointer;color:rgba(240,236,255,0.5);font-family:'Sora',sans-serif;font-weight:600;transition:all 0.2s;display:inline-flex;align-items:center;gap:5px;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.5)'">🔇 SAM Voice</button>
+<button onclick="showPhotoWizard()" id="samVoiceToggle" title="SAM Voice" style="background:none;border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:7px 13px;font-size:13px;cursor:pointer;color:rgba(240,236,255,0.5);font-family:'Sora',sans-serif;font-weight:600;transition:all 0.2s;display:inline-flex;align-items:center;gap:5px;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.5)'">📸 Photo Wizard</button>
     <button class="nav-signin-btn" onclick="openSignInModal()"  style="background:none;border:1px solid rgba(255,255,255,0.15);color:var(--text2);font-family:'Sora',sans-serif;font-size:13px;font-weight:600;padding:8px 18px;border-radius:50px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.5)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.15)';this.style.color='var(--text2)'">Sign in</button>
     <button class="nav-pro-btn" onclick="openProPage()">See plans →</button>
   </div>
 </nav>
 
 <main>
-<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.95</div>
+<div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.93</div>
 
 
-  <!-- ── UNIFIED HERO v7.95 ── -->
+  <!-- ── UNIFIED HERO v7.93 ── -->
   <div class="hero" id="heroSection">
 
     <!-- Social proof bar -->
     <div style="display:inline-flex;align-items:center;gap:8px;margin-bottom:32px;padding:10px 18px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:50px;flex-wrap:wrap;justify-content:center;">
-      <span style="font-size:11px;font-weight:700;color:rgba(167,139,250,0.8);">✦ 48 hours free</span>
+      <span style="font-size:11px;font-weight:700;color:rgba(167,139,250,0.8);">✦ Free to try</span>
       <span style="color:rgba(255,255,255,0.15);font-size:11px;">·</span>
-      <span style="font-size:11px;font-weight:700;color:rgba(52,211,153,0.8);">No card needed</span>
+      <span style="font-size:11px;font-weight:700;color:rgba(52,211,153,0.8);">No card</span>
+      <span style="color:rgba(255,255,255,0.15);font-size:11px;">·</span>
+      <span style="font-size:11px;font-weight:700;color:rgba(56,189,248,0.8);">No catch</span>
       <span style="color:rgba(255,255,255,0.15);font-size:11px;">·</span>
       <span style="font-size:11px;font-weight:700;color:rgba(251,191,36,0.8);">Cancel anytime</span>
     </div>
@@ -5823,25 +5831,15 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
 
 <div id="tools">
 
-    <!-- WORKSHOP -->
+    <!-- HOME GRID -->
     <div id="homeView">
-      <div style="max-width:860px;margin:0 auto;padding:48px 24px 8px;">
-        <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(167,139,250,0.5);margin-bottom:10px;">Your Studio</div>
-        <h2 style="font-family:'Sora',sans-serif;font-size:clamp(24px,3vw,34px);font-weight:800;color:var(--text);margin:0 0 6px;">Workshop</h2>
-        <p style="font-size:14px;color:var(--text3);margin:0 0 32px;line-height:1.6;">Everything SAM has built for you. Pick a tool and keep creating.</p>
+      <div class="tool-divider">
+        <div class="divider-line"></div>
+        <div class="divider-arrow"><span></span><span></span><span></span></div>
+        <div class="divider-label">Or pick a single tool</div>
+        <div class="divider-arrow"><span></span><span></span><span></span></div>
+        <div class="divider-line"></div>
       </div>
-      <!-- STORY WIZARD HERO ROW -->
-      <div style="max-width:860px;margin:0 auto 32px;padding:0 24px;">
-        <div style="background:linear-gradient(135deg,rgba(109,40,217,0.15),rgba(244,114,182,0.08));border:1px solid rgba(167,139,250,0.3);border-radius:20px;padding:28px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;">
-          <div style="flex:1;min-width:200px;">
-            <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(167,139,250,0.6);margin-bottom:8px;">✦ Start here</div>
-            <div style="font-family:'Sora',sans-serif;font-size:clamp(18px,2.5vw,24px);font-weight:800;color:var(--text);margin-bottom:6px;">Story Wizard</div>
-            <div style="font-size:14px;color:var(--text2);line-height:1.6;max-width:420px;">Tell SAM one moment. Walk out with a full video script, platform captions, b-roll cues, audience profile, and a lead magnet. This is SAM at full power.</div>
-          </div>
-          <button onclick="openWizardPage(true)" style="background:linear-gradient(135deg,#A78BFA,#F472B6);color:#fff;font-family:'Sora',sans-serif;font-size:15px;font-weight:800;padding:14px 28px;border:none;border-radius:50px;cursor:pointer;white-space:nowrap;box-shadow:0 0 24px rgba(167,139,250,0.3);transition:all 0.2s;flex-shrink:0;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 0 32px rgba(167,139,250,0.5)'" onmouseout="this.style.transform='';this.style.boxShadow='0 0 24px rgba(167,139,250,0.3)'">✦ Launch Story Wizard →</button>
-        </div>
-      </div>
-
       <div class="home-grid" id="homeGrid">
 
         <button class="tool-icon-btn tool-pulse" onclick="previewTool('pulse')">
@@ -5883,30 +5881,6 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
           <div class="tool-icon-name">The Lens</div>
           <div class="tool-icon-desc">Make people stop scrolling instantly</div>
         </button>
-
-        <button class="tool-icon-btn tool-reach" onclick="previewTool('reach')">
-          <div class="tool-icon-face">
-            <svg class="tool-icon-svg" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="10" r="4" stroke="#F472B6" stroke-width="1.8"/><path d="M6 24c0-4 3.6-7 8-7s8 3 8 7" stroke="#F472B6" stroke-width="1.8" stroke-linecap="round"/><path d="M21 6l3 3-3 3" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 9H18" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round"/></svg>
-          </div>
-          <div class="tool-icon-name">The Reach</div>
-          <div class="tool-icon-desc">Post your story to every platform at once</div>
-        </button>
-
-        <button class="tool-icon-btn" onclick="if(typeof openIdeasPanel==='function')openIdeasPanel();" style="border-color:rgba(167,139,250,0.2);">
-          <div class="tool-icon-face" style="background:rgba(167,139,250,0.08);">
-            <svg class="tool-icon-svg" viewBox="0 0 28 28" fill="none"><path d="M14 4v12M14 20v4" stroke="#A78BFA" stroke-width="2" stroke-linecap="round"/><path d="M8 8l-4-4M20 8l4-4M8 16l-4 4M20 16l4 4" stroke="#A78BFA" stroke-width="1.5" stroke-linecap="round"/></svg>
-          </div>
-          <div class="tool-icon-name" style="color:#A78BFA;">💜 My Ideas</div>
-          <div class="tool-icon-desc">Your saved hooks, scripts and concepts</div>
-        </button>
-
-        <div class="tool-icon-btn" style="opacity:0.5;cursor:default;border-style:dashed;">
-          <div class="tool-icon-face" style="background:rgba(255,255,255,0.03);">
-            <svg class="tool-icon-svg" viewBox="0 0 28 28" fill="none"><rect x="5" y="7" width="18" height="14" rx="2" stroke="#888" stroke-width="1.8"/><path d="M14 11v6M11 14h6" stroke="#888" stroke-width="1.8" stroke-linecap="round"/></svg>
-          </div>
-          <div class="tool-icon-name" style="color:#555;">Video Tool</div>
-          <div class="tool-icon-desc" style="color:#444;">Coming soon — $39/mo Broadcaster</div>
-        </div>
 
       </div>
     </div>
@@ -5979,7 +5953,6 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
           <textarea id="pulseInp" placeholder="Tell me what happened — in your own words, unpolished. The more real and specific, the better." oninput="updateChar('pulseInp','pulseChar')" maxlength="1000"></textarea>
           <button class="paste-btn" onclick="pasteToEl('pulseInp')" title="Paste">📋</button>
           <button class="mic-btn" id="micPulse" onclick="toggleMicFor('pulseInp','micPulse')">🎙</button>
-          <button class="mic-btn" onclick="openIdeasPicker('pulseInp')" title="Use a saved idea" style="color:#A78BFA;">💜</button>
         </div>
         <div class="char-hint"><span id="pulseChar">0</span> / 1000</div>
         <div class="chips">
@@ -6023,7 +5996,6 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
           <textarea id="sparkInp" placeholder="e.g. Self-taught DIY renovator documenting a full cottage gut renovation. My audience loves real moments, setbacks, and figuring things out without being an expert." style="min-height:90px;"></textarea>
           <button class="paste-btn" onclick="pasteToEl('sparkInp')" title="Paste">📋</button>
           <button class="mic-btn" id="micSpark" onclick="toggleMicFor('sparkInp','micSpark')">🎙</button>
-          <button class="mic-btn" onclick="openIdeasPicker('sparkInp')" title="Use a saved idea" style="color:#A78BFA;">💜</button>
         </div>
         <div class="loader" id="sparkLoader"><div class="loader-dots"><span style="background:var(--spark)"></span><span style="background:var(--spark)"></span><span style="background:var(--spark)"></span></div><div class="loader-text" id="sparkLoaderText">SAM is generating your ideas...</div></div>
         <div class="err-box" id="sparkErr"></div>
@@ -6058,7 +6030,6 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
           <textarea id="blueprintInp" placeholder="e.g. DIY cottage renovation — emotional moments, setbacks, and wins. Audience loves authenticity." style="min-height:90px;"></textarea>
           <button class="paste-btn" onclick="pasteToEl('blueprintInp')" title="Paste">📋</button>
           <button class="mic-btn" id="micBlueprint" onclick="toggleMicFor('blueprintInp','micBlueprint')">🎙</button>
-          <button class="mic-btn" onclick="openIdeasPicker('blueprintInp')" title="Use a saved idea" style="color:#A78BFA;">💜</button>
         </div>
         <div style="margin-top:14px;">
           <div class="field-label"><span class="field-label-accent" style="background:var(--blueprint);"></span>Platforms to rotate</div>
@@ -6107,7 +6078,6 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
           <textarea id="visionInp" placeholder="e.g. Self-taught DIY renovator. I want a concept nobody has seen before — something scroll-stopping that people share." style="min-height:90px;"></textarea>
           <button class="paste-btn" onclick="pasteToEl('visionInp')" title="Paste">📋</button>
           <button class="mic-btn" id="micVision" onclick="toggleMicFor('visionInp','micVision')">🎙</button>
-          <button class="mic-btn" onclick="openIdeasPicker('visionInp')" title="Use a saved idea" style="color:#A78BFA;">💜</button>
         </div>
         <div style="margin-top:14px;">
           <div class="field-label"><span class="field-label-accent" style="background:var(--vision);"></span>Platform</div>
@@ -6191,7 +6161,6 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
             <textarea id="lensInp" placeholder="e.g. This is from my renovation series — help me build a thumbnail that stops the scroll..." style="min-height:70px;padding-right:94px;"></textarea>
             <button class="paste-btn" onclick="pasteToEl('lensInp')" title="Paste">📋</button>
             <button class="mic-btn" id="micLens" onclick="toggleMicFor('lensInp','micLens')">🎙</button>
-            <button class="mic-btn" onclick="openIdeasPicker('lensInp')" title="Use a saved idea" style="color:#A78BFA;">💜</button>
           </div>
         </div>
         <div class="loader" id="lensLoader"><div class="loader-dots"><span style="background:var(--lens)"></span><span style="background:var(--lens)"></span><span style="background:var(--lens)"></span></div><div class="loader-text" id="lensLoaderText">SAM is reading your image...</div></div>
@@ -6264,133 +6233,6 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
               <button class="save-btn" style="flex:1;" onclick="printToolOutput('lensOutput','The Lens')">↓ Save PDF</button>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- THE REACH -->
-    <div class="tool-wrap" id="tool-reach">
-      <button class="tool-back-btn" onclick="goHome()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-        All tools
-      </button>
-      <div class="tool-header-bar">
-        <div class="tool-header-icon" style="background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);">
-          <svg width="22" height="22" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="10" r="4" stroke="#F472B6" stroke-width="1.8"/><path d="M6 24c0-4 3.6-7 8-7s8 3 8 7" stroke="#F472B6" stroke-width="1.8" stroke-linecap="round"/><path d="M21 6l3 3-3 3" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 9H18" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </div>
-        <div class="tool-header-title">The Reach</div>
-      </div>
-
-      <div class="glass">
-        <!-- Step 1: Upload photo -->
-        <div style="margin-bottom:20px;">
-          <div class="field-label"><span class="field-label-accent" style="background:#F472B6;"></span>Upload your photo</div>
-          <div id="reachDropZone" onclick="document.getElementById('reachFile').click()" ondragover="event.preventDefault();this.style.borderColor='#F472B6'" ondragleave="this.style.borderColor='#333'" ondrop="reachHandleDrop(event)" style="border:2px dashed #333;border-radius:12px;padding:32px;text-align:center;cursor:pointer;transition:all 0.2s;background:rgba(255,255,255,0.02);">
-            <input type="file" id="reachFile" accept="image/*" style="display:none;" onchange="reachHandleFile(event)">
-            <div id="reachDropInner">
-              <div style="font-size:32px;margin-bottom:8px;">📸</div>
-              <div style="font-size:14px;font-weight:600;color:var(--text2);">Drop a photo or <span style="color:#F472B6;cursor:pointer;">browse</span></div>
-              <div style="font-size:12px;color:var(--text3);margin-top:4px;">JPG, PNG, HEIC — any photo you want to post</div>
-            </div>
-            <div id="reachDropPreview" style="display:none;position:relative;width:100%;">
-              <img id="reachPreviewImg" src="" alt="" style="max-width:100%;max-height:240px;border-radius:8px;object-fit:contain;"/>
-              <button onclick="reachRemoveImg(event)" style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.7);border:none;color:#fff;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:14px;">✕</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Step 2: Your moment -->
-        <div style="margin-bottom:20px;">
-          <div class="field-label"><span class="field-label-accent" style="background:#F472B6;"></span>What's the story behind this photo? <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3);font-size:12px;">(optional)</span></div>
-          <div class="input-wrap">
-            <textarea id="reachMoment" placeholder="e.g. Just finished the kitchen renovation after 3 months — couldn't believe how it turned out..." style="min-height:80px;"></textarea>
-            <button class="paste-btn" onclick="pasteToEl('reachMoment')" title="Paste">📋</button>
-            <button class="mic-btn" id="micReach" onclick="toggleMicFor('reachMoment','micReach')">🎙</button>
-            <button class="mic-btn" onclick="openIdeasPicker('reachMoment')" title="Use a saved idea" style="color:#A78BFA;">💜</button>
-          </div>
-        </div>
-
-        <!-- Step 3: Select platforms -->
-        <div style="margin-bottom:20px;">
-          <div class="field-label"><span class="field-label-accent" style="background:#F472B6;"></span>Select platforms</div>
-          <div class="platform-grid" id="reachPlatforms">
-            <button class="platform-pill" data-p="Instagram" onclick="togglePill(this,'reachPlatforms')">📸 Instagram</button>
-            <button class="platform-pill" data-p="Facebook" onclick="togglePill(this,'reachPlatforms')">👥 Facebook</button>
-            <button class="platform-pill" data-p="LinkedIn" onclick="togglePill(this,'reachPlatforms')">💼 LinkedIn</button>
-            <button class="platform-pill" data-p="X (Twitter)" onclick="togglePill(this,'reachPlatforms')">✕ X</button>
-            <button class="platform-pill" data-p="TikTok" onclick="togglePill(this,'reachPlatforms')">🎵 TikTok</button>
-            <button class="platform-pill" data-p="Pinterest" onclick="togglePill(this,'reachPlatforms')">📌 Pinterest</button>
-          </div>
-        </div>
-
-        <!-- Step 4: Output options -->
-        <div style="margin-bottom:20px;">
-          <div class="field-label"><span class="field-label-accent" style="background:#F472B6;"></span>What do you need?</div>
-          <div class="platform-grid" id="reachOutputs">
-            <button class="platform-pill sel" data-p="Title/Headline" onclick="togglePill(this,'reachOutputs')">✦ Title/Headline</button>
-            <button class="platform-pill sel" data-p="Caption" onclick="togglePill(this,'reachOutputs')">✍ Caption</button>
-            <button class="platform-pill sel" data-p="Description" onclick="togglePill(this,'reachOutputs')">📝 Description</button>
-            <button class="platform-pill sel" data-p="Call to Action" onclick="togglePill(this,'reachOutputs')">🎯 Call to Action</button>
-            <button class="platform-pill sel" data-p="Hashtags" onclick="togglePill(this,'reachOutputs')">🏷 Hashtags</button>
-          </div>
-        </div>
-
-        <!-- Step 5: Schedule -->
-        <div style="margin-bottom:20px;">
-          <div class="field-label"><span class="field-label-accent" style="background:#F472B6;"></span>Schedule your post <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3);font-size:12px;">(optional)</span></div>
-          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;" id="reachScheduler">
-            <label style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;">
-              <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;">Mon</span>
-              <input type="radio" name="reachDay" value="Monday" style="accent-color:#F472B6;">
-              <input type="date" id="reachDateMon" style="width:100%;font-size:9px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text2);padding:3px;text-align:center;">
-            </label>
-            <label style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;">
-              <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;">Tue</span>
-              <input type="radio" name="reachDay" value="Tuesday" style="accent-color:#F472B6;">
-              <input type="date" id="reachDateTue" style="width:100%;font-size:9px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text2);padding:3px;text-align:center;">
-            </label>
-            <label style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;">
-              <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;">Wed</span>
-              <input type="radio" name="reachDay" value="Wednesday" style="accent-color:#F472B6;">
-              <input type="date" id="reachDateWed" style="width:100%;font-size:9px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text2);padding:3px;text-align:center;">
-            </label>
-            <label style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;">
-              <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;">Thu</span>
-              <input type="radio" name="reachDay" value="Thursday" style="accent-color:#F472B6;">
-              <input type="date" id="reachDateThu" style="width:100%;font-size:9px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text2);padding:3px;text-align:center;">
-            </label>
-            <label style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;">
-              <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;">Fri</span>
-              <input type="radio" name="reachDay" value="Friday" style="accent-color:#F472B6;">
-              <input type="date" id="reachDateFri" style="width:100%;font-size:9px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text2);padding:3px;text-align:center;">
-            </label>
-            <label style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;">
-              <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;">Sat</span>
-              <input type="radio" name="reachDay" value="Saturday" style="accent-color:#F472B6;">
-              <input type="date" id="reachDateSat" style="width:100%;font-size:9px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text2);padding:3px;text-align:center;">
-            </label>
-            <label style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;">
-              <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;">Sun</span>
-              <input type="radio" name="reachDay" value="Sunday" style="accent-color:#F472B6;">
-              <input type="date" id="reachDateSun" style="width:100%;font-size:9px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text2);padding:3px;text-align:center;">
-            </label>
-          </div>
-        </div>
-
-        <div class="loader" id="reachLoader" style="display:none;"><div class="loader-dots"><span style="background:#F472B6"></span><span style="background:#F472B6"></span><span style="background:#F472B6"></span></div><div class="loader-text">SAM is writing your post...</div></div>
-        <div class="err-box" id="reachErr"></div>
-        <button class="run-btn" id="reachBtn" onclick="guardedRunFn(runReach)" style="background:linear-gradient(135deg,#F472B6,#A78BFA);margin-top:8px;">✦ Generate my post →</button>
-      </div>
-
-      <!-- Output -->
-      <div class="output-wrap" id="reachOutput" style="display:none;">
-        <div class="output-card">
-          <div class="output-header">
-            <div class="output-label" style="color:#F472B6;">Your post</div>
-            <button class="reset-btn" onclick="resetReach()">← Start over</button>
-          </div>
-          <div class="output-body" id="reachBody"></div>
-          <div class="save-bar"><button class="save-btn" onclick="printToolOutput('reachOutput','The Reach')">↓ Save as PDF</button></div>
         </div>
       </div>
     </div>
@@ -6550,20 +6392,6 @@ const TOOLS = {
       'Safe headline + bold headline, each with a visual layout concept you can take to Canva',
       'Drop analytics screenshot — SAM reads what\'s working and tells you exactly what to post next'
     ]
-  },
-  reach: {
-    name: 'The Reach',
-    tagline: 'Photo Post Publisher',
-    color: '#F472B6',
-    bg: 'rgba(244,114,182,0.08)',
-    border: 'rgba(244,114,182,0.2)',
-    icon: `<svg width="36" height="36" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="10" r="4" stroke="#F472B6" stroke-width="1.8"/><path d="M6 24c0-4 3.6-7 8-7s8 3 8 7" stroke="#F472B6" stroke-width="1.8" stroke-linecap="round"/><path d="M21 6l3 3-3 3" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 9H18" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round"/></svg>`,
-    features: [
-      'Upload any photo and SAM writes platform-perfect captions, headlines and hashtags',
-      'Select which platforms you want — Instagram, Facebook, LinkedIn, X, TikTok, Pinterest',
-      'Choose exactly what you need: headline, caption, description, CTA, hashtags',
-      'Schedule your post for any day of the week — SAM keeps your story reaching people'
-    ]
   }
 };
 
@@ -6667,343 +6495,15 @@ function openTool(tool) {
     }
   }
 }
-function openWorkshop() {
-  currentTool = null;
-  const _hwb = document.getElementById('navWizardBtn'); if(_hwb) _hwb.style.display = 'none';
-  document.getElementById('heroSection').style.display = 'none';
-  const hd = document.getElementById('heroDesktop');
-  if (hd) hd.style.display = 'none';
-  const hiw = document.getElementById('howItWorks');
-  if (hiw) hiw.style.display = 'none';
-  document.getElementById('homeView').style.display = 'block';
-  document.querySelectorAll('.tool-wrap').forEach(w => w.classList.remove('active'));
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
 function goHome() {
   currentTool = null;
   const _hwb = document.getElementById('navWizardBtn'); if(_hwb) _hwb.style.display = 'none';
   document.getElementById('heroSection').style.display = '';
   const hd = document.getElementById('heroDesktop');
   if (hd) hd.style.display = window.innerWidth >= 900 ? 'block' : 'none';
-  const hiw = document.getElementById('howItWorks');
-  if (hiw) hiw.style.display = '';
   document.getElementById('homeView').style.display = 'block';
   document.querySelectorAll('.tool-wrap').forEach(w => w.classList.remove('active'));
   window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// ── IDEAS PICKER ─────────────────────────────────────────────────────────────
-let ideasPickerTarget = null;
-
-function openIdeasPicker(targetId) {
-  ideasPickerTarget = targetId;
-  const ideas = IB.load();
-  const list = document.getElementById('ideasPickerList');
-  if (!ideas || ideas.length === 0) {
-    list.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3);font-size:14px;">No saved ideas yet. Use any tool and save your outputs to Ideas.</div>';
-  } else {
-    const tL = { pulse:'The Pulse', spark:'The Spark', blueprint:'Blueprint', vision:'The Vision', lens:'The Lens', wizard:'Story Wizard', reach:'The Reach' };
-    list.innerHTML = ideas.map(idea => {
-      const preview = (idea.text || '').slice(0, 120).replace(/</g,'&lt;').replace(/>/g,'&gt;');
-      const label = tL[idea.type] || idea.type;
-      return '<div onclick=\"ideasPickerSelect(\'' + idea.id + '\')\" style=\"background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px;margin-bottom:8px;cursor:pointer;transition:all 0.15s;\" onmouseover=\"this.style.borderColor=\'rgba(167,139,250,0.4)\';this.style.background=\'rgba(167,139,250,0.06)\'\" onmouseout=\"this.style.borderColor=\'rgba(255,255,255,0.08)\';this.style.background=\'rgba(255,255,255,0.03)\'">'
-        + '<div style="font-size:10px;font-weight:700;color:rgba(167,139,250,0.6);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">' + label + '</div>'
-        + '<div style="font-size:13px;color:var(--text2);line-height:1.5;">' + preview + (idea.text.length > 120 ? '...' : '') + '</div>'
-        + '</div>';
-    }).join('');
-  }
-  document.getElementById('ideasPickerOverlay').style.display = 'block';
-  document.getElementById('ideasPickerPanel').style.display = 'block';
-  document.body.style.overflow = 'hidden';
-}
-
-function closeIdeasPicker() {
-  document.getElementById('ideasPickerOverlay').style.display = 'none';
-  document.getElementById('ideasPickerPanel').style.display = 'none';
-  document.body.style.overflow = '';
-  ideasPickerTarget = null;
-}
-
-function ideasPickerSelect(id) {
-  const idea = IB.load().find(i => i.id === id);
-  if (!idea || !ideasPickerTarget) return;
-  const el = document.getElementById(ideasPickerTarget);
-  if (el) {
-    el.value = idea.text;
-    el.focus();
-    if (ideasPickerTarget === 'pulseInp') updateChar('pulseInp','pulseChar');
-  }
-  closeIdeasPicker();
-}
-
-// ── THE REACH ────────────────────────────────────────────────────────────────
-let reachImgB64 = null;
-let reachImgType = null;
-
-function reachHandleFile(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  reachImgType = file.type;
-  const reader = new FileReader();
-  reader.onload = function(ev) {
-    reachImgB64 = ev.target.result.split(',')[1];
-    document.getElementById('reachPreviewImg').src = ev.target.result;
-    document.getElementById('reachDropPreview').style.display = 'block';
-    document.getElementById('reachDropInner').style.display = 'none';
-  };
-  reader.readAsDataURL(file);
-}
-
-function reachHandleDrop(e) {
-  e.preventDefault();
-  document.getElementById('reachDropZone').style.borderColor = '#333';
-  const file = e.dataTransfer.files[0];
-  if (!file || !file.type.startsWith('image/')) return;
-  reachImgType = file.type;
-  const reader = new FileReader();
-  reader.onload = function(ev) {
-    reachImgB64 = ev.target.result.split(',')[1];
-    document.getElementById('reachPreviewImg').src = ev.target.result;
-    document.getElementById('reachDropPreview').style.display = 'block';
-    document.getElementById('reachDropInner').style.display = 'none';
-  };
-  reader.readAsDataURL(file);
-}
-
-function reachRemoveImg(e) {
-  e.stopPropagation();
-  reachImgB64 = null;
-  reachImgType = null;
-  document.getElementById('reachPreviewImg').src = '';
-  document.getElementById('reachDropPreview').style.display = 'none';
-  document.getElementById('reachDropInner').style.display = 'block';
-  document.getElementById('reachFile').value = '';
-}
-
-async function runReach() {
-  const moment = document.getElementById('reachMoment').value.trim();
-  const platforms = getSelPills('reachPlatforms');
-  const outputs = getSelPills('reachOutputs');
-  const scheduledDay = document.querySelector('input[name="reachDay"]:checked');
-
-  if (!reachImgB64) {
-    document.getElementById('reachErr').textContent = 'Please upload a photo first.';
-    document.getElementById('reachErr').style.display = 'block';
-    return;
-  }
-  if (platforms.length === 0) {
-    document.getElementById('reachErr').textContent = 'Please select at least one platform.';
-    document.getElementById('reachErr').style.display = 'block';
-    return;
-  }
-
-  document.getElementById('reachErr').style.display = 'none';
-  document.getElementById('reachErr').textContent = '';
-  document.getElementById('reachLoader').style.display = 'flex';
-  document.getElementById('reachBtn').disabled = true;
-
-  const setup = getSetup();
-  const prompt = `You are SAM, a strategic content assistant. The user has uploaded a photo and wants platform-ready post content. Respond in plain text only — NO JSON, no code blocks, no markdown symbols.
-
-Photo context: ${moment || 'No additional context provided.'}
-Platforms: ${platforms.join(', ')}
-Outputs needed: ${outputs.join(', ')}
-${scheduledDay ? 'Scheduled for: ' + scheduledDay.value : ''}
-${setup.niche ? 'Creator niche: ' + setup.niche : ''}
-${setup.tone ? 'Tone: ' + setup.tone : ''}
-
-For each platform write clearly with the platform name as a header. Make every caption feel personal, story-driven, and native to that platform. Hashtags should be specific and strategic, not generic. Write in the creator's voice, not corporate language.`;
-
-  try {
-    const resp = await fetch('/api/sam', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        mode: 'upload',
-        imageBase64: reachImgB64,
-        imageType: reachImgType,
-        moment: prompt,
-        forceType: 'reach'
-      })
-    });
-
-    const reader2 = resp.body.getReader();
-    const decoder = new TextDecoder();
-    let fullText = '';
-    document.getElementById('reachLoader').style.display = 'none';
-    document.getElementById('reachOutput').style.display = 'block';
-    document.getElementById('reachBody').innerHTML = '<div id="reachStream" style="color:#ccc;font-size:14px;line-height:1.8;white-space:pre-wrap;"></div>';
-
-    while (true) {
-      const { done, value } = await reader2.read();
-      if (done) break;
-      const chunk = decoder.decode(value);
-      const lines = chunk.split('\n');
-      for (const line of lines) {
-        if (line.startsWith('data: ')) {
-          try {
-            const d = JSON.parse(line.slice(6));
-            if (d.t) {
-              fullText += d.t;
-              document.getElementById('reachStream').textContent = fullText;
-            }
-          } catch {}
-        }
-      }
-    }
-
-    // Parse and render the output
-    const platforms = getSelPills('reachPlatforms');
-    const outputs = getSelPills('reachOutputs');
-    const scheduledDay = document.querySelector('input[name="reachDay"]:checked');
-    let rendered = '';
-
-    function reachField(label, text, fieldId) {
-      const esc = text.replace(/'/g, "\'").replace(/\n/g, ' ');
-      return '<div style="margin-bottom:14px;">'
-        + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">'
-        + '<div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.08em;">' + label + '</div>'
-        + '<div style="display:flex;gap:6px;">'
-        + '<button onclick="reachCopyField(this)" data-text="' + esc + '" style="background:none;border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:rgba(255,255,255,0.4);font-size:10px;padding:2px 8px;cursor:pointer;">📋 Copy</button>'
-        + '<button onclick="reachEditField(\'' + fieldId + '\')" style="background:none;border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:rgba(255,255,255,0.4);font-size:10px;padding:2px 8px;cursor:pointer;">✏️ Edit</button>'
-        + '</div></div>'
-        + '<div id="' + fieldId + '" contenteditable="false" style="font-size:14px;color:rgba(240,236,255,0.85);line-height:1.7;padding:8px;border-radius:8px;border:1px solid transparent;transition:all 0.2s;">' + text + '</div>'
-        + '</div>';
-    }
-
-    try {
-      const parsed = JSON.parse(fullText.trim());
-      let platformIdx = 0;
-      platforms.forEach(platform => {
-        const pid = 'reach-platform-' + platformIdx++;
-        let platformText = '';
-        const headline = parsed.headline_safe || (parsed.hook_ideas && parsed.hook_ideas[0]) || '';
-        const caption = parsed.content_angle || parsed.diagnosis || '';
-        const description = parsed.next_action || '';
-
-        rendered += '<div id="' + pid + '" style="background:rgba(255,255,255,0.03);border:1px solid rgba(244,114,182,0.2);border-radius:14px;padding:20px;margin-bottom:16px;">';
-        rendered += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">';
-        rendered += '<div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#F472B6;">' + platform + '</div>';
-        rendered += '<button onclick="reachCopyAll(\'' + pid + '\')" style="background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.2);border-radius:6px;color:#A78BFA;font-size:11px;font-weight:600;padding:4px 12px;cursor:pointer;">📋 Copy all</button>';
-        rendered += '</div>';
-
-        if (outputs.includes('Title/Headline') && headline) {
-          platformText += headline + '\n';
-          rendered += reachField('Headline', headline, pid + '-headline');
-        }
-        if (outputs.includes('Caption') && caption) {
-          platformText += caption + '\n';
-          rendered += reachField('Caption', caption, pid + '-caption');
-        }
-        if (outputs.includes('Description') && description) {
-          platformText += description + '\n';
-          rendered += reachField('Description', description, pid + '-desc');
-        }
-        if (outputs.includes('Call to Action')) {
-          const cta = 'Follow for more behind-the-scenes content.';
-          platformText += cta + '\n';
-          rendered += reachField('Call to Action', cta, pid + '-cta');
-        }
-        if (outputs.includes('Hashtags')) {
-          const tags = '#CreatorLife #ContentCreator #' + platform.replace(/[^a-zA-Z]/g,'');
-          platformText += tags + '\n';
-          rendered += reachField('Hashtags', tags, pid + '-hashtags');
-        }
-
-        rendered += '<div style="display:flex;gap:8px;margin-top:8px;">';
-        rendered += '<button style="flex:1;padding:10px;background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);border-radius:8px;color:rgba(244,114,182,0.5);font-size:12px;font-weight:600;cursor:not-allowed;">📲 Post to ' + platform + ' — Connect account →</button>';
-        rendered += '</div>';
-        rendered += '</div>';
-      });
-
-      if (scheduledDay) {
-        rendered += '<div style="margin-top:8px;padding:12px 16px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:10px;font-size:13px;color:rgba(167,139,250,0.8);">📅 Scheduled for <strong>' + scheduledDay.value + '</strong></div>';
-      }
-    } catch(e) {
-      rendered = '<div style="color:#ccc;font-size:14px;line-height:1.8;white-space:pre-wrap;">' + fullText + '</div>';
-    }
-    document.getElementById('reachBody').innerHTML = rendered;
-  } catch(err) {
-    document.getElementById('reachLoader').style.display = 'none';
-    document.getElementById('reachErr').textContent = 'Something went wrong. Please try again.';
-    document.getElementById('reachErr').style.display = 'block';
-  } finally {
-    document.getElementById('reachBtn').disabled = false;
-  }
-}
-
-function reachCopyField(btn) {
-  const text = btn.dataset.text || '';
-  navigator.clipboard.writeText(text).then(function() {
-    const orig = btn.textContent;
-    btn.textContent = '✓ Copied';
-    btn.style.color = '#34D399';
-    btn.style.borderColor = 'rgba(52,211,153,0.3)';
-    setTimeout(function() {
-      btn.textContent = orig;
-      btn.style.color = 'rgba(255,255,255,0.4)';
-      btn.style.borderColor = 'rgba(255,255,255,0.1)';
-    }, 2000);
-  });
-}
-
-function reachEditField(fieldId) {
-  const el = document.getElementById(fieldId);
-  if (!el) return;
-  const isEditing = el.contentEditable === 'true';
-  if (isEditing) {
-    el.contentEditable = 'false';
-    el.style.border = '1px solid transparent';
-    el.style.background = 'transparent';
-  } else {
-    el.contentEditable = 'true';
-    el.style.border = '1px solid rgba(167,139,250,0.4)';
-    el.style.background = 'rgba(167,139,250,0.05)';
-    el.focus();
-    // Move cursor to end
-    const range = document.createRange();
-    range.selectNodeContents(el);
-    range.collapse(false);
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
-  }
-}
-
-function reachCopyAll(platformId) {
-  const container = document.getElementById(platformId);
-  if (!container) return;
-  const fields = container.querySelectorAll('[contenteditable]');
-  let text = '';
-  fields.forEach(function(f) { text += f.textContent.trim() + '\n\n'; });
-  navigator.clipboard.writeText(text.trim()).then(function() {
-    const btn = container.querySelector('button[onclick*="reachCopyAll"]');
-    if (btn) {
-      const orig = btn.textContent;
-      btn.textContent = '✓ Copied!';
-      btn.style.color = '#34D399';
-      setTimeout(function() {
-        btn.textContent = orig;
-        btn.style.color = '#A78BFA';
-      }, 2000);
-    }
-  });
-}
-
-function resetReach() {
-  reachImgB64 = null;
-  reachImgType = null;
-  document.getElementById('reachFile').value = '';
-  document.getElementById('reachPreviewImg').src = '';
-  document.getElementById('reachDropPreview').style.display = 'none';
-  document.getElementById('reachDropInner').style.display = 'block';
-  document.getElementById('reachMoment').value = '';
-  document.getElementById('reachErr').style.display = 'none';
-  document.getElementById('reachOutput').style.display = 'none';
-  document.getElementById('reachBody').innerHTML = '';
-  document.querySelectorAll('#reachPlatforms .platform-pill').forEach(p => p.classList.remove('sel'));
-  document.querySelectorAll('input[name="reachDay"]').forEach(r => r.checked = false);
 }
 
 // ── UI HELPERS ───────────────────────────────────────────────────────────────
@@ -9143,7 +8643,7 @@ window.getSamVoiceProfile = function() {
 };
 
 function getSuperSAMPrompt() {
-  // VOICE DNA BRAND KNOWLEDGE — v7.95
+  // VOICE DNA BRAND KNOWLEDGE — v7.93
   // SAM knows this about herself and leads with it when relevant:
   // - Voice DNA is SAM's exclusive differentiator. No other AI tool has it.
   // - It is a living profile of how the creator communicates — rhythm, humor,
@@ -9692,7 +9192,8 @@ function exportIdeasAsPDF(ideas){
     +'<div class="cover"><h1>My SAM Ideas</h1><h2>'+ideas.length+' saved idea'+(ideas.length===1?'':'s')+' · Exported '+new Date().toLocaleDateString()+'</h2></div>'
     +lines
     +'<div style="margin-top:40px;text-align:center;font-size:11px;color:#999;border-top:1px solid #eee;padding-top:16px;">Built with SAM · samforcreators.com</div>'
-    +'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},600);};</'+'script>\n</html>';
+    +'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},600);};</'+'script>'
+    +'</body></html>';
   const w = window.open('','_blank','width=900,height=700');
   if(w){ w.document.open(); w.document.write(printHTML); w.document.close(); setTimeout(function(){w.print();},600); }
 }
@@ -9870,12 +9371,10 @@ if (document.readyState === 'loading') {
     initPersistentSAM();
     initTrial(); initChat(); initWizard(); initHeroVisibility();
     setTimeout(() => { if (typeof updateWizardHeader === 'function') updateWizardHeader(); }, 300);
-    setTimeout(() => { if (localStorage.getItem('sam_uid')) openWorkshop(); }, 400);
   });
 } else {
   initTrial(); initChat(); initWizard(); initHeroVisibility();
   setTimeout(() => { if (typeof updateWizardHeader === 'function') updateWizardHeader(); }, 300);
-  setTimeout(() => { if (localStorage.getItem('sam_uid')) openWorkshop(); }, 400);
 }
 
 
@@ -10191,7 +9690,7 @@ function initWizard() {
 
 
   // ══════════════════════════════════════════════════════
-  // CINEMATIC MEET SAM — v7.95
+  // CINEMATIC MEET SAM — v7.93
   // ══════════════════════════════════════════════════════
 
   const MS = {
@@ -10212,10 +9711,9 @@ function initWizard() {
     const session = localStorage.getItem('sam_session_v2');
     const firstRunDone = localStorage.getItem('samFirstRunDone');
     const hasHistory = JSON.parse(localStorage.getItem('sam-chat-history')||'[]').length > 1;
-    const isKnownUser = localStorage.getItem('sam_uid');
     const step = localStorage.getItem('sam_session_step') || '0';
     const stepNum = parseInt(step);
-    if (!session && !firstRunDone && !hasHistory && !isKnownUser) return false;
+    if (!session && !firstRunDone && !hasHistory) return false;
 
     const stepLabels = {
       '0':'Brand Profile','1':'What to Create','2':'Your Moment',
@@ -10246,15 +9744,15 @@ function initWizard() {
         <div style="margin-left:auto;width:7px;height:7px;border-radius:50%;background:#34D399;flex-shrink:0;"></div>
       </div>
       <div style="font-size:15px;line-height:1.7;color:rgba(240,236,255,0.85);margin-bottom:6px;">Hey — welcome back.</div>
-      ${session && stepNum > 0 ? `<div style="font-size:15px;line-height:1.7;color:rgba(240,236,255,0.85);margin-bottom:6px;">Looks like you were working on something. Your story is still saved.</div>
-      <div style="font-size:15px;line-height:1.7;color:rgba(240,236,255,0.85);margin-bottom:20px;">Want to pick up where you left off — or open one of the other tools?</div>
+      <div style="font-size:15px;line-height:1.7;color:rgba(240,236,255,0.85);margin-bottom:6px;">Looks like you were working on something. Your story&#39;s still saved.</div>
+      <div style="font-size:15px;line-height:1.7;color:rgba(240,236,255,0.85);margin-bottom:20px;">Want to pick up where you left off — or open one of the other tools in our ecosystem?</div>
       <div style="background:rgba(167,139,250,0.07);border:1px solid rgba(167,139,250,0.2);border-radius:10px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
         <div>
           <div style="font-size:11px;color:rgba(240,236,255,0.35);margin-bottom:3px;letter-spacing:0.05em;text-transform:uppercase;">Story Engine</div>
           <div style="font-size:13px;color:#F0ECFF;font-weight:500;">Step ${stepNum} of 12 · ${label}</div>
         </div>
         <div style="font-size:11px;color:#A78BFA;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.2);padding:4px 10px;border-radius:999px;flex-shrink:0;">Saved ✓</div>
-      </div>` : `<div style="font-size:15px;line-height:1.7;color:rgba(240,236,255,0.85);margin-bottom:24px;">Ready to keep building? Pick up the Story Wizard or jump into any tool.</div>`}
+      </div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;">
         <button onclick="msOpenStoryEngine()" style="display:inline-flex;align-items:center;gap:8px;padding:12px 26px;border-radius:999px;font-size:14px;font-weight:700;cursor:pointer;border:none;background:linear-gradient(135deg,#A78BFA,#F472B6);color:#09080F;font-family:inherit;box-shadow:0 0 24px rgba(167,139,250,0.35);">📖 Open Story Engine</button>
         <button onclick="msReturningExplore()" style="display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:999px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:rgba(240,236,255,0.6);font-family:inherit;">⬡ Explore the tools</button>
@@ -11023,7 +10521,6 @@ Rules:
   }
 
   function meetSamInit() {
-    window._msFirstVisitActive = true;
     // SAM Voice auto-on removed — Pro feature coming soon
     // Restore voice profile from localStorage if available
     try {
@@ -11032,13 +10529,7 @@ Rules:
         if (vp) { WS.voiceProfile = vp; WS.voiceCalibrated = true; }
       }
     } catch(e) {}
-    // Reset state — clear any leftover cards from previous sessions
-    const oldVoiceCalib = document.getElementById('msVoiceCalib');
-    if (oldVoiceCalib) oldVoiceCalib.remove();
-    const oldHandoff = document.getElementById('msHandoffCard');
-    if (oldHandoff) oldHandoff.remove();
-    const goWrapReset = document.getElementById('msGoBtnWrap');
-    if (goWrapReset) { goWrapReset.style.display = 'none'; goWrapReset.classList.remove('revealed'); }
+    // Reset state
     const bubble = document.getElementById('msOpeningBubble');
     const choice = document.getElementById('msPathChoice');
     const talkPath = document.getElementById('msTalkPath');
@@ -11108,15 +10599,6 @@ Rules:
 
   
   function meetSamHandoff() {
-    // If voice not calibrated yet, show Voice DNA first
-    const voiceDone = (typeof getSamVoiceProfile === 'function' && !!getSamVoiceProfile()) || localStorage.getItem('sam-voice-calibrated') === 'true';
-    if (!voiceDone && typeof showVoiceCalibration === 'function') {
-      const goWrap = document.getElementById('msGoBtnWrap');
-      if (goWrap) goWrap.style.display = 'none';
-      showVoiceCalibration();
-      setTimeout(function(){ var c=document.getElementById("msVoiceCalib"); if(c) c.scrollIntoView({behavior:"smooth",block:"center"}); }, 400);
-      return;
-    }
     // Show handoff card instead of jumping straight to wizard
     const wrap = document.querySelector('.meet-sam-wrap');
     if (!wrap) { meetSamHandoffExecute(); return; }
@@ -11232,7 +10714,6 @@ Rules:
 
 
   function meetSamHandoffExecute() {
-    window._msFirstVisitActive = false;
     // Extract everything SAM learned from the conversation
     const learned = meetSamExtractContext();
 
@@ -11351,7 +10832,7 @@ Rules:
     startWizard('new');
   }
 
-  window.meetSamSendStoryFirstVisit = function meetSamSendStoryFirstVisit() {
+  function meetSamSendStory() {
     const input = document.getElementById('meetSamStoryInput');
     const story = input.value.trim();
     if (!story || story.length < 5) {
@@ -11395,7 +10876,6 @@ Rules:
     const thinkingTextEl = document.getElementById('msThinkingText');
     const thinkInterval = setInterval(() => {
       tIdx = (tIdx + 1) % MS_THINKING_LINES.length;
-      if (!thinkingTextEl) return;
       thinkingTextEl.style.opacity = '0';
       setTimeout(() => {
         thinkingTextEl.textContent = MS_THINKING_LINES[tIdx];
@@ -11442,7 +10922,7 @@ If they are asking about voice, mic, or speaking instead of typing: Warmly tell 
 
 If they mention they built SAM, are testing it, or are the developer: Play along warmly. Say something like "Hey — I know who you are. Let's make sure everything's working. Drop anything and I'll reflect it back." Then end with the button nudge.
 
-Rules: Max 3 sentences total. Never use bullet points. Never say "I can see that" or "It sounds like." Never be generic. Always end by pointing them to the button below. NEVER mention voice, Voice DNA, locking in voice, or calibration — that happens automatically after they click the button and is handled by the UI. NEVER accuse the user of prompt injection or testing — stay warm and in character always.`
+Rules: Max 3 sentences total. Never use bullet points. Never say "I can see that" or "It sounds like." Never be generic. Always end by pointing them to the button below. NEVER accuse the user of prompt injection or testing — stay warm and in character always.`
         })
       });
 
@@ -11564,12 +11044,16 @@ Rules: Max 3 sentences total. Never use bullet points. Never say "I can see that
         // Stop avatar pulse and ring
         avatars.forEach(a => a.classList.remove('ms-avatar-pulse'));
         if (respWrap) respWrap.classList.remove('speaking');
-        // Show go button — Voice DNA fires when user clicks
+        // Show voice calibration instead of go button
         setTimeout(() => {
-          const wrap2 = document.getElementById('msGoBtnWrap');
-          if (wrap2) {
-            wrap2.style.display = 'block';
-            setTimeout(() => { wrap2.classList.add('revealed'); }, 80);
+          if (typeof showVoiceCalibration === 'function') {
+            showVoiceCalibration();
+          } else {
+            const wrap2 = document.getElementById('msGoBtnWrap');
+            if (wrap2) {
+              wrap2.style.display = 'block';
+              setTimeout(() => { wrap2.classList.add('revealed'); }, 80);
+            }
           }
         }, 800);
       }
@@ -11716,8 +11200,8 @@ function openMeetSAMOverlay() {
     const storyBtn = document.getElementById('navStoryEngineBtn');
     if (storyBtn && hasWizard) storyBtn.style.display = 'inline-flex';
 
-    // Always open clean thread for returning users (sam_uid = known user)
-    const isReturningUser = localStorage.getItem('sam_uid') || localStorage.getItem('samFirstRunDone') || localStorage.getItem('sam-chat-history');
+    // Always open clean thread for returning users
+    const isReturningUser = localStorage.getItem('samFirstRunDone') || localStorage.getItem('sam-chat-history');
     if (isReturningUser && typeof msOpenThread === 'function') {
       msOpenThread();
     } else if (typeof meetSamInit === 'function') {
@@ -13853,6 +13337,94 @@ function openWizardFromNav() {
   </div>
 </div>
 
+<!-- ══ SAM ECOSYSTEM OVERLAY ══ -->
+<div id="ecosystemOverlay" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(9,8,15,0.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);animation:fade-in 0.3s ease;overflow-y:auto;">
+  <div style="max-width:480px;width:100%;margin:0 auto;padding:16px 20px;display:flex;flex-direction:column;gap:8px;min-height:100%;justify-content:center;box-sizing:border-box;">
+    
+    <!-- Header -->
+    <div style="text-align:center;padding-bottom:4px;">
+      <div style="font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:rgba(167,139,250,0.6);margin-bottom:6px;">✦ THE SAM ECOSYSTEM</div>
+      <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:#F0ECFF;line-height:1.2;margin-bottom:5px;">Five tools. <span style="background:linear-gradient(90deg,#F472B6,#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">One story.</span> All working together.</div>
+      <div style="font-size:11px;color:rgba(240,236,255,0.5);line-height:1.4;">You're inside the <strong style="color:#A78BFA;">SAM Engine</strong> — here's everything else SAM can do.</div>
+    </div>
+
+    <!-- Tools grid -->
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(244,114,182,0.1));border:1.5px solid rgba(167,139,250,0.4);border-radius:12px;cursor:pointer;" onclick="samReturnToWizard()">
+        <div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#6D28D9,#A78BFA);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Sora',sans-serif;font-size:14px;font-weight:800;color:#fff;">S</div>
+        <div style="flex:1;">
+          <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#F0ECFF;">SAM Story Engine</div>
+          <div style="font-size:11px;color:rgba(240,236,255,0.5);">Your full content strategy — built from your story</div>
+        </div>
+        <div style="font-size:10px;font-weight:700;color:#A78BFA;background:rgba(167,139,250,0.2);border:1px solid rgba(167,139,250,0.3);padding:3px 10px;border-radius:20px;white-space:nowrap;">← You are here</div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);border-radius:14px;cursor:pointer;" onclick="closeEcosystemAndOpenTool('pulse')">
+        <div style="width:34px;height:34px;border-radius:10px;background:rgba(244,114,182,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><path d="M5 8h18M5 13h11M5 18h14" stroke="#F472B6" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#F0ECFF;">The Pulse</div>
+          <div style="font-size:11px;color:rgba(240,236,255,0.5);">Any moment → hook, script & captions</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemAndOpenTool('spark')">
+        <div style="width:34px;height:34px;border-radius:10px;background:rgba(167,139,250,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><path d="M14 4v3M14 21v3M3 14H6M22 14h3M14 9a5 5 0 100 10 5 5 0 000-10z" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#F0ECFF;">The Spark</div>
+          <div style="font-size:11px;color:rgba(240,236,255,0.5);">Never run out of things to post</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemAndOpenTool('blueprint')">
+        <div style="width:34px;height:34px;border-radius:10px;background:rgba(56,189,248,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><rect x="5" y="7" width="18" height="16" rx="2" stroke="#38BDF8" stroke-width="1.8"/><path d="M5 12h18M10 5v4M18 5v4" stroke="#38BDF8" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#F0ECFF;">Blueprint</div>
+          <div style="font-size:11px;color:rgba(240,236,255,0.5);">Your whole week planned in 30 seconds</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemAndOpenTool('vision')">
+        <div style="width:34px;height:34px;border-radius:10px;background:rgba(52,211,153,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><polygon points="11,8 22,14 11,20" fill="#34D399"/><rect x="6" y="8" width="2.5" height="12" rx="1" fill="#34D399"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#F0ECFF;">The Vision</div>
+          <div style="font-size:11px;color:rgba(240,236,255,0.5);">One bold concept nobody else has made</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemAndOpenTool('lens')">
+        <div style="width:34px;height:34px;border-radius:10px;background:rgba(251,191,36,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="13" r="5" stroke="#FBBF24" stroke-width="1.8"/><circle cx="14" cy="13" r="2" fill="#FBBF24"/><path d="M14 4v3M14 19v3M4 13H7M21 13h3" stroke="#FBBF24" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#F0ECFF;">The Lens <span style="font-size:9px;font-weight:700;background:rgba(251,191,36,0.2);color:#FBBF24;border-radius:20px;padding:2px 7px;vertical-align:middle;margin-left:4px;">2-IN-1</span></div>
+          <div style="font-size:11px;color:rgba(240,236,255,0.5);">Thumbnail strategy from your photo · Decode your analytics & know exactly what to do next</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Buttons -->
+    <div style="display:flex;flex-direction:column;gap:8px;padding-top:4px;">
+      <button onclick="samReturnToWizard()" style="width:100%;padding:13px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">
+        ← Keep building my story
+      </button>
+      <button onclick="samExploreTools()" style="width:100%;padding:11px;background:transparent;border:1px solid rgba(255,255,255,0.12);border-radius:50px;font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:rgba(240,236,255,0.6);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,236,255,0.6)'">
+        Explore all tools → SAM brings your story with you
+      </button>
+    </div>
+
+  </div>
+</div>
+
 
 
 <!-- ── PRO PAGE ── -->
@@ -14487,7 +14059,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.95</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v7.93</div>
 
   <!-- PROGRESS BAR -->
   <div class="wizard-progress-wrap" id="wizardProgressWrap" style="display:none;">
@@ -14571,7 +14143,8 @@ if (localStorage.getItem('sam_dev') === 'true') {
     <div class="wizard-step active" id="wiz-entry">
       <div class="meet-sam-wrap">
 
-
+        <!-- SAM Voice toggle — floating bottom right -->
+        <button id="samVoiceToggleMeetSam" onclick="toggleSAMVoice()" style="position:fixed;bottom:24px;right:24px;z-index:9000;background:rgba(13,11,22,0.7);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:8px 16px;font-size:12px;font-weight:600;color:rgba(240,236,255,0.45);cursor:pointer;font-family:'Sora',sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:6px;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.45)'">🔇 SAM Voice</button>
 
         <!-- Ambient glow orbs — animated behind content -->
         <div class="ms-ambient" id="msAmbient">
@@ -14591,72 +14164,66 @@ if (localStorage.getItem('sam_dev') === 'true') {
 
         <!-- Single CTA — floats in after opening line -->
         <div class="ms-main-cta-wrap" id="msMainCTA" style="display:none;opacity:0;transform:translateY(20px);transition:opacity 0.8s ease,transform 0.8s cubic-bezier(0.34,1.2,0.64,1);">
-          <button class="ms-find-story-btn" onclick="meetSamStartTalk()">
+          <button class="ms-find-story-btn" onclick="meetSamChooseTalk()">
             ✦ Let's tell it together →
           </button>
           <div class="ms-find-story-sub">free · no card · 48 hours full access</div>
         </div>
 
-        <!-- TALK PATH — textarea input, shown after CTA click -->
-        <div class="ms-talk-path" id="msTalkPath" style="display:none;">
-          <div class="ms-story-input-wrap">
-            <textarea id="meetSamStoryInput" class="meet-sam-textarea" placeholder="Start anywhere — a moment, a feeling, something you’ve been meaning to say..." rows="4" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();meetSamSendStoryFirstVisit();}"></textarea>
-            <button class="ms-send-btn" onclick="meetSamSendStoryFirstVisit()">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-            </button>
+        <!-- iMESSAGE THREAD — persistent conversation -->
+        <div id="msThread" style="display:none;flex-direction:column;gap:16px;overflow-y:auto;flex:1;padding:8px 0 16px 0;scroll-behavior:smooth;min-height:0;"></div>
+
+        <!-- THINKING BUBBLE — floats below thread while SAM processes -->
+        <div id="msThinkingBubble" style="display:none;align-items:flex-end;gap:10px;padding:0 4px;flex-shrink:0;">
+          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#F472B6,#A78BFA);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#09080F;flex-shrink:0;">S</div>
+          <div style="background:linear-gradient(135deg,rgba(167,139,250,0.18),rgba(244,114,182,0.12));border:1px solid rgba(167,139,250,0.25);border-radius:18px 18px 18px 4px;padding:12px 16px;display:flex;gap:6px;align-items:center;">
+            <div style="width:7px;height:7px;border-radius:50%;background:#A78BFA;animation:ms-dot-bounce 1.2s ease infinite;"></div>
+            <div style="width:7px;height:7px;border-radius:50%;background:#A78BFA;animation:ms-dot-bounce 1.2s ease infinite 0.2s;"></div>
+            <div style="width:7px;height:7px;border-radius:50%;background:#A78BFA;animation:ms-dot-bounce 1.2s ease infinite 0.4s;"></div>
           </div>
         </div>
 
-        <!-- THINKING — shown while SAM processes -->
-        <div class="ms-thinking" id="msThinking" style="display:none;">
-          <div class="meet-sam-bubble-row">
-            <div class="ms-avatar-wrap speaking">
-              <div class="ms-avatar-ring"></div>
-              <div class="meet-sam-avatar">S</div>
-            </div>
-            <div class="ms-thinking-bubble">
-              <div class="ms-thinking-dots"><span></span><span></span><span></span></div>
-              <div class="ms-thinking-text" id="msThinkingText">Reading your story...</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- SAM RESPONSE — shown after API returns -->
-        <div class="ms-response-wrap" id="msResponseWrap" style="display:none;">
-          <div class="meet-sam-bubble-row">
-            <div class="ms-avatar-wrap" id="msResponseAvatarWrap">
-              <div class="ms-avatar-ring"></div>
-              <div class="meet-sam-avatar">S</div>
-            </div>
-            <div class="meet-sam-bubble ms-response-bubble" id="msResponseBubble"></div>
-          </div>
-        </div>
-
-        <!-- VOICE BAR — shows while SAM speaks -->
+        <!-- VOICE BAR — shows after first SAM response -->
         <div class="ms-voice-bar" id="msVoiceBar" style="display:none;flex-shrink:0;">
           <span></span><span></span><span></span><span></span><span></span>
           <span></span><span></span><span></span><span></span><span></span>
           <span></span><span></span><span></span><span></span><span></span>
         </div>
 
-        <!-- HANDOFF BUTTON — shown after SAM response typewriter completes -->
-        <div class="ms-go-btn-wrap" id="msGoBtnWrap" style="display:none;">
+        <!-- HANDOFF BUTTON -->
+        <div class="ms-go-btn-wrap" id="msGoBtnWrap" style="display:none;flex-shrink:0;">
           <button class="meet-sam-go-btn" id="msGoBtn" onclick="meetSamHandoff()">
-            ❆ Let’s build your story →
+            ✶ Let’s build your story →
           </button>
         </div>
 
-        <!-- CHAT NAV PILLS — returning users only -->
+        <!-- CHAT NAV PILLS -->
         <div id="msChatNav" style="display:none;justify-content:flex-start;gap:8px;padding:10px 0 0 0;flex-shrink:0;flex-wrap:wrap;align-items:center;">
           <button onclick="closeWizard();goHome();" style="display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:999px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:rgba(240,236,255,0.5);font-family:inherit;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(255,255,255,0.25)';this.style.color='rgba(240,236,255,0.8)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,236,255,0.5)'">← Home</button>
           <button onclick="msOpenStoryEngine();" style="display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:999px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid rgba(167,139,250,0.35);background:rgba(167,139,250,0.08);color:#A78BFA;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background='rgba(167,139,250,0.18)'" onmouseout="this.style.background='rgba(167,139,250,0.08)'">📖 Story Engine</button>
           <button onclick="msOpenVoiceCalib();" id="msChatVoiceBtn" style="display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:999px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid rgba(52,211,153,0.35);background:rgba(52,211,153,0.08);color:#34D399;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background='rgba(52,211,153,0.18)'" onmouseout="this.style.background='rgba(52,211,153,0.08)'">🎙 Voice DNA</button>
         </div>
 
-        <!-- stubs — keep IDs alive for returning user flow -->
-        <div id="msThread" style="display:none;"></div>
-        <div id="msInputRow" style="display:none;"></div>
-        <div id="msThinkingBubble" style="display:none;"></div>
+        <!-- PERSISTENT INPUT ROW -->
+        <div id="msInputRow" style="display:none;align-items:flex-end;gap:8px;padding:12px 0 0 0;border-top:1px solid rgba(255,255,255,0.07);flex-shrink:0;padding-bottom:env(safe-area-inset-bottom,0px);">
+          <label for="msPhotoUpload" style="cursor:pointer;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(244,114,182,0.5)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(240,236,255,0.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </label>
+          <input type="file" id="msPhotoUpload" accept="image/*" style="display:none;" onchange="msHandlePhotoUpload(this)">
+          <div style="flex:1;position:relative;">
+            <textarea id="meetSamStoryInput" class="meet-sam-textarea" placeholder="Ask SAM anything..." rows="1" style="resize:none;min-height:44px;max-height:120px;overflow-y:auto;padding-right:52px;padding-top:12px;" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();meetSamSendStory();}"></textarea>
+            <button id="msMicBtn" onclick="toggleMeetSamMic()" style="position:absolute;right:42px;bottom:10px;background:none;border:none;padding:4px;cursor:pointer;opacity:0.4;transition:opacity 0.2s;font-size:14px;" onmouseover="this.style.opacity='1'" onmouseout="if(!window._msMicActive)this.style.opacity='0.4'">&#127897;</button>
+            <button class="ms-send-btn" onclick="meetSamSendStory()" id="msSendBtn" style="position:absolute;right:8px;bottom:8px;width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- legacy compat stubs — keep IDs alive for old JS references -->
+        <div id="msResponseWrap" style="display:none;"></div>
+        <div id="msResponseBubble" style="display:none;"></div>
+        <div id="msThinking" style="display:none;"></div>
+        <div id="msTalkPath" style="display:none;"></div>
 
         <!-- Skip link -->
 
@@ -15359,7 +14926,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
     <!-- Advanced tools link -->
     <div class="wizard-advanced-link">
       <button class="wizard-advanced-btn" onclick="closeWizard()">
-        ← Back to Workshop
+        ↓ Open advanced tools
       </button>
     </div>
 
@@ -15944,6 +15511,13 @@ const SAM_VOICE = {
   }
 };
 
+function toggleSAMVoice() {
+  // SAM Voice — coming soon as Pro feature
+  const btn = document.getElementById('samVoiceToggle');
+  const btn2 = document.getElementById('samVoiceToggleMeetSam');
+  const msg = 'SAM Voice is coming soon — a Pro feature that lets SAM speak your outputs in her own voice.';
+  [btn, btn2].forEach(b => { if (b) { b.title = msg; } });
+}
 
 document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
 // ── END SAM VOICE ENGINE ──────────────────────────────────────────────────────
@@ -16058,7 +15632,7 @@ function msOpenThread() {
   const inputRow = document.getElementById('msInputRow');
   if (thread) { thread.innerHTML = ''; thread.style.display = 'flex'; }
   if (inputRow) { inputRow.style.display = 'flex'; }
-  const _chatNav1 = document.getElementById('msChatNav'); if (_chatNav1) _chatNav1.style.display = localStorage.getItem('sam_uid') ? 'flex' : 'none';
+  const _chatNav1 = document.getElementById('msChatNav'); if (_chatNav1) _chatNav1.style.display = 'flex';
 
   // Build context-aware opening
   const name = (typeof WS !== 'undefined' && WS.brandName) ? WS.brandName.split(' ')[0] : null;
@@ -16316,6 +15890,13 @@ async function meetSamSendStory() {
     h2.push({ role: 'sam', content: fullReply });
     msSaveHistory(h2);
 
+    // Trigger voice DNA capture after SAM's first reply — if not yet calibrated
+    const samReplyCount = h2.filter(function(m){return m.role==='sam';}).length;
+    const alreadyCalibrated = localStorage.getItem('sam-voice-calibrated') === 'true' ||
+      (typeof WS !== 'undefined' && WS.voiceCalibrated);
+    const hasVoiceProfile = !!getSamVoiceProfile();
+    const shouldTrigger = !alreadyCalibrated && !hasVoiceProfile &&
+      (samReplyCount === 2 || (samReplyCount >= 2 && samReplyCount % 3 === 0));
     // Voice DNA is gated behind the go button — not auto-triggered here
   }
 
@@ -16326,22 +15907,6 @@ async function meetSamSendStory() {
    PATCH: msCheckinAskMore — opens thread instead of showing old input
    ═══════════════════════════════════════════════ */
 /* ═══════════════════════════════════════════════
-   meetSamStartTalk — bridges CTA button to old flow
-   ═══════════════════════════════════════════════ */
-function meetSamStartTalk() {
-  const mainCTA = document.getElementById('msMainCTA');
-  if (mainCTA) { mainCTA.style.opacity = '0'; mainCTA.style.transform = 'translateY(-8px)'; setTimeout(() => { mainCTA.style.display = 'none'; }, 400); }
-  const talkPath = document.getElementById('msTalkPath');
-  if (talkPath) {
-    setTimeout(() => {
-      talkPath.style.display = 'flex';
-      const ta = document.getElementById('meetSamStoryInput');
-      if (ta) setTimeout(() => ta.focus(), 200);
-    }, 350);
-  }
-}
-
-/* ═══════════════════════════════════════════════
    PATCH: meetSamChooseTalk — opens thread for new users
    ═══════════════════════════════════════════════ */
 function meetSamChooseTalk() {
@@ -16351,7 +15916,7 @@ function meetSamChooseTalk() {
   if (mainCTA) mainCTA.style.display = 'none';
   const inputRow = document.getElementById('msInputRow');
   if (inputRow) inputRow.style.display = 'flex';
-  const _chatNav2 = document.getElementById('msChatNav'); if (_chatNav2) _chatNav2.style.display = localStorage.getItem('sam_uid') ? 'flex' : 'none';
+  const _chatNav2 = document.getElementById('msChatNav'); if (_chatNav2) _chatNav2.style.display = 'flex';
   // Shift ambient to pink
   const orb1 = document.querySelector('.ms-orb-1');
   const orb2 = document.querySelector('.ms-orb-2');
@@ -16371,15 +15936,10 @@ function meetSamChooseTalk() {
       if (wrap) wrap.classList.add('speaking');
       samTypeIntoBubble(el, opening, function() {
         if (wrap) wrap.classList.remove('speaking');
-        // Show input only after SAM finishes typing
-        const inputRow = document.getElementById('msInputRow');
-        if (inputRow) {
-          inputRow.style.display = 'flex';
-          const inp = document.getElementById('meetSamStoryInput');
-          if (inp) setTimeout(function(){ inp.focus(); }, 200);
-        }
       });
     }
+    const inp = document.getElementById('meetSamStoryInput');
+    if (inp) setTimeout(function(){ inp.focus(); }, 800);
   }, 200);
 }
 
@@ -16496,104 +16056,6 @@ function samHideThinking() {
 }
 
 </script>
-<div id="ideasPickerOverlay" onclick="closeIdeasPicker()" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);"></div>
-<div id="ideasPickerPanel" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:601;background:rgba(13,11,22,0.98);border-top:1px solid rgba(167,139,250,0.3);border-radius:20px 20px 0 0;padding:20px 20px 32px;max-height:60vh;overflow-y:auto;">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-    <div style="font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:var(--text);">💜 Use a saved idea</div>
-    <button onclick="closeIdeasPicker()" style="background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;padding:0;">✕</button>
-  </div>
-  <div id="ideasPickerList"></div>
-</div>
-
-
-<!-- ══ SAM ECOSYSTEM OVERLAY ══ -->
-<div id="ecosystemOverlay" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(9,8,15,0.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);animation:fade-in 0.3s ease;overflow-y:auto;">
-  <div style="max-width:480px;width:100%;margin:0 auto;padding:16px 20px;display:flex;flex-direction:column;gap:8px;min-height:100%;justify-content:center;box-sizing:border-box;">
-    
-    <!-- Header -->
-    <div style="text-align:center;padding-bottom:4px;">
-      <div style="font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:rgba(167,139,250,0.6);margin-bottom:6px;">✦ THE SAM ECOSYSTEM</div>
-      <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:#F0ECFF;line-height:1.2;margin-bottom:5px;">Five tools. <span style="background:linear-gradient(90deg,#F472B6,#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">One story.</span> All working together.</div>
-      <div style="font-size:11px;color:rgba(240,236,255,0.5);line-height:1.4;">You're inside the <strong style="color:#A78BFA;">SAM Engine</strong> — here's everything else SAM can do.</div>
-    </div>
-
-    <!-- Tools grid -->
-    <div style="display:flex;flex-direction:column;gap:10px;">
-      
-      <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(244,114,182,0.1));border:1.5px solid rgba(167,139,250,0.4);border-radius:12px;cursor:pointer;" onclick="samReturnToWizard()">
-        <div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#6D28D9,#A78BFA);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Sora',sans-serif;font-size:14px;font-weight:800;color:#fff;">S</div>
-        <div style="flex:1;">
-          <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#F0ECFF;">SAM Story Engine</div>
-          <div style="font-size:11px;color:rgba(240,236,255,0.5);">Your full content strategy — built from your story</div>
-        </div>
-        <div style="font-size:10px;font-weight:700;color:#A78BFA;background:rgba(167,139,250,0.2);border:1px solid rgba(167,139,250,0.3);padding:3px 10px;border-radius:20px;white-space:nowrap;">← You are here</div>
-      </div>
-
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);border-radius:14px;cursor:pointer;" onclick="closeEcosystemAndOpenTool('pulse')">
-        <div style="width:34px;height:34px;border-radius:10px;background:rgba(244,114,182,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><path d="M5 8h18M5 13h11M5 18h14" stroke="#F472B6" stroke-width="2" stroke-linecap="round"/></svg>
-        </div>
-        <div>
-          <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#F0ECFF;">The Pulse</div>
-          <div style="font-size:11px;color:rgba(240,236,255,0.5);">Any moment → hook, script & captions</div>
-        </div>
-      </div>
-
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemAndOpenTool('spark')">
-        <div style="width:34px;height:34px;border-radius:10px;background:rgba(167,139,250,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><path d="M14 4v3M14 21v3M3 14H6M22 14h3M14 9a5 5 0 100 10 5 5 0 000-10z" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </div>
-        <div>
-          <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#F0ECFF;">The Spark</div>
-          <div style="font-size:11px;color:rgba(240,236,255,0.5);">Never run out of things to post</div>
-        </div>
-      </div>
-
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemAndOpenTool('blueprint')">
-        <div style="width:34px;height:34px;border-radius:10px;background:rgba(56,189,248,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><rect x="5" y="7" width="18" height="16" rx="2" stroke="#38BDF8" stroke-width="1.8"/><path d="M5 12h18M10 5v4M18 5v4" stroke="#38BDF8" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </div>
-        <div>
-          <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#F0ECFF;">Blueprint</div>
-          <div style="font-size:11px;color:rgba(240,236,255,0.5);">Your whole week planned in 30 seconds</div>
-        </div>
-      </div>
-
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemAndOpenTool('vision')">
-        <div style="width:34px;height:34px;border-radius:10px;background:rgba(52,211,153,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><polygon points="11,8 22,14 11,20" fill="#34D399"/><rect x="6" y="8" width="2.5" height="12" rx="1" fill="#34D399"/></svg>
-        </div>
-        <div>
-          <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#F0ECFF;">The Vision</div>
-          <div style="font-size:11px;color:rgba(240,236,255,0.5);">One bold concept nobody else has made</div>
-        </div>
-      </div>
-
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemAndOpenTool('lens')">
-        <div style="width:34px;height:34px;border-radius:10px;background:rgba(251,191,36,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="13" r="5" stroke="#FBBF24" stroke-width="1.8"/><circle cx="14" cy="13" r="2" fill="#FBBF24"/><path d="M14 4v3M14 19v3M4 13H7M21 13h3" stroke="#FBBF24" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </div>
-        <div>
-          <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#F0ECFF;">The Lens <span style="font-size:9px;font-weight:700;background:rgba(251,191,36,0.2);color:#FBBF24;border-radius:20px;padding:2px 7px;vertical-align:middle;margin-left:4px;">2-IN-1</span></div>
-          <div style="font-size:11px;color:rgba(240,236,255,0.5);">Thumbnail strategy from your photo · Decode your analytics & know exactly what to do next</div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Buttons -->
-    <div style="display:flex;flex-direction:column;gap:8px;padding-top:4px;">
-      <button onclick="samReturnToWizard()" style="width:100%;padding:13px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">
-        ← Keep building my story
-      </button>
-      <button onclick="samExploreTools()" style="width:100%;padding:11px;background:transparent;border:1px solid rgba(255,255,255,0.12);border-radius:50px;font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:rgba(240,236,255,0.6);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,236,255,0.6)'">
-        Explore all tools → SAM brings your story with you
-      </button>
-    </div>
-
-  </div>
-</div>
-
 </body>
 </html>
  
