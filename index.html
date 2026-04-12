@@ -10246,15 +10246,15 @@ function initWizard() {
         <div style="margin-left:auto;width:7px;height:7px;border-radius:50%;background:#34D399;flex-shrink:0;"></div>
       </div>
       <div style="font-size:15px;line-height:1.7;color:rgba(240,236,255,0.85);margin-bottom:6px;">Hey — welcome back.</div>
-      <div style="font-size:15px;line-height:1.7;color:rgba(240,236,255,0.85);margin-bottom:6px;">Looks like you were working on something. Your story&#39;s still saved.</div>
-      <div style="font-size:15px;line-height:1.7;color:rgba(240,236,255,0.85);margin-bottom:20px;">Want to pick up where you left off — or open one of the other tools in our ecosystem?</div>
+      ${session && stepNum > 0 ? `<div style="font-size:15px;line-height:1.7;color:rgba(240,236,255,0.85);margin-bottom:6px;">Looks like you were working on something. Your story is still saved.</div>
+      <div style="font-size:15px;line-height:1.7;color:rgba(240,236,255,0.85);margin-bottom:20px;">Want to pick up where you left off — or open one of the other tools?</div>
       <div style="background:rgba(167,139,250,0.07);border:1px solid rgba(167,139,250,0.2);border-radius:10px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
         <div>
           <div style="font-size:11px;color:rgba(240,236,255,0.35);margin-bottom:3px;letter-spacing:0.05em;text-transform:uppercase;">Story Engine</div>
           <div style="font-size:13px;color:#F0ECFF;font-weight:500;">Step ${stepNum} of 12 · ${label}</div>
         </div>
         <div style="font-size:11px;color:#A78BFA;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.2);padding:4px 10px;border-radius:999px;flex-shrink:0;">Saved ✓</div>
-      </div>
+      </div>` : `<div style="font-size:15px;line-height:1.7;color:rgba(240,236,255,0.85);margin-bottom:24px;">Ready to keep building? Pick up the Story Wizard or jump into any tool.</div>`}
       <div style="display:flex;gap:10px;flex-wrap:wrap;">
         <button onclick="msOpenStoryEngine()" style="display:inline-flex;align-items:center;gap:8px;padding:12px 26px;border-radius:999px;font-size:14px;font-weight:700;cursor:pointer;border:none;background:linear-gradient(135deg,#A78BFA,#F472B6);color:#09080F;font-family:inherit;box-shadow:0 0 24px rgba(167,139,250,0.35);">📖 Open Story Engine</button>
         <button onclick="msReturningExplore()" style="display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:999px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:rgba(240,236,255,0.6);font-family:inherit;">⬡ Explore the tools</button>
@@ -11550,6 +11550,7 @@ Rules: Max 3 sentences total. Never use bullet points. Never say "I can see that
         setTimeout(() => {
           if (typeof showVoiceCalibration === 'function') {
             showVoiceCalibration();
+            setTimeout(function(){ var c=document.getElementById("msVoiceCalib"); if(c) c.scrollIntoView({behavior:"smooth",block:"center"}); }, 400);
           } else {
             const wrap2 = document.getElementById('msGoBtnWrap');
             if (wrap2) {
@@ -11557,7 +11558,7 @@ Rules: Max 3 sentences total. Never use bullet points. Never say "I can see that
               setTimeout(() => { wrap2.classList.add('revealed'); }, 80);
             }
           }
-        }, 800);
+        }, 2000);
       }
     };
     setTimeout(type, 300);
