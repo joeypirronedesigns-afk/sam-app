@@ -9479,13 +9479,18 @@ function openMeetSAMOverlay() { window.location.href = '/meet'; return; // legac
         if (meetStory && typeof WS !== 'undefined') WS.storyText = meetStory;
         if (meetVoice && typeof WS !== 'undefined') { try { WS.voiceProfile = JSON.parse(meetVoice).raw || meetVoice; WS.voiceCalibrated = true; } catch(e) {} }
         if (typeof openWizardPage === 'function') openWizardPage(true);
-        // Also populate input directly after wizard opens
+        // Populate inputs directly after wizard opens
         setTimeout(function() {
-          var inp = document.getElementById('brandName');
-          if (inp && meetName && !inp.value) inp.value = meetName;
-          var storyInp = document.getElementById('wizStoryInput') || document.querySelector('[name="storyText"]');
-          if (storyInp && meetStory && !storyInp.value) storyInp.value = meetStory;
-        }, 800);
+          var nameInp = document.getElementById('brandName');
+          if (nameInp && meetName && !nameInp.value) nameInp.value = meetName;
+          var storyInp = document.getElementById('wiz2text');
+          if (storyInp && meetStory && !storyInp.value) {
+            storyInp.value = meetStory;
+            if (typeof WS !== 'undefined') WS.storyText = meetStory;
+            var cc = document.getElementById('wiz2charcount');
+            if (cc) cc.textContent = meetStory.length + ' characters';
+          }
+        }, 1000);
       }, 600);
     }
   });
