@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+// Redirect new visitors to meet.html
+if (window.location.pathname === '/' && !localStorage.getItem('samFirstRunDone') && !window.location.search.includes('launch=wizard') && !window.location.search.includes('workshop=1')) {
+  window.location.replace('/meet');
+}
+</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <title>S.A.M. — Strategic Assistant for Making</title>
