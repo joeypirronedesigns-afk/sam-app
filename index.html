@@ -2,10 +2,13 @@
 <html lang="en">
 <head>
 <script>
-// Redirect new visitors to meet.html
-if (window.location.pathname === '/' && !localStorage.getItem('samFirstRunDone') && !window.location.search.includes('launch=wizard') && !window.location.search.includes('workshop=1')) {
-  window.location.replace('/meet');
-}
+(function() {
+  var p = window.location.pathname;
+  var s = window.location.search;
+  if ((p === '/' || p === '/index.html') && !localStorage.getItem('samFirstRunDone') && s.indexOf('launch=wizard') === -1 && s.indexOf('workshop=1') === -1) {
+    window.location.href = '/meet';
+  }
+})();
 </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
