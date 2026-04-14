@@ -86,13 +86,20 @@ module.exports = async function handler(req, res) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text: `🔔 *New SAM user!*\n\n👤 ${userName}\n📧 ${userEmail}\n🕐 ${new Date().toLocaleString()}\n<https://sam-hq.vercel.app|Open SAM HQ>` })
     }).catch(() => {});
-    // iMessage via OpenClaw on Joey's Mac
-    const openclawUrl = process.env.OPENCLAW_IMESSAGE_URL || 'http://localhost:3456/imessage';
-    fetch(openclawUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: `New SAM user! Name: ${userName} Email: ${userEmail}` })
-    }).catch(() => {});
+    // Telegram notification via OpenClaw bot
+    const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
+    const telegramChatId = process.env.TELEGRAM_CHAT_ID || '8734019866';
+    if (telegramToken) {
+      fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: telegramChatId,
+          text: `🔔 New SAM user!\n\n👤 Name: ${userName}\n📧 Email: ${userEmail}\n🕐 ${new Date().toLocaleString()}\n\n👉 sam-hq.vercel.app`,
+          parse_mode: 'Markdown'
+        })
+      }).catch(() => {});
+    }
   }
   if (req.body.voiceProfile || req.body.samContext) {
       await saveUserProfile(userId, {
