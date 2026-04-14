@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voice DNA — S.A.M. For Creators</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0a;
+  --card: #141420;
+  --card2: #1a1a2e;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.1);
+  --text: #ffffff;
+  --muted: rgba(255,255,255,0.5);
+  --muted2: rgba(255,255,255,0.25);
+  --purple: #8b5cf6;
+  --purple-light: #a78bfa;
+  --pink: #ec4899;
+  --pink-light: #f472b6;
+  --teal: #14b8a6;
+  --amber: #f59e0b;
+  --green: #22c55e;
+  --grad: linear-gradient(135deg, #8b5cf6, #ec4899);
+  --grad-soft: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(236,72,153,0.15));
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* BG GLOW */
+body::before {
+  content: '';
+  position: fixed;
+  bottom: -200px; left: -200px;
+  width: 800px; height: 800px;
+  background: radial-gradient(ellipse at center, rgba(139,92,246,0.12) 0%, rgba(236,72,153,0.06) 50%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+body::after {
+  content: '';
+  position: fixed;
+  top: -100px; right: -100px;
+  width: 500px; height: 500px;
+  background: radial-gradient(ellipse at center, rgba(139,92,246,0.06) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 99;
+  background: rgba(10,10,10,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-brand {
+  font-size: 14px; font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: 0.08em;
+}
+.nav-right { display: flex; align-items: center; gap: 10px; }
+.nav-pill {
+  font-size: 13px; font-weight: 500;
+  color: var(--muted);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 7px 16px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.nav-pill:hover { color: var(--text); background: rgba(255,255,255,0.1); }
+.nav-pill.purple {
+  background: rgba(139,92,246,0.15);
+  border-color: rgba(139,92,246,0.3);
+  color: var(--purple-light);
+}
+.nav-pill.purple:hover { background: rgba(139,92,246,0.25); }
+.nav-cta {
+  font-size: 13px; font-weight: 600;
+  color: #fff;
+  background: var(--grad);
+  border-radius: 999px;
+  padding: 8px 20px;
+  text-decoration: none;
+  transition: opacity 0.2s, transform 0.15s;
+  border: none;
+}
+.nav-cta:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* PAGE */
+.page { position: relative; z-index: 1; }
+.c { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
+
+/* HERO */
+.hero {
+  padding: 120px 2rem 80px;
+  text-align: center;
+  position: relative;
+}
+.hero-glow {
+  position: absolute;
+  top: 80px; left: 50%; transform: translateX(-50%);
+  width: 600px; height: 300px;
+  background: radial-gradient(ellipse, rgba(139,92,246,0.15) 0%, rgba(236,72,153,0.05) 50%, transparent 70%);
+  pointer-events: none;
+}
+.spark {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--purple-light);
+  background: rgba(139,92,246,0.12);
+  border: 1px solid rgba(139,92,246,0.25);
+  border-radius: 999px;
+  padding: 6px 14px;
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: fu 0.6s ease forwards 0.1s;
+}
+.spark::before { content: '✦'; font-size: 10px; }
+
+h1 {
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: fu 0.6s ease forwards 0.2s;
+}
+h1 .grad { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+.hero-sub {
+  font-size: clamp(15px, 2vw, 18px);
+  font-weight: 400;
+  color: var(--muted);
+  line-height: 1.75;
+  max-width: 540px;
+  margin: 0 auto 2.5rem;
+  opacity: 0;
+  animation: fu 0.6s ease forwards 0.3s;
+}
+
+.ctas {
+  display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+  opacity: 0; animation: fu 0.6s ease forwards 0.4s;
+}
+.btn-grad {
+  font-size: 14px; font-weight: 600;
+  color: #fff;
+  background: var(--grad);
+  border-radius: 999px;
+  padding: 14px 28px;
+  text-decoration: none;
+  transition: opacity 0.2s, transform 0.15s;
+}
+.btn-grad:hover { opacity: 0.9; transform: translateY(-1px); }
+.btn-outline {
+  font-size: 14px; font-weight: 500;
+  color: var(--muted);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border2);
+  border-radius: 999px;
+  padding: 14px 28px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.btn-outline:hover { color: var(--text); background: rgba(255,255,255,0.08); }
+
+/* DNA VISUAL */
+.dna-wrap {
+  max-width: 660px; margin: 4rem auto 0;
+  opacity: 0; animation: fu 0.8s ease forwards 0.55s;
+}
+.dna-label {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--muted2);
+  text-align: center; margin-bottom: 1rem;
+}
+.dna-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.dna-cell {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 10px; text-align: center;
+  transition: border-color 0.3s;
+}
+.dna-cell.on {
+  border-color: rgba(139,92,246,0.4);
+  background: rgba(139,92,246,0.08);
+}
+.dna-num {
+  font-size: 9px; font-weight: 600; letter-spacing: 0.1em;
+  color: var(--muted2); margin-bottom: 8px; text-transform: uppercase;
+}
+.dna-cell.on .dna-num { color: var(--purple-light); }
+.dna-bars { display: flex; align-items: flex-end; justify-content: center; gap: 2px; height: 28px; }
+.dna-bars span { display: block; width: 3px; background: rgba(255,255,255,0.1); border-radius: 1px; }
+.dna-cell.on .dna-bars span { background: var(--purple); }
+.dna-sl { font-size: 9px; color: var(--muted2); margin-top: 7px; }
+.dna-cell.on .dna-sl { color: var(--muted); }
+
+/* SECTION */
+.s { padding: 80px 0; position: relative; z-index: 1; }
+.s-divider { border: none; border-top: 1px solid var(--border); position: relative; z-index: 1; }
+.label {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--purple-light);
+  margin-bottom: 1.5rem;
+}
+.label::before { content: '✦'; font-size: 10px; }
+h2 {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 700; line-height: 1.1;
+  letter-spacing: -0.025em; margin-bottom: 1.25rem;
+}
+h2 .grad { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.body-text { font-size: 15px; font-weight: 400; color: var(--muted); line-height: 1.8; max-width: 520px; }
+
+/* PAIN CARDS */
+.pain-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 2.5rem; }
+.pain-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.75rem;
+  transition: border-color 0.2s, background 0.2s;
+}
+.pain-card:hover { border-color: var(--border2); background: var(--card2); }
+.pain-q {
+  font-size: 14px; font-weight: 400; font-style: italic;
+  color: rgba(255,255,255,0.8); line-height: 1.7; margin-bottom: 1rem;
+}
+.pain-q::before { content: '"'; color: var(--purple-light); font-style: normal; }
+.pain-q::after { content: '"'; color: var(--purple-light); font-style: normal; }
+.pain-who { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted2); }
+
+/* COMPARE */
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 2.5rem; }
+.cmp {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 2rem;
+}
+.cmp.hi { border-color: rgba(139,92,246,0.3); background: rgba(139,92,246,0.06); }
+.cmp-tag {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--muted2);
+  margin-bottom: 1.25rem; display: flex; align-items: center; gap: 8px;
+}
+.cmp-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.15); }
+.cmp.hi .cmp-dot { background: var(--purple); }
+.cmp-wave { display: flex; align-items: flex-end; gap: 3px; height: 44px; margin-bottom: 1.25rem; }
+.cmp-wave span { display: block; width: 4px; border-radius: 1px; background: rgba(255,255,255,0.08); }
+.cmp.hi .cmp-wave span { background: var(--purple); opacity: 0.75; }
+.cmp-h { font-size: 1.1rem; font-weight: 600; color: var(--text); margin-bottom: 0.5rem; }
+.cmp-b { font-size: 13px; font-weight: 400; color: var(--muted); line-height: 1.8; }
+
+/* STEPS */
+.steps { margin-top: 2.5rem; }
+.step {
+  display: grid; grid-template-columns: 48px 1fr;
+  gap: 1.5rem; padding: 1.75rem 0;
+  border-bottom: 1px solid var(--border);
+  align-items: start;
+}
+.step:last-child { border-bottom: none; }
+.step-n {
+  width: 36px; height: 36px;
+  background: rgba(139,92,246,0.12);
+  border: 1px solid rgba(139,92,246,0.25);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: var(--purple-light);
+}
+.step-t { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 0.4rem; }
+.step-t .g { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.step-d { font-size: 13px; font-weight: 400; color: var(--muted); line-height: 1.8; }
+
+/* TOOLS */
+.tools { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 2.5rem; }
+.tool {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 1.75rem;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.tool:hover { border-color: var(--border2); transform: translateY(-2px); }
+.tool-icon {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: 1rem;
+}
+.ti-pulse { background: rgba(236,72,153,0.15); }
+.ti-spark { background: rgba(139,92,246,0.15); }
+.ti-bp { background: rgba(20,184,166,0.15); }
+.ti-vision { background: rgba(34,197,94,0.15); }
+.ti-lens { background: rgba(245,158,11,0.15); }
+.ti-reach { background: rgba(139,92,246,0.15); }
+.tool-n { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 0.3rem; }
+.tool-tl { font-size: 12px; font-style: italic; color: var(--purple-light); margin-bottom: 0.75rem; }
+.tool-d { font-size: 12px; font-weight: 400; color: var(--muted); line-height: 1.7; }
+
+/* FEATURES */
+.feat { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-top: 2.5rem; }
+.fi {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  display: flex; gap: 10px; align-items: flex-start;
+  transition: background 0.2s;
+}
+.fi:hover { background: rgba(255,255,255,0.02); }
+.fi:nth-child(even) { border-right: none; }
+.fi:nth-last-child(-n+2) { border-bottom: none; }
+.fi-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--grad); flex-shrink: 0; margin-top: 7px;
+  background: linear-gradient(135deg, var(--purple), var(--pink));
+}
+.fi-t { font-size: 13px; font-weight: 400; color: var(--muted); line-height: 1.5; }
+.fi-t strong { color: var(--text); font-weight: 500; }
+
+/* PLANS */
+.plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 2.5rem; }
+.plan {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 20px; padding: 2rem 1.75rem;
+  position: relative;
+}
+.plan.pop {
+  border-color: rgba(139,92,246,0.4);
+  background: rgba(139,92,246,0.06);
+}
+.p-badge {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--grad); -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 1.25rem; display: block;
+}
+.p-name { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
+.p-price { font-size: 3rem; font-weight: 700; color: var(--text); line-height: 1; letter-spacing: -0.04em; }
+.p-price sup { font-size: 1.3rem; vertical-align: super; font-weight: 400; }
+.p-period { font-size: 12px; color: var(--muted2); margin-bottom: 0.5rem; }
+.p-pos { font-size: 13px; font-style: italic; color: var(--purple-light); margin-bottom: 1.25rem; line-height: 1.5; }
+.p-who { font-size: 13px; font-weight: 400; color: var(--muted); margin-bottom: 1.5rem; line-height: 1.7; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+.p-usage { font-size: 12px; color: var(--muted); line-height: 2; }
+.p-usage span { color: var(--text); font-weight: 500; }
+.p-cta {
+  display: block; font-size: 14px; font-weight: 600;
+  color: var(--muted); background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border2); border-radius: 999px;
+  padding: 12px 20px; text-align: center; text-decoration: none;
+  transition: all 0.2s; margin-top: 1.5rem;
+}
+.p-cta:hover { color: var(--text); background: rgba(255,255,255,0.1); }
+.plan.pop .p-cta { background: var(--grad); border: none; color: #fff; }
+.plan.pop .p-cta:hover { opacity: 0.9; }
+.p-lock { font-size: 11px; color: var(--muted2); text-align: center; margin-top: 0.75rem; }
+
+/* QUOTE */
+.q-section {
+  padding: 80px 2rem; text-align: center;
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  position: relative; z-index: 1;
+}
+.big-q {
+  font-size: clamp(1.2rem, 2.5vw, 1.7rem); font-weight: 400; font-style: italic;
+  color: rgba(255,255,255,0.8); line-height: 1.6; max-width: 700px; margin: 0 auto 1.5rem;
+}
+.big-q em { font-style: normal; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.q-attr { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; color: var(--muted2); text-transform: uppercase; }
+
+/* FOOTER CTA */
+.fcta { padding: 100px 2rem; text-align: center; position: relative; z-index: 1; }
+.fcta-glow {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 600px; height: 300px;
+  background: radial-gradient(ellipse, rgba(139,92,246,0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+.fcta h2 { font-size: clamp(2rem, 6vw, 4rem); }
+.fcta .body-text { margin: 0 auto 2.5rem; }
+.ffine { font-size: 12px; color: var(--muted2); margin-top: 1.25rem; }
+
+footer {
+  border-top: 1px solid var(--border); padding: 2rem;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 1rem; position: relative; z-index: 1;
+}
+.fb { font-size: 12px; color: var(--muted2); }
+.fl { display: flex; gap: 1.5rem; }
+.fl a { font-size: 12px; color: var(--muted2); text-decoration: none; transition: color 0.2s; }
+.fl a:hover { color: var(--text); }
+
+@keyframes fu { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+.r { opacity: 0; transform: translateY(14px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.r.v { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 700px) {
+  .pain-grid, .compare, .tools, .plans, .feat { grid-template-columns: 1fr; }
+  .fi:nth-child(even) { border-right: none; }
+  .fi:nth-last-child(-n+2) { border-bottom: 1px solid var(--border); }
+  .fi:last-child { border-bottom: none; }
+  .dna-row { grid-template-columns: repeat(3, 1fr); }
+  .c { padding: 0 1.25rem; }
+  .hero { padding: 100px 1.25rem 60px; }
+  .s { padding: 60px 0; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://samforcreators.com" class="nav-brand">S.A.M.</a>
+  <div class="nav-right">
+    <a href="https://samforcreators.com" class="nav-pill">← Back to SAM</a>
+    <a href="https://samforcreators.com" class="nav-pill purple">✦ Talk with SAM</a>
+    <a href="https://samforcreators.com" class="nav-cta">Try free →</a>
+  </div>
+</nav>
+
+<div class="page">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="c">
+    <div class="spark">The only AI that learns your voice</div>
+    <h1>Every session,<br>SAM sounds more<br>like <span class="grad">you.</span></h1>
+    <p class="hero-sub">I almost quit posting because I sounded like everyone else. Then I built SAM. Not to replace my voice — to remember it. Every session, she gets sharper. Every output, more unmistakably mine.</p>
+    <div class="ctas">
+      <a href="https://samforcreators.com" class="btn-grad">✦ Try SAM free — no card</a>
+      <a href="#what" class="btn-outline">What is Voice DNA? →</a>
+    </div>
+    <div class="dna-wrap">
+      <div class="dna-label">✦ Your Voice DNA — growing with every session</div>
+      <div class="dna-row" id="dnaRow"></div>
+    </div>
+  </div>
+</div>
+
+<hr class="s-divider">
+
+<!-- THE PROBLEM -->
+<section class="s">
+  <div class="c">
+    <div class="label r">The problem every creator knows</div>
+    <h2 class="r">You spent years finding<br>your voice. <span class="grad">AI erases it.</span></h2>
+    <p class="body-text r">Six months ago I was living in my brother's garage. Documenting a gut renovation. Trying to post content. Every AI tool made me sound like a press release. My audience could tell. So I built something different.</p>
+    <div class="pain-grid r">
+      <div class="pain-card"><div class="pain-q">I sound like a robot every time I use AI. I end up rewriting the whole thing anyway.</div><div class="pain-who">Creator — 84k followers</div></div>
+      <div class="pain-card"><div class="pain-q">It never remembers me. Every session starts from zero. Like I never existed.</div><div class="pain-who">Founder — 12k followers</div></div>
+      <div class="pain-card"><div class="pain-q">My content feels hollow. Like it could belong to anyone. My audience can feel it.</div><div class="pain-who">Coach — 210k followers</div></div>
+      <div class="pain-card"><div class="pain-q">I've been figuring this out alone for three years. AI was supposed to help. It made me feel more alone.</div><div class="pain-who">Renovator — 31k followers</div></div>
+    </div>
+  </div>
+</section>
+
+<hr class="s-divider">
+
+<!-- WHAT IS VOICE DNA -->
+<section class="s" id="what">
+  <div class="c">
+    <div class="label r">What Voice DNA actually is</div>
+    <h2 class="r">Not a style preset.<br>A living memory of<br><span class="grad">how you speak.</span></h2>
+    <p class="body-text r">Voice DNA captures your rhythm. Your humor. The specific phrases only you would use. The way you go quiet when something gets real. It builds automatically — invisibly — from every word you give SAM. It never resets. It only grows.</p>
+    <div class="compare r">
+      <div class="cmp">
+        <div class="cmp-tag"><span class="cmp-dot"></span> Session 1</div>
+        <div class="cmp-wave" id="w1"></div>
+        <div class="cmp-h">Good AI writing.</div>
+        <div class="cmp-b">SAM gives you clean, competent output. Better than most tools. But she's just getting started — the profile is still forming around who you are.</div>
+      </div>
+      <div class="cmp hi">
+        <div class="cmp-tag"><span class="cmp-dot"></span> Session 10</div>
+        <div class="cmp-wave" id="w10"></div>
+        <div class="cmp-h">Your writing.</div>
+        <div class="cmp-b">The cadence. The words you actually reach for. The jokes only you would make. People in your comments will ask: did you actually write this? You did.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="s-divider">
+
+<!-- HOW IT WORKS -->
+<section class="s">
+  <div class="c">
+    <div class="label r">How it works</div>
+    <h2 class="r">It learns you the way a<br><span class="grad">real creative partner</span> would.</h2>
+    <div class="steps">
+      <div class="step r"><div class="step-n">01</div><div><div class="step-t">You use SAM <span class="g">naturally</span></div><div class="step-d">Write a post. Generate a hook. Brainstorm an idea. Every interaction is a data point — not just what you asked for, but how you responded. What you kept. What you changed.</div></div></div>
+      <div class="step r"><div class="step-n">02</div><div><div class="step-t">SAM <span class="g">listens</span> to everything</div><div class="step-d">Sentence length. Punctuation choices. How you open. How you close. Whether you go vulnerable or funny first. Whether you use em-dashes or ellipses. All of it goes into Voice DNA — automatically.</div></div></div>
+      <div class="step r"><div class="step-n">03</div><div><div class="step-t">It <span class="g">never overwrites.</span> Only deepens.</div><div class="step-d">Unlike every other AI tool, SAM doesn't reset between sessions. It accumulates. Session 1 is still in there — and so is session 47. The profile grows richer every single time you show up.</div></div></div>
+      <div class="step r"><div class="step-n">04</div><div><div class="step-t">Every output sounds like <span class="g">you wrote it</span></div><div class="step-d">Not AI-assisted you. Not a cleaner version of you. You — on your best writing day. The version your audience actually subscribed to follow in the first place.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<hr class="s-divider">
+
+<!-- THE TOOLS -->
+<section class="s">
+  <div class="c">
+    <div class="label r">The full suite</div>
+    <h2 class="r">Five tools. One ecosystem.<br><span class="grad">All powered by your voice.</span></h2>
+    <p class="body-text r">Every part of SAM does one job perfectly — and hands off to the next. Voice DNA runs through all of them. The longer you use any one tool, the better every other tool gets.</p>
+    <div class="tools r">
+      <div class="tool"><div class="tool-icon ti-pulse">🎯</div><div class="tool-n">The Pulse</div><div class="tool-tl">Your story goes in. A complete script comes out.</div><div class="tool-d">Hook, full word-for-word script, b-roll directions, every platform caption — from one real moment. Walk in with words. Walk out ready to film.</div></div>
+      <div class="tool"><div class="tool-icon ti-spark">⚡</div><div class="tool-n">The Spark</div><div class="tool-tl">5 ideas built for you. Right now.</div><div class="tool-d">Tell SAM your niche. Get 5 specific, filmable content ideas — each matched to the right platform, each with the psychology behind why it performs.</div></div>
+      <div class="tool"><div class="tool-icon ti-bp">📅</div><div class="tool-n">Blueprint</div><div class="tool-tl">Your whole week done in 30 seconds.</div><div class="tool-d">Monday through Sunday — every day written, every platform covered, every caption ready to post. Each day is one tap from a full script.</div></div>
+      <div class="tool"><div class="tool-icon ti-vision">🎬</div><div class="tool-n">The Vision</div><div class="tool-tl">One bold concept nobody else has made.</div><div class="tool-d">A unique video concept with the full premise, your opening hook, shot-by-shot directions, and the psychology behind why it will stop the scroll.</div></div>
+      <div class="tool"><div class="tool-icon ti-lens">☀️</div><div class="tool-n">The Lens</div><div class="tool-tl">Thumbnails that stop the scroll. Analytics that tell you what to do next.</div><div class="tool-d">Drop a photo — get thumbnail concepts with text on your actual image. Drop your analytics screenshot — SAM tells you exactly what 3 posts to make this week.</div></div>
+      <div class="tool"><div class="tool-icon ti-reach">🚀</div><div class="tool-n">The Reach</div><div class="tool-tl">One story. Every platform. Your voice.</div><div class="tool-d">Upload a photo. SAM writes every caption, description, and hashtag — platform-perfect — for TikTok, Instagram, LinkedIn, Facebook, X, and Pinterest.</div></div>
+    </div>
+  </div>
+</section>
+
+<hr class="s-divider">
+
+<!-- ALL FEATURES -->
+<section class="s">
+  <div class="c">
+    <div class="label r">Everything that's included</div>
+    <h2 class="r">Every plan.<br><span class="grad">Every feature.</span></h2>
+    <p class="body-text r">No locked tools. No features behind a higher tier. Every plan gets the full SAM suite. The only difference is how much you run her.</p>
+    <div class="feat r">
+      <div class="fi"><div class="fi-dot"></div><div class="fi-t"><strong>Voice DNA</strong> — SAM learns how you write, speak, and think. Gets sharper every session. Never resets.</div></div>
+      <div class="fi"><div class="fi-dot"></div><div class="fi-t"><strong>The Pulse — Story Engine</strong> — Hook, script, b-roll directions, and platform captions from any real moment.</div></div>
+      <div class="fi"><div class="fi-dot"></div><div class="fi-t"><strong>The Spark — Idea Engine</strong> — 5 specific, filmable content ideas matched to your niche and platform.</div></div>
+      <div class="fi"><div class="fi-dot"></div><div class="fi-t"><strong>Blueprint — Content Calendar</strong> — Full 7-day plan with every caption written and every platform covered.</div></div>
+      <div class="fi"><div class="fi-dot"></div><div class="fi-t"><strong>The Vision — Concept Generator</strong> — One bold, original video concept with filming directions and scroll-stop psychology.</div></div>
+      <div class="fi"><div class="fi-dot"></div><div class="fi-t"><strong>The Lens — Thumbnail Strategy</strong> — Safe + bold headline options overlaid directly on your actual photo.</div></div>
+      <div class="fi"><div class="fi-dot"></div><div class="fi-t"><strong>The Lens — Analytics Decoder</strong> — Drop your analytics screenshot. SAM reads the numbers and tells you what to post next.</div></div>
+      <div class="fi"><div class="fi-dot"></div><div class="fi-t"><strong>The Reach — Post Everywhere</strong> — One photo becomes platform-perfect posts for every major platform in your voice.</div></div>
+      <div class="fi"><div class="fi-dot"></div><div class="fi-t"><strong>Lead Magnet Engine</strong> — Every SAM run builds a branded free resource your audience trades their email to receive.</div></div>
+      <div class="fi"><div class="fi-dot"></div><div class="fi-t"><strong>Audience Profiling</strong> — SAM diagnoses your ideal audience and builds every output around who they actually are.</div></div>
+      <div class="fi"><div class="fi-dot"></div><div class="fi-t"><strong>Steer SAM mid-session</strong> — Adjust tone, pace, length, or angle anytime. You're always in control of your story.</div></div>
+      <div class="fi"><div class="fi-dot"></div><div class="fi-t"><strong>B-roll directions</strong> — Every script includes shot-by-shot filming notes so you know exactly what to capture.</div></div>
+      <div class="fi"><div class="fi-dot"></div><div class="fi-t"><strong>All 7 platforms</strong> — TikTok, YouTube, YouTube Shorts, Instagram Reels, Facebook, LinkedIn, X. Every caption formatted right.</div></div>
+      <div class="fi"><div class="fi-dot"></div><div class="fi-t"><strong>12 languages, written natively</strong> — SAM thinks and writes in your language from the first word. Not translated. Native.</div></div>
+      <div class="fi"><div class="fi-dot"></div><div class="fi-t"><strong>Brand profile</strong> — Your name, logo, and brand color on every document SAM builds for you.</div></div>
+      <div class="fi"><div class="fi-dot"></div><div class="fi-t"><strong>Download everything as PDF</strong> — Every playbook, script, calendar, and lead magnet is yours to keep and share.</div></div>
+      <div class="fi"><div class="fi-dot"></div><div class="fi-t"><strong>Save and restore sessions</strong> — Pick up exactly where you left off. Your Voice DNA travels with you.</div></div>
+      <div class="fi"><div class="fi-dot"></div><div class="fi-t"><strong>My Ideas library</strong> — Every hook, script, and concept SAM writes is saved. Never lose a good idea again.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<div class="q-section r">
+  <div class="big-q">"This is not a feature. This is a <em>relationship.</em> The longer you stay, the more SAM becomes the creative director you never had — and the only one who actually sounds like you."</div>
+  <div class="q-attr">Joey Pirrone — Founder, S.A.M. For Creators</div>
+</div>
+
+<!-- PLANS -->
+<section class="s">
+  <div class="c">
+    <div class="label r">Simple pricing</div>
+    <h2 class="r">One plan for every<br>stage of the <span class="grad">journey.</span></h2>
+    <p class="body-text r">No locked features. No tiered access. Every plan gets the full SAM suite — all five tools, Voice DNA, lead magnets, everything. The only difference is how much you run her. Pick the one that matches how you create.</p>
+    <div class="plans r">
+      <div class="plan">
+        <div class="p-name">Creator</div>
+        <div class="p-price"><sup>$</sup>19</div>
+        <div class="p-period">/ month &nbsp;·&nbsp; founding rate — locked forever</div>
+        <div class="p-pos">Regular use — for creators building their posting rhythm.</div>
+        <div class="p-who">You're showing up consistently. You want to stop starting from zero every time and start posting with actual confidence. SAM has everything you need. No overwhelm.</div>
+        <div class="p-usage"><span>10</span> SAM Engine runs / month<br><span>70</span> tool runs across all 5 tools<br><span>1</span> lead magnet per run<br><span>All features</span> included</div>
+        <a href="https://samforcreators.com" class="p-cta">Get Creator — $19/mo →</a>
+        <div class="p-lock">🔒 7-day guarantee · Cancel anytime</div>
+      </div>
+      <div class="plan pop">
+        <div class="p-badge">⚡ Most popular</div>
+        <div class="p-name">Pro</div>
+        <div class="p-price"><sup>$</sup>39</div>
+        <div class="p-period">/ month &nbsp;·&nbsp; founding rate — locked forever</div>
+        <div class="p-pos">Heavy use — for full-time creators serious about growth.</div>
+        <div class="p-who">You post consistently and you're ready to scale. More runs, priority speed, and unlimited lead magnet rebuilds so SAM can keep up with how hard you work.</div>
+        <div class="p-usage"><span>20</span> SAM Engine runs / month<br><span>200</span> tool runs across all 5 tools<br><span>Unlimited</span> lead magnet rebuilds<br><span>Priority speed</span> — jump the queue</div>
+        <a href="https://samforcreators.com" class="p-cta">Get Pro — $39/mo →</a>
+        <div class="p-lock">🔒 7-day guarantee · Cancel anytime</div>
+      </div>
+      <div class="plan">
+        <div class="p-name">Studio</div>
+        <div class="p-price"><sup>$</sup>99</div>
+        <div class="p-period">/ month &nbsp;·&nbsp; founding rate — locked forever</div>
+        <div class="p-pos">Maximum use — for businesses and agencies running at scale.</div>
+        <div class="p-who">Multiple creators, multiple brands, multiple voices. SAM handles all of it. Up to 5 brand profiles, unlimited runs, everything unlocked. Built for teams who create at volume.</div>
+        <div class="p-usage"><span>100</span> SAM Engine runs / month<br><span>Unlimited</span> tool runs<br><span>Up to 5</span> brand profiles<br><span>Priority speed</span> — jump the queue</div>
+        <a href="https://samforcreators.com" class="p-cta">Get Studio — $99/mo →</a>
+        <div class="p-lock">🔒 7-day guarantee · Cancel anytime</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER CTA -->
+<div class="fcta">
+  <div class="fcta-glow"></div>
+  <div class="c">
+    <div class="label r">Start now</div>
+    <h2 class="r">Your voice took years<br>to build. <span class="grad">Keep it.</span></h2>
+    <p class="body-text r" style="margin: 0 auto 2.5rem;">48 hours free. All 5 tools. No card needed. Your Voice DNA starts building from your very first session — and it never stops.</p>
+    <a href="https://samforcreators.com" class="btn-grad r">✦ Try SAM free at samforcreators.com</a>
+    <div class="ffine r">48 hours full access · All 5 tools · No card ever · Cancel anytime</div>
+  </div>
+</div>
+
+<footer>
+  <div class="fb">S.A.M. — Strategic Assistant for Making &nbsp;·&nbsp; samforcreators.com</div>
+  <div class="fl">
+    <a href="https://samforcreators.com">Home</a>
+    <a href="https://samforcreators.com">Try free</a>
+    <a href="https://samforcreators.com">Sign in</a>
+  </div>
+</footer>
+
+</div><!-- .page -->
+
+<script>
+// DNA row
+const sd=[{n:"S·1",b:[3,5,4,6,4,3,5,4,3,4],l:"8 traits",on:false},{n:"S·3",b:[5,9,7,8,10,7,6,8,9,7],l:"16 traits",on:false},{n:"S·5",b:[8,14,11,13,16,12,9,13,15,11],l:"24 traits",on:false},{n:"S·8",b:[12,20,16,18,22,17,13,18,21,16],l:"32 traits",on:false},{n:"S·10",b:[16,27,22,24,29,23,18,24,28,22],l:"Your voice",on:true}];
+const row=document.getElementById('dnaRow');
+sd.forEach(s=>{
+  const d=document.createElement('div');d.className='dna-cell'+(s.on?' on':'');
+  const sn=document.createElement('div');sn.className='dna-num';sn.textContent=s.n;
+  const bars=document.createElement('div');bars.className='dna-bars';
+  s.b.forEach(h=>{const sp=document.createElement('span');sp.style.height=h+'px';bars.appendChild(sp);});
+  const sl=document.createElement('div');sl.className='dna-sl';sl.textContent=s.l;
+  d.appendChild(sn);d.appendChild(bars);d.appendChild(sl);row.appendChild(d);
+});
+
+// Waves
+function bw(id,hh){const e=document.getElementById(id);if(!e)return;hh.forEach(h=>{const s=document.createElement('span');s.style.height=h+'px';e.appendChild(s);});}
+bw('w1',[5,8,11,8,6,9,13,9,7,5,8,12,9,6,5,8,12,9,6,4]);
+bw('w10',[6,12,18,28,24,17,12,20,32,26,18,14,24,36,30,22,16,26,38,32,24,18,12,20,32,26]);
+
+// Scroll reveal
+const rs=document.querySelectorAll('.r');
+const ob=new IntersectionObserver(es=>{es.forEach((e,i)=>{if(e.isIntersecting)setTimeout(()=>e.target.classList.add('v'),i*40);});},{threshold:0.07,rootMargin:'0px 0px -20px 0px'});
+rs.forEach(el=>ob.observe(el));
+</script>
+</body>
+</html>
