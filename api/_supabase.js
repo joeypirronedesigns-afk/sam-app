@@ -93,6 +93,16 @@ async function saveUserProfile(uid, { voice_profile, sam_context }) {
   }, `uid=eq.${encodeURIComponent(uid)}`);
 }
 
+// Update email for an existing user by uid
+async function updateUserEmail(uid, email, name) {
+  if (!uid || uid === 'anon' || !email) return null;
+  return supabaseQuery('sam_users', 'PATCH', {
+    email: email.toLowerCase(),
+    name: name || null,
+    last_seen: new Date().toISOString()
+  }, `uid=eq.${encodeURIComponent(uid)}`);
+}
+
 // Get voice profile and SAM context for a user
 async function getUserProfile(uid) {
   if (!uid || uid === 'anon') return null;
@@ -101,4 +111,4 @@ async function getUserProfile(uid) {
   return result[0];
 }
 
-module.exports = { trackUser, trackEvent, trackSignup, getStats, saveUserProfile, getUserProfile };
+module.exports = { trackUser, trackEvent, trackSignup, getStats, saveUserProfile, getUserProfile, updateUserEmail };

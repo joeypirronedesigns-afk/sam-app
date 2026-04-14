@@ -1,5 +1,5 @@
 module.exports.config = { api: { bodyParser: { sizeLimit: "10mb" } } };
-const { trackUser, trackEvent, saveUserProfile, getUserProfile } = require('./_supabase');
+const { trackUser, trackEvent, saveUserProfile, getUserProfile, updateUserEmail } = require('./_supabase');
 
 // ── TIER LIMITS ────────────────────────────────────────────────────────────
 const TIER_LIMITS = {
@@ -66,7 +66,10 @@ module.exports = async function handler(req, res) {
       voice_calibrated: !!req.body.voiceProfile
     }).catch(() => {});
     trackEvent(userId, mode || 'chat', { tier }).catch(() => {});
-    if (req.body.voiceProfile || req.body.samContext) {
+    if (req.body.email && userId !== 'anon') {
+    await updateUserEmail(userId, req.body.email, req.body.name || null).catch(() => {});
+  }
+  if (req.body.voiceProfile || req.body.samContext) {
       await saveUserProfile(userId, {
         voice_profile: req.body.voiceProfile || (userProfile && userProfile.voice_profile) || null,
         sam_context: req.body.samContext || (userProfile && userProfile.sam_context) || null
