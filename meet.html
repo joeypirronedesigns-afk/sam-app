@@ -268,16 +268,18 @@ async function submitVoice() {
 }
 
 function showEmailCapture(profile, card) {
-  if(card) card.innerHTML='<div style="background:linear-gradient(135deg,rgba(167,139,250,0.08),rgba(56,189,248,0.04));border:1px solid rgba(167,139,250,0.2);border-radius:12px;padding:16px;"><div style="font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;background:linear-gradient(90deg,#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;">✦ Your Voice DNA is ready</div><div style="font-size:13px;color:rgba(240,236,255,0.85);margin-bottom:12px;">Drop your email so SAM remembers you next session — your Voice DNA grows every time you come back.</div><div style="display:flex;gap:8px;margin-bottom:8px;"><input id="emailCapture" type="email" placeholder="your@email.com" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(167,139,250,0.3);border-radius:8px;padding:8px 12px;color:#fff;font-size:13px;outline:none;" /><button onclick="saveEmail()" style="background:linear-gradient(90deg,#A78BFA,#38BDF8);border:none;border-radius:8px;padding:8px 16px;color:#000;font-weight:700;font-size:13px;cursor:pointer;">Save</button></div><button onclick="skipEmail()" style="background:none;border:none;color:rgba(255,255,255,0.3);font-size:11px;cursor:pointer;padding:4px 0;">Skip for now →</button></div>';
+  if(card) card.innerHTML='<div style="background:linear-gradient(135deg,rgba(167,139,250,0.08),rgba(56,189,248,0.04));border:1px solid rgba(167,139,250,0.2);border-radius:12px;padding:16px;"><div style="font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;background:linear-gradient(90deg,#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;">✦ Your Voice DNA is ready</div><div style="font-size:13px;color:rgba(240,236,255,0.85);margin-bottom:12px;">Drop your email so SAM remembers you next session — your Voice DNA grows every time you come back.</div><div style="display:flex;gap:8px;margin-bottom:8px;"><input id="nameCapture" type="text" placeholder="First name" style="width:120px;background:rgba(255,255,255,0.05);border:1px solid rgba(167,139,250,0.3);border-radius:8px;padding:8px 12px;color:#fff;font-size:13px;outline:none;" /><input id="emailCapture" type="email" placeholder="your@email.com" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(167,139,250,0.3);border-radius:8px;padding:8px 12px;color:#fff;font-size:13px;outline:none;" /><button onclick="saveEmail()" style="background:linear-gradient(90deg,#A78BFA,#38BDF8);border:none;border-radius:8px;padding:8px 16px;color:#000;font-weight:700;font-size:13px;cursor:pointer;">Save</button></div><button onclick="skipEmail()" style="background:none;border:none;color:rgba(255,255,255,0.3);font-size:11px;cursor:pointer;padding:4px 0;">Skip for now →</button></div>';
   window._pendingProfile = profile;
   window._pendingCard = card;
 }
 
 function saveEmail() {
   const email = document.getElementById('emailCapture')?.value?.trim();
+  const firstName = document.getElementById('nameCapture')?.value?.trim() || STATE.name || undefined;
   if(!email || !email.includes('@')) { document.getElementById('emailCapture').style.borderColor='rgba(244,114,182,0.5)'; return; }
+  if(firstName) STATE.name = firstName;
   if(STATE.uid) {
-    fetch('/api/sam',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'chat',userId:STATE.uid,messages:[],email:email,name:STATE.name||undefined,voiceProfile:window._pendingProfile,samContext:STATE.storyRaw?.slice(0,800)})}).catch(()=>{});
+    fetch('/api/sam',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'chat',userId:STATE.uid,messages:[],email:email,name:firstName,voiceProfile:window._pendingProfile,samContext:STATE.storyRaw?.slice(0,800)})}).catch(()=>{});
   }
   localStorage.setItem('sam_user_email', email);
   showVoiceLocked(window._pendingProfile, window._pendingCard);
