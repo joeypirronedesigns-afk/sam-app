@@ -68,6 +68,18 @@ module.exports = async function handler(req, res) {
     trackEvent(userId, mode || 'chat', { tier }).catch(() => {});
     if (req.body.email && userId !== 'anon') {
     await updateUserEmail(userId, req.body.email, req.body.name || null).catch(() => {});
+    // Notify Joey via Zapier Gmail webhook — new user signed up
+    const userName = req.body.name || 'Anonymous';
+    const userEmail = req.body.email;
+    fetch('https://hooks.zapier.com/hooks/catch/27195700/u7evzoc/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        subject: `New SAM user — ${userName}`,
+        body: `New signup on samforcreators.com\n\nName: ${userName}\nEmail: ${userEmail}\nTime: ${new Date().toLocaleString()}\n\nGo to SAM HQ: https://sam-hq.vercel.app`,
+        to: 'samforcreators@gmail.com'
+      })
+    }).catch(() => {});
   }
   if (req.body.voiceProfile || req.body.samContext) {
       await saveUserProfile(userId, {
