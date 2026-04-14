@@ -256,6 +256,7 @@ PERSONALITY: Confident, direct, warm. Keep responses to 2-4 sentences max. No ja
   };
   const toneContext = toneMap[tone] || toneMap['Authentic/Natural'];
   const emojiMap = { no: 'Use zero emojis.', few: 'Use 1-2 emojis maximum, only where they add genuine meaning.', lots: 'Use emojis freely and expressively.' };
+const hashtagRule = 'HASHTAG RULE — CRITICAL: Use a maximum of 3-4 hashtags total. Choose only the most specific and relevant ones to this exact post and this creator. Never use generic filler hashtags. Never exceed 4 hashtags regardless of platform.';
   const emojiLine = emojiMap[emojiPreference] || emojiMap['few'];
   const creatorLine = creatorContext
     ? `CREATOR CONTEXT: ${creatorContext} — Use this to make every output specific to this creator's story, niche, audience and voice. Never write generic content when you have this context.`
@@ -286,7 +287,7 @@ NEVER write in generic AI voice when you have this profile. Generic AI voice is:
 
   const samIdentity = `You are S.A.M. — Strategic Assistant for Making. You are an AI content strategist that helps creators write better scripts, hooks, captions, strategies and content plans.`;
 
-  const base = `${samIdentity} ${toneContext} ${emojiLine} ${creatorLine} ${voiceLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatContext} CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No explanation outside the JSON.`;
+  const base = `${samIdentity} ${toneContext} ${emojiLine} ${hashtagRule} ${creatorLine} ${voiceLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatContext} CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No explanation outside the JSON.`;
 
   const streamCall = async (system, userContent, maxTokens) => {
     const r = await fetch('https://api.anthropic.com/v1/messages', {
