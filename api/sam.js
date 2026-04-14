@@ -86,19 +86,13 @@ module.exports = async function handler(req, res) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text: `🔔 *New SAM user!*\n\n👤 ${userName}\n📧 ${userEmail}\n🕐 ${new Date().toLocaleString()}\n<https://sam-hq.vercel.app|Open SAM HQ>` })
     }).catch(() => {});
-    // SMS via Twilio direct
-    const twilioSid = process.env.TWILIO_ACCOUNT_SID;
-    const twilioToken = process.env.TWILIO_AUTH_TOKEN;
-    const twilioFrom = process.env.TWILIO_PHONE_NUMBER || '+18556804617';
-    if (twilioSid && twilioToken) {
-      const smsBody = `New SAM user!\nName: ${userName}\nEmail: ${userEmail}`;
-      const encoded = Buffer.from(`${twilioSid}:${twilioToken}`).toString('base64');
-      fetch(`https://api.twilio.com/2010-04-01/Accounts/${twilioSid}/Messages.json`, {
-        method: 'POST',
-        headers: { 'Authorization': `Basic ${encoded}`, 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ To: '+12398513339', From: twilioFrom, Body: smsBody }).toString()
-      }).catch(() => {});
-    }
+    // iMessage via OpenClaw on Joey's Mac
+    const openclawUrl = process.env.OPENCLAW_IMESSAGE_URL || 'http://localhost:3456/imessage';
+    fetch(openclawUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: `New SAM user! Name: ${userName} Email: ${userEmail}` })
+    }).catch(() => {});
   }
   if (req.body.voiceProfile || req.body.samContext) {
       await saveUserProfile(userId, {
