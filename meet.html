@@ -258,6 +258,11 @@ async function submitVoice() {
   STATE.voiceProfile=profile;
   localStorage.setItem('sam-voice-profile',JSON.stringify({raw:profile}));
   localStorage.setItem('sam-voice-calibrated','true');
+  // Send real writing samples to Voice DNA engine — actual words, not just traits
+  if(STATE.uid){
+    const realSamples=[val,STATE.storyRaw].filter(s=>s&&s.length>10);
+    fetch('/api/voice',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:STATE.uid,samples:realSamples,existingProfile:{voice_profile:profile}})}).catch(()=>{});
+  }
   if(STATE.uid) fetch('/api/sam',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'chat',userId:STATE.uid,messages:[],voiceProfile:profile,samContext:STATE.storyRaw.slice(0,800),name:STATE.name||undefined,niche:STATE.niche||undefined})}).catch(()=>{});
   showVoiceLocked(profile,card);
 }
