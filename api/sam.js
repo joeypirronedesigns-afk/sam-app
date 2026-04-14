@@ -80,6 +80,12 @@ module.exports = async function handler(req, res) {
         to: 'samforcreators@gmail.com'
       })
     }).catch(() => {});
+    // Slack notification
+    fetch(process.env.SLACK_WEBHOOK_URL || 'https://hooks.slack.com/services/placeholder', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: `🔔 *New SAM user!*\n\n👤 ${userName}\n📧 ${userEmail}\n🕐 ${new Date().toLocaleString()}\n<https://sam-hq.vercel.app|Open SAM HQ>` })
+    }).catch(() => {});
   }
   if (req.body.voiceProfile || req.body.samContext) {
       await saveUserProfile(userId, {
