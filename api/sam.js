@@ -267,7 +267,7 @@ PERSONALITY: Confident, direct, warm. Keep responses to 2-4 sentences max. No ja
   const platformContext = platforms && platforms.length > 0 ? `PLATFORM SPECS (follow exactly): ${getPlatformContext(platforms)}` : '';
   const formatContext = contentType ? `Content format requested: ${contentType}.` : '';
   const voiceLine = voiceProfile
-    ? `VOICE PROFILE — THIS IS THE MOST IMPORTANT INSTRUCTION: You have a forensic voice fingerprint for this creator. Their exact traits: ${voiceProfile}
+    ? `VOICE PROFILE — THIS IS THE MOST IMPORTANT INSTRUCTION: You have a forensic voice fingerprint built from this creator's ACTUAL writing samples. Real analysis: ${voiceProfile}
 
 You must ghost-write AS this person — not inspired by them, not in their general direction, but AS them. Apply their voice at the sentence level on every single line of output.
 
