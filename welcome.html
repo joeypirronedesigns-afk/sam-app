@@ -482,7 +482,7 @@
     // Returns a Promise that resolves ONLY when Katie finishes speaking
     async function speakWithKatie(text) {
       if (!text) return;
-      const plain = text.replace(/<[^>]+>/g, '').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim();
+      const plain = text.replace(/<[^>]+>/g, '').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/[\u{1F300}-\u{1FFFF}\u{2600}-\u{27BF}]/gu, '').replace(/\s+/g, ' ').trim();
       if (!plain) return;
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
@@ -605,7 +605,7 @@
           pause: 600
         },
         {
-          html: `This isn't another generic AI tool... this is something brand new. <strong style="color:var(--spark)">Voice DNA</strong> — I'll get to that in a second. 🤫`,
+          html: `This isn't another generic AI tool — this is something brand new. <strong style="color:var(--spark)">Voice DNA</strong> — I'll get to that in a second. 🤫`,
           pause: 1200
         },
         {
@@ -654,7 +654,7 @@
           pause: 1300
         },
         {
-          html: `So everything we build together sounds just like <strong>you</strong>. Not like AI. Not like everyone else. Like <strong style="color:var(--spark)">you</strong>.<br><br>Isn't that something?`,
+          html: `So everything we build together sounds just like <strong>you</strong>. Not like AI. Not like everyone else. Like <strong style="color:var(--spark)">you</strong>.<br><br> Isn't that something?`,
           pause: 1000
         }
       ], () => {
@@ -675,14 +675,14 @@
         },
         {
           html: `<div class="feature-list">
-            <div class="feature-item"><span class="feature-icon">🎯</span><span><strong>The Reach Tool</strong> — Write one post, deploy it to Facebook, TikTok, LinkedIn, Instagram, or Twitter — all sounding like you.</span></div>
-            <div class="feature-item"><span class="feature-icon">⚡</span><span><strong>Lead Magnet Engine</strong> — Writes free resources that build your authority, in your voice.</span></div>
-            <div class="feature-item"><span class="feature-icon">📐</span><span><strong>6 Specialized AI Tools</strong> — Strategy, content, analytics, outreach, campaigns, and a CEO-level layer that tells you exactly what to do next.</span></div>
+            <div class="feature-item"><span class="feature-icon">🎯 </span><span><strong>The Reach Tool</strong> — Write one post, deploy it to Facebook, TikTok, LinkedIn, Instagram, or Twitter — all sounding like you.</span></div>
+            <div class="feature-item"><span class="feature-icon">⚡ </span><span><strong>Lead Magnet Engine</strong> — Writes free resources that build your authority, in your voice.</span></div>
+            <div class="feature-item"><span class="feature-icon">📐 </span><span><strong>6 Specialized AI Tools</strong> — Strategy, content, analytics, outreach, campaigns, and a CEO-level layer that tells you exactly what to do next.</span></div>
           </div>`,
           pause: 1000
         },
         {
-          html: `Creators are paying <strong style="color:var(--pulse)">$39 a month</strong> for this. For the next <strong>48 hours — it's yours free.</strong><br><br>Does all of that sound good to you?`,
+          html: `Creators are paying <strong style="color:var(--pulse)">$39 a month</strong> for this. For the next <strong>48 hours — it's yours free.</strong><br><br> Does all of that sound good to you?`,
           cls: 'highlight',
           pause: 1200
         }
