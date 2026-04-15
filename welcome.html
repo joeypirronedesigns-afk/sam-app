@@ -482,7 +482,7 @@
     // Returns a Promise that resolves ONLY when Katie finishes speaking
     async function speakWithKatie(text) {
       if (!text) return;
-      const plain = text.replace(/<[^>]+>/g, '').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/[\u{1F300}-\u{1FFFF}\u{2600}-\u{27BF}]/gu, '').replace(/\s+/g, ' ').trim();
+      const plain = text.replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]+>/g, '').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/[\u{1F300}-\u{1FFFF}\u{2600}-\u{27BF}]/gu, '').replace(/\.\s*$/g, '').replace(/\s+/g, ' ').trim();
       if (!plain) return;
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
@@ -609,7 +609,7 @@
           pause: 1200
         },
         {
-          html: `This is a creative space built by a creator, for creators — and for the next <strong style="color:var(--pulse)">48 hours, it's completely yours free to create and use.</strong><br><br>Does that sound good?!`,
+          html: `This is a creative space built by a creator, for creators — and for the next <strong style="color:var(--pulse)">48 hours, it's completely yours free to create and use!</strong><br><br>Does that sound good?!`,
           cls: 'highlight',
           pause: 1000
         }
