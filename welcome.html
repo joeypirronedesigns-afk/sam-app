@@ -790,14 +790,7 @@
           })
         });
 
-        // 3. Post to Slack
-        await fetch('https:// {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            text: `🎉 *New SAM signup via Voice Welcome!*\n👤 *Name:* ${nameVal}\n📧 *Email:* ${emailVal}\n⏱ *48hr trial started*\n🕐 ${new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })}`
-          })
-        });
+        // Slack handled server-side by /api/waitlist
 
         // 4. Set session cookie so homepage shows their name
         const trialExpiry = new Date(Date.now() + 48 * 60 * 60 * 1000).toUTCString();
