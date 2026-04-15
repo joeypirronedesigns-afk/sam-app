@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Meet SAM — Your AI Creative Director</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><radialGradient id='g' cx='40%' cy='35%'><stop offset='0%' stop-color='%23F472B6'/><stop offset='100%' stop-color='%23A78BFA'/></radialGradient></defs><circle cx='50' cy='50' r='45' fill='url(%23g)'/></svg>" type="image/svg+xml">
+  <meta name="theme-color" content="#09080F" />
+  <meta name="description" content="Meet SAM — the AI creative director that learns your voice. 48 hours free, no card needed." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #09080F; --bg2: #0D0B16;
+      --surface: rgba(255,255,255,0.04); --surface2: rgba(255,255,255,0.07);
+      --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.14);
+      --text: #F0ECFF; --text2: rgba(240,236,255,0.65); --text3: rgba(240,236,255,0.38);
+      --spark: #A78BFA; --pulse: #F472B6; --blueprint: #38BDF8;
+      --radius: 14px; --radius-lg: 20px;
+    }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── AMBIENT ORBS ── */
+    .orb { position: fixed; border-radius: 50%; filter: blur(90px); pointer-events: none; z-index: 0; }
+    .orb-1 { width: 500px; height: 500px; background: #A78BFA; top: -150px; left: -120px; opacity: 0.15; }
+    .orb-2 { width: 400px; height: 400px; background: #F472B6; bottom: 80px; right: -100px; opacity: 0.12; }
+    .orb-3 { width: 300px; height: 300px; background: #38BDF8; top: 50%; left: 50%; transform: translate(-50%,-50%); opacity: 0.06; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; height: 56px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px; z-index: 100;
+      background: rgba(9,8,15,0.8); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--text); text-decoration: none;
+    }
+    .nav-logo span { color: var(--spark); }
+    .nav-badge {
+      font-size: 11px; font-weight: 600; color: var(--pulse);
+      background: rgba(244,114,182,0.1); border: 1px solid rgba(244,114,182,0.25);
+      border-radius: 999px; padding: 4px 12px; letter-spacing: 0.06em;
+    }
+
+    /* ── MAIN CONTAINER ── */
+    .welcome-container {
+      flex: 1; display: flex; flex-direction: column;
+      max-width: 600px; width: 100%; margin: 0 auto;
+      padding: 72px 20px 32px; position: relative; z-index: 1;
+      min-height: 100dvh;
+    }
+
+    /* ── SAM ORB (hero) ── */
+    .sam-hero {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 32px 0 28px; flex-shrink: 0;
+    }
+    .sam-orb-wrap { position: relative; margin-bottom: 20px; }
+    .sam-orb {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: linear-gradient(135deg, #F472B6, #A78BFA 50%, #38BDF8);
+      box-shadow: 0 0 60px rgba(167,139,250,0.4), 0 0 120px rgba(244,114,182,0.2);
+      animation: orbFloat 4s ease-in-out infinite;
+      cursor: default;
+    }
+    @keyframes orbFloat {
+      0%,100% { transform: translateY(0) scale(1); box-shadow: 0 0 60px rgba(167,139,250,0.4), 0 0 120px rgba(244,114,182,0.2); }
+      50% { transform: translateY(-6px) scale(1.03); box-shadow: 0 0 80px rgba(167,139,250,0.6), 0 0 140px rgba(244,114,182,0.3); }
+    }
+    .sam-orb.speaking {
+      animation: orbSpeak 0.8s ease-in-out infinite;
+    }
+    @keyframes orbSpeak {
+      0%,100% { transform: scale(1); box-shadow: 0 0 60px rgba(167,139,250,0.5); }
+      50% { transform: scale(1.06); box-shadow: 0 0 100px rgba(167,139,250,0.8), 0 0 160px rgba(244,114,182,0.4); }
+    }
+    .sam-orb-ring {
+      position: absolute; inset: -8px; border-radius: 50%;
+      border: 1.5px solid rgba(167,139,250,0.3);
+      animation: ringRotate 8s linear infinite;
+    }
+    .sam-orb-ring-2 {
+      position: absolute; inset: -16px; border-radius: 50%;
+      border: 1px solid rgba(244,114,182,0.15);
+      animation: ringRotate 12s linear infinite reverse;
+    }
+    @keyframes ringRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .sam-label {
+      font-family: 'Sora', sans-serif; font-size: 13px; font-weight: 700;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      background: linear-gradient(135deg, #F472B6, #A78BFA);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .sam-sublabel {
+      font-size: 12px; color: var(--text3); margin-top: 4px;
+      letter-spacing: 0.06em; text-align: center;
+    }
+
+    /* ── CONVERSATION ── */
+    .conversation {
+      flex: 1; display: flex; flex-direction: column;
+      overflow-y: auto; padding: 8px 0 16px; scroll-behavior: smooth;
+    }
+    .sam-bubble-wrap {
+      display: flex; align-items: flex-start; gap: 12px; margin-bottom: 20px;
+      opacity: 0; animation: fadeUp 0.5s cubic-bezier(0.34,1.2,0.64,1) forwards;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .sam-avatar {
+      width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, #F472B6, #A78BFA);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Sora', sans-serif; font-size: 13px; font-weight: 700; color: #09080F;
+    }
+    .sam-bubble {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 4px 18px 18px 18px; padding: 14px 18px;
+      font-size: 16px; line-height: 1.75; color: var(--text);
+      max-width: calc(100% - 48px); word-wrap: break-word;
+    }
+    .sam-bubble.large {
+      font-size: 17px; line-height: 1.8;
+      background: rgba(167,139,250,0.05); border-color: rgba(167,139,250,0.15);
+    }
+    .sam-bubble.highlight {
+      background: rgba(244,114,182,0.05); border-color: rgba(244,114,182,0.2);
+    }
+    .user-bubble-wrap {
+      display: flex; justify-content: flex-end; margin-bottom: 20px;
+      opacity: 0; animation: fadeUp 0.4s cubic-bezier(0.34,1.2,0.64,1) forwards;
+    }
+    .user-bubble {
+      background: linear-gradient(135deg,rgba(56,189,248,0.12),rgba(167,139,250,0.08));
+      border: 1px solid rgba(56,189,248,0.2);
+      border-radius: 18px 4px 18px 18px; padding: 13px 17px;
+      font-size: 15px; line-height: 1.75; color: rgba(240,236,255,0.88);
+      max-width: 80%; word-wrap: break-word;
+    }
+    .thinking-wrap { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 20px; }
+    .thinking-bubble {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 4px 18px 18px 18px; padding: 14px 18px;
+      display: flex; gap: 5px; align-items: center;
+    }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: #A78BFA; animation: dotBounce 1.2s ease infinite; }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes dotBounce {
+      0%,60%,100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-5px); opacity: 1; }
+    }
+    .cursor { display: inline-block; width: 2px; height: 1em; background: #A78BFA; margin-left: 2px; vertical-align: middle; animation: blink 0.8s step-end infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* ── GATE BADGES ── */
+    .gate-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.2);
+      border-radius: 999px; padding: 4px 12px; font-size: 12px;
+      color: #FBBF24; font-weight: 600; letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+
+    /* ── FEATURE LIST ── */
+    .feature-list { margin: 8px 0 4px; }
+    .feature-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-size: 15px; line-height: 1.6; color: rgba(240,236,255,0.85);
+    }
+    .feature-item:last-child { border-bottom: none; }
+    .feature-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+    /* ── INPUT ROW ── */
+    .input-row {
+      display: flex; align-items: flex-end; gap: 10px;
+      padding: 12px 0 0; border-top: 1px solid rgba(255,255,255,0.07);
+      flex-shrink: 0; padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    .input-wrap { flex: 1; position: relative; }
+    .main-input {
+      width: 100%; background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border2); border-radius: 16px;
+      padding: 13px 52px 13px 18px; font-family: 'Inter', sans-serif;
+      font-size: 16px; color: var(--text); line-height: 1.5;
+      resize: none; min-height: 48px; max-height: 120px; overflow-y: auto;
+      transition: all 0.2s;
+    }
+    .main-input:focus { outline: none; border-color: rgba(167,139,250,0.5); background: rgba(255,255,255,0.06); }
+    .main-input::placeholder { color: var(--text3); }
+    .main-input:disabled { opacity: 0.4; cursor: not-allowed; }
+    .send-btn {
+      position: absolute; bottom: 8px; right: 8px;
+      width: 32px; height: 32px; border-radius: 8px; border: none;
+      background: linear-gradient(135deg,#6D28D9,#A78BFA 50%,#F472B6);
+      color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s; box-shadow: 0 0 16px rgba(167,139,250,0.4);
+    }
+    .send-btn:hover { transform: scale(1.05); }
+    .send-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+
+    /* ── EMAIL FORM ── */
+    .email-form {
+      margin: 0 0 20px 48px;
+      background: rgba(167,139,250,0.06); border: 1px solid rgba(167,139,250,0.2);
+      border-radius: var(--radius-lg); padding: 20px;
+      opacity: 0; animation: fadeUp 0.6s cubic-bezier(0.34,1.2,0.64,1) forwards;
+    }
+    .email-form input {
+      width: 100%; background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border2); border-radius: var(--radius);
+      padding: 13px 16px; font-family: 'Inter', sans-serif;
+      font-size: 15px; color: var(--text); margin-bottom: 10px; transition: all 0.2s;
+    }
+    .email-form input:focus { outline: none; border-color: rgba(167,139,250,0.5); background: rgba(255,255,255,0.06); }
+    .email-form input::placeholder { color: var(--text3); }
+    .submit-btn {
+      width: 100%; padding: 14px; border: none; border-radius: 50px;
+      background: linear-gradient(135deg,#6D28D9,#A78BFA 50%,#F472B6);
+      color: #fff; font-family: 'Sora', sans-serif; font-size: 15px;
+      font-weight: 700; cursor: pointer; letter-spacing: 0.02em;
+      box-shadow: 0 0 30px rgba(167,139,250,0.3); transition: all 0.25s;
+    }
+    .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(167,139,250,0.5); }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .form-note { font-size: 11px; color: var(--text3); margin-top: 10px; text-align: center; letter-spacing: 0.03em; }
+
+    /* ── SUCCESS STATE ── */
+    .success-wrap {
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; padding: 32px 20px; gap: 16px;
+      opacity: 0; animation: fadeUp 0.8s cubic-bezier(0.34,1.2,0.64,1) forwards;
+    }
+    .success-orb {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: linear-gradient(135deg,#F472B6,#A78BFA);
+      box-shadow: 0 0 60px rgba(167,139,250,0.6);
+      animation: orbFloat 3s ease-in-out infinite;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+    }
+    .success-title {
+      font-family: 'Sora', sans-serif; font-size: 24px; font-weight: 800;
+      background: linear-gradient(135deg,#F472B6,#A78BFA);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .success-sub { font-size: 15px; color: var(--text2); line-height: 1.6; max-width: 380px; }
+    .enter-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 16px 36px; border: none; border-radius: 50px;
+      background: linear-gradient(135deg,#6D28D9,#A78BFA 50%,#F472B6);
+      color: #fff; font-family: 'Sora', sans-serif; font-size: 16px;
+      font-weight: 700; cursor: pointer; letter-spacing: 0.02em;
+      box-shadow: 0 0 40px rgba(167,139,250,0.4); transition: all 0.25s;
+      text-decoration: none;
+    }
+    .enter-btn:hover { transform: translateY(-2px); box-shadow: 0 0 60px rgba(167,139,250,0.6); }
+    .timer-note { font-size: 12px; color: var(--pulse); font-weight: 600; letter-spacing: 0.05em; }
+
+    /* ── HIDDEN ── */
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient orbs -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- Nav -->
+  <nav>
+    <a href="https://samforcreators.com" class="nav-logo">SAM <span>✦</span></a>
+    <div class="nav-badge">48 HR FREE ACCESS</div>
+  </nav>
+
+  <!-- Main -->
+  <div class="welcome-container">
+
+    <!-- SAM Orb Hero -->
+    <div class="sam-hero">
+      <div class="sam-orb-wrap">
+        <div class="sam-orb" id="heroOrb"></div>
+        <div class="sam-orb-ring"></div>
+        <div class="sam-orb-ring-2"></div>
+      </div>
+      <div class="sam-label">SAM</div>
+      <div class="sam-sublabel" id="orbStatus">Your AI Creative Director</div>
+    </div>
+
+    <!-- Conversation -->
+    <div class="conversation" id="conversation"></div>
+
+    <!-- Email Form (hidden until step 4) -->
+    <div class="email-form hidden" id="emailForm">
+      <input type="text" id="nameInput" placeholder="Your first name" autocomplete="given-name" />
+      <input type="email" id="emailInput" placeholder="Your email address" autocomplete="email" />
+      <button class="submit-btn" id="submitBtn" onclick="handleSignup()">
+        Get My 48-Hour Access ✦
+      </button>
+      <div class="form-note">No card. No catch. Just 48 hours to explore everything.</div>
+    </div>
+
+    <!-- Success (hidden until complete) -->
+    <div class="success-wrap hidden" id="successWrap">
+      <div class="success-orb">✦</div>
+      <div class="success-title" id="successTitle">You're in.</div>
+      <div class="success-sub" id="successSub">Your 48-hour clock starts now. Check your email — SAM just sent you everything you need.</div>
+      <div class="timer-note">⏱ 48 hours · All tools · No card ever</div>
+      <a href="https://samforcreators.com/meet" class="enter-btn" id="enterBtn">
+        Let's get to work →
+      </a>
+    </div>
+
+    <!-- Input Row -->
+    <div class="input-row" id="inputRow">
+      <div class="input-wrap">
+        <textarea
+          class="main-input"
+          id="mainInput"
+          placeholder="Type your reply..."
+          rows="1"
+          autocomplete="off"
+        ></textarea>
+        <button class="send-btn" id="sendBtn" onclick="handleSend()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // ── ELEVENLABS ────────────────────────────────────────────────────────────────
+    const ELEVENLABS_KEY = 'sk_c53e19f23635db2dea919a109fab9f84dc3790c29cbde074';
+    const VOICE_ID = 'T720RsqorTx4ZZWohrNN';
+
+    // ── STATE ──────────────────────────────────────────────────────────────────
+    let step = 0; // 0=opening, 1=waiting for name, 2=waiting for yes, 3=waiting for confirm, 4=waiting for email
+    let userName = '';
+    let isTyping = false;
+
+    const conversation = document.getElementById('conversation');
+    const mainInput = document.getElementById('mainInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const heroOrb = document.getElementById('heroOrb');
+    const orbStatus = document.getElementById('orbStatus');
+    const emailForm = document.getElementById('emailForm');
+    const successWrap = document.getElementById('successWrap');
+    const inputRow = document.getElementById('inputRow');
+
+    // ── AUTO-RESIZE INPUT ──────────────────────────────────────────────────────
+    mainInput.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+    });
+    mainInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
+    });
+
+    // ── HELPERS ────────────────────────────────────────────────────────────────
+    function scrollBottom() {
+      setTimeout(() => conversation.scrollTop = conversation.scrollHeight, 100);
+    }
+
+    function showThinking() {
+      const wrap = document.createElement('div');
+      wrap.className = 'thinking-wrap';
+      wrap.id = 'thinking';
+      wrap.innerHTML = `
+        <div class="sam-avatar">S</div>
+        <div class="thinking-bubble">
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        </div>`;
+      conversation.appendChild(wrap);
+      scrollBottom();
+    }
+
+    function removeThinking() {
+      const t = document.getElementById('thinking');
+      if (t) t.remove();
+    }
+
+    function addUserBubble(text) {
+      const wrap = document.createElement('div');
+      wrap.className = 'user-bubble-wrap';
+      wrap.innerHTML = `<div class="user-bubble">${escHtml(text)}</div>`;
+      conversation.appendChild(wrap);
+      scrollBottom();
+    }
+
+    function addSAMBubble(html, extraClass = '', delay = 0) {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          const wrap = document.createElement('div');
+          wrap.className = 'sam-bubble-wrap';
+          wrap.style.animationDelay = '0ms';
+          wrap.innerHTML = `
+            <div class="sam-avatar">S</div>
+            <div class="sam-bubble ${extraClass}">${html}</div>`;
+          conversation.appendChild(wrap);
+          scrollBottom();
+          // Speak the bubble
+          speakWithKatie(html);
+          setTimeout(resolve, 300);
+        }, delay);
+      });
+    }
+
+    function setOrbSpeaking(speaking) {
+      if (speaking) {
+        heroOrb.classList.add('speaking');
+        orbStatus.textContent = 'SAM is speaking...';
+      } else {
+        heroOrb.classList.remove('speaking');
+        orbStatus.textContent = 'Your AI Creative Director';
+      }
+    }
+
+    function setInputDisabled(disabled) {
+      mainInput.disabled = disabled;
+      sendBtn.disabled = disabled;
+      if (!disabled) mainInput.focus();
+    }
+
+    function escHtml(text) {
+      return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    // ── KATIE VOICE ───────────────────────────────────────────────────────────────
+    async function speakWithKatie(text) {
+      if (!text) return;
+      const plain = text.replace(/<[^>]+>/g, '').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim();
+      if (!plain) return;
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (isMobile) {
+        const doSpeak = () => {
+          window.speechSynthesis.cancel();
+          const utt = new SpeechSynthesisUtterance(plain);
+          utt.rate = 0.88; utt.pitch = 1.0; utt.volume = 1.0; utt.lang = 'en-US';
+          const voices = window.speechSynthesis.getVoices();
+          const pick = voices.find(v => v.name.includes('Samantha')) || voices.find(v => v.name.includes('Karen')) || voices.find(v => v.lang === 'en-US');
+          if (pick) utt.voice = pick;
+          window.speechSynthesis.speak(utt);
+        };
+        const voices = window.speechSynthesis.getVoices();
+        if (voices.length > 0) doSpeak();
+        else { window.speechSynthesis.onvoiceschanged = doSpeak; setTimeout(doSpeak, 400); }
+        return;
+      }
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!window._samCtx) window._samCtx = new AudioCtx();
+        const ctx = window._samCtx;
+        if (ctx.state === 'suspended') await ctx.resume();
+        const sentences = plain.match(/[^.!?]+[.!?]+/g) || [plain];
+        const chunks = []; let cur = '';
+        for (const s of sentences) {
+          if ((cur + s).length > 300) { if (cur) chunks.push(cur.trim()); cur = s; } else cur += s;
+        }
+        if (cur.trim()) chunks.push(cur.trim());
+        for (const chunk of chunks) {
+          if (!chunk) continue;
+          const r = await fetch('https://api.elevenlabs.io/v1/text-to-speech/' + VOICE_ID, {
+            method: 'POST',
+            headers: { 'xi-api-key': ELEVENLABS_KEY, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: chunk, model_id: 'eleven_turbo_v2', voice_settings: { stability: 0.5, similarity_boost: 0.75 } })
+          });
+          if (!r.ok) continue;
+          const buf = await r.arrayBuffer();
+          const audioBuf = await ctx.decodeAudioData(buf);
+          await new Promise(res => {
+            const src = ctx.createBufferSource();
+            src.buffer = audioBuf; src.connect(ctx.destination);
+            src.onended = res; src.start(0);
+          });
+        }
+      } catch(e) { console.log('Katie error:', e.message); }
+    }
+
+    // ── SAM SPEAKS ─────────────────────────────────────────────────────────────
+    async function samSpeak(bubbles, afterFn) {
+      setInputDisabled(true);
+      setOrbSpeaking(true);
+      showThinking();
+
+      // Stagger each bubble
+      for (let i = 0; i < bubbles.length; i++) {
+        const { html, cls, pause } = bubbles[i];
+        await new Promise(r => setTimeout(r, pause || 800));
+        removeThinking();
+        await addSAMBubble(html, cls || '');
+        if (i < bubbles.length - 1) {
+          await new Promise(r => setTimeout(r, 200));
+          showThinking();
+        }
+      }
+
+      setOrbSpeaking(false);
+      if (afterFn) afterFn();
+      else setInputDisabled(false);
+    }
+
+    // ── YES BUTTON HELPER ──────────────────────────────────────────────────────
+    function showYesButton(onYes, label) {
+      const wrap = document.createElement('div');
+      wrap.id = 'yes-btn-wrap';
+      wrap.style.cssText = 'display:flex;justify-content:flex-start;padding-left:48px;margin-bottom:20px;opacity:0;transition:opacity 0.4s;';
+      wrap.innerHTML = `<button onclick="handleYesBtn()" style="
+        display:inline-flex;align-items:center;gap:8px;
+        padding:13px 28px;border:none;border-radius:50px;
+        background:linear-gradient(135deg,#6D28D9,#A78BFA 50%,#F472B6);
+        color:#fff;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;
+        cursor:pointer;letter-spacing:0.02em;
+        box-shadow:0 0 30px rgba(167,139,250,0.35);
+        transition:all 0.25s;
+      " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+        ${label || 'Yes! ✦'}
+      </button>`;
+      conversation.appendChild(wrap);
+      setTimeout(() => { wrap.style.opacity = '1'; }, 50);
+      scrollBottom();
+      window._yesCallback = onYes;
+    }
+
+    function handleYesBtn() {
+      const wrap = document.getElementById('yes-btn-wrap');
+      const label = wrap ? (wrap.querySelector('button').textContent.trim().replace(' ✦','').replace('✦','').trim()) : 'Yes!';
+      if (wrap) wrap.remove();
+      addUserBubble(label);
+      if (window._yesCallback) window._yesCallback();
+    }
+
+    // ── CONVERSATION STEPS ─────────────────────────────────────────────────────
+
+    // STEP 0 — SAM opens, no input needed yet
+    async function startConversation() {
+      await new Promise(r => setTimeout(r, 800));
+      step = 0;
+      setInputDisabled(true);
+
+      await samSpeak([
+        {
+          html: `Hey — I'm SAM. Before you dive in, let me take 30 seconds and show you what you're about to get access to!`,
+          cls: 'large',
+          pause: 600
+        },
+        {
+          html: `This isn't another generic AI tool... this is something brand new. <strong style="color:var(--spark)">Voice DNA</strong> — I'll get to that in a second. 🤫`,
+          pause: 1200
+        },
+        {
+          html: `This is a creative space built by a creator, for creators — and for the next <strong style="color:var(--pulse)">48 hours, it's completely yours free to create and use.</strong><br><br>Does that sound good?!`,
+          cls: 'highlight',
+          pause: 1000
+        }
+      ], () => {
+        // Show Yes button — no text input yet
+        showYesButton(stepGotFirstYes);
+        setOrbSpeaking(false);
+      });
+    }
+
+    // STEP 1 — Got first yes, ask for name
+    async function stepGotFirstYes() {
+      step = 1;
+      setInputDisabled(true);
+      await samSpeak([
+        {
+          html: `Amazing! What's your name?`,
+          cls: 'large',
+          pause: 700
+        }
+      ], () => {
+        mainInput.placeholder = 'Type your name...';
+        setInputDisabled(false);
+      });
+    }
+
+    // STEP 2 — Got name, explain Voice DNA, gate on yes
+    async function stepGotName(name) {
+      userName = name.trim().split(' ')[0];
+      userName = userName.charAt(0).toUpperCase() + userName.slice(1).toLowerCase();
+      step = 2;
+      setInputDisabled(true);
+
+      await samSpeak([
+        {
+          html: `So, ${escHtml(userName)} — let me tell you what Voice DNA is and how it works.`,
+          pause: 800
+        },
+        {
+          html: `The creator who built me developed something nobody else has in the AI space right now. I actually learn how <em>you</em> write and communicate — your rhythm, your humor, your phrasing, your emotional register.`,
+          cls: 'large',
+          pause: 1300
+        },
+        {
+          html: `So everything we build together sounds just like <strong>you</strong>. Not like AI. Not like everyone else. Like <strong style="color:var(--spark)">you</strong>.<br><br>Isn't that something?`,
+          pause: 1000
+        }
+      ], () => {
+        showYesButton(stepGotVoiceDnaYes);
+        setOrbSpeaking(false);
+      });
+    }
+
+    // STEP 3 — Got voice DNA yes, pitch tools, gate on final confirm
+    async function stepGotVoiceDnaYes() {
+      step = 3;
+      setInputDisabled(true);
+
+      await samSpeak([
+        {
+          html: `Here's just a few of the other tools waiting for you inside:`,
+          pause: 700
+        },
+        {
+          html: `<div class="feature-list">
+            <div class="feature-item"><span class="feature-icon">🎯</span><span><strong>The Reach Tool</strong> — Write one post, deploy it to Facebook, TikTok, LinkedIn, Instagram, or Twitter — all sounding like you.</span></div>
+            <div class="feature-item"><span class="feature-icon">⚡</span><span><strong>Lead Magnet Engine</strong> — Writes free resources that build your authority, in your voice.</span></div>
+            <div class="feature-item"><span class="feature-icon">📐</span><span><strong>6 Specialized AI Tools</strong> — Strategy, content, analytics, outreach, campaigns, and a CEO-level layer that tells you exactly what to do next.</span></div>
+          </div>`,
+          pause: 1000
+        },
+        {
+          html: `Creators are paying <strong style="color:var(--pulse)">$39 a month</strong> for this. For the next <strong>48 hours — it's yours free.</strong><br><br>Does all of that sound good to you?`,
+          cls: 'highlight',
+          pause: 1200
+        }
+      ], () => {
+        showYesButton(stepGotFinalYes);
+        setOrbSpeaking(false);
+      });
+    }
+
+    // STEP 4 — Got Voice DNA yes, ready gate before email
+    async function stepGotFinalYes() {
+      step = 4;
+      setInputDisabled(true);
+
+      await samSpeak([
+        {
+          html: `Let's get you inside. I just need your email to hold your spot — and so I know where to reach you when your 48 hours are almost up.`,
+          pause: 800
+        },
+        {
+          html: `No spam. Just me making sure you get the most out of this. Are you ready? 🙌`,
+          cls: 'highlight',
+          pause: 900
+        }
+      ], () => {
+        showYesButton(stepGotReady, 'Ready! ✦');
+        setOrbSpeaking(false);
+      });
+    }
+
+    // STEP 5 — Got ready, show email form
+    async function stepGotReady() {
+      step = 5;
+      inputRow.classList.add('hidden');
+      emailForm.classList.remove('hidden');
+      document.getElementById('nameInput').value = userName;
+      document.getElementById('emailInput').focus();
+    }
+
+    // ── HANDLE USER INPUT (name only) ──────────────────────────────────────────
+    function handleSend() {
+      const val = mainInput.value.trim();
+      if (!val) return;
+
+      addUserBubble(val);
+      mainInput.value = '';
+      mainInput.style.height = 'auto';
+      setInputDisabled(true);
+
+      if (step === 1) {
+        if (val.length < 2) {
+          samSpeak([{ html: `I didn't catch that — what's your name?`, pause: 600 }], () => setInputDisabled(false));
+          return;
+        }
+        stepGotName(val);
+      }
+    }
+
+    // ── HANDLE SIGNUP ──────────────────────────────────────────────────────────
+    async function handleSignup() {
+      const nameVal = document.getElementById('nameInput').value.trim();
+      const emailVal = document.getElementById('emailInput').value.trim();
+      const submitBtn = document.getElementById('submitBtn');
+
+      if (!nameVal || nameVal.length < 2) {
+        document.getElementById('nameInput').focus();
+        document.getElementById('nameInput').style.borderColor = 'rgba(244,114,182,0.6)';
+        return;
+      }
+      if (!emailVal || !emailVal.includes('@') || !emailVal.includes('.')) {
+        document.getElementById('emailInput').focus();
+        document.getElementById('emailInput').style.borderColor = 'rgba(244,114,182,0.6)';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Creating your account...';
+      setOrbSpeaking(true);
+      orbStatus.textContent = 'Setting up your space...';
+
+      try {
+        // 1. Create account + start trial via auth API
+        const authRes = await fetch('/api/auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'save_user',
+            email: emailVal,
+            name: nameVal,
+            tier: 'free',
+            trialStart: Date.now()
+          })
+        });
+        const authData = await authRes.json();
+
+        // 2. Send welcome email + notify Joey + track in Supabase via waitlist API
+        await fetch('/api/waitlist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: nameVal,
+            email: emailVal,
+            source: 'welcome_voice',
+            notifyEmail: 'samforcreators@gmail.com'
+          })
+        });
+
+        // Slack notification handled server-side by /api/waitlist
+
+        // 4. Set session cookie so homepage shows their name
+        const trialExpiry = new Date(Date.now() + 48 * 60 * 60 * 1000).toUTCString();
+        document.cookie = `sam_user=${encodeURIComponent(JSON.stringify({ name: nameVal, email: emailVal, tier: 'free' }))}; expires=${trialExpiry}; path=/; SameSite=Lax`;
+        document.cookie = `sam_trial_start=${Date.now()}; expires=${trialExpiry}; path=/; SameSite=Lax`;
+        document.cookie = `sam_visited=true; expires=${new Date(Date.now() + 365*24*60*60*1000).toUTCString()}; path=/; SameSite=Lax`;
+
+        // 5. Show success
+        showSuccess(nameVal);
+
+      } catch(err) {
+        console.error('Signup error:', err);
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Get My 48-Hour Access ✦';
+        setOrbSpeaking(false);
+        orbStatus.textContent = 'Your AI Creative Director';
+        // Still try to show success — don't block user on API errors
+        showSuccess(nameVal);
+      }
+    }
+
+    function showSuccess(name) {
+      emailForm.classList.add('hidden');
+      inputRow.classList.add('hidden');
+      setOrbSpeaking(false);
+
+      // Final SAM message
+      addUserBubble(document.getElementById('emailInput').value || name);
+
+      setTimeout(() => {
+        const wrap = document.createElement('div');
+        wrap.className = 'sam-bubble-wrap';
+        wrap.innerHTML = `
+          <div class="sam-avatar">S</div>
+          <div class="sam-bubble large">You're in. Welcome to the space, <strong style="color:var(--spark)">${escHtml(name)}</strong>. Let's get to work. ✦</div>`;
+        conversation.appendChild(wrap);
+        scrollBottom();
+      }, 600);
+
+      setTimeout(() => {
+        successWrap.classList.remove('hidden');
+        document.getElementById('successTitle').textContent = `You're in, ${name}.`;
+        orbStatus.textContent = 'Welcome to the space ✦';
+        scrollBottom();
+      }, 1800);
+
+      // Auto-redirect after 5 seconds
+      setTimeout(() => {
+        window.location.href = 'https://samforcreators.com/meet';
+      }, 6000);
+    }
+
+    // ── INIT ───────────────────────────────────────────────────────────────────
+    // Check if returning visitor — redirect to homepage
+    function getCookie(name) {
+      const val = document.cookie.split('; ').find(r => r.startsWith(name + '='));
+      return val ? decodeURIComponent(val.split('=')[1]) : null;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const visited = getCookie('sam_visited');
+      if (visited) {
+        // Returning visitor — go to homepage
+        window.location.href = 'https://samforcreators.com';
+        return;
+      }
+      // First visit — start conversation
+      startConversation();
+    });
+  </script>
+</body>
+</html>
