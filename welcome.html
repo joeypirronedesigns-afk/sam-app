@@ -512,12 +512,16 @@
         if (!window._samCtx) window._samCtx = new AudioCtx();
         const ctx = window._samCtx;
         if (ctx.state === 'suspended') await ctx.resume();
-        const sentences = plain.match(/[^.!?]+[.!?]+/g) || [plain];
+        // Split into chunks — never drop trailing text without punctuation
+        const sentences = plain.match(/[^.!?]+[.!?]*/g) || [plain];
         const chunks = []; let cur = '';
         for (const s of sentences) {
+          if (!s.trim()) continue;
           if ((cur + s).length > 300) { if (cur) chunks.push(cur.trim()); cur = s; } else cur += s;
         }
         if (cur.trim()) chunks.push(cur.trim());
+        // Safety: if chunking produced nothing, just use the whole text
+        if (chunks.length === 0) chunks.push(plain);
         for (const chunk of chunks) {
           if (!chunk) continue;
           const r = await fetch('https://api.elevenlabs.io/v1/text-to-speech/' + VOICE_ID, {
