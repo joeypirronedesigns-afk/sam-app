@@ -481,8 +481,9 @@
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
       if (isMobile) {
-        // Mobile iOS Chrome: single request per bubble — no chunk splitting
         try {
+          if (!window._samAudio) window._samAudio = new Audio();
+          const audio = window._samAudio;
           const r = await fetch('https://api.elevenlabs.io/v1/text-to-speech/' + VOICE_ID, {
             method: 'POST',
             headers: { 'xi-api-key': ELEVENLABS_KEY, 'Content-Type': 'application/json' },
@@ -491,12 +492,12 @@
           if (r.ok) {
             const blob = await r.blob();
             const url = URL.createObjectURL(blob);
-            if (!window._samAudio) window._samAudio = new Audio();
-            window._samAudio.src = url;
             await new Promise(res => {
-              window._samAudio.onended = () => { URL.revokeObjectURL(url); res(); };
-              window._samAudio.onerror = () => { URL.revokeObjectURL(url); res(); };
-              window._samAudio.play().catch(e => { console.log('play blocked:', e.message); res(); });
+              audio.onended = () => { URL.revokeObjectURL(url); res(); };
+              audio.onerror = () => { URL.revokeObjectURL(url); res(); };
+              audio.src = url;
+              audio.load();
+              audio.play().catch(e => { console.log('iOS play blocked:', e.message); URL.revokeObjectURL(url); res(); });
             });
           }
         } catch(e) { console.log('Mobile Katie error:', e.message); }
