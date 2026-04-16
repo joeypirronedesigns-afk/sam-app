@@ -7742,12 +7742,9 @@ function guardedRunFn(originalFn) {
   // Paid or signed-in member — always allow
   if (state.paid || state.email) { originalFn(); return; }
 
-  // Active trial (within 48hrs) — always allow, no run limits
+  // Active trial (within 48hrs) — always allow, unlimited runs
   if (state.trialStart && (Date.now() - state.trialStart) < TRIAL_DURATION_MS) {
-    const toolKey = getCurrentToolKey(originalFn);
-    recordRun(toolKey);
     originalFn();
-    // Show nudge banner after 8 seconds
     setTimeout(function() { if(typeof showTourNextNudge === "function") showTourNextNudge(); }, 8000);
     return;
   }
@@ -7757,20 +7754,8 @@ function guardedRunFn(originalFn) {
     showPaywall('tool'); return;
   }
 
-  // No trial started yet — each tool gets 1 free run
-  const toolKey = getCurrentToolKey(originalFn);
-  const tried = getTriedTools();
-
-  // If this specific tool has already been run — ask for email
-  if (toolKey && tried.includes(toolKey)) {
-    openTrialCapture(); return;
-  }
-
-  // First run on this tool — allow it
-  recordRun(toolKey);
+  // No trial started yet — allow first run, start trial
   originalFn();
-
-  // Show nudge after 8 seconds
   setTimeout(function() { if(typeof showTourNextNudge === "function") showTourNextNudge(); }, 8000);
 }
 
