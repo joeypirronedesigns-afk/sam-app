@@ -850,6 +850,9 @@
 
       // Auto-redirect after 5 seconds
       setTimeout(() => {
+        // Mark as having gone through welcome — meet.html won't redirect back
+        localStorage.setItem('samFirstRunDone', '1');
+        localStorage.setItem('sam_visited_welcome', '1');
         window.location.href = 'https://samforcreators.com/meet';
       }, 6000);
     }
