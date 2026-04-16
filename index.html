@@ -5940,6 +5940,7 @@ For each platform write clearly with the platform name as a header. Make every c
 
     const respData = await resp.json();
     if (!respData.success) throw new Error(respData.error || 'Generation failed');
+    console.log('Reach response:', respData);
     const fullText = respData.text || '';
 
     document.getElementById('reachLoader').style.display = 'none';
