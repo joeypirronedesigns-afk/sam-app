@@ -442,9 +442,10 @@ async function init() {
   const hasSession=localStorage.getItem('sam_session_v2');
   const cachedVoice=localStorage.getItem('sam-voice-profile');
   if(cachedVoice){ try{ STATE.voiceProfile=JSON.parse(cachedVoice).raw||null; }catch(e){} }
+  const initToolParam = new URLSearchParams(window.location.search).get('tool');
   if(firstRunDone||hasSession){
     showReturningUser({name:localStorage.getItem('sam_meet_name')||null,voice_profile:STATE.voiceProfile});
-  } else if(!toolParam) {
+  } else if(!initToolParam) {
     // New user with no tool param — send to welcome flow
     window.location.replace('/welcome');
   } else {
