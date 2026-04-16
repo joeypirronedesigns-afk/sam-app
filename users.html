@@ -81,6 +81,16 @@ body{font-family:"Sora",sans-serif;background:var(--bg);color:var(--text);min-he
 .tool-card-name{font-size:12px;font-weight:700;color:var(--text);margin-bottom:2px}
 .tool-card-desc{font-size:11px;color:var(--text3);line-height:1.4}
 .tool-card-tag{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--spark);margin-bottom:4px}
+.link-library{margin-bottom:16px}
+.link-library-row{display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
+.link-chip{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--text2);cursor:pointer;transition:all .2s}
+.link-chip:hover{border-color:rgba(167,139,250,.4);color:var(--spark)}
+.link-chip.selected{border-color:rgba(167,139,250,.5);background:rgba(167,139,250,.08);color:var(--spark)}
+.link-chip-remove{color:var(--text3);font-size:13px;line-height:1;cursor:pointer;padding:0 2px}
+.link-add-row{display:flex;gap:6px;margin-top:8px}
+.link-input{flex:1;background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:6px 10px;font-family:"Sora",sans-serif;font-size:11px;color:var(--text);outline:none}
+.link-input:focus{border-color:rgba(167,139,250,.4)}
+.link-add-btn{background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.3);color:var(--spark);border-radius:6px;padding:6px 12px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:"Sora",sans-serif}
 </style>
 </head>
 <body>
@@ -125,6 +135,15 @@ body{font-family:"Sora",sans-serif;background:var(--bg);color:var(--text);min-he
 <option value="voicedna">Voice DNA intro</option>
 <option value="custom">Custom</option>
 </select>
+<div class="tools-label">Quick Links to Include</div>
+<div class="link-library" id="linkLibrary">
+<div class="link-library-row" id="linkChips"></div>
+<div class="link-add-row">
+<input class="link-input" id="linkLabelInput" placeholder="Label (e.g. Voice DNA)" style="max-width:130px"/>
+<input class="link-input" id="linkUrlInput" placeholder="https://samforcreators.com/..."/>
+<button class="link-add-btn" onclick="addLink()">+ Add</button>
+</div>
+</div>
 <div class="tools-label">Include Tool Cards in Email</div>
 <div class="tool-cards-grid">
 <label class="tool-card-check"><input type="checkbox" value="pulse"><div class="tool-card-inner"><div class="tool-card-tag">The Pulse</div><div class="tool-card-name">Your story goes in. A complete script comes out.</div><div class="tool-card-desc">Hook + full script in your exact voice. B-roll shots included.</div></div></label>
@@ -171,7 +190,7 @@ function filterUsers(){renderUsers(getFiltered());}
 function openModal(idx){selectedUser=getFiltered()[idx];if(!selectedUser)return;document.getElementById("modalSub").textContent="Personalized email for "+(selectedUser.name||selectedUser.email);document.getElementById("emailOutput").value="";document.getElementById("modalUserCard").innerHTML="<div><div class=\"modal-user-label\">Name</div><div class=\"modal-user-val\">"+esc(selectedUser.name||"-")+"</div></div><div><div class=\"modal-user-label\">Email</div><div class=\"modal-user-val\" style=\"font-size:11px\">"+esc(selectedUser.email)+"</div></div><div><div class=\"modal-user-label\">Tier</div><div class=\"modal-user-val\">"+(selectedUser.tier||"free")+"</div></div><div><div class=\"modal-user-label\">Signed Up</div><div class=\"modal-user-val\">"+fmt(selectedUser.signedUpAt)+"</div></div>";document.getElementById("emailModal").classList.add("open");}
 function closeModal(){document.getElementById("emailModal").classList.remove("open");selectedUser=null;}
 async function generateEmail(){if(!selectedUser)return;const btn=document.getElementById("generateBtn");const out=document.getElementById("emailOutput");const type=document.getElementById("emailType").value;const labels={checkin:"48-hour check-in",trial_ending:"trial ending soon",upgrade:"upgrade to Pro",winback:"win-back",voicedna:"Voice DNA intro",custom:"custom follow-up"};btn.disabled=true;btn.textContent="Generating...";out.value="";
-try{const checkedTools=[...document.querySelectorAll(".tool-card-check input:checked")].map(el=>el.value);const toolNames={pulse:"The Pulse (hook + full script in their voice)",spark:"The Spark (5 platform-matched content ideas)",blueprint:"Blueprint (7-day content calendar)",vision:"The Vision (one bold concept nobody else has)",lens:"The Lens (thumbnail strategy + analytics decoder)",reach:"The Reach (photo to platform-ready post)"};const toolsStr=checkedTools.length>0?"\n\nNaturally mention these SAM tools in the email body: "+checkedTools.map(t=>toolNames[t]||t).join(", ")+". Each links to https://samforcreators.com/meet":"";const prompt="You are SAM, the AI creative director for SAM For Creators (samforcreators.com). Write a short, personal, warm follow-up email from Joey (the creator who built SAM) to this user.\n\nUser: "+(selectedUser.name||"there")+" | "+selectedUser.email+" | "+(selectedUser.tier||"free")+" tier | signed up "+fmt(selectedUser.signedUpAt)+" | source: "+(selectedUser.source||"app")+" | paid: "+(selectedUser.paid?"yes":"no")+"\n\nEmail type: "+(labels[type]||type)+toolsStr+"\n\nSAM brand voice: Direct, warm, creator-to-creator. Not corporate. Short paragraphs. Sign off as Joey.\n\nWrite complete email with subject line. Format:\nSubject: [subject]\n\n[body]";
+try{const checkedTools=[...document.querySelectorAll(".tool-card-check input:checked")].map(el=>el.value);const toolNames={pulse:"The Pulse (hook + full script in their voice)",spark:"The Spark (5 platform-matched content ideas)",blueprint:"Blueprint (7-day content calendar)",vision:"The Vision (one bold concept nobody else has)",lens:"The Lens (thumbnail strategy + analytics decoder)",reach:"The Reach (photo to platform-ready post)"};const toolsStr=checkedTools.length>0?"\n\nNaturally mention these SAM tools in the email body: "+checkedTools.map(t=>toolNames[t]||t).join(", ")+". Each links to https://samforcreators.com/meet":"";const selLinks=getSelectedLinks();const linksStr=selLinks.length>0?"\n\nAlso naturally include these specific links where relevant: "+selLinks.map(l=>l.label+" ("+l.url+")").join(", "):"";const prompt="You are SAM, the AI creative director for SAM For Creators (samforcreators.com). Write a short, personal, warm follow-up email from Joey (the creator who built SAM) to this user.\n\nUser: "+(selectedUser.name||"there")+" | "+selectedUser.email+" | "+(selectedUser.tier||"free")+" tier | signed up "+fmt(selectedUser.signedUpAt)+" | source: "+(selectedUser.source||"app")+" | paid: "+(selectedUser.paid?"yes":"no")+"\n\nEmail type: "+(labels[type]||type)+toolsStr+linksStr+"\n\nSAM brand voice: Direct, warm, creator-to-creator. Not corporate. Short paragraphs. Sign off as Joey.\n\nWrite complete email with subject line. Format:\nSubject: [subject]\n\n[body]";
 const r=await fetch("/api/generate-email",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt})});
 const data=await r.json();out.value=data.text||data.error||"Error generating.";}catch(e){out.value="Error: "+e.message;}
 btn.disabled=false;btn.textContent="Regenerate";}
@@ -210,7 +229,7 @@ async function sendEmail(){
         email:selectedUser.email,
         source:"manual_followup",
         subject:subject,
-        customBody:'<div style="font-family:Arial,sans-serif;padding:32px;background:#09080F;color:#F0ECFF;max-width:520px;margin:0 auto;border-radius:12px"><p style="white-space:pre-wrap;line-height:1.7;color:rgba(240,236,255,0.85)">'+(()=>{const ct=[...document.querySelectorAll(".tool-card-check input:checked")].map(el=>el.value);const td={pulse:{tag:"THE PULSE",name:"Your story goes in. A complete script comes out.",desc:"Hook + full script in your exact voice. B-roll shots + delivery notes included. Every platform caption written.",color:"#ec4899"},spark:{tag:"THE SPARK",name:"5 ideas. Built for you. Right now.",desc:"5 platform-matched content ideas every time. One tap turns any idea into a full script.",color:"#8b5cf6"},blueprint:{tag:"BLUEPRINT",name:"Your whole week. Done in 30 seconds.",desc:"Full 7-day calendar, every platform covered, every caption ready to copy and post.",color:"#06b6d4"},vision:{tag:"THE VISION",name:"One concept. Nobody else has it.",desc:"One bold video concept uniquely yours. Full premise, opening hook, shot-by-shot directions.",color:"#10b981"},lens:{tag:"THE LENS",name:"Stop the scroll. Read your numbers.",desc:"Thumbnail strategy from your photo + analytics decoded in plain English. Know exactly what to post next.",color:"#f59e0b"},reach:{tag:"THE REACH",name:"Photo to platform-ready post.",desc:"Drop a photo, get a complete platform-ready post with caption and hashtags.",color:"#f97316"}};const cards=ct.map(t=>{const d=td[t];if(!d)return"";return'<div style="border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:20px;margin:10px 0;background:rgba(255,255,255,0.03)"><div style="font-size:10px;font-weight:700;letter-spacing:.1em;color:'+d.color+';margin-bottom:6px">'+d.tag+'</div><div style="font-size:15px;font-weight:700;color:#F0ECFF;margin-bottom:8px">'+d.name+'</div><div style="font-size:13px;color:rgba(240,236,255,0.6);line-height:1.6;margin-bottom:14px">'+d.desc+'</div><a href="https://samforcreators.com/meet" style="display:inline-block;padding:10px 20px;background:linear-gradient(135deg,#6D28D9,#A78BFA);color:#fff;text-decoration:none;border-radius:6px;font-size:12px;font-weight:700">Try it free</a></div>';}).join("");const bh=body.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>").replace(/(https?:\/\/[^\s<]+|www\.[^\s<]+)/g,'<a href="$1" style="color:#A78BFA;text-decoration:underline">$1</a>');return bh+(cards?'<div style="margin-top:32px;padding-top:24px;border-top:1px solid rgba(255,255,255,0.08)"><p style="font-size:11px;color:rgba(240,236,255,0.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px">Included in your free trial</p>'+cards+'</div>':""  );})()+'</p><p style="color:rgba(240,236,255,0.3);font-size:12px;margin-top:24px">samforcreators.com &middot; Reply to unsubscribe</p></div>'
+        customBody:'<div style="font-family:Arial,sans-serif;padding:32px;background:#09080F;color:#F0ECFF;max-width:520px;margin:0 auto;border-radius:12px"><p style="white-space:pre-wrap;line-height:1.7;color:rgba(240,236,255,0.85)">'+(()=>{const ct=[...document.querySelectorAll(".tool-card-check input:checked")].map(el=>el.value);const td={pulse:{tag:"THE PULSE",name:"Your story goes in. A complete script comes out.",desc:"Hook + full script in your exact voice. B-roll shots + delivery notes included. Every platform caption written.",color:"#ec4899"},spark:{tag:"THE SPARK",name:"5 ideas. Built for you. Right now.",desc:"5 platform-matched content ideas every time. One tap turns any idea into a full script.",color:"#8b5cf6"},blueprint:{tag:"BLUEPRINT",name:"Your whole week. Done in 30 seconds.",desc:"Full 7-day calendar, every platform covered, every caption ready to copy and post.",color:"#06b6d4"},vision:{tag:"THE VISION",name:"One concept. Nobody else has it.",desc:"One bold video concept uniquely yours. Full premise, opening hook, shot-by-shot directions.",color:"#10b981"},lens:{tag:"THE LENS",name:"Stop the scroll. Read your numbers.",desc:"Thumbnail strategy from your photo + analytics decoded in plain English. Know exactly what to post next.",color:"#f59e0b"},reach:{tag:"THE REACH",name:"Photo to platform-ready post.",desc:"Drop a photo, get a complete platform-ready post with caption and hashtags.",color:"#f97316"}};const cards=ct.map(t=>{const d=td[t];if(!d)return"";return'<div style="border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:20px;margin:10px 0;background:rgba(255,255,255,0.03)"><div style="font-size:10px;font-weight:700;letter-spacing:.1em;color:'+d.color+';margin-bottom:6px">'+d.tag+'</div><div style="font-size:15px;font-weight:700;color:#F0ECFF;margin-bottom:8px">'+d.name+'</div><div style="font-size:13px;color:rgba(240,236,255,0.6);line-height:1.6;margin-bottom:14px">'+d.desc+'</div><a href="https://samforcreators.com/meet" style="display:inline-block;padding:10px 20px;background:linear-gradient(135deg,#6D28D9,#A78BFA);color:#fff;text-decoration:none;border-radius:6px;font-size:12px;font-weight:700">Try it free &rarr;</a></div>';}).join("");const bh=body.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>").replace(/(https?:\/\/[^\s<]+|www\.[^\s<]+)/g,'<a href="$1" style="color:#A78BFA;text-decoration:underline">$1</a>');return bh+(cards?'<div style="margin-top:32px;padding-top:24px;border-top:1px solid rgba(255,255,255,0.08)"><p style="font-size:11px;color:rgba(240,236,255,0.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px">Included in your free trial</p>'+cards+'</div>':""  );})()+'</p><p style="color:rgba(240,236,255,0.3);font-size:12px;margin-top:24px">samforcreators.com &middot; Reply to unsubscribe</p></div>'
       })
     });
     const data=await r.json();
@@ -226,7 +245,40 @@ async function sendEmail(){
     console.log("Send error:",e.message);
   }
 }
+// ── LINK LIBRARY ──────────────────────────────────────────────────────────
+const DEFAULT_LINKS=[
+  {label:"Voice DNA",url:"https://samforcreators.com/voice-dna"},
+  {label:"Meet SAM",url:"https://samforcreators.com/meet"},
+  {label:"Welcome",url:"https://samforcreators.com/welcome"},
+  {label:"Pricing",url:"https://samforcreators.com/pro"}
+];
+function getLinks(){try{return JSON.parse(localStorage.getItem("sam_links")||"null")||DEFAULT_LINKS;}catch{return DEFAULT_LINKS;}}
+function saveLinks(links){localStorage.setItem("sam_links",JSON.stringify(links));}
+function renderLinks(){
+  const links=getLinks();
+  const el=document.getElementById("linkChips");
+  if(!el)return;
+  el.innerHTML=links.map((l,i)=>`<span class="link-chip" id="lc${i}" onclick="toggleLink(${i})" title="${l.url}">${l.label}<span class="link-chip-remove" onclick="removeLink(event,${i})">x</span></span>`).join("");
+}
+function toggleLink(i){document.getElementById("lc"+i)?.classList.toggle("selected");}
+function removeLink(e,i){e.stopPropagation();const links=getLinks();links.splice(i,1);saveLinks(links);renderLinks();}
+function addLink(){
+  const label=document.getElementById("linkLabelInput").value.trim();
+  const url=document.getElementById("linkUrlInput").value.trim();
+  if(!label||!url)return;
+  const links=getLinks();
+  links.push({label,url});
+  saveLinks(links);
+  renderLinks();
+  document.getElementById("linkLabelInput").value="";
+  document.getElementById("linkUrlInput").value="";
+}
+function getSelectedLinks(){
+  const links=getLinks();
+  return links.filter((_,i)=>document.getElementById("lc"+i)?.classList.contains("selected"));
+}
 loadUsers();
+setTimeout(renderLinks,100);
 </script>
 </body>
 </html>
