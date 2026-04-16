@@ -327,12 +327,14 @@ function saveEmail(silent) {
   const firstName = document.getElementById('nameCapture')?.value?.trim() || STATE.name || undefined;
   if(!email || !email.includes('@')) { document.getElementById('emailCapture').style.borderColor='rgba(244,114,182,0.5)'; return; }
   if(firstName) STATE.name = firstName;
-  if(STATE.uid) {
-    fetch('/api/sam',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'chat',userId:STATE.uid,messages:[],email:email,name:firstName,voiceProfile:window._pendingProfile,samContext:STATE.storyRaw?.slice(0,800)})}).catch(()=>{});
-  }
   const alreadySaved = localStorage.getItem('sam_user_email') === email.toLowerCase();
   localStorage.setItem('sam_user_email', email);
-  showVoiceLocked(window._pendingProfile, window._pendingCard);
+  // Only call API if not already saved from welcome flow
+  if(!alreadySaved && STATE.uid) {
+    fetch('/api/sam',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'chat',userId:STATE.uid,messages:[],email:email,name:firstName,voiceProfile:window._pendingProfile,samContext:STATE.storyRaw?.slice(0,800)})}).catch(()=>{});
+  }
+  if(!silent) showVoiceLocked(window._pendingProfile, window._pendingCard);
+  else if(window._pendingProfile && window._pendingCard) showVoiceLocked(window._pendingProfile, window._pendingCard);
 }
 
 function skipEmail() {
