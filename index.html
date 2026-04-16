@@ -6012,7 +6012,8 @@ For each platform write clearly with the platform name as a header. Make every c
     document.getElementById('reachBody').innerHTML = rendered;
   } catch(err) {
     document.getElementById('reachLoader').style.display = 'none';
-    document.getElementById('reachErr').textContent = 'Something went wrong. Please try again.';
+    document.getElementById('reachBtn').disabled = false;
+    document.getElementById('reachErr').textContent = err.message || 'Something went wrong. Please try again.';
     document.getElementById('reachErr').style.display = 'block';
   } finally {
     document.getElementById('reachBtn').disabled = false;
