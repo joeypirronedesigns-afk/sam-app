@@ -339,6 +339,27 @@ function goToWizard() {
 }
 
 function showReturningUser(profile) {
+  // Check for deep-link tool param — takes priority over returning user flow
+  const toolParam = new URLSearchParams(window.location.search).get('tool');
+  const toolIntros = {
+    pulse: "Let’s use The Pulse — tell me about a real moment from your life recently. Something you actually lived. The more specific, the better. I’ll turn it into a hook, full script, and captions.",
+    spark: "The Spark is ready. Tell me your niche and the platform you post on most — I’ll give you 5 content ideas built specifically for you right now.",
+    blueprint: "Blueprint mode. Tell me what you create and your main platform — I’ll plan your entire week of content in 30 seconds. Every day, every caption, ready to post.",
+    vision: "The Vision — I’m going to give you one bold concept nobody else has made. Tell me your niche and what makes your story different from everyone else in your space.",
+    lens: "The Lens is open. Are you here for thumbnail strategy or analytics decoding? Drop a photo or paste your analytics screenshot and I’ll tell you exactly what to do.",
+    reach: "The Reach is ready. Drop a photo — any photo from your life or content — and I’ll turn it into a platform-ready post with caption and hashtags."
+  };
+  if (toolParam && toolIntros[toolParam]) {
+    STATE.phase = 'talking';
+    const avatarWrap = document.querySelector('.sam-avatar-wrap');
+    if (avatarWrap) avatarWrap.classList.add('speaking');
+    const bubble = addSAMBubble();
+    typewrite(bubble, toolIntros[toolParam], () => {
+      if (avatarWrap) avatarWrap.classList.remove('speaking');
+      showInputRow('Tell SAM...');
+    });
+    return;
+  }
   STATE.phase='returning';
   profile=profile||{};
   const name=profile.name||STATE.name||null;
