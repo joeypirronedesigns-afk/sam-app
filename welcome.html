@@ -481,32 +481,22 @@
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
       if (isMobile) {
-        // Mobile: ElevenLabs via Audio() — works after user gesture (orb tap unlocks audio)
+        // Mobile iOS Chrome: single request per bubble — no chunk splitting
         try {
-          const sentences = plain.match(/[^.!?]+[.!?]*/g) || [plain];
-          const chunks = []; let cur = '';
-          for (const s of sentences) {
-            if (!s.trim()) continue;
-            if ((cur + s).length > 300) { if (cur) chunks.push(cur.trim()); cur = s; } else cur += s;
-          }
-          if (cur.trim()) chunks.push(cur.trim());
-          if (chunks.length === 0) chunks.push(plain);
-
-          for (const chunk of chunks) {
-            if (!chunk) continue;
-            const r = await fetch('https://api.elevenlabs.io/v1/text-to-speech/' + VOICE_ID, {
-              method: 'POST',
-              headers: { 'xi-api-key': ELEVENLABS_KEY, 'Content-Type': 'application/json' },
-              body: JSON.stringify({ text: chunk, model_id: 'eleven_turbo_v2', voice_settings: { stability: 0.5, similarity_boost: 0.75 } })
-            });
-            if (!r.ok) continue;
+          const r = await fetch('https://api.elevenlabs.io/v1/text-to-speech/' + VOICE_ID, {
+            method: 'POST',
+            headers: { 'xi-api-key': ELEVENLABS_KEY, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: plain, model_id: 'eleven_turbo_v2', voice_settings: { stability: 0.5, similarity_boost: 0.75 } })
+          });
+          if (r.ok) {
             const blob = await r.blob();
             const url = URL.createObjectURL(blob);
+            if (!window._samAudio) window._samAudio = new Audio();
+            window._samAudio.src = url;
             await new Promise(res => {
-              const audio = new Audio(url);
-              audio.onended = () => { URL.revokeObjectURL(url); res(); };
-              audio.onerror = () => { URL.revokeObjectURL(url); res(); };
-              audio.play().catch(() => res());
+              window._samAudio.onended = () => { URL.revokeObjectURL(url); res(); };
+              window._samAudio.onerror = () => { URL.revokeObjectURL(url); res(); };
+              window._samAudio.play().catch(e => { console.log('play blocked:', e.message); res(); });
             });
           }
         } catch(e) { console.log('Mobile Katie error:', e.message); }
