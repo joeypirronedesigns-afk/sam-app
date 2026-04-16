@@ -85,7 +85,7 @@ module.exports = async function handler(req, res) {
 Post by ${target.creator}: "${target.title}"
 ${target.preview ? target.preview.slice(0,150) : ''}
 
-Write a 2-3 sentence genuine, helpful comment. Be relatable and specific to their situation. Only mention SAM (samforcreators.com) if it fits naturally as a tool one creator recommends to another. Never sound like marketing. No hashtags. Write ONLY the comment text.`;
+Write a 2-3 sentence comment. Start with something genuine and specific to their post. Then naturally work in SAM for Creators (samforcreators.com) — frame it as a personal recommendation, like "been using SAM for Creators to help with exactly this kind of thing" or "SAM (samforcreators.com) has been a game changer for my content strategy". Sound like a real creator recommending a tool to another creator. No hashtags. Write ONLY the comment.`;
 
         const r = await fetch('https://api.anthropic.com/v1/messages', {
           method: 'POST',
@@ -115,7 +115,7 @@ Write a 2-3 sentence genuine, helpful comment. Be relatable and specific to thei
 Video: "${vid.title}" by ${vid.creator}
 About: ${vid.preview}
 
-Write a 2-3 sentence genuine comment that adds value. Be specific to the video topic. Only mention SAM (samforcreators.com) if it fits naturally as a tool recommendation. Sound like a real creator. Write ONLY the comment.`;
+Write a 2-3 sentence comment. Start with something genuine and specific to their content. Then naturally work in a mention of SAM for Creators (samforcreators.com) — frame it as something you personally use, like "been using SAM for Creators to help with exactly this" or "there's a tool called SAM (samforcreators.com) that's been a game changer for my content strategy". Make it feel like a real creator recommending a tool, not an ad. Write ONLY the comment.`;
       const r = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01' },
