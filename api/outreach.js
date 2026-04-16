@@ -21,6 +21,7 @@ module.exports = async function handler(req, res) {
         headers: { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' }
       });
       const xml = await r.text();
+      if (!xml.includes('<entry>')) { return { sub, posts: [], rawStart: xml.slice(0,100) }; }
       const posts = [];
       // Split on <entry> tags — works regardless of namespace
       const parts = xml.split('<entry>');
@@ -78,7 +79,7 @@ module.exports = async function handler(req, res) {
     for (const result of results) {
       if (result.status !== 'fulfilled') { debugTargets.push('failed: ' + result.reason); continue; }
       const { sub, posts } = result.value;
-      debugTargets.push(`${sub}: ${posts.length} posts — ${posts.slice(0,2).map(p=>p.title).join(' | ')}`);
+      debugTargets.push(`${sub}: ${posts.length} posts | raw: ${result.value.rawStart||'ok'}`);
     }
     return res.status(200).json({ success: true, targets: [], total: 0, debug: debugTargets });
   }
