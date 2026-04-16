@@ -338,11 +338,29 @@ function startTalkingReturning() {
 function openSignIn() { document.getElementById('signinOverlay').classList.add('open'); }
 function closeSignIn() { document.getElementById('signinOverlay').classList.remove('open'); }
 async function sendMagicLink() {
-  const email=document.getElementById('signinEmail').value.trim();
-  const status=document.getElementById('signinStatus');
-  if(!email||!email.includes('@')){ status.textContent='Please enter a valid email.'; return; }
-  status.textContent='Sending...';
-  setTimeout(()=>{ status.textContent='\u2713 Check your email for the sign-in link.'; },1000);
+  const email = document.getElementById('signinEmail').value.trim();
+  const status = document.getElementById('signinStatus');
+  const btn = document.querySelector('.signin-btn');
+  if (!email || !email.includes('@')) { status.textContent = 'Please enter a valid email.'; return; }
+  status.textContent = 'Sending...';
+  if (btn) btn.disabled = true;
+  try {
+    const r = await fetch('/api/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'send_magic_link', email })
+    });
+    const data = await r.json();
+    if (data.success) {
+      status.textContent = '✓ Check your email for the sign-in link.';
+    } else {
+      status.textContent = 'Something went wrong. Try again.';
+      if (btn) btn.disabled = false;
+    }
+  } catch(e) {
+    status.textContent = 'Connection error. Try again.';
+    if (btn) btn.disabled = false;
+  }
 }
 
 async function init() {
