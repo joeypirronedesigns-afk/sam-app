@@ -12,6 +12,16 @@ module.exports = async function handler(req, res) {
   const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
   const action = req.method === 'POST' ? req.body?.action : req.query?.action || 'fetch';
 
+  if (action === 'clear') {
+    try {
+      const { kv } = require('@vercel/kv');
+      await kv.delete('outreach:daily_targets');
+      return res.status(200).json({ success: true, message: 'Cache cleared' });
+    } catch(e) {
+      return res.status(200).json({ success: false, error: e.message });
+    }
+  }
+
   if (action === 'fetch') {
     try {
       const { kv } = require('@vercel/kv');
