@@ -61,6 +61,9 @@
     },
     "api/auth.js": {
       "maxDuration": 10
+    },
+    "api/outreach.js": {
+      "maxDuration": 60
     }
   },
   "headers": [
