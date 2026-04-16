@@ -121,6 +121,7 @@ body{font-family:"Sora",sans-serif;background:var(--bg);color:var(--text);min-he
 <div class="modal-actions">
 <button class="modal-btn generate" id="generateBtn" onclick="generateEmail()">Generate with SAM</button>
 <button class="modal-btn copy" id="copyBtn" onclick="copyEmail()">Copy</button>
+<button class="modal-btn generate" id="sendBtn" onclick="sendEmail()" style="background:linear-gradient(135deg,#065f46,#34d399);box-shadow:0 0 24px rgba(52,211,153,.3)">Send to User</button>
 </div>
 </div>
 </div>
@@ -161,6 +162,52 @@ function copyAddr(addr){navigator.clipboard.writeText(addr);}
 function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
 function fmt(iso){if(!iso)return"-";try{return new Date(iso).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});}catch(e){return iso.split("T")[0];}}
 document.getElementById("emailModal").addEventListener("click",function(e){if(e.target===this)closeModal();});
+async function sendEmail(){
+  if(!selectedUser||!selectedUser.email)return;
+  const text=document.getElementById("emailOutput").value.trim();
+  if(!text){alert("Generate an email first.");return;}
+  
+  // Parse subject from first line
+  const lines=text.split("\n");
+  let subject="Follow-up from Joey at SAM";
+  let body=text;
+  if(lines[0].toLowerCase().startsWith("subject:")){
+    subject=lines[0].replace(/^subject:\s*/i,"").trim();
+    body=lines.slice(1).join("\n").trim();
+  }
+  
+  // Confirmation
+  const confirmed=confirm("Send to: "+selectedUser.email+"\nSubject: "+subject+"\n\nConfirm send?");
+  if(!confirmed)return;
+  
+  const btn=document.getElementById("sendBtn");
+  btn.disabled=true;btn.textContent="Sending...";
+  
+  try{
+    const r=await fetch("/api/waitlist",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        name:selectedUser.name||"there",
+        email:selectedUser.email,
+        source:"manual_followup",
+        subject:subject,
+        customBody:'<div style="font-family:Arial,sans-serif;padding:32px;background:#09080F;color:#F0ECFF;max-width:520px;margin:0 auto;border-radius:12px"><p style="white-space:pre-wrap;line-height:1.7;color:rgba(240,236,255,0.85)">'+body.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>")+'</p><p style="color:rgba(240,236,255,0.3);font-size:12px;margin-top:24px">samforcreators.com &middot; Reply to unsubscribe</p></div>'
+      })
+    });
+    const data=await r.json();
+    if(data.success){
+      btn.textContent="Sent!";
+      btn.style.background="linear-gradient(135deg,#065f46,#34d399)";
+      setTimeout(()=>{btn.disabled=false;btn.textContent="Send to User";},3000);
+    } else {
+      btn.textContent="Failed";btn.disabled=false;
+    }
+  }catch(e){
+    btn.textContent="Error";btn.disabled=false;
+    console.log("Send error:",e.message);
+  }
+}
 loadUsers();
 </script>
 </body>
