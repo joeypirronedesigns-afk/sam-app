@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><radialGradient id='g' cx='40%' cy='35%'><stop offset='0%' stop-color='%23F472B6'/><stop offset='100%' stop-color='%23A78BFA'/></radialGradient></defs><circle cx='50' cy='50' r='45' fill='url(%23g)'/></svg>" type="image/svg+xml">
   <meta name="theme-color" content="#09080F" />
-  <meta name="description" content="Meet SAM — the AI creative director that learns your voice. 48 hours free, no card needed." />
+  <meta name="description" content="Meet SAM — the AI creative director that learns your voice. 7 days free, no card needed." />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -347,15 +347,15 @@
       <button class="submit-btn" id="submitBtn" onclick="handleSignup()">
         Get My 48-Hour Access ✦
       </button>
-      <div class="form-note">No card. No catch. Just 48 hours to explore everything.</div>
+      <div class="form-note">No card. No catch. Just 7 days to explore everything.</div>
     </div>
 
     <!-- Success (hidden until complete) -->
     <div class="success-wrap hidden" id="successWrap">
       <div class="success-orb">✦</div>
       <div class="success-title" id="successTitle">You're in.</div>
-      <div class="success-sub" id="successSub">Your 48-hour clock starts now. Check your email — SAM just sent you everything you need.</div>
-      <div class="timer-note">⏱ 48 hours · All tools · No card ever</div>
+      <div class="success-sub" id="successSub">Your 7-day trial starts now. Check your email — SAM just sent you everything you need.</div>
+      <div class="timer-note">⏱ 7 days · All tools · No card ever</div>
       <a href="https://samforcreators.com/meet" class="enter-btn" id="enterBtn">
         Let's get to work →
       </a>
@@ -611,7 +611,7 @@
           pause: 1200
         },
         {
-          html: `This is a creative space built by a creator, for other creators — and for the next <strong style="color:var(--pulse)">48 hours, it's completely yours free to use, test and see if it's the right fit for you!</strong><br><br>Does all of that sound good to you?!`,
+          html: `This is a creative space built by a creator, for other creators — and for the next <strong style="color:var(--pulse)">7 days, it's completely yours free to use, test and see if it's the right fit for you!</strong><br><br>Does all of that sound good to you?!`,
           cls: 'highlight',
           pause: 1000
         }
@@ -684,7 +684,7 @@
           pause: 1000
         },
         {
-          html: `Creators are paying <strong style="color:var(--pulse)">$39 a month</strong> for this. For the next <strong>48 hours — it's yours free.</strong><br><br> Does all of that sound good to you?`,
+          html: `Creators are paying <strong style="color:var(--pulse)">$39 a month</strong> for this. For the next <strong>7 days — it's yours free.</strong><br><br> Does all of that sound good to you?`,
           cls: 'highlight',
           pause: 1200
         }
@@ -701,7 +701,7 @@
 
       await samSpeak([
         {
-          html: `Let's get you inside. I just need your email to hold your spot — and so I know where to reach you when your 48 hours are almost up.`,
+          html: `Let's get you inside. I just need your email to hold your spot — and so I know where to reach you when your 7 days are almost up.`,
           pause: 800
         },
         {

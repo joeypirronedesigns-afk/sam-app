@@ -4529,7 +4529,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
   <div class="nav-right">
     <div class="trial-nav-badge" id="trialBadge" onclick="openProPage()" style="display:none;">
       <div class="trial-nav-dot"></div>
-      <span id="trialBadgeText">48hrs free</span>
+      <span id="trialBadgeText">7 days free</span>
     </div>
     <button onclick="window.location.href='/meet'" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:#F0ECFF;background:linear-gradient(135deg,rgba(109,40,217,0.3),rgba(244,114,182,0.15));border:1px solid rgba(167,139,250,0.4);border-radius:50px;padding:7px 16px;cursor:pointer;transition:all 0.2s;font-family:'Sora',sans-serif;white-space:nowrap;" onmouseover="this.style.background='linear-gradient(135deg,rgba(109,40,217,0.5),rgba(244,114,182,0.25))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(109,40,217,0.3),rgba(244,114,182,0.15))'">✦ Talk with SAM</button>
     <button id="navStoryEngineBtn" onclick="openWizardPage(true)" style="display:none;align-items:center;gap:5px;font-size:12px;font-weight:700;color:#A78BFA;background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.25);border-radius:50px;padding:7px 16px;cursor:pointer;transition:all 0.2s;font-family:'Sora',sans-serif;white-space:nowrap;" onmouseover="this.style.background='rgba(167,139,250,0.15)'" onmouseout="this.style.background='rgba(167,139,250,0.08)'">📖 Story Engine</button>
@@ -4549,7 +4549,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
     <!-- Social proof bar -->
     <div style="display:inline-flex;align-items:center;gap:8px;margin-bottom:32px;padding:10px 18px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:50px;flex-wrap:wrap;justify-content:center;">
-      <span style="font-size:11px;font-weight:700;color:rgba(167,139,250,0.8);">✦ 48 hours free</span>
+      <span style="font-size:11px;font-weight:700;color:rgba(167,139,250,0.8);">✦ 7 days free</span>
       <span style="color:rgba(255,255,255,0.15);font-size:11px;">·</span>
       <span style="font-size:11px;font-weight:700;color:rgba(52,211,153,0.8);">No card needed</span>
       <span style="color:rgba(255,255,255,0.15);font-size:11px;">·</span>
@@ -7390,7 +7390,7 @@ function handleAnnualNotify() { openWaitlist(); }
 // TRIAL SYSTEM
 // ══════════════════════════════════════════════════════════════════════════════
 
-const TRIAL_DURATION_MS = 48 * 60 * 60 * 1000; // 48 hours total
+const TRIAL_DURATION_MS = 7 * 24 * 60 * 60 * 1000; // 7 days total
 const TRIAL_EMAIL_MS    = 24 * 60 * 60 * 1000; // ask for email at 24 hours
 const TRIGGER_DELAY_MS  = 10 * 60 * 1000;       // 10 minutes
 
@@ -7461,7 +7461,7 @@ function updateTrialBadge(state) {
   const days  = Math.floor(hours / 24);
   const hrs   = hours % 24;
 
-  if (days > 0) text.textContent = days === 2 ? '2 days left' : days === 1 ? '1 day left' : '48hrs free';
+  if (days > 0) text.textContent = days === 2 ? '2 days left' : days === 1 ? '1 day left' : '7 days free';
   else text.textContent = hrs > 0 ? hrs + 'h left' : 'Trial ending';
 
   badge.classList.add('show');
@@ -7552,7 +7552,7 @@ function showTrialExpiredCard() {
   overlay.innerHTML = `
     <div style="max-width:460px;width:100%;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.2);border-radius:24px;padding:36px 32px;text-align:center;">
       <div style="font-size:42px;margin-bottom:16px;">⏰</div>
-      <div style="font-size:22px;font-weight:700;color:#F0ECFF;margin-bottom:10px;font-family:'Sora',sans-serif;line-height:1.3;">Your 48 hours are up.</div>
+      <div style="font-size:22px;font-weight:700;color:#F0ECFF;margin-bottom:10px;font-family:'Sora',sans-serif;line-height:1.3;">Your free trial is up.</div>
       <div style="font-size:15px;color:rgba(240,236,255,0.6);line-height:1.7;margin-bottom:24px;">
         You started something real here. The story isn't finished — and neither is SAM.<br/><br/>
         Everything you built is still saved. Pick a plan and keep going.
@@ -7799,11 +7799,11 @@ THE 5 TOOLS:
 5. The Lens — Two modes: (A) Drop a photo → SAM builds thumbnail strategy: safe + bold headline options, layout direction, face-aware composition, color palette, and platform captions. (B) Drop analytics screenshot → SAM reads the numbers and tells you exactly what's working, what to fix, and 3 posts to make this week.
 
 PRICING:
-- Free: 5 SAM Engine runs + 15 tool runs, 48hr trial, no card ever
+- Free: 5 SAM Engine runs + 15 tool runs, 7-day trial, no card ever
 - Creator: $19/month — 10 SAM Engine runs, 70 tool runs, lead magnet with every run, all platforms, 12 languages, branded PDFs. Founding member rate — locked in forever.
 - Pro: $39/month — 20 SAM Engine runs, 200 tool runs, unlimited lead magnet rebuilds, priority speed, every new tool first. Founding member rate.
 - Studio: $99/month — 100 SAM Engine runs, unlimited tool runs, up to 5 brand profiles. For power creators. Founding member rate.
-- Trial: New users get 48 hours full access, all tools, no limits — trial starts automatically after completing the SAM Engine
+- Trial: New users get 7 days full access, all tools, no limits — trial starts automatically after completing the SAM Engine
 
 PERSONALITY: Confident, direct, warm. Talk like a trusted creative director — not a support bot. Be specific. No fluff. If someone asks which tool to use, tell them exactly which one and why. Keep responses concise — 2-4 sentences max unless they ask for detail.`;
 
@@ -11620,12 +11620,12 @@ function openWizardFromNav() {
     <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#A78BFA,#F472B6,#38BDF8);"></div>
     <div style="width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#6D28D9,#A78BFA);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 20px;">💜</div>
     <div style="font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:#F0ECFF;text-align:center;line-height:1.2;margin-bottom:10px;">Your ideas are ready<br/>to export.</div>
-    <div style="font-size:14px;color:rgba(240,236,255,0.55);text-align:center;line-height:1.65;margin-bottom:28px;">Drop your email and SAM sends them straight to your inbox — plus unlocks <strong style="color:#A78BFA;">48 hours free</strong> across all 5 tools.</div>
+    <div style="font-size:14px;color:rgba(240,236,255,0.55);text-align:center;line-height:1.65;margin-bottom:28px;">Drop your email and SAM sends them straight to your inbox — plus unlocks <strong style="color:#A78BFA;">7 days free</strong> across all 5 tools.</div>
     <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;">
       <input id="exportCaptureName" type="text" placeholder="Your first name" autocomplete="given-name" style="width:100%;padding:14px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:14px;font-size:15px;color:#F0ECFF;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(167,139,250,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />
       <input id="exportCaptureEmail" type="email" placeholder="Your email address" autocomplete="email" inputmode="email" style="width:100%;padding:14px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:14px;font-size:15px;color:#F0ECFF;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(167,139,250,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />
       <div id="exportCaptureErr" style="display:none;font-size:13px;color:#F472B6;text-align:center;"></div>
-      <button onclick="submitExportCapture()" id="exportCaptureBtn" style="width:100%;padding:16px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">📧 Send my ideas + unlock 48hrs free →</button>
+      <button onclick="submitExportCapture()" id="exportCaptureBtn" style="width:100%;padding:16px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">📧 Send my ideas + unlock 7 days free →</button>
     </div>
     <div style="text-align:center;font-size:13px;color:rgba(240,236,255,0.35);">Already have an account? <span onclick="closeExportCapture();openSignInModal();" style="color:#A78BFA;cursor:pointer;">Sign in</span></div>
     <button onclick="closeExportCapture()" style="position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.08);border:none;border-radius:50%;width:32px;height:32px;color:rgba(255,255,255,0.4);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;">×</button>
@@ -11850,12 +11850,12 @@ function openWizardFromNav() {
         <div class="pro-price-dollar" style="color:var(--text2);font-size:42px;">$0</div>
         <div class="pro-price-period">/ month</div>
       </div>
-      <div class="pro-price-note">48 hours full access — no card ever</div>
+      <div class="pro-price-note">7 days full access — no card ever</div>
       <div class="pro-divider-line"></div>
       <div class="pro-feat-list">
         <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>5 SAM Engine runs</div>
         <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>15 tool runs across all 5 tools</div>
-        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>48 hours full access</div>
+        <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>7 days full access</div>
         <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>1 lead magnet per run</div>
         <div class="pro-feat-row"><div class="pro-feat-icon fi-no"></div><span class="feat-muted">Unlimited SAM runs</span></div>
         <div class="pro-feat-row"><div class="pro-feat-icon fi-no"></div><span class="feat-muted">Lead magnet rebuilds</span></div>
@@ -12029,7 +12029,7 @@ function openWizardFromNav() {
     <div class="pro-bottom-title">Your next piece of content<br/>is 60 seconds away.</div>
     <div class="pro-bottom-sub">Try SAM free — no card, no paywall, no catch.</div>
     <button class="pro-bottom-btn" onclick="closeProPage();openTrialCapture();">Try SAM free →</button>
-    <div class="pro-bottom-note">48 hours full access · All 5 tools · No card needed · Cancel anytime</div>
+    <div class="pro-bottom-note">7 days full access · All 5 tools · No card needed · Cancel anytime</div>
   </div>
 
 </div>
@@ -12043,7 +12043,7 @@ function openWizardFromNav() {
     <div id="wlFormState">
       <div class="wl-icon">🚀</div>
       <div class="wl-title">Start free — no card, no paywall</div>
-      <div class="wl-sub">48 hours full access. All 5 tools. No card needed.</div>
+      <div class="wl-sub">7 days full access. All 5 tools. No card needed.</div>
 
       <div class="wl-perks">
         <div class="wl-perk"><div class="wl-perk-dot">✓</div>First access when Pro goes live</div>
@@ -12056,7 +12056,7 @@ function openWizardFromNav() {
         <input class="wl-input" type="text" id="wlName" placeholder="Your first name" autocomplete="given-name" />
         <input class="wl-input" type="email" id="wlEmail" placeholder="Your email address" autocomplete="email" inputmode="email" />
         <button class="wl-submit" id="wlSubmitBtn" onclick="submitWaitlist()">
-          <span id="wlBtnText">Start my 48hrs free →</span>
+          <span id="wlBtnText">Start my 7 days free →</span>
         </button>
         <div class="wl-err" id="wlErr"></div>
         <div class="wl-note">🔒 No spam. One email when we launch. That's it.</div>
@@ -12094,7 +12094,7 @@ function openWizardFromNav() {
       <div class="trial-form">
         <input class="trial-input" type="text" id="trialName" placeholder="Your first name" autocomplete="given-name" />
         <input class="trial-input" type="email" id="trialEmail" placeholder="Your email address" autocomplete="email" inputmode="email" />
-        <button class="trial-btn" id="trialSubmitBtn" onclick="submitTrialEmail()">Start my 48hrs free →</button>
+        <button class="trial-btn" id="trialSubmitBtn" onclick="submitTrialEmail()">Start my 7 days free →</button>
         <div class="trial-err" id="trialErr"></div>
         <div class="trial-note">🔒 No spam. No card. Just SAM.</div>
       </div>
@@ -12104,7 +12104,7 @@ function openWizardFromNav() {
 
     <div class="trial-success" id="trialSuccess">
       <div class="trial-success-icon">🎉</div>
-      <div class="trial-success-title">You're in — 48hrs free!</div>
+      <div class="trial-success-title">You're in — 7 days free!</div>
       <div class="trial-success-sub">All 5 tools, unlimited runs, zero limits. Your clock starts now.<br/><br/>We'll email you before your trial ends with everything you need to keep going.</div>
       <button class="trial-success-btn" onclick="closeTrial();openWizardPage();">Let's go create something →</button>
     </div>
@@ -13519,7 +13519,7 @@ async function submitExportCapture() {
       +'</div>'
       +'<div style="font-size:15px;color:#333;margin-bottom:24px;">Hey '+name+' — here are your '+ideas.length+' saved idea'+(ideas.length===1?'':'s')+' from SAM.</div>'
       +lines
-      +'<div style="margin-top:32px;text-align:center;"><a href="https://samforcreators.com" style="display:inline-block;padding:14px 32px;background:#7C3AED;color:#fff;text-decoration:none;border-radius:50px;font-weight:700;">Open SAM — 48hrs free →</a></div>'
+      +'<div style="margin-top:32px;text-align:center;"><a href="https://samforcreators.com" style="display:inline-block;padding:14px 32px;background:#7C3AED;color:#fff;text-decoration:none;border-radius:50px;font-weight:700;">Open SAM — 7 days free →</a></div>'
       +'<div style="margin-top:24px;padding:16px;background:#f7f5ff;border-radius:8px;font-size:13px;color:#666;text-align:center;">Your 48-hour free trial is now active. All 5 tools, no card needed.</div>'
       +'</div>';
 
