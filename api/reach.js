@@ -8,8 +8,17 @@ module.exports = async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { imageBase64, imageType, moment } = req.body || {};
+  const { imageBase64, moment } = req.body || {};
   if (!imageBase64) return res.status(400).json({ error: 'Image required' });
+
+  // Auto-detect image type from base64 header — don't trust client-provided type
+  let imageType = 'image/jpeg';
+  const sig = imageBase64.slice(0, 16);
+  if (sig.startsWith('/9j/')) imageType = 'image/jpeg';
+  else if (sig.startsWith('iVBORw0K')) imageType = 'image/png';
+  else if (sig.startsWith('R0lGOD')) imageType = 'image/gif';
+  else if (sig.startsWith('UklGR')) imageType = 'image/webp';
+  else if (sig.startsWith('AAAAF') || sig.startsWith('AAAAI')) imageType = 'image/jpeg'; // HEIC → treat as jpeg
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'API key not configured' });
