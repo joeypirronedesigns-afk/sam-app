@@ -5928,42 +5928,24 @@ ${setup.tone ? 'Tone: ' + setup.tone : ''}
 For each platform write clearly with the platform name as a header. Make every caption feel personal, story-driven, and native to that platform. Hashtags should be specific and strategic, not generic. Write in the creator's voice, not corporate language.`;
 
   try {
-    const resp = await fetch('/api/sam', {
+    const resp = await fetch('/api/reach', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        mode: 'upload',
         imageBase64: reachImgB64,
         imageType: reachImgType,
-        moment: prompt,
-        forceType: 'reach'
+        moment: prompt
       })
     });
 
-    const reader2 = resp.body.getReader();
-    const decoder = new TextDecoder();
-    let fullText = '';
+    const respData = await resp.json();
+    if (!respData.success) throw new Error(respData.error || 'Generation failed');
+    const fullText = respData.text || '';
+
     document.getElementById('reachLoader').style.display = 'none';
     document.getElementById('reachOutput').style.display = 'block';
     document.getElementById('reachBody').innerHTML = '<div id="reachStream" style="color:#ccc;font-size:14px;line-height:1.8;white-space:pre-wrap;"></div>';
-
-    while (true) {
-      const { done, value } = await reader2.read();
-      if (done) break;
-      const chunk = decoder.decode(value);
-      const lines = chunk.split('\n');
-      for (const line of lines) {
-        if (line.startsWith('data: ')) {
-          try {
-            const d = JSON.parse(line.slice(6));
-            if (d.t) {
-              fullText += d.t;
-              document.getElementById('reachStream').textContent = fullText;
-            }
-          } catch {}
-        }
-      }
-    }
+    document.getElementById('reachStream').textContent = fullText;
 
     // Parse and render the output
     const platforms = getSelPills('reachPlatforms');
