@@ -858,17 +858,28 @@
       if (activated) return;
       activated = true;
 
-      // Hide tap label, shrink orb to normal size
+      // Hide tap label, shrink orb
       document.getElementById('orbTapLabel').style.display = 'none';
       document.getElementById('orbWrap').style.cursor = 'default';
       document.getElementById('heroOrb').classList.add('active');
       document.getElementById('orbWrap').style.width = '80px';
       document.getElementById('orbWrap').style.height = '80px';
 
-      // Unlock audio context on this user gesture
+      // Unlock AudioContext
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       if (!window._samCtx) window._samCtx = new AudioCtx();
       await window._samCtx.resume();
+
+      // iOS Chrome: pre-warm Audio with silent clip on this gesture
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (isMobile) {
+        window._samAudio = new Audio();
+        window._samAudio.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
+        window._samAudio.volume = 0;
+        try { await window._samAudio.play(); } catch(e) {}
+        window._samAudio.volume = 1.0;
+        await new Promise(r => setTimeout(r, 300));
+      }
 
       // Start conversation
       startConversation();
