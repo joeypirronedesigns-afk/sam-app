@@ -7739,22 +7739,47 @@ function guardedRunFn(originalFn) {
 
   const state = getTrialState();
 
-  // Paid or signed-in member — always allow
-  if (state.paid || state.email) { originalFn(); return; }
+  // Paid member — always allow immediately
+  if (state.paid) { originalFn(); return; }
 
-  // Active trial (within 48hrs) — always allow, unlimited runs
+  // Check server-side trial status if we have an email
+  const userEmail = state.email || localStorage.getItem('sam_user_email');
+  const userUid = localStorage.getItem('sam_uid');
+
+  if (userEmail || userUid) {
+    fetch('/api/trial-status', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ email: userEmail || null, uid: userUid || null })
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.allowed) {
+        originalFn();
+        setTimeout(function() { if(typeof showTourNextNudge === "function") showTourNextNudge(); }, 8000);
+      } else {
+        showPaywall('tool');
+      }
+    })
+    .catch(() => {
+      // Fail open — allow on error
+      originalFn();
+    });
+    return;
+  }
+
+  // Anonymous user — use localStorage trial
   if (state.trialStart && (Date.now() - state.trialStart) < TRIAL_DURATION_MS) {
     originalFn();
     setTimeout(function() { if(typeof showTourNextNudge === "function") showTourNextNudge(); }, 8000);
     return;
   }
 
-  // Trial expired — show paywall
   if (state.trialStart && (Date.now() - state.trialStart) >= TRIAL_DURATION_MS) {
     showPaywall('tool'); return;
   }
 
-  // No trial started yet — allow first run, start trial
+  // No trial started yet — allow, start trial
   originalFn();
   setTimeout(function() { if(typeof showTourNextNudge === "function") showTourNextNudge(); }, 8000);
 }
