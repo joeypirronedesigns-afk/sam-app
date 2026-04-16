@@ -444,16 +444,8 @@ async function init() {
   const cachedVoice=localStorage.getItem('sam-voice-profile');
   if(cachedVoice){ try{ STATE.voiceProfile=JSON.parse(cachedVoice).raw||null; }catch(e){} }
   const initToolParam = new URLSearchParams(window.location.search).get('tool');
-  const fromWelcome = localStorage.getItem('sam_from_welcome');
-  if(fromWelcome) {
-    // Came from welcome flow — show SAM greeting, clear flag
-    localStorage.removeItem('sam_from_welcome');
-    startGreeting();
-  } else if(firstRunDone||hasSession){
+  if(firstRunDone||hasSession){
     showReturningUser({name:localStorage.getItem('sam_meet_name')||null,voice_profile:STATE.voiceProfile});
-  } else if(!initToolParam) {
-    // New user with no tool param — send to welcome flow
-    window.location.replace('/welcome');
   } else {
     startGreeting();
   }
