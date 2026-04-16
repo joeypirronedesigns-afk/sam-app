@@ -26,6 +26,17 @@ module.exports = async function handler(req, res) {
   if (action === 'refresh') {
     const targets = [];
 
+    // Debug: test one subreddit first
+    let debugInfo = [];
+    try {
+      const testR = await fetch('https://www.reddit.com/r/NewTubers/hot.json?limit=2', {
+        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; SAMbot/1.0)' }
+      });
+      debugInfo.push('status:' + testR.status);
+      const testD = await testR.json();
+      debugInfo.push('posts:' + (testD?.data?.children?.length || 0));
+    } catch(e) { debugInfo.push('error:' + e.message); }
+
     // Fetch all subreddits in parallel
     const results = await Promise.allSettled(
       SUBREDDITS.map(sub =>
@@ -92,7 +103,7 @@ Write a 2-3 sentence genuine comment. Be helpful and relatable. Only mention SAM
       await kv.set('outreach:daily_targets', top, { ex: 86400 });
     } catch(e) {}
 
-    return res.status(200).json({ success: true, targets: top, total: top.length });
+    return res.status(200).json({ success: true, targets: top, total: top.length, debug: debugInfo });
   }
 
   return res.status(400).json({ error: 'Unknown action' });
