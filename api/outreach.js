@@ -26,43 +26,46 @@ module.exports = async function handler(req, res) {
   if (action === 'refresh') {
     const targets = [];
 
-    // Debug: test one subreddit first
-    let debugInfo = [];
-    try {
-      const testR = await fetch('https://www.reddit.com/r/NewTubers/hot.json?limit=2', {
-        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; SAMbot/1.0)' }
-      });
-      debugInfo.push('status:' + testR.status);
-      const testD = await testR.json();
-      debugInfo.push('posts:' + (testD?.data?.children?.length || 0));
-    } catch(e) { debugInfo.push('error:' + e.message); }
-
-    // Fetch all subreddits in parallel
+    // Use Reddit RSS (XML) feeds — bypass 403 on cloud IPs
     const results = await Promise.allSettled(
-      SUBREDDITS.map(sub =>
-        fetch(`https://www.reddit.com/r/${sub}/hot.json?limit=10`, {
-          headers: { 'User-Agent': 'SAMforCreators/1.0' }
-        }).then(r => r.json()).then(data => ({ sub, posts: data?.data?.children || [] }))
-      )
+      SUBREDDITS.map(async sub => {
+        const r = await fetch(\`https://www.reddit.com/r/\${sub}/hot.rss?limit=10\`, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+            'Accept': 'application/rss+xml, application/xml, text/xml'
+          }
+        });
+        const xml = await r.text();
+        // Parse RSS XML manually
+        const posts = [];
+        const entries = xml.match(/<entry>([\s\S]*?)<\/entry>/g) || [];
+        for (const entry of entries) {
+          const title = (entry.match(/<title[^>]*>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?<\/title>/) || [])[1] || '';
+          const link = (entry.match(/<link[^>]*href="([^"]*)"/) || [])[1] || '';
+          const author = (entry.match(/<name>(.*?)<\/name>/) || [])[1] || '';
+          const content = (entry.match(/<content[^>]*>([\s\S]*?)<\/content>/) || [])[1] || '';
+          if (title) posts.push({ title, link, author, content: content.replace(/<[^>]+>/g,'').slice(0,200) });
+        }
+        return { sub, posts };
+      })
     );
 
     for (const result of results) {
       if (result.status !== 'fulfilled') continue;
       const { sub, posts } = result.value;
-      for (const { data: post } of posts) {
-        if (post.stickied || post.score < 5) continue;
-        const text = ((post.title || '') + ' ' + (post.selftext || '')).toLowerCase();
+      for (const post of posts) {
+        const text = ((post.title || '') + ' ' + (post.content || '')).toLowerCase();
         const matches = KEYWORDS.filter(k => text.includes(k)).length;
         if (matches < 2) continue;
         targets.push({
-          id: post.id,
+          id: Math.random().toString(36).slice(2),
           platform: 'Reddit',
-          url: `https://reddit.com${post.permalink}`,
+          url: post.link,
           creator: `u/${post.author}`,
           title: post.title,
-          preview: (post.selftext || '').slice(0, 200),
-          score: post.score,
-          comments: post.num_comments,
+          preview: post.content || '',
+          score: 10,
+          comments: 0,
           subreddit: `r/${sub}`,
           relevanceScore: matches,
           draftComment: null
@@ -103,7 +106,7 @@ Write a 2-3 sentence genuine comment. Be helpful and relatable. Only mention SAM
       await kv.set('outreach:daily_targets', top, { ex: 86400 });
     } catch(e) {}
 
-    return res.status(200).json({ success: true, targets: top, total: top.length, debug: debugInfo });
+    return res.status(200).json({ success: true, targets: top, total: top.length });
   }
 
   return res.status(400).json({ error: 'Unknown action' });
