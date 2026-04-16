@@ -522,19 +522,28 @@
         if (chunks.length === 0) chunks.push(plain);
         for (const chunk of chunks) {
           if (!chunk) continue;
-          const r = await fetch('https://api.elevenlabs.io/v1/text-to-speech/' + VOICE_ID, {
-            method: 'POST',
-            headers: { 'xi-api-key': ELEVENLABS_KEY, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text: chunk, model_id: 'eleven_turbo_v2', voice_settings: { stability: 0.5, similarity_boost: 0.75 } })
-          });
-          if (!r.ok) continue;
-          const buf = await r.arrayBuffer();
-          const audioBuf = await ctx.decodeAudioData(buf);
-          await new Promise(res => {
-            const src = ctx.createBufferSource();
-            src.buffer = audioBuf; src.connect(ctx.destination);
-            src.onended = res; src.start(0);
-          });
+          // Resume context before each chunk — prevents suspension between bubbles
+          if (ctx.state === 'suspended') await ctx.resume();
+          try {
+            const r = await fetch('https://api.elevenlabs.io/v1/text-to-speech/' + VOICE_ID, {
+              method: 'POST',
+              headers: { 'xi-api-key': ELEVENLABS_KEY, 'Content-Type': 'application/json' },
+              body: JSON.stringify({ text: chunk, model_id: 'eleven_turbo_v2', voice_settings: { stability: 0.5, similarity_boost: 0.75 } })
+            });
+            if (!r.ok) continue;
+            const buf = await r.arrayBuffer();
+            const audioBuf = await ctx.decodeAudioData(buf);
+            await new Promise((res, rej) => {
+              const src = ctx.createBufferSource();
+              src.buffer = audioBuf; src.connect(ctx.destination);
+              src.onended = res;
+              src.onerror = res; // resolve on error too — don't block
+              // Safety timeout — never hang longer than chunk duration + 5s
+              const timeout = setTimeout(res, (audioBuf.duration * 1000) + 5000);
+              src.onended = () => { clearTimeout(timeout); res(); };
+              src.start(0);
+            });
+          } catch(chunkErr) { console.log('Chunk error:', chunkErr.message); continue; }
         }
       } catch(e) { console.log('Katie error:', e.message); }
     }
@@ -611,7 +620,7 @@
           pause: 1200
         },
         {
-          html: `This is a creative space built by a creator, for other creators — and for the next <strong style="color:var(--pulse)">7 days, it's completely yours free to use, test and see if it's the right fit for you!</strong><br><br>Does all of that sound good to you?!`,
+          html: `This is a creative space built by a creator, for other creators — and for the next <strong style="color:var(--pulse)">7 days, it's completely yours free to use, test and see if it's the right fit for you!</strong> Does all of that sound good?!`,
           cls: 'highlight',
           pause: 1000
         }
