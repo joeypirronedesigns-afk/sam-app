@@ -93,18 +93,18 @@ Write a 2-3 sentence comment. Start with something genuine and specific to their
           body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 120, messages: [{ role: 'user', content: prompt }] })
         });
         const d = await r.json();
-        top[i].draftComment = d.content?.[0]?.text?.trim() || '';
+        top[i].draftComment = (d.content?.[0]?.text?.trim() || '').replace(/^#[^\n]*\n/,'').replace(/^Comment[:\s]*/i,'').trim();
       } catch(e) { top[i].draftComment = ''; }
     })
   );
 
   // Add curated YouTube targets — high-traffic content creator videos
   const ytVideos = [
-    { id: 'yt1', title: 'How to grow your YouTube channel from 0 in 2025', url: 'https://www.youtube.com/watch?v=XpCoNQYPFUo', creator: 'Think Media', preview: 'Step by step guide to growing a YouTube channel from scratch with no subscribers' },
-    { id: 'yt2', title: "Why your content isn't going viral (and how to fix it)", url: 'https://www.youtube.com/watch?v=mxqGDLcLcYo', creator: 'Paddy Galloway', preview: 'The real reasons creators struggle to get views and what to do about it' },
-    { id: 'yt3', title: 'How I grew to 100k subscribers posting consistently', url: 'https://www.youtube.com/watch?v=K2bCpK9WcCo', creator: 'Creator Booth', preview: 'Consistency, thumbnails, and hooks — the three pillars of YouTube growth' },
-    { id: 'yt4', title: 'TikTok content strategy that actually works in 2025', url: 'https://www.youtube.com/watch?v=7htSC3gCGFI', creator: 'Hayley Paige', preview: 'How to create content that gets pushed by the TikTok algorithm' },
-    { id: 'yt5', title: 'Instagram growth tips for small creators', url: 'https://www.youtube.com/watch?v=pqMpPFl5O7s', creator: 'Jade Beason', preview: 'How to grow on Instagram when you have under 1000 followers' },
+    { id: 'yt1', title: 'How to grow on YouTube in 2025 (what actually works)', url: 'https://www.youtube.com/watch?v=8F9ME5cFBJM', creator: 'Think Media', preview: 'Practical YouTube growth strategies for small creators in 2025' },
+    { id: 'yt2', title: 'The YouTube algorithm explained for small creators', url: 'https://www.youtube.com/watch?v=RgfMKMqRBQY', creator: 'Paddy Galloway', preview: 'How the YouTube algorithm actually works and how to use it to grow faster' },
+    { id: 'yt3', title: 'How to create content consistently without burnout', url: 'https://www.youtube.com/watch?v=4ARcxKRQXF8', creator: 'Matt Ragland', preview: 'Systems for staying consistent as a content creator without burning out' },
+    { id: 'yt4', title: 'TikTok growth strategy for beginners in 2025', url: 'https://www.youtube.com/watch?v=SbBT-7BQNQU', creator: 'Sodium', preview: 'How to grow your TikTok from 0 using current algorithm strategies' },
+    { id: 'yt5', title: 'How to find your niche as a content creator', url: 'https://www.youtube.com/watch?v=8PYv1wRLMVM', creator: 'Jade Beason', preview: 'Finding and owning your content niche to build a loyal audience' },
   ];
 
   // Draft YouTube comments
@@ -122,7 +122,7 @@ Write a 2-3 sentence comment. Start with something genuine and specific to their
         body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 120, messages: [{ role: 'user', content: prompt }] })
       });
       const d = await r.json();
-      ytVideos[i].draftComment = d.content?.[0]?.text?.trim() || '';
+      ytVideos[i].draftComment = (d.content?.[0]?.text?.trim() || '').replace(/^#[^\n]*\n/,'').replace(/^Comment[:\s]*/i,'').trim();
     } catch(e) { ytVideos[i].draftComment = ''; }
   }));
 
