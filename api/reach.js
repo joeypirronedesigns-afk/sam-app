@@ -53,7 +53,10 @@ Make every caption feel personal, story-driven, and native to that platform. Wri
     }
 
     const data = await r.json();
+    console.log('Anthropic response type:', data.type, 'stop_reason:', data.stop_reason);
+    if (data.type === 'error') return res.status(200).json({ success: false, error: data.error?.message || 'Anthropic error' });
     const text = data.content?.[0]?.text || '';
+    if (!text) return res.status(200).json({ success: false, error: 'Empty response from AI. Try a different image.' });
     return res.status(200).json({ success: true, text });
   } catch(e) {
     return res.status(500).json({ error: e.message });
