@@ -14,36 +14,29 @@ module.exports = async function handler(req, res) {
   // Always scrape fresh — no KV dependency
   const targets = [];
 
-  // Fetch all subreddits via RSS in parallel
+  // Use Apify Reddit scraper with residential proxies
+  const APIFY_KEY = process.env.APIFY_API_KEY;
   const results = await Promise.allSettled(
-    SUBREDDITS.map(async sub => {
-      const r = await fetch(`https://www.reddit.com/r/${sub}/hot.rss?limit=10`, {
-        headers: { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' }
-      });
-      const xml = await r.text();
-      if (!xml.includes('<entry>')) { return { sub, posts: [], rawStart: xml.slice(0,100) }; }
-      const posts = [];
-      // Split on <entry> tags — works regardless of namespace
-      const parts = xml.split('<entry>');
-      for (let i = 1; i < parts.length; i++) {
-        const entry = parts[i].split('</entry>')[0];
-        // Extract title — handle CDATA and encoded entities
-        const titleMatch = entry.match(/<title[^>]*>([\s\S]*?)<\/title>/);
-        const title = titleMatch ? titleMatch[1].replace(/<!\[CDATA\[/,'').replace(/\]\]>/,'').trim() : '';
-        // Extract link href
-        const linkMatch = entry.match(/href="(https:\/\/www\.reddit\.com\/r\/[^"]+)"/);
-        const link = linkMatch ? linkMatch[1] : '';
-        // Extract author name
-        const authorMatch = entry.match(/<name>([\s\S]*?)<\/name>/);
-        const author = authorMatch ? authorMatch[1].replace('/u/','').trim() : '';
-        // Extract content
-        const contentMatch = entry.match(/<content[^>]*>([\s\S]*?)<\/content>/);
-        const content = contentMatch ? contentMatch[1].replace(/<[^>]+>/g,' ').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/&quot;/g,'"').replace(/\s+/g,' ').trim().slice(0,300) : '';
-        if (title && link && author && !author.includes('AutoModerator') && !title.includes('Weekly')) {
-          posts.push({ title, link, author, content });
-        }
-      }
-      return { sub, posts };
+    SUBREDDITS.slice(0,4).map(async sub => {
+      try {
+        const r = await fetch(`https://api.apify.com/v2/acts/trudax~reddit-scraper-lite/run-sync-get-dataset-items?token=${APIFY_KEY}&memory=128&timeout=25`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            subreddits: [sub],
+            type: 'hot',
+            maxItems: 8,
+            proxy: { useApifyProxy: true, apifyProxyGroups: ['RESIDENTIAL'] }
+          })
+        });
+        const posts = await r.json();
+        return { sub, posts: Array.isArray(posts) ? posts.map(p => ({
+          title: p.title || '',
+          link: p.url || `https://reddit.com${p.permalink||''}`,
+          author: p.author || '',
+          content: (p.selftext || '').slice(0,300)
+        })).filter(p => p.title && p.author && p.author !== 'AutoModerator') : [] };
+      } catch(e) { return { sub, posts: [] }; }
     })
   );
 
