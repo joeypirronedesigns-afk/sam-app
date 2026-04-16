@@ -52,7 +52,7 @@ module.exports = async function handler(req, res) {
         ? (subject || 'Your SAM Ideas Export')
         : source === 'manual_followup'
         ? (subject || 'A note from Joey at SAM')
-        : `You're in — 48 hours of SAM, completely free`;
+        : `You're in — 7 days of SAM, completely free`;
 
       const userHtml = (isIdeasExport || source === 'manual_followup') && customBody
         ? customBody
@@ -61,7 +61,7 @@ module.exports = async function handler(req, res) {
               <div style="font-size:40px;">🎉</div>
               <p style="color:rgba(240,236,255,0.4);font-size:12px;margin:0 0 16px;">If you don't see future emails from us, check your junk or spam folder and mark us as safe.</p>
               <h1 style="color:#A78BFA;font-size:24px;margin:12px 0 8px;">You're in, ${name}!</h1>
-              <p style="color:rgba(240,236,255,0.7);margin:0;">48 hours. All 5 tools. No card ever.</p>
+              <p style="color:rgba(240,236,255,0.7);margin:0;">7 days. All 5 tools. No card ever.</p>
             </div>
             <div style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.25);border-radius:12px;padding:16px;text-align:center;margin-bottom:24px;">
               <p style="color:#FBBF24;font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin:0 0 6px;">Your free access includes</p>
@@ -79,7 +79,7 @@ module.exports = async function handler(req, res) {
               <a href="https://samforcreators.com" style="display:inline-block;padding:14px 32px;background:#7C3AED;color:#fff;text-decoration:none;border-radius:50px;font-weight:700;">Open SAM now →</a>
             </div>
             <div style="background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.2);border-radius:10px;padding:14px;margin-bottom:20px;">
-              <p style="color:rgba(240,236,255,0.6);font-size:13px;margin:0;">After 48 hours you will get first access to <strong style="color:#FBBF24;">SAM Pro at $19/month</strong> — founding rate, locked in for life. No auto-charge.</p>
+              <p style="color:rgba(240,236,255,0.6);font-size:13px;margin:0;">After your 7-day trial you will get first access to <strong style="color:#FBBF24;">SAM Pro at $19/month</strong> — founding rate, locked in for life. No auto-charge.</p>
             </div>
             <p style="color:rgba(240,236,255,0.3);font-size:12px;text-align:center;margin:0;">samforcreators.com · Reply to unsubscribe</p>
           </div>`;
