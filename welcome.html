@@ -439,23 +439,17 @@
     }
 
     async function addSAMBubble(html, extraClass = '', delay = 0) {
-      return new Promise(resolve => {
-        setTimeout(async () => {
-          const wrap = document.createElement('div');
-          wrap.className = 'sam-bubble-wrap';
-          wrap.style.animationDelay = '0ms';
-          wrap.innerHTML = `
-            <div class="sam-avatar">S</div>
-            <div class="sam-bubble ${extraClass}">${html}</div>`;
-          conversation.appendChild(wrap);
-          scrollBottom();
-          // Speak bubble and WAIT until Katie finishes before resolving
-          await speakWithKatie(html);
-          // Small pause between bubbles
-          await new Promise(r => setTimeout(r, 400));
-          resolve();
-        }, delay);
-      });
+      if (delay) await new Promise(r => setTimeout(r, delay));
+      const wrap = document.createElement('div');
+      wrap.className = 'sam-bubble-wrap';
+      wrap.style.animationDelay = '0ms';
+      wrap.innerHTML = `
+        <div class="sam-avatar">S</div>
+        <div class="sam-bubble ${extraClass}">${html}</div>`;
+      conversation.appendChild(wrap);
+      scrollBottom();
+      await speakWithKatie(html);
+      await new Promise(r => setTimeout(r, 400));
     }
 
     function setOrbSpeaking(speaking) {
