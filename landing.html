@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAM for Creators</title>
+  <style>
+    body { background: #09080F; margin: 0; }
+  </style>
+</head>
+<body>
+<script>
+  function getCookie(name) {
+    const val = document.cookie.split('; ').find(r => r.startsWith(name + '='));
+    return val ? decodeURIComponent(val.split('=')[1]) : null;
+  }
+
+  const visited = getCookie('sam_visited');
+  const hasSession = localStorage.getItem('sam_session_v2');
+  const firstRunDone = localStorage.getItem('samFirstRunDone');
+
+  if (visited || hasSession || firstRunDone) {
+    // Returning user — go to workshop
+    window.location.replace('/app');
+  } else {
+    // New user — go to welcome
+    window.location.replace('/welcome');
+  }
+</script>
+</body>
+</html>
