@@ -807,7 +807,7 @@
         const trialExpiry = new Date(Date.now() + 48 * 60 * 60 * 1000).toUTCString();
         document.cookie = `sam_user=${encodeURIComponent(JSON.stringify({ name: nameVal, email: emailVal, tier: 'free' }))}; expires=${trialExpiry}; path=/; SameSite=Lax`;
         document.cookie = `sam_trial_start=${Date.now()}; expires=${trialExpiry}; path=/; SameSite=Lax`;
-        document.cookie = `sam_visited=true; expires=${new Date(Date.now() + 365*24*60*60*1000).toUTCString()}; path=/; SameSite=Lax`;
+        // sam_visited set in meet.html after SAM onboarding completes — not here
 
         // 5. Show success
         showSuccess(nameVal);
