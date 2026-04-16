@@ -487,23 +487,36 @@
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
       if (isMobile) {
-        // Mobile: speechSynthesis — await until done
-        return new Promise(resolve => {
-          const doSpeak = () => {
-            window.speechSynthesis.cancel();
-            const utt = new SpeechSynthesisUtterance(plain);
-            utt.rate = 0.88; utt.pitch = 1.0; utt.volume = 1.0; utt.lang = 'en-US';
-            const voices = window.speechSynthesis.getVoices();
-            const pick = voices.find(v => v.name.includes('Samantha')) || voices.find(v => v.name.includes('Karen')) || voices.find(v => v.lang === 'en-US');
-            if (pick) utt.voice = pick;
-            utt.onend = resolve;
-            utt.onerror = resolve;
-            window.speechSynthesis.speak(utt);
-          };
-          const voices = window.speechSynthesis.getVoices();
-          if (voices.length > 0) doSpeak();
-          else { window.speechSynthesis.onvoiceschanged = doSpeak; setTimeout(doSpeak, 400); }
-        });
+        // Mobile: ElevenLabs via Audio() — works after user gesture (orb tap unlocks audio)
+        try {
+          const sentences = plain.match(/[^.!?]+[.!?]*/g) || [plain];
+          const chunks = []; let cur = '';
+          for (const s of sentences) {
+            if (!s.trim()) continue;
+            if ((cur + s).length > 300) { if (cur) chunks.push(cur.trim()); cur = s; } else cur += s;
+          }
+          if (cur.trim()) chunks.push(cur.trim());
+          if (chunks.length === 0) chunks.push(plain);
+
+          for (const chunk of chunks) {
+            if (!chunk) continue;
+            const r = await fetch('https://api.elevenlabs.io/v1/text-to-speech/' + VOICE_ID, {
+              method: 'POST',
+              headers: { 'xi-api-key': ELEVENLABS_KEY, 'Content-Type': 'application/json' },
+              body: JSON.stringify({ text: chunk, model_id: 'eleven_turbo_v2', voice_settings: { stability: 0.5, similarity_boost: 0.75 } })
+            });
+            if (!r.ok) continue;
+            const blob = await r.blob();
+            const url = URL.createObjectURL(blob);
+            await new Promise(res => {
+              const audio = new Audio(url);
+              audio.onended = () => { URL.revokeObjectURL(url); res(); };
+              audio.onerror = () => { URL.revokeObjectURL(url); res(); };
+              audio.play().catch(() => res());
+            });
+          }
+        } catch(e) { console.log('Mobile Katie error:', e.message); }
+        return;
       }
 
       // Desktop: ElevenLabs Katie — awaits until all chunks finish
