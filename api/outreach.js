@@ -14,29 +14,26 @@ module.exports = async function handler(req, res) {
   // Always scrape fresh — no KV dependency
   const targets = [];
 
-  // Use Apify Reddit scraper with residential proxies
+  // Use Apify fast free Reddit scraper
   const APIFY_KEY = process.env.APIFY_API_KEY;
   const results = await Promise.allSettled(
     SUBREDDITS.slice(0,4).map(async sub => {
       try {
-        const r = await fetch(`https://api.apify.com/v2/acts/trudax~reddit-scraper-lite/run-sync-get-dataset-items?token=${APIFY_KEY}&memory=128&timeout=25`, {
+        const r = await fetch(`https://api.apify.com/v2/acts/cryptosignals~reddit-scraper-fast/run-sync-get-dataset-items?token=${APIFY_KEY}&memory=128&timeout=25`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            subreddits: [sub],
-            type: 'hot',
-            maxItems: 8,
-            proxy: { useApifyProxy: true, apifyProxyGroups: ['RESIDENTIAL'] }
-          })
+          body: JSON.stringify({ subreddit: sub, sort: 'hot', maxPosts: 8 })
         });
         const posts = await r.json();
         return { sub, posts: Array.isArray(posts) ? posts.map(p => ({
           title: p.title || '',
-          link: p.url || `https://reddit.com${p.permalink||''}`,
+          link: p.url || p.permalink || '',
           author: p.author || '',
-          content: (p.selftext || '').slice(0,300)
+          content: (p.selftext || '').slice(0,300),
+          score: p.score || 0,
+          comments: p.numComments || 0
         })).filter(p => p.title && p.author && p.author !== 'AutoModerator') : [] };
-      } catch(e) { return { sub, posts: [] }; }
+      } catch(e) { return { sub, posts: [], error: e.message }; }
     })
   );
 
