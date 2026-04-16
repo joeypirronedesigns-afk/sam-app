@@ -22,15 +22,24 @@ module.exports = async function handler(req, res) {
       });
       const xml = await r.text();
       const posts = [];
-      const entries = xml.match(/<entry>([\s\S]*?)<\/entry>/g) || [];
-      for (const entry of entries) {
-        const title = (entry.match(/<title[^>]*>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?<\/title>/) || [])[1] || '';
-        const link = (entry.match(/<link[^>]*href="([^"]*)"/) || [])[1] || '';
-        const author = (entry.match(/<name>(.*?)<\/name>/) || [])[1] || '';
-        const content = (entry.match(/<content[^>]*>([\s\S]*?)<\/content>/) || [])[1] || '';
-        const clean = content.replace(/<[^>]+>/g,'').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/&quot;/g,'"').slice(0,300);
-        if (title && !title.includes('Weekly') && !author.includes('AutoModerator')) {
-          posts.push({ title, link, author: author.replace('/u/',''), content: clean });
+      // Split on <entry> tags — works regardless of namespace
+      const parts = xml.split('<entry>');
+      for (let i = 1; i < parts.length; i++) {
+        const entry = parts[i].split('</entry>')[0];
+        // Extract title — handle CDATA and encoded entities
+        const titleMatch = entry.match(/<title[^>]*>([\s\S]*?)<\/title>/);
+        const title = titleMatch ? titleMatch[1].replace(/<!\[CDATA\[/,'').replace(/\]\]>/,'').trim() : '';
+        // Extract link href
+        const linkMatch = entry.match(/href="(https:\/\/www\.reddit\.com\/r\/[^"]+)"/);
+        const link = linkMatch ? linkMatch[1] : '';
+        // Extract author name
+        const authorMatch = entry.match(/<name>([\s\S]*?)<\/name>/);
+        const author = authorMatch ? authorMatch[1].replace('/u/','').trim() : '';
+        // Extract content
+        const contentMatch = entry.match(/<content[^>]*>([\s\S]*?)<\/content>/);
+        const content = contentMatch ? contentMatch[1].replace(/<[^>]+>/g,' ').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/&quot;/g,'"').replace(/\s+/g,' ').trim().slice(0,300) : '';
+        if (title && link && author && !author.includes('AutoModerator') && !title.includes('Weekly')) {
+          posts.push({ title, link, author, content });
         }
       }
       return { sub, posts };
