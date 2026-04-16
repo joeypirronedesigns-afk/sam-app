@@ -64,7 +64,14 @@ module.exports = async function handler(req, res) {
   const top = targets.slice(0, 15);
 
   if (top.length === 0) {
-    return res.status(200).json({ success: true, targets: [], total: 0, message: 'No matching posts found' });
+    // Debug: return raw RSS parse results
+    const debugTargets = [];
+    for (const result of results) {
+      if (result.status !== 'fulfilled') { debugTargets.push('failed: ' + result.reason); continue; }
+      const { sub, posts } = result.value;
+      debugTargets.push(`${sub}: ${posts.length} posts — ${posts.slice(0,2).map(p=>p.title).join(' | ')}`);
+    }
+    return res.status(200).json({ success: true, targets: [], total: 0, debug: debugTargets });
   }
 
   // Draft comments in parallel
