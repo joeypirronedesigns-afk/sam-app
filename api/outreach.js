@@ -1,6 +1,6 @@
 module.exports.config = { api: { bodyParser: { sizeLimit: '1mb' } } };
 
-const SUBREDDITS = ['content_creators', 'NewTubers', 'socialmedia', 'TikTokHelp', 'youtubers'];
+const SUBREDDITS = ['NewTubers', 'socialmedia', 'youtubers', 'podcasting', 'Filmmakers', 'SmallYTChannel', 'videography'];
 const KEYWORDS = ['content', 'creator', 'video', 'grow', 'views', 'algorithm', 'script', 'caption', 'hook', 'tiktok', 'instagram', 'youtube', 'struggle', 'help', 'advice', 'posting', 'audience', 'followers'];
 
 module.exports = async function handler(req, res) {
