@@ -96,5 +96,39 @@ Write a 2-3 sentence genuine, helpful comment. Be relatable and specific to thei
     })
   );
 
-  return res.status(200).json({ success: true, targets: top, total: top.length });
+  // Add curated YouTube targets — high-traffic content creator videos
+  const ytVideos = [
+    { id: 'yt1', title: 'How to grow your YouTube channel from 0 in 2025', url: 'https://www.youtube.com/watch?v=XpCoNQYPFUo', creator: 'Think Media', preview: 'Step by step guide to growing a YouTube channel from scratch with no subscribers' },
+    { id: 'yt2', title: 'Why your content isn't going viral (and how to fix it)', url: 'https://www.youtube.com/watch?v=mxqGDLcLcYo', creator: 'Paddy Galloway', preview: 'The real reasons creators struggle to get views and what to do about it' },
+    { id: 'yt3', title: 'How I grew to 100k subscribers posting consistently', url: 'https://www.youtube.com/watch?v=K2bCpK9WcCo', creator: 'Creator Booth', preview: 'Consistency, thumbnails, and hooks — the three pillars of YouTube growth' },
+    { id: 'yt4', title: 'TikTok content strategy that actually works in 2025', url: 'https://www.youtube.com/watch?v=7htSC3gCGFI', creator: 'Hayley Paige', preview: 'How to create content that gets pushed by the TikTok algorithm' },
+    { id: 'yt5', title: 'Instagram growth tips for small creators', url: 'https://www.youtube.com/watch?v=pqMpPFl5O7s', creator: 'Jade Beason', preview: 'How to grow on Instagram when you have under 1000 followers' },
+  ];
+
+  // Draft YouTube comments
+  await Promise.allSettled(ytVideos.map(async (vid, i) => {
+    try {
+      const prompt = `You are a content creator leaving a genuine helpful comment on a YouTube video.
+
+Video: "${vid.title}" by ${vid.creator}
+About: ${vid.preview}
+
+Write a 2-3 sentence genuine comment that adds value. Be specific to the video topic. Only mention SAM (samforcreators.com) if it fits naturally as a tool recommendation. Sound like a real creator. Write ONLY the comment.`;
+      const r = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01' },
+        body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 120, messages: [{ role: 'user', content: prompt }] })
+      });
+      const d = await r.json();
+      ytVideos[i].draftComment = d.content?.[0]?.text?.trim() || '';
+    } catch(e) { ytVideos[i].draftComment = ''; }
+  }));
+
+  const allTargets = [...top, ...ytVideos.map(v => ({
+    id: v.id, platform: 'YouTube', url: v.url, creator: v.creator,
+    title: v.title, preview: v.preview, score: 0, comments: 0,
+    subreddit: 'YouTube', relevanceScore: 5, draftComment: v.draftComment || ''
+  }))];
+
+  return res.status(200).json({ success: true, targets: allTargets, total: allTargets.length });
 };
