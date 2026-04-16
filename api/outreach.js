@@ -46,7 +46,7 @@ module.exports = async function handler(req, res) {
     for (const post of posts) {
       const text = ((post.title || '') + ' ' + (post.content || '')).toLowerCase();
       const matches = KEYWORDS.filter(k => text.includes(k)).length;
-      if (matches < 2) continue;
+      if (matches < 1) continue; // threshold lowered
       targets.push({
         id: Math.random().toString(36).slice(2),
         platform: 'Reddit',
@@ -72,7 +72,7 @@ module.exports = async function handler(req, res) {
     for (const result of results) {
       if (result.status !== 'fulfilled') { debugTargets.push('failed: ' + result.reason); continue; }
       const { sub, posts } = result.value;
-      debugTargets.push(`${sub}: ${posts.length} posts | raw: ${result.value.rawStart||'ok'}`);
+      const allPosts = posts; debugTargets.push(`${sub}: ${allPosts.length} posts | raw: ${result.value.rawStart||'ok'} | titles: ${allPosts.slice(0,2).map(p=>p.title).join(' | ')}`);
     }
     return res.status(200).json({ success: true, targets: [], total: 0, debug: debugTargets });
   }
