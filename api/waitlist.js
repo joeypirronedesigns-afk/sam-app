@@ -52,7 +52,7 @@ module.exports = async function handler(req, res) {
         ? (subject || 'Your SAM Ideas Export')
         : `You're in — 48 hours of SAM, completely free`;
 
-      const userHtml = isIdeasExport && customBody
+      const userHtml = (isIdeasExport || source === 'manual_followup') && customBody
         ? customBody
         : `<div style="font-family:Arial,sans-serif;padding:40px 32px;background:#09080F;color:#F0ECFF;border-radius:12px;max-width:520px;margin:0 auto;">
             <div style="text-align:center;margin-bottom:24px;">
