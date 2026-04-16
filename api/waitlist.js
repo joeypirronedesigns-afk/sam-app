@@ -50,6 +50,8 @@ module.exports = async function handler(req, res) {
       // EMAIL 2: To user — ideas export OR welcome email
       const userSubject = isIdeasExport
         ? (subject || 'Your SAM Ideas Export')
+        : source === 'manual_followup'
+        ? (subject || 'A note from Joey at SAM')
         : `You're in — 48 hours of SAM, completely free`;
 
       const userHtml = (isIdeasExport || source === 'manual_followup') && customBody
