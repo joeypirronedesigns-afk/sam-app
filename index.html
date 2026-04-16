@@ -4615,7 +4615,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
   <div style="background:#111; border:1px solid #222; border-radius:16px; padding:28px; margin-bottom:20px;">
     <p style="font-size:11px; font-weight:600; letter-spacing:0.1em; color:#a78bfa; text-transform:uppercase; margin:0 0 16px;">STEP 1 — YOUR PHOTO</p>
-    <div id="upload-zone" onclick="document.getElementById('photo-input').click()" style="border:2px dashed #333; border-radius:12px; padding:40px; text-align:center; cursor:pointer;" onmouseover="this.style.borderColor='#a78bfa'" onmouseout="this.style.borderColor='#333'">
+    <div id="upload-zone" style="border:2px dashed #333; border-radius:12px; padding:40px; text-align:center; cursor:pointer; position:relative;" onmouseover="this.style.borderColor='#a78bfa'" onmouseout="this.style.borderColor='#333'">
       <div id="upload-placeholder">
         <div style="font-size:32px; margin-bottom:8px;">📷</div>
         <p style="color:#ccc; font-size:15px; font-weight:500; margin:0 0 4px;">Click to upload your photo</p>
@@ -4623,7 +4623,7 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
       </div>
       <img id="photo-preview" style="display:none; max-width:100%; max-height:320px; border-radius:8px; object-fit:contain;" alt="Preview">
     </div>
-    <input type="file" id="photo-input" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
+    <input type="file" id="photo-input" accept="image/*" onchange="handlePhotoUpload(event)" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:2;">
     <div id="enhance-option" style="display:none; margin-top:20px; background:#1a1a2e; border:1px solid #2a2a3e; border-radius:12px; padding:16px;">
       <label style="display:flex; align-items:flex-start; gap:12px; cursor:pointer;">
         <input type="checkbox" id="ai-enhance" style="margin-top:2px; accent-color:#a78bfa; width:16px; height:16px;">
