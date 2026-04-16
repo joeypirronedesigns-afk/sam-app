@@ -888,13 +888,15 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+      // Allow ?preview=1 to bypass cookie redirect for testing
+      const isPreview = new URLSearchParams(window.location.search).get('preview');
       const visited = getCookie('sam_visited');
-      if (visited) {
+      if (visited && !isPreview) {
         // Returning visitor — go to homepage
         window.location.href = 'https://samforcreators.com';
         return;
       }
-      // First visit — wire up orb tap
+      // Wire up orb tap
       document.getElementById('orbWrap').addEventListener('click', activateSAM);
     });
   </script>
