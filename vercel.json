@@ -14,6 +14,10 @@
   ],
   "rewrites": [
     {
+      "source": "/landing",
+      "destination": "/landing.html"
+    },
+    {
       "source": "/users",
       "destination": "/users.html"
     },
@@ -35,7 +39,7 @@
     },
     {
       "source": "/",
-      "destination": "/meet.html"
+      "destination": "/landing.html"
     }
   ],
   "functions": {
