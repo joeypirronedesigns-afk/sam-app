@@ -101,7 +101,7 @@ Write a 2-3 sentence genuine, helpful comment. Be relatable and specific to thei
   // Add curated YouTube targets — high-traffic content creator videos
   const ytVideos = [
     { id: 'yt1', title: 'How to grow your YouTube channel from 0 in 2025', url: 'https://www.youtube.com/watch?v=XpCoNQYPFUo', creator: 'Think Media', preview: 'Step by step guide to growing a YouTube channel from scratch with no subscribers' },
-    { id: 'yt2', title: 'Why your content isn't going viral (and how to fix it)', url: 'https://www.youtube.com/watch?v=mxqGDLcLcYo', creator: 'Paddy Galloway', preview: 'The real reasons creators struggle to get views and what to do about it' },
+    { id: 'yt2', title: "Why your content isn't going viral (and how to fix it)", url: 'https://www.youtube.com/watch?v=mxqGDLcLcYo', creator: 'Paddy Galloway', preview: 'The real reasons creators struggle to get views and what to do about it' },
     { id: 'yt3', title: 'How I grew to 100k subscribers posting consistently', url: 'https://www.youtube.com/watch?v=K2bCpK9WcCo', creator: 'Creator Booth', preview: 'Consistency, thumbnails, and hooks — the three pillars of YouTube growth' },
     { id: 'yt4', title: 'TikTok content strategy that actually works in 2025', url: 'https://www.youtube.com/watch?v=7htSC3gCGFI', creator: 'Hayley Paige', preview: 'How to create content that gets pushed by the TikTok algorithm' },
     { id: 'yt5', title: 'Instagram growth tips for small creators', url: 'https://www.youtube.com/watch?v=pqMpPFl5O7s', creator: 'Jade Beason', preview: 'How to grow on Instagram when you have under 1000 followers' },
