@@ -28,8 +28,8 @@ module.exports = async function handler(req, res) {
   if (process.env.RESEND_API_KEY) {
     try {
 
-      // EMAIL 1: Notify Joey — always send
-      await fetch('https://api.resend.com/emails', {
+      // EMAIL 1: Notify Joey — skip for manual followups
+      if(source !== 'manual_followup') await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
