@@ -345,7 +345,7 @@
       <input type="text" id="nameInput" placeholder="Your first name" autocomplete="given-name" />
       <input type="email" id="emailInput" placeholder="Your email address" autocomplete="email" />
       <button class="submit-btn" id="submitBtn" onclick="handleSignup()">
-        Get My 48-Hour Access ✦
+        Get My 7-Day Access ✦
       </button>
       <div class="form-note">No card. No catch. Just 7 days to explore everything.</div>
     </div>
@@ -815,7 +815,7 @@
       } catch(err) {
         console.error('Signup error:', err);
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Get My 48-Hour Access ✦';
+        submitBtn.textContent = 'Get My 7-Day Access ✦';
         setOrbSpeaking(false);
         orbStatus.textContent = 'Your AI Creative Director';
         // Still try to show success — don't block user on API errors
@@ -874,23 +874,24 @@
       document.getElementById('orbWrap').style.width = '80px';
       document.getElementById('orbWrap').style.height = '80px';
 
-      // Unlock AudioContext
+      // Unlock AudioContext + pre-warm audio SYNCHRONOUSLY within gesture
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       if (!window._samCtx) window._samCtx = new AudioCtx();
-      await window._samCtx.resume();
-
-      // iOS Chrome: pre-warm Audio with silent clip on this gesture
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      if (isMobile) {
-        window._samAudio = new Audio();
-        window._samAudio.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
-        window._samAudio.volume = 0;
-        try { await window._samAudio.play(); } catch(e) { console.log('prewarm failed:', e.message); }
-        window._samAudio.pause();
-        window._samAudio.currentTime = 0;
-        window._samAudio.volume = 1.0;
-        await new Promise(r => setTimeout(r, 200));
-      }
+
+      // Pre-warm Audio element synchronously — must happen in same tick as tap
+      window._samAudio = new Audio();
+      window._samAudio.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
+      window._samAudio.volume = 0;
+      const prewarmPromise = window._samAudio.play().catch(e => console.log('prewarm:', e.message));
+
+      // Resume AudioContext async (fine to await after prewarm started)
+      await window._samCtx.resume();
+      await prewarmPromise;
+      window._samAudio.pause();
+      window._samAudio.currentTime = 0;
+      window._samAudio.volume = 1.0;
+      await new Promise(r => setTimeout(r, 150));
 
       // Start conversation
       startConversation();
