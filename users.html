@@ -192,7 +192,7 @@ async function sendEmail(){
         email:selectedUser.email,
         source:"manual_followup",
         subject:subject,
-        customBody:'<div style="font-family:Arial,sans-serif;padding:32px;background:#09080F;color:#F0ECFF;max-width:520px;margin:0 auto;border-radius:12px"><p style="white-space:pre-wrap;line-height:1.7;color:rgba(240,236,255,0.85)">'+body.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>")+'</p><p style="color:rgba(240,236,255,0.3);font-size:12px;margin-top:24px">samforcreators.com &middot; Reply to unsubscribe</p></div>'
+        customBody:'<div style="font-family:Arial,sans-serif;padding:32px;background:#09080F;color:#F0ECFF;max-width:520px;margin:0 auto;border-radius:12px"><p style="white-space:pre-wrap;line-height:1.7;color:rgba(240,236,255,0.85)">'+body.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>").replace(/(https?:\/\/[^\s<]+|www\.[^\s<]+)/g,'<a href="$1" style="color:#A78BFA;text-decoration:underline">$1</a>')+'</p><p style="color:rgba(240,236,255,0.3);font-size:12px;margin-top:24px">samforcreators.com &middot; Reply to unsubscribe</p></div>'
       })
     });
     const data=await r.json();
