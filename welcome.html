@@ -876,9 +876,11 @@
         window._samAudio = new Audio();
         window._samAudio.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
         window._samAudio.volume = 0;
-        try { await window._samAudio.play(); } catch(e) {}
+        try { await window._samAudio.play(); } catch(e) { console.log('prewarm failed:', e.message); }
+        window._samAudio.pause();
+        window._samAudio.currentTime = 0;
         window._samAudio.volume = 1.0;
-        await new Promise(r => setTimeout(r, 300));
+        await new Promise(r => setTimeout(r, 200));
       }
 
       // Start conversation
