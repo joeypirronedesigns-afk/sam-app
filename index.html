@@ -6,7 +6,7 @@
   var p = window.location.pathname;
   var s = window.location.search;
   if ((p === '/' || p === '/index.html') && !localStorage.getItem('samFirstRunDone') && s.indexOf('launch=wizard') === -1 && s.indexOf('workshop=1') === -1) {
-    window.location.href = '/meet';
+    window.location.href = '/welcome';
   }
 })();
 </script>
