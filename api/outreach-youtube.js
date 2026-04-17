@@ -1,8 +1,5 @@
 module.exports.config = { api: { bodyParser: { sizeLimit: '1mb' } } };
 
-// ─── SEARCH QUERIES — these define "ideal SAM user" signal ──────────────
-// Queries map to the 5 SAM painpoints. Pulse will find creators talking
-// about these problems — which means their audiences have them too.
 const SEARCH_QUERIES = [
   'growing small youtube channel',
   'content creator burnout',
@@ -16,19 +13,16 @@ const SEARCH_QUERIES = [
   'content creator starting from zero',
 ];
 
-// ─── FILTERS ────────────────────────────────────────────────────────────
-const MAX_VIDEOS_PER_QUERY   = 5;    // Apify pulls this many per search
-const MAX_DAYS_OLD           = 60;   // skip videos older than this
-const MIN_VIEW_COUNT         = 1000; // skip low-traffic dead videos
-const MAX_TOTAL_TARGETS      = 12;   // final list size after dedup
-const QUERIES_PER_REFRESH    = 5;    // randomly pick N queries each refresh (rotation)
+const QUERIES_PER_REFRESH = 3;
+const MAX_RESULTS_PER_QUERY = 10;
+const MAX_DAYS_OLD = 90;
+const MIN_VIEW_COUNT = 500;
+const MAX_TOTAL_TARGETS = 12;
 
-// ─── SAM BRAND + PULSE SYSTEM PROMPT (mirrors api/daily.js exactly) ─────
 const BRAND = `SAM BRAND KNOWLEDGE:
 SAM is an AI creative director built exclusively for content creators. NOT a general AI. NOT ChatGPT with a new coat of paint.
 
-VOICE DNA - THE EXCLUSIVE DIFFERENTIATOR:
-Voice DNA is a living profile of how a creator communicates - their rhythm, humor, phrasing, emotional register, sentence structure. It grows every session. It never overwrites - only gets deeper. First session: SAM is good. After ten sessions: SAM sounds exactly like them.
+VOICE DNA is a living profile of how a creator communicates. It grows every session. First session: SAM is good. After ten sessions: SAM sounds exactly like them.
 
 THE 5 CREATOR PAINPOINTS SAM SOLVES:
 1. I sound like a robot when I use AI
@@ -38,44 +32,30 @@ THE 5 CREATOR PAINPOINTS SAM SOLVES:
 5. I am figuring this out alone
 
 JOEY FOUNDER STORY:
-Joey Pirrone. Self-taught creator. Moved Fort Myers → Indianapolis → Upper Marlboro, MD. Lived in his brother's garage with wife Amanda and their dogs while selling their Indianapolis home. Bought a 28.5ft Forest River travel trailer, parked it in his parents' backyard while gutting their 1950s cottage — "From Studs to Sanctuary." Started posting 6 months ago. Zero following, zero experience. Almost quit multiple times. Tried Claude Code, built SAM — had never built software before. Hands shook when he realized what he made.
+Joey Pirrone. Self-taught creator. Lived in his brothers garage with wife Amanda and their dogs while selling their Indianapolis home. Bought a 28.5ft travel trailer, parked it in his parents backyard while gutting their 1950s cottage. Started posting 6 months ago with zero following, zero experience. Almost quit multiple times. Built SAM using Claude Code. Had never built software before. Hands shook when he realized what he made.
 
 TONE RULES - NEVER USE:
 journey, authentic, powerful story, resonate, leverage, impactful, unlock, supercharge, game-changer
 
-JOEY'S REAL OUTREACH VOICE:
-"Hey Jon, I'm a fellow creator. I follow your stuff and wanted to say thank you for the idea of the introduction video, I applied what you said to do, and it worked great! I love your content. You're super authentic and that's why I thought of you this morning… cause your content is all about helping others like me. Your heart is in the right place. I'm a little nervous about reaching out to you like this. we don't know each other personally and so I'll just cut to the Chase… I developed an app because I felt like my content ideas were scattered and random. It's basically an app to help me solve some of the problems I was having for social media posting and sharing my home renovations journey over on my channel. I'd like to share it with you if that's OK: to test it and get feedback. I know how this might look or sound to you, but it's completely free for you to use. i'm just looking for other content creators who might find it useful and get real feedback before I start letting others know about it. -Joey"
+JOEYS VOICE: Leads with the person. Gratitude first. Vulnerable on purpose. Frames SAM as something he built for himself. Tiny ask, pressure-free. Never marketing language, never pushy, never corporate.`;
 
-WHAT THIS REVEALS:
-1. Leads with the person, never the product
-2. Gratitude first, specific compliment, then ask
-3. Vulnerable on purpose
-4. Frames SAM as something he built for himself
-5. Tiny ask, pressure-free exit
-
-WHAT JOEY WOULD NEVER WRITE:
-- Marketing-email language, fake urgency, exaggeration
-- Generic compliments, corporate language
-- Anything pushy or condescending`;
-
-const PULSE_SYSTEM = `You are The Pulse — SAM HQ's outreach agent. Built by Joey Pirrone, founder of SAM at samforcreators.com.
+const PULSE_SYSTEM = `You are The Pulse, SAM HQs outreach agent. Built by Joey Pirrone, founder of SAM at samforcreators.com.
 
 ${BRAND}
 
-YOUR TASK RIGHT NOW: Draft a single YouTube comment on the video below. This is a PUBLIC comment that other viewers will see, not a DM. Your goal is for this comment to be the most useful one in the thread so other creators upvote it and Joey's profile earns real attention.
+YOUR TASK: Draft a single YouTube comment on the video below. This is a PUBLIC comment other viewers will see, not a DM. Your goal is for this comment to be the most useful one in the thread so creators upvote it and Joeys profile earns real attention.
 
 HARD RULES:
-1. Lead with a SPECIFIC reaction to something in the video — a framing choice, a line in the title/description, a point you can tell the video is making. Prove you watched it.
-2. Add something the creator didn't say — a lived-experience angle, a tactical add, a thoughtful counter. You are contributing, not complimenting.
-3. Mention SAM (samforcreators.com) ONLY if the video's subject genuinely opens the door — e.g., the video is about AI content, finding your voice, creator burnout, or sounding generic. If it doesn't open the door, write a great comment with no mention at all. A great comment with no mention beats a forced mention every time.
-4. If you do mention SAM, frame it the way Joey does — "I've been building a tool called SAM for this exact problem" — never "check out SAM, it's a game-changer."
-5. 2–4 sentences. No hashtags. No emojis. No signoff. No "-Joey" (that's for DMs, not public comments).
+1. Lead with a SPECIFIC reaction to something in the video. Prove you watched it.
+2. Add something the creator didnt say. Contribute, dont compliment.
+3. Mention SAM (samforcreators.com) ONLY if the videos subject genuinely opens the door. Otherwise write a great comment with no mention. A great comment without a mention beats a forced one.
+4. If you mention SAM, frame it like Joey: "Ive been building a tool called SAM for this exact problem". Never "check out SAM, its a game-changer".
+5. 2 to 4 sentences. No hashtags. No emojis. No signoff. No "-Joey".
 6. Zero banned words.
-7. Sound like a real creator who happened to watch this video. Not a marketer. Not an AI.
+7. Sound like a real creator who happened to watch this video.
 
-Output ONLY the comment text. No preamble, no labels, no quotes.`;
+Output ONLY the comment text.`;
 
-// ─── HANDLER ─────────────────────────────────────────────────────────────
 module.exports = async function handler(req, res) {
   const origin = req.headers.origin || '*';
   res.setHeader('Access-Control-Allow-Origin', origin);
@@ -86,30 +66,26 @@ module.exports = async function handler(req, res) {
 
   const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
   const APIFY_KEY = process.env.APIFY_API_KEY;
-
   if (!ANTHROPIC_KEY || !APIFY_KEY) {
     return res.status(500).json({ success: false, error: 'Missing API keys' });
   }
 
-  // Step 1 — shuffle queries and pick a random subset (rotation mechanism)
   const shuffled = [...SEARCH_QUERIES].sort(() => Math.random() - 0.5);
   const activeQueries = shuffled.slice(0, QUERIES_PER_REFRESH);
 
-  // Step 2 — scrape each query in parallel via Apify
   const scrapeResults = await Promise.allSettled(
     activeQueries.map(async (query) => {
       try {
         const r = await fetch(
-          `https://api.apify.com/v2/acts/apidojo~youtube-scraper/run-sync-get-dataset-items?token=${APIFY_KEY}&memory=512&timeout=60`,
+          `https://api.apify.com/v2/acts/streamers~youtube-scraper/run-sync-get-dataset-items?token=${APIFY_KEY}&memory=1024&timeout=120`,
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              searchQueries: [query],
-              maxItems: MAX_VIDEOS_PER_QUERY,
-              sortBy: 'r',       // relevance
-              dateFilter: 'm',   // this month
-              type: 'v',         // videos only (no shorts, no channels)
+              searchKeywords: query,
+              maxResults: MAX_RESULTS_PER_QUERY,
+              maxResultsShorts: 0,
+              maxResultStreams: 0,
             }),
           }
         );
@@ -117,17 +93,22 @@ module.exports = async function handler(req, res) {
         if (!Array.isArray(videos)) return { query, videos: [], error: 'non-array response' };
         return {
           query,
-          videos: videos.map(v => ({
-            videoId: v.id || v.videoId || '',
-            title: v.title || '',
-            url: v.url || (v.id ? `https://www.youtube.com/watch?v=${v.id}` : ''),
-            viewCount: parseInt(v.viewCount || v.views || 0, 10) || 0,
-            date: v.date || v.publishedAt || v.uploadDate || v.publishedTimeText || '',
-            channelName: v.channelName || v.author || v.uploader || 'Unknown',
-            channelUrl: v.channelUrl || v.authorUrl || '',
-            duration: v.duration || '',
-            description: (v.description || v.text || '').slice(0, 500),
-          })).filter(v => v.videoId && v.url && v.title),
+          videos: videos
+            .filter(v => v && v.id && v.url && v.title)
+            .map(v => ({
+              videoId: v.id,
+              title: v.title || '',
+              url: v.url,
+              viewCount: v.viewCount || 0,
+              date: v.date || '',
+              channelName: v.channelName || 'Unknown',
+              channelUrl: v.channelUrl || '',
+              subscribers: v.numberOfSubscribers || 0,
+              duration: v.duration || '',
+              description: (v.text || '').slice(0, 500),
+              likes: v.likes || 0,
+              commentsCount: v.commentsCount || 0,
+            })),
         };
       } catch (e) {
         return { query, videos: [], error: e.message };
@@ -135,7 +116,6 @@ module.exports = async function handler(req, res) {
     })
   );
 
-  // Step 3 — flatten + filter + dedupe by channel
   const cutoffDate = Date.now() - (MAX_DAYS_OLD * 24 * 60 * 60 * 1000);
   const seenChannels = new Set();
   const seenVideoIds = new Set();
@@ -145,20 +125,13 @@ module.exports = async function handler(req, res) {
     if (result.status !== 'fulfilled') continue;
     const { query, videos } = result.value;
     for (const v of videos) {
-      // Skip duplicates
       if (seenVideoIds.has(v.videoId)) continue;
       if (seenChannels.has(v.channelName)) continue;
-
-      // View threshold
       if (v.viewCount && v.viewCount < MIN_VIEW_COUNT) continue;
-
-      // Date filter — only enforce if we can parse the date
       const parsed = Date.parse(v.date);
       if (!isNaN(parsed) && parsed < cutoffDate) continue;
-
       seenVideoIds.add(v.videoId);
       seenChannels.add(v.channelName);
-
       targets.push({
         id: v.videoId,
         platform: 'YouTube',
@@ -168,16 +141,16 @@ module.exports = async function handler(req, res) {
         title: v.title,
         preview: v.description,
         viewCount: v.viewCount,
+        subscribers: v.subscribers,
         date: v.date,
-        score: v.viewCount,      // display compatibility with existing card
-        comments: 0,
+        score: v.likes,
+        comments: v.commentsCount,
         foundVia: query,
         draftComment: null,
       });
     }
   }
 
-  // Shuffle targets so display order varies each refresh
   targets.sort(() => Math.random() - 0.5);
   const top = targets.slice(0, MAX_TOTAL_TARGETS);
 
@@ -195,12 +168,11 @@ module.exports = async function handler(req, res) {
     });
   }
 
-  // Step 4 — draft comments via The Pulse (Sonnet + full brain)
   await Promise.allSettled(
     top.map(async (target, i) => {
       try {
         const userMessage = `Video title: "${target.title}"
-Channel: ${target.creator}
+Channel: ${target.creator} (${target.subscribers ? target.subscribers.toLocaleString() + ' subs' : 'sub count unknown'})
 Views: ${target.viewCount ? target.viewCount.toLocaleString() : 'unknown'}
 Published: ${target.date || 'recently'}
 Found via search: "${target.foundVia}"
