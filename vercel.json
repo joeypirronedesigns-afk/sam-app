@@ -62,9 +62,6 @@
     "api/auth.js": {
       "maxDuration": 10
     },
-    "api/outreach.js": {
-      "maxDuration": 60
-    },
     "api/outreach-reddit.js": {
       "maxDuration": 60
     },
