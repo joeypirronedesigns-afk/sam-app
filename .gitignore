@@ -1,1 +1,3 @@
 sk-ant-*
+.vercel
+.env*.local
