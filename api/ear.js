@@ -24,7 +24,7 @@ const POSTS_PER_SUB  = 10;
 const MAX_CANDIDATES = 50;
 const MIN_SCORE      = 28;
 const DIGEST_SIZE    = 10;
-const CLAUDE_MODEL   = 'claude-sonnet-4-5-20250929';
+const CLAUDE_MODEL   = 'claude-sonnet-4-20250514';
 
 const SLACK_WEBHOOK = process.env.SLACK_WEBHOOK_URL || '';
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
