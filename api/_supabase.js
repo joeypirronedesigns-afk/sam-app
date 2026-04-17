@@ -97,7 +97,6 @@ async function getStats() {
   }
 }
 
-module.exports = { trackUser, trackEvent, trackSignup, getStats };
 
 // Save voice profile and SAM context for a user
 async function saveUserProfile(uid, { voice_profile, sam_context }) {
@@ -129,4 +128,4 @@ async function getUserProfile(uid) {
   return result[0];
 }
 
-module.exports = { trackUser, trackEvent, trackSignup, getStats, saveUserProfile, getUserProfile, updateUserEmail };
+module.exports = { supabaseQuery, trackUser, trackEvent, trackSignup, getStats, saveUserProfile, getUserProfile, updateUserEmail };
