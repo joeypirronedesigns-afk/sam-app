@@ -73,6 +73,15 @@
     },
     "api/outreach-daily.js": {
       "maxDuration": 180
+    },
+    "api/ear.js": {
+      "maxDuration": 300
+    },
+    "api/pulse-context.js": {
+      "maxDuration": 10
+    },
+    "api/ear-signals.js": {
+      "maxDuration": 10
     }
   },
   "headers": [
@@ -107,6 +116,10 @@
     {
       "path": "/api/outreach-daily",
       "schedule": "0 18 * * *"
+    },
+    {
+      "path": "/api/ear",
+      "schedule": "0 12 * * *"
     }
   ]
 }
