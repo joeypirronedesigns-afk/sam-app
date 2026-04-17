@@ -1,15 +1,10 @@
 // api/ear.js
-// The Ear — listens for real creators actually struggling, not performing.
-// Scans Reddit creator subreddits, scores posts, persists to Supabase,
-// optionally posts a Slack digest.
+// The Ear — scans Reddit via Apify, scores with Claude, persists to Supabase.
+// Uses same Apify actor as outreach-reddit.js (cryptosignals~reddit-scraper-fast)
+// because direct Reddit fetches get blocked from Vercel IPs.
 //
-// Env vars (required):
-//   ANTHROPIC_API_KEY
-//   SUPABASE_URL
-//   SUPABASE_ANON_KEY
-//
-// Env vars (optional):
-//   SLACK_WEBHOOK_URL
+// Env vars (required): ANTHROPIC_API_KEY, APIFY_API_KEY, SUPABASE_URL, SUPABASE_ANON_KEY
+// Env vars (optional): SLACK_WEBHOOK_URL
 
 module.exports.config = { api: { bodyParser: { sizeLimit: '1mb' } } };
 
@@ -19,24 +14,21 @@ const { supabaseQuery } = require('./_supabase');
 const SUBREDDITS = [
   'NewTubers',
   'SmallYTChannel',
-  'CreatorServices',
   'ContentCreation',
   'SocialMediaMarketing',
   'youtubers',
-  'podcasting',
   'writing',
-  'Blogging',
 ];
 
-const POSTS_PER_SUB  = 25;
-const MAX_CANDIDATES = 60;
+const POSTS_PER_SUB  = 10;
+const MAX_CANDIDATES = 50;
 const MIN_SCORE      = 28;
 const DIGEST_SIZE    = 10;
-const USER_AGENT     = 'SAM-for-Creators-listener/1.0';
 const CLAUDE_MODEL   = 'claude-sonnet-4-5-20250929';
 
 const SLACK_WEBHOOK = process.env.SLACK_WEBHOOK_URL || '';
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
+const APIFY_KEY     = process.env.APIFY_API_KEY;
 
 // ─── RUBRIC ──────────────────────────────────────────────────────────────
 const RUBRIC_PROMPT = `You are screening Reddit posts from content creators to find people who are genuinely struggling with their voice or authorship — not promoting themselves, not asking tactical questions (analytics, thumbnails, lighting), not performing expertise.
@@ -60,29 +52,37 @@ The post:
 TITLE: {TITLE}
 BODY: {BODY}`;
 
-// ─── REDDIT ──────────────────────────────────────────────────────────────
-async function fetchSubreddit(sub) {
-  const url = `https://www.reddit.com/r/${sub}/new.json?limit=${POSTS_PER_SUB}`;
+// ─── APIFY FETCH (mirrors outreach-reddit.js) ────────────────────────────
+async function fetchSubredditViaApify(sub) {
+  if (!APIFY_KEY) return [];
   try {
-    const r = await fetch(url, { headers: { 'User-Agent': USER_AGENT } });
-    if (!r.ok) return [];
-    const data = await r.json();
-    return (data?.data?.children || [])
-      .map(c => c.data)
-      .filter(p => p && !p.stickied && !p.over_18 && (p.selftext || p.title))
+    const url = `https://api.apify.com/v2/acts/cryptosignals~reddit-scraper-fast/run-sync-get-dataset-items?token=${APIFY_KEY}&memory=128&timeout=25`;
+    const r = await fetch(url, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ subreddit: sub, sort: 'new', maxPosts: POSTS_PER_SUB }),
+    });
+    if (!r.ok) {
+      console.warn(`[ear] apify ${sub} returned ${r.status}`);
+      return [];
+    }
+    const posts = await r.json();
+    if (!Array.isArray(posts)) return [];
+    return posts
+      .filter(p => p && p.title && p.author && p.author !== 'AutoModerator')
       .map(p => ({
-        id:        p.id,
-        subreddit: p.subreddit,
+        id:        (p.id || p.permalink || p.url || '').replace(/^t3_/, '').slice(-10),
+        subreddit: sub,
         title:     p.title || '',
         body:      (p.selftext || '').slice(0, 2000),
-        url:       `https://www.reddit.com${p.permalink}`,
+        url:       p.url || p.permalink || '',
         score:     p.score || 0,
-        comments:  p.num_comments || 0,
-        created:   p.created_utc,
-        author:    p.author,
+        comments:  p.numComments || 0,
+        created:   p.createdAt ? Math.floor(new Date(p.createdAt).getTime() / 1000) : null,
+        author:    p.author || '',
       }));
   } catch (e) {
-    console.warn(`[ear] ${sub} fetch failed:`, e.message);
+    console.warn(`[ear] apify ${sub} fetch failed:`, e.message);
     return [];
   }
 }
@@ -103,7 +103,6 @@ async function scoreWithClaude(post) {
   const prompt = RUBRIC_PROMPT
     .replace('{TITLE}', post.title)
     .replace('{BODY}', post.body || '(no body)');
-
   try {
     const r = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -194,16 +193,14 @@ async function slackPost(text) {
 
 // ─── HANDLER ─────────────────────────────────────────────────────────────
 module.exports = async function handler(req, res) {
-  if (!ANTHROPIC_KEY) {
-    return res.status(500).json({ error: 'ANTHROPIC_API_KEY not set' });
-  }
+  if (!ANTHROPIC_KEY) return res.status(500).json({ error: 'ANTHROPIC_API_KEY not set' });
+  if (!APIFY_KEY)     return res.status(500).json({ error: 'APIFY_API_KEY not set' });
 
-  // 1. fetch
+  // 1. fetch all subs in parallel (Apify handles rate limiting + IP rotation)
+  const results = await Promise.allSettled(SUBREDDITS.map(fetchSubredditViaApify));
   const allPosts = [];
-  for (const sub of SUBREDDITS) {
-    const posts = await fetchSubreddit(sub);
-    allPosts.push(...posts);
-    await new Promise(r => setTimeout(r, 300));
+  for (const r of results) {
+    if (r.status === 'fulfilled') allPosts.push(...r.value);
   }
 
   // 2. prefilter + cap
@@ -213,14 +210,14 @@ module.exports = async function handler(req, res) {
   const scored = [];
   const BATCH = 5;
   for (let i = 0; i < filtered.length; i += BATCH) {
-    const chunk   = filtered.slice(i, i + BATCH);
-    const results = await Promise.all(chunk.map(p => scoreWithClaude(p)));
-    results.forEach((s, idx) => {
+    const chunk = filtered.slice(i, i + BATCH);
+    const batch = await Promise.all(chunk.map(p => scoreWithClaude(p)));
+    batch.forEach((s, idx) => {
       if (s && s.total >= MIN_SCORE) scored.push({ post: chunk[idx], score: s });
     });
   }
 
-  // 4. persist (dedup via the unique constraint on platform,post_id)
+  // 4. persist (unique constraint dedups)
   let persisted = 0;
   for (const entry of scored) {
     const ok = await persistSignal(entry.post, entry.score);
