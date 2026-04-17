@@ -52,11 +52,29 @@ async function trackEvent(uid, event, data = {}) {
 }
 
 // Record a signup
-async function trackSignup({ email, name, tier, source }) {
-  return supabaseQuery('sam_signups', 'POST', {
+async function trackSignup({ email, name, tier, source, attribution_source, attribution_token }) {
+  // Write to sam_signups (the signup log)
+  const signup = await supabaseQuery('sam_signups', 'POST', {
     email: email.toLowerCase(), name, tier: tier || 'free', source: source || 'waitlist',
+    attribution_source: attribution_source || null,
+    attribution_token: attribution_token || null,
     created_at: new Date().toISOString()
   });
+
+  // Also patch sam_users with the same attribution (if user record exists)
+  if (attribution_token) {
+    await supabaseQuery('sam_users', 'PATCH', {
+      attribution_source: attribution_source || null,
+      attribution_token: attribution_token,
+    }, `email=eq.${encodeURIComponent(email.toLowerCase())}`);
+
+    // Mark the matching outreach_queue row as converted
+    await supabaseQuery('outreach_queue', 'PATCH', {
+      status: 'converted',
+    }, `token=eq.${encodeURIComponent(attribution_token)}`);
+  }
+
+  return signup;
 }
 
 // Get stats for HQ dashboard

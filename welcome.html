@@ -790,6 +790,11 @@
         const authData = await authRes.json();
 
         // 2. Send welcome email + notify Joey + track in Supabase via waitlist API
+        // Capture attribution from URL (e.g. ?src=youtube_abc123) or from sessionStorage
+        const attribSrc = new URLSearchParams(window.location.search).get('src')
+          || sessionStorage.getItem('sam_attrib_src')
+          || '';
+        if (attribSrc) sessionStorage.setItem('sam_attrib_src', attribSrc);
         await fetch('/api/waitlist', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -797,6 +802,7 @@
             name: nameVal,
             email: emailVal,
             source: 'welcome_voice',
+            src: attribSrc,
             notifyEmail: 'samforcreators@gmail.com'
           })
         });

@@ -64,6 +64,15 @@
     },
     "api/outreach.js": {
       "maxDuration": 60
+    },
+    "api/outreach-reddit.js": {
+      "maxDuration": 60
+    },
+    "api/outreach-youtube.js": {
+      "maxDuration": 120
+    },
+    "api/outreach-daily.js": {
+      "maxDuration": 180
     }
   },
   "headers": [
@@ -88,6 +97,16 @@
           "value": "no-cache, no-store, must-revalidate"
         }
       ]
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/outreach-daily",
+      "schedule": "0 12 * * *"
+    },
+    {
+      "path": "/api/outreach-daily",
+      "schedule": "0 18 * * *"
     }
   ]
 }

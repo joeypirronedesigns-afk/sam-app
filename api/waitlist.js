@@ -14,7 +14,7 @@ module.exports = async function handler(req, res) {
     try { body = JSON.parse(body); } catch(e) { body = {}; }
   }
 
-  const { name, email, notifyEmail, source, subject, customBody } = body || {};
+  const { name, email, notifyEmail, source, subject, customBody, src } = body || {};
   if (!name || !email) return res.status(400).json({ error: 'Name and email required' });
   if (!email.includes('@') || !email.includes('.')) return res.status(400).json({ error: 'Invalid email' });
 
@@ -102,10 +102,18 @@ module.exports = async function handler(req, res) {
     }
   }
 
+  // Parse attribution (e.g. src="youtube_abc123" -> source=youtube, token=abc123)
+  let attribution_source = null, attribution_token = null;
+  if (src && typeof src === 'string' && src.includes('_')) {
+    const idx = src.indexOf('_');
+    attribution_source = src.slice(0, idx).toLowerCase();
+    attribution_token = src.slice(idx + 1);
+  }
+
   // Track in Supabase
   try {
-    await trackSignup({ email, name, tier: 'free', source: source || 'waitlist' });
-    await trackEvent(email, 'signup', { name, source: source || 'waitlist' });
+    await trackSignup({ email, name, tier: 'free', source: source || 'waitlist', attribution_source, attribution_token });
+    await trackEvent(email, 'signup', { name, source: source || 'waitlist', attribution_source, attribution_token });
   } catch(e) { console.error('Supabase tracking error:', e.message); }
 
   return res.status(200).json({ success: true, message: `${name} added`, emailSent: !!process.env.RESEND_API_KEY });

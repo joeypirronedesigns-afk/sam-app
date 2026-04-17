@@ -19,6 +19,18 @@ const MAX_DAYS_OLD = 90;
 const MIN_VIEW_COUNT = 500;
 const MAX_TOTAL_TARGETS = 12;
 
+function shortToken() {
+  return Math.random().toString(36).slice(2, 10);
+}
+
+function tagCommentWithToken(comment, token, platform) {
+  if (!comment) return comment;
+  const tag = `samforcreators.com/welcome?src=${platform}_${token}`;
+  return comment
+    .replace(/samforcreators\.com\/welcome(\?[^\s)]*)?/gi, tag)
+    .replace(/samforcreators\.com(?!\/welcome)/gi, tag);
+}
+
 const BRAND = `SAM BRAND KNOWLEDGE:
 SAM is an AI creative director built exclusively for content creators. NOT a general AI. NOT ChatGPT with a new coat of paint.
 
@@ -32,7 +44,7 @@ THE 5 CREATOR PAINPOINTS SAM SOLVES:
 5. I am figuring this out alone
 
 JOEY FOUNDER STORY:
-Joey Pirrone. Self-taught creator. Lived in his brothers garage with wife Amanda and their dogs while selling their Indianapolis home. Bought a 28.5ft travel trailer, parked it in his parents backyard while gutting their 1950s cottage. Started posting 6 months ago with zero following, zero experience. Almost quit multiple times. Built SAM using Claude Code. Had never built software before. Hands shook when he realized what he made.
+Joey Pirrone. Self-taught creator. Lived in his brothers garage with wife Amanda and their dogs while selling their Indianapolis home. Bought a 28.5ft travel trailer, parked it in his parents backyard while gutting their 1950s cottage. Started posting 6 months ago with zero following, zero experience. Almost quit multiple times. Built SAM using Claude Code. Had never built software before.
 
 TONE RULES - NEVER USE:
 journey, authentic, powerful story, resonate, leverage, impactful, unlock, supercharge, game-changer
@@ -48,7 +60,7 @@ YOUR TASK: Draft a single YouTube comment on the video below. This is a PUBLIC c
 HARD RULES:
 1. Lead with a SPECIFIC reaction to something in the video. Prove you watched it.
 2. Add something the creator didnt say. Contribute, dont compliment.
-3. Mention SAM (samforcreators.com) ONLY if the videos subject genuinely opens the door. Otherwise write a great comment with no mention. A great comment without a mention beats a forced one.
+3. Mention SAM (samforcreators.com/welcome) ONLY if the videos subject genuinely opens the door. Otherwise write a great comment with no mention. A great comment without a mention beats a forced one.
 4. If you mention SAM, frame it like Joey: "Ive been building a tool called SAM for this exact problem". Never "check out SAM, its a game-changer".
 5. 2 to 4 sentences. No hashtags. No emojis. No signoff. No "-Joey".
 6. Zero banned words.
@@ -134,6 +146,7 @@ module.exports = async function handler(req, res) {
       seenChannels.add(v.channelName);
       targets.push({
         id: v.videoId,
+        token: shortToken(),
         platform: 'YouTube',
         url: v.url,
         creator: v.channelName,
@@ -197,7 +210,8 @@ Draft the comment.`;
           }),
         });
         const d = await r.json();
-        top[i].draftComment = (d.content?.[0]?.text || '').trim();
+        const rawComment = (d.content?.[0]?.text || '').trim();
+        top[i].draftComment = tagCommentWithToken(rawComment, top[i].token, 'youtube');
       } catch (e) {
         top[i].draftComment = '';
       }

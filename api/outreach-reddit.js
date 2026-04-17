@@ -3,6 +3,18 @@ module.exports.config = { api: { bodyParser: { sizeLimit: '1mb' } } };
 const SUBREDDITS = ['NewTubers', 'socialmedia', 'youtubers', 'podcasting', 'SmallYTChannel', 'videography'];
 const KEYWORDS = ['content', 'creator', 'video', 'grow', 'views', 'algorithm', 'script', 'caption', 'hook', 'tiktok', 'instagram', 'youtube', 'struggle', 'help', 'advice', 'posting', 'audience', 'followers', 'editing'];
 
+function shortToken() {
+  return Math.random().toString(36).slice(2, 10);
+}
+
+function tagCommentWithToken(comment, token, platform) {
+  if (!comment) return comment;
+  const tag = `samforcreators.com/welcome?src=${platform}_${token}`;
+  return comment
+    .replace(/samforcreators\.com\/welcome(\?[^\s)]*)?/gi, tag)
+    .replace(/samforcreators\.com(?!\/welcome)/gi, tag);
+}
+
 const BRAND = `SAM BRAND KNOWLEDGE:
 SAM is an AI creative director built exclusively for content creators. NOT a general AI. NOT ChatGPT with a new coat of paint.
 
@@ -16,27 +28,25 @@ THE 5 CREATOR PAINPOINTS SAM SOLVES:
 5. I am figuring this out alone
 
 JOEY FOUNDER STORY:
-Joey Pirrone. Self-taught creator. Lived in his brother's garage, then a 28.5ft travel trailer in his parents' backyard while gutting their 1950s cottage. Started posting 6 months ago with zero following. Almost quit multiple times. Built SAM using Claude Code — had never built software before. Hands shook when he realized what he made.
+Joey Pirrone. Self-taught creator. Lived in his brothers garage, then a 28.5ft travel trailer in his parents backyard while gutting their 1950s cottage. Started posting 6 months ago with zero following. Almost quit multiple times. Built SAM using Claude Code, had never built software before.
 
 TONE RULES - NEVER USE:
 journey, authentic, powerful story, resonate, leverage, impactful, unlock, supercharge, game-changer
 
-JOEY'S VOICE: Leads with the person. Gratitude first. Vulnerable on purpose. Frames SAM as something he built for himself. Tiny ask, pressure-free. Signs -Joey (in DMs only, not public comments).
+JOEYS VOICE: Leads with the person. Gratitude first. Vulnerable. Frames SAM as something he built for himself. Tiny ask, pressure-free. Never marketing-email language, never fake urgency, never pushy, never corporate.`;
 
-NEVER: marketing-email language, fake urgency, exaggeration, generic compliments, corporate language, anything pushy.`;
-
-const PULSE_SYSTEM = `You are The Pulse — SAM HQ's outreach agent. Built by Joey Pirrone, founder of SAM at samforcreators.com.
+const PULSE_SYSTEM = `You are The Pulse, SAM HQs outreach agent. Built by Joey Pirrone, founder of SAM at samforcreators.com.
 
 ${BRAND}
 
-YOUR TASK RIGHT NOW: Draft a single Reddit comment on the post below. This is a public reply other redditors will read. Your goal is a comment that genuinely helps the OP so it gets upvoted.
+YOUR TASK: Draft a single Reddit comment on the post below. This is a public reply other redditors will read. Your goal is a comment that genuinely helps the OP so it gets upvoted.
 
 HARD RULES:
 1. Lead with a SPECIFIC reaction to what the OP actually said. Prove you read their post.
-2. Offer something real — a tactic, a reframe, a lived-experience take. Contribute, don't compliment.
-3. Mention SAM (samforcreators.com) ONLY if the post's problem directly maps to what SAM solves. If it doesn't, skip the mention entirely — a great comment without a mention beats a forced one.
-4. If you do mention it, frame it like Joey does: "been building a tool called SAM because I had this exact problem" — never "check out SAM, game-changer."
-5. 2–4 sentences. No hashtags. No signoff. No "-Joey" (that's DMs, not public comments).
+2. Offer something real: a tactic, a reframe, a lived-experience take. Contribute, dont compliment.
+3. Mention SAM (samforcreators.com/welcome) ONLY if the posts problem directly maps to what SAM solves. If it doesnt, skip the mention entirely. A great comment without a mention beats a forced one.
+4. If you do mention SAM, frame it like Joey: "been building a tool called SAM because I had this exact problem". Never "check out SAM, its a game-changer".
+5. 2 to 4 sentences. No hashtags. No signoff. No "-Joey".
 6. Zero banned words.
 7. Sound like a redditor who happens to be a creator, not a marketer.
 
@@ -90,6 +100,7 @@ module.exports = async function handler(req, res) {
       if (matches < 1) continue;
       targets.push({
         id: Math.random().toString(36).slice(2),
+        token: shortToken(),
         platform: 'Reddit',
         url: post.link,
         creator: `u/${post.author}`,
@@ -136,7 +147,8 @@ Draft the comment.`;
           }),
         });
         const d = await r.json();
-        top[i].draftComment = (d.content?.[0]?.text || '').trim();
+        const rawComment = (d.content?.[0]?.text || '').trim();
+        top[i].draftComment = tagCommentWithToken(rawComment, top[i].token, 'reddit');
       } catch (e) { top[i].draftComment = ''; }
     })
   );
