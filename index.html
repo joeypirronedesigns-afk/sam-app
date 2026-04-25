@@ -7933,7 +7933,9 @@ async function sendChatMessage() {
       body: JSON.stringify({
         mode: 'chat',
         messages: messages,
-        systemPrompt: SAM_SYSTEM_PROMPT
+        systemPrompt: SAM_SYSTEM_PROMPT,
+        userId: (getTrialState().email || 'anon').toLowerCase(),
+        voiceProfile: getSamVoiceProfile() || undefined
       })
     });
 

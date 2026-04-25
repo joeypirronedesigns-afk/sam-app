@@ -145,16 +145,20 @@ module.exports = async function handler(req, res) {
       const hasImage = messages.some(m => Array.isArray(m.content) && m.content.some(c => c.type === 'image'));
       const chatModel = hasImage ? 'claude-sonnet-4-6' : 'claude-haiku-4-5-20251001';
       const chatMaxTokens = hasImage ? 600 : 400;
-      // Inject stored user profile into system prompt if available
+      // Prefer client-sent voiceProfile (localStorage) with Supabase as fallback
+      const effectiveVoice = voiceProfile || (userProfile && userProfile.voice_profile) || '';
       let profileContext = '';
-      if (userProfile) {
-        const parts = [];
-        if (userProfile.name) parts.push('User name: ' + userProfile.name);
-        if (userProfile.niche) parts.push('Niche: ' + userProfile.niche);
-        if (userProfile.platforms) parts.push('Platforms: ' + userProfile.platforms);
-        if (userProfile.voice_profile) parts.push('Voice DNA: ' + userProfile.voice_profile.slice(0, 600));
-        if (userProfile.sam_context) parts.push('Story context: ' + userProfile.sam_context.slice(0, 800));
-        if (parts.length) profileContext = '\n\nUSER PROFILE (use this to personalize every response):\n' + parts.join('\n');
+      if (userProfile || effectiveVoice) {
+        const profileParts = [];
+        if (userProfile && userProfile.name) profileParts.push('User name: ' + userProfile.name);
+        if (userProfile && userProfile.niche) profileParts.push('Niche: ' + userProfile.niche);
+        if (userProfile && userProfile.platforms) profileParts.push('Platforms: ' + userProfile.platforms);
+        if (userProfile && userProfile.sam_context) profileParts.push('Story context: ' + userProfile.sam_context.slice(0, 800));
+        const profileMeta = profileParts.length ? '\n\nUSER PROFILE:\n' + profileParts.join('\n') : '';
+        const chatVoiceLine = effectiveVoice
+          ? `\n\nVOICE PROFILE — THIS IS THE MOST IMPORTANT INSTRUCTION: You have a forensic voice fingerprint for this user. Apply their voice in every response — match their sentence rhythm, punctuation personality, actual words and phrases, and energy signature. Never drift into generic AI polish.\nVoice DNA: ${effectiveVoice.slice(0, 600)}`
+          : '';
+        profileContext = profileMeta + chatVoiceLine;
       }
       const baseSystem = systemPrompt || `You are SAM`;
       const chatSystem = systemPrompt ? systemPrompt + profileContext : `You are SAM — Strategic Assistant for Making — a friendly, sharp creative director built into the SAM app at samforcreators.com. You help creators understand and get the most out of SAM's 5 tools.
