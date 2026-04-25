@@ -7440,10 +7440,9 @@ function initTrial() {
   // Signed in or paid — update badge and flag to open Meet SAM
   if (state.email || state.paid) {
     updateTrialBadge(state);
-    // Re-run badge update after DOM is ready to catch timing issues
-    setTimeout(() => updateTrialBadge(getTrialState()), 500);
-    setTimeout(() => updateTrialBadge(getTrialState()), 1500);
     window._userSignedIn = true;
+    // Background refresh from Supabase — repaint if server data differs from cache
+    getCurrentUser().then(user => { if (user) updateTrialBadge(user); }).catch(() => {});
     return;
   }
 
@@ -7462,11 +7461,14 @@ function initTrial() {
 }
 
 function updateTrialBadge(state) {
-  // Update sign-in button based on auth state
+  // Prefer canonical Supabase data (via cache); fall back to passed state for anonymous path
+  const _cu = getCurrentUserCached();
+  const _u  = _cu || (state && state.email ? state : null);
+
   const signInBtn = document.querySelector('.nav-signin-btn');
   if (signInBtn) {
-    if (state.email) {
-      const displayName = state.name ? state.name : state.email.split('@')[0];
+    if (_u && _u.email) {
+      const displayName = _u.name ? _u.name : _u.email.split('@')[0];
       signInBtn.textContent = '✓ ' + displayName;
       signInBtn.style.borderColor = 'rgba(52,211,153,0.4)';
       signInBtn.style.color = '#34D399';
@@ -7478,6 +7480,10 @@ function updateTrialBadge(state) {
       signInBtn.onclick = openSignInModal;
     }
   }
+
+  // ── "See plans" — hidden for paid users ─────────────────────────────────────
+  const _paid = (_u && _u.paid) || (state && state.paid);
+  document.querySelectorAll('.nav-pro-btn').forEach(el => el.style.display = _paid ? 'none' : '');
 
   const badge = document.getElementById('trialBadge');
   const text  = document.getElementById('trialBadgeText');
