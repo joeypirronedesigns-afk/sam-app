@@ -7805,8 +7805,33 @@ function initChat() {
     if (hint && !chatOpen && !chatHintDismissed) hint.style.display = 'block';
   }, 30000);
 
-  // Add opening message
-  addChatMessage('sam', "Hey! I'm SAM — I know everything about this app. What tool are you trying to use, or what are you trying to create? I'll point you in the right direction. 🎯");
+  // Restore from localStorage cache (instant) — fall back to greeting for new users
+  const _chatCached = (() => { try { return JSON.parse(localStorage.getItem('sam-chat-history') || '[]'); } catch { return []; } })();
+  if (_chatCached.length > 0) {
+    chatHistory = _chatCached;
+    chatHistory.forEach(m => _renderChatMessageUI(m.role === 'assistant' ? 'sam' : m.role, m.content));
+  } else {
+    addChatMessage('sam', "Hey! I'm SAM — I know everything about this app. What tool are you trying to use, or what are you trying to create? I'll point you in the right direction. 🎯");
+  }
+
+  // Sync from server — server is source of truth for authenticated users
+  const _chatSyncId = (getTrialState().email || '').toLowerCase();
+  if (_chatSyncId) {
+    fetch('/api/memory?userId=' + encodeURIComponent(_chatSyncId))
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data && Array.isArray(data.messages) && data.messages.length > 0) {
+          chatHistory = data.messages;
+          localStorage.setItem('sam-chat-history', JSON.stringify(chatHistory));
+          const msgs = document.getElementById('chatMessages');
+          if (msgs) {
+            msgs.innerHTML = '';
+            chatHistory.forEach(m => _renderChatMessageUI(m.role === 'assistant' ? 'sam' : m.role, m.content));
+          }
+        }
+      })
+      .catch(() => {});
+  }
 }
 
 function toggleChat() {
@@ -7827,25 +7852,35 @@ function closeChat() {
   document.getElementById('chatPanel').classList.remove('open');
 }
 
-function addChatMessage(role, text) {
+// Render-only — used for replay from history so we don't re-save historical messages
+function _renderChatMessageUI(role, text) {
   const msgs = document.getElementById('chatMessages');
   const div = document.createElement('div');
   div.className = 'chat-msg ' + role;
-
   const avatar = role === 'sam'
     ? '<div class="chat-msg-avatar">🤖</div>'
     : '<div class="chat-msg-avatar" style="background:linear-gradient(135deg,#A78BFA,#F472B6);">👤</div>';
-
-  // Add speaker button for SAM messages
-  // Add speaker button for SAM messages
   const speakBtn = role === 'sam'
     ? '<button onclick="if(typeof SAM_VOICE!==\'undefined\')SAM_VOICE.speak(this.closest(\'[class*=chat-msg]\').querySelector(\'.chat-bubble\').innerText)" style="background:none;border:none;cursor:pointer;color:rgba(240,236,255,0.3);font-size:11px;padding:2px 6px;transition:color 0.2s;" title="Read aloud">🔊</button>'
     : '';
   div.innerHTML = avatar + '<div class="chat-bubble">' + mdToHtml(text) + '</div>' + speakBtn;
   msgs.appendChild(div);
-  chatHistory.push({ role: role === 'sam' ? 'assistant' : 'user', content: text });
   scrollChatToBottom();
-  // SAM Voice speak — Pro feature coming soon
+}
+
+function addChatMessage(role, text) {
+  _renderChatMessageUI(role, text);
+  chatHistory.push({ role: role === 'sam' ? 'assistant' : 'user', content: text });
+  try { localStorage.setItem('sam-chat-history', JSON.stringify(chatHistory.slice(-40))); } catch {}
+  const _chatUserId = (getTrialState().email || '').toLowerCase();
+  if (_chatUserId) {
+    const newest = chatHistory[chatHistory.length - 1];
+    fetch('/api/memory', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: _chatUserId, role: newest.role, content: newest.content })
+    }).catch(() => {});
+  }
 }
 
 function scrollChatToBottom() {
