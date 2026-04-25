@@ -7485,6 +7485,15 @@ function updateTrialBadge(state) {
   const _paid = (_u && _u.paid) || (state && state.paid);
   document.querySelectorAll('.nav-pro-btn').forEach(el => el.style.display = _paid ? 'none' : '');
 
+  // Self-heal: if nav DOM wasn't ready, retry after next frame
+  if (document.querySelectorAll('.nav-pro-btn').length === 0 && !window._badgeRetryScheduled) {
+    window._badgeRetryScheduled = true;
+    requestAnimationFrame(() => {
+      window._badgeRetryScheduled = false;
+      updateTrialBadge(state);
+    });
+  }
+
   const badge = document.getElementById('trialBadge');
   const text  = document.getElementById('trialBadgeText');
   if (!badge || !state.trialStart) return;
@@ -9184,6 +9193,17 @@ if (document.readyState === 'loading') {
   initTrial(); initChat(); initWizard(); initHeroVisibility();
   setTimeout(() => { if (typeof updateWizardHeader === 'function') updateWizardHeader(); }, 300);
   setTimeout(() => { if (localStorage.getItem('sam_uid') && localStorage.getItem('samFirstRunDone')) openWorkshop(); }, 400);
+}
+
+function _samBadgePaint() {
+  const u = getCurrentUserCached();
+  if (u) updateTrialBadge(u);
+  else { const s = getTrialState(); if (s.email || s.paid) updateTrialBadge(s); }
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', _samBadgePaint);
+} else {
+  _samBadgePaint();
 }
 
 
