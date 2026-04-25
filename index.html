@@ -7385,6 +7385,55 @@ function saveTrialState(obj) {
   localStorage.setItem('sam-trial', JSON.stringify(obj));
 }
 
+// ── IDENTITY — Single source of truth ────────────────────────────────────────
+// Supabase sam_users is canonical. localStorage is a 5-min read-through cache.
+// No call site should read sam-trial directly after the migration is complete.
+const _SAM_USER_KEY = 'sam-current-user';
+const _SAM_CACHE_TTL = 300000; // 5 minutes
+
+function readUserCache() {
+  try { return JSON.parse(localStorage.getItem(_SAM_USER_KEY) || 'null'); } catch { return null; }
+}
+
+function writeUserCache(user) {
+  try {
+    localStorage.setItem(_SAM_USER_KEY, JSON.stringify({ ...user, _cachedAt: Date.now() }));
+    // Legacy shim — keeps getTrialState() returning correct data while call sites are migrated
+    localStorage.setItem('sam-trial', JSON.stringify({
+      email: user.email, name: user.name, tier: user.tier,
+      paid: user.paid, trialStart: user.trialStart
+    }));
+  } catch {}
+}
+
+function clearUserCache() {
+  try { localStorage.removeItem(_SAM_USER_KEY); } catch {}
+}
+
+async function getCurrentUser() {
+  const cached = readUserCache();
+  if (cached && cached._cachedAt && (Date.now() - cached._cachedAt) < _SAM_CACHE_TTL) return cached;
+  // Seed email from stale cache or legacy sam-trial — need it to fetch from server
+  const email = (cached && cached.email) || getTrialState().email || null;
+  if (!email) return null;
+  try {
+    const data = await fetch('/api/me', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    }).then(r => r.json());
+    if (data && data.user) { writeUserCache(data.user); return data.user; }
+  } catch {}
+  return null;
+}
+
+function getCurrentUserCached() {
+  const c = readUserCache();
+  if (!c || !c._cachedAt || (Date.now() - c._cachedAt) >= _SAM_CACHE_TTL) return null;
+  return c;
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 function initTrial() {
   const state = getTrialState();
 
