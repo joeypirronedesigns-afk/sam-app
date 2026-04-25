@@ -1,33 +1,69 @@
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { userId, samples, existingProfile } = req.body;
-  if (!userId || userId === 'anon') return res.status(400).json({ error: 'No user ID' });
+  const { userId, samples, existingProfile, source } = req.body;
+  const uid = userId ? userId.toLowerCase() : null;
+  if (!uid || uid === 'anon') return res.status(400).json({ error: 'No user ID' });
   if (!samples || !samples.length) return res.status(400).json({ error: 'No samples provided' });
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'API key not configured' });
 
+  const SUPABASE_URL = process.env.SUPABASE_URL;
+  const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
   const { saveUserProfile, getUserProfile } = require('./_supabase');
 
-  // Get existing profile to merge with, not overwrite
-  const existing = existingProfile || await getUserProfile(userId).catch(() => null);
-  const existingSamples = existing?.voice_samples ? JSON.parse(existing.voice_samples) : [];
-  const existingAnalysis = existing?.voice_profile || '';
+  // Pattern B: fetch full historical sample set BEFORE inserting (clean baseline)
+  let historicalSamples = [];
+  if (existingProfile && SUPABASE_URL && SERVICE_KEY) {
+    try {
+      const _hr = await fetch(
+        `${SUPABASE_URL}/rest/v1/sam_voice_samples?user_id=eq.${encodeURIComponent(uid)}&select=sample_text&order=created_at.asc`,
+        { headers: { 'apikey': SERVICE_KEY, 'Authorization': `Bearer ${SERVICE_KEY}` } }
+      );
+      if (_hr.ok) {
+        historicalSamples = (await _hr.json()).map(r => r.sample_text);
+      } else {
+        console.error('[voice] historical fetch failed:', await _hr.text());
+      }
+    } catch (e) { console.error('[voice] historical fetch error:', e.message); }
+  }
 
-  // Keep last 20 samples max — newest first
-  const allSamples = [...samples, ...existingSamples].slice(0, 20);
+  // Persist new samples (graceful degradation — Claude runs even if insert fails)
+  const sampleSource = source || (existingProfile ? 'voice_trainer' : 'onboarding');
+  if (SUPABASE_URL && SERVICE_KEY) {
+    try {
+      const _rows = samples.map(s => ({ user_id: uid, sample_text: s, source: sampleSource }));
+      const _ir = await fetch(`${SUPABASE_URL}/rest/v1/sam_voice_samples`, {
+        method: 'POST',
+        headers: {
+          'apikey': SERVICE_KEY, 'Authorization': `Bearer ${SERVICE_KEY}`,
+          'Content-Type': 'application/json', 'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(_rows)
+      });
+      if (!_ir.ok) console.error('[voice] sample insert failed:', await _ir.text());
+      else console.log('[voice] inserted', samples.length, 'samples for', uid, 'source=', sampleSource);
+    } catch (e) { console.error('[voice] sample insert error:', e.message); }
+  }
+
+  // New samples first (most recent), then full historical — cap at 30
+  const allSamples = [...samples, ...historicalSamples].slice(0, 30);
   const sampleText = allSamples.map((s, i) => `Sample ${i+1}: "${s}"`).join('\n');
 
-  // Use Claude to extract real voice patterns from actual writing
+  // Fetch user row for sam_context preservation; resolve existingAnalysis from either form
+  const existing = await getUserProfile(uid).catch(() => null);
+  const existingAnalysis = typeof existingProfile === 'string'
+    ? existingProfile
+    : (existingProfile?.voice_profile || existing?.voice_profile || '');
+
   const prompt = `You are analyzing a creator's actual writing samples to extract their real voice DNA.
 
 THEIR ACTUAL WRITING:
 ${sampleText}
 
-${existingAnalysis ? 'PREVIOUS ANALYSIS (update and deepen this, never replace):\n' + existingAnalysis + '\n\n' : ''}
-
-Extract their voice DNA from these REAL examples. Be forensic and specific — reference actual phrases and patterns you see. Cover:
+${existingAnalysis ? 'PREVIOUS ANALYSIS (update and deepen this, never replace):\n' + existingAnalysis + '\n\n' : '\n'}Extract their voice DNA from these REAL examples. Be forensic and specific — reference actual phrases and patterns you see. Cover:
 1. SENTENCE RHYTHM — how long, how they break, where they punch
 2. PUNCTUATION PERSONALITY — their actual use of .. or — or ! or CAPS
 3. EMOTIONAL REGISTER — where they go vulnerable, where they pull back
@@ -64,19 +100,10 @@ No preamble. No closing remarks. No prose paragraphs. Just the numbered list. 20
 
     if (!analysis) return res.status(500).json({ error: 'No analysis generated' });
 
-    // Store both the analysis AND the raw samples
-    // voice_profile = the forensic analysis (used in system prompt)
-    // voice_samples = JSON array of actual sentences (for future analysis rounds)
-    await saveUserProfile(userId, {
+    await saveUserProfile(uid, {
       voice_profile: analysis,
       sam_context: existing?.sam_context || null
     });
-
-    // Also store raw samples in a separate field via direct supabase call
-    const { default: supabaseQuery } = require('./_supabase');
-    // Store samples as JSON string in sam_context as backup if no dedicated field
-    // This is additive — never overwrites existing sam_context, appends samples
-    const samplesPayload = JSON.stringify(allSamples);
 
     return res.status(200).json({
       ok: true,
