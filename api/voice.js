@@ -37,7 +37,12 @@ Extract their voice DNA from these REAL examples. Be forensic and specific — r
 
 Be specific. Quote their actual words. Never use generic descriptions like "conversational" or "authentic" — say exactly WHAT they do and HOW.
 
-Return a forensic voice analysis in 200 words max.`;
+Return exactly 6-8 numbered traits, one per line, in this format:
+1. [Trait name] — [one-sentence description quoting their actual words or patterns]
+2. [Trait name] — [one-sentence description]
+...and so on.
+
+No preamble. No closing remarks. No prose paragraphs. Just the numbered list. 200 words max total.`;
 
   try {
     const r = await fetch('https://api.anthropic.com/v1/messages', {
