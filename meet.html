@@ -112,6 +112,18 @@
 <script>
 const STATE = { uid:null, phase:'greeting', storyRaw:'', voiceProfile:null, samContext:null, name:null };
 
+// Identity cache helpers — mirrored from index.html (shared module in future)
+const _SAM_USER_KEY = 'sam-current-user';
+const _SAM_CACHE_TTL = 300000;
+function readUserCache() { try { return JSON.parse(localStorage.getItem(_SAM_USER_KEY) || 'null'); } catch { return null; } }
+function writeUserCache(user) {
+  try {
+    localStorage.setItem(_SAM_USER_KEY, JSON.stringify({ ...user, _cachedAt: Date.now() }));
+    localStorage.setItem('sam-trial', JSON.stringify({ email: user.email, name: user.name, tier: user.tier, paid: user.paid, trialStart: user.trialStart }));
+  } catch {}
+}
+function getCurrentUserCached() { const c = readUserCache(); if (!c || !c._cachedAt || (Date.now() - c._cachedAt) >= _SAM_CACHE_TTL) return null; return c; }
+
 function getOrCreateUID() {
   let uid = localStorage.getItem('sam_uid');
   if (!uid) { uid = 'anon-' + Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem('sam_uid', uid); }
@@ -322,13 +334,40 @@ function prefillEmailCapture() {
   }
 }
 
-function saveEmail(silent) {
+async function saveEmail(silent) {
   const email = document.getElementById('emailCapture')?.value?.trim();
   const firstName = document.getElementById('nameCapture')?.value?.trim() || STATE.name || undefined;
   if(!email || !email.includes('@')) { document.getElementById('emailCapture').style.borderColor='rgba(244,114,182,0.5)'; return; }
   if(firstName) STATE.name = firstName;
   const alreadySaved = localStorage.getItem('sam_user_email') === email.toLowerCase();
   localStorage.setItem('sam_user_email', email);
+
+  // Write canonical cache with safe merge — avoid clobbering paid status
+  const _lowEmail = email.toLowerCase();
+  const _ex = getCurrentUserCached();
+  let _cacheWrite;
+  if (_ex && _ex.email === _lowEmail) {
+    // Same user already cached — keep tier/paid/trialStart, refresh name if newly captured
+    _cacheWrite = { ..._ex, name: firstName || _ex.name || '' };
+  } else if (_ex && _ex.email && _ex.email !== _lowEmail) {
+    // Different user in cache — write fresh free record for new email
+    _cacheWrite = { email: _lowEmail, name: firstName || '', tier: 'free', paid: false, trialStart: Date.now() };
+  } else {
+    // No cache — fetch canonical from /api/me before writing to avoid clobbering paid status
+    try {
+      const _r = await fetch('/api/me', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: _lowEmail }) });
+      const _d = await _r.json();
+      _cacheWrite = (_d && _d.user)
+        ? { ..._d.user, name: firstName || _d.user.name || '' }
+        : { email: _lowEmail, name: firstName || '', tier: 'free', paid: false, trialStart: Date.now() };
+    } catch {
+      _cacheWrite = { email: _lowEmail, name: firstName || '', tier: 'free', paid: false, trialStart: Date.now() };
+    }
+  }
+  writeUserCache(_cacheWrite);
+  const _nb = document.querySelector('.nav-signin');
+  if (_nb) { _nb.textContent = '✓ ' + (firstName || email.split('@')[0]); _nb.style.borderColor = 'rgba(52,211,153,0.4)'; _nb.style.color = '#34D399'; _nb.onclick = null; }
+
   // Only call API if not already saved from welcome flow
   if(!alreadySaved && STATE.uid) {
     fetch('/api/sam',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'chat',userId:STATE.uid,messages:[],email:email,name:firstName,voiceProfile:window._pendingProfile,samContext:STATE.storyRaw?.slice(0,800)})}).catch(()=>{});
@@ -444,8 +483,22 @@ async function init() {
   const cachedVoice=localStorage.getItem('sam-voice-profile');
   if(cachedVoice){ try{ STATE.voiceProfile=JSON.parse(cachedVoice).raw||null; }catch(e){} }
   const initToolParam = new URLSearchParams(window.location.search).get('tool');
+
+  // Paint nav with canonical identity if cached
+  const _cu = getCurrentUserCached();
+  const _navBtn = document.querySelector('.nav-signin');
+  if (_cu && _cu.email && _navBtn) {
+    const _dn = _cu.name ? _cu.name : _cu.email.split('@')[0];
+    _navBtn.textContent = '✓ ' + _dn;
+    _navBtn.style.borderColor = 'rgba(52,211,153,0.4)';
+    _navBtn.style.color = '#34D399';
+    _navBtn.onclick = null;
+  }
+
   if(firstRunDone||hasSession){
-    showReturningUser({name:localStorage.getItem('sam_meet_name')||null,voice_profile:STATE.voiceProfile});
+    const _name = (_cu && _cu.name) || localStorage.getItem('sam_meet_name') || null;
+    const _voice = (_cu && _cu.voiceProfile) || STATE.voiceProfile;
+    showReturningUser({name:_name,voice_profile:_voice});
   } else {
     startGreeting();
   }
