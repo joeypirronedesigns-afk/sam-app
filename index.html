@@ -7473,7 +7473,6 @@ function initTrial() {
   // Signed in or paid — update badge and flag to open Meet SAM
   if (state.email || state.paid) {
     updateTrialBadge(state);
-    window._userSignedIn = true;
     // Background refresh from Supabase — repaint if server data differs from cache
     getCurrentUser().then(user => { if (user) updateTrialBadge(user); }).catch(() => {});
     return;
@@ -7599,7 +7598,8 @@ async function submitTrialEmail() {
   state.name = name;
   state.email = email;
   state.trialStart = Date.now();
-  saveTrialState(state);
+  writeUserCache({ email, name, tier: 'free', paid: false, trialStart: state.trialStart });
+  claimAnonymousChatHistory(email);
 
   // Fire off notification (non-blocking)
   try {
@@ -9603,7 +9603,9 @@ function initWizard() {
     const hasEmail = localStorage.getItem('sam_uid');
     const hasCompletedOnboarding = localStorage.getItem('samFirstRunDone');
     const isReturning = hasSaved || hasCompletedOnboarding;
-    if (!isReturning || window._trialExpired || window._userSignedIn) {
+    const _wizUser = getCurrentUserCached() || getTrialState();
+    const _isNewUser = _wizUser && _wizUser.trialStart && (Date.now() - _wizUser.trialStart < 300000);
+    if (!isReturning || window._trialExpired || _isNewUser) {
       if (typeof openWizardPage === 'function') openWizardPage(window._trialExpired);
     }
   }, 800);
