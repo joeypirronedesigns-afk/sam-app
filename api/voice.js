@@ -58,12 +58,27 @@ module.exports = async function handler(req, res) {
     ? existingProfile
     : (existingProfile?.voice_profile || existing?.voice_profile || '');
 
+  const evolutionBlock = existingAnalysis
+    ? `EXISTING VOICE PROFILE (refine and extend, do not replace):
+${existingAnalysis}
+
+The writer has provided NEW writing samples below. Your job is to EVOLVE the existing profile:
+- PRESERVE traits from the existing profile that still hold true in the new samples
+- REFINE traits where the new samples reveal more nuance or contradict the old read
+- ADD new traits that only emerge from the new samples
+- REMOVE traits that the new samples clearly disprove (rare — be conservative)
+
+Keep the same numbered list format. Aim for 10-20 numbered traits total. If the existing profile had 14 traits and the new samples reveal 3 genuinely new patterns, the output should be ~17 traits, not a fresh 10.
+
+`
+    : '\n';
+
   const prompt = `You are analyzing a creator's actual writing samples to extract their real voice DNA.
 
 THEIR ACTUAL WRITING:
 ${sampleText}
 
-${existingAnalysis ? 'PREVIOUS ANALYSIS (update and deepen this, never replace):\n' + existingAnalysis + '\n\n' : '\n'}Extract their voice DNA from these REAL examples. Be forensic and specific — reference actual phrases and patterns you see. Cover:
+${evolutionBlock}Extract their voice DNA from these REAL examples. Be forensic and specific — reference actual phrases and patterns you see. Cover:
 1. SENTENCE RHYTHM — how long, how they break, where they punch
 2. PUNCTUATION PERSONALITY — their actual use of .. or — or ! or CAPS
 3. EMOTIONAL REGISTER — where they go vulnerable, where they pull back
