@@ -23,3 +23,28 @@ Audit before deleting to confirm none have voice_profile or sam_context worth ke
 SELECT uid, name, voice_profile, sam_context FROM sam_users
 WHERE email = 'j.pirrone@yahoo.com' AND uid != 'j.pirrone@yahoo.com';
 ```
+
+## Wizard server persistence gap (deferred)
+
+The Story Wizard saves only to localStorage (keys: `sam_session_v2`, `sam_session_step`, `sam_session_ts`). No server-side persistence exists.
+
+Implications:
+- Wizard sessions cannot be restored on a different device
+- If a user clears browser data mid-wizard, the session is lost permanently
+- Cross-device parity isn't possible without redesign
+
+What's needed (deferred — multi-hour design + implement):
+- Decide schema: extend sam_users with a wizard_session JSONB column, OR new sam_wizard_sessions table
+- Add server save endpoint (or extend /api/memory with wizard-specific path)
+- Wire saveWizardState() to also POST to server (debounced, so we don't hammer Supabase on every keystroke)
+- On wizard init, fetch server-side session if localStorage is empty (cross-device restore)
+- Anon-to-signed-in claim flow (similar to claimAnonymousChatHistory but for wizard data)
+- Handle save failures gracefully (retry + queued sync)
+
+Existing functions to migrate when this is built:
+- saveWizardState() at index.html line ~9327 — called ~19 times across 12 steps
+- doRestoreSession() at index.html line ~9406 — currently localStorage-only
+- closeWizard() at index.html lines 9682-9686 — should flush server state on close
+- Step 12 playbook generation — currently saves to localStorage only as 'sam-playbook-html'
+
+Identified: 2026-04-25 during Commit 5a verification. Not introduced by identity refactor — predates 949d436.

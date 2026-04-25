@@ -10329,6 +10329,8 @@ async function generateStoryReflection() {
   if (diagEl) diagEl.innerHTML = `<div class="sam-thinking">SAM is reading your story<div class="sam-thinking-dots"><div class="sam-thinking-dot"></div><div class="sam-thinking-dot"></div><div class="sam-thinking-dot"></div></div></div>`;
   if (nextBtn) nextBtn.disabled = true;
 
+  const _s9UserId = (getCurrentUserCached() || {}).email || localStorage.getItem('sam_uid') || 'anon';
+
   // If photo uploaded — use API to analyze it
   if (hasPhoto) {
     try {
@@ -10338,7 +10340,7 @@ async function generateStoryReflection() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           mode: 'chat',
-          userId: 'dev-joey',
+          userId: _s9UserId,
           messages: [{
             role: 'user',
             content: [
@@ -10376,7 +10378,7 @@ async function generateStoryReflection() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         mode: 'chat',
-        userId: 'dev-joey',
+        userId: _s9UserId,
         messages: [{ role: 'user', content: text }],
         systemPrompt: `You are SAM — a creative intelligence who finds the real story inside what creators share. Read what this person wrote and reflect back the emotional core in 2-3 sentences. Tell them what makes their story powerful, what their audience will connect with, and why it matters. Be specific to what they actually wrote — never generic. Never say "I can see that" or "It sounds like". Speak directly and warmly, as if you already know them. Never use bullet points. End with one sentence that makes them feel ready to keep going.`
       })
