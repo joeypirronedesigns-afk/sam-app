@@ -7483,7 +7483,10 @@ function updateTrialBadge(state) {
 
   // ── "See plans" — hidden for paid users ─────────────────────────────────────
   const _paid = (_u && _u.paid) || (state && state.paid);
-  document.querySelectorAll('.nav-pro-btn').forEach(el => el.style.display = _paid ? 'none' : '');
+  document.querySelectorAll('.nav-pro-btn').forEach(el => {
+    if (_paid) el.style.setProperty('display', 'none', 'important');
+    else el.style.removeProperty('display');
+  });
 
   // Self-heal: if nav DOM wasn't ready, retry after next frame
   if (document.querySelectorAll('.nav-pro-btn').length === 0 && !window._badgeRetryScheduled) {
