@@ -8029,9 +8029,18 @@ function loadPersistentHistory() {
 
 function savePersistentHistory(history) {
   try {
-    // Keep last 40 messages
     const trimmed = history.slice(-40);
     localStorage.setItem(SAM_PERSISTENT_HISTORY_KEY, JSON.stringify(trimmed));
+    // Mirror the newest message to the server for cross-device persistence
+    const userId = (getTrialState().email || '').toLowerCase();
+    if (userId && trimmed.length > 0) {
+      const newest = trimmed[trimmed.length - 1];
+      fetch('/api/memory', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, role: newest.role, content: newest.content })
+      }).catch(() => {});
+    }
   } catch {}
 }
 
@@ -8058,23 +8067,40 @@ function initPersistentSAM() {
     }
   }
 
-  // Load history
+  // Load history from localStorage immediately (cache) then sync from server
   persistentSAMHistory = loadPersistentHistory();
 
-  // Restore messages to UI
-  if (persistentSAMHistory.length > 0) {
-    persistentSAMHistory.forEach(msg => {
-      addPersistentMessage(msg.role, msg.content, false);
-    });
-  } else {
-    // First time — send personalized opener
-    const state = getTrialState();
-    const name = state.name ? ', ' + state.name.split(' ')[0] : '';
-    const isDevModeGreeting = localStorage.getItem('sam_dev') === 'true';
-    const opener = isDevModeGreeting
-      ? "Marketing mode ON — tell me what you want to promote and I'll write the content. TikTok hook, LinkedIn post, carousel, thread — just say the word."
-      : "Hey" + name + " — I\'m SAM, your creative director. I\'m here anytime you get stuck, want to spitball ideas, need a hook, or just want to think through your next move. The more we talk, the more I sound like you. What\'s on your mind?";
-    addPersistentMessage('sam', opener, true);
+  function _renderPersistentHistory(history) {
+    const msgsEl = document.getElementById('persistentSAMMessages');
+    if (msgsEl) msgsEl.innerHTML = '';
+    if (history.length > 0) {
+      history.forEach(msg => addPersistentMessage(msg.role, msg.content, false));
+    } else {
+      const state = getTrialState();
+      const name = state.name ? ', ' + state.name.split(' ')[0] : '';
+      const isDevModeGreeting = localStorage.getItem('sam_dev') === 'true';
+      const opener = isDevModeGreeting
+        ? "Marketing mode ON — tell me what you want to promote and I'll write the content. TikTok hook, LinkedIn post, carousel, thread — just say the word."
+        : "Hey" + name + " — I\'m SAM, your creative director. I\'m here anytime you get stuck, want to spitball ideas, need a hook, or just want to think through your next move. The more we talk, the more I sound like you. What\'s on your mind?";
+      addPersistentMessage('sam', opener, true);
+    }
+  }
+
+  _renderPersistentHistory(persistentSAMHistory);
+
+  // Sync from server — server is source of truth; replace localStorage cache if server has data
+  const _syncUserId = (getTrialState().email || '').toLowerCase();
+  if (_syncUserId) {
+    fetch('/api/memory?userId=' + encodeURIComponent(_syncUserId))
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data && Array.isArray(data.messages) && data.messages.length > 0) {
+          persistentSAMHistory = data.messages;
+          localStorage.setItem(SAM_PERSISTENT_HISTORY_KEY, JSON.stringify(persistentSAMHistory));
+          _renderPersistentHistory(persistentSAMHistory);
+        }
+      })
+      .catch(() => {});
   }
 
   // Never auto-open on page load — user must click FAB
