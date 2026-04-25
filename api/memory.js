@@ -20,11 +20,28 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({ messages });
   }
 
-  // POST — save a single message for a user
+  // POST — save a single message (or batch) for a user
   if (req.method === 'POST') {
-    const { role, content, userId: rawUserId } = req.body;
+    const { role, content, userId: rawUserId, messages: batchMessages } = req.body;
     const userId = (rawUserId || '').toLowerCase();
     if (!userId) return res.status(400).json({ error: 'userId required' });
+
+    // Batch mode — {userId, messages: [{role, content}, ...]}
+    if (Array.isArray(batchMessages) && batchMessages.length > 0) {
+      const rows = batchMessages
+        .filter(m => m.role && m.content)
+        .map(m => ({ user_id: userId, role: m.role, content: m.content }));
+      if (rows.length > 0) {
+        await fetch(`${SUPABASE_URL}/rest/v1/sam_conversations`, {
+          method: 'POST',
+          headers: { ...headers, Prefer: 'return=minimal' },
+          body: JSON.stringify(rows)
+        });
+      }
+      return res.status(200).json({ ok: true, saved: rows.length });
+    }
+
+    // Single message — {userId, role, content}
     if (!role || !content) return res.status(400).json({ error: 'role and content required' });
     await fetch(`${SUPABASE_URL}/rest/v1/sam_conversations`, {
       method: 'POST',

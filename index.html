@@ -7432,6 +7432,39 @@ function getCurrentUserCached() {
   if (!c || !c._cachedAt || (Date.now() - c._cachedAt) >= _SAM_CACHE_TTL) return null;
   return c;
 }
+
+// Called after sign-in. Re-tags 'anon' messages in localStorage with the now-known email
+// and batch-POSTs them to /api/memory for cross-device history.
+async function claimAnonymousChatHistory(email) {
+  if (!email) return;
+  const lowered = email.toLowerCase();
+  try {
+    const raw = localStorage.getItem('sam-chat-history');
+    if (!raw) return;
+    const history = JSON.parse(raw);
+    if (!Array.isArray(history) || history.length === 0) return;
+    let claimed = 0;
+    for (const msg of history) {
+      if (msg.userId === 'anon' || !msg.userId) {
+        msg.userId = lowered;
+        claimed++;
+      }
+    }
+    if (claimed === 0) return;
+    localStorage.setItem('sam-chat-history', JSON.stringify(history));
+    await fetch('/api/memory', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId: lowered,
+        messages: history.filter(m => m.userId === lowered)
+      })
+    }).catch(() => {});
+    console.log(`[claim] migrated ${claimed} anonymous messages to ${lowered}`);
+  } catch (e) {
+    console.warn('[claim] failed', e);
+  }
+}
 // ─────────────────────────────────────────────────────────────────────────────
 
 function initTrial() {
@@ -7937,10 +7970,11 @@ function _renderChatMessageUI(role, text) {
 
 function addChatMessage(role, text) {
   _renderChatMessageUI(role, text);
-  chatHistory.push({ role: role === 'sam' ? 'assistant' : 'user', content: text });
+  const _chatU = getCurrentUserCached();
+  const _chatUserId = (_chatU && _chatU.email ? _chatU.email : 'anon').toLowerCase();
+  chatHistory.push({ role: role === 'sam' ? 'assistant' : 'user', content: text, userId: _chatUserId });
   try { localStorage.setItem('sam-chat-history', JSON.stringify(chatHistory.slice(-40))); } catch {}
-  const _chatUserId = (getTrialState().email || '').toLowerCase();
-  if (_chatUserId) {
+  if (_chatUserId && _chatUserId !== 'anon') {
     const newest = chatHistory[chatHistory.length - 1];
     fetch('/api/memory', {
       method: 'POST',
@@ -7982,6 +8016,9 @@ async function sendChatMessage() {
   const text = input.value.trim();
   if (!text) return;
 
+  const _u = getCurrentUserCached();
+  const _uid = (_u && _u.email ? _u.email : 'anon').toLowerCase();
+
   input.value = '';
   addChatMessage('user', text);
   showChatTyping();
@@ -8001,8 +8038,8 @@ async function sendChatMessage() {
         mode: 'chat',
         messages: messages,
         systemPrompt: SAM_SYSTEM_PROMPT,
-        userId: (getTrialState().email || 'anon').toLowerCase(),
-        voiceProfile: getSamVoiceProfile() || undefined
+        userId: _uid,
+        voiceProfile: (_u && _u.voiceProfile) || getSamVoiceProfile() || undefined
       })
     });
 
@@ -13498,15 +13535,8 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
         });
         const data = await res.json();
         if (data.success && data.user) {
-          // Set trial state from KV user
-          const trialObj = {
-            email: data.user.email,
-            name: data.user.name,
-            tier: data.user.tier,
-            paid: data.user.paid,
-            trialStart: data.user.trialStart
-          };
-          localStorage.setItem('sam-trial', JSON.stringify(trialObj));
+          writeUserCache(data.user);
+          claimAnonymousChatHistory(data.user.email);
           showToastMsg('Welcome back' + (data.user.name ? ', ' + data.user.name : '') + '! 🎉', '#34D399');
           setTimeout(() => location.reload(), 1500);
         } else {
