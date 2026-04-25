@@ -115,15 +115,19 @@ No preamble. No closing remarks. No prose paragraphs. Just the numbered list. 20
 
     if (!analysis) return res.status(500).json({ error: 'No analysis generated' });
 
+    const nextVersion = (existing?.voice_version || 0) + 1;
+
     await saveUserProfile(uid, {
       voice_profile: analysis,
-      sam_context: existing?.sam_context || null
+      sam_context: existing?.sam_context || null,
+      voice_version: nextVersion
     });
 
     return res.status(200).json({
       ok: true,
       analysis,
-      samples_stored: allSamples.length,
+      samples_stored: samples.length,
+      voice_version: nextVersion,
       message: `Voice DNA updated with ${allSamples.length} real writing samples`
     });
 

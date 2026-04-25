@@ -99,13 +99,14 @@ async function getStats() {
 
 
 // Save voice profile and SAM context for a user
-async function saveUserProfile(uid, { voice_profile, sam_context }) {
+async function saveUserProfile(uid, { voice_profile, sam_context, voice_version }) {
   if (!uid || uid === 'anon') return null;
   // PATCH updates existing row by uid
   return supabaseQuery('sam_users', 'PATCH', {
     voice_profile: voice_profile || null,
     sam_context: sam_context || null,
     voice_calibrated: voice_profile ? true : false,
+    ...(voice_version !== undefined ? { voice_version } : {}),
     last_seen: new Date().toISOString()
   }, `uid=eq.${encodeURIComponent(uid)}`);
 }
@@ -123,7 +124,7 @@ async function updateUserEmail(uid, email, name) {
 // Get voice profile and SAM context for a user
 async function getUserProfile(uid) {
   if (!uid || uid === 'anon') return null;
-  const result = await supabaseQuery('sam_users', 'GET', null, `uid=eq.${uid}&select=voice_profile,sam_context,name,niche,platforms,tier`);
+  const result = await supabaseQuery('sam_users', 'GET', null, `uid=eq.${uid}&select=voice_profile,sam_context,name,niche,platforms,tier,voice_version`);
   if (!result || !result.length) return null;
   return result[0];
 }
