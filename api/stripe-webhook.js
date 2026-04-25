@@ -1,3 +1,5 @@
+module.exports.config = { api: { bodyParser: false } };
+
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { trackUser, trackEvent, trackSignup } = require('./_supabase');
 
@@ -60,7 +62,7 @@ module.exports = async function handler(req, res) {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              from: 'SAM <onboarding@resend.dev>',
+              from: 'SAM <joey@samforcreators.com>',
               to: [process.env.SAM_NOTIFY_EMAIL || 'samforcreators@gmail.com'],
               subject: `💰 New SAM ${plan} subscriber — ${name || email}`,
               html: `<div style="font-family:Arial;padding:24px;background:#09080F;color:#F0ECFF;border-radius:12px;">
@@ -78,7 +80,7 @@ module.exports = async function handler(req, res) {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              from: 'Joey at SAM <onboarding@resend.dev>',
+              from: 'Joey at SAM <joey@samforcreators.com>',
               to: [email],
               subject: `Welcome to SAM ${plan.charAt(0).toUpperCase() + plan.slice(1)} — you're in.`,
               html: `<div style="font-family:Arial;padding:40px 32px;background:#09080F;color:#F0ECFF;border-radius:12px;max-width:520px;margin:0 auto;">
