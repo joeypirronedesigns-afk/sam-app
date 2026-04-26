@@ -22,6 +22,12 @@ Joey is the only paid customer (j.pirrone@yahoo.com, tier=creator). Working via 
 | f64fa03 | Commit 4: removed window._userSignedIn, wizard auto-open uses trialStart recency check, submitTrialEmail uses writeUserCache |
 | e123826 | Commit 4.1: fixed hardcoded 'dev-joey' userId in wizard step 9, appended wizard persistence gap to cleanup.md |
 | 84fc105 | Commit 7: Voice DNA modal prose fallback, prompt updated to numbered list, getVoiceVersion handles prose |
+| 88dac2e | Hide hero trial banner for paid users (Issue 3) |
+| 6af0a58 | Fix Issue 4: Reload Session button doesn't open wizard after hard refresh |
+| f8cdcd1 | Issue 5 Gap A+B: SAM acknowledges persistent memory + loads chat history (MEMORY & CONTINUITY block + fetchRecentChatHistory) |
+| 3fe7cd6 | Issue 5 Part 2: /meet chat canonical email fix — getCanonicalUid() helper + api/sam.js anon-* gate tightening |
+| 80cb2c1 | Issue 6: Honest Voice DNA evolution disclosure in SAM system prompt (HOW VOICE DNA UPDATES block) |
+| 5a9b673 | Issue 2: Add Voice Trainer tile to Switch Tools overlay — 8th entry, emerald green, openVoiceTrainer()+closeEcosystemOverlay() |
 
 ## Architecture: Strangler Pattern Migration State
 
@@ -75,7 +81,7 @@ Key facts:
 ## Known Open Issues / Pending Work
 
 ### Pre-existing bugs surfaced during testing tonight (not refactor-caused)
-- **Reload Session button doesn't work after hard refresh** — investigation needed. User reports it used to work. Could be sam_session_v2 not writing properly, or doRestoreSession not firing on init.
+- **Reload Session button doesn't work after hard refresh** — ✓ FIXED 6af0a58 — doRestoreSession() now opens #wizardPage before calling showWizardStep().
 - **Trial banner ("7 days free · No card needed · Cancel anytime") still showing for paid users** — ✓ FIXED 88dac2e — id="heroTrialBanner" added, hidden via updateTrialBadge setProperty pattern.
 
 ### Deferred to cleanup.md
