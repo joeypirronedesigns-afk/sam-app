@@ -76,7 +76,7 @@ Key facts:
 
 ### Pre-existing bugs surfaced during testing tonight (not refactor-caused)
 - **Reload Session button doesn't work after hard refresh** — investigation needed. User reports it used to work. Could be sam_session_v2 not writing properly, or doRestoreSession not firing on init.
-- **Trial banner ("7 days free · No card needed · Cancel anytime") still showing for paid users** — same category as "See plans" was. Pure CSS/HTML hint, no JS hide for paid.
+- **Trial banner ("7 days free · No card needed · Cancel anytime") still showing for paid users** — ✓ FIXED 88dac2e — id="heroTrialBanner" added, hidden via updateTrialBadge setProperty pattern.
 
 ### Deferred to cleanup.md
 - Three stale anon rows in sam_users (harmless, deferred deletion)
@@ -85,6 +85,24 @@ Key facts:
 ### Identity refactor — remaining commits
 - Commit 5b: paywall + feature gates + dev chat migration (pure cleanup, low priority)
 - Commit 6: remove dead getTrialState/saveTrialState/sam-trial legacy code (deferred 1+ week to confirm shim safe to remove)
+
+### Issue 5 — SAM system prompt contradicts persistent memory (HIGH PRIORITY)
+SAM told user she's "a creative sparring partner in a single session" and "can't carry forward to next visit." This directly contradicts:
+- The homepage promise: "SAM remembers every word"
+- The actual implementation: Commit 3 wired chat persistence to Supabase via /api/memory; sam_conversations table exists and is being written to
+
+**Root cause:** api/sam.js system prompt doesn't acknowledge SAM's own memory architecture. SAM has no idea she has a persistent chat history or a Voice DNA profile she's built over time.
+
+**Fix:** Small prompt update in api/sam.js (or wherever the chat system prompt is assembled). Tell SAM: she has persistent memory of past conversations via Supabase, she has a Voice DNA profile she's been building, and she should acknowledge this honestly when users ask. Data already exists — prompt is just unaware of it.
+
+### Issue 6 — SAM over-promises Voice DNA evolution from chat (MEDIUM PRIORITY)
+In same conversation, SAM told user that new info shared in chat "gets baked in" to Voice DNA. Currently false — only explicit Voice Trainer submissions and initial onboarding samples write to sam_voice_samples + voice_profile. Chat content does not.
+
+**Two resolution paths:**
+- **(a) Build chat-to-Voice-DNA extraction** — background job that periodically mines sam_conversations for voice signals and feeds them into voice_profile evolution. Bigger build. The right long-term answer.
+- **(b) Prompt correction only** — update SAM's system prompt to be honest: "your voice profile updates when you use Voice Trainer, not automatically from chat." Softens the false promise without new infrastructure. Ship fast.
+
+Recommended: do (b) now alongside Issue 5 fix (both are prompt changes in api/sam.js), then revisit (a) as a future feature.
 
 ## Voice Trainer Feature (Pattern B) — In Progress
 
@@ -127,11 +145,15 @@ New table `sam_voice_samples`:
 - Three entry points wired to openVoiceTrainer()
 
 ### Build plan (current session)
-Commit V1: Supabase migration — create sam_voice_samples table
-Commit V2: Backend — /api/voice modified to read/write samples table
-Commit V3: Backend — evolution prompt for Claude when existingProfile present
-Commit V4: Frontend — openVoiceTrainer modal
-Commit V5: Frontend — three entry points wired
+Commit V1: Supabase migration — create sam_voice_samples table ✓ (done manually in Supabase dashboard)
+Commit V2: Backend — /api/voice modified to read/write samples table ✓ 7b6a649
+Commit V3: Backend — evolution prompt for Claude when existingProfile present ✓ 939b550
+Commit V3.5: voice_version increment on save + getUserProfile select fix ✓ 37537b0
+Commit V4: Frontend — openVoiceTrainer modal ✓ c2b7a19
+Commit V5: Frontend — three entry points wired ✓ 74fa509
+
+## Voice Trainer — COMPLETE ✓
+All commits shipped: V1 (schema) → V2 (backend Pattern B) → V3 (evolution prompt) → V3.5 (voice_version) → V4 (modal UI) → V4.1 (identity fix) → V5 (entry points)
 
 ## Current Session Vibe
 Joey is direct, blunt, action-oriented. Pushed back on excessive caution earlier. Wants to ship Pattern B tonight despite hour. Heard the risk note, accepted it. Use the full context window if the task requires it. Test between commits, but don't over-explain.
