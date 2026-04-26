@@ -1,5 +1,23 @@
 module.exports.config = { api: { bodyParser: { sizeLimit: "10mb" } } };
-const { trackUser, trackEvent, saveUserProfile, getUserProfile, updateUserEmail } = require('./_supabase');
+const { trackUser, trackEvent, saveUserProfile, getUserProfile, updateUserEmail, supabaseQuery } = require('./_supabase');
+
+async function fetchRecentChatHistory(userId, limit = 20) {
+  if (!userId || userId === 'anon') return [];
+  try {
+    const rows = await supabaseQuery(
+      'sam_conversations', 'GET', null,
+      `user_id=eq.${encodeURIComponent(userId.toLowerCase())}&order=created_at.desc&limit=${limit}`
+    );
+    if (!Array.isArray(rows) || rows.length === 0) return [];
+    return rows
+      .filter(r => r.role && r.content)
+      .reverse()
+      .map(r => ({ role: r.role, content: r.content }));
+  } catch (e) {
+    console.error('[history] fetch error:', e.message);
+    return [];
+  }
+}
 
 // ── TIER LIMITS ────────────────────────────────────────────────────────────
 const TIER_LIMITS = {
@@ -160,6 +178,9 @@ module.exports = async function handler(req, res) {
           : '';
         profileContext = profileMeta + chatVoiceLine;
       }
+      if (userId && userId !== 'anon') {
+        profileContext += `\n\nMEMORY & CONTINUITY:\nYou have persistent memory of this user across sessions:\n- Their Voice DNA profile (above) — how they actually write\n- Their story context and niche (above, if present)\n- Past conversations stored in your database\nWhen the user asks "do you remember me" or "what do you know about me", be honest and specific. Reference what's actually in the profile. Never disclaim memory you have. If you genuinely don't have something (e.g., a specific event they mention from before that's not in context), say so plainly — don't fall back to generic "I can't remember between sessions" disclaimers, because that's false.`;
+      }
       const baseSystem = systemPrompt || `You are SAM`;
       const chatSystem = systemPrompt ? systemPrompt + profileContext : `You are SAM — Strategic Assistant for Making — a friendly, sharp creative director built into the SAM app at samforcreators.com. You help creators understand and get the most out of SAM's 5 tools.
 
@@ -172,6 +193,13 @@ THE 5 TOOLS:
 
 PERSONALITY: Confident, direct, warm. Keep responses to 2-4 sentences max. No jargon.` + profileContext;
 
+      let finalMessages = messages.slice(-10);
+      const currentSessionLength = messages.filter(m => m.role === 'user').length;
+      if (currentSessionLength <= 2 && userId && userId !== 'anon') {
+        const history = await fetchRecentChatHistory(userId, 20);
+        if (history.length > 0) finalMessages = [...history, ...finalMessages];
+      }
+
       try {
         const chatRes = await fetch('https://api.anthropic.com/v1/messages', {
           method: 'POST',
@@ -180,7 +208,7 @@ PERSONALITY: Confident, direct, warm. Keep responses to 2-4 sentences max. No ja
             model: chatModel,
             max_tokens: chatMaxTokens,
             system: chatSystem,
-            messages: messages.slice(-10)
+            messages: finalMessages
           })
         });
         const data = await chatRes.json();
