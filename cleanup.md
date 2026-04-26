@@ -88,3 +88,38 @@ product work — multi-hour design + implement + edge cases.
 Identified during user testing tonight where SAM told user "new info you
 share gets baked in to Voice DNA" — which was false. Path (b) shipped to
 stop the false promise. Path (a) remains the long-term win.
+
+## Voice Trainer badge race condition (Issue 7 — deferred)
+
+Documented 2026-04-25 night session. Smoke test after Issue 2 ship surfaced
+two related polish bugs. Not brand-promise blocking, deferred to next session.
+
+**Symptom A (race condition):**
+On first open of Voice Trainer modal, badge shows "🧬 NO PROFILE YET — LET'S
+START" even when user has an active voice profile in sam_users
+(voice_version=7, 7 traits). Closing and reopening modal correctly shows
+"🧬 V7 · 7 TRAITS." Suggests modal opens and stamps initial state before
+async user fetch (getCurrentUser → /api/me POST with email) resolves.
+
+**Likely fix:** Either await getCurrentUser() before rendering modal, or
+add a loading state that updates badge once user data arrives. Modal
+currently uses getCurrentUserCached() which can return null on first hit
+before cache is populated.
+
+**Symptom B (label gap):**
+Workshop tile (/app grid) and top nav both show "Voice DNA · Refine how
+SAM hears you" without version count. Should optionally show "v7" or
+"v7 · 7 traits" when profile exists. Pure UI label addition, no logic
+needed beyond reading user data.
+
+**Verification on next session:**
+1. Open /app fresh, before clicking anything verify Workshop tile state
+2. Click 🧬 entry point, observe badge text on first open
+3. If race condition reproduces, fix in openVoiceTrainer() before render
+4. Add version count to Workshop tile + top nav using same data source as
+   wizard header (which works correctly — shows V1/V7 reliably)
+
+**Architectural note:** /api/me requires email in POST body. Returns 400
+"valid email required" if called without email. This is by design — it's
+a lookup endpoint, not session-aware. All internal callers pass email
+correctly via getCurrentUser() helper.
