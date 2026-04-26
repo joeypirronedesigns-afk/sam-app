@@ -1,5 +1,17 @@
 # Data Cleanup — Deferred
 
+## Orphan anon-* rows in sam_users
+
+Discovered 2026-04-25 during V4 verification. Three rows in sam_users with uid starting with 'anon-' and email='j.pirrone@yahoo.com'. These are from pre-Strangler-migration anonymous sessions that wrote voice_profile data before identity consolidation. They're not interfering with anything — getUserProfile by email-uid returns only the canonical row.
+
+Safe cleanup query (verify with SELECT first, then DELETE):
+```sql
+SELECT uid, email FROM sam_users WHERE uid LIKE 'anon-%' AND email = 'j.pirrone@yahoo.com';
+DELETE FROM sam_users WHERE uid LIKE 'anon-%' AND email = 'j.pirrone@yahoo.com';
+```
+
+Apply the same pattern to clean up similar orphans for other users if any exist.
+
 ## Stale anon rows in sam_users (non-blocking)
 
 Three rows in sam_users have `uid = anon-xxx` but `email = j.pirrone@yahoo.com` and `tier = free`.
