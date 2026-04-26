@@ -9423,6 +9423,12 @@ function doRestoreSession() {
     const saved = localStorage.getItem('sam_session_v2');
     const step = localStorage.getItem('sam_session_step') || '0';
     if (!saved || step === '0') return;
+    // Open the wizard panel (idempotent — safe even if already open)
+    const _wp = document.getElementById('wizardPage');
+    if (_wp) _wp.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    const _nwb = document.getElementById('navWizardBtn');
+    if (_nwb) _nwb.style.display = 'flex';
     const restoredSession = JSON.parse(saved);
     delete restoredSession.voiceProfile;
     delete restoredSession.voiceCalibrated;
