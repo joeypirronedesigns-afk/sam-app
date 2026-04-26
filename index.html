@@ -9710,6 +9710,11 @@ async function openVoiceTrainer() {
   const user = await getCurrentUser();
   const modal = document.getElementById('voiceTrainerModal');
 
+  // Reparent to body to escape any wizard/container stacking context
+  if (modal && modal.parentElement !== document.body) {
+    document.body.appendChild(modal);
+  }
+
   document.getElementById('vtForm').style.display = 'block';
   document.getElementById('vtLoading').style.display = 'none';
   document.getElementById('vtResult').style.display = 'none';
