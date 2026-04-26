@@ -60,3 +60,31 @@ Existing functions to migrate when this is built:
 - Step 12 playbook generation — currently saves to localStorage only as 'sam-playbook-html'
 
 Identified: 2026-04-25 during Commit 5a verification. Not introduced by identity refactor — predates 949d436.
+
+## Voice DNA evolution from chat conversations (deferred)
+
+Documented 2026-04-25. Issue 6 path (a) — building actual chat-to-Voice-DNA
+extraction — was deferred in favor of path (b) (prompt honesty fix shipped
+in 80cb2c1).
+
+What path (a) would require:
+- Background job (Vercel scheduled function or nightly cron) that mines
+  sam_conversations for each active user
+- Extracts voice signals (style, rhythm, phrasing) — NOT mood/topic/sentiment
+- Periodically updates sam_users.voice_profile via /api/voice with
+  source='chat_extracted'
+- Cost: each user analysis ~1 Anthropic API call. With N active users on
+  daily cron, real money. Decide model (Sonnet vs Haiku) based on quality
+  needed.
+- Drift protection: avoid spam-prompt-induced profile drift if user vents
+  at SAM for a session.
+- User control: opt-out toggle? Notification when profile auto-updates?
+
+Tradeoff vs path (b) (current state): Path (b) tells users honestly to use
+Voice Trainer for explicit refinement. Path (a) makes the "gets sharper
+every time you use her" homepage promise actually true. Path (a) is real
+product work — multi-hour design + implement + edge cases.
+
+Identified during user testing tonight where SAM told user "new info you
+share gets baked in to Voice DNA" — which was false. Path (b) shipped to
+stop the false promise. Path (a) remains the long-term win.

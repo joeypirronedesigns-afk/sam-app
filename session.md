@@ -92,14 +92,11 @@ Key facts:
 **f8cdcd1** — Gap B: fetchRecentChatHistory() added to api/sam.js. Queries sam_conversations for last 20 messages, prepended on fresh sessions (≤2 user messages).
 **3fe7cd6** — Part 2: /meet page was sending anon-xxx fingerprint (STATE.uid) instead of canonical email. getCanonicalUid() helper added to meet.html; used in callSAM + two side-effect API calls. api/sam.js anon gates tightened to reject anon-* prefix.
 
-### Issue 6 — SAM over-promises Voice DNA evolution from chat (MEDIUM PRIORITY)
-In same conversation, SAM told user that new info shared in chat "gets baked in" to Voice DNA. Currently false — only explicit Voice Trainer submissions and initial onboarding samples write to sam_voice_samples + voice_profile. Chat content does not.
+### Issue 6 — SAM over-promises Voice DNA evolution from chat ✓ CLOSED (path b)
 
-**Two resolution paths:**
-- **(a) Build chat-to-Voice-DNA extraction** — background job that periodically mines sam_conversations for voice signals and feeds them into voice_profile evolution. Bigger build. The right long-term answer.
-- **(b) Prompt correction only** — update SAM's system prompt to be honest: "your voice profile updates when you use Voice Trainer, not automatically from chat." Softens the false promise without new infrastructure. Ship fast.
+**80cb2c1** — HOW VOICE DNA UPDATES paragraph appended to MEMORY & CONTINUITY block in api/sam.js. SAM now directed to point users to Voice Trainer rather than implying chat evolves their profile automatically.
 
-Recommended: do (b) now alongside Issue 5 fix (both are prompt changes in api/sam.js), then revisit (a) as a future feature.
+Path (a) — actual chat-to-Voice-DNA extraction — deferred. Full design + cost analysis appended to cleanup.md.
 
 ## Voice Trainer Feature (Pattern B) — In Progress
 
