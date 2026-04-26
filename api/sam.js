@@ -2,7 +2,7 @@ module.exports.config = { api: { bodyParser: { sizeLimit: "10mb" } } };
 const { trackUser, trackEvent, saveUserProfile, getUserProfile, updateUserEmail, supabaseQuery } = require('./_supabase');
 
 async function fetchRecentChatHistory(userId, limit = 20) {
-  if (!userId || userId === 'anon') return [];
+  if (!userId || userId === 'anon' || userId.startsWith('anon-')) return [];
   try {
     const rows = await supabaseQuery(
       'sam_conversations', 'GET', null,
@@ -178,7 +178,7 @@ module.exports = async function handler(req, res) {
           : '';
         profileContext = profileMeta + chatVoiceLine;
       }
-      if (userId && userId !== 'anon') {
+      if (userId && userId !== 'anon' && !userId.startsWith('anon-')) {
         profileContext += `\n\nMEMORY & CONTINUITY:\nYou have persistent memory of this user across sessions:\n- Their Voice DNA profile (above) — how they actually write\n- Their story context and niche (above, if present)\n- Past conversations stored in your database\nWhen the user asks "do you remember me" or "what do you know about me", be honest and specific. Reference what's actually in the profile. Never disclaim memory you have. If you genuinely don't have something (e.g., a specific event they mention from before that's not in context), say so plainly — don't fall back to generic "I can't remember between sessions" disclaimers, because that's false.`;
       }
       const baseSystem = systemPrompt || `You are SAM`;
@@ -195,7 +195,7 @@ PERSONALITY: Confident, direct, warm. Keep responses to 2-4 sentences max. No ja
 
       let finalMessages = messages.slice(-10);
       const currentSessionLength = messages.filter(m => m.role === 'user').length;
-      if (currentSessionLength <= 2 && userId && userId !== 'anon') {
+      if (currentSessionLength <= 2 && userId && userId !== 'anon' && !userId.startsWith('anon-')) {
         const history = await fetchRecentChatHistory(userId, 20);
         if (history.length > 0) finalMessages = [...history, ...finalMessages];
       }
