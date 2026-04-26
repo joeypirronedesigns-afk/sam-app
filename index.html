@@ -9710,7 +9710,7 @@ async function openVoiceTrainer() {
   document.getElementById('vtCounter').textContent = '0 / 50 characters minimum';
   document.getElementById('vtSubmit').disabled = true;
 
-  if (!user || !user.uid || user.uid === 'anon') {
+  if (!user || !user.email || user.email === 'anon') {
     document.getElementById('vtError').textContent = 'Please sign in to use Voice Trainer.';
     document.getElementById('vtError').style.display = 'block';
     document.getElementById('vtForm').style.display = 'none';
@@ -9753,7 +9753,7 @@ function closeVoiceTrainer() {
 
 async function refineVoice() {
   const user = getCurrentUserCached();
-  if (!user || !user.uid) return;
+  if (!user || !user.email) return;
 
   const samples = ['vtSample1','vtSample2','vtSample3']
     .map(id => document.getElementById(id).value.trim())
@@ -9775,7 +9775,7 @@ async function refineVoice() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        userId: user.uid,
+        userId: user.email,
         samples,
         existingProfile: _vtCurrentProfile,
         source: 'voice_trainer'
