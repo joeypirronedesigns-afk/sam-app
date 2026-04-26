@@ -9680,22 +9680,6 @@ function openMeetSAMOverlay() { window.location.href = '/meet'; return; // legac
 })();
 
 
-function showVoiceProfilePopover(btn) {
-  var vp = (typeof getSamVoiceProfile === 'function') ? getSamVoiceProfile() : localStorage.getItem('sam-voice-profile');
-  if (!vp) return;
-  var raw = vp;
-  try { raw = JSON.parse(vp).raw || vp; } catch(e) {}
-  var lines = raw.split('\n').filter(function(l){ return l.match(/^[0-9]+[.]/); }).slice(0, 8);
-  var items;
-  if (lines.length > 0) {
-    items = lines.map(function(l){ return '<div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:13px;line-height:1.6;color:rgba(240,236,255,0.8);">'+l.replace(/^[0-9]+[.]\s*/,'')+'</div>'; }).join('');
-  } else {
-    items = '<div style="font-size:13px;line-height:1.8;color:rgba(240,236,255,0.8);">'+raw.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</div>';
-  }
-  var html = '<div id="vpPopover" style="position:fixed;inset:0;z-index:3000;background:rgba(9,8,15,0.85);display:flex;align-items:center;justify-content:center;padding:20px;" onclick="document.getElementById(\'vpPopover\').remove()"><div style="background:rgba(13,11,22,0.98);border:1px solid rgba(52,211,153,0.3);border-radius:20px;padding:24px;max-width:480px;width:100%;" onclick="event.stopPropagation()"><div style="font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:#34D399;margin-bottom:12px;">Your Voice DNA</div>'+items+'<button onclick="document.getElementById(\'vpPopover\').remove()" style="margin-top:16px;width:100%;padding:10px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:10px;color:#34D399;font-family:inherit;font-size:13px;cursor:pointer;">Close</button></div></div>';
-  document.body.insertAdjacentHTML('beforeend', html);
-}
-
 // ── VOICE TRAINER ─────────────────────────────────────────────────────────────
 var _vtCurrentProfile = null;
 var _vtCurrentVersion = 0;
@@ -12655,7 +12639,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
         <span id="wizardDefaultLabel">Building your story</span>
         <button onclick="openEcosystemOverlay()" style="display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#A78BFA;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);border-radius:20px;padding:3px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.background='rgba(167,139,250,0.2)'" onmouseout="this.style.background='rgba(167,139,250,0.1)'">⇄ Switch tools</button>
         <button onclick="closeWizard();window.location.href='/meet';" style="display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#F472B6;background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.25);border-radius:20px;padding:3px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.background='rgba(244,114,182,0.18)'" onmouseout="this.style.background='rgba(244,114,182,0.08)'">✦ Talk with SAM</button>
-        <button id="voiceCalibBadge" onclick="showVoiceProfilePopover(this)" style="display:none;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#34D399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.25);border-radius:20px;padding:3px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.background='rgba(52,211,153,0.2)'" onmouseout="this.style.background='rgba(52,211,153,0.1)'">🎙 Voice locked in</button>
+        <button id="voiceCalibBadge" onclick="openVoiceTrainer()" style="display:none;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#34D399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.25);border-radius:20px;padding:3px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.background='rgba(52,211,153,0.2)'" onmouseout="this.style.background='rgba(52,211,153,0.1)'">🎙 Voice locked in</button>
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
         <button onclick="devSaveSession()" id="devSaveBtn" style="display:none;font-size:10px;font-weight:700;background:rgba(109,40,217,0.3);color:#A78BFA;border:1px solid rgba(167,139,250,0.3);border-radius:8px;padding:5px 10px;cursor:pointer;">💾 Session</button>
