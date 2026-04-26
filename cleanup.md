@@ -123,3 +123,51 @@ needed beyond reading user data.
 "valid email required" if called without email. This is by design — it's
 a lookup endpoint, not session-aware. All internal callers pass email
 correctly via getCurrentUser() helper.
+
+## Voice DNA drift on submission (Issue 8 — investigate next session)
+
+Surfaced 2026-04-25 ~10:30pm during Voice Trainer testing.
+
+**Symptom:** After multiple Voice Trainer submissions, profile traits drifted
+dramatically. V7 → V10 replaced forensic stylistic traits (Lowercase-to-caps
+emphasis / Double-dot pause / Parenthetical data-dump) with entirely different
+meta-commentary traits (Anxiety-as-documentation / Self-aware parenthetical
+confession / Lowercase as default vulnerability). The new traits describe
+*what* the writing does emotionally rather than *how* it does it mechanically.
+
+**Likely cause:** Evolution prompt in api/voice.js instructs PRESERVE/REFINE/
+ADD/REMOVE but the REMOVE path may be too permissive. When new samples contain
+emotionally rich content, the model may re-interpret existing mechanical traits
+as emotional ones rather than preserving them.
+
+**Investigation path:**
+1. Read api/voice.js evolution prompt (PRESERVE/REFINE/ADD/REMOVE block)
+2. Evaluate whether "REMOVE traits the new samples clearly disprove" is firing
+   too aggressively
+3. Consider adding explicit instruction: "Mechanical/stylistic traits (rhythm,
+   punctuation, phrasing) should be treated as stable — only remove if new
+   samples show a clear DIFFERENT mechanical pattern, not just a different
+   emotional register"
+4. Consider capping REMOVE to 1-2 traits max per evolution cycle
+
+**Related:** cleanup.md path (a) drift protection note applies here too.
+
+## Regenerated hook can't be saved (Issue 9 — investigate next session)
+
+Surfaced 2026-04-25 ~10:30pm during Pulse tool testing.
+
+**Symptom:** In The Pulse output, after clicking "Try a different hook," the
+new hook text displays correctly. But the "Save to Ideas" button either doesn't
+fire or remains bound to the original hook text — saving the old hook, not the
+new one.
+
+**Likely cause:** regenHook() replaces the hook display text but doesn't
+re-bind the save-to-ideas onclick handler. The handler was attached to the
+original hook string at render time and isn't updated when the hook regenerates.
+
+**Investigation path:**
+1. grep -n "regenHook\|regen.*hook\|Try a different hook" index.html
+2. Find how save-to-ideas is bound in the original Pulse output render
+3. Confirm regenHook() updates the DOM but not the handler
+4. Fix: either re-bind onclick with new hook text after regen, or read hook
+   from DOM at click time rather than closing over the original string
