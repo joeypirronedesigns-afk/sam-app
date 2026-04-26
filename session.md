@@ -86,14 +86,11 @@ Key facts:
 - Commit 5b: paywall + feature gates + dev chat migration (pure cleanup, low priority)
 - Commit 6: remove dead getTrialState/saveTrialState/sam-trial legacy code (deferred 1+ week to confirm shim safe to remove)
 
-### Issue 5 — SAM system prompt contradicts persistent memory (HIGH PRIORITY)
-SAM told user she's "a creative sparring partner in a single session" and "can't carry forward to next visit." This directly contradicts:
-- The homepage promise: "SAM remembers every word"
-- The actual implementation: Commit 3 wired chat persistence to Supabase via /api/memory; sam_conversations table exists and is being written to
+### Issue 5 — SAM system prompt contradicts persistent memory ✓ CLOSED
 
-**Root cause:** api/sam.js system prompt doesn't acknowledge SAM's own memory architecture. SAM has no idea she has a persistent chat history or a Voice DNA profile she's built over time.
-
-**Fix:** Small prompt update in api/sam.js (or wherever the chat system prompt is assembled). Tell SAM: she has persistent memory of past conversations via Supabase, she has a Voice DNA profile she's been building, and she should acknowledge this honestly when users ask. Data already exists — prompt is just unaware of it.
+**f8cdcd1** — Gap A: MEMORY & CONTINUITY block added to profileContext in api/sam.js, gated on signed-in userId. Covers both prompt paths (default + client-sent systemPrompt).
+**f8cdcd1** — Gap B: fetchRecentChatHistory() added to api/sam.js. Queries sam_conversations for last 20 messages, prepended on fresh sessions (≤2 user messages).
+**3fe7cd6** — Part 2: /meet page was sending anon-xxx fingerprint (STATE.uid) instead of canonical email. getCanonicalUid() helper added to meet.html; used in callSAM + two side-effect API calls. api/sam.js anon gates tightened to reject anon-* prefix.
 
 ### Issue 6 — SAM over-promises Voice DNA evolution from chat (MEDIUM PRIORITY)
 In same conversation, SAM told user that new info shared in chat "gets baked in" to Voice DNA. Currently false — only explicit Voice Trainer submissions and initial onboarding samples write to sam_voice_samples + voice_profile. Chat content does not.
