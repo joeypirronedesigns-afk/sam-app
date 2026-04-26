@@ -123,6 +123,7 @@ function writeUserCache(user) {
   } catch {}
 }
 function getCurrentUserCached() { const c = readUserCache(); if (!c || !c._cachedAt || (Date.now() - c._cachedAt) >= _SAM_CACHE_TTL) return null; return c; }
+function getCanonicalUid() { const u = getCurrentUserCached(); return (u && u.email) ? u.email.toLowerCase() : (STATE.uid || 'anon'); }
 
 function getOrCreateUID() {
   let uid = localStorage.getItem('sam_uid');
@@ -192,7 +193,7 @@ function typewrite(el, text, onDone) {
 }
 
 async function callSAM(messages, systemPrompt) {
-  const payload={mode:'chat',userId:STATE.uid,messages,systemPrompt,voiceProfile:STATE.voiceProfile||undefined,samContext:STATE.storyRaw?STATE.storyRaw.slice(0,800):undefined};
+  const payload={mode:'chat',userId:getCanonicalUid(),messages,systemPrompt,voiceProfile:STATE.voiceProfile||undefined,samContext:STATE.storyRaw?STATE.storyRaw.slice(0,800):undefined};
   try {
     const res=await fetch('/api/sam',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     const reader=res.body.getReader(); const decoder=new TextDecoder(); let fullText='';
@@ -294,9 +295,9 @@ async function submitVoice() {
   // Send real writing samples to Voice DNA engine — actual words, not just traits
   if(STATE.uid){
     const realSamples=[val,STATE.storyRaw].filter(s=>s&&s.length>10);
-    fetch('/api/voice',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:STATE.uid,samples:realSamples,existingProfile:{voice_profile:profile}})}).catch(()=>{});
+    fetch('/api/voice',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:getCanonicalUid(),samples:realSamples,existingProfile:{voice_profile:profile}})}).catch(()=>{});
   }
-  if(STATE.uid) fetch('/api/sam',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'chat',userId:STATE.uid,messages:[],voiceProfile:profile,samContext:STATE.storyRaw.slice(0,800),name:STATE.name||undefined,niche:STATE.niche||undefined})}).catch(()=>{});
+  if(STATE.uid) fetch('/api/sam',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'chat',userId:getCanonicalUid(),messages:[],voiceProfile:profile,samContext:STATE.storyRaw.slice(0,800),name:STATE.name||undefined,niche:STATE.niche||undefined})}).catch(()=>{});
   showEmailCapture(profile,card);
 }
 
@@ -370,7 +371,7 @@ async function saveEmail(silent) {
 
   // Only call API if not already saved from welcome flow
   if(!alreadySaved && STATE.uid) {
-    fetch('/api/sam',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'chat',userId:STATE.uid,messages:[],email:email,name:firstName,voiceProfile:window._pendingProfile,samContext:STATE.storyRaw?.slice(0,800)})}).catch(()=>{});
+    fetch('/api/sam',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'chat',userId:getCanonicalUid(),messages:[],email:email,name:firstName,voiceProfile:window._pendingProfile,samContext:STATE.storyRaw?.slice(0,800)})}).catch(()=>{});
   }
   if(!silent) showVoiceLocked(window._pendingProfile, window._pendingCard);
   else if(window._pendingProfile && window._pendingCard) showVoiceLocked(window._pendingProfile, window._pendingCard);
