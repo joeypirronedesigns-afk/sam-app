@@ -4533,11 +4533,199 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 
     /* ══════════════════════════════════════════════════════
   </style>
+
+<style>
+/* ═══════════════════════════════════════════════════════
+   QUIET STUDIO SHELL v1 — scaffold commit
+   All rules scoped under body.quiet-studio-shell.
+   Remove that class to restore the legacy shell intact.
+════════════════════════════════════════════════════════ */
+
+body.quiet-studio-shell {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+body.quiet-studio-shell .ambient { display: none; }
+
+/* Push legacy top-nav right of the rail */
+body.quiet-studio-shell > nav {
+  left: 220px;
+}
+
+/* Offset main content to clear the rail */
+body.quiet-studio-shell > main {
+  padding-left: 220px;
+}
+
+/* ── QS RAIL ── */
+.qs-rail { display: none; }
+
+body.quiet-studio-shell .qs-rail {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  width: 220px;
+  background: var(--paper);
+  border-right: 1px solid var(--rule);
+  z-index: 200;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.qs-rail-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--rule);
+  min-height: 68px;
+  flex-shrink: 0;
+}
+
+.qs-rail-logo-mark {
+  width: 32px;
+  height: 32px;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Instrument Serif', serif;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+
+.qs-rail-logo-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.qs-rail-nav {
+  flex: 1;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.qs-rail-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 10px;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: background 0.15s cubic-bezier(0.16,1,0.3,1),
+              color 0.15s cubic-bezier(0.16,1,0.3,1);
+  min-height: 44px;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.qs-rail-item:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.qs-rail-item.qs-active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.qs-rail-item-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.qs-rail-footer {
+  padding: 16px 20px;
+  border-top: 1px solid var(--rule);
+  flex-shrink: 0;
+}
+
+.qs-version-stamp {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--ink-faint);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ── MOBILE: rail hidden off-canvas at 767px ── */
+@media (max-width: 767px) {
+  body.quiet-studio-shell .qs-rail {
+    transform: translateX(-100%);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  body.quiet-studio-shell > nav { left: 0; }
+  body.quiet-studio-shell > main { padding-left: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.quiet-studio-shell .qs-rail { transition: none; }
+  .qs-rail-item { transition: none; }
+}
+</style>
+
 </head>
-<body>
+<body class="quiet-studio-shell">
 <div class="ambient ambient-1"></div>
 <div class="ambient ambient-2"></div>
 <div class="ambient ambient-3"></div>
+
+<!-- ═══════════════════════════════════════════════════
+     QUIET STUDIO SHELL SCAFFOLD — v1
+     Commit 1: tokens + layout regions. No tile wiring.
+     Remove body.quiet-studio-shell to restore legacy.
+════════════════════════════════════════════════════ -->
+<div data-qs-shell="true" data-qs-version="v1">
+  <aside class="qs-rail" aria-label="Quiet Studio navigation">
+    <div class="qs-rail-header">
+      <div class="qs-rail-logo-mark">QS</div>
+      <span class="qs-rail-logo-text">Quiet Studio</span>
+    </div>
+    <nav class="qs-rail-nav" aria-label="Studio navigation">
+      <div class="qs-rail-item">
+        <svg class="qs-rail-item-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="2" y="2" width="6" height="6" rx="1.5"/><rect x="10" y="2" width="6" height="6" rx="1.5"/><rect x="2" y="10" width="6" height="6" rx="1.5"/><rect x="10" y="10" width="6" height="6" rx="1.5"/></svg>
+        Dashboard
+      </div>
+      <div class="qs-rail-item">
+        <svg class="qs-rail-item-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M9 2.5l1.8 3.7 4.1.6-3 2.9.7 4.1L9 11.8l-3.6 1.9.7-4.1-3-2.9 4.1-.6L9 2.5z"/></svg>
+        Spark
+      </div>
+      <div class="qs-rail-item">
+        <svg class="qs-rail-item-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 4.5h12M3 8.5h7M3 12.5h9"/></svg>
+        My Ideas
+      </div>
+      <div class="qs-rail-item">
+        <svg class="qs-rail-item-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 3h10a1 1 0 011 1v1H3V4a1 1 0 011-1zM3 5h12l-.9 9.1a1 1 0 01-1 .9H4.9a1 1 0 01-1-.9L3 5z"/></svg>
+        Story Engine
+      </div>
+      <div class="qs-rail-item">
+        <svg class="qs-rail-item-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="9" cy="9" r="6.5"/><path d="M6.5 9h5M9 6.5v5"/></svg>
+        All Tools
+      </div>
+    </nav>
+    <div class="qs-rail-footer">
+      <div class="qs-version-stamp">Quiet Studio v1</div>
+    </div>
+  </aside>
+</div>
 
 <nav>
   <div class="nav-logo" onclick="goHome()" style="cursor:pointer;">S<span class="nav-logo-dot">.</span>A<span class="nav-logo-dot">.</span>M<span class="nav-logo-dot">.</span></div>
