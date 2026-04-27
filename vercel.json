@@ -22,10 +22,6 @@
       "destination": "/users.html"
     },
     {
-      "source": "/welcome",
-      "destination": "/welcome.html"
-    },
-    {
       "source": "/meet",
       "destination": "/meet.html"
     },
@@ -92,15 +88,6 @@
         {
           "key": "Pragma",
           "value": "no-cache"
-        }
-      ]
-    },
-    {
-      "source": "/welcome",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate"
         }
       ]
     }
