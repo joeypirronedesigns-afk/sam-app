@@ -381,7 +381,7 @@
 
   <script>
     // ── ELEVENLABS ────────────────────────────────────────────────────────────────
-    const ELEVENLABS_KEY = 'sk_c53e19f23635db2dea919a109fab9f84dc3790c29cbde074';
+    // ELEVENLABS_KEY removed — now read from Vercel env var via /api/elevenlabs proxy
     const VOICE_ID = 'T720RsqorTx4ZZWohrNN';
 
     // ── STATE ──────────────────────────────────────────────────────────────────
@@ -484,10 +484,10 @@
         try {
           if (!window._samAudio) window._samAudio = new Audio();
           const audio = window._samAudio;
-          const r = await fetch('https://api.elevenlabs.io/v1/text-to-speech/' + VOICE_ID, {
+          const r = await fetch('/api/elevenlabs', {
             method: 'POST',
-            headers: { 'xi-api-key': ELEVENLABS_KEY, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text: plain, model_id: 'eleven_turbo_v2', voice_settings: { stability: 0.5, similarity_boost: 0.75 } })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: plain, voiceId: VOICE_ID, modelId: 'eleven_turbo_v2', voiceSettings: { stability: 0.5, similarity_boost: 0.75 } })
           });
           if (r.ok) {
             const blob = await r.blob();
@@ -525,11 +525,11 @@
           // Resume context before each chunk — prevents suspension between bubbles
           if (ctx.state === 'suspended') await ctx.resume();
           try {
-            const r = await fetch('https://api.elevenlabs.io/v1/text-to-speech/' + VOICE_ID, {
-              method: 'POST',
-              headers: { 'xi-api-key': ELEVENLABS_KEY, 'Content-Type': 'application/json' },
-              body: JSON.stringify({ text: chunk, model_id: 'eleven_turbo_v2', voice_settings: { stability: 0.5, similarity_boost: 0.75 } })
-            });
+            const r = await fetch('/api/elevenlabs', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: chunk, voiceId: VOICE_ID, modelId: 'eleven_turbo_v2', voiceSettings: { stability: 0.5, similarity_boost: 0.75 } })
+          });
             if (!r.ok) continue;
             const buf = await r.arrayBuffer();
             const audioBuf = await ctx.decodeAudioData(buf);
