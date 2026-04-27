@@ -237,6 +237,62 @@
       color: var(--ink-soft);
     }
 
+    /* ── CREATOR LOOP ── */
+    .loop-section {
+      padding: 80px 24px;
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    .loop-section .mono-label { margin-bottom: 40px; }
+
+    .loop-list { border-top: 1px solid var(--rule); }
+
+    .loop-row {
+      display: grid;
+      grid-template-columns: 36px 200px 1fr;
+      gap: 0 24px;
+      align-items: baseline;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .loop-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--ink-faint);
+      padding-top: 2px;
+    }
+
+    .loop-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.4;
+    }
+
+    .loop-desc {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--ink-soft);
+    }
+
+    .loop-row-return .loop-num {
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--ink-faint);
+    }
+
+    .loop-row-return .loop-desc {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--serif-accent);
+    }
+
     /* ── WHY SECTION ── */
     .why-section {
       padding: 80px 24px;
@@ -465,6 +521,7 @@
     @media (min-width: 768px) {
       .nav { padding: 0 48px; }
       .hero { padding: 108px 48px 96px; }
+      .loop-section { padding: 88px 48px; }
       .tools-section { padding: 88px 48px; }
       .why-section { padding: 88px 48px; }
       .pricing-section { padding: 88px 48px; }
@@ -473,6 +530,17 @@
 
     @media (max-width: 767px) {
       .hero-body { font-size: 16px; }
+
+      .loop-row {
+        grid-template-columns: 28px 1fr;
+        gap: 0 12px;
+        row-gap: 6px;
+        padding: 24px 0;
+        align-items: start;
+      }
+      .loop-name { grid-column: 2; }
+      .loop-desc { grid-column: 2; }
+      .loop-row-return .loop-name { display: none; }
 
       .tool-row {
         grid-template-columns: 28px 1fr;
@@ -507,11 +575,45 @@
     <p class="hero-kicker">AI creative director for serious creators</p>
     <h1 class="hero-headline">Your story,<br>in <em>your voice.</em></h1>
     <p class="hero-body">
-      SAM learns how you write, understands your current project, and turns ideas into content that reads like you made every decision — not like AI, not like everyone else.
+      You're working on something real — a video, a newsletter, a build you're showing up for every day. SAM turns the overwhelm of getting it out of your head into work you're ready to post. The work compounds. The voice stays yours.
     </p>
     <div class="hero-actions">
       <a href="/meet" class="btn-primary">Meet SAM →</a>
       <span class="hero-note">7 days free · no card needed</span>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- HOW IT WORKS -->
+  <div class="loop-section">
+    <p class="mono-label">How it works</p>
+    <div class="loop-list">
+
+      <div class="loop-row">
+        <span class="loop-num">01</span>
+        <div class="loop-name">Voice DNA</div>
+        <div class="loop-desc">SAM learns how you actually write — your pacing, your structure, the decisions you make when something matters.</div>
+      </div>
+
+      <div class="loop-row">
+        <span class="loop-num">02</span>
+        <div class="loop-name">Story Engine</div>
+        <div class="loop-desc">Twelve deliberate steps that turn your current project into a narrative framework you can use for weeks.</div>
+      </div>
+
+      <div class="loop-row">
+        <span class="loop-num">03</span>
+        <div class="loop-name">Reach</div>
+        <div class="loop-desc">The same story, adapted for eight surfaces — each one shaped for the platform's audience and format, not just resized.</div>
+      </div>
+
+      <div class="loop-row loop-row-return">
+        <span class="loop-num">↺</span>
+        <div class="loop-name"></div>
+        <div class="loop-desc">And the next one learns from this one.</div>
+      </div>
+
     </div>
   </div>
 
