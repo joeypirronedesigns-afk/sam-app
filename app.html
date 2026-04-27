@@ -4890,6 +4890,19 @@ body.quiet-studio-shell .qs-dashboard {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
+.qs-tile-icon {
+  width: 28px;
+  height: 28px;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.qs-tile--coming-soon .qs-tile-icon {
+  color: var(--ink-faint);
 }
 
 .qs-drawer-tile-text { flex: 1; min-width: 0; }
@@ -4926,7 +4939,7 @@ body.quiet-studio-shell .qs-dashboard {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v2">
+<div data-qs-shell="true" data-qs-version="v2.1">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
     <div class="qs-rail-header">
       <div class="qs-rail-logo-mark">QS</div>
@@ -4934,28 +4947,28 @@ body.quiet-studio-shell .qs-dashboard {
     </div>
     <nav class="qs-rail-nav" aria-label="Studio navigation">
       <div class="qs-rail-item">
-        <svg class="qs-rail-item-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="2" y="2" width="6" height="6" rx="1.5"/><rect x="10" y="2" width="6" height="6" rx="1.5"/><rect x="2" y="10" width="6" height="6" rx="1.5"/><rect x="10" y="10" width="6" height="6" rx="1.5"/></svg>
+        <svg class="qs-rail-item-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><rect x="13" y="4" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><rect x="4" y="13" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><rect x="13" y="13" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Dashboard
       </div>
       <div class="qs-rail-item">
-        <svg class="qs-rail-item-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M9 2.5l1.8 3.7 4.1.6-3 2.9.7 4.1L9 11.8l-3.6 1.9.7-4.1-3-2.9 4.1-.6L9 2.5z"/></svg>
+        <svg class="qs-rail-item-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4L13.7 8.3L18 10L13.7 11.7L12 16L10.3 11.7L6 10L10.3 8.3L12 4Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Spark
       </div>
       <div class="qs-rail-item">
-        <svg class="qs-rail-item-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 4.5h12M3 8.5h7M3 12.5h9"/></svg>
+        <svg class="qs-rail-item-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="7" width="11" height="10" rx="2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 7V6.5C9 5.7 9.7 5 10.5 5H17.5C18.3 5 19 5.7 19 6.5V13.5C19 14.3 18.3 15 17.5 15H16" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
         My Ideas
       </div>
       <div class="qs-rail-item">
-        <svg class="qs-rail-item-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 3h10a1 1 0 011 1v1H3V4a1 1 0 011-1zM3 5h12l-.9 9.1a1 1 0 01-1 .9H4.9a1 1 0 01-1-.9L3 5z"/></svg>
+        <svg class="qs-rail-item-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H11V18H5.5C4.7 18 4 17.3 4 16.5V5.5Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 5.5C20 4.7 19.3 4 18.5 4H13V18H18.5C19.3 18 20 17.3 20 16.5V5.5Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 8L9 9L7 11L9 13" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 8L17 9L15 11L17 13" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Story Engine
       </div>
       <div class="qs-rail-item">
-        <svg class="qs-rail-item-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="9" cy="9" r="6.5"/><path d="M6.5 9h5M9 6.5v5"/></svg>
+        <svg class="qs-rail-item-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 12H16M12 8V16" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
         All Tools
       </div>
     </nav>
     <div class="qs-rail-footer">
-      <div class="qs-version-stamp">Quiet Studio v2</div>
+      <div class="qs-version-stamp">Quiet Studio v2.1</div>
     </div>
   </aside>
 </div>
@@ -5342,24 +5355,28 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
 
         <!-- Spark -->
         <div class="qs-tile" onclick="openTool('spark')">
+          <svg class="qs-tile-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4L13.7 8.3L18 10L13.7 11.7L12 16L10.3 11.7L6 10L10.3 8.3L12 4Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <div class="qs-tile-title">Spark</div>
           <div class="qs-tile-desc">Five content ideas for your niche, fast</div>
         </div>
 
         <!-- My Ideas -->
         <div class="qs-tile" onclick="if(typeof openIdeasPanel==='function')openIdeasPanel()">
+          <svg class="qs-tile-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="7" width="11" height="10" rx="2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 7V6.5C9 5.7 9.7 5 10.5 5H17.5C18.3 5 19 5.7 19 6.5V13.5C19 14.3 18.3 15 17.5 15H16" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <div class="qs-tile-title">My Ideas</div>
           <div class="qs-tile-desc">Everything you've saved in one place</div>
         </div>
 
         <!-- Story Engine -->
         <div class="qs-tile" onclick="openWizardPage()">
+          <svg class="qs-tile-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H11V18H5.5C4.7 18 4 17.3 4 16.5V5.5Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 5.5C20 4.7 19.3 4 18.5 4H13V18H18.5C19.3 18 20 17.3 20 16.5V5.5Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 8L9 9L7 11L9 13" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 8L17 9L15 11L17 13" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <div class="qs-tile-title">Story Engine</div>
           <div class="qs-tile-desc">Twelve steps from stuck to ready-to-post</div>
         </div>
 
         <!-- Voice DNA — coming soon -->
         <div class="qs-tile qs-tile--coming-soon">
+          <svg class="qs-tile-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 8C7 6 9 10 12 8C15 6 17 10 19 8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 16C7 14 9 18 12 16C15 14 17 18 19 16" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 8V16M12 8V16M17 8V16" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <div class="qs-tile-title">Voice DNA</div>
           <div class="qs-tile-desc">Living profile of how you communicate</div>
           <div class="qs-coming-badge">Coming soon</div>
@@ -5367,6 +5384,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
 
         <!-- Reach — coming soon -->
         <div class="qs-tile qs-tile--coming-soon">
+          <svg class="qs-tile-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="2.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><circle cx="5" cy="6" r="1.8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><circle cx="19" cy="6" r="1.8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><circle cx="5" cy="18" r="1.8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><circle cx="19" cy="18" r="1.8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 7L10 11M17.5 7L14 11M6.5 17L10 13M17.5 17L14 13" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <div class="qs-tile-title">Reach</div>
           <div class="qs-tile-desc">Adapts your story for every platform</div>
           <div class="qs-coming-badge">Coming soon</div>
@@ -5374,6 +5392,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
 
         <!-- All Tools — opens drawer -->
         <div class="qs-tile" onclick="openQSDrawer()">
+          <svg class="qs-tile-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 12H16M12 8V16" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <div class="qs-tile-title">All Tools</div>
           <div class="qs-tile-desc">Pulse, Blueprint, Vision, Lens</div>
         </div>
@@ -14740,8 +14759,8 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
   <div class="qs-drawer-body">
 
     <div class="qs-drawer-tile" onclick="closeQSDrawer();setTimeout(function(){openTool('pulse');},200)">
-      <div class="qs-drawer-tile-icon" style="background:rgba(244,114,182,0.1);">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#F472B6" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M2 6h14M2 9h8M2 12h10"/></svg>
+      <div class="qs-drawer-tile-icon">
+        <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 13H6.2L8.5 8.4L11.1 16L13.6 11.2L15.3 13H21" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <div class="qs-drawer-tile-text">
         <div class="qs-drawer-tile-name">Pulse</div>
@@ -14750,8 +14769,8 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
     </div>
 
     <div class="qs-drawer-tile" onclick="closeQSDrawer();setTimeout(function(){openTool('blueprint');},200)">
-      <div class="qs-drawer-tile-icon" style="background:rgba(56,189,248,0.1);">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#38BDF8" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4" width="12" height="11" rx="1.5"/><path d="M3 7.5h12M6.5 3v2.5M11.5 3v2.5"/></svg>
+      <div class="qs-drawer-tile-icon">
+        <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 4V20M14 4V20M4 10H14" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 14L18 12L20 14" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <div class="qs-drawer-tile-text">
         <div class="qs-drawer-tile-name">Blueprint</div>
@@ -14760,8 +14779,8 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
     </div>
 
     <div class="qs-drawer-tile" onclick="closeQSDrawer();setTimeout(function(){openTool('vision');},200)">
-      <div class="qs-drawer-tile-icon" style="background:rgba(52,211,153,0.1);">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><polygon points="7,5 15,9 7,13" fill="#34D399"/><rect x="3" y="5" width="2" height="8" rx="1" fill="#34D399"/></svg>
+      <div class="qs-drawer-tile-icon">
+        <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 5H5.5C4.7 5 4 5.7 4 6.5V8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 5H18.5C19.3 5 20 5.7 20 6.5V8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 19H5.5C4.7 19 4 18.3 4 17.5V16" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 19H18.5C19.3 19 20 18.3 20 17.5V16" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 9L15 12L10 15V9Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <div class="qs-drawer-tile-text">
         <div class="qs-drawer-tile-name">Vision</div>
@@ -14770,8 +14789,8 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
     </div>
 
     <div class="qs-drawer-tile" onclick="closeQSDrawer();setTimeout(function(){openTool('lens');},200)">
-      <div class="qs-drawer-tile-icon" style="background:rgba(251,191,36,0.1);">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#FBBF24" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8.5" r="4"/><circle cx="9" cy="8.5" r="1.5" fill="#FBBF24" stroke="none"/><path d="M9 2v2M9 13v3M2 8.5h2M14 8.5h2"/></svg>
+      <div class="qs-drawer-tile-icon">
+        <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.5" cy="10.5" r="5.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.5 14.5L19 19" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 12L9.8 10.2L11.3 11.6L13.2 8.9" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <div class="qs-drawer-tile-text">
         <div class="qs-drawer-tile-name">Lens</div>
