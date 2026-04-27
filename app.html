@@ -4811,8 +4811,11 @@ body.quiet-studio-shell .qs-rail {
 }
 
 /* ── HIDE LEGACY CHROME WHEN QS SHELL IS ACTIVE ── */
-body.quiet-studio-shell #heroSection { display: none !important; }
-body.quiet-studio-shell #howItWorks  { display: none !important; }
+body.quiet-studio-shell #heroSection     { display: none !important; }
+body.quiet-studio-shell #howItWorks      { display: none !important; }
+/* Standalone rules — belt-and-suspenders, grouped selector may lose to JS inline */
+body.quiet-studio-shell #ecosystemOverlay { display: none !important; }
+body.quiet-studio-shell #tourNextBanner   { display: none !important; }
 
 /* ── QS DASHBOARD ── */
 .qs-dashboard { display: none; }
@@ -5122,7 +5125,7 @@ body.quiet-studio-shell .qs-dashboard {
 </nav>
 
 <main>
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v9.4</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v9.5</div>
 
 
 
@@ -13243,7 +13246,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v9.4</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v9.5</div>
 
 
   <!-- PROGRESS BAR -->
@@ -14519,6 +14522,9 @@ function openEcosystemOverlay() {
     if (el) { el.style.display = 'flex'; document.body.style.overflow = 'hidden'; }
   }
   window.openEcosystemOverlay = openEcosystemOverlay;
+  if (document.body.classList.contains('quiet-studio-shell')) {
+    window.openEcosystemOverlay = function() {};
+  }
   function closeEcosystemOverlay() {
     document.querySelectorAll('#ecosystemOverlay').forEach(el => { el.style.display = 'none'; });
     document.body.style.overflow = '';
