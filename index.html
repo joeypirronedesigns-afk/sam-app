@@ -85,16 +85,16 @@
     .nav-cta {
       display: inline-flex;
       align-items: center;
-      font-size: 13px;
-      font-weight: 600;
-      color: #fff;
-      background: var(--accent);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--ink);
+      background: transparent;
       border-radius: 6px;
       padding: 8px 18px;
       text-decoration: none;
-      transition: background 150ms var(--ease);
+      transition: color 150ms var(--ease);
     }
-    .nav-cta:hover { background: var(--accent-hover); }
+    .nav-cta:hover { color: var(--accent); text-decoration: underline; }
 
     /* ── SHARED ── */
     .mono-label {
@@ -178,7 +178,7 @@
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       letter-spacing: 0.06em;
-      color: var(--ink-faint);
+      color: var(--ink-muted);
     }
 
     /* ── TOOLS LIST ── */
