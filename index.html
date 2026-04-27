@@ -452,6 +452,514 @@
       line-height: 1.6;
     }
 
+    /* ── TOOLKIT SECTION ── */
+    .toolkit-section {
+      padding: 80px 24px;
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    .toolkit-bridge {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--ink-muted);
+      margin-bottom: 12px;
+    }
+
+    .toolkit-section > .mono-label { margin-bottom: 48px; }
+
+    .toolkit-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .tk-card {
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      padding: 40px;
+      box-shadow: 0 1px 2px rgba(26,24,21,.04), 0 2px 8px rgba(26,24,21,.04);
+    }
+
+    .tk-name {
+      font-family: 'Instrument Serif', serif;
+      font-size: 28px;
+      font-weight: 400;
+      line-height: 1.2;
+      color: var(--ink);
+      margin-bottom: 32px;
+    }
+
+    .tk-caption {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-size: 16px;
+      line-height: 1.5;
+      color: #6B6760;
+      margin-top: 24px;
+    }
+
+    /* Shared sub-elements */
+    .tk-subhead {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #6B6760;
+      margin-bottom: 16px;
+    }
+
+    .tk-section-head {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .tk-section-head-nb {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .tk-divider {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin: 32px 0;
+    }
+
+    /* Lens */
+    .tk-verdict-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--serif-accent);
+      background: #FAEFEB;
+      padding: 6px 12px;
+      border-radius: 2px;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+
+    .tk-verdict {
+      border-left: 3px solid var(--serif-accent);
+      padding-left: 20px;
+      margin-bottom: 32px;
+    }
+
+    .tk-verdict-text {
+      font-family: 'Instrument Serif', serif;
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 1.3;
+      color: var(--ink);
+    }
+
+    .tk-chevron-bullets {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .tk-chevron-bullets li {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--ink);
+      padding-left: 24px;
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    .tk-chevron-bullets li:last-child { margin-bottom: 0; }
+
+    .tk-chevron-bullets li::before {
+      content: '›';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 18px;
+      line-height: 1.4;
+    }
+
+    /* Pulse */
+    .tk-hook {
+      border-left: 3px solid var(--accent);
+      padding-left: 16px;
+      margin-bottom: 8px;
+    }
+
+    .tk-hook-text {
+      font-family: 'Instrument Serif', serif;
+      font-size: 26px;
+      font-weight: 400;
+      line-height: 1.3;
+      color: var(--ink);
+    }
+
+    .tk-arrow-bullets {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .tk-arrow-bullets li {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--ink);
+      padding-left: 24px;
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    .tk-arrow-bullets li:last-child { margin-bottom: 0; }
+
+    .tk-arrow-bullets li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--serif-accent);
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    /* Blueprint */
+    .tk-day-list { display: flex; flex-direction: column; }
+
+    .tk-day-item {
+      padding-bottom: 24px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid #F0EDE5;
+    }
+
+    .tk-day-item:last-child {
+      padding-bottom: 0;
+      margin-bottom: 0;
+      border-bottom: none;
+    }
+
+    .tk-day-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .tk-day-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+
+    .tk-day-platform {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #6B6760;
+    }
+
+    .tk-day-format {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #6B6760;
+      margin-bottom: 8px;
+    }
+
+    .tk-day-post {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--ink);
+    }
+
+    .tk-hashtags { color: #6B6760; }
+
+    /* Vision */
+    .tk-concept-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 28px;
+      font-weight: 400;
+      line-height: 1.3;
+      color: var(--ink);
+      margin-bottom: 12px;
+    }
+
+    .tk-format-pill {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #6B6760;
+      background: #F0EDE5;
+      padding: 4px 10px;
+      border-radius: 2px;
+      margin-bottom: 24px;
+    }
+
+    .tk-score-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .tk-score-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #6B6760;
+    }
+
+    .tk-score-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--serif-accent);
+    }
+
+    .tk-score-track {
+      width: 100%;
+      height: 6px;
+      background: #F0EDE5;
+      border-radius: 3px;
+      margin-bottom: 32px;
+    }
+
+    .tk-score-fill {
+      height: 100%;
+      width: 74%;
+      background: var(--serif-accent);
+      border-radius: 3px;
+    }
+
+    .tk-reasoning {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--ink);
+    }
+
+    /* Spark */
+    .tk-spark-list { display: flex; flex-direction: column; }
+
+    .tk-spark-item {
+      padding-bottom: 28px;
+      margin-bottom: 28px;
+      border-bottom: 1px solid #F0EDE5;
+    }
+
+    .tk-spark-item:last-child {
+      padding-bottom: 0;
+      margin-bottom: 0;
+      border-bottom: none;
+    }
+
+    .tk-spark-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #6B6760;
+      margin-bottom: 8px;
+    }
+
+    .tk-spark-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .tk-spark-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 19px;
+      font-weight: 400;
+      line-height: 1.35;
+      color: var(--ink);
+    }
+
+    .tk-spark-platform {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      padding-top: 6px;
+      flex-shrink: 0;
+    }
+
+    .tk-spark-reason {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #6B6760;
+    }
+
+    /* My Ideas */
+    .tk-myideas-name-row {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .tk-myideas-name-row .tk-name { margin-bottom: 0; }
+
+    .tk-myideas-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      color: #6B6760;
+    }
+
+    .tk-search-field {
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      padding: 12px 16px;
+      border-radius: 2px;
+      font-size: 14px;
+      color: #6B6760;
+      width: 100%;
+      display: block;
+      margin-bottom: 24px;
+    }
+
+    .tk-filter-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #6B6760;
+      margin-bottom: 10px;
+    }
+
+    .tk-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .tk-chip {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      padding: 5px 10px;
+      border-radius: 2px;
+      border: 1px solid var(--rule);
+      color: #6B6760;
+      background: var(--paper);
+    }
+
+    .tk-chip-teal {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: #E8F0F1;
+    }
+
+    .tk-chip-rust {
+      color: var(--serif-accent);
+      border-color: var(--serif-accent);
+      background: #FAEFEB;
+    }
+
+    .tk-ideas-hr {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin: 24px 0;
+    }
+
+    .tk-idea-card {
+      padding-bottom: 24px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid #F0EDE5;
+    }
+
+    .tk-idea-card:last-child {
+      padding-bottom: 0;
+      margin-bottom: 0;
+      border-bottom: none;
+    }
+
+    .tk-idea-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .tk-idea-source { display: flex; align-items: center; }
+
+    .tk-idea-source-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--serif-accent);
+    }
+
+    .tk-idea-source-type {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      color: #6B6760;
+    }
+
+    .tk-idea-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #6B6760;
+    }
+
+    .tk-idea-content {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--ink);
+      margin-bottom: 12px;
+    }
+
+    .tk-stage-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .tk-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 2px;
+      color: #6B6760;
+      background: #F0EDE5;
+    }
+
+    .tk-badge-active {
+      color: #FFFFFF;
+      background: var(--accent);
+    }
+
     /* ── FINAL CTA ── */
     .cta-section {
       padding: 96px 24px;
@@ -517,12 +1025,20 @@
     }
     .footer-links a:hover { color: var(--ink-muted); }
 
+    .footer-version {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--ink-faint);
+      letter-spacing: 0.05em;
+    }
+
     /* ── RESPONSIVE ── */
     @media (min-width: 768px) {
       .nav { padding: 0 48px; }
       .hero { padding: 108px 48px 96px; }
       .loop-section { padding: 88px 48px; }
       .tools-section { padding: 88px 48px; }
+      .toolkit-section { padding: 88px 48px; }
       .why-section { padding: 88px 48px; }
       .pricing-section { padding: 88px 48px; }
       footer { padding: 32px 48px; }
@@ -552,6 +1068,12 @@
       .tool-desc { grid-column: 2; }
 
       .why-points { gap: 28px; }
+
+      .toolkit-grid {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+      .tk-card { padding: 28px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -707,6 +1229,204 @@
     </div>
   </div>
 
+  <!-- TOOLKIT -->
+  <div class="toolkit-section">
+    <p class="toolkit-bridge">The loop is the heartbeat. These are the additional tools that make SAM deeper.</p>
+    <p class="mono-label">The rest of the toolkit</p>
+    <div class="toolkit-grid">
+
+      <!-- Lens -->
+      <div>
+        <div class="tk-card">
+          <div class="tk-name">Lens</div>
+          <span class="tk-verdict-tag">Analytics detected</span>
+          <div class="tk-verdict">
+            <p class="tk-verdict-text">Your overall account is growing fast but your latest post bombed hard — that gap is the real story.</p>
+          </div>
+          <p class="tk-subhead">What's working</p>
+          <ul class="tk-chevron-bullets">
+            <li>Views doubled in 28 days — 105% growth means the algorithm is starting to pick you up, something is clicking</li>
+            <li>Net followers up 150% is the most underrated stat here — you're not just getting views, you're converting strangers into followers</li>
+            <li>Engagement up 28% alongside views means your audience isn't just scrolling past, they're actually stopping and interacting</li>
+          </ul>
+        </div>
+        <p class="tk-caption">Drop an analytics screenshot. SAM tells you what your numbers actually mean.</p>
+      </div>
+
+      <!-- Pulse -->
+      <div>
+        <div class="tk-card">
+          <div class="tk-name">Pulse</div>
+          <p class="tk-subhead">Your hook</p>
+          <div class="tk-hook">
+            <p class="tk-hook-text">I moved 1,200 miles from home and bought a house that probably should've been condemned.</p>
+          </div>
+          <hr class="tk-divider" />
+          <p class="tk-subhead">B-roll shots</p>
+          <ul class="tk-arrow-bullets">
+            <li>Wide shot of the cottage exterior — overgrown, weathered, all of it</li>
+            <li>Close-up of original 1950s details — trim, flooring, fixtures before demo</li>
+            <li>You swinging a demo tool into a wall — first real gut punch of the reno</li>
+            <li>Quick pan of the worst damage — water stains, rot, whatever's most brutal</li>
+          </ul>
+        </div>
+        <p class="tk-caption">Describe a moment. SAM turns it into a post.</p>
+      </div>
+
+      <!-- Blueprint -->
+      <div>
+        <div class="tk-card">
+          <div class="tk-name">Blueprint</div>
+          <p class="tk-section-head">Your 7-day plan</p>
+          <div class="tk-day-list">
+            <div class="tk-day-item">
+              <div class="tk-day-meta">
+                <span class="tk-day-label">Monday</span>
+                <span class="tk-day-platform">Facebook Reels</span>
+              </div>
+              <div class="tk-day-format">Reel</div>
+              <p class="tk-day-post">stripped a 1950s cottage down to the bones — no plan, just a demo bar and bad decisions 😅 this thing had layers. literal layers. <span class="tk-hashtags">#OldHouseProblems #CottageRehab #DIY</span></p>
+            </div>
+            <div class="tk-day-item">
+              <div class="tk-day-meta">
+                <span class="tk-day-label">Tuesday</span>
+                <span class="tk-day-platform">Facebook Reels</span>
+              </div>
+              <div class="tk-day-format">Reel</div>
+              <p class="tk-day-post">fort myers kid ends up gutting a 50s cottage in maryland. life is weird. but the bones on this house? actually solid. stay tuned. <span class="tk-hashtags">#CottageRehab #DIYRenovation</span></p>
+            </div>
+            <div class="tk-day-item">
+              <div class="tk-day-meta">
+                <span class="tk-day-label">Wednesday</span>
+                <span class="tk-day-platform">Facebook Reels</span>
+              </div>
+              <div class="tk-day-format">Reel</div>
+              <p class="tk-day-post">moved from florida to indiana to maryland — chasing something different each time. right now i'm chasing whatever's behind this plaster wall. <span class="tk-hashtags">#OldHouseLove #CottageRehab</span></p>
+            </div>
+          </div>
+        </div>
+        <p class="tk-caption">Pick your platforms. SAM builds 7 days of posts with a different angle each time.</p>
+      </div>
+
+      <!-- Vision -->
+      <div>
+        <div class="tk-card">
+          <div class="tk-name">Vision</div>
+          <p class="tk-section-head-nb">Your concept</p>
+          <div class="tk-concept-title">I gutted a 1950s cottage nobody wanted</div>
+          <span class="tk-format-pill">Reel</span>
+          <div class="tk-score-row">
+            <span class="tk-score-label">Scroll-stop score</span>
+            <span class="tk-score-value">74%</span>
+          </div>
+          <div class="tk-score-track"><div class="tk-score-fill"></div></div>
+          <hr class="tk-divider" />
+          <p class="tk-section-head-nb">Why it works</p>
+          <p class="tk-reasoning">People follow places and people before they follow content — a 1950s gut job in Maryland with a Florida guy who bounced through Indianapolis is a specific enough story that it cuts through the noise. The tutorial gives the algorithm a reason to push it, the personal thread gives people a reason to follow.</p>
+        </div>
+        <p class="tk-caption">Pick your platform and concept style. SAM generates a video idea with a scroll-stop score and full filming direction.</p>
+      </div>
+
+      <!-- Spark -->
+      <div>
+        <div class="tk-card">
+          <div class="tk-name">Spark</div>
+          <p class="tk-section-head">Your ideas</p>
+          <div class="tk-spark-list">
+            <div class="tk-spark-item">
+              <div class="tk-spark-num">Idea 01</div>
+              <div class="tk-spark-row">
+                <div class="tk-spark-title">The real reason I gutted a 1950s cottage instead of buying something move-in ready</div>
+                <span class="tk-spark-platform">YouTube</span>
+              </div>
+              <p class="tk-spark-reason">People who follow renovation content don't just want to see the work — they want to know why someone made a hard choice, and this gives Joey a story that's actually his</p>
+            </div>
+            <div class="tk-spark-item">
+              <div class="tk-spark-num">Idea 02</div>
+              <div class="tk-spark-row">
+                <div class="tk-spark-title">What a 1950s Maryland cottage looks like when you pull the walls open for the first time — no filter, no cleanup</div>
+                <span class="tk-spark-platform">TikTok</span>
+              </div>
+              <p class="tk-spark-reason">Raw first-demo footage stops scrollers cold because everyone wants to see what's hiding behind old walls, and the shock factor does the work</p>
+            </div>
+            <div class="tk-spark-item">
+              <div class="tk-spark-num">Idea 03</div>
+              <div class="tk-spark-row">
+                <div class="tk-spark-title">I moved from Florida to Indiana to Maryland — here's what each place actually taught me</div>
+                <span class="tk-spark-platform">Instagram</span>
+              </div>
+              <p class="tk-spark-reason">The multi-state arc is genuinely unusual and gives Joey a personal story hook that separates him from every other renovation account</p>
+            </div>
+          </div>
+        </div>
+        <p class="tk-caption">Tell SAM your niche. SAM gives you 5 specific content ideas with reasoning for why each one will perform.</p>
+      </div>
+
+      <!-- My Ideas -->
+      <div>
+        <div class="tk-card">
+          <div class="tk-myideas-name-row">
+            <span class="tk-name">My Ideas</span>
+            <span class="tk-myideas-count">26 ideas</span>
+          </div>
+          <div class="tk-search-field">Search ideas, hooks, concepts…</div>
+          <p class="tk-filter-label">Source</p>
+          <div class="tk-chip-row">
+            <span class="tk-chip tk-chip-teal">All</span>
+            <span class="tk-chip">Playbook</span>
+            <span class="tk-chip">Pulse</span>
+            <span class="tk-chip">Spark</span>
+            <span class="tk-chip">Vision</span>
+            <span class="tk-chip">Blueprint</span>
+            <span class="tk-chip">Lens</span>
+          </div>
+          <p class="tk-filter-label">Stage</p>
+          <div class="tk-chip-row">
+            <span class="tk-chip tk-chip-rust">Saved</span>
+            <span class="tk-chip">Scripting</span>
+            <span class="tk-chip">Filmed</span>
+            <span class="tk-chip">Posted</span>
+          </div>
+          <hr class="tk-ideas-hr" />
+          <div class="tk-idea-card">
+            <div class="tk-idea-meta">
+              <div class="tk-idea-source">
+                <span class="tk-idea-source-name">PULSE</span>
+                <span class="tk-idea-source-type">&nbsp;— hook</span>
+              </div>
+              <span class="tk-idea-date">Apr 25</span>
+            </div>
+            <p class="tk-idea-content">"Nobody tells you that the scariest part of a renovation isn't the demo — it's the part right before you cover everything up forever."</p>
+            <div class="tk-stage-row">
+              <span class="tk-badge tk-badge-active">SAVED</span>
+              <span class="tk-badge">SCRIPTING</span>
+              <span class="tk-badge">FILMED</span>
+              <span class="tk-badge">POSTED</span>
+            </div>
+          </div>
+          <div class="tk-idea-card">
+            <div class="tk-idea-meta">
+              <div class="tk-idea-source">
+                <span class="tk-idea-source-name">PULSE</span>
+                <span class="tk-idea-source-type">&nbsp;— diagnosis</span>
+              </div>
+              <span class="tk-idea-date">Apr 25</span>
+            </div>
+            <p class="tk-idea-content">"This script hits the emotional core of imposter syndrome meeting unlikely momentum — Joey didn't hire a contractor, didn't hire a social media manager, didn't know what he was…"</p>
+            <div class="tk-stage-row">
+              <span class="tk-badge">SAVED</span>
+              <span class="tk-badge tk-badge-active">SCRIPTING</span>
+              <span class="tk-badge">FILMED</span>
+              <span class="tk-badge">POSTED</span>
+            </div>
+          </div>
+        </div>
+        <p class="tk-caption">Every idea SAM generates lives here — searchable, filterable, and tracked from saved to posted.</p>
+      </div>
+
+    </div>
+  </div>
+
   <!-- FINAL CTA -->
   <div class="cta-section">
     <h2 class="cta-headline">Ready to make work that<br><em>sounds like you?</em></h2>
@@ -718,6 +1438,7 @@
   <footer>
     <div class="footer-inner">
       <span class="footer-copy">© 2026 SAM for Creators</span>
+      <span class="footer-version">v0.9</span>
       <div class="footer-links">
         <a href="mailto:joey@samforcreators.com">Contact</a>
         <a href="/meet">Start free</a>
