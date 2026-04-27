@@ -10,13 +10,14 @@
       ],
       "destination": "https://samforcreators.com/$1",
       "permanent": true
+    },
+    {
+      "source": "/landing",
+      "destination": "/",
+      "permanent": true
     }
   ],
   "rewrites": [
-    {
-      "source": "/landing",
-      "destination": "/landing.html"
-    },
     {
       "source": "/users",
       "destination": "/users.html"
