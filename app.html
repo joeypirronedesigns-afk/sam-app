@@ -4544,6 +4544,9 @@ nav button,.trial-nav-badge,.hero-cta-primary{-webkit-tap-highlight-color:transp
 body.quiet-studio-shell {
   background: var(--paper);
   color: var(--ink);
+  /* --ink-faint in :root is #B8B4AB — too light against --paper (#FAFAF7).
+     Override locally so the version stamp and other faint text are legible. */
+  --ink-faint: #8A8680;
 }
 
 body.quiet-studio-shell .ambient { display: none; }
@@ -4693,7 +4696,7 @@ body.quiet-studio-shell .qs-rail {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v1">
+<div data-qs-shell="true" data-qs-version="v1.1">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
     <div class="qs-rail-header">
       <div class="qs-rail-logo-mark">QS</div>
@@ -4722,7 +4725,7 @@ body.quiet-studio-shell .qs-rail {
       </div>
     </nav>
     <div class="qs-rail-footer">
-      <div class="qs-version-stamp">Quiet Studio v1</div>
+      <div class="qs-version-stamp">Quiet Studio v1.1</div>
     </div>
   </aside>
 </div>
