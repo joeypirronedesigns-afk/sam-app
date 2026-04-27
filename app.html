@@ -4554,8 +4554,11 @@ body.quiet-studio-shell .ambient { display: none; }
 /* Push legacy top-nav right of the rail */
 body.quiet-studio-shell > nav { display: none !important; }
 body.quiet-studio-shell #chatFab,
-body.quiet-studio-shell #chatPanel,
-body.quiet-studio-shell #persistentSAMFab { display: none !important; }
+body.quiet-studio-shell #chatPanel { display: none !important; }
+body.quiet-studio-shell .psam-fab-btn,
+body.quiet-studio-shell .psam-fab-label { display: none !important; }
+body.quiet-studio-shell #persistentSAMFab { background: transparent !important; gap: 0 !important; }
+body.quiet-studio-shell .qs-legacy-workshop-block { display: none !important; }
 
 /* QS top strip */
 body.quiet-studio-shell .qs-topstrip {
@@ -5114,7 +5117,7 @@ body.quiet-studio-shell .qs-dashboard {
 </nav>
 
 <main>
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v9.0</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v9.1</div>
 
 
 
@@ -5522,13 +5525,13 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
 
       </div>
 
-      <div style="max-width:860px;margin:0 auto;padding:48px 24px 8px;">
+      <div class="qs-legacy-workshop-block" style="max-width:860px;margin:0 auto;padding:48px 24px 8px;">
         <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(167,139,250,0.5);margin-bottom:10px;">Your Studio</div>
         <h2 style="font-family:'Sora',sans-serif;font-size:clamp(24px,3vw,34px);font-weight:800;color:var(--text);margin:0 0 6px;">Workshop</h2>
         <p style="font-size:14px;color:var(--text3);margin:0 0 32px;line-height:1.6;">Everything SAM has built for you. Pick a tool and keep creating.</p>
       </div>
-      <!-- STORY WIZARD HERO ROW -->
-      <div style="max-width:860px;margin:0 auto 32px;padding:0 24px;">
+      <!-- STORY WIZARD HERO ROW (legacy, hidden under QS shell) -->
+      <div class="qs-legacy-workshop-block" style="max-width:860px;margin:0 auto 32px;padding:0 24px;">
         <div style="background:linear-gradient(135deg,rgba(109,40,217,0.15),rgba(244,114,182,0.08));border:1px solid rgba(167,139,250,0.3);border-radius:20px;padding:28px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;">
           <div style="flex:1;min-width:200px;">
             <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(167,139,250,0.6);margin-bottom:8px;">✦ Start here</div>
@@ -13235,7 +13238,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v9.0</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v9.1</div>
 
 
   <!-- PROGRESS BAR -->
