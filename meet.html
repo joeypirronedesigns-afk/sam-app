@@ -128,7 +128,7 @@
 <script>
 const STATE = { uid:null, phase:'greeting', storyRaw:'', voiceProfile:null, samContext:null, name:null };
 
-// Identity cache helpers — mirrored from index.html (shared module in future)
+// Identity cache helpers — mirrored from app.html (shared module in future)
 const _SAM_USER_KEY = 'sam-current-user';
 const _SAM_CACHE_TTL = 300000;
 function readUserCache() { try { return JSON.parse(localStorage.getItem(_SAM_USER_KEY) || 'null'); } catch { return null; } }

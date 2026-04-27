@@ -28,15 +28,11 @@
     },
     {
       "source": "/app",
-      "destination": "/index.html"
+      "destination": "/app.html"
     },
     {
       "source": "/app/:path*",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/",
-      "destination": "/landing.html"
+      "destination": "/app.html"
     }
   ],
   "functions": {
