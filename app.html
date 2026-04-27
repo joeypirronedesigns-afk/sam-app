@@ -4575,6 +4575,8 @@ body.quiet-studio-shell .qs-rail {
   z-index: 200;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 .qs-rail-header {
@@ -4617,6 +4619,14 @@ body.quiet-studio-shell .qs-rail {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  min-height: 0;
+  margin: 0;
+  position: static;
+  background: transparent;
+  box-sizing: border-box;
 }
 
 .qs-rail-item {
@@ -4696,7 +4706,7 @@ body.quiet-studio-shell .qs-rail {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v1.1">
+<div data-qs-shell="true" data-qs-version="v1.2">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
     <div class="qs-rail-header">
       <div class="qs-rail-logo-mark">QS</div>
@@ -4725,7 +4735,7 @@ body.quiet-studio-shell .qs-rail {
       </div>
     </nav>
     <div class="qs-rail-footer">
-      <div class="qs-version-stamp">Quiet Studio v1.1</div>
+      <div class="qs-version-stamp">Quiet Studio v1.2</div>
     </div>
   </aside>
 </div>
