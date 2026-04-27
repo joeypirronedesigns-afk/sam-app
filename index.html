@@ -491,6 +491,30 @@
       margin-bottom: 32px;
     }
 
+    .tk-name-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .tk-name-row .tk-name { margin-bottom: 0; }
+
+    .tk-icon {
+      width: 24px;
+      height: 24px;
+      flex: 0 0 24px;
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tk-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+
     .tk-caption {
       font-family: 'Instrument Serif', serif;
       font-style: italic;
@@ -817,9 +841,10 @@
     /* My Ideas */
     .tk-myideas-name-row {
       display: flex;
-      align-items: baseline;
+      align-items: center;
       gap: 16px;
       margin-bottom: 32px;
+      flex-wrap: wrap;
     }
 
     .tk-myideas-name-row .tk-name { margin-bottom: 0; }
@@ -1238,7 +1263,16 @@
       <!-- Lens -->
       <div>
         <div class="tk-card">
-          <div class="tk-name">Lens</div>
+          <div class="tk-name-row">
+            <span class="tk-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                <circle cx="10.5" cy="10.5" r="5.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M14.5 14.5L19 19" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8 12L9.8 10.2L11.3 11.6L13.2 8.9" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <div class="tk-name">Lens</div>
+          </div>
           <span class="tk-verdict-tag">Analytics detected</span>
           <div class="tk-verdict">
             <p class="tk-verdict-text">Your overall account is growing fast but your latest post bombed hard — that gap is the real story.</p>
@@ -1256,7 +1290,14 @@
       <!-- Pulse -->
       <div>
         <div class="tk-card">
-          <div class="tk-name">Pulse</div>
+          <div class="tk-name-row">
+            <span class="tk-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                <path d="M3 13H6.2L8.5 8.4L11.1 16L13.6 11.2L15.3 13H21" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <div class="tk-name">Pulse</div>
+          </div>
           <p class="tk-subhead">Your hook</p>
           <div class="tk-hook">
             <p class="tk-hook-text">I moved 1,200 miles from home and bought a house that probably should've been condemned.</p>
@@ -1276,7 +1317,16 @@
       <!-- Blueprint -->
       <div>
         <div class="tk-card">
-          <div class="tk-name">Blueprint</div>
+          <div class="tk-name-row">
+            <span class="tk-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                <rect x="4" y="4" width="16" height="16" rx="2.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8 4V20M14 4V20M4 10H14" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M16 14L18 12L20 14" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <div class="tk-name">Blueprint</div>
+          </div>
           <p class="tk-section-head">Your 7-day plan</p>
           <div class="tk-day-list">
             <div class="tk-day-item">
@@ -1311,7 +1361,18 @@
       <!-- Vision -->
       <div>
         <div class="tk-card">
-          <div class="tk-name">Vision</div>
+          <div class="tk-name-row">
+            <span class="tk-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                <path d="M7 5H5.5C4.7 5 4 5.7 4 6.5V8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M17 5H18.5C19.3 5 20 5.7 20 6.5V8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M7 19H5.5C4.7 19 4 18.3 4 17.5V16" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M17 19H18.5C19.3 19 20 18.3 20 17.5V16" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 9L15 12L10 15V9Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <div class="tk-name">Vision</div>
+          </div>
           <p class="tk-section-head-nb">Your concept</p>
           <div class="tk-concept-title">I gutted a 1950s cottage nobody wanted</div>
           <span class="tk-format-pill">Reel</span>
@@ -1330,7 +1391,14 @@
       <!-- Spark -->
       <div>
         <div class="tk-card">
-          <div class="tk-name">Spark</div>
+          <div class="tk-name-row">
+            <span class="tk-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                <path d="M12 4L13.7 8.3L18 10L13.7 11.7L12 16L10.3 11.7L6 10L10.3 8.3L12 4Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <div class="tk-name">Spark</div>
+          </div>
           <p class="tk-section-head">Your ideas</p>
           <div class="tk-spark-list">
             <div class="tk-spark-item">
@@ -1366,6 +1434,12 @@
       <div>
         <div class="tk-card">
           <div class="tk-myideas-name-row">
+            <span class="tk-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                <rect x="5" y="7" width="11" height="10" rx="2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9 7V6.5C9 5.7 9.7 5 10.5 5H17.5C18.3 5 19 5.7 19 6.5V13.5C19 14.3 18.3 15 17.5 15H16" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
             <span class="tk-name">My Ideas</span>
             <span class="tk-myideas-count">26 ideas</span>
           </div>
@@ -1438,7 +1512,7 @@
   <footer>
     <div class="footer-inner">
       <span class="footer-copy">© 2026 SAM for Creators</span>
-      <span class="footer-version">v0.9</span>
+      <span class="footer-version">v0.11</span>
       <div class="footer-links">
         <a href="mailto:joey@samforcreators.com">Contact</a>
         <a href="/meet">Start free</a>
