@@ -48,3 +48,4 @@ sam-app/
 - Frontend renders the output beautifully
 
 Your API key never touches the browser. It lives only in Vercel's secure environment.
+
