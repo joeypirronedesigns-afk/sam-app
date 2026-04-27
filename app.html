@@ -4693,6 +4693,226 @@ body.quiet-studio-shell .qs-rail {
   body.quiet-studio-shell .qs-rail { transition: none; }
   .qs-rail-item { transition: none; }
 }
+
+/* ── HIDE LEGACY CHROME WHEN QS SHELL IS ACTIVE ── */
+body.quiet-studio-shell #heroSection { display: none !important; }
+body.quiet-studio-shell #howItWorks  { display: none !important; }
+
+/* ── QS DASHBOARD ── */
+.qs-dashboard { display: none; }
+
+body.quiet-studio-shell .qs-dashboard {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding: 40px 32px 48px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+@media (max-width: 1024px) {
+  body.quiet-studio-shell .qs-dashboard { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  body.quiet-studio-shell .qs-dashboard {
+    grid-template-columns: 1fr;
+    padding: 24px 16px 32px;
+  }
+}
+
+.qs-tile {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 28px 24px;
+  cursor: pointer;
+  transition: background 0.15s cubic-bezier(0.16,1,0.3,1),
+              border-color 0.15s cubic-bezier(0.16,1,0.3,1);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 44px;
+  box-sizing: border-box;
+}
+
+.qs-tile:hover {
+  background: var(--surface-2);
+  border-color: var(--rule-strong);
+}
+
+.qs-tile--coming-soon {
+  cursor: default;
+}
+
+.qs-tile--coming-soon:hover {
+  background: var(--paper);
+  border-color: var(--rule);
+}
+
+.qs-tile-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.qs-tile-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+.qs-coming-badge {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  background: var(--surface-2);
+  border-radius: 50px;
+  padding: 3px 8px;
+  margin-top: 4px;
+  width: fit-content;
+}
+
+/* ── QS ALL TOOLS DRAWER ── */
+.qs-drawer-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 24, 21, 0.4);
+  z-index: 300;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+.qs-drawer-backdrop.open { display: block; }
+
+.qs-drawer {
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  width: 420px;
+  max-width: 100vw;
+  background: var(--paper);
+  border-left: 1px solid var(--rule);
+  z-index: 301;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.qs-drawer.open { transform: translateX(0); }
+
+.qs-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 24px 20px;
+  border-bottom: 1px solid var(--rule);
+  flex-shrink: 0;
+}
+
+.qs-drawer-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.qs-drawer-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 8px;
+  color: var(--ink-soft);
+  font-size: 22px;
+  line-height: 1;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s cubic-bezier(0.16,1,0.3,1);
+}
+
+.qs-drawer-close:hover {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
+.qs-drawer-body {
+  flex: 1;
+  padding: 16px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.qs-drawer-tile {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  cursor: pointer;
+  transition: background 0.15s cubic-bezier(0.16,1,0.3,1),
+              border-color 0.15s cubic-bezier(0.16,1,0.3,1);
+  -webkit-tap-highlight-color: transparent;
+  min-height: 44px;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.qs-drawer-tile:hover {
+  background: var(--surface-2);
+  border-color: var(--rule-strong);
+}
+
+.qs-drawer-tile-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.qs-drawer-tile-text { flex: 1; min-width: 0; }
+
+.qs-drawer-tile-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 3px;
+}
+
+.qs-drawer-tile-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qs-drawer { transition: none; }
+  .qs-tile, .qs-drawer-tile, .qs-drawer-close { transition: none; }
+}
 </style>
 
 </head>
@@ -4706,7 +4926,7 @@ body.quiet-studio-shell .qs-rail {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v1.2">
+<div data-qs-shell="true" data-qs-version="v2">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
     <div class="qs-rail-header">
       <div class="qs-rail-logo-mark">QS</div>
@@ -4735,7 +4955,7 @@ body.quiet-studio-shell .qs-rail {
       </div>
     </nav>
     <div class="qs-rail-footer">
-      <div class="qs-version-stamp">Quiet Studio v1.2</div>
+      <div class="qs-version-stamp">Quiet Studio v2</div>
     </div>
   </aside>
 </div>
@@ -5111,6 +5331,55 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
 
     <!-- WORKSHOP -->
     <div id="homeView">
+
+      <!-- ═══════════════════════════════════════════════════
+           QUIET STUDIO DASHBOARD — v2
+           Visible only under body.quiet-studio-shell.
+           Legacy workshop content below coexists for now —
+           Commit 3 will suppress it.
+      ════════════════════════════════════════════════════ -->
+      <div data-qs-dashboard="true" class="qs-dashboard">
+
+        <!-- Spark -->
+        <div class="qs-tile" onclick="openTool('spark')">
+          <div class="qs-tile-title">Spark</div>
+          <div class="qs-tile-desc">Five content ideas for your niche, fast</div>
+        </div>
+
+        <!-- My Ideas -->
+        <div class="qs-tile" onclick="if(typeof openIdeasPanel==='function')openIdeasPanel()">
+          <div class="qs-tile-title">My Ideas</div>
+          <div class="qs-tile-desc">Everything you've saved in one place</div>
+        </div>
+
+        <!-- Story Engine -->
+        <div class="qs-tile" onclick="openWizardPage()">
+          <div class="qs-tile-title">Story Engine</div>
+          <div class="qs-tile-desc">Twelve steps from stuck to ready-to-post</div>
+        </div>
+
+        <!-- Voice DNA — coming soon -->
+        <div class="qs-tile qs-tile--coming-soon">
+          <div class="qs-tile-title">Voice DNA</div>
+          <div class="qs-tile-desc">Living profile of how you communicate</div>
+          <div class="qs-coming-badge">Coming soon</div>
+        </div>
+
+        <!-- Reach — coming soon -->
+        <div class="qs-tile qs-tile--coming-soon">
+          <div class="qs-tile-title">Reach</div>
+          <div class="qs-tile-desc">Adapts your story for every platform</div>
+          <div class="qs-coming-badge">Coming soon</div>
+        </div>
+
+        <!-- All Tools — opens drawer -->
+        <div class="qs-tile" onclick="openQSDrawer()">
+          <div class="qs-tile-title">All Tools</div>
+          <div class="qs-tile-desc">Pulse, Blueprint, Vision, Lens</div>
+        </div>
+
+      </div>
+
       <div style="max-width:860px;margin:0 auto;padding:48px 24px 8px;">
         <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(167,139,250,0.5);margin-bottom:10px;">Your Studio</div>
         <h2 style="font-family:'Sora',sans-serif;font-size:clamp(24px,3vw,34px);font-weight:800;color:var(--text);margin:0 0 6px;">Workshop</h2>
@@ -14457,6 +14726,74 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
   </div>
 </div>
 
+
+<!-- ═══════════════════════════════════════════════════
+     QUIET STUDIO ALL TOOLS DRAWER — v2
+════════════════════════════════════════════════════ -->
+<div class="qs-drawer-backdrop" id="qsDrawerBackdrop" onclick="closeQSDrawer()"></div>
+
+<div data-qs-drawer="true" class="qs-drawer" id="qsDrawer" role="dialog" aria-label="All Tools">
+  <div class="qs-drawer-header">
+    <span class="qs-drawer-title">All Tools</span>
+    <button class="qs-drawer-close" onclick="closeQSDrawer()" aria-label="Close">×</button>
+  </div>
+  <div class="qs-drawer-body">
+
+    <div class="qs-drawer-tile" onclick="closeQSDrawer();setTimeout(function(){openTool('pulse');},200)">
+      <div class="qs-drawer-tile-icon" style="background:rgba(244,114,182,0.1);">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#F472B6" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M2 6h14M2 9h8M2 12h10"/></svg>
+      </div>
+      <div class="qs-drawer-tile-text">
+        <div class="qs-drawer-tile-name">Pulse</div>
+        <div class="qs-drawer-tile-desc">Turn a moment into a hook, script, and shot list</div>
+      </div>
+    </div>
+
+    <div class="qs-drawer-tile" onclick="closeQSDrawer();setTimeout(function(){openTool('blueprint');},200)">
+      <div class="qs-drawer-tile-icon" style="background:rgba(56,189,248,0.1);">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#38BDF8" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4" width="12" height="11" rx="1.5"/><path d="M3 7.5h12M6.5 3v2.5M11.5 3v2.5"/></svg>
+      </div>
+      <div class="qs-drawer-tile-text">
+        <div class="qs-drawer-tile-name">Blueprint</div>
+        <div class="qs-drawer-tile-desc">A 7-day posting plan with a different angle each day</div>
+      </div>
+    </div>
+
+    <div class="qs-drawer-tile" onclick="closeQSDrawer();setTimeout(function(){openTool('vision');},200)">
+      <div class="qs-drawer-tile-icon" style="background:rgba(52,211,153,0.1);">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><polygon points="7,5 15,9 7,13" fill="#34D399"/><rect x="3" y="5" width="2" height="8" rx="1" fill="#34D399"/></svg>
+      </div>
+      <div class="qs-drawer-tile-text">
+        <div class="qs-drawer-tile-name">Vision</div>
+        <div class="qs-drawer-tile-desc">Generate a video concept with scroll-stop score</div>
+      </div>
+    </div>
+
+    <div class="qs-drawer-tile" onclick="closeQSDrawer();setTimeout(function(){openTool('lens');},200)">
+      <div class="qs-drawer-tile-icon" style="background:rgba(251,191,36,0.1);">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#FBBF24" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8.5" r="4"/><circle cx="9" cy="8.5" r="1.5" fill="#FBBF24" stroke="none"/><path d="M9 2v2M9 13v3M2 8.5h2M14 8.5h2"/></svg>
+      </div>
+      <div class="qs-drawer-tile-text">
+        <div class="qs-drawer-tile-name">Lens</div>
+        <div class="qs-drawer-tile-desc">Drop a thumbnail or analytics screenshot, get a verdict</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function openQSDrawer() {
+  document.getElementById('qsDrawerBackdrop').classList.add('open');
+  document.getElementById('qsDrawer').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeQSDrawer() {
+  document.getElementById('qsDrawerBackdrop').classList.remove('open');
+  document.getElementById('qsDrawer').classList.remove('open');
+  document.body.style.overflow = '';
+}
+</script>
 
 </body>
 </html>
