@@ -2942,11 +2942,12 @@
        SAM GUIDED WIZARD
     ══════════════════════════════════════════════════════ */
 
+/* ── STORY ENGINE WORKSPACE — v9.17 ───────────────────────────── */
     .wizard-page {
       display: none;
       position: fixed;
       inset: 0;
-      background: var(--bg);
+      background: rgba(26, 24, 21, 0.72);
       z-index: 800;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
@@ -2959,11 +2960,9 @@
       position: sticky;
       top: 0;
       z-index: 10;
-      background: rgba(9,8,15,0.92);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background: var(--paper);
       padding: 14px 20px 12px;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--rule);
     }
     @media(min-width:768px){ .wizard-progress-wrap { padding: 16px 48px 14px; } }
 
@@ -2976,36 +2975,39 @@
       margin-bottom: 10px;
     }
     .wizard-progress-label {
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
+      font-family: var(--qs-font-mono);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: var(--text3);
+      color: var(--ink-muted);
     }
     .wizard-progress-step {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--spark);
+      font-family: var(--qs-font-mono);
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--ink);
     }
     .wizard-progress-bar {
       width: 100%;
       height: 3px;
-      background: var(--border);
+      background: var(--rule);
       border-radius: 2px;
       overflow: hidden;
     }
     .wizard-progress-fill {
       height: 100%;
       border-radius: 2px;
-      background: linear-gradient(90deg, #6D28D9, #A78BFA, #F472B6);
+      background: var(--accent);
       transition: width 0.5s cubic-bezier(0.34,1.2,0.64,1);
     }
 
     /* Wizard body */
     .wizard-body {
-      max-width: 640px;
+      max-width: 720px;
       margin: 0 auto;
       padding: 40px 24px 220px;
+      background: var(--paper);
     }
     @media(min-width:768px){ .wizard-body { padding: 56px 40px 220px; } }
 
@@ -3017,26 +3019,29 @@
     .wizard-step.active { display: block; }
 
     .wizard-question {
-      font-family: 'Sora', sans-serif;
-      font-size: clamp(22px, 4vw, 32px);
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      line-height: 1.2;
-      color: var(--text);
+      font-family: var(--qs-font-serif);
+      font-size: clamp(22px, 4vw, 28px);
+      font-weight: 400;
+      font-style: italic;
+      letter-spacing: 0;
+      line-height: 1.25;
+      color: var(--ink);
       margin-bottom: 12px;
     }
 
     .wizard-why {
+      font-family: var(--qs-font-ui);
       font-size: 14px;
       line-height: 1.7;
-      color: var(--text2);
+      color: var(--ink-soft);
       margin-bottom: 28px;
       padding: 14px 16px;
-      background: rgba(167,139,250,0.06);
-      border-left: 2px solid rgba(167,139,250,0.3);
-      border-radius: 0 var(--radius) var(--radius) 0;
+      background: transparent;
+      border-left: 2px solid var(--rule-strong);
+      border-radius: 0;
+      max-width: 560px;
     }
-    .wizard-why strong { color: var(--text); }
+    .wizard-why strong { color: var(--ink); }
 
     /* Choice buttons */
     .wizard-choices {
@@ -3051,9 +3056,9 @@
       align-items: flex-start;
       gap: 14px;
       padding: 16px 18px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
+      background: var(--surface-2);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
       cursor: pointer;
       transition: all 0.2s cubic-bezier(0.34,1.2,0.64,1);
       text-align: left;
@@ -3061,15 +3066,12 @@
       user-select: none;
     }
     .wizard-choice:hover {
-      border-color: var(--border2);
-      background: var(--surface2);
-      transform: translateY(-2px);
+      border-color: var(--rule-strong);
+      background: var(--surface-2);
     }
     .wizard-choice.selected {
-      background: linear-gradient(135deg, rgba(109,40,217,0.2), rgba(244,114,182,0.1));
-      border-color: rgba(167,139,250,0.5);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(109,40,217,0.15);
+      background: var(--accent-soft);
+      border-color: var(--accent);
     }
     .wizard-choice-icon {
       font-size: 24px;
@@ -3078,25 +3080,22 @@
     }
     .wizard-choice-content { flex: 1; }
     .wizard-choice-label {
-      font-family: 'Sora', sans-serif;
+      font-family: var(--qs-font-ui);
       font-size: 15px;
       font-weight: 600;
-      color: var(--text);
+      color: var(--ink);
       margin-bottom: 3px;
       line-height: 1.3;
     }
     .wizard-choice.selected .wizard-choice-label {
-      background: linear-gradient(135deg, #A78BFA, #F472B6);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: var(--accent);
     }
     .wizard-choice-desc {
       font-size: 13px;
-      color: var(--text3);
+      color: var(--ink-muted);
       line-height: 1.5;
     }
-    .wizard-choice.selected .wizard-choice-desc { color: var(--text2); }
+    .wizard-choice.selected .wizard-choice-desc { color: var(--ink-soft); }
 
     /* Multi-select choices */
     .wizard-choices.multi .wizard-choice { position: relative; }
@@ -3105,16 +3104,16 @@
       top: 12px; right: 14px;
       width: 20px; height: 20px;
       border-radius: 50%;
-      border: 1.5px solid var(--border2);
+      border: 1.5px solid var(--rule);
       display: flex; align-items: center; justify-content: center;
       font-size: 10px;
       color: transparent;
       transition: all 0.15s;
     }
     .wizard-choice.selected .wizard-choice-check {
-      background: linear-gradient(135deg, #A78BFA, #F472B6);
+      background: var(--accent);
       border-color: transparent;
-      color: #fff;
+      color: var(--paper);
     }
 
     /* SAM diagnosis card */
@@ -3357,10 +3356,8 @@
       bottom: 0; left: 0; right: 0;
       padding: 16px 24px;
       padding-bottom: max(16px, env(safe-area-inset-bottom, 16px));
-      background: rgba(9,8,15,0.95);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-top: 1px solid var(--border);
+      background: var(--paper);
+      border-top: 1px solid var(--rule);
       display: flex;
       gap: 12px;
       align-items: center;
@@ -3374,34 +3371,33 @@
       gap: 6px;
       font-size: 14px;
       font-weight: 500;
-      color: var(--text3);
+      color: var(--ink-soft);
       background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 50px;
+      border: 1px solid var(--rule);
+      border-radius: 8px;
       padding: 12px 20px;
       cursor: pointer;
       transition: all 0.2s;
       flex-shrink: 0;
     }
-    .wizard-back:hover { color: var(--text2); border-color: var(--border2); }
+    .wizard-back:hover { color: var(--ink); border-color: var(--rule-strong); }
 
     .wizard-next {
       flex: 1;
       padding: 14px;
       border: none;
-      border-radius: var(--radius);
-      font-family: 'Sora', sans-serif;
+      border-radius: 8px;
+      font-family: var(--qs-font-ui);
       font-size: 15px;
-      font-weight: 700;
+      font-weight: 600;
       cursor: pointer;
-      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, #F472B6);
-      color: #fff;
-      box-shadow: 0 0 24px rgba(167,139,250,0.3);
+      background: var(--accent);
+      color: var(--paper);
       transition: all 0.2s;
       letter-spacing: 0.02em;
     }
-    .wizard-next:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(167,139,250,0.45); }
-    .wizard-next:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+    .wizard-next:hover { opacity: 0.88; }
+    .wizard-next:disabled { opacity: 0.35; cursor: not-allowed; }
 
     /* Loader */
     .wizard-loader {
@@ -6274,7 +6270,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.16.5" data-qs-primitives="v9.9" data-qs-dashboard="v9.16.5">
+<div data-qs-shell="true" data-qs-version="v9.17" data-qs-primitives="v9.9" data-qs-dashboard="v9.17">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6358,7 +6354,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.16.5</div>
+  <div class="qs-version-stamp">Quiet Studio v9.17</div>
 </div>
 
   </aside>
@@ -6388,7 +6384,7 @@ body.quiet-studio-shell .qs-rail nav {
       <span id="trialBadgeText">7 days free</span>
     </div>
     <button onclick="window.location.href='/meet'" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:#F0ECFF;background:linear-gradient(135deg,rgba(109,40,217,0.3),rgba(244,114,182,0.15));border:1px solid rgba(167,139,250,0.4);border-radius:50px;padding:7px 16px;cursor:pointer;transition:all 0.2s;font-family:'Sora',sans-serif;white-space:nowrap;" onmouseover="this.style.background='linear-gradient(135deg,rgba(109,40,217,0.5),rgba(244,114,182,0.25))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(109,40,217,0.3),rgba(244,114,182,0.15))'">✦ Talk with SAM</button>
-    <button id="navStoryEngineBtn" onclick="openWizardPage(true)" style="display:none;align-items:center;gap:5px;font-size:12px;font-weight:700;color:#A78BFA;background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.25);border-radius:50px;padding:7px 16px;cursor:pointer;transition:all 0.2s;font-family:'Sora',sans-serif;white-space:nowrap;" onmouseover="this.style.background='rgba(167,139,250,0.15)'" onmouseout="this.style.background='rgba(167,139,250,0.08)'">📖 Story Engine</button>
+    <button id="navStoryEngineBtn" onclick="openWizardPage(true)" style="display:none;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent);border-radius:6px;padding:7px 16px;cursor:pointer;transition:all 0.2s;font-family:var(--qs-font-ui);white-space:nowrap;">📖 Story Engine</button>
     <button onclick="openWorkshop()" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:rgba(240,236,255,0.7);background:none;border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:7px 16px;cursor:pointer;transition:all 0.2s;font-family:'Sora',sans-serif;white-space:nowrap;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.7)'">🛠 Workshop</button>
     <button onclick="openVoiceTrainer()" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:#34D399;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.25);border-radius:50px;padding:7px 16px;cursor:pointer;transition:all 0.2s;font-family:'Sora',sans-serif;white-space:nowrap;" onmouseover="this.style.background='rgba(52,211,153,0.15)';this.style.borderColor='rgba(52,211,153,0.4)'" onmouseout="this.style.background='rgba(52,211,153,0.08)';this.style.borderColor='rgba(52,211,153,0.25)'">🧬 Voice DNA</button>
     <button class="nav-signin-btn" onclick="openSignInModal()"  style="background:none;border:1px solid rgba(255,255,255,0.15);color:var(--text2);font-family:'Sora',sans-serif;font-size:13px;font-weight:600;padding:8px 18px;border-radius:50px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.5)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.15)';this.style.color='var(--text2)'">Sign in</button>
@@ -6423,7 +6419,7 @@ body.quiet-studio-shell .qs-rail nav {
     <p style="font-size:clamp(15px,2vw,20px);line-height:1.7;color:var(--text2);max-width:560px;margin:0 auto 36px;">You've spent years finding your voice. SAM remembers every word of it. While every other AI tool starts from zero, SAM's Voice DNA captures how you think, how you phrase things, and what makes your audience trust you — then gets sharper every single time you use her. The longer you work together, the more your content sounds unmistakably like you.</p>
 
     <!-- CTA -->
-    <button onclick="setTimeout(function(){if(typeof getTrialState==='function'&&typeof openWizardPage==='function'){getTrialState().email?openWizardPage():openTrialCapture();}else if(typeof openTrialCapture==='function'){openTrialCapture();}},0)" style="background:linear-gradient(135deg,#FBB824,#F472B6);color:#09080F;font-family:'Sora',sans-serif;font-size:clamp(15px,2vw,18px);font-weight:800;padding:16px 36px;border:none;border-radius:50px;cursor:pointer;box-shadow:0 0 40px rgba(251,184,36,0.3);letter-spacing:-0.01em;margin-bottom:16px;transition:all 0.25s;">&#10022; Tell SAM your story — it's free &rarr;</button>
+    <button onclick="setTimeout(function(){if(typeof getTrialState==='function'&&typeof openWizardPage==='function'){getTrialState().email?openWizardPage():openTrialCapture();}else if(typeof openTrialCapture==='function'){openTrialCapture();}},0)" style="background:var(--accent);color:var(--paper);font-family:var(--qs-font-ui);font-size:clamp(15px,2vw,18px);font-weight:700;padding:16px 36px;border:none;border-radius:8px;cursor:pointer;letter-spacing:0;margin-bottom:16px;transition:all 0.25s;">&#10022; Tell SAM your story — it's free &rarr;</button>
 
     <!-- See plans link -->
     <div style="margin-bottom:60px;">
@@ -6452,7 +6448,7 @@ body.quiet-studio-shell .qs-rail nav {
       </div>
       <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(167,139,250,0.15);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
         <div style="font-size:12px;color:var(--text3);">+ Platform captions · B-roll cues · Audience profile · Lead magnet</div>
-        <button onclick="openWizardPage()" style="font-size:13px;font-weight:700;background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(244,114,182,0.1));border:1px solid rgba(167,139,250,0.3);color:var(--text);border-radius:50px;padding:8px 20px;cursor:pointer;">Try it with your story &rarr;</button>
+        <button onclick="openWizardPage()" style="font-size:13px;font-weight:600;background:var(--accent-soft);border:1px solid var(--accent);color:var(--accent);border-radius:8px;padding:8px 20px;cursor:pointer;font-family:var(--qs-font-ui);">Try it with your story &rarr;</button>
       </div>
     </div>
 
@@ -7147,7 +7143,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
             <div style="font-family:'Sora',sans-serif;font-size:clamp(18px,2.5vw,24px);font-weight:800;color:var(--text);margin-bottom:6px;">Story Wizard</div>
             <div style="font-size:14px;color:var(--text2);line-height:1.6;max-width:420px;">Tell SAM one moment. Walk out with a full video script, platform captions, b-roll cues, audience profile, and a lead magnet. This is SAM at full power.</div>
           </div>
-          <button onclick="openWizardPage(true)" style="background:linear-gradient(135deg,#A78BFA,#F472B6);color:#fff;font-family:'Sora',sans-serif;font-size:15px;font-weight:800;padding:14px 28px;border:none;border-radius:50px;cursor:pointer;white-space:nowrap;box-shadow:0 0 24px rgba(167,139,250,0.3);transition:all 0.2s;flex-shrink:0;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 0 32px rgba(167,139,250,0.5)'" onmouseout="this.style.transform='';this.style.boxShadow='0 0 24px rgba(167,139,250,0.3)'">✦ Launch Story Wizard →</button>
+          <button onclick="openWizardPage(true)" style="background:var(--accent);color:var(--paper);font-family:var(--qs-font-ui);font-size:15px;font-weight:700;padding:14px 28px;border:none;border-radius:8px;cursor:pointer;white-space:nowrap;transition:all 0.2s;flex-shrink:0;">✦ Launch Story Wizard →</button>
         </div>
       </div>
 
@@ -7249,7 +7245,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
           <div style="font-size:13px;color:var(--text3);line-height:1.6;">Script, captions for every platform, b-roll cues, audience profile, and a lead magnet. Ready to post.</div>
         </div>
       </div>
-      <button onclick="setTimeout(function(){if(typeof getTrialState==='function'&&typeof openWizardPage==='function'){getTrialState().email?openWizardPage():openTrialCapture();}else if(typeof openTrialCapture==='function'){openTrialCapture();}},0)" style="margin-top:40px;background:linear-gradient(135deg,#FBB824,#F472B6);color:#09080F;font-family:'Sora',sans-serif;font-size:16px;font-weight:800;padding:16px 36px;border:none;border-radius:50px;cursor:pointer;box-shadow:0 0 30px rgba(251,184,36,0.25);">&#10022; Try SAM free — no card, no catch &rarr;</button>
+      <button onclick="setTimeout(function(){if(typeof getTrialState==='function'&&typeof openWizardPage==='function'){getTrialState().email?openWizardPage():openTrialCapture();}else if(typeof openTrialCapture==='function'){openTrialCapture();}},0)" style="margin-top:40px;background:var(--accent);color:var(--paper);font-family:var(--qs-font-ui);font-size:16px;font-weight:700;padding:16px 36px;border:none;border-radius:8px;cursor:pointer;">&#10022; Try SAM free — no card, no catch &rarr;</button>
     </div>
 
     <!-- THE PULSE -->
