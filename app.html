@@ -9447,7 +9447,7 @@ function renderLens(data) {
             </div>
           </div>
         </div>
-        <button onclick="lensLiveUpdate()" style="font-size:12px;font-weight:700;background:linear-gradient(135deg,rgba(167,139,250,0.2),rgba(244,114,182,0.1));border:1px solid rgba(167,139,250,0.3);border-radius:8px;padding:8px 20px;color:#A78BFA;cursor:pointer;width:100%;">↻ Regenerate thumbnails with edits</button>
+        <button onclick="lensLiveUpdate()" style="font-size:12px;font-weight:600;background:var(--accent-soft);border:1px solid var(--accent);border-radius:8px;padding:8px 20px;color:var(--accent);cursor:pointer;width:100%;font-family:'Inter',system-ui,sans-serif;">↻ Regenerate thumbnails with edits</button>
       `;
       // Insert before the visual reference block
       const allBlocks = lensBody.querySelectorAll('.out-block');
@@ -13492,16 +13492,16 @@ function renderPlaybook(data) {
           <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text3);margin-bottom:5px;">Steer SAM in a different direction (optional)</div>
           <textarea id="lmSteerInput" placeholder="e.g. make it a planning checklist… or focus on budgeting tips… or for someone starting their first project…" style="width:100%;padding:9px 12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);font-size:13px;color:var(--text);resize:none;line-height:1.5;height:60px;box-sizing:border-box;" oninput="this.style.height='auto';this.style.height=Math.max(60,this.scrollHeight)+'px'"></textarea>
         </div>
-        <button onclick="regenerateLeadMagnet()" style="padding:10px 18px;background:linear-gradient(135deg,#7C3AED,#EC4899);border:none;border-radius:var(--radius);color:white;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;height:60px;">
+        <button onclick="regenerateLeadMagnet()" style="padding:10px 18px;background:var(--accent);border:none;border-radius:8px;color:var(--paper);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;height:60px;font-family:'Inter',system-ui,sans-serif;">
           🔄 Regenerate
         </button>
-        <button onclick="saveWizardItem(document.getElementById('leadMagnetSection').innerText,'Lead Magnet: ' + (WS.brandName||'My Brand'),'wizard')" style="padding:10px 18px;background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.3);border-radius:var(--radius);color:var(--spark);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;height:60px;">
+        <button onclick="saveWizardItem(document.getElementById('leadMagnetSection').innerText,'Lead Magnet: ' + (WS.brandName||'My Brand'),'wizard')" style="padding:10px 18px;background:var(--surface-2);border:1px solid var(--rule);border-radius:8px;color:var(--ink-muted);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;height:60px;font-family:'Inter',system-ui,sans-serif;">
           💜 Save to Ideas
         </button>
       </div>
-      <div id="lmRegenStatus" style="display:none;margin-top:10px;align-items:center;gap:12px;padding:12px 16px;background:linear-gradient(135deg,rgba(167,139,250,0.1),rgba(244,114,182,0.06));border:1px solid rgba(167,139,250,0.4);border-radius:var(--radius);position:relative;overflow:hidden;">
+      <div id="lmRegenStatus" style="display:none;margin-top:10px;align-items:center;gap:12px;padding:12px 16px;background:var(--surface-2);border:1px solid var(--rule);border-radius:8px;position:relative;overflow:hidden;">
         <div class="sam-status-dots"><span></span><span></span><span></span></div>
-        <div id="lmRegenStatusText" style="font-size:13px;font-weight:600;color:transparent;background:linear-gradient(90deg,#A78BFA,#F472B6,#FBB824,#A78BFA);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;animation:samTextShimmer 2.5s ease infinite;">SAM is rebuilding your lead magnet — about 15 seconds...</div>
+        <div id="lmRegenStatusText" style="font-size:13px;font-weight:600;color:var(--ink-soft);font-family:'Inter',system-ui,sans-serif;">SAM is rebuilding your lead magnet — about 15 seconds...</div>
       </div>
     </div>`;
 
@@ -13544,41 +13544,41 @@ function renderPlaybook(data) {
 
   <!-- WHAT SAM CAN BUILD NEXT -->
   <div class="no-print" style="margin-bottom:16px;">
-    <div style="background:linear-gradient(135deg,#6D28D9,#A78BFA 50%,#F472B6);border-radius:14px;padding:16px 20px;cursor:pointer;" onclick="document.getElementById('samNextSection').scrollIntoView({behavior:'smooth'})">
-      <div style="font-size:11px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:4px;">✦ SAM knows your full story</div>
-      <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:#fff;">Keep building — email sequence, content plan, video concept & more →</div>
+    <div style="background:var(--surface-2);border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:8px;padding:16px 20px;cursor:pointer;" onclick="(function(){var ts=typeof getTrialState==='function'?getTrialState():{};if(ts.paid||ts.email){var el=document.getElementById('samNextSection');if(el)el.scrollIntoView({behavior:'smooth'});}else{if(typeof showPaywall==='function')showPaywall('tool');}})()">
+      <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);font-family:'JetBrains Mono',monospace;margin-bottom:4px;">✦ SAM knows your full story</div>
+      <div style="font-family:'Inter',system-ui,sans-serif;font-size:15px;font-weight:600;color:var(--ink);">Keep building — email sequence, content plan, video concept & more →</div>
     </div>
   </div>
-  <div class="playbook-section no-print" id="samNextSection" style="border:1px solid rgba(167,139,250,0.2);border-radius:var(--radius-xl);background:linear-gradient(135deg,rgba(109,40,217,0.08),rgba(244,114,182,0.05));padding:28px;">
-    <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:var(--text);margin-bottom:8px;letter-spacing:-0.01em;">What do you want to create next?</div>
-    <div style="font-size:13px;color:var(--text3);margin-bottom:24px;line-height:1.6;">No starting over. No re-explaining. SAM uses everything from this session to build the next piece instantly. Each output can be copied or saved to your PDF.</div>
+  <div class="playbook-section no-print" id="samNextSection" style="border:1px solid var(--rule);border-radius:8px;background:var(--surface-2);padding:28px;">
+    <div style="font-family:'Instrument Serif',Georgia,serif;font-size:20px;font-weight:400;font-style:italic;color:var(--ink);margin-bottom:8px;letter-spacing:-0.01em;">What do you want to create next?</div>
+    <div style="font-size:13px;color:var(--ink-soft);margin-bottom:24px;line-height:1.6;">No starting over. No re-explaining. SAM uses everything from this session to build the next piece instantly. Each output can be copied or saved to your PDF.</div>
     <div style="display:flex;flex-direction:column;gap:10px;">
-      <button onclick="startNextTool('email')" style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);cursor:pointer;text-align:left;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)'" onmouseout="this.style.borderColor='var(--border)'">
+      <button onclick="startNextTool('email')" style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--paper);border:1px solid var(--rule);border-radius:8px;cursor:pointer;text-align:left;transition:all 0.2s;font-family:'Inter',system-ui,sans-serif;">
         <div style="font-size:22px;">📧</div>
         <div>
-          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;">Build my email welcome sequence</div>
-          <div style="font-size:12px;color:var(--text3);">3-5 emails for new subscribers — written in your voice, for your audience.</div>
+          <div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:2px;">Build my email welcome sequence</div>
+          <div style="font-size:12px;color:var(--ink-muted);">3-5 emails for new subscribers — written in your voice, for your audience.</div>
         </div>
       </button>
-      <button onclick="startNextTool('week')" style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);cursor:pointer;text-align:left;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)'" onmouseout="this.style.borderColor='var(--border)'">
+      <button onclick="startNextTool('week')" style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--paper);border:1px solid var(--rule);border-radius:8px;cursor:pointer;text-align:left;transition:all 0.2s;font-family:'Inter',system-ui,sans-serif;">
         <div style="font-size:22px;">📅</div>
         <div>
-          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;">Plan my content week</div>
-          <div style="font-size:12px;color:var(--text3);">7 days of posts, captions and platform strategy — all built from this story.</div>
+          <div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:2px;">Plan my content week</div>
+          <div style="font-size:12px;color:var(--ink-muted);">7 days of posts, captions and platform strategy — all built from this story.</div>
         </div>
       </button>
-      <button onclick="startNextTool('idea')" style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);cursor:pointer;text-align:left;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)'" onmouseout="this.style.borderColor='var(--border)'">
+      <button onclick="startNextTool('idea')" style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--paper);border:1px solid var(--rule);border-radius:8px;cursor:pointer;text-align:left;transition:all 0.2s;font-family:'Inter',system-ui,sans-serif;">
         <div style="font-size:22px;">⚡</div>
         <div>
-          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;">Generate 5 content ideas</div>
-          <div style="font-size:12px;color:var(--text3);">Specific ideas built for your niche and audience — each one ready to run through SAM.</div>
+          <div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:2px;">Generate 5 content ideas</div>
+          <div style="font-size:12px;color:var(--ink-muted);">Specific ideas built for your niche and audience — each one ready to run through SAM.</div>
         </div>
       </button>
-      <button onclick="startNextTool('concept')" style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);cursor:pointer;text-align:left;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)'" onmouseout="this.style.borderColor='var(--border)'">
+      <button onclick="startNextTool('concept')" style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--paper);border:1px solid var(--rule);border-radius:8px;cursor:pointer;text-align:left;transition:all 0.2s;font-family:'Inter',system-ui,sans-serif;">
         <div style="font-size:22px;">🎬</div>
         <div>
-          <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;">Build a bold video concept</div>
-          <div style="font-size:12px;color:var(--text3);">One unique concept nobody else has made — with hook, script and shot list.</div>
+          <div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:2px;">Build a bold video concept</div>
+          <div style="font-size:12px;color:var(--ink-muted);">One unique concept nobody else has made — with hook, script and shot list.</div>
         </div>
       </button>
     </div>
