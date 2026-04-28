@@ -242,6 +242,11 @@ module.exports = async function handler(req, res) {
     chromium  = require('@sparticuz/chromium');
     puppeteer = require('puppeteer-core');
   } catch(e) {
+    console.error('[pdf] puppeteer launch error:', {
+      message: e && e.message,
+      name: e && e.name,
+      stack: e && e.stack
+    });
     try {
       // Local dev fallback
       puppeteer = require('puppeteer');
@@ -256,6 +261,15 @@ module.exports = async function handler(req, res) {
 
   let browser;
   try {
+    console.error('[pdf] starting puppeteer launch with chromium:', {
+      hasChromium: !!chromium,
+      hasPuppeteer: !!puppeteer,
+      nodeVersion: process.version,
+      env: {
+        REGION: process.env.VERCEL_REGION,
+        RUNTIME: process.env.VERCEL_ENV
+      }
+    });
     if (chromium) {
       browser = await puppeteer.launch({
         args: [...chromium.args, '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'],
