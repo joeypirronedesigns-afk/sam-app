@@ -6002,7 +6002,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.10.1" data-qs-primitives="v9.9" data-qs-dashboard="v9.10.1">
+<div data-qs-shell="true" data-qs-version="v9.11" data-qs-primitives="v9.9" data-qs-dashboard="v9.11">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6082,7 +6082,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.10.1</div>
+  <div class="qs-version-stamp">Quiet Studio v9.11</div>
 </div>
 
   </aside>
@@ -6567,6 +6567,56 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
   if (hours === 0) hours = 12;
   var minutesStr = minutes < 10 ? '0' + minutes : '' + minutes;
   dateEl.textContent = days[d.getDay()] + ' · ' + months[d.getMonth()] + ' ' + d.getDate() + ' · ' + hours + ':' + minutesStr + ' ' + ampm;
+})();
+
+// Voice DNA footer wiring — v9.11
+(function() {
+  function updateVoiceFooter(data) {
+    var dot = document.querySelector('.qs-dash-status-dot');
+    var text = document.querySelector('.qs-dash-status-text');
+    if (!dot || !text) return;
+
+    if (data && data.calibrated) {
+      dot.classList.remove('qs-dash-status-dot--neutral', 'qs-dash-status-dot--stale', 'qs-dash-status-dot--error');
+      dot.classList.add('qs-dash-status-dot--healthy');
+      text.textContent = data.displayAge
+        ? 'Voice synced · ' + data.displayAge
+        : 'Voice synced';
+    } else {
+      dot.classList.remove('qs-dash-status-dot--healthy', 'qs-dash-status-dot--stale', 'qs-dash-status-dot--error');
+      dot.classList.add('qs-dash-status-dot--neutral');
+      text.textContent = 'Voice setup needed';
+    }
+  }
+
+  function fetchVoiceStatus() {
+    var email = null;
+    try {
+      if (typeof getTrialState === 'function') {
+        var ts = getTrialState();
+        email = ts && ts.email ? ts.email : null;
+      }
+    } catch(e) { email = null; }
+
+    // Normalize email on client before sending
+    email = typeof email === 'string' ? email.trim().toLowerCase() : null;
+
+    if (!email) {
+      updateVoiceFooter({ calibrated: false });
+      return;
+    }
+
+    fetch('/api/voice-status?email=' + encodeURIComponent(email))
+      .then(function(r) { return r.json(); })
+      .then(function(data) { updateVoiceFooter(data); })
+      .catch(function() { updateVoiceFooter({ calibrated: false }); });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', fetchVoiceStatus);
+  } else {
+    fetchVoiceStatus();
+  }
 })();
 </script>
 
