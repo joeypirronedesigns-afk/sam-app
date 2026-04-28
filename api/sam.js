@@ -685,7 +685,50 @@ CTA: [call to action]
 HASHTAGS: [relevant hashtags]
 
 Make every caption feel personal, story-driven, and native to that platform. Write in the creator's voice.`;
-        return await streamCall(reachSystem, reachContent, 1800, 'claude-sonnet-4-6');
+      // v9.13 — persist Reach generation state before streaming
+      // Write must happen before streamCall because streamCall calls res.end() internally
+      (async () => {
+        try {
+          const _reachEmail = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : '';
+          const _platformCount = (req.body.platforms && req.body.platforms.length > 0)
+            ? req.body.platforms.length
+            : 3;
+          if (_reachEmail && _reachEmail.includes('@')) {
+            const _supabaseUrl = process.env.SUPABASE_URL;
+            const _supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+            if (_supabaseUrl && _supabaseKey) {
+              // Find canonical row
+              const _findRes = await fetch(
+                `${_supabaseUrl}/rest/v1/sam_users?email=eq.${encodeURIComponent(_reachEmail)}&select=uid&order=last_seen.desc.nullslast&limit=1`,
+                { headers: { 'apikey': _supabaseKey, 'Authorization': `Bearer ${_supabaseKey}` } }
+              );
+              if (_findRes.ok) {
+                const _rows = await _findRes.json();
+                if (_rows && _rows.length > 0) {
+                  const _uid = _rows[0].uid;
+                  await fetch(
+                    `${_supabaseUrl}/rest/v1/sam_users?uid=eq.${encodeURIComponent(_uid)}`,
+                    {
+                      method: 'PATCH',
+                      headers: {
+                        'apikey': _supabaseKey,
+                        'Authorization': `Bearer ${_supabaseKey}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                      },
+                      body: JSON.stringify({
+                        reach_platforms_ready: _platformCount,
+                        reach_updated_at: new Date().toISOString()
+                      })
+                    }
+                  );
+                }
+              }
+            }
+          }
+        } catch (_e) { /* non-blocking — never let persistence fail the generation */ }
+      })();
+      return await streamCall(reachSystem, reachContent, 1800, 'claude-sonnet-4-6');
       }
 
       const textSystem = `${base} Analyse this content idea. Return ONLY: {"type":"text_only","diagnosis":"what this idea is really about and why it has potential — 2 sentences","hook_ideas":["hook 1","hook 2","hook 3"],"content_angle":"the strongest angle to take","best_platform":"single best platform","next_action":"the one most important thing to do with this idea right now"}`;
