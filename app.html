@@ -5941,6 +5941,150 @@ body.quiet-studio-shell .qs-dash-plan-number {
 }
 
 /* ============================================================ */
+/* v9.16 — TALK WITH SAM · Quiet Studio cream-paper register   */
+/* ============================================================ */
+
+body.quiet-studio-shell #persistentSAMPanel {
+  background: var(--qs-paper);
+  border-left: 1px solid var(--qs-rule-strong);
+  box-shadow: -8px 0 40px rgba(26,24,21,0.12);
+}
+
+body.quiet-studio-shell #persistentSAMBackdrop {
+  background: rgba(26,24,21,0.35);
+}
+
+body.quiet-studio-shell .psam-header {
+  background: var(--qs-paper);
+  border-bottom: 1px solid var(--qs-rule);
+}
+
+body.quiet-studio-shell .psam-header-avatar {
+  background: var(--qs-surface-2);
+  border: 1px solid var(--qs-rule);
+  font-family: var(--qs-font-serif);
+  font-size: 18px;
+  color: var(--qs-ink);
+  border-radius: var(--qs-radius-md);
+}
+
+body.quiet-studio-shell .psam-header-name {
+  font-family: var(--qs-font-serif);
+  font-size: 14px;
+  color: var(--qs-ink);
+}
+
+body.quiet-studio-shell .psam-header-status {
+  color: var(--qs-accent);
+}
+body.quiet-studio-shell .psam-header-status::before {
+  background: var(--qs-accent);
+}
+
+body.quiet-studio-shell .psam-header-btn {
+  color: var(--qs-ink-muted);
+}
+body.quiet-studio-shell .psam-header-btn:hover {
+  color: var(--qs-ink);
+  background: var(--qs-surface-2);
+}
+
+body.quiet-studio-shell .psam-messages {
+  background: var(--qs-paper);
+}
+body.quiet-studio-shell .psam-messages::-webkit-scrollbar-thumb {
+  background: var(--qs-rule-strong);
+}
+
+body.quiet-studio-shell .psam-bubble {
+  color: var(--qs-ink);
+}
+
+body.quiet-studio-shell .psam-sam .psam-bubble {
+  background: var(--qs-surface-2);
+  border: 1px solid var(--qs-rule);
+  color: var(--qs-ink);
+  font-family: var(--qs-font-ui);
+  border-radius: 4px 10px 10px 10px;
+}
+
+body.quiet-studio-shell .psam-user-bubble {
+  background: var(--qs-ink);
+  border: 1px solid var(--qs-ink);
+  color: var(--qs-paper);
+  border-radius: 10px 4px 10px 10px;
+}
+
+body.quiet-studio-shell .psam-typing span {
+  background: var(--qs-ink-muted);
+}
+
+body.quiet-studio-shell .psam-tool-btn {
+  background: var(--qs-surface-2);
+  border: 1px solid var(--qs-rule-strong);
+  color: var(--qs-accent);
+}
+body.quiet-studio-shell .psam-tool-btn:hover {
+  background: var(--qs-accent-soft);
+  border-color: var(--qs-accent);
+  color: var(--qs-accent-hover);
+}
+
+body.quiet-studio-shell .psam-input-row {
+  background: var(--qs-paper);
+  border-top: 1px solid var(--qs-rule);
+}
+
+body.quiet-studio-shell .psam-input {
+  background: var(--qs-surface-2);
+  border: 1px solid var(--qs-rule);
+  color: var(--qs-ink);
+  font-family: var(--qs-font-ui);
+}
+body.quiet-studio-shell .psam-input:focus {
+  border-color: var(--qs-accent);
+}
+body.quiet-studio-shell .psam-input::placeholder {
+  color: var(--qs-ink-muted);
+}
+
+body.quiet-studio-shell .psam-send-btn {
+  background: var(--qs-ink);
+  color: var(--qs-paper);
+  box-shadow: none;
+}
+body.quiet-studio-shell .psam-send-btn:hover {
+  background: var(--qs-ink-soft);
+  transform: scale(1.06);
+}
+
+body.quiet-studio-shell .psam-fab-btn {
+  background: var(--qs-ink);
+  box-shadow: 0 4px 16px rgba(26,24,21,0.22);
+  color: var(--qs-paper);
+  font-size: 18px;
+}
+body.quiet-studio-shell .psam-fab-btn:hover {
+  box-shadow: 0 6px 24px rgba(26,24,21,0.32);
+}
+body.quiet-studio-shell .psam-fab-dot {
+  background: var(--qs-accent);
+  border-color: var(--qs-paper);
+}
+
+body.quiet-studio-shell .psam-tool-output {
+  background: var(--qs-surface-2);
+  border: 1px solid var(--qs-rule);
+}
+body.quiet-studio-shell .psam-output-label {
+  color: var(--qs-ink-muted);
+  border-bottom: 1px solid var(--qs-rule);
+}
+body.quiet-studio-shell .psam-output-section {
+  border-bottom: 1px solid var(--qs-rule);
+}
+
+/* ============================================================ */
 /* MOBILE — Spine cards stack                                   */
 /* ============================================================ */
 
@@ -6002,7 +6146,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.15.1" data-qs-primitives="v9.9" data-qs-dashboard="v9.15.1">
+<div data-qs-shell="true" data-qs-version="v9.16" data-qs-primitives="v9.9" data-qs-dashboard="v9.16">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6082,7 +6226,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.15.1</div>
+  <div class="qs-version-stamp">Quiet Studio v9.16</div>
 </div>
 
   </aside>
@@ -14496,10 +14640,10 @@ function openWizardFromNav() {
 <div id="persistentSAMFab">
   <div id="persistentSAMPanel">
     <div class="psam-header">
-      <div class="psam-header-avatar">🤖</div>
+      <div class="psam-header-avatar">✦</div>
       <div class="psam-header-info">
         <div class="psam-header-name">SAM</div>
-        <div class="psam-header-status">Your creative director</div>
+        <div class="psam-header-status">Your editorial director</div>
       </div>
       <div class="psam-header-actions">
         <button class="psam-header-btn" onclick="clearPersistentHistory()" title="New conversation">↺</button>
@@ -14516,7 +14660,7 @@ function openWizardFromNav() {
     </div>
   </div>
   <button class="psam-fab-btn" onclick="togglePersistentSAM()" title="Talk with SAM">
-    🤖
+    ✦
     <div class="psam-fab-dot"></div>
   </button>
 </div>
