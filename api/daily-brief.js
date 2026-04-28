@@ -112,7 +112,7 @@ PRIORITY LADDER (use this order):
 4. Voice DNA not calibrated
 5. Otherwise: momentum/consistency verdict
 
-Also generate exactly 3 action items for today's plan. Each must be concrete, time-bounded, and routed to an existing tool. Include them in the JSON as "todays_plan": array of objects with keys: id (string "plan-1" etc), step_number (1-3), label (2-8 words, action-oriented), timebox_minutes (integer 10-45), route (one of: story-engine|reach|voice-dna|spark|all-tools|today), reason (one sentence max).`;
+Also generate exactly 3 action items for today's plan. Each must be concrete, time-bounded, and routed to an existing tool. Include them in the JSON as "todays_plan": array of objects with keys: id (string "plan-1" etc), step_number (1-3), label (2-8 words, action-oriented), timebox_minutes (integer 10-45), route (one of: story-engine|reach|voice-dna|spark|all-tools|today), reason (one sentence max). At least 1 of the 3 todays_plan items must be a shipping or distribution action that publishes, adapts, schedules for immediate release, or pushes content outward today, and that item must route to reach or spark.`;
 
   const userPrompt = `Today's date: ${briefDate}
 Creator niche: ${niche}
