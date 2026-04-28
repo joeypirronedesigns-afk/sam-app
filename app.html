@@ -1494,12 +1494,12 @@
     .virality-fill { height: 100%; border-radius: 3px; transition: width 1.2s cubic-bezier(0.34, 1.2, 0.64, 1); }
     .virality-score { font-family: 'Sora', sans-serif; font-size: 16px; font-weight: 700; flex-shrink: 0; min-width: 38px; text-align: right; }
 
-    .platform-strategy { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 10px; }
-    .ps-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--surface2); border-bottom: 1px solid var(--border); }
-    .ps-name { font-size: 13px; font-weight: 600; color: var(--text); }
+    .platform-strategy { background: var(--surface-2); border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; margin-bottom: 10px; }
+    .ps-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--paper); border-bottom: 1px solid var(--rule); }
+    .ps-name { font-size: 13px; font-weight: 600; color: var(--ink); font-family: 'Inter', system-ui, sans-serif; }
     .ps-body { padding: 12px 14px; }
-    .ps-caption { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 8px; white-space: pre-wrap; }
-    .ps-hashtags { font-size: 13px; color: var(--text3); }
+    .ps-caption { font-size: 14px; color: var(--ink-soft); line-height: 1.6; margin-bottom: 8px; white-space: pre-wrap; font-family: 'Inter', system-ui, sans-serif; }
+    .ps-hashtags { font-size: 13px; color: var(--ink-muted); font-family: 'Inter', system-ui, sans-serif; }
 
     .focus-directive { background: linear-gradient(135deg, rgba(109,40,217,0.15), rgba(244,114,182,0.1)); border: 1px solid rgba(167,139,250,0.2); border-radius: var(--radius); padding: 16px 18px; margin-top: 4px; }
     .focus-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--spark); margin-bottom: 6px; }
@@ -9922,9 +9922,9 @@ function showPaywall(context, force) {
   const apos = String.fromCharCode(39);
   const messages = {
     'pdf': {
-      headline: 'Your playbook is ready.<br/>Let' + apos + 's get it off my screen and into yours.',
-      sub: 'You built something real here. PDF downloads are part of paid plans — and honestly, $29/month is less than a single coaching session.',
-      urgency: 'Your story. Your voice. Your brand. Ready to download.'
+      headline: 'Your playbook is ready.',
+      sub: 'Keep building, export what you made, and come back to it anytime. SAM Standard unlocks downloads, next-step tools, and your saved workspace in one place.',
+      urgency: ''
     },
     'lead_magnet': {
       headline: 'Your lead magnet is built.<br/>Time to actually use it.',
@@ -9961,7 +9961,7 @@ function checkTrialBeforeRun() {
   if (state.paid) return true;
   if (state.email && state.trialStart) {
     if ((Date.now() - state.trialStart) > TRIAL_DURATION_MS) {
-      showPaywall('pdf', true); return false;
+      if (!getTrialState().paid) { showPaywall('pdf', true); return false; }
     }
     return true;
   }
@@ -13269,7 +13269,7 @@ function renderPlaybook(data) {
 
   let html = `
     <div style="display:flex;justify-content:flex-end;margin-bottom:12px;">
-      <button onclick="saveWizardItem(document.getElementById('wizardPlaybook').innerText,'Full Playbook — ' + new Date().toLocaleDateString(),'wizard')" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--spark);background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);border-radius:50px;padding:7px 14px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(167,139,250,0.2)'" onmouseout="this.style.background='rgba(167,139,250,0.1)'">💜 Save full playbook to My Ideas</button>
+      <button onclick="saveWizardItem(document.getElementById('wizardPlaybook').innerText,'Full Playbook — ' + new Date().toLocaleDateString(),'wizard')" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ink-muted);background:var(--surface-2);border:1px solid var(--rule);border-radius:6px;padding:7px 14px;cursor:pointer;transition:all 0.2s;font-family:'Inter',system-ui,sans-serif;">💜 Save full playbook to My Ideas</button>
     </div>
     <div class="playbook-cover">
       <div class="playbook-cover-badge">✦ SAM Engine Output</div>
@@ -13707,7 +13707,7 @@ async function downloadPDF(type) {
 
     if (res.status === 429) {
       const err = await res.json();
-      showPaywall('pdf', true);
+      if (!getTrialState().paid) { showPaywall('pdf', true); return false; }
       btn.innerHTML = originalText;
       btn.disabled = false;
       return;
@@ -13719,7 +13719,7 @@ async function downloadPDF(type) {
         if (type === 'playbook') printPlaybookOnly();
         else printLeadMagnetOnly();
       } else {
-        showPaywall('pdf', true);
+        if (!getTrialState().paid) { showPaywall('pdf', true); return false; }
       }
       btn.innerHTML = originalText;
       btn.disabled = false;
@@ -14780,17 +14780,17 @@ function openWizardFromNav() {
 <div class="paywall-overlay" id="paywallOverlay">
   <div class="paywall-inner" style="background:var(--paper);border:1px solid var(--rule);border-radius:16px;padding:32px 28px;max-width:440px;width:90%;text-align:center;position:relative;">
     <div style="width:36px;height:36px;border-radius:50%;background:var(--accent-soft);border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:16px;color:var(--accent);">✦</div>
-    <div data-paywall="headline" style="font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:26px;font-weight:400;color:var(--ink);line-height:1.25;margin-bottom:10px;">You just found<br/>your story.</div>
-    <div data-paywall="sub" style="font-family:'Inter',system-ui,sans-serif;font-size:15px;color:var(--ink-soft);line-height:1.6;margin-bottom:8px;">SAM has everything you built — your voice, your hook, your strategy. Unlock the full playbook for $29/month.</div>
-    <div data-paywall="urgency" style="font-family:'Inter',system-ui,sans-serif;font-size:12px;color:var(--ink-muted);margin-bottom:24px;letter-spacing:0.02em;">Ready to keep going?</div>
+    <div data-paywall="headline" style="font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:26px;font-weight:400;color:var(--ink);line-height:1.25;margin-bottom:10px;">Your playbook is ready.</div>
+    <div data-paywall="sub" style="font-family:'Inter',system-ui,sans-serif;font-size:15px;color:var(--ink-soft);line-height:1.6;margin-bottom:8px;">Keep building, export what you made, and come back to it anytime. SAM Standard unlocks downloads, next-step tools, and your saved workspace in one place.</div>
+    <div data-paywall="urgency" style="font-family:'Inter',system-ui,sans-serif;font-size:12px;color:var(--ink-muted);margin-bottom:24px;letter-spacing:0.02em;"></div>
     <div style="background:var(--surface-2);border:1px solid var(--rule);border-radius:8px;padding:16px 20px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;">
-      <div><div style="font-family:'Inter',system-ui,sans-serif;font-size:16px;font-weight:600;color:var(--ink);text-align:left;">SAM Standard</div><div style="font-family:'Inter',system-ui,sans-serif;font-size:13px;color:var(--ink-soft);margin-top:2px;text-align:left;">Everything, every day. All tools. Voice DNA. Unlimited drafts.</div></div>
+      <div><div style="font-family:'Inter',system-ui,sans-serif;font-size:16px;font-weight:600;color:var(--ink);text-align:left;">SAM Standard</div><div style="font-family:'Inter',system-ui,sans-serif;font-size:13px;color:var(--ink-soft);margin-top:2px;text-align:left;">Unlock downloads, saved work, and every next-step tool.</div></div>
       <div style="font-family:'Inter',system-ui,sans-serif;font-size:18px;font-weight:700;color:var(--ink);flex-shrink:0;margin-left:16px;">$29<span style="font-size:13px;font-weight:400;color:var(--ink-muted)">/mo</span></div>
     </div>
-    <button onclick="window.location.href='https://sam-app-git-quietstudio-joeypirronedesigns-1029s-projects.vercel.app/';" style="background:var(--accent);color:var(--paper);border:none;border-radius:8px;width:100%;padding:14px;font-size:15px;font-weight:600;font-family:'Inter',system-ui,sans-serif;cursor:pointer;margin-bottom:12px;">Get started →</button>
-    <div onclick="window.location.href='https://sam-app-git-quietstudio-joeypirronedesigns-1029s-projects.vercel.app/';" style="color:var(--accent);font-family:'Inter',system-ui,sans-serif;font-size:12px;cursor:pointer;margin-bottom:16px;">See all plan details →</div>
-    <button onclick="if(typeof openSignInModal==='function')openSignInModal();else document.getElementById('paywallOverlay').classList.remove('open');" style="border:1px solid var(--rule);color:var(--ink-soft);border-radius:8px;background:transparent;width:100%;padding:12px;font-family:'Inter',system-ui,sans-serif;cursor:pointer;margin-bottom:10px;font-size:14px;">Already a member? Sign in</button>
-    <div onclick="document.getElementById('paywallOverlay').classList.remove('open');" style="color:var(--ink-muted);font-size:12px;font-family:'Inter',system-ui,sans-serif;cursor:pointer;">Maybe later</div>
+    <button onclick="window.location.href='https://sam-app-git-quietstudio-joeypirronedesigns-1029s-projects.vercel.app/#pricing';" style="background:var(--accent);color:var(--paper);border:none;border-radius:8px;width:100%;padding:14px;font-size:15px;font-weight:600;font-family:'Inter',system-ui,sans-serif;cursor:pointer;margin-bottom:12px;">Unlock SAM Standard →</button>
+    <div onclick="window.location.href='https://sam-app-git-quietstudio-joeypirronedesigns-1029s-projects.vercel.app/#pricing';" style="color:var(--accent);font-family:'Inter',system-ui,sans-serif;font-size:12px;cursor:pointer;margin-bottom:16px;">See what's included →</div>
+    <button onclick="if(typeof openSignInModal==='function')openSignInModal();else document.getElementById('paywallOverlay').classList.remove('open');" style="border:1px solid var(--rule);color:var(--ink-soft);border-radius:8px;background:transparent;width:100%;padding:12px;font-family:'Inter',system-ui,sans-serif;cursor:pointer;margin-bottom:10px;font-size:14px;">Already have access? Sign in</button>
+    <div onclick="document.getElementById('paywallOverlay').classList.remove('open');" style="color:var(--ink-muted);font-size:12px;font-family:'Inter',system-ui,sans-serif;cursor:pointer;">Not now</div>
   </div>
 </div>
 
