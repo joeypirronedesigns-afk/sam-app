@@ -1,16 +1,15 @@
 // api/pdf.js — SAM Puppeteer PDF Generator
-// Uses @sparticuz/chromium-min to stay under Vercel's 50MB bundle limit
+// Uses @sparticuz/chromium to run bundled Chromium on Vercel
 // Chromium binary fetched at runtime from GitHub CDN (fast, free, no bandwidth cost)
 //
 // package.json needs:
-//   "@sparticuz/chromium-min": "^123.0.1"
+//   "@sparticuz/chromium": "^123.0.1"
 //   "puppeteer-core": "^22.15.0"
 //
 // vercel.json needs:
 //   "api/pdf.js": { "memory": 3009, "maxDuration": 60 }
 //   (requires Vercel Pro — free plan max is 10s which is too short for Chromium)
 
-const CHROMIUM_URL = 'https://github.com/Sparticuz/chromium/releases/download/v123.0.1/chromium-v123.0.1-pack.tar';
 
 const TIER_LIMITS = { free: 5, creator: 999, pro: 999, studio: 999, standard: 999, paid: 999 };
 
@@ -240,7 +239,7 @@ module.exports = async function handler(req, res) {
   try {
     // Use chromium-min to stay under Vercel's 50MB bundle limit
     // Chromium binary is fetched at runtime from GitHub CDN
-    chromium  = require('@sparticuz/chromium-min');
+    chromium  = require('@sparticuz/chromium');
     puppeteer = require('puppeteer-core');
   } catch(e) {
     try {
@@ -250,7 +249,7 @@ module.exports = async function handler(req, res) {
     } catch(e2) {
       return res.status(500).json({
         error: 'Puppeteer not installed',
-        detail: 'Run: npm install @sparticuz/chromium-min puppeteer-core'
+        detail: 'Run: npm install @sparticuz/chromium puppeteer-core'
       });
     }
   }
@@ -261,7 +260,7 @@ module.exports = async function handler(req, res) {
       browser = await puppeteer.launch({
         args: [...chromium.args, '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'],
         defaultViewport: chromium.defaultViewport,
-        executablePath: await chromium.executablePath(CHROMIUM_URL),
+        executablePath: await chromium.executablePath(),
         headless: chromium.headless,
         ignoreHTTPSErrors: true,
       });
