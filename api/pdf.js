@@ -10,7 +10,7 @@
 //   "api/pdf.js": { "memory": 3009, "maxDuration": 60 }
 //   (requires Vercel Pro — free plan max is 10s which is too short for Chromium)
 
-// Using @sparticuz/chromium full package — no external binary needed
+const CHROMIUM_URL = 'https://github.com/Sparticuz/chromium/releases/download/v123.0.1/chromium-v123.0.1-pack.tar';
 
 const TIER_LIMITS = { free: 5, creator: 999, pro: 999, studio: 999, standard: 999, paid: 999 };
 
@@ -240,7 +240,7 @@ module.exports = async function handler(req, res) {
   try {
     // Use chromium-min to stay under Vercel's 50MB bundle limit
     // Chromium binary is fetched at runtime from GitHub CDN
-    chromium  = require('@sparticuz/chromium');
+    chromium  = require('@sparticuz/chromium-min');
     puppeteer = require('puppeteer-core');
   } catch(e) {
     try {
