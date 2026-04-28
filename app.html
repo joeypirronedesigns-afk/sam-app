@@ -4557,7 +4557,15 @@ body.quiet-studio-shell #chatFab,
 body.quiet-studio-shell #chatPanel { display: none !important; }
 body.quiet-studio-shell .psam-fab-btn,
 body.quiet-studio-shell .psam-fab-label { display: none !important; }
-body.quiet-studio-shell #persistentSAMFab { background: transparent !important; gap: 0 !important; }
+body.quiet-studio-shell #persistentSAMFab {
+  display: flex !important;
+  background: transparent !important;
+  gap: 0 !important;
+  pointer-events: none;
+}
+body.quiet-studio-shell #persistentSAMFab #persistentSAMPanel {
+  pointer-events: auto;
+}
 body.quiet-studio-shell .qs-legacy-workshop-block,
 body.quiet-studio-shell #homeGrid,
 body.quiet-studio-shell #ecosystemOverlay,
@@ -5126,7 +5134,7 @@ body.quiet-studio-shell .qs-dashboard {
 </nav>
 
 <main>
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v9.7</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v9.8</div>
 
 
 
@@ -13247,7 +13255,7 @@ function openWizardFromNav() {
      SAM GUIDED WIZARD PAGE
 ══════════════════════════════════════════════════════ -->
 <div class="wizard-page" id="wizardPage">
-  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v9.7</div>
+  <div style="position:fixed;bottom:6px;left:10px;color:rgba(255,255,255,0.15);font-size:9px;font-weight:600;letter-spacing:0.08em;z-index:9999;pointer-events:none;">v9.8</div>
 
 
   <!-- PROGRESS BAR -->
