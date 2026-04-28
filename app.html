@@ -2959,6 +2959,8 @@
       .wizard-page { left: 0; }
     }
     .wizard-page.open { display: block; }
+    .qs-wizard-switch-tools-btn { display: none !important; }
+    @media (max-width: 767px) { .qs-wizard-switch-tools-btn { display: inline-flex !important; } }
 
     /* Progress bar */
     .wizard-progress-wrap {
@@ -6282,7 +6284,7 @@ body.quiet-studio-shell .qs-rail nav {
 <!-- DAILY section -->
 <nav class="qs-dash-rail-section" aria-label="Daily">
   <div class="qs-dash-rail-section-label">Daily</div>
-  <button class="qs-dash-rail-item is-active" data-qs-nav="today">
+  <button class="qs-dash-rail-item is-active" data-qs-nav="today" onclick="if(typeof closeWizard==='function')closeWizard();">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9.5L12 3L21 9.5V20C21 20.5 20.5 21 20 21H4C3.5 21 3 20.5 3 20V9.5Z"/><path d="M9 21V13H15V21"/></svg>
     Today
   </button>
@@ -7990,8 +7992,7 @@ function openWizardPage(skipCheck) {
   if (window._trialExpired) { setTimeout(() => showTrialExpiredCard(), 800); }
 }
 function openProPage() {
-  const el = document.getElementById('pricingPage');
-  if (el) { el.classList.add('open'); document.body.style.overflow = 'hidden'; }
+  window.location.href = 'https://sam-app-git-quietstudio-joeypirronedesigns-1029s-projects.vercel.app/';
 }
 function openMeetSAMOverlay() { window.location.href = '/meet'; }
 function openSignInModal() {
@@ -9482,10 +9483,7 @@ function renderLens(data) {
 
 // ── PRO PAGE ──────────────────────────────────────────────────────────────────
 function openProPage() {
-  const page = document.getElementById('proPage');
-  page.classList.add('open');
-  page.scrollTop = 0;
-  document.body.style.overflow = 'hidden';
+  window.location.href = 'https://sam-app-git-quietstudio-joeypirronedesigns-1029s-projects.vercel.app/';
 }
 function closeProPage() {
   document.getElementById('proPage').classList.remove('open');
@@ -11737,7 +11735,7 @@ function restoreSessionIfAvailable() {
     banner.innerHTML = `
       <div style="font-size:13px;color:var(--text2);">🔖 <strong style="color:var(--text);">Welcome back</strong> — you have an unfinished session · ${timeAgo}</div>
       <div style="display:flex;gap:8px;">
-        <button onclick="doRestoreSession()" style="font-size:12px;font-weight:700;background:#7C3AED;color:#fff;border:none;border-radius:8px;padding:6px 14px;cursor:pointer;">⚡ Restore</button>
+        <button onclick="doRestoreSession()" style="font-size:12px;font-weight:600;background:var(--accent);color:var(--paper);border:none;border-radius:6px;padding:6px 14px;cursor:pointer;font-family:'Inter',system-ui,sans-serif;">⚡ Restore</button>
         <button onclick="document.getElementById('samRestoreBanner').remove()" style="font-size:12px;color:var(--text3);background:none;border:none;cursor:pointer;padding:6px;">Dismiss</button>
       </div>`;
     document.body.prepend(banner);
@@ -14981,8 +14979,8 @@ if (localStorage.getItem('sam_dev') === 'true') {
           <span id="wizardHeaderName" style="font-size:13px;font-weight:700;color:var(--ink);font-family:'Inter',system-ui,sans-serif;"></span>
         </span>
         <span id="wizardDefaultLabel">Building your story</span>
-        <button onclick="openEcosystemOverlay()" style="display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted);background:transparent;border:1px solid var(--rule);border-radius:6px;padding:3px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:'Inter',system-ui,sans-serif;">⇄ Switch tools</button>
-        <button onclick="closeWizard();window.location.href='/meet';" style="display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent);border-radius:6px;padding:3px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:'Inter',system-ui,sans-serif;">✦ Talk with SAM</button>
+        <button class="qs-wizard-switch-tools-btn" onclick="openEcosystemOverlay()" style="display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted);background:transparent;border:1px solid var(--rule);border-radius:6px;padding:3px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:'Inter',system-ui,sans-serif;">⇄ Switch tools</button>
+        <button onclick="closeWizard();setTimeout(function(){openTalkWithSAM();},300);" style="display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent);border-radius:6px;padding:3px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:'Inter',system-ui,sans-serif;">✦ Talk with SAM</button>
         <button id="voiceCalibBadge" onclick="openVoiceTrainer()" style="display:none;align-items:center;gap:5px;font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-soft);background:transparent;border:1px solid var(--rule);border-radius:6px;padding:3px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:'Inter',system-ui,sans-serif;">🎙 Voice locked in</button>
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
@@ -15806,8 +15804,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
 (function(){
 var _oc=window.closeProPage;
 window.closeProPage=function(){if(_oc)_oc();requestAnimationFrame(function(){var p=document.getElementById("proPage");if(p&&!p.classList.contains("open")){p.style.pointerEvents="none";p.style.display="none";}});};
-var _oo=window.openProPage;
-window.openProPage=function(){var p=document.getElementById("proPage");if(p){p.style.pointerEvents="";p.style.display="";}if(_oo)_oo();};
+window.openProPage=function(){window.location.href='https://sam-app-git-quietstudio-joeypirronedesigns-1029s-projects.vercel.app/';};
 
 // ══════════════════════════════════════════════════════════════════════════════
 // SOFT POPUP v7.56
