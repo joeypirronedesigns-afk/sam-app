@@ -5054,6 +5054,444 @@ body.quiet-studio-shell .qs-dashboard {
   .qs-drawer { transition: none; }
   .qs-tile, .qs-drawer-tile, .qs-drawer-close { transition: none; }
 }
+/* ============================================================ */
+/* QUIET STUDIO PRIMITIVES — v9.9 PATTERN LOCKDOWN              */
+/* These classes are the M2 design vocabulary.                  */
+/* No existing class is modified. New tools (v9.10+) inherit.   */
+/* ============================================================ */
+
+body.quiet-studio-shell {
+  --qs-paper:        #FAFAF7;
+  --qs-surface-2:    #F4F2EC;
+  --qs-rule:         #E5E2DB;
+  --qs-rule-strong:  #C9C5BC;
+  --qs-ink:          #1A1815;
+  --qs-ink-soft:     #4A4640;
+  --qs-ink-muted:    #8B8680;
+  --qs-ink-faint:    #8A8680;
+  --qs-accent:       #20808D;
+  --qs-accent-soft:  rgba(32, 128, 141, 0.08);
+  --qs-accent-hover: #1A6B77;
+  --qs-serif-accent: #8B3A2F;
+  --qs-state-pill-bg: #F5E8E5;
+  --qs-pos:          #437A22;
+  --qs-neg:          #A12C7B;
+
+  --qs-font-ui:      'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --qs-font-mono:    'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --qs-font-serif:   'Instrument Serif', Charter, Georgia, serif;
+
+  --qs-space-1:  4px;
+  --qs-space-2:  8px;
+  --qs-space-3:  12px;
+  --qs-space-4:  16px;
+  --qs-space-5:  20px;
+  --qs-space-6:  24px;
+  --qs-space-7:  32px;
+  --qs-space-8:  40px;
+  --qs-space-9:  48px;
+
+  --qs-radius-sm:  6px;
+  --qs-radius-md:  8px;
+  --qs-radius-lg:  10px;
+  --qs-radius-xl:  12px;
+  --qs-radius-pill: 9999px;
+
+  --qs-ease:       cubic-bezier(0.16, 1, 0.3, 1);
+  --qs-fast:       120ms;
+  --qs-medium:     180ms;
+  --qs-slow:       220ms;
+}
+
+body.quiet-studio-shell .qs-meta-label {
+  font-family: var(--qs-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--qs-serif-accent);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+body.quiet-studio-shell .qs-section-label {
+  font-family: var(--qs-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--qs-ink-muted);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+body.quiet-studio-shell .qs-tool-name {
+  font-family: var(--qs-font-serif);
+  font-style: normal;
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 1.1;
+  color: var(--qs-ink);
+  letter-spacing: -0.01em;
+}
+
+body.quiet-studio-shell .qs-tool-subtitle {
+  font-family: var(--qs-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--qs-accent);
+  font-weight: 400;
+  line-height: 1.4;
+  margin-top: 4px;
+}
+
+body.quiet-studio-shell .qs-verdict {
+  font-family: var(--qs-font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.4;
+  color: var(--qs-ink);
+}
+
+body.quiet-studio-shell .qs-strapline {
+  font-family: var(--qs-font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--qs-ink-muted);
+  margin-top: 16px;
+}
+
+body.quiet-studio-shell .qs-body {
+  font-family: var(--qs-font-ui);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--qs-ink);
+}
+
+body.quiet-studio-shell .qs-card {
+  background: var(--qs-surface-2);
+  border: 1px solid var(--qs-rule);
+  border-radius: var(--qs-radius-xl);
+  padding: 32px;
+}
+
+body.quiet-studio-shell .qs-rule {
+  height: 1px;
+  background: var(--qs-rule);
+  border: none;
+  margin: 24px 0;
+}
+
+body.quiet-studio-shell .qs-rule-strong {
+  height: 1px;
+  background: var(--qs-rule-strong);
+  border: none;
+  margin: 32px 0;
+}
+
+body.quiet-studio-shell .qs-state-pill {
+  display: inline-block;
+  background: var(--qs-state-pill-bg);
+  color: var(--qs-serif-accent);
+  font-family: var(--qs-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: var(--qs-radius-sm);
+  font-weight: 400;
+}
+
+body.quiet-studio-shell .qs-platform-pill {
+  display: inline-block;
+  background: var(--qs-accent-soft);
+  color: var(--qs-accent);
+  border: 1px solid rgba(32, 128, 141, 0.20);
+  font-family: var(--qs-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.10em;
+  padding: 4px 10px;
+  border-radius: var(--qs-radius-sm);
+  font-weight: 400;
+}
+
+body.quiet-studio-shell .qs-input {
+  width: 100%;
+  background: var(--qs-surface-2);
+  border: 1px solid var(--qs-rule);
+  border-radius: var(--qs-radius-md);
+  padding: 12px 16px;
+  font-family: var(--qs-font-ui);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--qs-ink);
+  transition: border-color var(--qs-fast) var(--qs-ease);
+}
+
+body.quiet-studio-shell .qs-input::placeholder {
+  color: var(--qs-ink-faint);
+}
+
+body.quiet-studio-shell .qs-input:focus,
+body.quiet-studio-shell .qs-input:focus-visible {
+  outline: none;
+  border-color: var(--qs-accent);
+  box-shadow: 0 0 0 3px var(--qs-accent-soft);
+}
+
+body.quiet-studio-shell .qs-textarea {
+  width: 100%;
+  min-height: 120px;
+  background: var(--qs-surface-2);
+  border: 1px solid var(--qs-rule);
+  border-radius: var(--qs-radius-md);
+  padding: 14px 16px;
+  font-family: var(--qs-font-ui);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--qs-ink);
+  resize: vertical;
+  transition: border-color var(--qs-fast) var(--qs-ease);
+}
+
+body.quiet-studio-shell .qs-textarea::placeholder {
+  color: var(--qs-ink-faint);
+}
+
+body.quiet-studio-shell .qs-textarea:focus,
+body.quiet-studio-shell .qs-textarea:focus-visible {
+  outline: none;
+  border-color: var(--qs-accent);
+  box-shadow: 0 0 0 3px var(--qs-accent-soft);
+}
+
+body.quiet-studio-shell .qs-button-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--qs-accent);
+  color: var(--qs-paper);
+  font-family: var(--qs-font-ui);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 12px 24px;
+  border: none;
+  border-radius: var(--qs-radius-md);
+  cursor: pointer;
+  transition: background var(--qs-fast) var(--qs-ease);
+  min-height: 44px;
+}
+
+body.quiet-studio-shell .qs-button-primary:hover {
+  background: var(--qs-accent-hover);
+}
+
+body.quiet-studio-shell .qs-button-primary:focus-visible {
+  outline: 2px solid var(--qs-accent);
+  outline-offset: 2px;
+}
+
+body.quiet-studio-shell .qs-button-primary:disabled {
+  background: var(--qs-rule-strong);
+  color: var(--qs-ink-muted);
+  cursor: not-allowed;
+}
+
+body.quiet-studio-shell .qs-button-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--qs-paper);
+  color: var(--qs-ink);
+  font-family: var(--qs-font-ui);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 12px 24px;
+  border: 1px solid var(--qs-rule);
+  border-radius: var(--qs-radius-md);
+  cursor: pointer;
+  transition: background var(--qs-fast) var(--qs-ease), border-color var(--qs-fast) var(--qs-ease);
+  min-height: 44px;
+}
+
+body.quiet-studio-shell .qs-button-ghost:hover {
+  background: var(--qs-surface-2);
+  border-color: var(--qs-rule-strong);
+}
+
+body.quiet-studio-shell .qs-button-ghost:focus-visible {
+  outline: 2px solid var(--qs-accent);
+  outline-offset: 2px;
+}
+
+body.quiet-studio-shell .qs-button-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--qs-paper);
+  color: var(--qs-serif-accent);
+  font-family: var(--qs-font-ui);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 12px 24px;
+  border: 1px solid var(--qs-serif-accent);
+  border-radius: var(--qs-radius-md);
+  cursor: pointer;
+  transition: background var(--qs-fast) var(--qs-ease);
+  min-height: 44px;
+}
+
+body.quiet-studio-shell .qs-button-danger:hover {
+  background: rgba(139, 58, 47, 0.06);
+}
+
+body.quiet-studio-shell .qs-bullet-chevron {
+  list-style: none;
+  padding-left: 0;
+}
+
+body.quiet-studio-shell .qs-bullet-chevron li {
+  position: relative;
+  padding-left: 24px;
+  margin-bottom: 12px;
+  color: var(--qs-ink);
+  font-family: var(--qs-font-ui);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+body.quiet-studio-shell .qs-bullet-chevron li::before {
+  content: "›";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--qs-accent);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+body.quiet-studio-shell .qs-bullet-arrow {
+  list-style: none;
+  padding-left: 0;
+}
+
+body.quiet-studio-shell .qs-bullet-arrow li {
+  position: relative;
+  padding-left: 24px;
+  margin-bottom: 12px;
+  color: var(--qs-ink);
+  font-family: var(--qs-font-ui);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+body.quiet-studio-shell .qs-bullet-arrow li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--qs-serif-accent);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+body.quiet-studio-shell .qs-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  background: var(--qs-paper);
+  color: var(--qs-ink-soft);
+  font-family: var(--qs-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  padding: 6px 12px;
+  border: 1px solid var(--qs-rule);
+  border-radius: var(--qs-radius-sm);
+  cursor: pointer;
+  transition: all var(--qs-fast) var(--qs-ease);
+  min-height: 32px;
+}
+
+body.quiet-studio-shell .qs-filter-chip:hover {
+  background: var(--qs-surface-2);
+}
+
+body.quiet-studio-shell .qs-filter-chip.is-selected {
+  background: var(--qs-accent-soft);
+  color: var(--qs-accent);
+  border-color: var(--qs-accent);
+}
+
+body.quiet-studio-shell .qs-filter-chip.is-saved {
+  background: var(--qs-state-pill-bg);
+  color: var(--qs-serif-accent);
+  border-color: rgba(139, 58, 47, 0.30);
+}
+
+body.quiet-studio-shell .qs-progress-bar {
+  height: 6px;
+  background: var(--qs-rule);
+  border-radius: var(--qs-radius-pill);
+  overflow: hidden;
+  width: 100%;
+}
+
+body.quiet-studio-shell .qs-progress-bar-fill {
+  height: 100%;
+  background: var(--qs-serif-accent);
+  border-radius: var(--qs-radius-pill);
+  transition: width 600ms var(--qs-ease);
+}
+
+body.quiet-studio-shell .qs-loading-skeleton {
+  background: linear-gradient(90deg, var(--qs-surface-2) 0%, var(--qs-rule) 50%, var(--qs-surface-2) 100%);
+  background-size: 200% 100%;
+  border-radius: var(--qs-radius-md);
+  animation: qs-shimmer 1.6s ease-in-out infinite;
+  min-height: 16px;
+}
+
+@keyframes qs-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.quiet-studio-shell .qs-loading-skeleton {
+    animation: none;
+    background: var(--qs-surface-2);
+  }
+}
+
+body.quiet-studio-shell .qs-error-state {
+  background: var(--qs-surface-2);
+  border-left: 3px solid var(--qs-neg);
+  padding: 16px 20px;
+  border-radius: var(--qs-radius-md);
+  font-family: var(--qs-font-ui);
+  font-size: 14px;
+  color: var(--qs-ink-soft);
+  line-height: 1.5;
+}
+
+body.quiet-studio-shell .qs-error-state strong {
+  color: var(--qs-neg);
+  font-weight: 500;
+}
+
+body.quiet-studio-shell .qs-empty-state {
+  font-family: var(--qs-font-serif);
+  font-style: italic;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--qs-ink-muted);
+  text-align: center;
+  padding: 48px 24px;
+}
+
 </style>
 
 </head>
@@ -5067,7 +5505,7 @@ body.quiet-studio-shell .qs-dashboard {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v3">
+<div data-qs-shell="true" data-qs-version="v9.9" data-qs-primitives="v9.9">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
     <div class="qs-rail-header">
       <div class="qs-rail-logo-mark">QS</div>
@@ -5096,7 +5534,7 @@ body.quiet-studio-shell .qs-dashboard {
       </div>
     </nav>
     <div class="qs-rail-footer">
-      <div class="qs-version-stamp">Quiet Studio v3</div>
+      <div class="qs-version-stamp">Quiet Studio v9.9</div>
     </div>
   </aside>
 
