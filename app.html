@@ -1513,8 +1513,8 @@
     .cross-tool-arrow { font-size: 16px; color: var(--text3); }
 
     .save-bar { padding: 14px 20px 18px; border-top: 1px solid var(--border); }
-    .save-btn { width: 100%; padding: 12px; background: transparent; border: 1px dashed var(--border); border-radius: var(--radius); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
-    .save-btn:hover { border-color: var(--border2); color: var(--text2); border-style: solid; }
+    .save-btn { width: 100%; padding: 12px; background: transparent; border: 1px dashed var(--rule); border-radius: 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; font-family: 'Inter', system-ui, sans-serif; }
+    .save-btn:hover { border-color: var(--rule-strong); color: var(--ink); border-style: solid; }
 
     .idea-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; border-left: 3px solid var(--spark); margin-bottom: 10px; transition: all 0.2s; }
     .idea-card:hover { background: var(--surface2); }
@@ -1643,8 +1643,8 @@
     .ideas-footer-btn{flex:1;padding:10px;border-radius:var(--radius);font-family:"Sora",sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;text-align:center;}
     .ideas-footer-clear{background:transparent;border:1px solid var(--border);color:var(--text3);}
     .ideas-footer-export{background:linear-gradient(135deg,rgba(109,40,217,0.2),rgba(244,114,182,0.1));border:1px solid rgba(167,139,250,0.3);color:var(--text);}
-    .save-to-ideas-btn{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--spark);background:var(--spark-bg);border:1px solid var(--spark-border);border-radius:8px;padding:5px 12px;cursor:pointer;transition:all 0.15s;}
-    .save-to-ideas-btn:hover{background:rgba(167,139,250,0.2);}
+    .save-to-ideas-btn{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted);background:var(--surface-2);border:1px solid var(--rule);border-radius:6px;padding:5px 12px;cursor:pointer;transition:all 0.15s;font-family:'Inter',system-ui,sans-serif;}
+    .save-to-ideas-btn:hover{background:var(--paper);border-color:var(--rule-strong);color:var(--ink);}
     .save-to-ideas-btn.saved{color:var(--vision);background:var(--vision-bg);border-color:var(--vision-border);pointer-events:none;}
     .ib-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:rgba(13,11,22,0.97);border:1px solid rgba(167,139,250,0.3);border-radius:50px;padding:10px 20px;font-size:13px;font-weight:600;color:var(--text);z-index:1100;transition:transform 0.3s cubic-bezier(0.34,1.2,0.64,1),opacity 0.3s;white-space:nowrap;display:flex;align-items:center;gap:8px;opacity:0;pointer-events:none;}
     .ib-toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
@@ -3935,17 +3935,18 @@
       font-weight: 600;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      color: var(--text3);
-      background: var(--surface);
-      border: 1px solid var(--border);
+      color: var(--ink-muted);
+      background: var(--surface-2);
+      border: 1px solid var(--rule);
       border-radius: 6px;
       padding: 5px 12px;
       cursor: pointer;
       transition: all 0.15s;
       float: right;
       margin-top: 10px;
+      font-family: 'Inter', system-ui, sans-serif;
     }
-    .playbook-copy-btn:hover { color: var(--text2); border-color: var(--border2); }
+    .playbook-copy-btn:hover { color: var(--ink); border-color: var(--rule-strong); }
     .playbook-copy-btn.copied { color: #34D399; border-color: rgba(52,211,153,0.3); }
 
     .no-print { }
@@ -13288,11 +13289,11 @@ function renderPlaybook(data) {
         ${data.diagnosis_why ? `<div class="wizard-why" style="margin-top:12px;"><strong>Why this matters:</strong> ${data.diagnosis_why}</div>` : ''}
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center;">
-        <button class="playbook-copy-btn" style="margin-top:0;background:rgba(167,139,250,0.12);border-color:rgba(167,139,250,0.3);color:var(--spark);" onclick="saveWizardItem(this.closest('.playbook-section').innerText,'Story Diagnosis','wizard')">💜 Save</button>
+        <button class="playbook-copy-btn" style="margin-top:0;background:var(--surface-2);border:1px solid var(--rule);color:var(--ink-muted);font-family:'Inter',system-ui,sans-serif;" onclick="saveWizardItem(this.closest('.playbook-section').innerText,'Story Diagnosis','wizard')">💜 Save</button>
       </div>
       <div class="no-print" style="margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-      <button class="sec-regen-btn" onclick="regenSection('diagnosis',this)" style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:rgba(240,236,255,0.5);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:6px 13px;cursor:pointer;transition:all 0.2s;font-family:inherit;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.5)'">↺ Redo</button>
-      <input id="sec-steer-diagnosis" type="text" placeholder="Optional: steer SAM differently..." onkeydown="if(event.key==='Enter'){event.preventDefault();this.previousElementSibling.click();}" style="flex:1;min-width:120px;max-width:280px;padding:6px 11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:50px;font-size:11px;color:var(--text2);font-family:inherit;outline:none;" onfocus="this.style.borderColor='rgba(167,139,250,0.35)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'"><button onclick="this.previousElementSibling.previousElementSibling.click()" style="flex-shrink:0;padding:6px 12px;background:rgba(167,139,250,0.15);border:1px solid rgba(167,139,250,0.3);border-radius:50px;font-size:11px;font-weight:700;color:#A78BFA;cursor:pointer;font-family:inherit;white-space:nowrap;" onmouseover="this.style.background='rgba(167,139,250,0.25)'" onmouseout="this.style.background='rgba(167,139,250,0.15)'">Apply →</button>
+      <button class="sec-regen-btn" onclick="regenSection('diagnosis',this)" style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--ink-muted);background:var(--surface-2);border:1px solid var(--rule);border-radius:6px;padding:6px 13px;cursor:pointer;transition:all 0.2s;font-family:'Inter',system-ui,sans-serif;">↺ Redo</button>
+      <input id="sec-steer-diagnosis" type="text" placeholder="Optional: steer SAM differently..." onkeydown="if(event.key==='Enter'){event.preventDefault();this.previousElementSibling.click();}" style="flex:1;min-width:120px;max-width:280px;padding:6px 11px;background:var(--paper);border:1px solid var(--rule);border-radius:6px;font-size:11px;color:var(--ink);font-family:'Inter',system-ui,sans-serif;outline:none;"><button onclick="this.previousElementSibling.previousElementSibling.click()" style="flex-shrink:0;padding:6px 12px;background:var(--accent);border:none;border-radius:6px;font-size:11px;font-weight:600;color:var(--paper);cursor:pointer;font-family:'Inter',system-ui,sans-serif;white-space:nowrap;">Apply →</button>
     </div>
     </div>`;
   }
@@ -13315,11 +13316,11 @@ function renderPlaybook(data) {
         </div>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center;">
-        <button class="playbook-copy-btn" style="margin-top:0;background:rgba(167,139,250,0.12);border-color:rgba(167,139,250,0.3);color:var(--spark);" onclick="saveWizardItem(this.closest('.playbook-section').innerText,'Story Architecture','wizard')">💜 Save</button>
+        <button class="playbook-copy-btn" style="margin-top:0;background:var(--surface-2);border:1px solid var(--rule);color:var(--ink-muted);font-family:'Inter',system-ui,sans-serif;" onclick="saveWizardItem(this.closest('.playbook-section').innerText,'Story Architecture','wizard')">💜 Save</button>
       </div>
       <div class="no-print" style="margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-      <button class="sec-regen-btn" onclick="regenSection('architecture',this)" style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:rgba(240,236,255,0.5);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:6px 13px;cursor:pointer;transition:all 0.2s;font-family:inherit;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.5)'">↺ Redo</button>
-      <input id="sec-steer-architecture" type="text" placeholder="Optional: steer SAM differently..." onkeydown="if(event.key==='Enter'){event.preventDefault();this.previousElementSibling.click();}" style="flex:1;min-width:120px;max-width:280px;padding:6px 11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:50px;font-size:11px;color:var(--text2);font-family:inherit;outline:none;" onfocus="this.style.borderColor='rgba(167,139,250,0.35)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'"><button onclick="this.previousElementSibling.previousElementSibling.click()" style="flex-shrink:0;padding:6px 12px;background:rgba(167,139,250,0.15);border:1px solid rgba(167,139,250,0.3);border-radius:50px;font-size:11px;font-weight:700;color:#A78BFA;cursor:pointer;font-family:inherit;white-space:nowrap;" onmouseover="this.style.background='rgba(167,139,250,0.25)'" onmouseout="this.style.background='rgba(167,139,250,0.15)'">Apply →</button>
+      <button class="sec-regen-btn" onclick="regenSection('architecture',this)" style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--ink-muted);background:var(--surface-2);border:1px solid var(--rule);border-radius:6px;padding:6px 13px;cursor:pointer;transition:all 0.2s;font-family:'Inter',system-ui,sans-serif;">↺ Redo</button>
+      <input id="sec-steer-architecture" type="text" placeholder="Optional: steer SAM differently..." onkeydown="if(event.key==='Enter'){event.preventDefault();this.previousElementSibling.click();}" style="flex:1;min-width:120px;max-width:280px;padding:6px 11px;background:var(--paper);border:1px solid var(--rule);border-radius:6px;font-size:11px;color:var(--ink);font-family:'Inter',system-ui,sans-serif;outline:none;"><button onclick="this.previousElementSibling.previousElementSibling.click()" style="flex-shrink:0;padding:6px 12px;background:var(--accent);border:none;border-radius:6px;font-size:11px;font-weight:600;color:var(--paper);cursor:pointer;font-family:'Inter',system-ui,sans-serif;white-space:nowrap;">Apply →</button>
     </div>
     </div>`;
   }
@@ -13336,11 +13337,11 @@ function renderPlaybook(data) {
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center;">
         <button class="playbook-copy-btn" style="margin-top:0;" onclick="wizCopy(this,'${escQ(data.hook)}')">Copy hook</button>
-        <button class="playbook-copy-btn" style="margin-top:0;background:rgba(167,139,250,0.12);border-color:rgba(167,139,250,0.3);color:var(--spark);" onclick="var _h=this.closest('.psam-output-section')||this.closest('[id^=playbook-sec-]');var _t=_h?(_h.querySelector('.playbook-hook')||_h.querySelector('.psam-copyable')):null;var _txt=_t?_t.innerText.trim():'';if(_txt)saveWizardItem(_txt,'Hook','wizard');">💜 Save</button>
+        <button class="playbook-copy-btn" style="margin-top:0;background:var(--surface-2);border:1px solid var(--rule);color:var(--ink-muted);font-family:'Inter',system-ui,sans-serif;" onclick="var _h=this.closest('.psam-output-section')||this.closest('[id^=playbook-sec-]');var _t=_h?(_h.querySelector('.playbook-hook')||_h.querySelector('.psam-copyable')):null;var _txt=_t?_t.innerText.trim():'';if(_txt)saveWizardItem(_txt,'Hook','wizard');">💜 Save</button>
       </div>
       <div class="no-print" style="margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-      <button class="sec-regen-btn" onclick="regenSection('hook',this)" style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:rgba(240,236,255,0.5);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:6px 13px;cursor:pointer;transition:all 0.2s;font-family:inherit;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.5)'">↺ Redo</button>
-      <input id="sec-steer-hook" type="text" placeholder="Optional: steer SAM differently..." onkeydown="if(event.key==='Enter'){event.preventDefault();this.previousElementSibling.click();}" style="flex:1;min-width:120px;max-width:280px;padding:6px 11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:50px;font-size:11px;color:var(--text2);font-family:inherit;outline:none;" onfocus="this.style.borderColor='rgba(167,139,250,0.35)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'"><button onclick="this.previousElementSibling.previousElementSibling.click()" style="flex-shrink:0;padding:6px 12px;background:rgba(167,139,250,0.15);border:1px solid rgba(167,139,250,0.3);border-radius:50px;font-size:11px;font-weight:700;color:#A78BFA;cursor:pointer;font-family:inherit;white-space:nowrap;" onmouseover="this.style.background='rgba(167,139,250,0.25)'" onmouseout="this.style.background='rgba(167,139,250,0.15)'">Apply →</button>
+      <button class="sec-regen-btn" onclick="regenSection('hook',this)" style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--ink-muted);background:var(--surface-2);border:1px solid var(--rule);border-radius:6px;padding:6px 13px;cursor:pointer;transition:all 0.2s;font-family:'Inter',system-ui,sans-serif;">↺ Redo</button>
+      <input id="sec-steer-hook" type="text" placeholder="Optional: steer SAM differently..." onkeydown="if(event.key==='Enter'){event.preventDefault();this.previousElementSibling.click();}" style="flex:1;min-width:120px;max-width:280px;padding:6px 11px;background:var(--paper);border:1px solid var(--rule);border-radius:6px;font-size:11px;color:var(--ink);font-family:'Inter',system-ui,sans-serif;outline:none;"><button onclick="this.previousElementSibling.previousElementSibling.click()" style="flex-shrink:0;padding:6px 12px;background:var(--accent);border:none;border-radius:6px;font-size:11px;font-weight:600;color:var(--paper);cursor:pointer;font-family:'Inter',system-ui,sans-serif;white-space:nowrap;">Apply →</button>
     </div>
     </div>`;
   }
@@ -13372,9 +13373,9 @@ function renderPlaybook(data) {
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center;">
         <button class="playbook-copy-btn" style="margin-top:0;" onclick="wizCopyEl(this)">Copy script</button>
-        <button class="playbook-copy-btn" style="margin-top:0;background:rgba(167,139,250,0.12);border-color:rgba(167,139,250,0.3);color:var(--spark);" onclick="saveWizardItem(this.closest('.playbook-section').querySelector('.playbook-script').innerText,'Full script','wizard')">💜 Save</button>
+        <button class="playbook-copy-btn" style="margin-top:0;background:var(--surface-2);border:1px solid var(--rule);color:var(--ink-muted);font-family:'Inter',system-ui,sans-serif;" onclick="saveWizardItem(this.closest('.playbook-section').querySelector('.playbook-script').innerText,'Full script','wizard')">💜 Save</button>
       </div>
-      <div class='no-print' style='margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;'><button class='sec-regen-btn' onclick="regenSection('script',this)" style='display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:rgba(240,236,255,0.5);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:6px 13px;cursor:pointer;transition:all 0.2s;font-family:inherit;' onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.5)'">↺ Redo</button><input id='sec-steer-script' type='text' placeholder='Optional: steer SAM differently...' onkeydown='if(event.key==="Enter"){event.preventDefault();this.previousElementSibling.click();}' style='flex:1;min-width:120px;max-width:280px;padding:6px 11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:50px;font-size:11px;color:var(--text2);font-family:inherit;outline:none;' onfocus="this.style.borderColor='rgba(167,139,250,0.35)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'"><button onclick="this.previousElementSibling.previousElementSibling.click()" style="flex-shrink:0;padding:6px 12px;background:rgba(167,139,250,0.15);border:1px solid rgba(167,139,250,0.3);border-radius:50px;font-size:11px;font-weight:700;color:#A78BFA;cursor:pointer;font-family:inherit;white-space:nowrap;" onmouseover="this.style.background='rgba(167,139,250,0.25)'" onmouseout="this.style.background='rgba(167,139,250,0.15)'">Apply →</button></div>
+      <div class='no-print' style='margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;'><button class='sec-regen-btn' onclick="regenSection('script',this)" style='display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--ink-muted);background:var(--surface-2);border:1px solid var(--rule);border-radius:6px;padding:6px 13px;cursor:pointer;transition:all 0.2s;font-family:inherit;'>↺ Redo</button><input id='sec-steer-script' type='text' placeholder='Optional: steer SAM differently...' onkeydown='if(event.key==="Enter"){event.preventDefault();this.previousElementSibling.click();}' style='flex:1;min-width:120px;max-width:280px;padding:6px 11px;background:var(--paper);border:1px solid var(--rule);border-radius:6px;font-size:11px;color:var(--ink);font-family:inherit;outline:none;'><button onclick="this.previousElementSibling.previousElementSibling.click()" style="flex-shrink:0;padding:6px 12px;background:var(--accent);border:none;border-radius:6px;font-size:11px;font-weight:600;color:var(--paper);cursor:pointer;font-family:'Inter',system-ui,sans-serif;white-space:nowrap;">Apply →</button></div>
     </div>`;
   }
 
@@ -13392,7 +13393,7 @@ function renderPlaybook(data) {
         <div class="ps-header">
           <div class="ps-name">${ps.platform}</div>
           <button class="copy-btn" style="float:none;margin:0;" onclick="wizCopy(this,'${escQ((ps.caption||'') + '\n' + (ps.hashtags||''))}')">Copy</button>
-          <button class="copy-btn" style="float:none;margin:0;background:rgba(167,139,250,0.1);border-color:rgba(167,139,250,0.3);color:var(--spark);" onclick="saveWizardItem('${escQ((ps.caption||'') + '\n' + (ps.hashtags||''))}','${escQ(ps.platform||'')} caption','wizard')">💜 Save</button>
+          <button class="copy-btn" style="float:none;margin:0;background:var(--surface-2);border:1px solid var(--rule);color:var(--ink-muted);font-family:'Inter',system-ui,sans-serif;" onclick="saveWizardItem('${escQ((ps.caption||'') + '\n' + (ps.hashtags||''))}','${escQ(ps.platform||'')} caption','wizard')">💜 Save</button>
         </div>
         <div class="ps-body">
           ${ps.strategy ? `<div style="font-size:13px;color:var(--text3);margin-bottom:8px;font-style:italic;">${ps.strategy}</div>` : ''}
@@ -13401,7 +13402,7 @@ function renderPlaybook(data) {
         </div>
       </div>`;
     });
-    html += `</div>`; html += `<div class='no-print' style='margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;'><button class='sec-regen-btn' onclick="regenSection('platforms',this)" style='display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:rgba(240,236,255,0.5);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:6px 13px;cursor:pointer;transition:all 0.2s;font-family:inherit;' onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.5)'">↺ Redo</button><input id='sec-steer-platforms' type='text' placeholder='Optional: steer SAM differently...' onkeydown='if(event.key==="Enter"){event.preventDefault();this.previousElementSibling.click();}' style='flex:1;min-width:120px;max-width:280px;padding:6px 11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:50px;font-size:11px;color:var(--text2);font-family:inherit;outline:none;' onfocus="this.style.borderColor='rgba(167,139,250,0.35)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'"><button onclick="this.previousElementSibling.previousElementSibling.click()" style="flex-shrink:0;padding:6px 12px;background:rgba(167,139,250,0.15);border:1px solid rgba(167,139,250,0.3);border-radius:50px;font-size:11px;font-weight:700;color:#A78BFA;cursor:pointer;font-family:inherit;white-space:nowrap;" onmouseover="this.style.background='rgba(167,139,250,0.25)'" onmouseout="this.style.background='rgba(167,139,250,0.15)'">Apply →</button></div></div>`;
+    html += `</div>`; html += `<div class='no-print' style='margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;'><button class='sec-regen-btn' onclick="regenSection('platforms',this)" style='display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--ink-muted);background:var(--surface-2);border:1px solid var(--rule);border-radius:6px;padding:6px 13px;cursor:pointer;transition:all 0.2s;font-family:inherit;'>↺ Redo</button><input id='sec-steer-platforms' type='text' placeholder='Optional: steer SAM differently...' onkeydown='if(event.key==="Enter"){event.preventDefault();this.previousElementSibling.click();}' style='flex:1;min-width:120px;max-width:280px;padding:6px 11px;background:var(--paper);border:1px solid var(--rule);border-radius:6px;font-size:11px;color:var(--ink);font-family:inherit;outline:none;'><button onclick="this.previousElementSibling.previousElementSibling.click()" style="flex-shrink:0;padding:6px 12px;background:var(--accent);border:none;border-radius:6px;font-size:11px;font-weight:600;color:var(--paper);cursor:pointer;font-family:'Inter',system-ui,sans-serif;white-space:nowrap;">Apply →</button></div></div>`;
   }
 
   // ⑥ AUDIENCE PROFILE — deep psychographic
@@ -13425,7 +13426,7 @@ function renderPlaybook(data) {
         ${apRow('voice', 'How to Talk to Them', '🗣️')}
       </div>
       ${audienceProfile.why ? `<div class="wizard-why" style="margin-top:12px;border-left:3px solid var(--spark);padding-left:14px;"><strong>Why SAM sees this for you:</strong> ${audienceProfile.why}</div>` : ''}
-      <div class='no-print' style='margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;'><button class='sec-regen-btn' onclick="regenSection('audience',this)" style='display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:rgba(240,236,255,0.5);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:6px 13px;cursor:pointer;transition:all 0.2s;font-family:inherit;' onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.5)'">↺ Redo</button><input id='sec-steer-audience' type='text' placeholder='Optional: steer SAM differently...' onkeydown='if(event.key==="Enter"){event.preventDefault();this.previousElementSibling.click();}' style='flex:1;min-width:120px;max-width:280px;padding:6px 11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:50px;font-size:11px;color:var(--text2);font-family:inherit;outline:none;' onfocus="this.style.borderColor='rgba(167,139,250,0.35)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'"><button onclick="this.previousElementSibling.previousElementSibling.click()" style="flex-shrink:0;padding:6px 12px;background:rgba(167,139,250,0.15);border:1px solid rgba(167,139,250,0.3);border-radius:50px;font-size:11px;font-weight:700;color:#A78BFA;cursor:pointer;font-family:inherit;white-space:nowrap;" onmouseover="this.style.background='rgba(167,139,250,0.25)'" onmouseout="this.style.background='rgba(167,139,250,0.15)'">Apply →</button></div>
+      <div class='no-print' style='margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;'><button class='sec-regen-btn' onclick="regenSection('audience',this)" style='display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--ink-muted);background:var(--surface-2);border:1px solid var(--rule);border-radius:6px;padding:6px 13px;cursor:pointer;transition:all 0.2s;font-family:inherit;'>↺ Redo</button><input id='sec-steer-audience' type='text' placeholder='Optional: steer SAM differently...' onkeydown='if(event.key==="Enter"){event.preventDefault();this.previousElementSibling.click();}' style='flex:1;min-width:120px;max-width:280px;padding:6px 11px;background:var(--paper);border:1px solid var(--rule);border-radius:6px;font-size:11px;color:var(--ink);font-family:inherit;outline:none;'><button onclick="this.previousElementSibling.previousElementSibling.click()" style="flex-shrink:0;padding:6px 12px;background:var(--accent);border:none;border-radius:6px;font-size:11px;font-weight:600;color:var(--paper);cursor:pointer;font-family:'Inter',system-ui,sans-serif;white-space:nowrap;">Apply →</button></div>
     </div>`;
   }
 
@@ -13539,7 +13540,7 @@ function renderPlaybook(data) {
       <div class="playbook-focus-eyebrow">Stop. Focus.</div>
       <div class="playbook-focus-text">${data.focus_directive || 'You have everything you need. The only thing left is to show up and do the work. Go.'}</div>
     </div></div>
-    <div class='no-print' style='margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;'><button class='sec-regen-btn' onclick="regenSection('focus',this)" style='display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:rgba(240,236,255,0.5);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:6px 13px;cursor:pointer;transition:all 0.2s;font-family:inherit;' onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.5)'">↺ Redo</button><input id='sec-steer-focus' type='text' placeholder='Optional: steer SAM differently...' onkeydown='if(event.key==="Enter"){event.preventDefault();this.previousElementSibling.click();}' style='flex:1;min-width:120px;max-width:280px;padding:6px 11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:50px;font-size:11px;color:var(--text2);font-family:inherit;outline:none;' onfocus="this.style.borderColor='rgba(167,139,250,0.35)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'"><button onclick="this.previousElementSibling.previousElementSibling.click()" style="flex-shrink:0;padding:6px 12px;background:rgba(167,139,250,0.15);border:1px solid rgba(167,139,250,0.3);border-radius:50px;font-size:11px;font-weight:700;color:#A78BFA;cursor:pointer;font-family:inherit;white-space:nowrap;" onmouseover="this.style.background='rgba(167,139,250,0.25)'" onmouseout="this.style.background='rgba(167,139,250,0.15)'">Apply →</button></div>
+    <div class='no-print' style='margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;'><button class='sec-regen-btn' onclick="regenSection('focus',this)" style='display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--ink-muted);background:var(--surface-2);border:1px solid var(--rule);border-radius:6px;padding:6px 13px;cursor:pointer;transition:all 0.2s;font-family:inherit;'>↺ Redo</button><input id='sec-steer-focus' type='text' placeholder='Optional: steer SAM differently...' onkeydown='if(event.key==="Enter"){event.preventDefault();this.previousElementSibling.click();}' style='flex:1;min-width:120px;max-width:280px;padding:6px 11px;background:var(--paper);border:1px solid var(--rule);border-radius:6px;font-size:11px;color:var(--ink);font-family:inherit;outline:none;'><button onclick="this.previousElementSibling.previousElementSibling.click()" style="flex-shrink:0;padding:6px 12px;background:var(--accent);border:none;border-radius:6px;font-size:11px;font-weight:600;color:var(--paper);cursor:pointer;font-family:'Inter',system-ui,sans-serif;white-space:nowrap;">Apply →</button></div>
   </div>
 
   <!-- WHAT SAM CAN BUILD NEXT -->
@@ -15736,19 +15737,17 @@ if (localStorage.getItem('sam_dev') === 'true') {
     <button class="playbook-print-btn" id="playbookPdfBtn" onclick="downloadPDF('playbook')" style="flex:1;min-width:140px;font-size:12px;">
       ⬇️ Download PDF
     </button>
-    <button class="playbook-print-btn" id="leadMagnetPdfBtn" onclick="downloadPDF('leadmagnet')" style="flex:1;min-width:140px;font-size:12px;background:linear-gradient(135deg,#92400E,#FBBF24,#F59E0B);">
+    <button class="playbook-print-btn" id="leadMagnetPdfBtn" onclick="downloadPDF('leadmagnet')" style="flex:1;min-width:140px;font-size:12px;background:var(--accent);color:var(--paper);font-family:'Inter',system-ui,sans-serif;">
       ⬇️ Download Lead Magnet
     </button>
-    <div style="width:100%;text-align:center;font-size:11px;color:rgba(240,236,255,0.4);margin-top:4px;">Uncheck "Headers and footers" in the print dialog for a clean PDF</div>
+    <div style="width:100%;text-align:center;font-size:11px;color:var(--ink-muted);margin-top:4px;font-family:'Inter',system-ui,sans-serif;">Uncheck "Headers and footers" in the print dialog for a clean PDF</div>
   </div>
 
   <!-- What's next banner — disabled, value surfaced inline on page 12 -->
-  <div id="tourNextBanner" style="display:none !important;position:sticky;top:0;left:0;right:0;z-index:840;background:linear-gradient(135deg,#6D28D9,#A78BFA 50%,#F472B6);padding:0;">
+  <div id="tourNextBanner" style="display:none !important;position:sticky;top:0;left:0;right:0;z-index:840;background:var(--surface-2);border:1px solid var(--rule);padding:0;">
     <button onclick="closeWizard();setTimeout(()=>fireTourSplash(0),400);"
-      style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 20px;background:none;border:none;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#fff;cursor:pointer;letter-spacing:0.02em;">
-      <div style="width:7px;height:7px;border-radius:50%;background:#fff;animation:pulse-dot 1.5s ease-in-out infinite;flex-shrink:0;"></div>
+      style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 20px;background:none;border:none;font-family:'Inter',system-ui,sans-serif;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;letter-spacing:0.02em;">
       ✦ SAM has more — tap to see what's next →
-      <div style="width:7px;height:7px;border-radius:50%;background:#fff;animation:pulse-dot 1.5s ease-in-out infinite 0.5s;flex-shrink:0;"></div>
     </button>
   </div>
 
