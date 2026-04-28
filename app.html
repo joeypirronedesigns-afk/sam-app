@@ -6002,7 +6002,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.13.2" data-qs-primitives="v9.9" data-qs-dashboard="v9.13.2">
+<div data-qs-shell="true" data-qs-version="v9.13.3" data-qs-primitives="v9.9" data-qs-dashboard="v9.13.3">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6082,7 +6082,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.13.2</div>
+  <div class="qs-version-stamp">Quiet Studio v9.13.3</div>
 </div>
 
   </aside>
@@ -6640,26 +6640,14 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
         statusEl.classList.remove('qs-dash-spine-card-status--neutral', 'qs-dash-spine-card-status--stale', 'qs-dash-spine-card-status--error');
         statusEl.classList.add('qs-dash-spine-card-status--healthy');
       }
-      var nodes = statusEl ? statusEl.childNodes : [];
-      for (var j = 0; j < nodes.length; j++) {
-        if (nodes[j].nodeType === 3) {
-          nodes[j].textContent = ' Step ' + data.currentStep + ' of 12';
-          break;
-        }
-      }
+      if (statusEl) statusEl.lastChild.textContent = ' Step ' + data.currentStep + ' of 12';
       if (copyEl) copyEl.textContent = 'Pick up where you left off.';
     } else {
       if (statusEl) {
         statusEl.classList.remove('qs-dash-spine-card-status--healthy', 'qs-dash-spine-card-status--stale', 'qs-dash-spine-card-status--error');
         statusEl.classList.add('qs-dash-spine-card-status--neutral');
       }
-      var nodes2 = statusEl ? statusEl.childNodes : [];
-      for (var k = 0; k < nodes2.length; k++) {
-        if (nodes2[k].nodeType === 3) {
-          nodes2[k].textContent = ' Not started';
-          break;
-        }
-      }
+      if (statusEl) statusEl.lastChild.textContent = ' Not started';
       if (copyEl) copyEl.textContent = 'Build your playbook in 12 guided steps.';
     }
   }
@@ -6712,26 +6700,14 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
         statusEl.classList.remove('qs-dash-spine-card-status--neutral', 'qs-dash-spine-card-status--stale', 'qs-dash-spine-card-status--error');
         statusEl.classList.add('qs-dash-spine-card-status--healthy');
       }
-      var nodes = statusEl ? statusEl.childNodes : [];
-      for (var j = 0; j < nodes.length; j++) {
-        if (nodes[j].nodeType === 3) {
-          nodes[j].textContent = ' Ready · ' + data.platformsReady + ' platforms';
-          break;
-        }
-      }
+      if (statusEl) statusEl.lastChild.textContent = ' Ready · ' + data.platformsReady + ' platforms';
       if (copyEl) copyEl.textContent = 'Captions adapt for every platform you publish on.';
     } else {
       if (statusEl) {
         statusEl.classList.remove('qs-dash-spine-card-status--healthy', 'qs-dash-spine-card-status--stale', 'qs-dash-spine-card-status--error');
         statusEl.classList.add('qs-dash-spine-card-status--neutral');
       }
-      var nodes2 = statusEl ? statusEl.childNodes : [];
-      for (var k = 0; k < nodes2.length; k++) {
-        if (nodes2[k].nodeType === 3) {
-          nodes2[k].textContent = ' Not ready';
-          break;
-        }
-      }
+      if (statusEl) statusEl.lastChild.textContent = ' Not ready';
       if (copyEl) copyEl.textContent = 'Adapt one idea across every platform.';
     }
   }
