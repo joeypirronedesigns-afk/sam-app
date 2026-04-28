@@ -13688,7 +13688,7 @@ async function downloadPDF(type) {
     if (!localStorage.getItem('sam_uid')) localStorage.setItem('sam_uid', userId);
     // Dev mode bypass — set localStorage.sam_dev = 'true' to skip rate limits
     const isDevMode = localStorage.getItem('sam_dev') === 'true';
-    const tier = isDevMode ? 'studio' : (WS.tier || 'free');
+    const tier = isDevMode ? 'studio' : (typeof getTrialState === 'function' ? (getTrialState().tier || getTrialState().paid ? 'paid' : 'free') : (WS.tier || 'free'));
 
     const payload = {
       type,
