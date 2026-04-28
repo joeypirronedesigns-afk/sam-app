@@ -65,6 +65,7 @@ async function saveBrief(email, briefDate, timezone, brief, profile) {
     },
     body: JSON.stringify({
       email,
+      uid: profile.uid || email,
       brief_date: briefDate,
       timezone: timezone || 'UTC',
       verdict_line: brief.verdict_line,
