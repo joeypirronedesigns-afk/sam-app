@@ -6002,7 +6002,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.15" data-qs-primitives="v9.9" data-qs-dashboard="v9.15">
+<div data-qs-shell="true" data-qs-version="v9.15.1" data-qs-primitives="v9.9" data-qs-dashboard="v9.15.1">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6082,7 +6082,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.15</div>
+  <div class="qs-version-stamp">Quiet Studio v9.15.1</div>
 </div>
 
   </aside>
@@ -6760,9 +6760,11 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
     if (data && data.verdict_line && !data.fallback) {
       if (metaEl) metaEl.textContent = "SAM’S READ · TODAY";
 
-      var emphasisEl = verdictEl.querySelector('span');
-      if (emphasisEl) emphasisEl.textContent = data.verdict_line;
-      else verdictEl.textContent = data.verdict_line;
+      verdictEl.textContent = '';
+      var emphasisEl = document.createElement('span');
+      emphasisEl.className = 'qs-dash-sams-read-verdict-emphasis';
+      emphasisEl.textContent = data.verdict_line;
+      verdictEl.appendChild(emphasisEl);
 
       bodyEl.textContent = data.body;
 
