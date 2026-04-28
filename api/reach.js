@@ -40,6 +40,46 @@ Make every caption feel personal, story-driven, and native to that platform. Wri
     ? [{ type: 'image', source: { type: 'base64', media_type: imageType || 'image/jpeg', data: imageBase64 } }, { type: 'text', text: moment || 'Generate platform-ready post content for this photo.' }]
     : moment || 'Generate platform-ready post content.';
 
+  // v9.13.1 — persist Reach generation state before streaming
+  // Non-blocking: never delays or breaks the stream
+  (async () => {
+    try {
+      const _email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : '';
+      const _platforms = req.body.platforms;
+      const _platformCount = (Array.isArray(_platforms) && _platforms.length > 0) ? _platforms.length : 3;
+      if (_email && _email.includes('@')) {
+        const _supabaseUrl = process.env.SUPABASE_URL;
+        const _supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+        if (_supabaseUrl && _supabaseKey) {
+          const _findRes = await fetch(
+            `${_supabaseUrl}/rest/v1/sam_users?email=eq.${encodeURIComponent(_email)}&select=uid&order=last_seen.desc.nullslast&limit=1`,
+            { headers: { 'apikey': _supabaseKey, 'Authorization': `Bearer ${_supabaseKey}` } }
+          );
+          if (_findRes.ok) {
+            const _rows = await _findRes.json();
+            if (_rows && _rows.length > 0) {
+              await fetch(
+                `${_supabaseUrl}/rest/v1/sam_users?uid=eq.${encodeURIComponent(_rows[0].uid)}`,
+                {
+                  method: 'PATCH',
+                  headers: {
+                    'apikey': _supabaseKey,
+                    'Authorization': `Bearer ${_supabaseKey}`,
+                    'Content-Type': 'application/json',
+                    'Prefer': 'return=minimal'
+                  },
+                  body: JSON.stringify({
+                    reach_platforms_ready: _platformCount,
+                    reach_updated_at: new Date().toISOString()
+                  })
+                }
+              );
+            }
+          }
+        }
+      }
+    } catch (_e) { /* non-blocking — never let persistence fail the generation */ }
+  })();
   try {
     const r = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
