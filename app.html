@@ -6002,7 +6002,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.12" data-qs-primitives="v9.9" data-qs-dashboard="v9.12">
+<div data-qs-shell="true" data-qs-version="v9.13" data-qs-primitives="v9.9" data-qs-dashboard="v9.13">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6082,7 +6082,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.12</div>
+  <div class="qs-version-stamp">Quiet Studio v9.13</div>
 </div>
 
   </aside>
@@ -6688,6 +6688,78 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
     document.addEventListener('DOMContentLoaded', fetchStoryEngineStatus);
   } else {
     fetchStoryEngineStatus();
+  }
+})();
+// Reach spine card wiring — v9.13
+(function() {
+  function updateReachCard(data) {
+    var cards = document.querySelectorAll('.qs-dash-spine-card');
+    var reachCard = null;
+    for (var i = 0; i < cards.length; i++) {
+      var titleEl = cards[i].querySelector('.qs-dash-spine-card-title');
+      if (titleEl && titleEl.textContent.trim() === 'The Reach') {
+        reachCard = cards[i];
+        break;
+      }
+    }
+    if (!reachCard) return;
+
+    var statusEl = reachCard.querySelector('.qs-dash-spine-card-status');
+    var copyEl = reachCard.querySelector('.qs-dash-spine-card-copy');
+
+    if (data && data.ready && data.platformsReady) {
+      if (statusEl) {
+        statusEl.classList.remove('qs-dash-spine-card-status--neutral', 'qs-dash-spine-card-status--stale', 'qs-dash-spine-card-status--error');
+        statusEl.classList.add('qs-dash-spine-card-status--healthy');
+      }
+      var nodes = statusEl ? statusEl.childNodes : [];
+      for (var j = 0; j < nodes.length; j++) {
+        if (nodes[j].nodeType === 3) {
+          nodes[j].textContent = ' Ready · ' + data.platformsReady + ' platforms';
+          break;
+        }
+      }
+      if (copyEl) copyEl.textContent = 'Captions adapt for every platform you publish on.';
+    } else {
+      if (statusEl) {
+        statusEl.classList.remove('qs-dash-spine-card-status--healthy', 'qs-dash-spine-card-status--stale', 'qs-dash-spine-card-status--error');
+        statusEl.classList.add('qs-dash-spine-card-status--neutral');
+      }
+      var nodes2 = statusEl ? statusEl.childNodes : [];
+      for (var k = 0; k < nodes2.length; k++) {
+        if (nodes2[k].nodeType === 3) {
+          nodes2[k].textContent = ' Not ready';
+          break;
+        }
+      }
+      if (copyEl) copyEl.textContent = 'Adapt one idea across every platform.';
+    }
+  }
+
+  function fetchReachStatus() {
+    var email = null;
+    try {
+      if (typeof getTrialState === 'function') {
+        var ts = getTrialState();
+        email = ts && ts.email ? ts.email.trim().toLowerCase() : null;
+      }
+    } catch(e) { email = null; }
+
+    if (!email) {
+      updateReachCard({ ready: false, platformsReady: null });
+      return;
+    }
+
+    fetch('/api/reach-status?email=' + encodeURIComponent(email))
+      .then(function(r) { return r.json(); })
+      .then(function(data) { updateReachCard(data); })
+      .catch(function() { updateReachCard({ ready: false, platformsReady: null }); });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', fetchReachStatus);
+  } else {
+    fetchReachStatus();
   }
 })();
 </script>
