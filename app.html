@@ -6002,7 +6002,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.13.3" data-qs-primitives="v9.9" data-qs-dashboard="v9.13.3">
+<div data-qs-shell="true" data-qs-version="v9.14" data-qs-primitives="v9.9" data-qs-dashboard="v9.14">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6082,7 +6082,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.13.3</div>
+  <div class="qs-version-stamp">Quiet Studio v9.14</div>
 </div>
 
   </aside>
@@ -6736,6 +6736,77 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
     document.addEventListener('DOMContentLoaded', fetchReachStatus);
   } else {
     fetchReachStatus();
+  }
+})();
+// SAM's Read daily brief wiring — v9.14
+(function() {
+  var CTA_ROUTES = {
+    'story-engine': function() { if (typeof openWizardPage === 'function') openWizardPage(); },
+    'reach': function() { if (typeof openTool === 'function') openTool('reach'); },
+    'spark': function() { if (typeof openTool === 'function') openTool('spark'); },
+    'voice-dna': function() { if (typeof openTool === 'function') openTool('voice-dna'); },
+    'all-tools': function() { if (typeof openTool === 'function') openTool('all-tools'); },
+    'today': function() { /* already on dashboard, no-op */ }
+  };
+
+  function updateSamsRead(data) {
+    var metaEl = document.querySelector('.qs-dash-sams-read-meta');
+    var verdictEl = document.querySelector('.qs-dash-sams-read-verdict');
+    var bodyEl = document.querySelector('.qs-dash-sams-read-body');
+    var actionsEl = document.querySelector('.qs-dash-sams-read-actions');
+
+    if (!verdictEl || !bodyEl) return;
+
+    if (data && data.verdict_line && !data.fallback) {
+      if (metaEl) metaEl.textContent = "SAM’S READ · TODAY";
+
+      var emphasisEl = verdictEl.querySelector('span');
+      if (emphasisEl) emphasisEl.textContent = data.verdict_line;
+      else verdictEl.textContent = data.verdict_line;
+
+      bodyEl.textContent = data.body;
+
+      if (actionsEl && data.primary_cta_label && data.primary_cta_route) {
+        var primaryBtn = actionsEl.querySelector('.qs-button-primary');
+        if (primaryBtn) {
+          primaryBtn.textContent = data.primary_cta_label;
+          primaryBtn.onclick = CTA_ROUTES[data.primary_cta_route] || null;
+          primaryBtn.title = data.primary_cta_reason || '';
+        }
+      }
+    }
+  }
+
+  function fetchDailyBrief() {
+    var email = null;
+    var timezone = (typeof Intl !== 'undefined' && Intl.DateTimeFormat)
+      ? Intl.DateTimeFormat().resolvedOptions().timeZone
+      : 'UTC';
+    var today = new Date().toISOString().slice(0, 10);
+
+    try {
+      if (typeof getTrialState === 'function') {
+        var ts = getTrialState();
+        email = ts && ts.email ? ts.email.trim().toLowerCase() : null;
+      }
+    } catch(e) { email = null; }
+
+    if (!email) return;
+
+    var url = '/api/daily-brief?email=' + encodeURIComponent(email)
+      + '&timezone=' + encodeURIComponent(timezone)
+      + '&date=' + encodeURIComponent(today);
+
+    fetch(url)
+      .then(function(r) { return r.json(); })
+      .then(function(data) { updateSamsRead(data); })
+      .catch(function() { /* leave hardcoded fallback */ });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', fetchDailyBrief);
+  } else {
+    fetchDailyBrief();
   }
 })();
 </script>
