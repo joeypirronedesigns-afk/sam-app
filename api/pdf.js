@@ -12,10 +12,11 @@
 
 const CHROMIUM_URL = 'https://github.com/Sparticuz/chromium/releases/download/v123.0.1/chromium-v123.0.1-pack.tar';
 
-const TIER_LIMITS = { free: 5, creator: 10, pro: 20, studio: 999 };
+const TIER_LIMITS = { free: 5, creator: 999, pro: 999, studio: 999, standard: 999, paid: 999 };
 
 async function checkPdfLimit(userId, tier) {
   if (userId && (userId.startsWith('dev-') || userId === 'dev@sam.com')) return { allowed: true };
+  if (tier === 'paid' || tier === 'standard' || tier === 'creator' || tier === 'pro' || tier === 'studio') return { allowed: true };
   if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
     try {
       const { kv } = require('@vercel/kv');
