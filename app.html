@@ -5964,6 +5964,28 @@ body.quiet-studio-shell .qs-dash-plan-number {
 }
 
 /* ============================================================ */
+/* v9.10.1 — Rail nav reset (cancel legacy global nav styling)  */
+/* ============================================================ */
+
+body.quiet-studio-shell .qs-rail nav {
+  position: static;
+  top: auto;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  height: auto;
+  width: auto;
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  display: block;
+  padding: 0;
+  z-index: auto;
+  border: none;
+  box-shadow: none;
+}
+
+/* ============================================================ */
 /* END v9.10 DASHBOARD                                          */
 /* ============================================================ */
 
@@ -5980,7 +6002,7 @@ body.quiet-studio-shell .qs-dash-plan-number {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.10" data-qs-primitives="v9.9" data-qs-dashboard="v9.10">
+<div data-qs-shell="true" data-qs-version="v9.10.1" data-qs-primitives="v9.9" data-qs-dashboard="v9.10.1">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6060,7 +6082,7 @@ body.quiet-studio-shell .qs-dash-plan-number {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.10</div>
+  <div class="qs-version-stamp">Quiet Studio v9.10.1</div>
 </div>
 
   </aside>
