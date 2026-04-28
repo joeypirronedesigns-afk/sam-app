@@ -5492,6 +5492,481 @@ body.quiet-studio-shell .qs-empty-state {
   padding: 48px 24px;
 }
 
+
+
+/* ============================================================ */
+/* QUIET STUDIO DASHBOARD — v9.10                                */
+/* Today briefing surface. Inherits all v9.9 primitives.         */
+/* ============================================================ */
+
+body.quiet-studio-shell {
+  /* ---- v9.10 STATUS COLOR TOKENS ---- */
+  --qs-status-healthy:  #6E8F62;
+  --qs-status-stale:    #A0823C;
+  --qs-status-error:    #A35A52;
+  --qs-status-neutral:  #8B8680;
+
+  /* ---- v9.10 RAIL DIMENSIONS ---- */
+  --qs-rail-width:      240px;
+}
+
+/* ============================================================ */
+/* RAIL — header restructure                                    */
+/* ============================================================ */
+
+body.quiet-studio-shell .qs-dash-rail-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 16px 12px;
+}
+
+body.quiet-studio-shell .qs-dash-rail-mark {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--qs-radius-sm);
+  background: var(--qs-ink);
+  color: var(--qs-paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+body.quiet-studio-shell .qs-dash-rail-mark svg {
+  width: 14px;
+  height: 14px;
+}
+
+body.quiet-studio-shell .qs-dash-rail-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+body.quiet-studio-shell .qs-dash-rail-name {
+  font-family: var(--qs-font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--qs-ink);
+  line-height: 1.2;
+}
+
+body.quiet-studio-shell .qs-dash-rail-meta {
+  font-family: var(--qs-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--qs-ink-muted);
+  line-height: 1.2;
+}
+
+/* ============================================================ */
+/* RAIL — nav sections                                          */
+/* ============================================================ */
+
+body.quiet-studio-shell .qs-dash-rail-section {
+  padding: 12px 12px 8px;
+}
+
+body.quiet-studio-shell .qs-dash-rail-section-label {
+  font-family: var(--qs-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--qs-ink-muted);
+  padding: 0 4px;
+  margin-bottom: 6px;
+}
+
+body.quiet-studio-shell .qs-dash-rail-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--qs-radius-sm);
+  font-family: var(--qs-font-ui);
+  font-size: 14px;
+  color: var(--qs-ink-soft);
+  cursor: pointer;
+  transition: background var(--qs-fast) var(--qs-ease);
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+}
+
+body.quiet-studio-shell .qs-dash-rail-item:hover {
+  background: var(--qs-surface-2);
+}
+
+body.quiet-studio-shell .qs-dash-rail-item.is-active {
+  background: var(--qs-accent-soft);
+  color: var(--qs-accent);
+  font-weight: 500;
+}
+
+body.quiet-studio-shell .qs-dash-rail-item svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+body.quiet-studio-shell .qs-dash-rail-item-count {
+  margin-left: auto;
+  font-family: var(--qs-font-mono);
+  font-size: 11px;
+  color: var(--qs-ink-muted);
+}
+
+/* ============================================================ */
+/* RAIL — pinned ideas section                                  */
+/* ============================================================ */
+
+body.quiet-studio-shell .qs-dash-rail-pinned {
+  padding: 0 12px 12px;
+}
+
+body.quiet-studio-shell .qs-dash-pinned-tile {
+  width: 100%;
+  text-align: left;
+  background: var(--qs-surface-2);
+  border: 1px solid var(--qs-rule);
+  border-radius: var(--qs-radius-md);
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  transition: background var(--qs-fast) var(--qs-ease), border-color var(--qs-fast) var(--qs-ease);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+body.quiet-studio-shell .qs-dash-pinned-tile:hover {
+  background: var(--qs-rule);
+  border-color: var(--qs-rule-strong);
+}
+
+body.quiet-studio-shell .qs-dash-pinned-tile-title {
+  font-family: var(--qs-font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--qs-ink);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+body.quiet-studio-shell .qs-dash-pinned-tile-meta {
+  font-family: var(--qs-font-ui);
+  font-size: 11px;
+  color: var(--qs-ink-muted);
+  line-height: 1.4;
+}
+
+/* ============================================================ */
+/* RAIL — footer status (Voice synced)                          */
+/* ============================================================ */
+
+body.quiet-studio-shell .qs-dash-rail-footer {
+  margin-top: auto;
+  padding: 12px 16px 16px;
+  border-top: 1px solid var(--qs-rule);
+}
+
+body.quiet-studio-shell .qs-dash-status-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 20px;
+}
+
+body.quiet-studio-shell .qs-dash-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--qs-radius-pill);
+  flex-shrink: 0;
+}
+
+body.quiet-studio-shell .qs-dash-status-dot--healthy { background: var(--qs-status-healthy); }
+body.quiet-studio-shell .qs-dash-status-dot--stale   { background: var(--qs-status-stale); }
+body.quiet-studio-shell .qs-dash-status-dot--error   { background: var(--qs-status-error); }
+body.quiet-studio-shell .qs-dash-status-dot--neutral { background: var(--qs-status-neutral); }
+
+body.quiet-studio-shell .qs-dash-status-text {
+  font-family: var(--qs-font-ui);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--qs-ink-muted);
+}
+
+/* ============================================================ */
+/* CANVAS — Today header                                        */
+/* ============================================================ */
+
+body.quiet-studio-shell .qs-dash-canvas {
+  padding: 24px 32px 48px;
+  max-width: 1200px;
+}
+
+body.quiet-studio-shell .qs-dash-today-header {
+  margin-bottom: 24px;
+}
+
+body.quiet-studio-shell .qs-dash-today-title {
+  font-family: var(--qs-font-ui);
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--qs-ink);
+  line-height: 1.1;
+  margin: 0 0 4px;
+}
+
+body.quiet-studio-shell .qs-dash-today-meta {
+  font-family: var(--qs-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--qs-ink-muted);
+  margin-bottom: 8px;
+}
+
+body.quiet-studio-shell .qs-dash-today-dek {
+  font-family: var(--qs-font-ui);
+  font-size: 13px;
+  color: var(--qs-ink-soft);
+  margin: 0;
+}
+
+/* ============================================================ */
+/* CANVAS — SAM's Read verdict card                             */
+/* ============================================================ */
+
+body.quiet-studio-shell .qs-dash-sams-read {
+  background: var(--qs-surface-2);
+  border: 1px solid var(--qs-rule);
+  border-radius: var(--qs-radius-xl);
+  padding: 32px;
+  margin-bottom: 32px;
+}
+
+body.quiet-studio-shell .qs-dash-sams-read-meta {
+  font-family: var(--qs-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--qs-ink-muted);
+  margin-bottom: 16px;
+}
+
+body.quiet-studio-shell .qs-dash-sams-read-verdict {
+  font-family: var(--qs-font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 1.3;
+  color: var(--qs-ink);
+  margin-bottom: 20px;
+}
+
+body.quiet-studio-shell .qs-dash-sams-read-verdict-emphasis {
+  color: var(--qs-serif-accent);
+}
+
+body.quiet-studio-shell .qs-dash-sams-read-body {
+  font-family: var(--qs-font-ui);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--qs-ink-soft);
+  margin-bottom: 24px;
+}
+
+body.quiet-studio-shell .qs-dash-sams-read-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ============================================================ */
+/* CANVAS — Spine cards (3 across)                              */
+/* ============================================================ */
+
+body.quiet-studio-shell .qs-dash-spine-section {
+  margin-bottom: 32px;
+}
+
+body.quiet-studio-shell .qs-dash-spine-label {
+  font-family: var(--qs-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--qs-ink-muted);
+  margin-bottom: 12px;
+}
+
+body.quiet-studio-shell .qs-dash-spine-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+body.quiet-studio-shell .qs-dash-spine-card {
+  background: var(--qs-surface-2);
+  border: 1px solid var(--qs-rule);
+  border-radius: var(--qs-radius-xl);
+  padding: 16px;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--qs-medium) var(--qs-ease), border-color var(--qs-medium) var(--qs-ease);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+body.quiet-studio-shell .qs-dash-spine-card:hover:not(:disabled) {
+  background: var(--qs-rule);
+  border-color: var(--qs-rule-strong);
+}
+
+body.quiet-studio-shell .qs-dash-spine-card:disabled {
+  cursor: default;
+  opacity: 0.85;
+}
+
+body.quiet-studio-shell .qs-dash-spine-card-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--qs-ink);
+  margin-bottom: 4px;
+}
+
+body.quiet-studio-shell .qs-dash-spine-card-title {
+  font-family: var(--qs-font-ui);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--qs-ink);
+  line-height: 1.3;
+}
+
+body.quiet-studio-shell .qs-dash-spine-card-status {
+  font-family: var(--qs-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.10em;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+body.quiet-studio-shell .qs-dash-spine-card-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--qs-radius-pill);
+  flex-shrink: 0;
+}
+
+body.quiet-studio-shell .qs-dash-spine-card-status--healthy { color: var(--qs-status-healthy); }
+body.quiet-studio-shell .qs-dash-spine-card-status--healthy .qs-dash-spine-card-status-dot { background: var(--qs-status-healthy); }
+body.quiet-studio-shell .qs-dash-spine-card-status--stale   { color: var(--qs-status-stale); }
+body.quiet-studio-shell .qs-dash-spine-card-status--stale .qs-dash-spine-card-status-dot { background: var(--qs-status-stale); }
+body.quiet-studio-shell .qs-dash-spine-card-status--error   { color: var(--qs-status-error); }
+body.quiet-studio-shell .qs-dash-spine-card-status--error .qs-dash-spine-card-status-dot { background: var(--qs-status-error); }
+body.quiet-studio-shell .qs-dash-spine-card-status--neutral { color: var(--qs-status-neutral); }
+body.quiet-studio-shell .qs-dash-spine-card-status--neutral .qs-dash-spine-card-status-dot { background: var(--qs-status-neutral); }
+
+body.quiet-studio-shell .qs-dash-spine-card-copy {
+  font-family: var(--qs-font-ui);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--qs-ink-soft);
+  margin: 4px 0 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ============================================================ */
+/* CANVAS — Today's Plan section                                */
+/* ============================================================ */
+
+body.quiet-studio-shell .qs-dash-plan-section {
+  margin-top: 32px;
+}
+
+body.quiet-studio-shell .qs-dash-plan-label {
+  font-family: var(--qs-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--qs-ink-muted);
+  margin-bottom: 12px;
+}
+
+body.quiet-studio-shell .qs-dash-plan-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+body.quiet-studio-shell .qs-dash-plan-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--qs-surface-2);
+  border: 1px solid var(--qs-rule);
+  border-radius: var(--qs-radius-md);
+  font-family: var(--qs-font-ui);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--qs-ink);
+}
+
+body.quiet-studio-shell .qs-dash-plan-number {
+  font-family: var(--qs-font-mono);
+  font-size: 11px;
+  color: var(--qs-ink-muted);
+  flex-shrink: 0;
+  letter-spacing: 0.14em;
+}
+
+/* ============================================================ */
+/* MOBILE — Spine cards stack                                   */
+/* ============================================================ */
+
+@media (max-width: 768px) {
+  body.quiet-studio-shell .qs-dash-spine-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  body.quiet-studio-shell .qs-dash-canvas {
+    padding: 16px 20px 32px;
+  }
+  body.quiet-studio-shell .qs-dash-today-title {
+    font-size: 24px;
+  }
+  body.quiet-studio-shell .qs-dash-sams-read {
+    padding: 24px 20px;
+  }
+  body.quiet-studio-shell .qs-dash-sams-read-verdict {
+    font-size: 22px;
+  }
+}
+
+/* ============================================================ */
+/* END v9.10 DASHBOARD                                          */
+/* ============================================================ */
+
 </style>
 
 </head>
@@ -5505,37 +5980,89 @@ body.quiet-studio-shell .qs-empty-state {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.9" data-qs-primitives="v9.9">
+<div data-qs-shell="true" data-qs-version="v9.10" data-qs-primitives="v9.9" data-qs-dashboard="v9.10">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
-    <div class="qs-rail-header">
-      <div class="qs-rail-logo-mark">QS</div>
-      <span class="qs-rail-logo-text">Quiet Studio</span>
-    </div>
-    <nav class="qs-rail-nav" aria-label="Studio navigation">
-      <div class="qs-rail-item" onclick="goHome()" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();goHome();}" style="cursor:pointer;">
-        <svg class="qs-rail-item-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><rect x="13" y="4" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><rect x="4" y="13" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><rect x="13" y="13" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Dashboard
-      </div>
-      <div class="qs-rail-item" onclick="openTool('spark')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openTool('spark');}" style="cursor:pointer;">
-        <svg class="qs-rail-item-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4L13.7 8.3L18 10L13.7 11.7L12 16L10.3 11.7L6 10L10.3 8.3L12 4Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Spark
-      </div>
-      <div class="qs-rail-item" onclick="openIdeasPanel()" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openIdeasPanel();}" style="cursor:pointer;">
-        <svg class="qs-rail-item-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="7" width="11" height="10" rx="2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 7V6.5C9 5.7 9.7 5 10.5 5H17.5C18.3 5 19 5.7 19 6.5V13.5C19 14.3 18.3 15 17.5 15H16" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        My Ideas
-      </div>
-      <div class="qs-rail-item" onclick="openWizardPage()" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openWizardPage();}" style="cursor:pointer;">
-        <svg class="qs-rail-item-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6.5C6 5.7 6.7 5 7.5 5H11.5C12.9 5 14 6.1 14 7.5V18.5C14 17.1 12.9 16 11.5 16H7.5C6.7 16 6 16.7 6 17.5V6.5Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 6.5C18 5.7 17.3 5 16.5 5H12.5C11.1 5 10 6.1 10 7.5V18.5C10 17.1 11.1 16 12.5 16H16.5C17.3 16 18 16.7 18 17.5V6.5Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 8.5H10.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 11H11" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.5 8L14.6 9.1L16.5 7.2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.5 11L14.6 12.1L16.5 10.2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Story Engine
-      </div>
-      <div class="qs-rail-item" onclick="openQSDrawer()" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openQSDrawer();}" style="cursor:pointer;">
-        <svg class="qs-rail-item-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 12H16M12 8V16" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        All Tools
-      </div>
-    </nav>
-    <div class="qs-rail-footer">
-      <div class="qs-version-stamp">Quiet Studio v9.9</div>
-    </div>
+
+<!-- Rail header — SAM mark + brand stack -->
+<div class="qs-dash-rail-header">
+  <div class="qs-dash-rail-mark" aria-label="SAM">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M5 12L18 4L12 12L5 12Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M19 12L6 20L12 12L19 12Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <div class="qs-dash-rail-brand">
+    <div class="qs-dash-rail-name">SAM</div>
+    <div class="qs-dash-rail-meta">Studio · v0.4</div>
+  </div>
+</div>
+
+<!-- DAILY section -->
+<nav class="qs-dash-rail-section" aria-label="Daily">
+  <div class="qs-dash-rail-section-label">Daily</div>
+  <button class="qs-dash-rail-item is-active" data-qs-nav="today">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9.5L12 3L21 9.5V20C21 20.5 20.5 21 20 21H4C3.5 21 3 20.5 3 20V9.5Z"/><path d="M9 21V13H15V21"/></svg>
+    Today
+  </button>
+</nav>
+
+<!-- THE SPINE section -->
+<nav class="qs-dash-rail-section" aria-label="The Spine">
+  <div class="qs-dash-rail-section-label">The Spine</div>
+  <button class="qs-dash-rail-item" data-qs-nav="voice-dna" disabled>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5.5C10.2 6.7 10.2 8.5 9 9.7L7.7 11C6.5 12.2 6.5 14 7.7 15.2C8.9 16.4 8.9 18.2 7.7 19.4"/><path d="M15 4.6C13.8 5.8 13.8 7.6 15 8.8L16.3 10.1C17.5 11.3 17.5 13.1 16.3 14.3C15.1 15.5 15.1 17.3 16.3 18.5"/><path d="M10 7.3C11.3 8 12.7 8 14 7.3"/><path d="M10 12C11.3 12.7 12.7 12.7 14 12"/><path d="M10 16.7C11.3 17.4 12.7 17.4 14 16.7"/></svg>
+    Voice DNA
+  </button>
+  <button class="qs-dash-rail-item" data-qs-nav="story-engine" onclick="openWizardPage()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6.5C6 5.7 6.7 5 7.5 5H11.5C12.9 5 14 6.1 14 7.5V18.5C14 17.1 12.9 16 11.5 16H7.5C6.7 16 6 16.7 6 17.5V6.5Z"/><path d="M18 6.5C18 5.7 17.3 5 16.5 5H12.5C11.1 5 10 6.1 10 7.5V18.5C10 17.1 11.1 16 12.5 16H16.5C17.3 16 18 16.7 18 17.5V6.5Z"/></svg>
+    Story Engine
+  </button>
+  <button class="qs-dash-rail-item" data-qs-nav="reach" onclick="openTool('reach')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="12" r="2.2"/><circle cx="16.5" cy="7.5" r="1.8"/><circle cx="17" cy="16.5" r="1.8"/><path d="M10.1 10.9L14.7 8.4"/><path d="M10.1 13.1L15.1 15.8"/></svg>
+    The Reach
+  </button>
+</nav>
+
+<!-- MORE section -->
+<nav class="qs-dash-rail-section" aria-label="More">
+  <div class="qs-dash-rail-section-label">More</div>
+  <button class="qs-dash-rail-item" data-qs-nav="spark" onclick="openTool('spark')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4L13.7 8.3L18 10L13.7 11.7L12 16L10.3 11.7L6 10L10.3 8.3L12 4Z"/></svg>
+    The Spark
+  </button>
+  <button class="qs-dash-rail-item" data-qs-nav="my-ideas" onclick="if(typeof openIdeasPanel==='function')openIdeasPanel()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="7" width="11" height="10" rx="2"/><path d="M9 7V6.5C9 5.7 9.7 5 10.5 5H17.5C18.3 5 19 5.7 19 6.5V13.5C19 14.3 18.3 15 17.5 15H16"/></svg>
+    My Ideas
+    <span class="qs-dash-rail-item-count">26</span>
+  </button>
+  <button class="qs-dash-rail-item" data-qs-nav="all-tools" onclick="openQSDrawer()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></svg>
+    All Tools
+  </button>
+</nav>
+
+<!-- MY IDEAS pinned section -->
+<div class="qs-dash-rail-pinned">
+  <div class="qs-dash-rail-section-label" style="padding: 0 4px 6px;">Recent Threads</div>
+  <button class="qs-dash-pinned-tile" data-qs-pinned="library">
+    <div class="qs-dash-pinned-tile-title">The library SAM reads from</div>
+    <div class="qs-dash-pinned-tile-meta">Saved · Scripting · Filmed · Posted</div>
+  </button>
+  <button class="qs-dash-pinned-tile" data-qs-pinned="spark-ideas">
+    <div class="qs-dash-pinned-tile-title">Generate 5 fresh ideas</div>
+    <div class="qs-dash-pinned-tile-meta">From The Spark</div>
+  </button>
+</div>
+
+<!-- Rail footer — Voice synced status -->
+<div class="qs-dash-rail-footer">
+  <div class="qs-dash-status-row">
+    <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
+    <span class="qs-dash-status-text">Voice synced · 2h ago</span>
+  </div>
+  <div class="qs-version-stamp">Quiet Studio v9.10</div>
+</div>
+
   </aside>
 
   <!-- QS Top Strip -->
@@ -5932,51 +6459,94 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
            Legacy workshop content below coexists for now —
            Commit 3 will suppress it.
       ════════════════════════════════════════════════════ -->
-      <div data-qs-dashboard="true" class="qs-dashboard">
+      <div data-qs-dashboard="true">
 
-        <!-- Spark -->
-        <div class="qs-tile" onclick="openTool('spark')">
-          <svg class="qs-tile-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4L13.7 8.3L18 10L13.7 11.7L12 16L10.3 11.7L6 10L10.3 8.3L12 4Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <div class="qs-tile-title">Spark</div>
-          <div class="qs-tile-desc">Five content ideas for your niche, fast</div>
-        </div>
+<div class="qs-dash-canvas">
+  <!-- Today header -->
+  <header class="qs-dash-today-header">
+    <h1 class="qs-dash-today-title">Today</h1>
+    <div class="qs-dash-today-meta" id="qs-dash-today-date">SUN · APR 27 · 10:00 PM</div>
+    <p class="qs-dash-today-dek">Three things SAM thinks matter most.</p>
+  </header>
 
-        <!-- My Ideas -->
-        <div class="qs-tile" onclick="if(typeof openIdeasPanel==='function')openIdeasPanel()">
-          <svg class="qs-tile-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="7" width="11" height="10" rx="2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 7V6.5C9 5.7 9.7 5 10.5 5H17.5C18.3 5 19 5.7 19 6.5V13.5C19 14.3 18.3 15 17.5 15H16" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <div class="qs-tile-title">My Ideas</div>
-          <div class="qs-tile-desc">Everything you've saved in one place</div>
-        </div>
+  <!-- SAM's Read verdict card -->
+  <section class="qs-dash-sams-read" aria-label="SAM's read this morning">
+    <div class="qs-dash-sams-read-meta">SAM's Read · This Morning</div>
+    <div class="qs-dash-sams-read-verdict">
+      Your reach has collapsed 65% in 28 days — <span class="qs-dash-sams-read-verdict-emphasis">something fundamental broke</span> in your posting rhythm.
+    </div>
+    <p class="qs-dash-sams-read-body">
+      You used to post 4 times a week with a strong hook in the first line. The last 14 posts opened with a question, and the last 6 went out after 9pm. The audience you have now reads at 7am. The post you drafted last night is good. Send it now, then take a week to fix the rhythm.
+    </p>
+    <div class="qs-dash-sams-read-actions">
+      <button class="qs-button-primary">Open last night's draft</button>
+      <button class="qs-button-ghost">See the data</button>
+    </div>
+  </section>
 
-        <!-- Story Engine -->
-        <div class="qs-tile" onclick="openWizardPage()">
-          <svg class="qs-tile-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6.5C6 5.7 6.7 5 7.5 5H11.5C12.9 5 14 6.1 14 7.5V18.5C14 17.1 12.9 16 11.5 16H7.5C6.7 16 6 16.7 6 17.5V6.5Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 6.5C18 5.7 17.3 5 16.5 5H12.5C11.1 5 10 6.1 10 7.5V18.5C10 17.1 11.1 16 12.5 16H16.5C17.3 16 18 16.7 18 17.5V6.5Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 8.5H10.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 11H11" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.5 8L14.6 9.1L16.5 7.2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.5 11L14.6 12.1L16.5 10.2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <div class="qs-tile-title">Story Engine</div>
-          <div class="qs-tile-desc">Twelve steps from stuck to ready-to-post</div>
+  <!-- The Spine — 3 cards -->
+  <section class="qs-dash-spine-section" aria-label="The Spine">
+    <div class="qs-dash-spine-label">The Spine</div>
+    <div class="qs-dash-spine-grid">
+      <button class="qs-dash-spine-card" disabled aria-label="Voice DNA — coming soon">
+        <svg class="qs-dash-spine-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5C10.2 6.7 10.2 8.5 9 9.7L7.7 11C6.5 12.2 6.5 14 7.7 15.2C8.9 16.4 8.9 18.2 7.7 19.4"/><path d="M15 4.6C13.8 5.8 13.8 7.6 15 8.8L16.3 10.1C17.5 11.3 17.5 13.1 16.3 14.3C15.1 15.5 15.1 17.3 16.3 18.5"/><path d="M10 7.3C11.3 8 12.7 8 14 7.3"/><path d="M10 12C11.3 12.7 12.7 12.7 14 12"/><path d="M10 16.7C11.3 17.4 12.7 17.4 14 16.7"/></svg>
+        <div class="qs-dash-spine-card-title">Voice DNA</div>
+        <div class="qs-dash-spine-card-status qs-dash-spine-card-status--neutral">
+          <span class="qs-dash-spine-card-status-dot"></span>
+          Coming soon · v0.5
         </div>
+        <p class="qs-dash-spine-card-copy">Your voice signature locks here. SAM drafts in your register.</p>
+      </button>
 
-        <!-- Voice DNA — coming soon -->
-        <div class="qs-tile qs-tile--coming-soon">
-          <svg class="qs-tile-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5.5C10.2 6.7 10.2 8.5 9 9.7L7.7 11C6.5 12.2 6.5 14 7.7 15.2C8.9 16.4 8.9 18.2 7.7 19.4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 4.6C13.8 5.8 13.8 7.6 15 8.8L16.3 10.1C17.5 11.3 17.5 13.1 16.3 14.3C15.1 15.5 15.1 17.3 16.3 18.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 7.3C11.3 8 12.7 8 14 7.3" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 12C11.3 12.7 12.7 12.7 14 12" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 16.7C11.3 17.4 12.7 17.4 14 16.7" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <div class="qs-tile-title">Voice DNA</div>
-          <div class="qs-tile-desc">Living profile of how you communicate</div>
-          <div class="qs-coming-badge">Coming soon</div>
+      <button class="qs-dash-spine-card" onclick="openWizardPage()">
+        <svg class="qs-dash-spine-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6.5C6 5.7 6.7 5 7.5 5H11.5C12.9 5 14 6.1 14 7.5V18.5C14 17.1 12.9 16 11.5 16H7.5C6.7 16 6 16.7 6 17.5V6.5Z"/><path d="M18 6.5C18 5.7 17.3 5 16.5 5H12.5C11.1 5 10 6.1 10 7.5V18.5C10 17.1 11.1 16 12.5 16H16.5C17.3 16 18 16.7 18 17.5V6.5Z"/></svg>
+        <div class="qs-dash-spine-card-title">Story Engine</div>
+        <div class="qs-dash-spine-card-status qs-dash-spine-card-status--neutral">
+          <span class="qs-dash-spine-card-status-dot"></span>
+          Reading from current state
         </div>
+        <p class="qs-dash-spine-card-copy">Pick up where you left off.</p>
+      </button>
 
-        <!-- Reach — coming soon -->
-        <div class="qs-tile qs-tile--coming-soon">
-          <svg class="qs-tile-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="8" cy="12" r="2.2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16.5" cy="7.5" r="1.8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><circle cx="17" cy="16.5" r="1.8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.1 10.9L14.7 8.4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.1 13.1L15.1 15.8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 18.5C6.3 17.4 7.9 16.8 10 16.8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 5.5C6.3 6.6 7.9 7.2 10 7.2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <div class="qs-tile-title">Reach</div>
-          <div class="qs-tile-desc">Adapts your story for every platform</div>
-          <div class="qs-coming-badge">Coming soon</div>
+      <button class="qs-dash-spine-card" onclick="openTool('reach')">
+        <svg class="qs-dash-spine-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="12" r="2.2"/><circle cx="16.5" cy="7.5" r="1.8"/><circle cx="17" cy="16.5" r="1.8"/><path d="M10.1 10.9L14.7 8.4"/><path d="M10.1 13.1L15.1 15.8"/></svg>
+        <div class="qs-dash-spine-card-title">The Reach</div>
+        <div class="qs-dash-spine-card-status qs-dash-spine-card-status--healthy">
+          <span class="qs-dash-spine-card-status-dot"></span>
+          Ready · 4 platforms
         </div>
+        <p class="qs-dash-spine-card-copy">Captions adapt for every platform you publish on.</p>
+      </button>
+    </div>
+  </section>
 
-        <!-- All Tools — opens drawer -->
-        <div class="qs-tile" onclick="openQSDrawer()">
-          <svg class="qs-tile-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 12H16M12 8V16" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <div class="qs-tile-title">All Tools</div>
-          <div class="qs-tile-desc">Pulse, Blueprint, Vision, Lens</div>
-        </div>
+  <!-- Today's Plan -->
+  <section class="qs-dash-plan-section" aria-label="Today's Plan">
+    <div class="qs-dash-plan-label">Today's Plan · 3 Actions</div>
+    <ol class="qs-dash-plan-list">
+      <li class="qs-dash-plan-item"><span class="qs-dash-plan-number">01</span><span>Send last night's draft before 9am to catch the morning audience.</span></li>
+      <li class="qs-dash-plan-item"><span class="qs-dash-plan-number">02</span><span>Resume Story Engine at step 4 — finish the audience definition.</span></li>
+      <li class="qs-dash-plan-item"><span class="qs-dash-plan-number">03</span><span>Adapt the cottage rebuild post for Reach across 4 platforms.</span></li>
+    </ol>
+  </section>
+</div>
+
+<script>
+(function() {
+  var dateEl = document.getElementById('qs-dash-today-date');
+  if (!dateEl) return;
+  var d = new Date();
+  var days = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  var months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  var hours = d.getHours();
+  var minutes = d.getMinutes();
+  var ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  if (hours === 0) hours = 12;
+  var minutesStr = minutes < 10 ? '0' + minutes : '' + minutes;
+  dateEl.textContent = days[d.getDay()] + ' · ' + months[d.getMonth()] + ' ' + d.getDate() + ' · ' + hours + ':' + minutesStr + ' ' + ampm;
+})();
+</script>
 
       </div>
 
