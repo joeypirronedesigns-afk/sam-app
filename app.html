@@ -6084,6 +6084,84 @@ body.quiet-studio-shell .psam-output-section {
   border-bottom: 1px solid var(--qs-rule);
 }
 
+body.quiet-studio-shell #qsChatCollapseBtn { display: none; }
+
+/* ============================================================ */
+/* v9.16.2 — THREE-COLUMN DESKTOP PROMOTION                    */
+/* ============================================================ */
+
+@media (min-width: 1280px) {
+  body.quiet-studio-shell:not(.qs-chat-collapsed) #persistentSAMPanel {
+    display: flex !important;
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    height: 100vh;
+    width: 420px;
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  body.quiet-studio-shell:not(.qs-chat-collapsed) > main {
+    padding-right: 420px;
+  }
+  body.quiet-studio-shell:not(.qs-chat-collapsed) #persistentSAMBackdrop {
+    display: none !important;
+  }
+  body.quiet-studio-shell #qsChatCollapseBtn {
+    display: block;
+  }
+  body.quiet-studio-shell .psam-header-btn[title="Close"] {
+    display: none;
+  }
+  body.quiet-studio-shell.qs-chat-collapsed #persistentSAMPanel {
+    display: none !important;
+  }
+  body.quiet-studio-shell.qs-chat-collapsed .psam-fab-btn {
+    display: flex !important;
+  }
+  body.quiet-studio-shell.qs-chat-collapsed #persistentSAMFab {
+    pointer-events: auto;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+  body.quiet-studio-shell:not(.qs-chat-collapsed) #persistentSAMPanel {
+    display: flex !important;
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    height: 100vh;
+    width: 360px;
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  body.quiet-studio-shell:not(.qs-chat-collapsed) > main {
+    padding-right: 360px;
+  }
+  body.quiet-studio-shell:not(.qs-chat-collapsed) #persistentSAMBackdrop {
+    display: none !important;
+  }
+  body.quiet-studio-shell #qsChatCollapseBtn {
+    display: block;
+  }
+  body.quiet-studio-shell .psam-header-btn[title="Close"] {
+    display: none;
+  }
+  body.quiet-studio-shell.qs-chat-collapsed #persistentSAMPanel {
+    display: none !important;
+  }
+  body.quiet-studio-shell.qs-chat-collapsed .psam-fab-btn {
+    display: flex !important;
+  }
+  body.quiet-studio-shell.qs-chat-collapsed #persistentSAMFab {
+    pointer-events: auto;
+  }
+}
+
 /* ============================================================ */
 /* MOBILE — Spine cards stack                                   */
 /* ============================================================ */
@@ -6146,7 +6224,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.16" data-qs-primitives="v9.9" data-qs-dashboard="v9.16">
+<div data-qs-shell="true" data-qs-version="v9.16.2" data-qs-primitives="v9.9" data-qs-dashboard="v9.16.2">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6226,7 +6304,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.16</div>
+  <div class="qs-version-stamp">Quiet Studio v9.16.2</div>
 </div>
 
   </aside>
@@ -10392,6 +10470,33 @@ function closePersistentSAM() {
   localStorage.setItem(SAM_PERSISTENT_OPEN_KEY, 'false');
   document.getElementById('persistentSAMPanel').classList.remove('open');
 }
+
+function toggleSAMColumn() {
+  var fab = document.getElementById('persistentSAMFab');
+  var collapsed = document.body.classList.contains('qs-chat-collapsed');
+  if (collapsed) {
+    document.body.classList.remove('qs-chat-collapsed');
+    if (fab) fab.removeAttribute('data-collapsed');
+    localStorage.removeItem('qs-chat-collapsed');
+    var btn = document.getElementById('qsChatCollapseBtn');
+    if (btn) btn.textContent = '‹';
+  } else {
+    document.body.classList.add('qs-chat-collapsed');
+    if (fab) fab.setAttribute('data-collapsed', 'true');
+    localStorage.setItem('qs-chat-collapsed', '1');
+    var btn = document.getElementById('qsChatCollapseBtn');
+    if (btn) btn.textContent = '›';
+  }
+}
+window.addEventListener('DOMContentLoaded', function() {
+  if (localStorage.getItem('qs-chat-collapsed') === '1') {
+    var fab = document.getElementById('persistentSAMFab');
+    if (fab) fab.setAttribute('data-collapsed', 'true');
+    document.body.classList.add('qs-chat-collapsed');
+    var btn = document.getElementById('qsChatCollapseBtn');
+    if (btn) btn.textContent = '›';
+  }
+});
 
 function addPersistentMessage(role, text, save) {
   const msgs = document.getElementById('persistentSAMMessages');
@@ -14646,6 +14751,7 @@ function openWizardFromNav() {
         <div class="psam-header-status">Your editorial director</div>
       </div>
       <div class="psam-header-actions">
+        <button class="psam-header-btn" id="qsChatCollapseBtn" onclick="toggleSAMColumn()" title="Collapse chat column">‹</button>
         <button class="psam-header-btn" onclick="clearPersistentHistory()" title="New conversation">↺</button>
         <button class="psam-header-btn" onclick="closePersistentSAM()" title="Close">✕</button>
       </div>
