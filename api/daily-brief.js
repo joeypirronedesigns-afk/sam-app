@@ -76,6 +76,7 @@ async function saveBrief(email, briefDate, timezone, brief, profile) {
       source_hash: sourceHash,
       source_snapshot: sourceSnapshot,
       model: 'claude-haiku-4-5-20251001',
+      todays_plan: brief.todays_plan || null,
       updated_at: new Date().toISOString()
     })
   });
@@ -109,7 +110,9 @@ PRIORITY LADDER (use this order):
 2. Story progress stalled
 3. Reach readiness weak or underused
 4. Voice DNA not calibrated
-5. Otherwise: momentum/consistency verdict`;
+5. Otherwise: momentum/consistency verdict
+
+Also generate exactly 3 action items for today's plan. Each must be concrete, time-bounded, and routed to an existing tool. Include them in the JSON as "todays_plan": array of objects with keys: id (string "plan-1" etc), step_number (1-3), label (2-8 words, action-oriented), timebox_minutes (integer 10-45), route (one of: story-engine|reach|voice-dna|spark|all-tools|today), reason (one sentence max).`;
 
   const userPrompt = `Today's date: ${briefDate}
 Creator niche: ${niche}
@@ -127,7 +130,8 @@ Write today's daily brief as JSON matching this exact schema:
   "primary_cta_route": "string",
   "primary_cta_reason": "string",
   "source_signals": ["array", "of", "strings"],
-  "brief_date": "${briefDate}"
+  "brief_date": "${briefDate}",
+  "todays_plan": [{"id":"plan-1","step_number":1,"label":"string","timebox_minutes":25,"route":"string","reason":"string"},{"id":"plan-2","step_number":2,"label":"string","timebox_minutes":10,"route":"string","reason":"string"},{"id":"plan-3","step_number":3,"label":"string","timebox_minutes":20,"route":"string","reason":"string"}]
 }`;
 
   const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -184,6 +188,7 @@ module.exports = async function handler(req, res) {
         primary_cta_route: cached.primary_cta_route,
         primary_cta_reason: cached.primary_cta_reason,
         brief_date: cached.brief_date,
+        todays_plan: cached.todays_plan || null,
         cached: true
       });
     }
