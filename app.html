@@ -6274,7 +6274,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.16.4" data-qs-primitives="v9.9" data-qs-dashboard="v9.16.4">
+<div data-qs-shell="true" data-qs-version="v9.16.5" data-qs-primitives="v9.9" data-qs-dashboard="v9.16.5">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6358,7 +6358,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.16.4</div>
+  <div class="qs-version-stamp">Quiet Studio v9.16.5</div>
 </div>
 
   </aside>
@@ -10531,13 +10531,13 @@ function toggleSAMColumn() {
   if (collapsed) {
     document.body.classList.remove('qs-chat-collapsed');
     if (fab) fab.removeAttribute('data-collapsed');
-    localStorage.removeItem('qs-chat-collapsed');
+    localStorage.removeItem('samColumnCollapsed');
     var btn = document.getElementById('qsChatCollapseBtn');
     if (btn) btn.textContent = '‹';
   } else {
     document.body.classList.add('qs-chat-collapsed');
     if (fab) fab.setAttribute('data-collapsed', 'true');
-    localStorage.setItem('qs-chat-collapsed', '1');
+    localStorage.setItem('samColumnCollapsed', 'true');
     var btn = document.getElementById('qsChatCollapseBtn');
     if (btn) btn.textContent = '›';
   }
@@ -10551,7 +10551,7 @@ function openTalkWithSAM() {
       document.body.classList.remove('qs-chat-collapsed');
       fab.removeAttribute('data-collapsed');
       if (btn) btn.textContent = '‹';
-      localStorage.setItem('qs-chat-collapsed', 'false');
+      localStorage.setItem('samColumnCollapsed', 'false');
     }
     return;
   }
@@ -14869,7 +14869,7 @@ function openWizardFromNav() {
   <div id="persistentSAMPanel">
     <div class="psam-header">
       <div class="psam-header-avatar" style="display:flex;align-items:center;justify-content:center;background:transparent;border:none;">
-          <img src="/icons/sam.svg" width="22" height="22" alt="SAM" style="opacity:0.9;" />
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="22" height="22" aria-hidden="true" style="color:var(--qs-ink);opacity:0.85;"><path d="M5 12L18 4L12 12L5 12Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 12L6 20L12 12L19 12Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
       <div class="psam-header-info">
         <div class="psam-header-name">SAM</div>
@@ -14894,7 +14894,7 @@ function openWizardFromNav() {
     </div>
   </div>
   <button class="psam-fab-btn" onclick="togglePersistentSAM()" title="Talk with SAM">
-    <img src="/icons/sam.svg" width="20" height="20" alt="SAM" />
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="20" height="20" aria-hidden="true" style="color:#FAFAF7;"><path d="M5 12L18 4L12 12L5 12Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 12L6 20L12 12L19 12Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
     <div class="psam-fab-dot"></div>
   </button>
 </div>
