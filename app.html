@@ -6002,7 +6002,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.14.1" data-qs-primitives="v9.9" data-qs-dashboard="v9.14.1">
+<div data-qs-shell="true" data-qs-version="v9.15" data-qs-primitives="v9.9" data-qs-dashboard="v9.15">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6082,7 +6082,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.14.1</div>
+  <div class="qs-version-stamp">Quiet Studio v9.15</div>
 </div>
 
   </aside>
@@ -6773,6 +6773,49 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
           primaryBtn.onclick = CTA_ROUTES[data.primary_cta_route] || null;
           primaryBtn.title = data.primary_cta_reason || '';
         }
+      }
+
+      // Update Today's Plan
+      var plan = (data && data.todays_plan && data.todays_plan.length > 0)
+        ? data.todays_plan
+        : [
+            { id: 'plan-1', step_number: 1, label: 'Clarify your next story beat', timebox_minutes: 15, route: 'story-engine' },
+            { id: 'plan-2', step_number: 2, label: 'Pick one platform to post on first', timebox_minutes: 10, route: 'reach' },
+            { id: 'plan-3', step_number: 3, label: 'Publish one rough draft before the day ends', timebox_minutes: 20, route: 'reach' }
+          ];
+
+      var planLabel = document.querySelector('.qs-dash-plan-label');
+      var planList = document.querySelector('.qs-dash-plan-list');
+
+      if (planLabel) planLabel.textContent = "Today’s Plan · " + plan.length + " Actions";
+
+      if (planList) {
+        planList.innerHTML = '';
+        var CTA_PLAN_ROUTES = {
+          'story-engine': function() { if (typeof openWizardPage === 'function') openWizardPage(); },
+          'reach': function() { if (typeof openTool === 'function') openTool('reach'); },
+          'spark': function() { if (typeof openTool === 'function') openTool('spark'); },
+          'voice-dna': function() { if (typeof openTool === 'function') openTool('voice-dna'); },
+          'all-tools': function() { if (typeof openTool === 'function') openTool('all-tools'); },
+          'today': function() {}
+        };
+        plan.forEach(function(item) {
+          var li = document.createElement('li');
+          li.className = 'qs-dash-plan-item';
+          if (CTA_PLAN_ROUTES[item.route]) {
+            li.style.cursor = 'pointer';
+            li.onclick = CTA_PLAN_ROUTES[item.route];
+          }
+          var numSpan = document.createElement('span');
+          numSpan.className = 'qs-dash-plan-number';
+          numSpan.textContent = String(item.step_number).padStart(2, '0');
+          var textSpan = document.createElement('span');
+          var timeStr = item.timebox_minutes ? ' · ' + item.timebox_minutes + ' min' : '';
+          textSpan.textContent = item.label + timeStr;
+          li.appendChild(numSpan);
+          li.appendChild(textSpan);
+          planList.appendChild(li);
+        });
       }
     }
   }
