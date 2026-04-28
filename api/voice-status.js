@@ -5,13 +5,6 @@
 // GET /api/voice-status?email=user@example.com
 // Returns: { calibrated: bool, lastSampleAt: string|null, displayAge: string|null }
 
-const { createClient } = require('@supabase/supabase-js');
-
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY
-);
-
 function formatAge(dateStr) {
   if (!dateStr) return null;
   const now = new Date();
@@ -36,7 +29,6 @@ module.exports = async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
 
-  // Normalize email
   const raw = req.query.email;
   const email = typeof raw === 'string' ? raw.trim().toLowerCase() : '';
 
@@ -44,17 +36,23 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({ calibrated: false, lastSampleAt: null, displayAge: null });
   }
 
+  const SUPABASE_URL = process.env.SUPABASE_URL;
+  const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!SUPABASE_URL || !SERVICE_KEY) {
+    return res.status(200).json({ calibrated: false, lastSampleAt: null, displayAge: null });
+  }
+
   try {
-    const { data: samples, error } = await supabase
-      .from('sam_voice_samples')
-      .select('created_at')
-      .eq('user_id', email)
-      .order('created_at', { ascending: false })
-      .limit(1);
+    const r = await fetch(
+      `${SUPABASE_URL}/rest/v1/sam_voice_samples?user_id=eq.${encodeURIComponent(email)}&select=created_at&order=created_at.desc&limit=1`,
+      { headers: { 'apikey': SERVICE_KEY, 'Authorization': `Bearer ${SERVICE_KEY}` } }
+    );
 
-    if (error) throw error;
+    if (!r.ok) throw new Error('Supabase fetch failed: ' + await r.text());
 
-    const hasSamples = samples && samples.length > 0;
+    const samples = await r.json();
+    const hasSamples = Array.isArray(samples) && samples.length > 0;
     const lastSampleAt = hasSamples ? samples[0].created_at : null;
 
     return res.status(200).json({
@@ -64,7 +62,7 @@ module.exports = async function handler(req, res) {
     });
 
   } catch (err) {
-    console.error('voice-status error:', err);
+    console.error('voice-status error:', err.message);
     return res.status(200).json({ calibrated: false, lastSampleAt: null, displayAge: null });
   }
 };
