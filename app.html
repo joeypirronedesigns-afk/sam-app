@@ -4383,17 +4383,17 @@
 
 /* ── BRAND PROFILE ── */
     .brand-upload-zone {
-      border: 2px dashed var(--border2);
-      border-radius: var(--radius-lg);
+      border: 2px dashed var(--rule);
+      border-radius: 8px;
       padding: 24px;
       text-align: center;
       cursor: pointer;
       transition: all 0.2s;
-      background: var(--surface);
+      background: var(--surface-2);
       position: relative;
     }
-    .brand-upload-zone:hover { border-color: var(--spark); background: var(--surface2); }
-    .brand-upload-zone.has-logo { border-style: solid; border-color: rgba(167,139,250,0.4); }
+    .brand-upload-zone:hover { border-color: var(--accent); background: var(--surface-2); }
+    .brand-upload-zone.has-logo { border-style: solid; border-color: var(--accent); }
     .brand-logo-preview {
       max-height: 80px;
       max-width: 200px;
@@ -4415,8 +4415,8 @@
       transition: all 0.15s;
     }
     .brand-color-swatch.selected {
-      border-color: var(--text);
-      transform: scale(1.15);
+      box-shadow: 0 0 0 2px var(--paper), 0 0 0 4px var(--accent);
+      border-color: transparent;
     }
     .brand-text-input {
       width: 100%;
@@ -14978,22 +14978,22 @@ if (localStorage.getItem('sam_dev') === 'true') {
       <div class="wizard-progress-label" id="wizardProgressLabel" style="display:flex;align-items:center;gap:10px;">
         <span id="wizardUserIdentity" style="display:none;align-items:center;gap:8px;">
           <img id="wizardHeaderPhoto" src="" style="width:24px;height:24px;border-radius:50%;object-fit:cover;display:none;" />
-          <span id="wizardHeaderName" style="font-size:13px;font-weight:700;color:var(--text);"></span>
+          <span id="wizardHeaderName" style="font-size:13px;font-weight:700;color:var(--ink);font-family:'Inter',system-ui,sans-serif;"></span>
         </span>
         <span id="wizardDefaultLabel">Building your story</span>
-        <button onclick="openEcosystemOverlay()" style="display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#A78BFA;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);border-radius:20px;padding:3px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.background='rgba(167,139,250,0.2)'" onmouseout="this.style.background='rgba(167,139,250,0.1)'">⇄ Switch tools</button>
-        <button onclick="closeWizard();window.location.href='/meet';" style="display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#F472B6;background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.25);border-radius:20px;padding:3px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.background='rgba(244,114,182,0.18)'" onmouseout="this.style.background='rgba(244,114,182,0.08)'">✦ Talk with SAM</button>
-        <button id="voiceCalibBadge" onclick="openVoiceTrainer()" style="display:none;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#34D399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.25);border-radius:20px;padding:3px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.background='rgba(52,211,153,0.2)'" onmouseout="this.style.background='rgba(52,211,153,0.1)'">🎙 Voice locked in</button>
+        <button onclick="openEcosystemOverlay()" style="display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted);background:transparent;border:1px solid var(--rule);border-radius:6px;padding:3px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:'Inter',system-ui,sans-serif;">⇄ Switch tools</button>
+        <button onclick="closeWizard();window.location.href='/meet';" style="display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent);border-radius:6px;padding:3px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:'Inter',system-ui,sans-serif;">✦ Talk with SAM</button>
+        <button id="voiceCalibBadge" onclick="openVoiceTrainer()" style="display:none;align-items:center;gap:5px;font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-soft);background:transparent;border:1px solid var(--rule);border-radius:6px;padding:3px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:'Inter',system-ui,sans-serif;">🎙 Voice locked in</button>
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
         <button onclick="devSaveSession()" id="devSaveBtn" style="display:none;font-size:10px;font-weight:700;background:rgba(109,40,217,0.3);color:#A78BFA;border:1px solid rgba(167,139,250,0.3);border-radius:8px;padding:5px 10px;cursor:pointer;">💾 Session</button>
         <button onclick="devRestoreSession()" id="devRestoreBtn" style="display:none;font-size:10px;font-weight:700;background:rgba(5,150,105,0.3);color:#34D399;border:1px solid rgba(52,211,153,0.3);border-radius:8px;padding:5px 10px;cursor:pointer;">⚡ Restore</button>
         <div class="wizard-progress-step" id="wizardStepLabel">Step 1 of 10</div>
-        <button id="wizardSaveBtn" onclick="manualSaveSession()" style="font-size:10px;font-weight:700;color:#34D399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.25);border-radius:8px;padding:4px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.background='rgba(52,211,153,0.2)'" onmouseout="this.style.background='rgba(52,211,153,0.1)'">Save Session</button>
-        <button onclick="doRestoreSession()" style="font-size:10px;font-weight:700;color:#34D399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.25);border-radius:8px;padding:4px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.background='rgba(52,211,153,0.2)'" onmouseout="this.style.background='rgba(52,211,153,0.1)'">Reload Session</button>
-        <button onclick="if(typeof openIdeasPanel==='function')openIdeasPanel();" style="font-size:10px;font-weight:700;color:#A78BFA;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);border-radius:8px;padding:4px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;position:relative;" onmouseover="this.style.background='rgba(167,139,250,0.2)'" onmouseout="this.style.background='rgba(167,139,250,0.1)'">💜 My Ideas<span id="wizardIdeasBadge" style="display:none;position:absolute;top:-5px;right:-5px;width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#A78BFA,#F472B6);color:#fff;font-size:9px;font-weight:700;align-items:center;justify-content:center;border:2px solid var(--bg);"></span></button>
+        <button id="wizardSaveBtn" onclick="manualSaveSession()" style="font-size:10px;font-weight:600;color:var(--ink-soft);background:transparent;border:1px solid var(--rule);border-radius:6px;padding:4px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:'Inter',system-ui,sans-serif;">Save Session</button>
+        <button onclick="doRestoreSession()" style="font-size:10px;font-weight:600;color:var(--ink-soft);background:transparent;border:1px solid var(--rule);border-radius:6px;padding:4px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:'Inter',system-ui,sans-serif;">Reload Session</button>
+        <button onclick="if(typeof openIdeasPanel==='function')openIdeasPanel();" style="font-size:10px;font-weight:600;color:var(--ink-soft);background:transparent;border:1px solid var(--rule);border-radius:6px;padding:4px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;position:relative;font-family:'Inter',system-ui,sans-serif;">✦ My Ideas<span id="wizardIdeasBadge" style="display:none;position:absolute;top:-5px;right:-5px;width:16px;height:16px;border-radius:50%;background:var(--accent);color:var(--paper);font-size:9px;font-weight:700;align-items:center;justify-content:center;border:2px solid var(--paper);"></span></button>
         <div id="wizardStepJumper" style="position:relative;">
-          <button onclick="toggleStepJumper()" style="font-size:10px;font-weight:600;color:var(--text3);background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:3px 10px;cursor:pointer;letter-spacing:0.04em;">Jump ▾</button>
+          <button onclick="toggleStepJumper()" style="font-size:10px;font-weight:600;color:var(--ink-muted);background:transparent;border:1px solid var(--rule);border-radius:6px;padding:3px 10px;cursor:pointer;letter-spacing:0.04em;font-family:'Inter',system-ui,sans-serif;">Jump ▾</button>
           <div id="stepJumperMenu" style="display:none;position:absolute;right:0;top:28px;background:rgba(13,11,22,0.98);border:1px solid var(--border2);border-radius:12px;padding:6px;z-index:500;min-width:180px;box-shadow:0 8px 32px rgba(0,0,0,0.5);">
             <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);padding:4px 8px 6px;">Jump to step</div>
             <button onclick="jumpToStep('0')" class="step-jump-btn">Step 0 — Brand profile</button>
@@ -15715,7 +15715,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
     <!-- Advanced tools link -->
     <div class="wizard-advanced-link">
       <button class="wizard-advanced-btn" onclick="closeWizard()">
-        ← Back to Workshop
+        ← Back to Today
       </button>
     </div>
 
