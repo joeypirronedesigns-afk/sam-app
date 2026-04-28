@@ -6002,7 +6002,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.11" data-qs-primitives="v9.9" data-qs-dashboard="v9.11">
+<div data-qs-shell="true" data-qs-version="v9.12" data-qs-primitives="v9.9" data-qs-dashboard="v9.12">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6082,7 +6082,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.11</div>
+  <div class="qs-version-stamp">Quiet Studio v9.12</div>
 </div>
 
   </aside>
@@ -6616,6 +6616,78 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
     document.addEventListener('DOMContentLoaded', fetchVoiceStatus);
   } else {
     fetchVoiceStatus();
+  }
+})();
+// Story Engine spine card wiring — v9.12
+(function() {
+  function updateStoryEngineCard(data) {
+    var cards = document.querySelectorAll('.qs-dash-spine-card');
+    var seCard = null;
+    for (var i = 0; i < cards.length; i++) {
+      var titleEl = cards[i].querySelector('.qs-dash-spine-card-title');
+      if (titleEl && titleEl.textContent.trim() === 'Story Engine') {
+        seCard = cards[i];
+        break;
+      }
+    }
+    if (!seCard) return;
+
+    var statusEl = seCard.querySelector('.qs-dash-spine-card-status');
+    var copyEl = seCard.querySelector('.qs-dash-spine-card-copy');
+
+    if (data && data.started && data.currentStep) {
+      if (statusEl) {
+        statusEl.classList.remove('qs-dash-spine-card-status--neutral', 'qs-dash-spine-card-status--stale', 'qs-dash-spine-card-status--error');
+        statusEl.classList.add('qs-dash-spine-card-status--healthy');
+      }
+      var nodes = statusEl ? statusEl.childNodes : [];
+      for (var j = 0; j < nodes.length; j++) {
+        if (nodes[j].nodeType === 3) {
+          nodes[j].textContent = ' Step ' + data.currentStep + ' of 12';
+          break;
+        }
+      }
+      if (copyEl) copyEl.textContent = 'Pick up where you left off.';
+    } else {
+      if (statusEl) {
+        statusEl.classList.remove('qs-dash-spine-card-status--healthy', 'qs-dash-spine-card-status--stale', 'qs-dash-spine-card-status--error');
+        statusEl.classList.add('qs-dash-spine-card-status--neutral');
+      }
+      var nodes2 = statusEl ? statusEl.childNodes : [];
+      for (var k = 0; k < nodes2.length; k++) {
+        if (nodes2[k].nodeType === 3) {
+          nodes2[k].textContent = ' Not started';
+          break;
+        }
+      }
+      if (copyEl) copyEl.textContent = 'Build your playbook in 12 guided steps.';
+    }
+  }
+
+  function fetchStoryEngineStatus() {
+    var email = null;
+    try {
+      if (typeof getTrialState === 'function') {
+        var ts = getTrialState();
+        email = ts && ts.email ? ts.email.trim().toLowerCase() : null;
+      }
+    } catch(e) { email = null; }
+
+    if (!email) {
+      updateStoryEngineCard({ started: false, currentStep: null });
+      return;
+    }
+
+    fetch('/api/story-engine-status?email=' + encodeURIComponent(email))
+      .then(function(r) { return r.json(); })
+      .then(function(data) { updateStoryEngineCard(data); })
+      .catch(function() { updateStoryEngineCard({ started: false, currentStep: null }); });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', fetchStoryEngineStatus);
+  } else {
+    fetchStoryEngineStatus();
   }
 })();
 </script>
@@ -11620,7 +11692,7 @@ function showWizardStep(step) {
     const total = 12;
     const pct = Math.round((stepNum / total) * 100);
     document.getElementById('wizardProgressFill').style.width = pct + '%';
-    document.getElementById('wizardStepLabel').textContent = 'Step ' + stepNum + ' of ' + total; WS._currentStep = stepNum; if (typeof updateWizardHeader === 'function') updateWizardHeader(); if (typeof _samSaveSession === 'function') _samSaveSession();
+    document.getElementById('wizardStepLabel').textContent = 'Step ' + stepNum + ' of ' + total; WS._currentStep = stepNum; if (typeof updateWizardHeader === 'function') updateWizardHeader(); if (typeof _samSaveSession === 'function') _samSaveSession(); if (typeof getTrialState === 'function') { (function() { try { var _ts = getTrialState(); var _email = _ts && _ts.email ? _ts.email.trim().toLowerCase() : null; var _step = parseInt(WS._currentStep || '0'); if (_email && _step >= 1 && _step <= 12) { fetch('/api/story-engine-save', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: _email, step: _step }) }).catch(function() {}); } } catch(e) {} })(); }
   }
 
   // Disable next by default — re-enabled when selection made
