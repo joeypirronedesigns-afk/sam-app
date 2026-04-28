@@ -9923,17 +9923,17 @@ function showPaywall(context, force) {
   const messages = {
     'pdf': {
       headline: 'Your playbook is ready.<br/>Let' + apos + 's get it off my screen and into yours.',
-      sub: 'You built something real here. PDF downloads are part of paid plans — and honestly, $19/month is less than a single coaching session.',
+      sub: 'You built something real here. PDF downloads are part of paid plans — and honestly, $29/month is less than a single coaching session.',
       urgency: 'Your story. Your voice. Your brand. Ready to download.'
     },
     'lead_magnet': {
       headline: 'Your lead magnet is built.<br/>Time to actually use it.',
-      sub: 'You just created a free resource your audience would trade their email for. Downloading it requires a paid plan — starting at $19/month.',
+      sub: 'You just created a free resource your audience would trade their email for. Downloading it requires a paid plan — starting at $29/month.',
       urgency: 'This is how you grow your list while you sleep.'
     },
     'tool': {
       headline: 'You' + apos + 've hit your free limit.<br/>You' + apos + 're clearly not messing around.',
-      sub: 'Free accounts get a taste. Paid accounts get the whole thing — unlimited runs, every tool, every time. Starting at $19/month.',
+      sub: 'Free accounts get a taste. Paid accounts get the whole thing — unlimited runs, every tool, every time. Starting at $29/month.',
       urgency: 'Pick a plan and keep building.'
     },
     'wizard': {
@@ -10127,7 +10127,7 @@ THE 5 TOOLS:
 
 PRICING:
 - Free: 5 SAM Engine runs + 15 tool runs, 7-day trial, no card ever
-- Creator: $19/month — 10 SAM Engine runs, 70 tool runs, lead magnet with every run, all platforms, 12 languages, branded PDFs. Founding member rate — locked in forever.
+- Creator: $29/month — 10 SAM Engine runs, 70 tool runs, lead magnet with every run, all platforms, 12 languages, branded PDFs. Founding member rate — locked in forever.
 - Pro: $39/month — 20 SAM Engine runs, 200 tool runs, unlimited lead magnet rebuilds, priority speed, every new tool first. Founding member rate.
 - Studio: $99/month — 100 SAM Engine runs, unlimited tool runs, up to 5 brand profiles. For power creators. Founding member rate.
 - Trial: New users get 7 days full access, all tools, no limits — trial starts automatically after completing the SAM Engine
@@ -13089,7 +13089,7 @@ Include complete reasoning (WHY) for every recommendation.
     if (isRateLimit) {
       errTitle = "You've hit today's limit";
       errExplain = "SAM's free plan includes a set number of runs per day. Your limit resets at midnight.";
-      errTip = "Upgrade for unlimited runs — from $19/month, cancel anytime.";
+      errTip = "Upgrade for unlimited runs — from $29/month, cancel anytime.";
     } else if (isTimeout) {
       errTitle = 'SAM took too long';
       errExplain = "Your story had a lot of depth and SAM ran out of time. This sometimes happens with longer stories.";
@@ -13544,7 +13544,7 @@ function renderPlaybook(data) {
 
   <!-- WHAT SAM CAN BUILD NEXT -->
   <div class="no-print" style="margin-bottom:16px;">
-    <div style="background:var(--surface-2);border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:8px;padding:16px 20px;cursor:pointer;" onclick="(function(){var ts=typeof getTrialState==='function'?getTrialState():{};if(ts.paid||ts.email){var el=document.getElementById('samNextSection');if(el)el.scrollIntoView({behavior:'smooth'});}else{if(typeof showPaywall==='function')showPaywall('tool');}})()">
+    <div style="background:var(--surface-2);border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:8px;padding:16px 20px;cursor:pointer;" onclick="(function(){var ts=typeof getTrialState==='function'?getTrialState():{};var trialActive=ts.email&&ts.trialStart&&(Date.now()-ts.trialStart)<(7*24*60*60*1000);var entitled=ts.paid||trialActive;if(entitled){var el=document.getElementById('samNextSection');if(el)el.scrollIntoView({behavior:'smooth'});}else{window.location.href='https://sam-app-git-quietstudio-joeypirronedesigns-1029s-projects.vercel.app/';}})()">
       <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);font-family:'JetBrains Mono',monospace;margin-bottom:4px;">✦ SAM knows your full story</div>
       <div style="font-family:'Inter',system-ui,sans-serif;font-size:15px;font-weight:600;color:var(--ink);">Keep building — email sequence, content plan, video concept & more →</div>
     </div>
@@ -14547,7 +14547,7 @@ function openWizardFromNav() {
         <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Download everything as PDF</div>
         <div class="pro-feat-row"><div class="pro-feat-icon fi-no"></div><span class="feat-muted">Unlimited tool runs</span></div>
       </div>
-      <button class="pro-btn pro-btn-grad" style="background:linear-gradient(135deg,#F472B6,#A78BFA);" onclick="window._selectedPlan='creator';handleProSignup('creator')">Get Creator — $19/month →</button>
+      <button class="pro-btn pro-btn-grad" style="background:linear-gradient(135deg,#F472B6,#A78BFA);" onclick="window._selectedPlan='creator';handleProSignup('creator')">Get Creator — $29/month →</button>
       <div class="pro-guarantee-row">🔒 Founding rate · 7-day guarantee · Cancel anytime</div>
     </div>
 
@@ -14711,7 +14711,7 @@ function openWizardFromNav() {
 
       <div class="wl-perks">
         <div class="wl-perk"><div class="wl-perk-dot">✓</div>First access when Pro goes live</div>
-        <div class="wl-perk"><div class="wl-perk-dot">✓</div>Creator plan from $19/month — cancel anytime</div>
+        <div class="wl-perk"><div class="wl-perk-dot">✓</div>Creator plan from $29/month — cancel anytime</div>
         <div class="wl-perk"><div class="wl-perk-dot">✓</div>Exclusive early-access features</div>
         <div class="wl-perk"><div class="wl-perk-dot">✓</div>Direct line to the SAM team</div>
       </div>
@@ -14778,41 +14778,19 @@ function openWizardFromNav() {
 
 <!-- ── DAY 4 PAYWALL ── -->
 <div class="paywall-overlay" id="paywallOverlay">
-  <div class="paywall-inner" style="max-width:480px;width:100%;margin:16px auto;padding:32px 24px 28px;display:flex;flex-direction:column;align-items:center;gap:0;box-sizing:border-box;">
-
-    <!-- SAM avatar -->
-    <div style="width:48px;height:48px;border-radius:12px;background:var(--surface-2);border:1px solid var(--rule);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:20px;">✦</div>
-
-    <!-- Headline -->
-    <div data-paywall="headline" style="font-family:'Instrument Serif',Georgia,serif;font-size:28px;font-weight:400;font-style:italic;color:var(--ink);text-align:center;line-height:1.15;margin-bottom:10px;">You just found<br/>your story.</div>
-
-    <!-- Subtext -->
-    <div data-paywall="sub" style="font-family:'Inter',system-ui,sans-serif;font-size:13px;color:var(--ink-soft);text-align:center;line-height:1.6;margin-bottom:28px;">SAM has everything you built — your story, your voice, your strategy.<br/>It's all here waiting.</div>
-
-    <!-- Question -->
-    <div data-paywall="urgency" style="font-family:'Inter',system-ui,sans-serif;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:14px;">Ready to keep going?</div>
-
-    <!-- Single plan card -->
-    <div style="width:100%;margin-bottom:24px;">
-      <div style="background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:16px 20px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;">
-        <div>
-          <div style="font-family:'Inter',system-ui,sans-serif;font-size:16px;font-weight:600;color:var(--ink);">SAM Standard</div>
-          <div style="font-family:'Inter',system-ui,sans-serif;font-size:13px;color:var(--ink-soft);margin-top:2px;">Everything, every day. All tools. Voice DNA. Unlimited drafts.</div>
-        </div>
-        <div style="font-family:'Inter',system-ui,sans-serif;font-size:18px;font-weight:700;color:var(--ink);">$29<span style="font-size:13px;font-weight:400;color:var(--ink-muted)">/mo</span></div>
-      </div>
-      <button onclick="handleProSignup('standard')" style="width:100%;padding:14px;background:var(--accent);color:var(--paper);border:none;border-radius:8px;font-family:'Inter',system-ui,sans-serif;font-size:15px;font-weight:600;cursor:pointer;">Get started →</button>
+  <div class="paywall-inner" style="background:var(--paper);border:1px solid var(--rule);border-radius:16px;padding:32px 28px;max-width:440px;width:90%;text-align:center;position:relative;">
+    <div style="width:36px;height:36px;border-radius:50%;background:var(--accent-soft);border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:16px;color:var(--accent);">✦</div>
+    <div data-paywall="headline" style="font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:26px;font-weight:400;color:var(--ink);line-height:1.25;margin-bottom:10px;">You just found<br/>your story.</div>
+    <div data-paywall="sub" style="font-family:'Inter',system-ui,sans-serif;font-size:15px;color:var(--ink-soft);line-height:1.6;margin-bottom:8px;">SAM has everything you built — your voice, your hook, your strategy. Unlock the full playbook for $29/month.</div>
+    <div data-paywall="urgency" style="font-family:'Inter',system-ui,sans-serif;font-size:12px;color:var(--ink-muted);margin-bottom:24px;letter-spacing:0.02em;">Ready to keep going?</div>
+    <div style="background:var(--surface-2);border:1px solid var(--rule);border-radius:8px;padding:16px 20px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;">
+      <div><div style="font-family:'Inter',system-ui,sans-serif;font-size:16px;font-weight:600;color:var(--ink);text-align:left;">SAM Standard</div><div style="font-family:'Inter',system-ui,sans-serif;font-size:13px;color:var(--ink-soft);margin-top:2px;text-align:left;">Everything, every day. All tools. Voice DNA. Unlimited drafts.</div></div>
+      <div style="font-family:'Inter',system-ui,sans-serif;font-size:18px;font-weight:700;color:var(--ink);flex-shrink:0;margin-left:16px;">$29<span style="font-size:13px;font-weight:400;color:var(--ink-muted)">/mo</span></div>
     </div>
-
-    <!-- See plans -->
-    <div onclick="document.getElementById('paywallOverlay').classList.remove('open');document.body.style.overflow='';setTimeout(()=>openProPage(),100);" style="font-family:'Inter',system-ui,sans-serif;font-size:12px;color:var(--accent);cursor:pointer;margin-bottom:12px;text-align:center;">See all plan details →</div>
-
-    <!-- Sign in -->
-    <button onclick="document.getElementById('paywallOverlay').classList.remove('open');document.body.style.overflow='';openSignInModal();" style="width:100%;padding:12px;background:transparent;border:1px solid var(--rule);border-radius:8px;font-family:'Inter',system-ui,sans-serif;font-size:13px;font-weight:600;color:var(--ink-soft);cursor:pointer;margin-bottom:12px;">Already a member? Sign in</button>
-
-    <!-- Maybe later -->
-    <div onclick="document.getElementById('paywallOverlay').classList.remove('open');document.body.style.overflow='';" style="font-family:'Inter',system-ui,sans-serif;font-size:12px;color:var(--ink-muted);cursor:pointer;">Maybe later — remind me next time</div>
-
+    <button onclick="window.location.href='https://sam-app-git-quietstudio-joeypirronedesigns-1029s-projects.vercel.app/';" style="background:var(--accent);color:var(--paper);border:none;border-radius:8px;width:100%;padding:14px;font-size:15px;font-weight:600;font-family:'Inter',system-ui,sans-serif;cursor:pointer;margin-bottom:12px;">Get started →</button>
+    <div onclick="window.location.href='https://sam-app-git-quietstudio-joeypirronedesigns-1029s-projects.vercel.app/';" style="color:var(--accent);font-family:'Inter',system-ui,sans-serif;font-size:12px;cursor:pointer;margin-bottom:16px;">See all plan details →</div>
+    <button onclick="if(typeof openSignInModal==='function')openSignInModal();else document.getElementById('paywallOverlay').classList.remove('open');" style="border:1px solid var(--rule);color:var(--ink-soft);border-radius:8px;background:transparent;width:100%;padding:12px;font-family:'Inter',system-ui,sans-serif;cursor:pointer;margin-bottom:10px;font-size:14px;">Already a member? Sign in</button>
+    <div onclick="document.getElementById('paywallOverlay').classList.remove('open');" style="color:var(--ink-muted);font-size:12px;font-family:'Inter',system-ui,sans-serif;cursor:pointer;">Maybe later</div>
   </div>
 </div>
 
