@@ -54,7 +54,7 @@ module.exports = async function handler(req, res) {
             html: `<div style="font-family:Arial;padding:40px 32px;background:#09080F;color:#F0ECFF;border-radius:12px;max-width:520px;margin:0 auto;">
               <h2 style="color:#A78BFA;">Welcome back.</h2>
               <p style="color:rgba(240,236,255,0.7);">Click the button below to sign back into SAM. This link expires in 15 minutes.</p>
-              <a href="https://samforcreators.com?token=${magicToken}" 
+              <a href="${process.env.SITE_URL || 'https://samforcreators.com'}/app?token=${magicToken}" 
                 style="display:inline-block;padding:16px 32px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);color:#fff;text-decoration:none;border-radius:50px;font-weight:700;margin:24px 0;">
                 ✦ Sign into SAM →
               </a>

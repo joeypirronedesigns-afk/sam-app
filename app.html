@@ -5,7 +5,7 @@
 (function() {
   var p = window.location.pathname;
   var s = window.location.search;
-  if ((p === '/' || p === '/app.html') && !localStorage.getItem('samFirstRunDone') && s.indexOf('launch=wizard') === -1 && s.indexOf('workshop=1') === -1) {
+  if ((p === '/' || p === '/app.html') && !localStorage.getItem('samFirstRunDone') && s.indexOf('launch=wizard') === -1 && s.indexOf('workshop=1') === -1 && s.indexOf('token=') === -1) {
     window.location.href = '/';
   }
 })();
@@ -15682,8 +15682,9 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
         if (data.success && data.user) {
           writeUserCache(data.user);
           claimAnonymousChatHistory(data.user.email);
+          localStorage.setItem('samFirstRunDone', 'true');
           showToastMsg('Welcome back' + (data.user.name ? ', ' + data.user.name : '') + '! 🎉', '#34D399');
-          setTimeout(() => location.reload(), 1500);
+          setTimeout(() => { window.location.href = window.location.origin + '/app'; }, 1500);
         } else {
           showToastMsg('This link has expired. Use Sign in to get a new one.', '#F472B6');
         }
