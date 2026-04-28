@@ -6059,6 +6059,7 @@ body.quiet-studio-shell .psam-send-btn:hover {
 }
 
 body.quiet-studio-shell .psam-fab-btn {
+  display: none !important;
   background: var(--qs-ink);
   box-shadow: 0 4px 16px rgba(26,24,21,0.22);
   color: var(--qs-paper);
@@ -6119,7 +6120,7 @@ body.quiet-studio-shell #qsChatCollapseBtn { display: none; }
     display: none !important;
   }
   body.quiet-studio-shell.qs-chat-collapsed .psam-fab-btn {
-    display: flex !important;
+    display: none !important;
   }
   body.quiet-studio-shell.qs-chat-collapsed #persistentSAMFab {
     pointer-events: auto;
@@ -6155,7 +6156,7 @@ body.quiet-studio-shell #qsChatCollapseBtn { display: none; }
     display: none !important;
   }
   body.quiet-studio-shell.qs-chat-collapsed .psam-fab-btn {
-    display: flex !important;
+    display: none !important;
   }
   body.quiet-studio-shell.qs-chat-collapsed #persistentSAMFab {
     pointer-events: auto;
@@ -6273,7 +6274,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.16.3" data-qs-primitives="v9.9" data-qs-dashboard="v9.16.3">
+<div data-qs-shell="true" data-qs-version="v9.16.4" data-qs-primitives="v9.9" data-qs-dashboard="v9.16.4">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6357,7 +6358,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.16.3</div>
+  <div class="qs-version-stamp">Quiet Studio v9.16.4</div>
 </div>
 
   </aside>
@@ -10560,8 +10561,23 @@ function openTalkWithSAM() {
 function openSAMFullScreen() {
   document.body.classList.add('qs-sam-fullscreen');
   var panel = document.getElementById('persistentSAMPanel');
-  if (panel) panel.style.display = 'flex';
+  var backdrop = document.getElementById('persistentSAMBackdrop');
   var samNavItem = document.querySelector('[data-qs-nav="talk-with-sam"]');
+  if (panel) {
+    panel.style.display = 'flex';
+    panel.style.position = 'fixed';
+    panel.style.top = '0';
+    panel.style.right = '0';
+    panel.style.bottom = '0';
+    panel.style.left = '0';
+    panel.style.width = '100vw';
+    panel.style.height = '100vh';
+    panel.style.zIndex = '1300';
+    panel.style.borderRadius = '0';
+    panel.style.borderLeft = 'none';
+    panel.style.flexDirection = 'column';
+  }
+  if (backdrop) backdrop.style.display = 'none';
   if (samNavItem) samNavItem.classList.add('is-active');
   localStorage.setItem('samMobileChat', 'open');
 }
@@ -10569,18 +10585,39 @@ function openSAMFullScreen() {
 function closeSAMFullScreen() {
   document.body.classList.remove('qs-sam-fullscreen');
   var panel = document.getElementById('persistentSAMPanel');
-  if (panel) panel.style.removeProperty('display');
+  var backdrop = document.getElementById('persistentSAMBackdrop');
   var samNavItem = document.querySelector('[data-qs-nav="talk-with-sam"]');
+  if (panel) {
+    panel.style.display = '';
+    panel.style.position = '';
+    panel.style.top = '';
+    panel.style.right = '';
+    panel.style.bottom = '';
+    panel.style.left = '';
+    panel.style.width = '';
+    panel.style.height = '';
+    panel.style.zIndex = '';
+    panel.style.borderRadius = '';
+    panel.style.borderLeft = '';
+    panel.style.flexDirection = '';
+  }
+  if (backdrop) backdrop.style.display = '';
   if (samNavItem) samNavItem.classList.remove('is-active');
   localStorage.removeItem('samMobileChat');
 }
 window.addEventListener('DOMContentLoaded', function() {
-  if (localStorage.getItem('qs-chat-collapsed') === '1') {
+  if (window.innerWidth >= 1024) {
     var fab = document.getElementById('persistentSAMFab');
-    if (fab) fab.setAttribute('data-collapsed', 'true');
-    document.body.classList.add('qs-chat-collapsed');
     var btn = document.getElementById('qsChatCollapseBtn');
-    if (btn) btn.textContent = '›';
+    var wasCollapsed = localStorage.getItem('samColumnCollapsed') === 'true';
+    if (wasCollapsed) {
+      if (fab) fab.setAttribute('data-collapsed', 'true');
+      if (btn) btn.textContent = '›';
+    } else {
+      if (fab) fab.removeAttribute('data-collapsed');
+      if (btn) btn.textContent = '‹';
+      localStorage.setItem('samColumnCollapsed', 'false');
+    }
   }
 });
 
@@ -14831,7 +14868,9 @@ function openWizardFromNav() {
 <div id="persistentSAMFab">
   <div id="persistentSAMPanel">
     <div class="psam-header">
-      <div class="psam-header-avatar">✦</div>
+      <div class="psam-header-avatar" style="display:flex;align-items:center;justify-content:center;background:transparent;border:none;">
+          <img src="/icons/sam.svg" width="22" height="22" alt="SAM" style="opacity:0.9;" />
+        </div>
       <div class="psam-header-info">
         <div class="psam-header-name">SAM</div>
         <div class="psam-header-status">Your editorial director</div>
@@ -14855,7 +14894,7 @@ function openWizardFromNav() {
     </div>
   </div>
   <button class="psam-fab-btn" onclick="togglePersistentSAM()" title="Talk with SAM">
-    ✦
+    <img src="/icons/sam.svg" width="20" height="20" alt="SAM" />
     <div class="psam-fab-dot"></div>
   </button>
 </div>
