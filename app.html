@@ -6298,7 +6298,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.22" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.23" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6382,7 +6382,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.22</div>
+  <div class="qs-version-stamp">Quiet Studio v9.23</div>
 </div>
 
   </aside>
@@ -7616,8 +7616,8 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
         All tools
       </button>
       <div class="tool-header-bar">
-        <div class="tool-header-icon" style="background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);">
-          <svg width="22" height="22" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="10" r="4" stroke="#F472B6" stroke-width="1.8"/><path d="M6 24c0-4 3.6-7 8-7s8 3 8 7" stroke="#F472B6" stroke-width="1.8" stroke-linecap="round"/><path d="M21 6l3 3-3 3" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 9H18" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <div class="tool-header-icon" style="background:var(--surface-2);border:1px solid var(--rule);">
+          <svg width="22" height="22" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="10" r="4" stroke="var(--accent)" stroke-width="1.8"/><path d="M6 24c0-4 3.6-7 8-7s8 3 8 7" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round"/><path d="M21 6l3 3-3 3" stroke="var(--ink-soft)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 9H18" stroke="var(--ink-soft)" stroke-width="1.8" stroke-linecap="round"/></svg>
         </div>
         <div class="tool-header-title">The Reach</div>
       </div>
@@ -7625,35 +7625,35 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
       <div class="glass">
         <!-- Step 1: Upload photo -->
         <div style="margin-bottom:20px;">
-          <div class="field-label"><span class="field-label-accent" style="background:#F472B6;"></span>Upload your photo</div>
-          <div id="reachDropZone" ondragover="event.preventDefault();this.style.borderColor='#F472B6'" ondragleave="this.style.borderColor='#333'" ondrop="reachHandleDrop(event)" style="border:2px dashed #333;border-radius:12px;padding:32px;text-align:center;cursor:pointer;transition:all 0.2s;background:rgba(255,255,255,0.02);position:relative;">
+          <div class="field-label"><span class="field-label-accent" style="background:var(--accent);"></span>Upload your photo</div>
+          <div id="reachDropZone" ondragover="event.preventDefault();this.style.borderColor='var(--accent)'" ondragleave="this.style.borderColor='var(--rule)'" ondrop="reachHandleDrop(event)" style="border:2px dashed var(--rule);border-radius:12px;padding:32px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--surface-2);position:relative;">
             <input type="file" id="reachFile" accept="image/*" onchange="reachHandleFile(event)" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:2;">
             <div id="reachDropInner">
               <div style="font-size:32px;margin-bottom:8px;">📸</div>
-              <div style="font-size:14px;font-weight:600;color:var(--ink-soft);">Drop a photo or <span style="color:#F472B6;cursor:pointer;">browse</span></div>
+              <div style="font-size:14px;font-weight:600;color:var(--ink-soft);">Drop a photo or <span style="color:var(--accent);cursor:pointer;">browse</span></div>
               <div style="font-size:12px;color:var(--ink-muted);margin-top:4px;">JPG, PNG, HEIC — any photo you want to post</div>
             </div>
             <div id="reachDropPreview" style="display:none;position:relative;width:100%;">
               <img id="reachPreviewImg" src="" alt="" style="max-width:100%;max-height:240px;border-radius:8px;object-fit:contain;"/>
-              <button onclick="reachRemoveImg(event)" style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.7);border:none;color:#fff;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:14px;">✕</button>
+              <button onclick="reachRemoveImg(event)" style="position:absolute;top:8px;right:8px;background:var(--ink);border:none;color:var(--paper);border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:14px;">✕</button>
             </div>
           </div>
         </div>
 
         <!-- Step 2: Your moment -->
         <div style="margin-bottom:20px;">
-          <div class="field-label"><span class="field-label-accent" style="background:#F472B6;"></span>What's the story behind this photo? <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink-muted);font-size:12px;">(optional)</span></div>
+          <div class="field-label"><span class="field-label-accent" style="background:var(--accent);"></span>What's the story behind this photo? <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink-muted);font-size:12px;">(optional)</span></div>
           <div class="input-wrap">
             <textarea id="reachMoment" placeholder="e.g. Just finished the kitchen renovation after 3 months — couldn't believe how it turned out..." style="min-height:80px;"></textarea>
             <button class="paste-btn" onclick="pasteToEl('reachMoment')" title="Paste">📋</button>
             <button class="mic-btn" id="micReach" onclick="toggleMicFor('reachMoment','micReach')">🎙</button>
-            <button class="mic-btn" onclick="openIdeasPicker('reachMoment')" title="Use a saved idea" style="color:#A78BFA;">💜</button>
+            <button class="mic-btn" onclick="openIdeasPicker('reachMoment')" title="Use a saved idea" style="color:var(--ink-soft);">💜</button>
           </div>
         </div>
 
         <!-- Step 3: Select platforms -->
         <div style="margin-bottom:20px;">
-          <div class="field-label"><span class="field-label-accent" style="background:#F472B6;"></span>Select platforms</div>
+          <div class="field-label"><span class="field-label-accent" style="background:var(--accent);"></span>Select platforms</div>
           <div class="platform-grid" id="reachPlatforms">
             <button class="platform-pill" data-p="Instagram" onclick="togglePill(this,'reachPlatforms')">📸 Instagram</button>
             <button class="platform-pill" data-p="Facebook" onclick="togglePill(this,'reachPlatforms')">👥 Facebook</button>
@@ -7666,7 +7666,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
 
         <!-- Step 4: Output options -->
         <div style="margin-bottom:20px;">
-          <div class="field-label"><span class="field-label-accent" style="background:#F472B6;"></span>What do you need?</div>
+          <div class="field-label"><span class="field-label-accent" style="background:var(--accent);"></span>What do you need?</div>
           <div class="platform-grid" id="reachOutputs">
             <button class="platform-pill sel" data-p="Title/Headline" onclick="togglePill(this,'reachOutputs')">✦ Title/Headline</button>
             <button class="platform-pill sel" data-p="Caption" onclick="togglePill(this,'reachOutputs')">✍ Caption</button>
@@ -7682,16 +7682,16 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
           
         </div>
 
-        <div class="loader" id="reachLoader" style="display:none;"><div class="loader-dots"><span style="background:#F472B6"></span><span style="background:#F472B6"></span><span style="background:#F472B6"></span></div><div class="loader-text">SAM is writing your post...</div></div>
+        <div class="loader" id="reachLoader" style="display:none;"><div class="loader-dots"><span style="background:var(--accent)"></span><span style="background:var(--accent)"></span><span style="background:var(--accent)"></span></div><div class="loader-text">SAM is writing your post...</div></div>
         <div class="err-box" id="reachErr"></div>
-        <button class="run-btn" id="reachBtn" onclick="guardedRunFn(runReach)" style="background:linear-gradient(135deg,#F472B6,#A78BFA);margin-top:8px;">✦ Generate my post →</button>
+        <button class="run-btn" id="reachBtn" onclick="guardedRunFn(runReach)" style="background:var(--accent);margin-top:8px;">✦ Generate my post →</button>
       </div>
 
       <!-- Output -->
       <div class="output-wrap" id="reachOutput" style="display:none;">
         <div class="output-card">
           <div class="output-header">
-            <div class="output-label" style="color:#F472B6;">Your post</div>
+            <div class="output-label" style="color:var(--accent);">Your post</div>
             <button class="reset-btn" onclick="resetReach()">← Start over</button>
           </div>
           <div class="output-body" id="reachBody"></div>
@@ -7859,10 +7859,10 @@ const TOOLS = {
   reach: {
     name: 'The Reach',
     tagline: 'Photo Post Publisher',
-    color: '#F472B6',
-    bg: 'rgba(244,114,182,0.08)',
-    border: 'rgba(244,114,182,0.2)',
-    icon: `<svg width="36" height="36" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="10" r="4" stroke="#F472B6" stroke-width="1.8"/><path d="M6 24c0-4 3.6-7 8-7s8 3 8 7" stroke="#F472B6" stroke-width="1.8" stroke-linecap="round"/><path d="M21 6l3 3-3 3" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 9H18" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round"/></svg>`,
+    color: 'var(--accent)',
+    bg: 'var(--surface-2)',
+    border: 'var(--rule)',
+    icon: `<svg width="36" height="36" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="10" r="4" stroke="var(--accent)" stroke-width="1.8"/><path d="M6 24c0-4 3.6-7 8-7s8 3 8 7" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round"/><path d="M21 6l3 3-3 3" stroke="var(--ink-soft)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 9H18" stroke="var(--ink-soft)" stroke-width="1.8" stroke-linecap="round"/></svg>`,
     features: [
       'Upload any photo and SAM writes platform-perfect captions, headlines and hashtags',
       'Select which platforms you want — Instagram, Facebook, LinkedIn, X, TikTok, Pinterest',
@@ -8071,9 +8071,9 @@ function openIdeasPicker(targetId) {
       list.innerHTML = '';
       ideas.slice(0,20).forEach(function(idea, i) {
         var div = document.createElement('div');
-        div.style.cssText = 'padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer;font-size:13px;line-height:1.6;color:rgba(240,236,255,0.8);';
-        div.innerHTML = '<span style="font-size:10px;font-weight:700;color:#A78BFA;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:3px;">' + (idea.type || 'idea') + '</span>' + (idea.text || '').slice(0,120).replace(/</g,'&lt;');
-        div.addEventListener('mouseover', function(){ this.style.background='rgba(167,139,250,0.08)'; });
+        div.style.cssText = 'padding:12px 14px;border-bottom:1px solid var(--rule);cursor:pointer;font-size:13px;line-height:1.6;color:var(--ink);';
+        div.innerHTML = '<span style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:3px;">' + (idea.type || 'idea') + '</span>' + (idea.text || '').slice(0,120).replace(/</g,'&lt;');
+        div.addEventListener('mouseover', function(){ this.style.background='var(--surface-2)'; });
         div.addEventListener('mouseout', function(){ this.style.background=''; });
         div.addEventListener('click', (function(text, tid) {
           return function() { reachInsertIdea(text, tid); };
@@ -8141,7 +8141,7 @@ function reachHandleFile(e) {
 
 function reachHandleDrop(e) {
   e.preventDefault();
-  document.getElementById('reachDropZone').style.borderColor = '#333';
+  document.getElementById('reachDropZone').style.borderColor = 'var(--rule)';
   const file = e.dataTransfer.files[0];
   if (!file || !file.type.startsWith('image/')) return;
   reachImgType = file.type;
@@ -8219,7 +8219,7 @@ For each platform write clearly with the platform name as a header. Make every c
 
     document.getElementById('reachLoader').style.display = 'none';
     document.getElementById('reachOutput').style.display = 'block';
-    document.getElementById('reachBody').innerHTML = '<div id="reachStream" style="color:#ccc;font-size:14px;line-height:1.8;white-space:pre-wrap;"></div>';
+    document.getElementById('reachBody').innerHTML = '<div id="reachStream" style="color:var(--ink);font-size:14px;line-height:1.8;white-space:pre-wrap;"></div>';
     document.getElementById('reachStream').textContent = fullText;
 
     // Parse and render the output
@@ -8232,13 +8232,13 @@ For each platform write clearly with the platform name as a header. Make every c
       const esc = text.replace(/'/g, "\'").replace(/\n/g, ' ');
       return '<div style="margin-bottom:14px;">'
         + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">'
-        + '<div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.08em;">' + label + '</div>'
+        + '<div style="font-size:10px;font-weight:700;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.08em;">' + label + '</div>'
         + '<div style="display:flex;gap:6px;">'
-        + '<button onclick="reachCopyField(this)" data-text="' + esc + '" style="background:none;border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:rgba(255,255,255,0.4);font-size:10px;padding:2px 8px;cursor:pointer;">📋 Copy</button>'
-        + '<button onclick="reachEditField(\'' + fieldId + '\')" style="background:none;border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:rgba(255,255,255,0.4);font-size:10px;padding:2px 8px;cursor:pointer;">✏️ Edit</button>'
-        + '<button onclick="openIdeasPicker(this.getAttribute(\'data-fid\'))" data-fid="' + fieldId + '" style="background:none;border:1px solid rgba(167,139,250,0.3);border-radius:6px;color:#A78BFA;font-size:10px;padding:2px 8px;cursor:pointer;">💜 Ideas</button>'
+        + '<button onclick="reachCopyField(this)" data-text="' + esc + '" style="background:none;border:1px solid var(--rule);border-radius:6px;color:var(--ink-muted);font-size:10px;padding:2px 8px;cursor:pointer;">📋 Copy</button>'
+        + '<button onclick="reachEditField(\'' + fieldId + '\')" style="background:none;border:1px solid var(--rule);border-radius:6px;color:var(--ink-muted);font-size:10px;padding:2px 8px;cursor:pointer;">✏️ Edit</button>'
+        + '<button onclick="openIdeasPicker(this.getAttribute(\'data-fid\'))" data-fid="' + fieldId + '" style="background:none;border:1px solid var(--rule);border-radius:6px;color:var(--ink-soft);font-size:10px;padding:2px 8px;cursor:pointer;">💜 Ideas</button>'
         + '</div></div>'
-        + '<div id="' + fieldId + '" data-label="' + label + '" data-text="' + esc + '" contenteditable="false" style="font-size:14px;color:rgba(240,236,255,0.85);line-height:1.7;padding:8px;border-radius:8px;border:1px solid transparent;transition:all 0.2s;">' + text + '</div>'
+        + '<div id="' + fieldId + '" data-label="' + label + '" data-text="' + esc + '" contenteditable="false" style="font-size:14px;color:var(--ink);line-height:1.7;padding:8px;border-radius:8px;border:1px solid transparent;transition:all 0.2s;">' + text + '</div>'
         + '</div>';
     }
 
@@ -8259,29 +8259,29 @@ For each platform write clearly with the platform name as a header. Make every c
         const desc2 = extractField(block, 'DESCRIPTION');
         const cta2 = extractField(block, 'CTA');
         const tags2 = extractField(block, 'HASHTAGS');
-        rendered += '<div id="' + pid + '" style="background:rgba(255,255,255,0.03);border:1px solid rgba(244,114,182,0.2);border-radius:14px;padding:20px;margin-bottom:16px;">';
+        rendered += '<div id="' + pid + '" style="background:var(--surface-2);border:1px solid var(--rule);border-radius:14px;padding:20px;margin-bottom:16px;">';
         rendered += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">';
-        rendered += '<div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#F472B6;">' + platformName + '</div>';
-        rendered += '<button id="copyAll-' + pid + '" onclick="reachCopyAll(\'' + pid + '\')" style="background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.2);border-radius:6px;color:#A78BFA;font-size:11px;font-weight:600;padding:4px 12px;cursor:pointer;">📋 Copy All</button>';
+        rendered += '<div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);">' + platformName + '</div>';
+        rendered += '<button id="copyAll-' + pid + '" onclick="reachCopyAll(\'' + pid + '\')" style="background:var(--surface-2);border:1px solid var(--rule);border-radius:6px;color:var(--ink-soft);font-size:11px;font-weight:600;padding:4px 12px;cursor:pointer;">📋 Copy All</button>';
         rendered += '</div>';
         if (outputs.includes('Title/Headline') && hook) rendered += reachField('Hook', hook, pid + '-hook');
         if (outputs.includes('Caption') && caption2) rendered += reachField('Caption', caption2, pid + '-caption');
         if (outputs.includes('Description') && desc2) rendered += reachField('Description', desc2, pid + '-desc');
         if (outputs.includes('Call to Action') && cta2) rendered += reachField('Call to Action', cta2, pid + '-cta');
         if (outputs.includes('Hashtags') && tags2) rendered += reachField('Hashtags', tags2, pid + '-hashtags');
-        rendered += '<div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06);">';
-        rendered += '<button id="copyAll-' + pid + '" onclick="reachCopyAll(\'' + pid + '\')" style="flex:1;padding:10px;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);border-radius:8px;color:#A78BFA;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background=\'rgba(167,139,250,0.2)\'" onmouseout="this.style.background=\'rgba(167,139,250,0.1)\'">📋 Copy Post</button>';
-        rendered += '<button onclick="reachOpenPlatform(\'' + platformName + '\')" style="flex:1;padding:10px;background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);border-radius:8px;color:#F472B6;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background=\'rgba(244,114,182,0.15)\'" onmouseout="this.style.background=\'rgba(244,114,182,0.08)\'">↗ Open ' + platformName + '</button>';
+        rendered += '<div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--rule);">';
+        rendered += '<button id="copyAll-' + pid + '" onclick="reachCopyAll(\'' + pid + '\')" style="flex:1;padding:10px;background:var(--surface-2);border:1px solid var(--rule);border-radius:8px;color:var(--ink-soft);font-size:12px;font-weight:700;cursor:pointer;transition:opacity 0.2s;" onmouseover="this.style.opacity=\'0.75\'" onmouseout="this.style.opacity=\'1\'">📋 Copy Post</button>';
+        rendered += '<button onclick="reachOpenPlatform(\'' + platformName + '\')" style="flex:1;padding:10px;background:var(--accent);border:1px solid var(--accent);border-radius:8px;color:var(--paper);font-size:12px;font-weight:700;cursor:pointer;transition:opacity 0.2s;" onmouseover="this.style.opacity=\'0.85\'" onmouseout="this.style.opacity=\'1\'">↗ Open ' + platformName + '</button>';
         rendered += '</div>';
         rendered += '<div style="margin-top:6px;">';
-        rendered += '<button onclick="reachSaveToIdeas(\'' + pid + '\', \'' + platformName + '\')" style="width:100%;padding:8px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:8px;color:rgba(167,139,250,0.6);font-size:11px;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.color=\'#A78BFA\';this.style.borderColor=\'rgba(167,139,250,0.4)\'" onmouseout="this.style.color=\'rgba(167,139,250,0.6)\';this.style.borderColor=\'rgba(167,139,250,0.15)\'">💜 Save to My Ideas</button>';
+        rendered += '<button onclick="reachSaveToIdeas(\'' + pid + '\', \'' + platformName + '\')" style="width:100%;padding:8px;background:var(--surface-2);border:1px solid var(--rule);border-radius:8px;color:var(--ink-muted);font-size:11px;font-weight:600;cursor:pointer;transition:opacity 0.2s;" onmouseover="this.style.opacity=\'0.75\'" onmouseout="this.style.opacity=\'1\'">💜 Save to My Ideas</button>';
         rendered += '</div>';
       });
     } else {
-      rendered = '<div style="color:#ccc;font-size:14px;line-height:1.8;white-space:pre-wrap;">' + fullText + '</div>';
+      rendered = '<div style="color:var(--ink);font-size:14px;line-height:1.8;white-space:pre-wrap;">' + fullText + '</div>';
     }
     if (scheduledDay) {
-      rendered += '<div style="margin-top:8px;padding:12px 16px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:10px;font-size:13px;color:rgba(167,139,250,0.8);">Scheduled for <strong>' + scheduledDay.value + '</strong></div>';
+      rendered += '<div style="margin-top:8px;padding:12px 16px;background:var(--surface-2);border:1px solid var(--rule);border-radius:10px;font-size:13px;color:var(--ink-soft);">Scheduled for <strong>' + scheduledDay.value + '</strong></div>';
     }
     document.getElementById('reachBody').innerHTML = rendered;
   } catch(err) {
@@ -8299,7 +8299,7 @@ function reachCopyField(btn) {
   navigator.clipboard.writeText(text).then(function() {
     const orig = btn.innerHTML;
     btn.innerHTML = '✅ Copied!';
-    btn.style.color = '#A78BFA';
+    btn.style.color = 'var(--accent)';
     setTimeout(function() { btn.innerHTML = orig; btn.style.color = ''; }, 2000);
   }).catch(function() {
     // fallback
@@ -8339,7 +8339,7 @@ function reachCopyAll(platformId) {
     if (btn) {
       var orig = btn.innerHTML;
       btn.innerHTML = '✅ Copied!';
-      btn.style.background = 'rgba(167,139,250,0.2)';
+      btn.style.background = 'var(--surface-2)';
       setTimeout(function() { btn.innerHTML = orig; btn.style.background = ''; }, 2500);
     }
   }).catch(function() {
@@ -8383,7 +8383,7 @@ function reachSaveToIdeas(platformId, platformName) {
     if (btn) {
       var orig = btn.innerHTML;
       btn.innerHTML = '✅ Saved to My Ideas!';
-      btn.style.color = '#A78BFA';
+      btn.style.color = 'var(--accent)';
       setTimeout(function() { btn.innerHTML = orig; btn.style.color = ''; }, 2500);
     }
   }
@@ -8405,8 +8405,8 @@ function reachEditField(fieldId) {
     el.style.background = 'transparent';
   } else {
     el.contentEditable = 'true';
-    el.style.border = '1px solid rgba(167,139,250,0.4)';
-    el.style.background = 'rgba(167,139,250,0.05)';
+    el.style.border = '1px solid var(--accent)';
+    el.style.background = 'var(--surface-2)';
     el.focus();
     // Move cursor to end
     const range = document.createRange();
@@ -8432,7 +8432,7 @@ function reachCopyAll(platformId) {
       btn.style.color = 'var(--accent)';
       setTimeout(function() {
         btn.textContent = orig;
-        btn.style.color = '#A78BFA';
+        btn.style.color = 'var(--accent)';
       }, 2000);
     }
   });
@@ -8470,7 +8470,7 @@ function fillInp(id, text) {
 }
 function flash(id) {
   const el = document.getElementById(id);
-  el.style.borderColor = 'rgba(244,114,182,0.6)';
+  el.style.borderColor = 'var(--accent)';
   el.focus();
   setTimeout(() => el.style.borderColor = '', 1500);
 }
