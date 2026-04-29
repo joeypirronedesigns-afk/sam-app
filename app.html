@@ -5760,6 +5760,33 @@ body.quiet-studio-shell .qs-dash-today-dek {
 }
 
 /* ============================================================ */
+
+.qs-dash-sams-read-hear { margin-top: 12px; }
+.qs-hear-sam-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-muted);
+  background: none;
+  border: 1px solid var(--rule);
+  border-radius: 20px;
+  padding: 5px 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.qs-hear-sam-btn:hover {
+  color: var(--ink-soft);
+  border-color: var(--rule-strong);
+  background: var(--surface-2);
+}
+.qs-hear-sam-btn.playing {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
 /* CANVAS — SAM's Read verdict card                             */
 /* ============================================================ */
 
@@ -6355,7 +6382,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.45" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.46" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6439,7 +6466,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.45</div>
+  <div class="qs-version-stamp">Quiet Studio v9.46</div>
 </div>
 
   </aside>
@@ -6861,6 +6888,9 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
       <button class="qs-button-primary">Open last night's draft</button>
       <button class="qs-button-ghost" onclick="openTool('reach')">See the data</button>
     </div>
+    <div class="qs-dash-sams-read-hear">
+      <button class="qs-hear-sam-btn" id="hearSAMBtn" onclick="hearSAMBrief()">&#9654; Hear SAM</button>
+    </div>
   </section>
 
   <!-- The Spine — 3 cards -->
@@ -6975,6 +7005,80 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
     fetchVoiceStatus();
   }
 })();
+
+// ── HEAR SAM — ElevenLabs Daily Brief ────────────────────────────
+var _hearSAMAudio = null;
+
+function hearSAMBrief() {
+  var btn = document.getElementById('hearSAMBtn');
+  if (!btn) return;
+
+  // Stop if already playing
+  if (_hearSAMAudio) {
+    _hearSAMAudio.pause();
+    _hearSAMAudio = null;
+    btn.textContent = '\u25B6 Hear SAM';
+    btn.classList.remove('playing');
+    return;
+  }
+
+  // Read brief text from DOM
+  var verdictEl = document.querySelector('.qs-dash-sams-read-verdict');
+  var bodyEl = document.querySelector('.qs-dash-sams-read-body');
+  if (!verdictEl || !bodyEl) return;
+
+  var text = (verdictEl.textContent || '').trim() + ' ' + (bodyEl.textContent || '').trim();
+  if (!text.trim()) return;
+
+  btn.textContent = 'Loading\u2026';
+  btn.classList.add('playing');
+
+  // POST to our own server proxy — API key never in browser
+  fetch('/api/elevenlabs', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      text: text,
+      voiceId: 'T720RsqorTx4ZZWohrNN',
+      modelId: 'eleven_turbo_v2_5',
+      voiceSettings: { stability: 0.5, similarity_boost: 0.75 }
+    })
+  })
+  .then(function(r) {
+    if (!r.ok) throw new Error('Audio error ' + r.status);
+    return r.blob();
+  })
+  .then(function(blob) {
+    var url = URL.createObjectURL(blob);
+    _hearSAMAudio = new Audio(url);
+    _hearSAMAudio.onended = function() {
+      _hearSAMAudio = null;
+      URL.revokeObjectURL(url);
+      if (btn) {
+        btn.textContent = '\u25B6 Hear SAM';
+        btn.classList.remove('playing');
+      }
+    };
+    _hearSAMAudio.onerror = function() {
+      _hearSAMAudio = null;
+      if (btn) {
+        btn.textContent = '\u25B6 Hear SAM';
+        btn.classList.remove('playing');
+      }
+    };
+    btn.textContent = '\u25A0 Stop';
+    _hearSAMAudio.play();
+  })
+  .catch(function(e) {
+    console.error('[hearSAM]', e.message);
+    if (btn) {
+      btn.textContent = '\u25B6 Hear SAM';
+      btn.classList.remove('playing');
+    }
+  });
+}
+// ── END HEAR SAM ──────────────────────────────────────────────────
+
 // Story Engine spine card wiring — v9.12
 (function() {
   function updateStoryEngineCard(data) {
