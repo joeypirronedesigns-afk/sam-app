@@ -1172,23 +1172,22 @@
       font-weight: 500;
       padding: 8px 14px;
       border-radius: 50px;
-      border: 1px solid var(--border);
-      background: var(--surface);
+      border: 1px solid var(--rule);
+      background: var(--surface-2);
       color: var(--ink-soft);
       cursor: pointer;
       transition: all 0.15s;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
     }
-    .platform-pill:hover { border-color: var(--border2); color: var(--text); }
+    .platform-pill:hover { border-color: var(--accent); color: var(--accent); }
     .platform-pill.sel {
-      color: #ffffff !important;
+      color: var(--paper) !important;
       border-color: var(--accent) !important;
-      background: #20808D !important;
-      background: linear-gradient(135deg, #6D28D9, var(--accent) 50%, var(--accent)) !important;
+      background: var(--accent) !important;
       font-weight: 700 !important;
-      box-shadow: 0 0 16px rgba(167,139,250,0.5) !important;
-      -webkit-text-fill-color: #ffffff !important;
+      box-shadow: 0 0 8px rgba(32,128,141,0.3) !important;
+      -webkit-text-fill-color: var(--paper) !important;
     }
 
     /* ── OPTIONS ── */
@@ -6298,7 +6297,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.30" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.31" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6382,7 +6381,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.30</div>
+  <div class="qs-version-stamp">Quiet Studio v9.31</div>
 </div>
 
   </aside>
