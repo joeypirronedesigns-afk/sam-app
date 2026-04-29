@@ -100,7 +100,7 @@
       opacity: 0.18;
     }
     .ambient-1 { width: 500px; height: 500px; background: #A78BFA; top: -150px; left: -120px; }
-    .ambient-2 { width: 400px; height: 400px; background: #F472B6; bottom: 100px; right: -100px; }
+    .ambient-2 { width: 400px; height: 400px; background: var(--accent); bottom: 100px; right: -100px; }
     .ambient-3 { width: 300px; height: 300px; background: #38BDF8; top: 50%; left: 50%; transform: translate(-50%,-50%); opacity: 0.07; }
 
     /* ── NAV ── */
@@ -161,7 +161,7 @@
       font-size: 13px;
       font-weight: 600;
       color: #fff;
-      background: linear-gradient(135deg, #6D28D9, #A78BFA, #F472B6);
+      background: linear-gradient(135deg, #6D28D9, #A78BFA, var(--accent));
       border: none;
       border-radius: 50px;
       padding: 8px 18px;
@@ -285,7 +285,7 @@
     }
     .hero-title-desktop em {
       font-style: normal;
-      background: linear-gradient(135deg, #F472B6, #A78BFA, #38BDF8);
+      background: linear-gradient(135deg, var(--accent), #A78BFA, #38BDF8);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -303,7 +303,7 @@
     }
     .hero-mobile h1 em {
       font-style: normal;
-      background: linear-gradient(135deg, #F472B6, #A78BFA, #38BDF8);
+      background: linear-gradient(135deg, var(--accent), #A78BFA, #38BDF8);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -341,7 +341,7 @@
       border-radius: 50px;
       border: none;
       cursor: pointer;
-      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, #F472B6);
+      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, var(--accent));
       color: #fff;
       transition: all 0.25s;
       box-shadow: 0 0 30px rgba(167,139,250,0.3);
@@ -398,7 +398,7 @@
       color: rgba(240,236,255,0.4);
       margin-top: 5px;
     }
-    .grad-pink { background: linear-gradient(135deg, #F472B6, #EC4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .grad-pink { background: linear-gradient(135deg, var(--accent), #EC4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .grad-purple { background: linear-gradient(135deg, #A78BFA, #818CF8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .grad-cyan { background: linear-gradient(135deg, #67E8F9, #38BDF8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .grad-green { background: linear-gradient(135deg, #6EE7B7, var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
@@ -561,7 +561,7 @@
     .psam-tool-btn {
       margin-top: 6px;
       padding: 7px 13px;
-      background: linear-gradient(135deg, rgba(109,40,217,0.2), rgba(244,114,182,0.1));
+      background: linear-gradient(135deg, rgba(109,40,217,0.2), var(--accent-soft));
       border: 1px solid rgba(167,139,250,0.35);
       border-radius: 50px;
       font-size: 12px;
@@ -571,7 +571,7 @@
       transition: all 0.2s;
       font-family: inherit;
     }
-    .psam-tool-btn:hover { background: linear-gradient(135deg, rgba(109,40,217,0.35), rgba(244,114,182,0.2)); border-color: rgba(167,139,250,0.6); color: #fff; }
+    .psam-tool-btn:hover { background: linear-gradient(135deg, rgba(109,40,217,0.35), var(--accent-soft)); border-color: rgba(167,139,250,0.6); color: #fff; }
     .psam-typing {
       display: none;
       align-items: center;
@@ -1160,7 +1160,7 @@
       -webkit-tap-highlight-color: transparent;
     }
     .mic-btn:hover { border-color: var(--border2); }
-    .mic-btn.recording { border-color: #F472B6; background: rgba(244,114,182,0.1); }
+    .mic-btn.recording { border-color: var(--accent); background: var(--accent-soft); }
 
     /* ── PLATFORM PILLS ── */
     .platform-grid { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -1185,7 +1185,7 @@
       color: #ffffff !important;
       border-color: #A78BFA !important;
       background: #20808D !important;
-      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, #F472B6) !important;
+      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, var(--accent)) !important;
       font-weight: 700 !important;
       box-shadow: 0 0 16px rgba(167,139,250,0.5) !important;
       -webkit-text-fill-color: #ffffff !important;
@@ -1320,7 +1320,7 @@
       font-weight: 600;
       letter-spacing: 0.02em;
       color: transparent;
-      background: linear-gradient(90deg, #A78BFA, #F472B6, #FBB824, #A78BFA);
+      background: linear-gradient(90deg, #A78BFA, var(--accent), #FBB824, #A78BFA);
       background-size: 300% 100%;
       -webkit-background-clip: text;
       background-clip: text;
@@ -1429,7 +1429,7 @@
       padding: 16px 18px;
       background: var(--surface-2);
       border-radius: var(--radius);
-      border-left: 3px solid var(--pulse);
+      border-left: 3px solid var(--accent);
       letter-spacing: -0.01em;
       margin-bottom: 8px;
     }
@@ -1446,7 +1446,7 @@
       align-items: center;
       gap: 5px;
     }
-    .hook-retry:hover { color: var(--pulse); }
+    .hook-retry:hover { color: var(--accent); }
 
     .script-block {
       background: var(--surface-2);
@@ -1458,14 +1458,14 @@
       color: var(--ink);
       white-space: pre-wrap;
     }
-    .script-beat { display: block; font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--pulse); margin: 14px 0 4px; }
+    .script-beat { display: block; font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin: 14px 0 4px; }
     .script-note { display: block; font-size: 12px; color: var(--ink-muted); font-style: italic; padding: 3px 0 3px 12px; border-left: 2px solid var(--rule); margin: 4px 0; }
     .script-line { display: block; }
 
     .broll-list { display: flex; flex-direction: column; gap: 0; }
     .broll-item { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--rule); font-size: 15px; color: var(--ink-soft); line-height: 1.5; }
     .broll-item:last-child { border-bottom: none; }
-    .broll-arrow { color: var(--pulse); flex-shrink: 0; font-style: normal; }
+    .broll-arrow { color: var(--accent); flex-shrink: 0; font-style: normal; }
 
     .copy-btn {
       display: inline-flex;
@@ -1565,14 +1565,14 @@
     .setup-sub { font-size: 14px; color: var(--ink-soft); margin-bottom: 24px; line-height: 1.5; }
     .setup-field { margin-bottom: 18px; }
     .setup-field-label { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 8px; }
-    .setup-save-btn { width: 100%; padding: 15px; background: linear-gradient(135deg, #6D28D9, #A78BFA, #F472B6); border: none; border-radius: var(--radius); font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 600; color: #fff; cursor: pointer; transition: all 0.2s; margin-top: 8px; }
+    .setup-save-btn { width: 100%; padding: 15px; background: linear-gradient(135deg, #6D28D9, #A78BFA, var(--accent)); border: none; border-radius: var(--radius); font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 600; color: #fff; cursor: pointer; transition: all 0.2s; margin-top: 8px; }
     .setup-save-btn:hover { transform: translateY(-1px); box-shadow: 0 0 30px rgba(167,139,250,0.3); }
 
     /* Chips */
     .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; align-items: center; }
     .chips-label { font-size: 13px; color: var(--ink-muted); flex-shrink: 0; }
-    .chip { font-size: 13px; padding: 5px 12px; border: 1px solid var(--border); border-radius: 20px; cursor: pointer; background: var(--surface); color: var(--ink-soft); transition: all 0.15s; }
-    .chip:hover { border-color: var(--border2); color: var(--text); }
+    .chip { font-size: 13px; padding: 5px 12px; border: 1px solid var(--rule); border-radius: 20px; cursor: pointer; background: var(--surface-2); color: var(--ink-soft); transition: all 0.15s; }
+    .chip:hover { border-color: var(--accent); color: var(--accent); }
 
     .char-hint { font-size: 12px; color: var(--ink-muted); text-align: right; margin-top: 4px; }
 
@@ -1582,14 +1582,14 @@
     /* ── IDEAS BANK ── */
     .ideas-nav-btn{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--ink-soft);background:var(--surface);border:1px solid var(--border);border-radius:50px;padding:7px 14px;cursor:pointer;transition:all 0.2s;position:relative;}
     .ideas-nav-btn:hover{border-color:var(--border2);color:var(--text);}
-    .ideas-count-badge{position:absolute;top:-5px;right:-5px;width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#A78BFA,#F472B6);color:#fff;font-size:10px;font-weight:700;display:none;align-items:center;justify-content:center;border:2px solid var(--bg);}
+    .ideas-count-badge{position:absolute;top:-5px;right:-5px;width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#A78BFA,var(--accent));color:#fff;font-size:10px;font-weight:700;display:none;align-items:center;justify-content:center;border:2px solid var(--bg);}
     .ideas-count-badge.show{display:flex;}
     .ideas-overlay{display:none;position:fixed;inset:0;z-index:900;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);}
     .ideas-overlay.open{display:block;}
     .ideas-panel{position:fixed;top:0;right:0;bottom:0;width:100%;max-width:480px;background:rgba(13,11,22,0.98);border-left:1px solid var(--border2);z-index:901;display:flex;flex-direction:column;transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1);overflow:hidden;}
     .ideas-panel.open{transform:translateX(0);}
     .ideas-panel-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid var(--border);flex-shrink:0;position:relative;}
-    .ideas-panel-header::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,#A78BFA,#F472B6,transparent);}
+    .ideas-panel-header::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,#A78BFA,var(--accent),transparent);}
     .ideas-panel-title{font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--text);}
     .ideas-panel-title span{font-size:13px;font-weight:500;color:var(--ink-muted);margin-left:8px;font-family:'Inter',sans-serif;}
     .ideas-close-btn{width:32px;height:32px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);color:var(--ink-muted);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;}
@@ -1602,7 +1602,7 @@
     .ideas-search-input::placeholder{color:var(--ink-muted);}
     .ideas-filters{display:flex;gap:6px;flex-wrap:wrap;}
     .ideas-filter-btn{font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--ink-muted);cursor:pointer;transition:all 0.15s;}
-    .ideas-filter-btn.active{background:linear-gradient(135deg,rgba(109,40,217,0.25),rgba(244,114,182,0.15));border-color:rgba(167,139,250,0.5);color:var(--text);}
+    .ideas-filter-btn.active{background:linear-gradient(135deg,rgba(109,40,217,0.25),var(--accent-soft));border-color:rgba(167,139,250,0.5);color:var(--text);}
     .ideas-list{flex:1;overflow-y:auto;padding:12px 20px 80px;}
     .ideas-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;}
     .ideas-empty-icon{font-size:40px;margin-bottom:16px;}
@@ -1611,15 +1611,15 @@
     .idea-bank-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:10px;position:relative;overflow:hidden;}
     .idea-bank-card::before{content:"";position:absolute;top:0;left:0;width:3px;height:100%;border-radius:14px 0 0 14px;}
     .idea-bank-card:hover{border-color:var(--border2);}
-    .idea-bank-card.type-pulse::before{background:var(--pulse);}
+    .idea-bank-card.type-pulse::before{background:var(--accent);}
     .idea-bank-card.type-spark::before{background:var(--accent);}
-    .idea-bank-card.type-wizard::before{background:linear-gradient(180deg,#A78BFA,#F472B6);}
+    .idea-bank-card.type-wizard::before{background:linear-gradient(180deg,#A78BFA,var(--accent));}
     .idea-bank-card.type-vision::before{background:var(--vision);}
     .idea-bank-card.type-blueprint::before{background:var(--blueprint);}
     .idea-bank-card.type-lens::before{background:var(--lens);}
     .idea-bank-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px;}
     .idea-bank-type-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:3px 8px;border-radius:20px;flex-shrink:0;}
-    .badge-pulse{background:var(--pulse-bg);color:var(--pulse);border:1px solid var(--pulse-border);}
+    .badge-pulse{background:var(--pulse-bg);color:var(--accent);border:1px solid var(--pulse-border);}
     .badge-spark{background:var(--spark-bg);color:var(--accent);border:1px solid var(--spark-border);}
     .badge-wizard{background:rgba(167,139,250,0.12);color:var(--accent);border:1px solid rgba(167,139,250,0.25);}
     .badge-vision{background:var(--vision-bg);color:var(--vision);border:1px solid var(--vision-border);}
@@ -1642,7 +1642,7 @@
     .ideas-panel-footer{padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:10px;flex-shrink:0;background:rgba(13,11,22,0.95);}
     .ideas-footer-btn{flex:1;padding:10px;border-radius:var(--radius);font-family:"Sora",sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;text-align:center;}
     .ideas-footer-clear{background:transparent;border:1px solid var(--border);color:var(--ink-muted);}
-    .ideas-footer-export{background:linear-gradient(135deg,rgba(109,40,217,0.2),rgba(244,114,182,0.1));border:1px solid rgba(167,139,250,0.3);color:var(--text);}
+    .ideas-footer-export{background:linear-gradient(135deg,rgba(109,40,217,0.2),var(--accent-soft));border:1px solid rgba(167,139,250,0.3);color:var(--text);}
     .save-to-ideas-btn{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted);background:var(--surface-2);border:1px solid var(--rule);border-radius:6px;padding:5px 12px;cursor:pointer;transition:all 0.15s;font-family:'Inter',system-ui,sans-serif;}
     .save-to-ideas-btn:hover{background:var(--paper);border-color:var(--rule-strong);color:var(--ink);}
     .save-to-ideas-btn.saved{color:var(--vision);background:var(--vision-bg);border-color:var(--vision-border);pointer-events:none;}
@@ -1720,7 +1720,7 @@
       font-weight: 700;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      background: linear-gradient(135deg,#A78BFA,#F472B6);
+      background: linear-gradient(135deg,#A78BFA,var(--accent));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -1784,7 +1784,7 @@
     }
     .pro-hero-title em {
       font-style: normal;
-      background: linear-gradient(135deg, #F472B6, #A78BFA, #38BDF8);
+      background: linear-gradient(135deg, var(--accent), #A78BFA, #38BDF8);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -1841,7 +1841,7 @@
       overflow: hidden;
     }
     .pro-card.featured {
-      background: linear-gradient(160deg, rgba(109,40,217,0.14), rgba(244,114,182,0.08), rgba(56,189,248,0.06));
+      background: linear-gradient(160deg, rgba(109,40,217,0.14), var(--accent-soft), rgba(56,189,248,0.06));
       border-color: rgba(167,139,250,0.45);
     }
     .pro-card.featured::before {
@@ -1849,7 +1849,7 @@
       position: absolute;
       top: 0; left: 8%; right: 8%;
       height: 1px;
-      background: linear-gradient(90deg, transparent, #A78BFA, #F472B6, transparent);
+      background: linear-gradient(90deg, transparent, #A78BFA, var(--accent), transparent);
     }
 
     .pro-card-badge {
@@ -1924,7 +1924,7 @@
       letter-spacing: 0.02em;
     }
     .pro-btn-grad {
-      background: linear-gradient(135deg,#6D28D9,#A78BFA 50%,#F472B6);
+      background: linear-gradient(135deg,#6D28D9,#A78BFA 50%,var(--accent));
       color: #fff;
       box-shadow: 0 0 30px rgba(167,139,250,0.3);
     }
@@ -2031,12 +2031,12 @@
       top: 0; left: 0; right: 0;
       height: 2px;
     }
-    .tc-pulse::before { background: var(--pulse); }
+    .tc-pulse::before { background: var(--accent); }
     .tc-spark::before { background: var(--accent); }
     .tc-blueprint::before { background: var(--blueprint); }
     .tc-vision::before { background: var(--vision); }
     .tc-lens::before { background: var(--lens); }
-    .tc-future::before { background: linear-gradient(90deg,var(--accent),var(--pulse)); }
+    .tc-future::before { background: linear-gradient(90deg,var(--accent),var(--accent)); }
 
     .pro-tool-icon { font-size: 22px; margin-bottom: 8px; }
     .pro-tool-name { font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
@@ -2067,7 +2067,7 @@
             <div style="font-size:14px;color:var(--ink-soft);line-height:1.6;">Hook that stops the scroll. Word-for-word script. Platform strategy for every channel you care about. Captions and hashtags. All from one real moment or story you shared with SAM.</div>
           </div>
           <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;">
-            <div style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#F472B6;margin-bottom:12px;">✦ Your email list grows too</div>
+            <div style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">✦ Your email list grows too</div>
             <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;">A branded lead magnet your audience actually wants</div>
             <div style="font-size:14px;color:var(--ink-soft);line-height:1.6;">SAM builds a downloadable resource — checklist, guide, planner — branded with your name and logo. Your audience trades their email for it. You build your list while you sleep.</div>
           </div>
@@ -2154,7 +2154,7 @@
       border-radius: 50px;
       border: none;
       cursor: pointer;
-      background: linear-gradient(135deg,#6D28D9,#A78BFA 50%,#F472B6);
+      background: linear-gradient(135deg,#6D28D9,#A78BFA 50%,var(--accent));
       color: #fff;
       box-shadow: 0 0 40px rgba(167,139,250,0.35);
       transition: all 0.25s;
@@ -2200,7 +2200,7 @@
       position: absolute;
       top: 0; left: 8%; right: 8%;
       height: 1px;
-      background: linear-gradient(90deg,transparent,#A78BFA,#F472B6,transparent);
+      background: linear-gradient(90deg,transparent,#A78BFA,var(--accent),transparent);
     }
 
     .wl-close {
@@ -2290,7 +2290,7 @@
       font-size: 15px;
       font-weight: 700;
       cursor: pointer;
-      background: linear-gradient(135deg,#6D28D9,#A78BFA 50%,#F472B6);
+      background: linear-gradient(135deg,#6D28D9,#A78BFA 50%,var(--accent));
       color: #fff;
       box-shadow: 0 0 30px rgba(167,139,250,0.3);
       transition: all 0.2s;
@@ -2376,7 +2376,7 @@
       position: absolute;
       top: 0; left: 0; right: 0;
       height: 2px;
-      background: linear-gradient(90deg, #6D28D9, #A78BFA, #F472B6, #38BDF8);
+      background: linear-gradient(90deg, #6D28D9, #A78BFA, var(--accent), #38BDF8);
     }
 
     .trial-sam-logo {
@@ -2400,7 +2400,7 @@
     }
     .trial-headline em {
       font-style: normal;
-      background: linear-gradient(135deg, #F472B6, #A78BFA, #38BDF8);
+      background: linear-gradient(135deg, var(--accent), #A78BFA, #38BDF8);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -2472,7 +2472,7 @@
       font-size: 16px;
       font-weight: 700;
       cursor: pointer;
-      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, #F472B6);
+      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, var(--accent));
       color: #fff;
       box-shadow: 0 0 30px rgba(167,139,250,0.35);
       transition: all 0.2s;
@@ -2521,7 +2521,7 @@
       border-radius: 50px;
       border: none;
       cursor: pointer;
-      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, #F472B6);
+      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, var(--accent));
       color: #fff;
       box-shadow: 0 0 24px rgba(167,139,250,0.3);
       transition: all 0.2s;
@@ -2589,7 +2589,7 @@
     .paywall-title { font-family: 'Sora', sans-serif; font-size: 26px; font-weight: 700; letter-spacing: -0.02em; color: var(--text); margin-bottom: 10px; line-height: 1.2; }
     .paywall-sub { font-size: 15px; color: var(--ink-soft); line-height: 1.65; margin-bottom: 24px; }
     .paywall-price-block {
-      background: linear-gradient(135deg, rgba(109,40,217,0.12), rgba(244,114,182,0.08));
+      background: linear-gradient(135deg, rgba(109,40,217,0.12), var(--accent-soft));
       border: 1px solid rgba(167,139,250,0.3);
       border-radius: 18px;
       padding: 20px;
@@ -2601,7 +2601,7 @@
       font-weight: 700;
       letter-spacing: -2px;
       line-height: 1;
-      background: linear-gradient(135deg, #A78BFA, #F472B6);
+      background: linear-gradient(135deg, #A78BFA, var(--accent));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -2625,7 +2625,7 @@
       font-size: 16px;
       font-weight: 700;
       cursor: pointer;
-      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, #F472B6);
+      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, var(--accent));
       color: #fff;
       box-shadow: 0 0 30px rgba(167,139,250,0.35);
       transition: all 0.2s;
@@ -2669,7 +2669,7 @@
     .chat-btn {
       width: 56px; height: 56px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, #F472B6);
+      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, var(--accent));
       border: none;
       cursor: pointer;
       display: flex;
@@ -2722,7 +2722,7 @@
     .chat-panel-avatar {
       width: 36px; height: 36px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #6D28D9, #F472B6);
+      background: linear-gradient(135deg, #6D28D9, var(--accent));
       display: flex; align-items: center; justify-content: center;
       font-size: 16px;
       flex-shrink: 0;
@@ -2774,7 +2774,7 @@
     .chat-msg-avatar {
       width: 26px; height: 26px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #6D28D9, #F472B6);
+      background: linear-gradient(135deg, #6D28D9, var(--accent));
       display: flex; align-items: center; justify-content: center;
       font-size: 12px;
       flex-shrink: 0;
@@ -2843,7 +2843,7 @@
     .chat-send-btn {
       width: 38px; height: 38px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #6D28D9, #F472B6);
+      background: linear-gradient(135deg, #6D28D9, var(--accent));
       border: none;
       cursor: pointer;
       display: flex; align-items: center; justify-content: center;
@@ -2868,7 +2868,7 @@
     /* Mobile desktop hint — only shows on phones */
     .desktop-hint {
       display: none;
-      background: linear-gradient(135deg, rgba(109,40,217,0.15), rgba(244,114,182,0.1));
+      background: linear-gradient(135deg, rgba(109,40,217,0.15), var(--accent-soft));
       border-bottom: 1px solid rgba(167,139,250,0.2);
       padding: 10px 20px;
       text-align: center;
@@ -2894,7 +2894,7 @@
     .divider-line {
       flex: 1;
       height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(167,139,250,0.4), rgba(244,114,182,0.4), rgba(167,139,250,0.4), transparent);
+      background: linear-gradient(90deg, transparent, rgba(167,139,250,0.4), var(--accent-soft), rgba(167,139,250,0.4), transparent);
     }
 
     .divider-label {
@@ -3276,7 +3276,7 @@
     .platform-limit-msg {
       font-size: 12px;
       font-weight: 600;
-      color: #F472B6;
+      color: var(--accent);
       text-align: center;
       padding: 8px 0 0;
       opacity: 0;
@@ -3871,7 +3871,7 @@
     }
     .wizard-entry-title em {
       font-style: normal;
-      background: linear-gradient(135deg, #F472B6, #A78BFA, #38BDF8);
+      background: linear-gradient(135deg, var(--accent), #A78BFA, #38BDF8);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -3903,7 +3903,7 @@
       -webkit-tap-highlight-color: transparent;
     }
     .wizard-entry-primary {
-      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, #F472B6);
+      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, var(--accent));
       color: #fff;
       border: none;
       box-shadow: 0 0 24px rgba(167,139,250,0.3);
@@ -4095,7 +4095,7 @@
 
       /* ── HOOK ── */
       .playbook-hook {
-        background: linear-gradient(135deg, rgba(109,40,217,0.08), rgba(244,114,182,0.05)) !important;
+        background: linear-gradient(135deg, rgba(109,40,217,0.08), var(--accent-soft)) !important;
         border: 1px solid rgba(109,40,217,0.2) !important;
         border-left: 4px solid #20808D !important;
         border-radius: 0 8pt 8pt 0 !important;
@@ -4145,10 +4145,10 @@
 
       .arch-opening { border-top: 2.5px solid #38BDF8 !important; }
       .arch-setup   { border-top: 2.5px solid #A78BFA !important; }
-      .arch-risk    { border-top: 2.5px solid #F472B6 !important; }
+      .arch-risk    { border-top: 2.5px solid var(--accent) !important; }
       .arch-turn    { border-top: 2.5px solid #FBBF24 !important; }
       .arch-payoff  { border-top: 2.5px solid var(--accent) !important; }
-      .arch-cta     { border-top: 2.5px solid #F472B6 !important; }
+      .arch-cta     { border-top: 2.5px solid var(--accent) !important; }
 
       .playbook-arch-beat {
         font-size: 7.5pt !important;
@@ -4308,7 +4308,7 @@
 
       /* ── FOCUS DIRECTIVE ── */
       .playbook-focus {
-        background: linear-gradient(135deg, rgba(109,40,217,0.08), rgba(244,114,182,0.05)) !important;
+        background: linear-gradient(135deg, rgba(109,40,217,0.08), var(--accent-soft)) !important;
         border: 1.5px solid rgba(109,40,217,0.2) !important;
         border-radius: 8pt !important;
         padding: 16pt 20pt !important;
@@ -6298,7 +6298,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.28" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.29" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6382,7 +6382,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.28</div>
+  <div class="qs-version-stamp">Quiet Studio v9.29</div>
 </div>
 
   </aside>
@@ -6411,7 +6411,7 @@ body.quiet-studio-shell .qs-rail nav {
       <div class="trial-nav-dot"></div>
       <span id="trialBadgeText">7 days free</span>
     </div>
-    <button onclick="window.location.href='/meet'" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--ink);background:linear-gradient(135deg,rgba(109,40,217,0.3),rgba(244,114,182,0.15));border:1px solid rgba(167,139,250,0.4);border-radius:50px;padding:7px 16px;cursor:pointer;transition:all 0.2s;font-family:'Sora',sans-serif;white-space:nowrap;" onmouseover="this.style.background='linear-gradient(135deg,rgba(109,40,217,0.5),rgba(244,114,182,0.25))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(109,40,217,0.3),rgba(244,114,182,0.15))'">✦ Talk with SAM</button>
+    <button onclick="window.location.href='/meet'" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--ink);background:linear-gradient(135deg,rgba(109,40,217,0.3),var(--accent-soft));border:1px solid rgba(167,139,250,0.4);border-radius:50px;padding:7px 16px;cursor:pointer;transition:all 0.2s;font-family:'Sora',sans-serif;white-space:nowrap;" onmouseover="this.style.background='linear-gradient(135deg,rgba(109,40,217,0.5),var(--accent-soft))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(109,40,217,0.3),var(--accent-soft))'">✦ Talk with SAM</button>
     <button id="navStoryEngineBtn" onclick="openWizardPage(true)" style="display:none;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent);border-radius:6px;padding:7px 16px;cursor:pointer;transition:all 0.2s;font-family:var(--qs-font-ui);white-space:nowrap;">📖 Story Engine</button>
     <button onclick="openWorkshop()" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:rgba(240,236,255,0.7);background:none;border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:7px 16px;cursor:pointer;transition:all 0.2s;font-family:'Sora',sans-serif;white-space:nowrap;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.7)'">🛠 Workshop</button>
     <button onclick="openVoiceTrainer()" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent);border-radius:50px;padding:7px 16px;cursor:pointer;transition:all 0.2s;font-family:'Inter',system-ui,sans-serif;white-space:nowrap;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">🧬 Voice DNA</button>
@@ -6441,7 +6441,7 @@ body.quiet-studio-shell .qs-rail nav {
     <div class="hero-badge" style="margin-bottom:28px;">&#10022; THE ONLY AI THAT LEARNS YOUR VOICE</div>
 
     <!-- Headline -->
-    <h1 style="font-family:'Sora',sans-serif;font-size:clamp(32px,5vw,60px);font-weight:800;line-height:1.08;letter-spacing:-0.03em;color:var(--text);margin-bottom:20px;">You have a story.<br/>Posting it shouldn't feel like a <span style="background:linear-gradient(90deg,#F472B6,#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">second job.</span></h1>
+    <h1 style="font-family:'Sora',sans-serif;font-size:clamp(32px,5vw,60px);font-weight:800;line-height:1.08;letter-spacing:-0.03em;color:var(--text);margin-bottom:20px;">You have a story.<br/>Posting it shouldn't feel like a <span style="background:linear-gradient(90deg,var(--accent),#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">second job.</span></h1>
 
     <!-- Subhead -->
     <p style="font-size:clamp(15px,2vw,20px);line-height:1.7;color:var(--ink-soft);max-width:560px;margin:0 auto 36px;">You've spent years finding your voice. SAM remembers every word of it. While every other AI tool starts from zero, SAM's Voice DNA captures how you think, how you phrase things, and what makes your audience trust you — then gets sharper every single time you use her. The longer you work together, the more your content sounds unmistakably like you.</p>
@@ -6459,11 +6459,11 @@ body.quiet-studio-shell .qs-rail nav {
       <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(167,139,250,0.6);margin-bottom:16px;">&#10022; Real SAM output — generated in 12 seconds</div>
       <div style="font-size:13px;color:var(--ink-muted);margin-bottom:8px;">INPUT: "I almost quit last week. 3 months of posting, 200 views on my best video. Then a stranger DMed me saying my video helped them through their divorce. I cried. I kept going."</div>
       <div style="width:100%;height:1px;background:rgba(167,139,250,0.15);margin:16px 0;"></div>
-      <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#F472B6;margin-bottom:10px;">HOOK</div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;">HOOK</div>
       <div style="font-family:'Sora',sans-serif;font-size:clamp(17px,2.5vw,22px);font-weight:700;color:var(--text);line-height:1.3;margin-bottom:20px;">"I almost quit last week. 3 months of posting. 200 views on my best video."</div>
       <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#A78BFA;margin-bottom:10px;">SCRIPT</div>
       <div style="font-size:14px;color:var(--ink-soft);line-height:1.9;">
-        <span style="display:block;font-size:10px;font-weight:700;letter-spacing:0.1em;color:rgba(244,114,182,0.7);text-transform:uppercase;margin-bottom:4px;">[HOOK — direct to camera]</span>
+        <span style="display:block;font-size:10px;font-weight:700;letter-spacing:0.1em;color:var(--accent-soft);text-transform:uppercase;margin-bottom:4px;">[HOOK — direct to camera]</span>
         I almost quit last week.<br/>
         <span style="display:block;font-size:10px;font-weight:700;letter-spacing:0.1em;color:rgba(167,139,250,0.7);text-transform:uppercase;margin:10px 0 4px;">[SETUP]</span>
         Three months. Posting every day. And my biggest video had 200 views.<br/>
@@ -7165,7 +7165,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
       </div>
       <!-- STORY WIZARD HERO ROW (legacy, hidden under QS shell) -->
       <div class="qs-legacy-workshop-block" style="max-width:860px;margin:0 auto 32px;padding:0 24px;">
-        <div style="background:linear-gradient(135deg,rgba(109,40,217,0.15),rgba(244,114,182,0.08));border:1px solid rgba(167,139,250,0.3);border-radius:20px;padding:28px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;">
+        <div style="background:linear-gradient(135deg,rgba(109,40,217,0.15),var(--accent-soft));border:1px solid rgba(167,139,250,0.3);border-radius:20px;padding:28px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;">
           <div style="flex:1;min-width:200px;">
             <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(167,139,250,0.6);margin-bottom:8px;">✦ Start here</div>
             <div style="font-family:'Sora',sans-serif;font-size:clamp(18px,2.5vw,24px);font-weight:800;color:var(--text);margin-bottom:6px;">Story Wizard</div>
@@ -7179,7 +7179,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
 
         <button class="tool-icon-btn tool-pulse" onclick="previewTool('pulse')">
           <div class="tool-icon-face">
-            <svg class="tool-icon-svg" viewBox="0 0 28 28" fill="none"><path d="M5 8h18M5 13h11M5 18h14" stroke="#F472B6" stroke-width="2" stroke-linecap="round"/></svg>
+            <svg class="tool-icon-svg" viewBox="0 0 28 28" fill="none"><path d="M5 8h18M5 13h11M5 18h14" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"/></svg>
           </div>
           <div class="tool-icon-name">The Pulse</div>
           <div class="tool-icon-desc">Turn a real moment into your best video</div>
@@ -7219,7 +7219,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
 
         <button class="tool-icon-btn tool-reach" onclick="previewTool('reach')">
           <div class="tool-icon-face">
-            <svg class="tool-icon-svg" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="10" r="4" stroke="#F472B6" stroke-width="1.8"/><path d="M6 24c0-4 3.6-7 8-7s8 3 8 7" stroke="#F472B6" stroke-width="1.8" stroke-linecap="round"/><path d="M21 6l3 3-3 3" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 9H18" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <svg class="tool-icon-svg" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="10" r="4" stroke="var(--accent)" stroke-width="1.8"/><path d="M6 24c0-4 3.6-7 8-7s8 3 8 7" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round"/><path d="M21 6l3 3-3 3" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 9H18" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round"/></svg>
           </div>
           <div class="tool-icon-name">The Reach</div>
           <div class="tool-icon-desc">Post your story to every platform at once</div>
@@ -7255,15 +7255,15 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
     <!-- HOW IT WORKS -->
     <div id="howItWorks" style="max-width:680px;margin:0 auto;padding:64px 24px 80px;text-align:center;">
       <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(167,139,250,0.5);margin-bottom:16px;">From your words to ready-to-post — in seconds</div>
-      <h2 style="font-family:'Sora',sans-serif;font-size:clamp(22px,3vw,32px);font-weight:800;color:var(--text);margin-bottom:48px;line-height:1.2;">You talk. SAM builds. You <span style="background:linear-gradient(90deg,#F472B6,#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">film.</span></h2>
+      <h2 style="font-family:'Sora',sans-serif;font-size:clamp(22px,3vw,32px);font-weight:800;color:var(--text);margin-bottom:48px;line-height:1.2;">You talk. SAM builds. You <span style="background:linear-gradient(90deg,var(--accent),#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">film.</span></h2>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:24px;text-align:left;">
         <div style="background:rgba(167,139,250,0.05);border:1px solid rgba(167,139,250,0.15);border-radius:14px;padding:24px;">
           <div style="font-family:'Sora',sans-serif;font-size:28px;font-weight:800;color:rgba(167,139,250,0.3);margin-bottom:12px;">01</div>
           <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;">Tell SAM your moment</div>
           <div style="font-size:13px;color:var(--ink-muted);line-height:1.6;">A win, a setback, an idea — anything real. No prompts, no templates. Just your words.</div>
         </div>
-        <div style="background:rgba(244,114,182,0.05);border:1px solid rgba(244,114,182,0.15);border-radius:14px;padding:24px;">
-          <div style="font-family:'Sora',sans-serif;font-size:28px;font-weight:800;color:rgba(244,114,182,0.3);margin-bottom:12px;">02</div>
+        <div style="background:var(--accent-soft);border:1px solid var(--accent-soft);border-radius:14px;padding:24px;">
+          <div style="font-family:'Sora',sans-serif;font-size:28px;font-weight:800;color:var(--accent-soft);margin-bottom:12px;">02</div>
           <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;">SAM finds the story</div>
           <div style="font-size:13px;color:var(--ink-muted);line-height:1.6;">SAM reads your moment, diagnoses what makes it powerful, and writes a hook that stops the scroll.</div>
         </div>
@@ -7290,7 +7290,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
       </div>
 
       <div class="glass">
-        <div class="field-label"><span class="field-label-accent" style="background:var(--pulse);"></span>Your platforms</div>
+        <div class="field-label"><span class="field-label-accent" style="background:var(--accent);"></span>Your platforms</div>
         <div class="platform-grid" id="pulsePlatforms">
           <button class="platform-pill" data-p="TikTok" onclick="togglePill(this,'pulsePlatforms')">🎵 TikTok</button>
           <button class="platform-pill" data-p="YouTube Shorts" onclick="togglePill(this,'pulsePlatforms')">▶ YT Shorts</button>
@@ -7303,7 +7303,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
       </div>
 
       <div class="glass">
-        <div class="field-label"><span class="field-label-accent" style="background:var(--pulse);"></span>Content format</div>
+        <div class="field-label"><span class="field-label-accent" style="background:var(--accent);"></span>Content format</div>
         <div class="options-grid">
           <button class="opt-btn sel" data-v="Short-form video" onclick="selectOpt(this,'pulseFormat')">🎬 Short-form video</button>
           <button class="opt-btn" data-v="Long-form YouTube video" onclick="selectOpt(this,'pulseFormat')">▶️ Long-form YouTube</button>
@@ -7315,7 +7315,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
       </div>
 
       <div class="glass">
-        <div class="field-label"><span class="field-label-accent" style="background:var(--pulse);"></span>Describe your moment</div>
+        <div class="field-label"><span class="field-label-accent" style="background:var(--accent);"></span>Describe your moment</div>
         <div class="input-wrap">
           <textarea id="pulseInp" placeholder="Tell me what happened — in your own words, unpolished. The more real and specific, the better." oninput="updateChar('pulseInp','pulseChar')" maxlength="1000"></textarea>
           <button class="paste-btn" onclick="pasteToEl('pulseInp')" title="Paste">📋</button>
@@ -7328,7 +7328,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
           <button class="chip" onclick="fillInp('pulseInp','I almost quit last month. Three months of posting and my best video had 200 views. Then a stranger DMed me saying my video helped them through their divorce.')">Almost quit</button>
           <button class="chip" onclick="fillInp('pulseInp','Taught myself something I had no business learning. Made every mistake possible. Finally got it right — here is what I wish someone told me.')">Self-taught lesson</button>
         </div>
-        <div class="loader" id="pulseLoader"><div class="loader-dots"><span style="background:var(--pulse)"></span><span style="background:var(--pulse)"></span><span style="background:var(--pulse)"></span></div><div class="loader-text" id="pulseLoaderText">SAM is reading your moment...</div></div>
+        <div class="loader" id="pulseLoader"><div class="loader-dots"><span style="background:var(--accent)"></span><span style="background:var(--accent)"></span><span style="background:var(--accent)"></span></div><div class="loader-text" id="pulseLoaderText">SAM is reading your moment...</div></div>
         <div class="err-box" id="pulseErr"></div>
         <div class="sam-status-bar hidden" id="pulseStatusBar"><div class="sam-status-dots"><span></span><span></span><span></span></div><div class="sam-status-text">SAM is working...</div></div>
         <button class="run-btn run-pulse" id="pulseBtn" onclick="guardedRunFn(runPulse)">Run The Pulse →</button>
@@ -7337,7 +7337,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
       <div class="output-wrap" id="pulseOutput">
         <div class="output-card">
           <div class="output-header">
-            <div class="output-label" style="color:var(--pulse);">SAM Output</div>
+            <div class="output-label" style="color:var(--accent);">SAM Output</div>
             <button class="reset-btn" onclick="resetTool('pulse')">← New moment</button>
           </div>
           <div class="output-body" id="pulseBody"></div>
@@ -7586,7 +7586,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
           <div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:3px;">Have a content idea instead?</div>
           <div style="font-size:13px;color:var(--ink-soft);">The Pulse builds a full script, hook and platform strategy from any idea.</div>
         </div>
-        <button onclick="goHome();setTimeout(()=>previewTool('pulse'),150)" style="background:var(--pulse-bg);border:1px solid var(--pulse-border);border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;color:var(--pulse);cursor:pointer;white-space:nowrap;">Use The Pulse →</button>
+        <button onclick="goHome();setTimeout(()=>previewTool('pulse'),150)" style="background:var(--pulse-bg);border:1px solid var(--pulse-border);border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;color:var(--accent);cursor:pointer;white-space:nowrap;">Use The Pulse →</button>
       </div>
 
       <div class="sam-status-bar hidden" id="lensStatusBar" style="margin-top:12px;"><div class="sam-status-dots"><span></span><span></span><span></span></div><div class="sam-status-text">SAM is working...</div></div>
@@ -7792,10 +7792,10 @@ const TOOLS = {
   pulse: {
     name: 'The Pulse',
     tagline: 'Moment → Content',
-    color: 'var(--pulse)',
+    color: 'var(--accent)',
     bg: 'var(--pulse-bg)',
     border: 'var(--pulse-border)',
-    icon: `<svg width="36" height="36" viewBox="0 0 28 28" fill="none"><path d="M5 8h18M5 13h11M5 18h14" stroke="#F472B6" stroke-width="2" stroke-linecap="round"/></svg>`,
+    icon: `<svg width="36" height="36" viewBox="0 0 28 28" fill="none"><path d="M5 8h18M5 13h11M5 18h14" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"/></svg>`,
     features: [
       'Tell SAM what just happened — raw, unpolished, in your own words',
       'Get the single best hook SAM can write, picked for your audience and platform',
@@ -8720,11 +8720,11 @@ function renderPulse(data, contentType, originalText, platforms) {
   const body = document.getElementById('pulseBody');
   let html = '';
   if (isReal(data.diagnosis)) {
-    html += `<div class="out-block"><div class="out-block-title" style="color:var(--pulse);">● What this is really about</div><div class="out-text">${data.diagnosis}</div><button class="copy-btn" onclick="copyText(this,'${escQ(data.diagnosis)}')">Copy</button>${makeIbSaveBtn(data.diagnosis,"pulse","diagnosis",platforms&&platforms[0]?platforms[0]:"")}</div>`;
+    html += `<div class="out-block"><div class="out-block-title" style="color:var(--accent);">● What this is really about</div><div class="out-text">${data.diagnosis}</div><button class="copy-btn" onclick="copyText(this,'${escQ(data.diagnosis)}')">Copy</button>${makeIbSaveBtn(data.diagnosis,"pulse","diagnosis",platforms&&platforms[0]?platforms[0]:"")}</div>`;
   }
   const hook = data.hook || data.hook_1 || '';
   if (isReal(hook)) {
-    html += `<div class="out-block"><div class="out-block-title" style="color:var(--pulse);">● Your hook</div><div class="hook-display">${hook}</div>${makeIbSaveBtn(hook,"pulse","hook",platforms&&platforms[0]?platforms[0]:"")}<button class="hook-retry" onclick="regenHook('${escQ(originalText)}')">↻ Try a different hook</button><button class="copy-btn" onclick="copyText(this,'${escQ(hook)}')">Copy</button></div>`;
+    html += `<div class="out-block"><div class="out-block-title" style="color:var(--accent);">● Your hook</div><div class="hook-display">${hook}</div>${makeIbSaveBtn(hook,"pulse","hook",platforms&&platforms[0]?platforms[0]:"")}<button class="hook-retry" onclick="regenHook('${escQ(originalText)}')">↻ Try a different hook</button><button class="copy-btn" onclick="copyText(this,'${escQ(hook)}')">Copy</button></div>`;
   }
   if (data.full_script || data.script) {
     const sc = data.full_script || data.script;
@@ -8732,7 +8732,7 @@ function renderPulse(data, contentType, originalText, platforms) {
     const isTxt = textFmts.some(f => (contentType||'').trim() === f.trim());
     if (isTxt) {
       const clean = sc.replace(/\[[A-Z /]+\]/g,'').replace(/\([^)]*\)/gi,'').trim();
-      html += `<div class="out-block"><div class="out-block-title" style="color:var(--pulse);">● Your post — ready to copy</div><div class="out-text" style="background:var(--surface-2);border-radius:var(--radius);padding:16px;border-left:3px solid var(--pulse);white-space:pre-wrap;">${clean}</div><button class="copy-btn" onclick="copyText(this,'${escQ(clean)}')">Copy</button>${makeIbSaveBtn(clean,"pulse","post",platforms&&platforms[0]?platforms[0]:"")}</div>`;
+      html += `<div class="out-block"><div class="out-block-title" style="color:var(--accent);">● Your post — ready to copy</div><div class="out-text" style="background:var(--surface-2);border-radius:var(--radius);padding:16px;border-left:3px solid var(--accent);white-space:pre-wrap;">${clean}</div><button class="copy-btn" onclick="copyText(this,'${escQ(clean)}')">Copy</button>${makeIbSaveBtn(clean,"pulse","post",platforms&&platforms[0]?platforms[0]:"")}</div>`;
     } else {
       const fs = sc.split('\n').map(line => {
         const t = line.trim();
@@ -8741,19 +8741,19 @@ function renderPulse(data, contentType, originalText, platforms) {
         if (t.startsWith('(') && t.endsWith(')')) return `<span class="script-note">${t}</span>`;
         return `<span class="script-line">${t}</span>`;
       }).filter(Boolean).join('\n');
-      html += `<div class="out-block"><div class="out-block-title" style="color:var(--pulse);">● Full script — word for word</div><div class="script-block">${fs}</div><button class="copy-btn" onclick="copyEl(this)">Copy script</button>${makeIbSaveBtn(fs,"pulse","script",platforms&&platforms[0]?platforms[0]:"")}</div>`;
+      html += `<div class="out-block"><div class="out-block-title" style="color:var(--accent);">● Full script — word for word</div><div class="script-block">${fs}</div><button class="copy-btn" onclick="copyEl(this)">Copy script</button>${makeIbSaveBtn(fs,"pulse","script",platforms&&platforms[0]?platforms[0]:"")}</div>`;
     }
   }
-  if (isReal(data.visual_note)) html += `<div class="out-block"><div class="out-block-title" style="color:var(--pulse);">● What to show on screen</div><div class="out-text">${data.visual_note}</div></div>`;
+  if (isReal(data.visual_note)) html += `<div class="out-block"><div class="out-block-title" style="color:var(--accent);">● What to show on screen</div><div class="out-text">${data.visual_note}</div></div>`;
   const brollArr = Array.isArray(data.b_roll) ? data.b_roll : (data.b_roll||'').split('\n').filter(Boolean);
-  if (brollArr.length) html += `<div class="out-block"><div class="out-block-title" style="color:var(--pulse);">● B-roll shots</div><div class="broll-list">${brollArr.map(l=>`<div class="broll-item"><i class="broll-arrow">→</i>${l.trim()}</div>`).join('')}</div></div>`;
-  if (isReal(data.pacing_note)) html += `<div class="out-block"><div class="out-block-title" style="color:var(--pulse);">● How to deliver it</div><div class="out-text">${data.pacing_note}</div></div>`;
-  if (isReal(data.cta)) html += `<div class="out-block"><div class="out-block-title" style="color:var(--pulse);">● Call to action</div><div class="out-text">${data.cta}</div><button class="copy-btn" onclick="copyText(this,'${escQ(data.cta)}')">Copy</button>${makeIbSaveBtn(data.cta,"pulse","cta",platforms&&platforms[0]?platforms[0]:"")}</div>`;
+  if (brollArr.length) html += `<div class="out-block"><div class="out-block-title" style="color:var(--accent);">● B-roll shots</div><div class="broll-list">${brollArr.map(l=>`<div class="broll-item"><i class="broll-arrow">→</i>${l.trim()}</div>`).join('')}</div></div>`;
+  if (isReal(data.pacing_note)) html += `<div class="out-block"><div class="out-block-title" style="color:var(--accent);">● How to deliver it</div><div class="out-text">${data.pacing_note}</div></div>`;
+  if (isReal(data.cta)) html += `<div class="out-block"><div class="out-block-title" style="color:var(--accent);">● Call to action</div><div class="out-text">${data.cta}</div><button class="copy-btn" onclick="copyText(this,'${escQ(data.cta)}')">Copy</button>${makeIbSaveBtn(data.cta,"pulse","cta",platforms&&platforms[0]?platforms[0]:"")}</div>`;
   if (data.platform_strategies && Array.isArray(data.platform_strategies)) {
     const selPlatforms = platforms && platforms.length > 0 ? platforms : null;
     const filtered = selPlatforms ? data.platform_strategies.filter(ps => selPlatforms.includes(ps.platform)) : data.platform_strategies;
     if (filtered.length) {
-      html += `<div class="out-block"><div class="out-block-title" style="color:var(--pulse);">● Platform strategy</div>`;
+      html += `<div class="out-block"><div class="out-block-title" style="color:var(--accent);">● Platform strategy</div>`;
       filtered.forEach(ps => {
         if (!ps || !ps.platform) return;
         html += `<div class="platform-strategy"><div class="ps-header"><div class="ps-name">${ps.platform}</div><button class="copy-btn" style="float:none;margin:0;" onclick="copyText(this,'${escQ((ps.caption||'') + '\n' + (ps.hashtags||''))}')">Copy</button>${makeIbSaveBtn((ps.caption||'')+(ps.hashtags?'\n'+ps.hashtags:''),"pulse","caption",ps.platform||"")}</div><div class="ps-body">${ps.strategy ? `<div class="out-text" style="font-size:13px;color:var(--ink-muted);margin-bottom:8px;">${ps.strategy}</div>` : ''}${ps.caption ? `<div class="ps-caption">${ps.caption}</div>` : ''}${ps.hashtags ? `<div class="ps-hashtags">${ps.hashtags}</div>` : ''}</div></div>`;
@@ -8958,7 +8958,7 @@ function renderVision(data) {
   const body = document.getElementById('visionBody');
   if (!data || !data.title) { body.innerHTML = '<div style="color:var(--ink-muted);padding:1rem;">No concept returned. Try again.</div>'; return; }
   const score = data.virality_score && typeof data.virality_score === 'number' ? Math.min(100, Math.max(40, data.virality_score)) : Math.floor(Math.random() * 25) + 72;
-  const scoreColor = score >= 90 ? 'var(--accent)' : score >= 75 ? '#FBBF24' : '#F472B6';
+  const scoreColor = score >= 90 ? 'var(--accent)' : score >= 75 ? '#FBBF24' : 'var(--accent)';
   let prodItems = '';
   if (Array.isArray(data.production_notes)) prodItems = data.production_notes.map(n=>`<li>${n}</li>`).join('');
   else if (typeof data.production_notes === 'string') prodItems = data.production_notes.split('\n').filter(Boolean).map(n=>`<li>${n.replace(/^[-•▸→]\s*/,'')}</li>`).join('');
@@ -8985,7 +8985,7 @@ function _doLensUpdate() {
   const hl2 = document.getElementById('lensEditHL2')?.value || window._currentLensHL2 || hl1;
   const sub1 = document.getElementById('lensEditSub1')?.value || window._currentLensSubtext || '';
   const sub2 = window._currentLensSub2 || sub1;
-  const ac = document.getElementById('lensEditColor')?.value || window._currentLensAc || '#F472B6';
+  const ac = document.getElementById('lensEditColor')?.value || window._currentLensAc || 'var(--accent)';
   const colorLabel = document.getElementById('lensColorLabel');
   if (colorLabel) colorLabel.textContent = ac;
   const imgSrc = window._currentLensImgSrc || window._lensImgSrc || '';
@@ -9140,7 +9140,7 @@ function getPalette(accentColor, templateName, isBold) {
     { accent: '#FF6B6B', text: '#FFFFFF', bg: 'rgba(0,0,0,0.85)' },
     { accent: '#39FF14', text: '#000000', bg: 'rgba(0,0,0,0.92)' },
   ];
-  if (accentColor && accentColor !== '#FF4500' && accentColor !== '#F472B6' && accentColor !== '#FF6500') {
+  if (accentColor && accentColor !== '#FF4500' && accentColor !== 'var(--accent)' && accentColor !== '#FF6500') {
     return { accent: accentColor, text: '#FFFFFF', bg: 'rgba(0,0,0,0.85)' };
   }
   const hash = (templateName||'').split('').reduce((a,c)=>a+c.charCodeAt(0),0);
@@ -9376,7 +9376,7 @@ function renderLens(data) {
     const hl2 = data.headline_bold || '';
     const sub1 = data.subtext_safe || data.thumbnail_subtext || '';
     const sub2 = data.subtext_bold || '';
-    const ac = data.thumbnail_color || '#F472B6';
+    const ac = data.thumbnail_color || 'var(--accent)';
     if (hl1 || hl2) {
       html += `<div class="out-block"><div class="out-block-title" style="color:var(--lens);">● Your headlines</div>`;
       if (hl1) html += `<div style="margin-bottom:10px;"><div style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:rgba(32,128,141,0.8);text-transform:uppercase;margin-bottom:5px;">✓ Safe — clean &amp; relatable</div><div style="background:var(--surface-2);border-left:3px solid rgba(32,128,141,0.6);border-radius:0 var(--radius) var(--radius) 0;padding:12px 14px;"><div style="font-family:'Inter',system-ui,sans-serif;font-size:18px;font-weight:700;color:var(--ink);line-height:1.2;">${hl1}</div>${sub1?`<div style="font-size:13px;color:var(--ink-muted);margin-top:4px;">${sub1}</div>`:''}</div><button class="copy-btn" style="float:none;margin-top:6px;" onclick="copyText(this,'${escQ(hl1+(sub1?'\n'+sub1:''))}')">Copy</button>${makeIbSaveBtn(hl1+(sub1?'\n'+sub1:''),"lens","headline","")}</div>`;
@@ -9431,8 +9431,8 @@ function renderLens(data) {
           <div>
             <div style="font-size:11px;font-weight:600;color:var(--ink-muted);margin-bottom:4px;">Accent color</div>
             <div style="display:flex;align-items:center;gap:8px;">
-              <input id="lensEditColor" type="color" value="${ac||'#F472B6'}" style="width:40px;height:36px;border:none;border-radius:8px;cursor:pointer;background:none;" oninput="lensLiveUpdate()" />
-              <span id="lensColorLabel" style="font-size:12px;color:var(--ink-soft);">${ac||'#F472B6'}</span>
+              <input id="lensEditColor" type="color" value="${ac||'var(--accent)'}" style="width:40px;height:36px;border:none;border-radius:8px;cursor:pointer;background:none;" oninput="lensLiveUpdate()" />
+              <span id="lensColorLabel" style="font-size:12px;color:var(--ink-soft);">${ac||'var(--accent)'}</span>
             </div>
           </div>
         </div>
@@ -9476,8 +9476,8 @@ function renderLens(data) {
           <div>
             <div style="font-size:11px;font-weight:600;color:var(--ink-muted);margin-bottom:4px;">Accent color</div>
             <div style="display:flex;align-items:center;gap:8px;">
-              <input id="lensEditColor" type="color" value="${ac||'#F472B6'}" style="width:40px;height:36px;border:none;border-radius:8px;cursor:pointer;background:none;" oninput="lensLiveUpdate()" />
-              <span id="lensColorLabel" style="font-size:12px;color:var(--ink-soft);">${ac||'#F472B6'}</span>
+              <input id="lensEditColor" type="color" value="${ac||'var(--accent)'}" style="width:40px;height:36px;border:none;border-radius:8px;cursor:pointer;background:none;" oninput="lensLiveUpdate()" />
+              <span id="lensColorLabel" style="font-size:12px;color:var(--ink-soft);">${ac||'var(--accent)'}</span>
             </div>
           </div>
         </div>
@@ -9920,7 +9920,7 @@ function showTrialExpiredCard() {
       </div>
 
       <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
-        <button onclick="openStripeCheckout('creator')" style="width:100%;padding:14px;border-radius:999px;background:linear-gradient(90deg,#F472B6,#A78BFA);border:none;color:#09080F;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">
+        <button onclick="openStripeCheckout('creator')" style="width:100%;padding:14px;border-radius:999px;background:linear-gradient(90deg,var(--accent),#A78BFA);border:none;color:#09080F;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">
           ✦ Creator — $19/mo → Keep going
         </button>
         <button onclick="openStripeCheckout('pro')" style="width:100%;padding:14px;border-radius:999px;background:rgba(167,139,250,0.15);border:1px solid rgba(167,139,250,0.3);color:#A78BFA;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">
@@ -10236,7 +10236,7 @@ function _renderChatMessageUI(role, text) {
   div.className = 'chat-msg ' + role;
   const avatar = role === 'sam'
     ? '<div class="chat-msg-avatar">🤖</div>'
-    : '<div class="chat-msg-avatar" style="background:linear-gradient(135deg,#A78BFA,#F472B6);">👤</div>';
+    : '<div class="chat-msg-avatar" style="background:linear-gradient(135deg,#A78BFA,var(--accent));">👤</div>';
   const speakBtn = role === 'sam'
     ? '<button onclick="if(typeof SAM_VOICE!==\'undefined\')SAM_VOICE.speak(this.closest(\'[class*=chat-msg]\').querySelector(\'.chat-bubble\').innerText)" style="background:none;border:none;cursor:pointer;color:rgba(240,236,255,0.3);font-size:11px;padding:2px 6px;transition:color 0.2s;" title="Read aloud">🔊</button>'
     : '';
@@ -10479,7 +10479,7 @@ function initPersistentSAM() {
     _qrRow.style.display = _devQR ? 'flex' : 'none';
     if (_devQR) {
       _qrRow.innerHTML = '<button style="font-size:11px;font-weight:600;padding:5px 12px;border-radius:999px;border:1px solid rgba(167,139,250,0.35);background:rgba(167,139,250,0.08);color:#A78BFA;cursor:pointer;white-space:nowrap;" onclick="sendPersistentMessage_quick(\'Write me a TikTok hook about Voice DNA\')">🎬 TikTok hook</button>'
-        + '<button style="font-size:11px;font-weight:600;padding:5px 12px;border-radius:999px;border:1px solid rgba(244,114,182,0.35);background:rgba(244,114,182,0.08);color:#F472B6;cursor:pointer;white-space:nowrap;" onclick="sendPersistentMessage_quick(\'Write a LinkedIn founder post about why I built SAM\')">💼 Founder post</button>'
+        + '<button style="font-size:11px;font-weight:600;padding:5px 12px;border-radius:999px;border:1px solid var(--accent-soft);background:var(--accent-soft);color:var(--accent);cursor:pointer;white-space:nowrap;" onclick="sendPersistentMessage_quick(\'Write a LinkedIn founder post about why I built SAM\')">💼 Founder post</button>'
         + '<button style="font-size:11px;font-weight:600;padding:5px 12px;border-radius:999px;border:1px solid rgba(56,189,248,0.35);background:rgba(56,189,248,0.08);color:#38BDF8;cursor:pointer;white-space:nowrap;" onclick="sendPersistentMessage_quick(\'Write an Instagram carousel about SAM vs ChatGPT\')">📱 Carousel</button>'
         + '<button style="font-size:11px;font-weight:600;padding:5px 12px;border-radius:999px;border:1px solid rgba(32,128,141,0.35);background:rgba(32,128,141,0.08);color:var(--accent);cursor:pointer;white-space:nowrap;" onclick="sendPersistentMessage_quick(\'Give me 5 content angles about Voice DNA\')">🧬 Voice DNA</button>';
     }
@@ -11234,7 +11234,7 @@ function closeIdeasPanel(){document.getElementById('ideasOverlay').classList.rem
 function setIdeasFilter(f,btn){IB.currentFilter=f;document.querySelectorAll('.ideas-filter-btn[data-filter]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderIdeasList()}
 function setIdeasStatusFilter(s,btn){if(IB.currentStatusFilter===s){IB.currentStatusFilter=null;btn.classList.remove('active')}else{IB.currentStatusFilter=s;document.querySelectorAll('.ideas-filter-btn[data-sf]').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}renderIdeasList()}
 function renderIdeasList(){const list=document.getElementById('ideasList');if(!list)return;const ideas=IB.getFiltered();if(!ideas.length){const empty=IB.load().length===0;list.innerHTML='<div class="ideas-empty"><div class="ideas-empty-icon">'+(empty?'&#128161;':'&#128269;')+'</div><div class="ideas-empty-title">'+(empty?'No ideas saved yet':'Nothing matches')+'</div><div class="ideas-empty-sub">'+(empty?'Every time SAM generates a hook, script, or concept — tap Save to Ideas.':'Try a different search or clear your filters.')+'</div></div>';return}const sL={saved:'Saved',scripting:'Scripting',filmed:'Filmed',posted:'Posted'};const tL={pulse:'The Pulse',spark:'The Spark',wizard:'Playbook',vision:'The Vision',blueprint:'Blueprint',lens:'The Lens'};list.innerHTML=ideas.map(idea=>{const date=new Date(idea.date).toLocaleDateString('en-US',{month:'short',day:'numeric'});const sb=['saved','scripting','filmed','posted'].map(s=>'<button class="idea-status-btn'+(idea.status===s?' active-'+s:'')+'" onclick="ibUpdateStatus(\''+idea.id+'\',\''+s+'\',this)">'+sL[s]+'</button>').join('');const ul=idea.type==='wizard'?'Open playbook':idea.type==='vision'?'Script it':'Build this';
-      const isMobileDevice=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)||window.innerWidth<600;const txt=(idea.text||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');const esc=(idea.text||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,'\\n').slice(0,300);return'<div class="idea-bank-card type-'+idea.type+'" id="ibc-'+idea.id+'"><div class="idea-bank-card-top"><div><span class="idea-bank-type-badge badge-'+idea.type+'">'+(tL[idea.type]||idea.type)+'</span>'+(idea.subtype?'<span style="font-size:10px;color:var(--ink-muted);margin-left:6px;">'+idea.subtype+'</span>':'')+(idea.platform?'<span style="font-size:10px;color:var(--ink-muted);margin-left:4px;">&#183; '+idea.platform+'</span>':'')+'</div><div class="idea-bank-card-actions"><button class="ib-action-btn" onclick="ibCopy(\''+esc+'\')" title="Copy">&#128203;</button><button class="ib-action-btn" onclick="ibUse(\''+idea.id+'\')" style="font-size:11px;font-weight:600;width:auto;padding:0 10px;color:var(--accent);">'+ul+' &#8594;</button>'+(idea.type==="wizard"&&isMobileDevice?'<button class="ib-action-btn" onclick="emailPlaybookIdea(\''+idea.id+'\')" style="font-size:11px;font-weight:600;width:auto;padding:0 10px;color:#F472B6;">📧</button>':'')+'<button class="ib-action-btn danger" onclick="ibDel(\''+idea.id+'\')" title="Delete">&#10005;</button></div></div><div class="idea-bank-text" id="ibt-'+idea.id+'" onclick="document.getElementById(\'ibt-'+idea.id+'\').classList.toggle(\'expanded\')">'+txt+'</div><div class="idea-bank-card-footer"><div class="idea-status-select">'+sb+'</div><div class="idea-bank-date">'+date+'</div></div></div>'}).join('');IB.updateNavBadge()}
+      const isMobileDevice=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)||window.innerWidth<600;const txt=(idea.text||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');const esc=(idea.text||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,'\\n').slice(0,300);return'<div class="idea-bank-card type-'+idea.type+'" id="ibc-'+idea.id+'"><div class="idea-bank-card-top"><div><span class="idea-bank-type-badge badge-'+idea.type+'">'+(tL[idea.type]||idea.type)+'</span>'+(idea.subtype?'<span style="font-size:10px;color:var(--ink-muted);margin-left:6px;">'+idea.subtype+'</span>':'')+(idea.platform?'<span style="font-size:10px;color:var(--ink-muted);margin-left:4px;">&#183; '+idea.platform+'</span>':'')+'</div><div class="idea-bank-card-actions"><button class="ib-action-btn" onclick="ibCopy(\''+esc+'\')" title="Copy">&#128203;</button><button class="ib-action-btn" onclick="ibUse(\''+idea.id+'\')" style="font-size:11px;font-weight:600;width:auto;padding:0 10px;color:var(--accent);">'+ul+' &#8594;</button>'+(idea.type==="wizard"&&isMobileDevice?'<button class="ib-action-btn" onclick="emailPlaybookIdea(\''+idea.id+'\')" style="font-size:11px;font-weight:600;width:auto;padding:0 10px;color:var(--accent);">📧</button>':'')+'<button class="ib-action-btn danger" onclick="ibDel(\''+idea.id+'\')" title="Delete">&#10005;</button></div></div><div class="idea-bank-text" id="ibt-'+idea.id+'" onclick="document.getElementById(\'ibt-'+idea.id+'\').classList.toggle(\'expanded\')">'+txt+'</div><div class="idea-bank-card-footer"><div class="idea-status-select">'+sb+'</div><div class="idea-bank-date">'+date+'</div></div></div>'}).join('');IB.updateNavBadge()}
 function ibUpdateStatus(id,status){IB.updateStatus(id,status);const card=document.getElementById('ibc-'+id);if(card)card.querySelectorAll('.idea-status-btn').forEach(b=>{const s=b.getAttribute('onclick').match(/'(\w+)'/g)?.[1]?.replace(/'/g,'');b.className='idea-status-btn'+(s===status?' active-'+status:'')});IB.updateNavBadge();if(status==='posted')showIbToast('Marked as posted!')}
 function ibDel(id){const card=document.getElementById('ibc-'+id);if(card){card.style.opacity='0';card.style.transform='translateX(30px)';card.style.transition='all 0.25s';setTimeout(()=>{IB.delete(id);renderIdeasList()},250)}else{IB.delete(id);renderIdeasList()}}
 function ibCopy(text){navigator.clipboard.writeText(text.replace(/\\n/g,'\n')).then(()=>showIbToast('Copied!'))}
@@ -11445,7 +11445,7 @@ function printPlaybookOnly() {
       --surface:#F4F2EC;--surface2:#f0eeff;
       --bg:#fff;--radius:10px;--radius-lg:14px;--radius-xl:18px;
       --spark:#20808D;--spark-bg:rgba(32,128,141,0.08);--spark-border:rgba(32,128,141,0.2);
-      --pulse:#A78BFA;--lens:#D97706;--vision:#F472B6;
+      --pulse:#A78BFA;--lens:#D97706;--vision:var(--accent);
     }
     body{font-family:'Sora',Arial,sans-serif;color:#09080F;background:#fff;padding:24px;margin:0;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
     @page{size:A4;margin:12mm 14mm;}
@@ -11456,7 +11456,7 @@ function printPlaybookOnly() {
     .playbook-cover{text-align:center;padding:40px 0 32px;border-bottom:1px solid #e8e4f0;margin-bottom:32px;}
     .playbook-cover-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#20808D;background:rgba(32,128,141,0.08);border:1px solid rgba(32,128,141,0.2);padding:5px 14px;border-radius:50px;margin-bottom:20px;}
     .playbook-cover-title{font-family:'Sora',sans-serif;font-size:36px;font-weight:700;letter-spacing:-0.02em;line-height:1.1;color:#09080F;margin-bottom:12px;}
-    .playbook-cover-title em{font-style:normal;background:linear-gradient(135deg,#F472B6,#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .playbook-cover-title em{font-style:normal;background:linear-gradient(135deg,var(--accent),#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
     .playbook-cover-meta{font-size:13px;color:#6b7080;}
     .playbook-section{margin-bottom:32px;padding-bottom:32px;border-bottom:1px solid #e8e4f0;}
     .playbook-section:last-child{border-bottom:none;}
@@ -11465,11 +11465,11 @@ function printPlaybookOnly() {
     .playbook-card{background:#F4F2EC;border:1px solid #e8e4f0;border-radius:14px;padding:18px;margin-bottom:12px;}
     .playbook-card-label{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#6b7080;margin-bottom:8px;}
     .playbook-card-text{font-size:15px;line-height:1.75;color:#09080F;}
-    .playbook-hook{font-family:'Sora',sans-serif;font-size:22px;font-weight:700;line-height:1.3;color:#09080F;padding:20px;background:linear-gradient(135deg,rgba(109,40,217,0.12),rgba(244,114,182,0.08));border:1px solid rgba(167,139,250,0.25);border-left:4px solid #A78BFA;border-radius:0 14px 14px 0;margin-bottom:10px;letter-spacing:-0.01em;}
+    .playbook-hook{font-family:'Sora',sans-serif;font-size:22px;font-weight:700;line-height:1.3;color:#09080F;padding:20px;background:linear-gradient(135deg,rgba(109,40,217,0.12),var(--accent-soft));border:1px solid rgba(167,139,250,0.25);border-left:4px solid #A78BFA;border-radius:0 14px 14px 0;margin-bottom:10px;letter-spacing:-0.01em;}
     .playbook-script{background:#F4F2EC;border:1px solid #e8e4f0;border-radius:14px;padding:20px;font-size:15px;line-height:2.1;color:#09080F;white-space:pre-wrap;}
     .playbook-arch-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
     .playbook-arch-card{background:#F4F2EC;border:1px solid #e8e4f0;border-radius:10px;padding:14px 16px;border-top:2px solid transparent;}
-    .arch-opening{border-top-color:#38BDF8;}.arch-setup{border-top-color:#A78BFA;}.arch-risk{border-top-color:#F472B6;}.arch-turn{border-top-color:#FBBF24;}.arch-payoff{border-top-color:var(--accent);}.arch-cta{border-top-color:#F472B6;}
+    .arch-opening{border-top-color:#38BDF8;}.arch-setup{border-top-color:#A78BFA;}.arch-risk{border-top-color:var(--accent);}.arch-turn{border-top-color:#FBBF24;}.arch-payoff{border-top-color:var(--accent);}.arch-cta{border-top-color:var(--accent);}
     .playbook-arch-beat{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#6b7080;margin-bottom:5px;}
     .playbook-arch-text{font-size:14px;color:#09080F;line-height:1.55;}
     .playbook-arch-time{font-size:11px;color:#6b7080;margin-top:4px;}
@@ -11483,7 +11483,7 @@ function printPlaybookOnly() {
     .playbook-lead-comment{background:rgba(0,0,0,0.03);border:1px solid rgba(251,191,36,0.2);border-radius:10px;padding:14px 16px;}
     .playbook-lead-comment-label{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#D97706;margin-bottom:8px;}
     .playbook-lead-comment-text{font-size:15px;color:#09080F;line-height:1.6;font-style:italic;}
-    .playbook-focus{background:linear-gradient(135deg,rgba(109,40,217,0.15),rgba(244,114,182,0.1));border:1px solid rgba(167,139,250,0.25);border-radius:14px;padding:20px;}
+    .playbook-focus{background:linear-gradient(135deg,rgba(109,40,217,0.15),var(--accent-soft));border:1px solid rgba(167,139,250,0.25);border-radius:14px;padding:20px;}
     .playbook-focus-eyebrow{font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#20808D;margin-bottom:8px;}
     .playbook-focus-text{font-family:'Sora',sans-serif;font-size:18px;font-weight:600;color:#09080F;line-height:1.4;}
     .playbook-lead-why.no-print{display:none!important;}
@@ -11883,7 +11883,7 @@ function printToolOutput(outputId, toolName) {
       table{width:100%;border-collapse:collapse;font-size:9.5pt;}
       /* Reach tool print styles */
       [style*="background:rgba(255,255,255,0.03)"],[style*="background: rgba(255,255,255,0.03)"]{background:#f9f7ff!important;border:1px solid #e0d9f7!important;border-radius:8pt!important;padding:10pt!important;margin-bottom:12pt!important;}
-      [style*="color:rgba(240,236,255"],[style*="color:#F472B6"],[style*="color:#A78BFA"]{color:#1a1a2e!important;}
+      [style*="color:rgba(240,236,255"],[style*="color:var(--accent)"],[style*="color:#A78BFA"]{color:#1a1a2e!important;}
       [contenteditable]{color:#1a1a2e!important;background:#fff!important;font-size:10.5pt!important;line-height:1.7!important;}
       .eco-tool-card,[style*="border:1px solid rgba(244,114,182"],[style*="border:1px solid rgba(167,139,250"]{background:#f9f7ff!important;border:1px solid #e0d9f7!important;color:#1a1a2e!important;}
       button{display:none!important;}
@@ -12790,7 +12790,7 @@ function toggleWizardMic() {
   if (wizardActiveMic) { wizardActiveMic.stop(); return; }
   const rec = new SR();
   rec.continuous = true; rec.interimResults = true; rec.lang = 'en-US';
-  rec.onstart = () => { wizardActiveMic = rec; if(btn) { btn.textContent = '⏹'; btn.style.borderColor = '#F472B6'; btn.style.background = 'rgba(244,114,182,0.1)'; } };
+  rec.onstart = () => { wizardActiveMic = rec; if(btn) { btn.textContent = '⏹'; btn.style.borderColor = 'var(--accent)'; btn.style.background = 'var(--accent-soft)'; } };
   rec.onresult = e => {
     let t = '';
     for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript;
@@ -13144,7 +13144,7 @@ Include complete reasoning (WHY) for every recommendation.
         <div style="font-size:15px;color:var(--ink-soft);line-height:1.65;margin-bottom:10px;">${errExplain}</div>
         <div style="font-size:13px;color:var(--accent);background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.2);border-radius:var(--radius);padding:12px 16px;margin-bottom:28px;line-height:1.6;">💡 ${errTip}</div>
         <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-          <button onclick="retryPlaybook()" style="padding:14px 32px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);color:#fff;border:none;border-radius:var(--radius);font-family:'Sora',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">↻ Try again</button>
+          <button onclick="retryPlaybook()" style="padding:14px 32px;background:linear-gradient(135deg,#6D28D9,#A78BFA,var(--accent));color:#fff;border:none;border-radius:var(--radius);font-family:'Sora',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">↻ Try again</button>
           ${isRateLimit ? '<button onclick="openProModal()" style="padding:14px 24px;background:linear-gradient(135deg,rgba(251,191,36,0.2),rgba(251,191,36,0.1));border:1px solid rgba(251,191,36,0.4);border-radius:var(--radius);font-family:\'Sora\',sans-serif;font-size:14px;font-weight:600;color:var(--lens);cursor:pointer;">See plans →</button>' : ''}
           <button onclick="showWizardStep('10')" style="padding:14px 24px;background:transparent;color:var(--ink-muted);border:1px solid var(--border);border-radius:var(--radius);font-family:'Sora',sans-serif;font-size:14px;cursor:pointer;">← Edit my answers</button>
         </div>
@@ -13471,7 +13471,7 @@ function renderPlaybook(data) {
       <div class="playbook-section-title">Your thumbnail strategy</div>
       <div class="wizard-why" style="margin-bottom:16px;">Your thumbnail is a billboard. It's the only reason someone clicks. SAM built two options — safe and bold — both written in your voice, both using your photo as the canvas.</div>
       ${ts.headline_safe ? `<div style="margin-bottom:10px;"><div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(32,128,141,0.8);margin-bottom:6px;">✓ Safe headline</div><div class="playbook-hook" style="font-size:18px;">${ts.headline_safe}</div>${ts.subtext_safe ? `<div style="font-size:13px;color:var(--ink-muted);margin-top:4px;">${ts.subtext_safe}</div>` : ''}<button class="playbook-copy-btn" onclick="wizCopy(this,'${escQ(ts.headline_safe)}')">Copy</button></div>` : ''}
-      ${ts.headline_bold ? `<div style="margin-bottom:10px;"><div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(244,114,182,0.8);margin-bottom:6px;">⚡ Bold headline</div><div class="playbook-hook" style="font-size:18px;border-left-color:var(--pulse);">${ts.headline_bold}</div>${ts.subtext_bold ? `<div style="font-size:13px;color:var(--ink-muted);margin-top:4px;">${ts.subtext_bold}</div>` : ''}<button class="playbook-copy-btn" onclick="wizCopy(this,'${escQ(ts.headline_bold)}')">Copy</button></div>` : ''}
+      ${ts.headline_bold ? `<div style="margin-bottom:10px;"><div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent-soft);margin-bottom:6px;">⚡ Bold headline</div><div class="playbook-hook" style="font-size:18px;border-left-color:var(--accent);">${ts.headline_bold}</div>${ts.subtext_bold ? `<div style="font-size:13px;color:var(--ink-muted);margin-top:4px;">${ts.subtext_bold}</div>` : ''}<button class="playbook-copy-btn" onclick="wizCopy(this,'${escQ(ts.headline_bold)}')">Copy</button></div>` : ''}
       ${ts.layout_direction ? `<div class="wizard-why" style="margin-top:12px;"><strong>Layout direction:</strong> ${ts.layout_direction}</div>` : ''}
       <button style="width:100%;margin-top:12px;padding:12px;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.3);border-radius:var(--radius);font-size:14px;font-weight:600;color:var(--accent);cursor:pointer;" onclick="window.open('https://www.canva.com/create/youtube-thumbnails/','_blank')">🎨 Take this to Canva →</button>
     </div>`;
@@ -14330,15 +14330,15 @@ function openWizardFromNav() {
 <!-- ── EXPORT CAPTURE MODAL ── -->
 <div id="exportCaptureOverlay" style="display:none;position:fixed;inset:0;z-index:3500;background:rgba(9,8,15,0.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);align-items:center;justify-content:center;padding:20px;overflow-y:auto;">
   <div style="max-width:480px;width:100%;margin:0 auto;background:rgba(13,11,22,0.99);border:1px solid rgba(167,139,250,0.3);border-radius:28px;padding:40px 32px;position:relative;overflow:hidden;">
-    <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#A78BFA,#F472B6,#38BDF8);"></div>
+    <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#A78BFA,var(--accent),#38BDF8);"></div>
     <div style="width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#6D28D9,#A78BFA);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 20px;">💜</div>
     <div style="font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:var(--ink);text-align:center;line-height:1.2;margin-bottom:10px;">Your ideas are ready<br/>to export.</div>
     <div style="font-size:14px;color:rgba(240,236,255,0.55);text-align:center;line-height:1.65;margin-bottom:28px;">Drop your email and SAM sends them straight to your inbox — plus unlocks <strong style="color:#A78BFA;">7 days free</strong> across all 5 tools.</div>
     <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;">
       <input id="exportCaptureName" type="text" placeholder="Your first name" autocomplete="given-name" style="width:100%;padding:14px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:14px;font-size:15px;color:var(--ink);outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(167,139,250,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />
       <input id="exportCaptureEmail" type="email" placeholder="Your email address" autocomplete="email" inputmode="email" style="width:100%;padding:14px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:14px;font-size:15px;color:var(--ink);outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(167,139,250,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />
-      <div id="exportCaptureErr" style="display:none;font-size:13px;color:#F472B6;text-align:center;"></div>
-      <button onclick="submitExportCapture()" id="exportCaptureBtn" style="width:100%;padding:16px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">📧 Send my ideas + unlock 7 days free →</button>
+      <div id="exportCaptureErr" style="display:none;font-size:13px;color:var(--accent);text-align:center;"></div>
+      <button onclick="submitExportCapture()" id="exportCaptureBtn" style="width:100%;padding:16px;background:linear-gradient(135deg,#6D28D9,#A78BFA,var(--accent));border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">📧 Send my ideas + unlock 7 days free →</button>
     </div>
     <div style="text-align:center;font-size:13px;color:rgba(240,236,255,0.35);">Already have an account? <span onclick="closeExportCapture();openSignInModal();" style="color:#A78BFA;cursor:pointer;">Sign in</span></div>
     <button onclick="closeExportCapture()" style="position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.08);border:none;border-radius:50%;width:32px;height:32px;color:rgba(255,255,255,0.4);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;">×</button>
@@ -14361,7 +14361,7 @@ function openWizardFromNav() {
   <!-- HERO -->
   <div class="pro-hero">
     <div class="pro-hero-badge">✦ STOP FIGURING IT OUT ALONE</div>
-    <div class="pro-hero-title">Five tools.<br/><em style="background:linear-gradient(90deg,#F472B6,#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:normal;">One unfair advantage.</em></div>
+    <div class="pro-hero-title">Five tools.<br/><em style="background:linear-gradient(90deg,var(--accent),#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:normal;">One unfair advantage.</em></div>
     <div class="pro-hero-sub">Most creators are figuring out content alone — the hook, the script, the platform, the caption, all of it. You have SAM. Five tools built around your story so you never start from zero again.</div>
     <div class="pro-value-row">
       <div class="pro-value-pill">✦ 5 tools in one</div>
@@ -14375,7 +14375,7 @@ function openWizardFromNav() {
   <div style="max-width:1100px;margin:0 auto;padding:64px 24px 32px;">
     <div style="text-align:center;margin-bottom:48px;">
       <div style="font-size:11px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:12px;">Everything you were figuring out alone</div>
-      <div style="font-family:'Sora',sans-serif;font-size:clamp(30px,4vw,48px);font-weight:800;color:var(--text);line-height:1.15;">Five tools. One <span style="background:linear-gradient(90deg,#F472B6,#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">ecosystem.</span></div>
+      <div style="font-family:'Sora',sans-serif;font-size:clamp(30px,4vw,48px);font-weight:800;color:var(--text);line-height:1.15;">Five tools. One <span style="background:linear-gradient(90deg,var(--accent),#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">ecosystem.</span></div>
       <div style="font-size:16px;color:var(--ink-soft);margin-top:14px;max-width:560px;margin-left:auto;margin-right:auto;">Every part of SAM was built to do one job perfectly — and hand off to the next.</div>
     </div>
     <div class="pro-tools-showcase-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:24px;align-items:stretch;">
@@ -14384,20 +14384,20 @@ function openWizardFromNav() {
       <div style="background:var(--pulse-bg);border:1px solid var(--pulse-border);border-radius:24px;padding:36px 32px;display:flex;flex-direction:column;gap:0;position:relative;overflow:hidden;">
         <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),rgba(32,128,141,0.5));border-radius:24px 24px 0 0;"></div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-          <div style="font-size:11px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--pulse);">The Pulse</div>
+          <div style="font-size:11px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">The Pulse</div>
           <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);background:var(--pulse-bg);padding:3px 8px;border-radius:20px;">Heartbeat</div>
         </div>
         <div style="font-family:'Inter',system-ui,sans-serif;font-size:22px;font-weight:800;color:var(--ink);line-height:1.2;margin-bottom:12px;">Your story goes in.<br/>A complete script<br/>comes out.</div>
-        <div style="font-size:13px;font-weight:600;color:var(--pulse);font-style:italic;margin-bottom:16px;line-height:1.6;">Kinda like having a Hollywood screenwriter on call 24/7 — who only writes YOUR stories.</div>
+        <div style="font-size:13px;font-weight:600;color:var(--accent);font-style:italic;margin-bottom:16px;line-height:1.6;">Kinda like having a Hollywood screenwriter on call 24/7 — who only writes YOUR stories.</div>
         <div style="font-size:13px;color:var(--ink-soft);line-height:1.6;flex:1;margin-bottom:20px;">Describe any real moment. SAM writes the hook, full word-for-word script, b-roll directions, and every platform caption. Walk in with words. Walk out ready to film.</div>
         <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:20px;">
-          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-soft);"><div style="width:5px;height:5px;border-radius:50%;background:var(--pulse);flex-shrink:0;"></div>Hook + full script in your exact voice</div>
-          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-soft);"><div style="width:5px;height:5px;border-radius:50%;background:var(--pulse);flex-shrink:0;"></div>B-roll shots + delivery notes included</div>
-          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-soft);"><div style="width:5px;height:5px;border-radius:50%;background:var(--pulse);flex-shrink:0;"></div>Every platform caption. Written. Done.</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-soft);"><div style="width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0;"></div>Hook + full script in your exact voice</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-soft);"><div style="width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0;"></div>B-roll shots + delivery notes included</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-soft);"><div style="width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0;"></div>Every platform caption. Written. Done.</div>
         </div>
         <div style="padding-top:16px;border-top:1px solid var(--pulse-border);">
           <div style="font-size:11px;color:var(--ink-muted);text-decoration:line-through;margin-bottom:3px;">$29/mo standalone</div>
-          <div style="font-size:12px;font-weight:700;color:var(--pulse);">Included in all SAM plans</div>
+          <div style="font-size:12px;font-weight:700;color:var(--accent);">Included in all SAM plans</div>
         </div>
       </div>
 
@@ -14516,11 +14516,11 @@ function openWizardFromNav() {
   <div style="max-width:1100px;margin:0 auto;padding:32px 24px 64px;">
     <div style="text-align:center;margin-bottom:40px;">
       <div style="font-size:11px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:12px;">Who SAM was built for</div>
-      <div style="font-family:'Sora',sans-serif;font-size:clamp(24px,3vw,36px);font-weight:800;color:var(--text);">Built for the ones who figured it out the <span style="background:linear-gradient(90deg,#F472B6,#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">hard way.</span></div>
+      <div style="font-family:'Sora',sans-serif;font-size:clamp(24px,3vw,36px);font-weight:800;color:var(--text);">Built for the ones who figured it out the <span style="background:linear-gradient(90deg,var(--accent),#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">hard way.</span></div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;">
 
-      <div style="background:rgba(244,114,182,0.06);border:1px solid rgba(244,114,182,0.15);border-radius:20px;padding:28px 24px;">
+      <div style="background:var(--accent-soft);border:1px solid var(--accent-soft);border-radius:20px;padding:28px 24px;">
         <div style="font-size:28px;margin-bottom:12px;">🎥</div>
         <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;">Creators &amp; Coaches</div>
         <div style="font-size:14px;color:var(--ink-soft);line-height:1.6;">You have something worth saying. SAM figures out how to say it — hook, script, platform, caption — so you can just show up and film.</div>
@@ -14544,7 +14544,7 @@ function openWizardFromNav() {
   <!-- FOUNDER STORY -->
   <div style="max-width:760px;margin:0 auto;padding:0 24px 64px;">
     <div style="background:linear-gradient(135deg,rgba(251,191,36,0.06),rgba(167,139,250,0.06));border:1px solid rgba(251,191,36,0.2);border-radius:24px;padding:40px 40px;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#FBB824,#F472B6,#A78BFA);"></div>
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#FBB824,var(--accent),#A78BFA);"></div>
       <div style="font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:rgba(251,191,36,0.6);margin-bottom:16px;">&#10022; THE STORY BEHIND SAM</div>
       <div style="font-family:'Sora',sans-serif;font-size:clamp(18px,2.5vw,24px);font-weight:800;color:var(--ink);line-height:1.2;margin-bottom:20px;">"SAM was built by a self-taught creator<br/>who almost quit."</div>
       <div style="font-size:15px;color:var(--ink-soft);line-height:1.8;margin-bottom:20px;">Joey Pirrone was documenting a complete home renovation — living in a travel trailer in the backyard with his wife Amanda, self-taught, no contractor license, no social media team. Every upload demanded 15 decisions he never signed up to make. He almost stopped posting entirely.<br/><br/>Instead, he built the tool he needed. That tool is SAM.</div>
@@ -14579,7 +14579,7 @@ function openWizardFromNav() {
 
     <!-- CREATOR -->
     <div class="pro-card">
-      <div class="pro-card-badge" style="background:rgba(244,114,182,0.15);color:#F472B6;">✦ Founding member rate</div>
+      <div class="pro-card-badge" style="background:var(--accent-soft);color:var(--accent);">✦ Founding member rate</div>
       <div class="pro-card-name">Creator</div>
       <div class="pro-price-block">
         <div class="pro-price-dollar grad-pink">$19</div>
@@ -14596,7 +14596,7 @@ function openWizardFromNav() {
         <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Download everything as PDF</div>
         <div class="pro-feat-row"><div class="pro-feat-icon fi-no"></div><span class="feat-muted">Unlimited tool runs</span></div>
       </div>
-      <button class="pro-btn pro-btn-grad" style="background:linear-gradient(135deg,#F472B6,#A78BFA);" onclick="window._selectedPlan='creator';handleProSignup('creator')">Get Creator — $29/month →</button>
+      <button class="pro-btn pro-btn-grad" style="background:linear-gradient(135deg,var(--accent),#A78BFA);" onclick="window._selectedPlan='creator';handleProSignup('creator')">Get Creator — $29/month →</button>
       <div class="pro-guarantee-row">🔒 Founding rate · 7-day guarantee · Cancel anytime</div>
     </div>
 
@@ -14642,7 +14642,7 @@ function openWizardFromNav() {
         <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div><strong>Priority speed</strong> — jump the queue</div>
         <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Every new tool the moment it drops</div>
       </div>
-      <button class="pro-btn pro-btn-grad" style="background:linear-gradient(135deg,#FBB824,#F472B6);" onclick="window._selectedPlan='studio';handleProSignup('studio')">Get Studio — $99/month →</button>
+      <button class="pro-btn pro-btn-grad" style="background:linear-gradient(135deg,#FBB824,var(--accent));" onclick="window._selectedPlan='studio';handleProSignup('studio')">Get Studio — $99/month →</button>
       <div class="pro-guarantee-row">🔒 Founding rate · 7-day guarantee · Cancel anytime</div>
     </div>
 
@@ -14671,7 +14671,7 @@ function openWizardFromNav() {
       </div>
 
       <div class="pro-review-card">
-        <div style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#F472B6;margin-bottom:10px;">✦ Your email list grows too</div>
+        <div style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;">✦ Your email list grows too</div>
         <div class="pro-review-text">Every SAM run builds a free resource your audience actually wants — checklist, guide, or planner — branded with your name and logo. They trade their email for it. You grow while you sleep.</div>
       </div>
 
@@ -15786,7 +15786,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
     <div style="background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);border-radius:12px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:#A78BFA;" id="ibEmailConfirmAddr">...</div>
     <div style="display:flex;gap:10px;">
       <button onclick="closeIbEmailConfirm()" style="flex:1;padding:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:50px;font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:rgba(240,236,255,0.6);cursor:pointer;">Cancel</button>
-      <button id="ibEmailConfirmBtn" onclick="executeIbEmailSend()" style="flex:2;padding:12px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#fff;cursor:pointer;">📧 Send now</button>
+      <button id="ibEmailConfirmBtn" onclick="executeIbEmailSend()" style="flex:2;padding:12px;background:linear-gradient(135deg,#6D28D9,#A78BFA,var(--accent));border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#fff;cursor:pointer;">📧 Send now</button>
     </div>
     <div style="text-align:center;margin-top:12px;font-size:11px;color:rgba(240,236,255,0.3);">Check spam if it doesn't arrive in 2 minutes</div>
   </div>
@@ -15923,7 +15923,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
         <div style="font-size:13px;color:var(--ink-soft);text-align:center;font-weight:600;">Try everything free for 24 hours</div>
         <input type="text" class="tour-email-input" placeholder="Your first name" id="tourNameInput" style="margin-bottom:0;"/>
         <input type="email" class="tour-email-input" placeholder="your@email.com" id="tourEmailInput"/>
-        <button class="tour-cta-primary" style="background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);" onclick="submitTourEmail()">✦ Start 24hr free trial →</button>
+        <button class="tour-cta-primary" style="background:linear-gradient(135deg,#6D28D9,#A78BFA,var(--accent));" onclick="submitTourEmail()">✦ Start 24hr free trial →</button>
         <div style="display:flex;align-items:center;gap:10px;width:100%;margin:4px 0;">
           <div style="flex:1;height:1px;background:rgba(255,255,255,0.08);"></div>
           <div style="font-size:11px;color:var(--ink-muted);">or go straight to pro</div>
@@ -15931,7 +15931,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;width:100%;">
           <button onclick="closeTourSplash();setTimeout(()=>openProPage(),200);"
-            style="padding:10px 6px;border:1px solid rgba(244,114,182,0.3);border-radius:12px;background:rgba(244,114,182,0.08);color:#F472B6;font-family:'Sora',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;line-height:1.3;">
+            style="padding:10px 6px;border:1px solid var(--accent-soft);border-radius:12px;background:var(--accent-soft);color:var(--accent);font-family:'Sora',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;line-height:1.3;">
             Creator<br/><span style="font-size:13px;">$19/mo</span>
           </button>
           <button onclick="closeTourSplash();setTimeout(()=>openProPage(),200);"
@@ -15973,7 +15973,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
         <div style="font-size:14px;color:var(--ink-soft);text-align:center;">24 hours. Full access. No card needed.</div>
         <input type="text" class="tour-email-input" placeholder="Your first name" id="tourNameInput" style="margin-bottom:0;"/>
         <input type="email" class="tour-email-input" placeholder="your@email.com" id="tourEmailInput"/>
-        <button class="tour-cta-primary" style="background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);" onclick="submitTourEmail()">✦ Start my 24hr free trial →</button>
+        <button class="tour-cta-primary" style="background:linear-gradient(135deg,#6D28D9,#A78BFA,var(--accent));" onclick="submitTourEmail()">✦ Start my 24hr free trial →</button>
       </div>
       <button class="tour-cta-secondary" onclick="closeTourSplash();">Maybe later — back to my tools</button>`;
   }
@@ -15982,7 +15982,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
     const email = (document.getElementById('tourEmailInput')?.value||'').trim();
     if (!email||!email.includes('@')) {
       const inp = document.getElementById('tourEmailInput');
-      if(inp){inp.style.borderColor='#F472B6';setTimeout(()=>inp.style.borderColor='',1500);}
+      if(inp){inp.style.borderColor='var(--accent)';setTimeout(()=>inp.style.borderColor='',1500);}
       return;
     }
     const nameVal = (document.getElementById('tourNameInput')?.value||'').trim() || 'SAM Creator';
@@ -15993,7 +15993,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
     closeTourSplash();
     setTimeout(()=>{
       const m=document.createElement('div');
-      m.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);color:#fff;padding:14px 28px;border-radius:50px;font-family:Sora,sans-serif;font-weight:700;font-size:15px;z-index:9999;box-shadow:0 0 40px rgba(167,139,250,0.4);';
+      m.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#6D28D9,#A78BFA,var(--accent));color:#fff;padding:14px 28px;border-radius:50px;font-family:Sora,sans-serif;font-weight:700;font-size:15px;z-index:9999;box-shadow:0 0 40px rgba(167,139,250,0.4);';
       m.textContent="✦ You're in! 24 hours of full access starts now.";
       document.body.appendChild(m);setTimeout(()=>m.remove(),4000);
     },300);
@@ -16041,10 +16041,10 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
           showToastMsg('Welcome back' + (data.user.name ? ', ' + data.user.name : '') + '! 🎉', 'var(--accent)');
           setTimeout(() => { window.location.href = window.location.origin + '/app'; }, 1500);
         } else {
-          showToastMsg('This link has expired. Use Sign in to get a new one.', '#F472B6');
+          showToastMsg('This link has expired. Use Sign in to get a new one.', 'var(--accent)');
         }
       } catch(e) {
-        showToastMsg('Sign in failed. Try again.', '#F472B6');
+        showToastMsg('Sign in failed. Try again.', 'var(--accent)');
       }
     }
   }
@@ -16115,10 +16115,10 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
       if(msg) { msg.style.color = 'var(--accent)'; msg.textContent = 'Check your email — link sent! ✓'; }
       if(btn) btn.textContent = 'Sent!';
     } else if (result.noAccount) {
-      if(msg) { msg.style.color = '#F472B6'; msg.textContent = 'No account found. Start a free trial first.'; }
+      if(msg) { msg.style.color = 'var(--accent)'; msg.textContent = 'No account found. Start a free trial first.'; }
       if(btn) { btn.disabled = false; btn.textContent = 'Send sign-in link →'; }
     } else {
-      if(msg) { msg.style.color = '#F472B6'; msg.textContent = 'Something went wrong. Try again.'; }
+      if(msg) { msg.style.color = 'var(--accent)'; msg.textContent = 'Something went wrong. Try again.'; }
       if(btn) { btn.disabled = false; btn.textContent = 'Send sign-in link →'; }
     }
   }
@@ -16321,14 +16321,14 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
     <!-- Header -->
     <div style="text-align:center;padding-bottom:4px;">
       <div style="font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:rgba(167,139,250,0.6);margin-bottom:6px;">✦ THE SAM ECOSYSTEM</div>
-      <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:var(--ink);line-height:1.2;margin-bottom:5px;">Five tools. <span style="background:linear-gradient(90deg,#F472B6,#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">One story.</span> All working together.</div>
+      <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:var(--ink);line-height:1.2;margin-bottom:5px;">Five tools. <span style="background:linear-gradient(90deg,var(--accent),#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">One story.</span> All working together.</div>
       <div style="font-size:11px;color:rgba(240,236,255,0.5);line-height:1.4;">You're inside the <strong style="color:#A78BFA;">SAM Engine</strong> — here's everything else SAM can do.</div>
     </div>
 
     <!-- Tools grid -->
     <div style="display:flex;flex-direction:column;gap:10px;">
       
-      <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(244,114,182,0.1));border:1.5px solid rgba(167,139,250,0.4);border-radius:12px;cursor:pointer;" onclick="samReturnToWizard()">
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(167,139,250,0.15),var(--accent-soft));border:1.5px solid rgba(167,139,250,0.4);border-radius:12px;cursor:pointer;" onclick="samReturnToWizard()">
         <div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#6D28D9,#A78BFA);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Sora',sans-serif;font-size:14px;font-weight:800;color:#fff;">S</div>
         <div style="flex:1;">
           <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--ink);">SAM Story Engine</div>
@@ -16386,8 +16386,8 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
           <div style="font-size:11px;color:var(--ink-muted);">Thumbnail strategy from your photo &middot; Decode your analytics &amp; know exactly what to do next</div>
         </div>
       </div>
-          <div class="eco-tool-card" onclick="closeEcosystemAndOpenTool('reach')" style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(244,114,182,0.06);border:1px solid rgba(244,114,182,0.15);border-radius:12px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(244,114,182,0.12)'" onmouseout="this.style.background='rgba(244,114,182,0.06)'">
-            <div style="width:36px;height:36px;border-radius:10px;background:rgba(244,114,182,0.15);border:1px solid rgba(244,114,182,0.3);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">📸</div>
+          <div class="eco-tool-card" onclick="closeEcosystemAndOpenTool('reach')" style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--accent-soft);border:1px solid var(--accent-soft);border-radius:12px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='var(--accent-soft)'" onmouseout="this.style.background='var(--accent-soft)'">
+            <div style="width:36px;height:36px;border-radius:10px;background:var(--accent-soft);border:1px solid var(--accent-soft);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">📸</div>
             <div><div style="font-size:13px;font-weight:700;color:var(--ink);">The Reach</div><div style="font-size:11px;color:rgba(240,236,255,0.45);">Photo → platform-ready post</div></div>
           </div>
           <div class="eco-tool-card" onclick="openVoiceTrainer();closeEcosystemOverlay();" style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(32,128,141,0.06);border:1px solid rgba(32,128,141,0.15);border-radius:12px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(32,128,141,0.12)'" onmouseout="this.style.background='rgba(32,128,141,0.06)'">
@@ -16405,7 +16405,7 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
 
     <!-- Buttons -->
     <div style="display:flex;flex-direction:column;gap:8px;padding-top:4px;">
-      <button onclick="samReturnToWizard()" style="width:100%;padding:13px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">
+      <button onclick="samReturnToWizard()" style="width:100%;padding:13px;background:linear-gradient(135deg,#6D28D9,#A78BFA,var(--accent));border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">
         ← Keep building my story
       </button>
       <button onclick="samExploreTools()" style="width:100%;padding:11px;background:transparent;border:1px solid rgba(255,255,255,0.12);border-radius:50px;font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:rgba(240,236,255,0.6);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,236,255,0.6)'">
