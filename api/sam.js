@@ -74,6 +74,26 @@ module.exports = async function handler(req, res) {
   let userProfile = null;
   if (userId && userId !== 'anon') {
     userProfile = await getUserProfile(userId).catch(() => null);
+    // If uid is anon or profile missing, fall back to email lookup
+    if ((!userProfile || !userProfile.sam_context) && req.body.userEmail) {
+      try {
+        const _email = req.body.userEmail.trim().toLowerCase();
+        const _enc = encodeURIComponent(_email);
+        const SUPABASE_URL = process.env.SUPABASE_URL;
+        const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+        if (SUPABASE_URL && SERVICE_KEY) {
+          const _r = await fetch(
+            `${SUPABASE_URL}/rest/v1/sam_users?email=eq.${_enc}&select=uid,voice_profile,sam_context,name,niche,platforms,tier,voice_version&order=last_seen.desc.nullslast&limit=10`,
+            { headers: { 'apikey': SERVICE_KEY, 'Authorization': `Bearer ${SERVICE_KEY}` } }
+          );
+          if (_r.ok) {
+            const _rows = await _r.json();
+            const _real = Array.isArray(_rows) && (_rows.find(r => r.tier && r.tier !== 'free') || _rows[0]);
+            if (_real && _real.sam_context) userProfile = _real;
+          }
+        }
+      } catch(_e) {}
+    }
   }
 
   // Track user + save voice profile (awaited when voice data present)
