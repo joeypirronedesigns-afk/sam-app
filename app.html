@@ -6382,7 +6382,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.49" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.50" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6466,7 +6466,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.49</div>
+  <div class="qs-version-stamp">Quiet Studio v9.50</div>
 </div>
 
   </aside>
@@ -11930,6 +11930,14 @@ function saveWizardState() {
 function _samSaveSession() {
   try {
     const slim = {...WS, brandLogo: null};
+    // Don't overwrite a good server-hydrated session with an empty WS skeleton
+    const _hasContent = !!(WS.brandName || WS.storyText || WS.creatorType);
+    const _existingStep = localStorage.getItem('sam_session_step');
+    const _existingSession = localStorage.getItem('sam_session_v2');
+    if (!_hasContent && _existingStep && _existingStep !== '0' && _existingSession) {
+      // WS is empty but localStorage has real data — skip overwrite
+      return true;
+    }
     const str = JSON.stringify(slim);
     localStorage.setItem('sam_session_v2', str);
     localStorage.setItem('sam_session_step', WS._currentStep || '0');
