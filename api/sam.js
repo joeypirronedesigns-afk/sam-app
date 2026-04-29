@@ -23,7 +23,7 @@ async function fetchRecentChatHistory(userId, limit = 20) {
 // ── TIER LIMITS ────────────────────────────────────────────────────────────
 const TIER_LIMITS = {
   free:    { playbooks: 5,  nextTools: 15,  chatMessages: 20 },
-  creator: { playbooks: 10, nextTools: 70,  chatMessages: 50 },
+  creator: { playbooks: 10, nextTools: 70,  chatMessages: 200 },
   pro:     { playbooks: 20, nextTools: 200, chatMessages: 150 },
   studio:  { playbooks: 100,nextTools: 999, chatMessages: 999 },
 };
@@ -31,6 +31,10 @@ const TIER_LIMITS = {
 async function checkLimit(userId, tier, action, tourStep) {
   // Dev bypass
   if (userId && (userId.startsWith('dev-') || userId === 'dev@sam.com')) {
+    return { allowed: true };
+  }
+  // Founder bypass
+  if (userId && userId.toLowerCase() === 'j.pirrone@yahoo.com') {
     return { allowed: true };
   }
   // Tour bypass — users going through guided tour run free
