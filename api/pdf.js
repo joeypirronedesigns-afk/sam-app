@@ -82,17 +82,12 @@ module.exports = async function handler(req, res) {
     let launchOptions = {};
 
     if (process.env.VERCEL) {
-      const CHROMIUM_URL = process.env.CHROMIUM_URL;
-      if (!CHROMIUM_URL) {
-        return res.status(500).json({ error: 'Missing CHROMIUM_URL env var' });
-      }
-
-      const chromium = require('@sparticuz/chromium-min');
+      const chromium = require('@sparticuz/chromium');
 
       launchOptions = {
         args: [...chromium.args, '--no-sandbox', '--disable-setuid-sandbox'],
         defaultViewport: chromium.defaultViewport,
-        executablePath: await chromium.executablePath(CHROMIUM_URL),
+        executablePath: await chromium.executablePath(),
         headless: chromium.headless,
         ignoreHTTPSErrors: true,
       };
