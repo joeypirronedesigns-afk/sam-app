@@ -761,7 +761,8 @@ function buildPlaybookHTML(pb, brand) {
     </div>`);
   }
 
-  return wrap(\`SAM · \${e(brandName)} · \${e(docType)}\`, brandColor, pages.join('\n'));
+  return wrap(`SAM · ${e(brandName)} · ${e(docType)}\`, brandColor, pages.join('
+'));
 }
 
 // ─── LEAD MAGNET BUILDER ──────────────────────────────────────────────────────
@@ -817,7 +818,8 @@ function buildLeadMagnetHTML(lm, brand) {
     </div>`);
   }
 
-  return wrap(`SAM · ${e(brandName)} · Lead Magnet`, brandColor, pages.join('\n'));
+  return wrap(`SAM · ${e(brandName)} · Lead Magnet`, brandColor, pages.join('
+'));
 }
 
 // ─── HTML WRAPPER ─────────────────────────────────────────────────────────────
