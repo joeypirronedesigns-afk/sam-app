@@ -1,5 +1,6 @@
 module.exports.config = { api: { bodyParser: { sizeLimit: "10mb" } } };
 const { trackUser, trackEvent, saveUserProfile, getUserProfile, updateUserEmail, supabaseQuery } = require('./_supabase');
+const { normalizeSamContext, buildBrainPrompt } = require('./_context');
 
 async function fetchRecentChatHistory(userId, limit = 20) {
   if (!userId || userId === 'anon' || userId.startsWith('anon-')) return [];
@@ -187,16 +188,17 @@ module.exports = async function handler(req, res) {
       const effectiveVoice = voiceProfile || (userProfile && userProfile.voice_profile) || '';
       let profileContext = '';
       if (userProfile || effectiveVoice) {
-        const profileParts = [];
-        if (userProfile && userProfile.name) profileParts.push('User name: ' + userProfile.name);
-        if (userProfile && userProfile.niche) profileParts.push('Niche: ' + userProfile.niche);
-        if (userProfile && userProfile.platforms) profileParts.push('Platforms: ' + userProfile.platforms);
-        if (userProfile && userProfile.sam_context) profileParts.push('Story context: ' + userProfile.sam_context.slice(0, 800));
-        const profileMeta = profileParts.length ? '\n\nUSER PROFILE:\n' + profileParts.join('\n') : '';
-        const chatVoiceLine = effectiveVoice
-          ? `\n\nVOICE PROFILE — THIS IS THE MOST IMPORTANT INSTRUCTION: You have a forensic voice fingerprint for this user. Apply their voice in every response — match their sentence rhythm, punctuation personality, actual words and phrases, and energy signature. Never drift into generic AI polish.\nVoice DNA: ${effectiveVoice.slice(0, 600)}`
-          : '';
-        profileContext = profileMeta + chatVoiceLine;
+        const brainCtx = normalizeSamContext(userProfile && userProfile.sam_context);
+        if (effectiveVoice) brainCtx.voice.profile = effectiveVoice;
+        if (userProfile && userProfile.name && !brainCtx.identity.name) brainCtx.identity.name = userProfile.name;
+        if (userProfile && userProfile.voice_version) brainCtx.voice.version = userProfile.voice_version;
+
+        profileContext = buildBrainPrompt(brainCtx);
+
+        const vp = effectiveVoice || brainCtx.voice.profile || '';
+        if (vp) {
+          profileContext += '\n\nVOICE DNA — CRITICAL INSTRUCTION: Apply forensic voice fingerprint in every response. Match sentence rhythm, punctuation personality, actual phrases, energy signature. Never generic AI polish.\nVoice fingerprint: ' + vp.slice(0, 800);
+        }
       }
       if (userId && userId !== 'anon' && !userId.startsWith('anon-')) {
         profileContext += `\n\nMEMORY & CONTINUITY:\nYou have persistent memory of this user across sessions:\n- Their Voice DNA profile (above) — how they actually write\n- Their story context and niche (above, if present)\n- Past conversations stored in your database\nWhen the user asks "do you remember me" or "what do you know about me", be honest and specific. Reference what's actually in the profile. Never disclaim memory you have. If you genuinely don't have something (e.g., a specific event they mention from before that's not in context), say so plainly — don't fall back to generic "I can't remember between sessions" disclaimers, because that's false.\n\nHOW VOICE DNA UPDATES: The user's Voice DNA profile only updates when they explicitly submit new writing samples through the Voice Trainer (the 🧬 button in the nav, Workshop, or chat header). Chat conversations with you do NOT automatically update their voice profile — they're saved to your memory of past chats, but not analyzed into voice traits. If a user asks how to refine their voice profile or says "you'll learn my voice over time," gently point them to Voice Trainer rather than implying chat alone evolves their profile.`;

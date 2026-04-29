@@ -4,6 +4,8 @@
 // POST /api/wizard-save
 // Body: { email: string, context: object }
 
+const { mapWizardToSchemaV2, loadUserContext, saveUserContext } = require('./_context');
+
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -20,52 +22,20 @@ module.exports = async function handler(req, res) {
   const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!SUPABASE_URL || !SERVICE_KEY) return res.status(200).json({ ok: false, reason: 'no config' });
 
-  // Strip voice/binary fields before saving
-  const toSave = Object.assign({}, context);
-  delete toSave.voiceProfile;
-  delete toSave.voiceCalibrated;
-  delete toSave.voiceSample;
-  delete toSave.brandLogo;
-  delete toSave.storyPhoto;
-  delete toSave.thumbPhoto;
+  // Strip binary fields
+  const stripped = Object.assign({}, context);
+  delete stripped.voiceProfile; delete stripped.voiceCalibrated;
+  delete stripped.voiceSample; delete stripped.brandLogo;
+  delete stripped.storyPhoto; delete stripped.thumbPhoto;
 
   try {
-    const enc = encodeURIComponent(email.toLowerCase());
+    const { ctx: existingCtx, uid } = await loadUserContext(email);
+    if (!uid) return res.status(200).json({ ok: false, reason: 'user not found' });
 
-    // Find the row with tier != null (real paid/trial row) for this email
-    // Order by last_seen desc to get most recently active row
-    const findR = await fetch(
-      `${SUPABASE_URL}/rest/v1/sam_users?email=eq.${enc}&select=uid,tier&order=last_seen.desc.nullslast&limit=10`,
-      { headers: { 'apikey': SERVICE_KEY, 'Authorization': `Bearer ${SERVICE_KEY}` } }
-    );
-    if (!findR.ok) throw new Error('Find failed');
-    const rows = await findR.json();
-    if (!Array.isArray(rows) || rows.length === 0) return res.status(200).json({ ok: false, reason: 'user not found' });
-
-    // Prefer row with a real tier (not null/free anon rows)
-    const targetRow = rows.find(r => r.tier && r.tier !== 'free') || rows[0];
-    const uid = targetRow.uid;
-
-    const updateR = await fetch(
-      `${SUPABASE_URL}/rest/v1/sam_users?uid=eq.${encodeURIComponent(uid)}`,
-      {
-        method: 'PATCH',
-        headers: {
-          'apikey': SERVICE_KEY,
-          'Authorization': `Bearer ${SERVICE_KEY}`,
-          'Content-Type': 'application/json',
-          'Prefer': 'return=minimal'
-        },
-        body: JSON.stringify({
-          sam_context: JSON.stringify(toSave),
-          last_seen: new Date().toISOString()
-        })
-      }
-    );
-
-    if (!updateR.ok) throw new Error('Update failed: ' + await updateR.text());
-    console.log('[wizard-save] saved to uid:', uid, 'tier:', targetRow.tier);
-    return res.status(200).json({ ok: true, uid });
+    const newCtx = mapWizardToSchemaV2(stripped, existingCtx);
+    const ok = await saveUserContext(email, newCtx, uid);
+    console.log('[wizard-save] v2 save:', ok, 'uid:', uid);
+    return res.status(200).json({ ok, uid });
 
   } catch(e) {
     console.error('[wizard-save]', e.message);
