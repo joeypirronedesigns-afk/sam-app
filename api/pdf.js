@@ -9,7 +9,8 @@ module.exports = async function handler(req, res) {
 
   try {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
-    const { type, playbookData, leadMagnetData, brandData } = body;
+    const { type, playbookData, leadMagnetData, brandData, nextToolData } = body;
+    if (playbookData && nextToolData) playbookData.nextToolData = nextToolData;
 
     if (!type || (type !== 'playbook' && type !== 'leadmagnet')) {
       return res.status(400).json({ error: 'type must be playbook or leadmagnet' });
@@ -738,7 +739,29 @@ function buildPlaybookHTML(pb, brand) {
     </div>`);
   }
 
-  return wrap(`SAM · ${e(brandName)} · ${e(docType)}`, brandColor, pages.join('\n'));
+  // ── Next Steps Appendix ───────────────────────────────────────────────────
+  const nextToolData = pb.nextToolData || null;
+  if (nextToolData && nextToolData.length > 0) {
+    const cards = nextToolData.map(item => `
+      <div class="module-card" style="margin-bottom:12pt;page-break-inside:avoid;">
+        ${item.label ? `<div class="module-label">${e(item.label)}</div><div class="module-rule"></div>` : ''}
+        <div class="body-copy" style="white-space:pre-line;">${e(item.body)}</div>
+      </div>`).join('');
+
+    pages.push(`<div class="pdf-page pdf-page--interior">
+      ${hdr(brandName, docType, String(pages.length + 1).padStart(2,'0'))}
+      <div class="section-body">
+        <div class="meta-label" style="color:#8B3A2F;">Appendix A</div>
+        <div class="section-rule"></div>
+        <h2 class="section-title">What SAM recommends you create next.</h2>
+        <p class="body-copy" style="margin-bottom:20pt;color:#4A4640;">Based on your session, here are the next pieces SAM suggests building — ready to execute.</p>
+        ${cards}
+      </div>
+      ${ftr(brandName)}
+    </div>`);
+  }
+
+  return wrap(\`SAM · \${e(brandName)} · \${e(docType)}\`, brandColor, pages.join('\n'));
 }
 
 // ─── LEAD MAGNET BUILDER ──────────────────────────────────────────────────────

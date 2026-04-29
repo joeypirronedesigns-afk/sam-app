@@ -13722,13 +13722,28 @@ async function downloadPDF(type) {
     const isDevMode = localStorage.getItem('sam_dev') === 'true';
     const tier = isDevMode ? 'studio' : (typeof getTrialState === 'function' ? (getTrialState().tier || getTrialState().paid ? 'paid' : 'free') : (WS.tier || 'free'));
 
+    // Collect next-tool output data from DOM if present
+    const nextToolEl = document.getElementById('nextToolOutput');
+    const nextToolData = [];
+    if (nextToolEl) {
+      const cards = nextToolEl.querySelectorAll('[data-copy]');
+      cards.forEach(function(card) {
+        const labelEl = card.querySelector('[style*="uppercase"]') || card.querySelector('[style*="text-transform"]');
+        const bodyEl = card.querySelector('[style*="line-height"]') || card.querySelector('[style*="font-size:13px"]');
+        const label = labelEl ? (labelEl.innerText || labelEl.textContent || '').trim() : '';
+        const body = card.dataset.copy || (bodyEl ? (bodyEl.innerText || bodyEl.textContent || '').trim() : '');
+        if (body) nextToolData.push({ label: label, body: body });
+      });
+    }
+
     const payload = {
       type,
       userId,
       tier,
       brandData,
       playbookData: pb,
-      leadMagnetData: pb.lead_magnet || {}
+      leadMagnetData: pb.lead_magnet || {},
+      nextToolData: nextToolData.length > 0 ? nextToolData : null
     };
 
     const res = await fetch('/api/pdf', {
