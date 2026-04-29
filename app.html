@@ -6297,7 +6297,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.35" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.36" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6381,7 +6381,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.35</div>
+  <div class="qs-version-stamp">Quiet Studio v9.36</div>
 </div>
 
   </aside>
@@ -9692,7 +9692,7 @@ async function getCurrentUser() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email })
     }).then(r => r.json());
-    if (data && data.user) { writeUserCache(data.user); return data.user; }
+    if (data && data.user) { writeUserCache(data.user); renderNavIdentity(data.user); return data.user; }
   } catch {}
   return null;
 }
@@ -9737,6 +9737,34 @@ async function claimAnonymousChatHistory(email) {
 }
 // ─────────────────────────────────────────────────────────────────────────────
 
+
+function resolveNavUser(user) {
+  const cached = typeof readUserCache === 'function' ? readUserCache() : null;
+  const trial = typeof getTrialState === 'function' ? getTrialState() : null;
+  return user || cached || (trial && trial.email ? trial : null) || null;
+}
+
+function renderNavIdentity(user) {
+  const signInBtn = document.querySelector('.nav-signin-btn');
+  if (!signInBtn) return;
+  const resolved = resolveNavUser(user);
+  const rawName = resolved && (resolved.name || resolved.full_name || resolved.first_name || resolved.email);
+  const label = rawName
+    ? (rawName.includes('@') ? rawName.split('@')[0] : rawName.split(' ')[0])
+    : null;
+  if (label) {
+    signInBtn.textContent = label;
+    signInBtn.style.color = '';
+    signInBtn.style.borderColor = '';
+    signInBtn.dataset.auth = 'true';
+  } else {
+    signInBtn.textContent = 'Sign in';
+    signInBtn.style.color = '';
+    signInBtn.style.borderColor = '';
+    signInBtn.dataset.auth = 'false';
+    if (typeof openSignInModal === 'function') signInBtn.onclick = openSignInModal;
+  }
+}
 function initTrial() {
   const state = getTrialState();
 
@@ -9767,21 +9795,7 @@ function updateTrialBadge(state) {
   const _cu = getCurrentUserCached();
   const _u  = _cu || (state && state.email ? state : null);
 
-  const signInBtn = document.querySelector('.nav-signin-btn');
-  if (signInBtn) {
-    if (_u && _u.email) {
-      const displayName = _u.name ? _u.name.split(' ')[0] : _u.email.split('@')[0];
-      signInBtn.textContent = '✓ ' + displayName;
-      signInBtn.style.borderColor = 'rgba(32,128,141,0.4)';
-      signInBtn.style.color = 'var(--accent)';
-      signInBtn.onclick = null;
-    } else {
-      signInBtn.textContent = 'Sign in';
-      signInBtn.style.borderColor = 'rgba(255,255,255,0.15)';
-      signInBtn.style.color = 'var(--ink-soft)';
-      signInBtn.onclick = openSignInModal;
-    }
-  }
+  renderNavIdentity(_u);
 
   // ── "See plans" — hidden for paid users ─────────────────────────────────────
   const _paid = (_u && _u.paid) || (state && state.paid);
@@ -11556,7 +11570,7 @@ function saveToIdeas(opts){return IB.add(opts)}
 function makeIbSaveBtn(text,type,subtype,platform){const e=(text||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,'\\n').slice(0,300);return '<button class="save-to-ideas-btn" onclick="ibSaveBtnClick(this,\''+e+'\',\''+type+'\',\''+(subtype||'')+'\',\''+(platform||'')+'\')">&#128156; Save to Ideas</button>'}
 function ibSaveBtnClick(btn,text,type,subtype,platform){const t=text.replace(/\\n/g,'\n');IB.forceAdd({text:t,type,subtype,platform});const bl=btn.getAttribute('data-base-label')||btn.innerHTML;btn.setAttribute('data-base-label',bl);btn.textContent='Saved!';btn.classList.add('saved');IB.updateNavBadge();setTimeout(()=>{btn.innerHTML=bl;btn.classList.remove('saved')},2000)}
 function initIdeasBank(){IB.updateNavBadge()}
-function forceNavRefresh(){try{const c=readUserCache();if(c&&c.email){writeUserCache(c);if(typeof updateTrialBadge==='function'){const ts=typeof getTrialState==='function'?getTrialState():{};updateTrialBadge(ts);}}}catch(e){console.warn('forceNavRefresh:',e)}}
+function forceNavRefresh(){try{const c=readUserCache();const t=getTrialState();const u=c||(t&&t.email?t:null);if(u){if(typeof writeUserCache==='function')writeUserCache(u);renderNavIdentity(u);}}catch(e){console.warn('forceNavRefresh:',e)}}
 // ══ END SAM IDEAS BANK ══
 
 // ── DEV MODE ─────────────────────────────────────────────────────────────────
@@ -16038,7 +16052,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
         });
         const data = await res.json();
         if (data.success && data.user) {
-          writeUserCache(data.user);
+          writeUserCache(data.user); renderNavIdentity(data.user);
           claimAnonymousChatHistory(data.user.email);
           localStorage.setItem('samFirstRunDone', 'true');
           showToastMsg('Welcome back' + (data.user.name ? ', ' + data.user.name.split(' ')[0] : '') + '! 🎉', 'var(--accent)');
