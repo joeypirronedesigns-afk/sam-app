@@ -6382,7 +6382,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.51" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.52" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6466,7 +6466,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.51</div>
+  <div class="qs-version-stamp">Quiet Studio v9.52</div>
 </div>
 
   </aside>
@@ -12004,18 +12004,40 @@ function restoreSessionIfAvailable() {
 
 function doRestoreSession() {
   try {
-    // If WS is empty, wait for getCurrentUser to hydrate from server first
-    if (typeof WS !== 'undefined' && !WS.brandName && !WS.storyText) {
-      if (typeof getCurrentUser === 'function') {
-        getCurrentUser().then(function() {
-          setTimeout(function() { doRestoreSession(); }, 100);
-        });
-        return;
-      }
-    }
     const saved = localStorage.getItem('sam_session_v2');
     const step = localStorage.getItem('sam_session_step') || '0';
-    if (!saved || step === '0') return;
+    const _peek = saved ? JSON.parse(saved) : {};
+    const _hasLocal = !!(_peek.brandName || _peek.storyText || (parseInt(_peek._currentStep) >= 1));
+
+    // No local data — try server samContext (api/me returns samContext camelCase)
+    if (!_hasLocal) {
+      if (window.__samRestorePending) return; // prevent overlapping boot fetches
+      window.__samRestorePending = true;
+      if (typeof getCurrentUser === 'function') {
+        getCurrentUser().then(function(user) {
+          window.__samRestorePending = false;
+          if (!user || !user.samContext) return;
+          try {
+            var _ctx = JSON.parse(user.samContext);
+            var _usable = _ctx && (
+              _ctx.brandName || _ctx.storyText ||
+              (parseInt(_ctx._currentStep) >= 1)
+            );
+            if (_usable) {
+              Object.assign(WS, _ctx);
+              localStorage.setItem('sam_session_v2', JSON.stringify(_ctx));
+              localStorage.setItem('sam_session_step', String(_ctx._currentStep || '1'));
+              localStorage.setItem('sam_session_ts', Date.now().toString());
+              setTimeout(function() { doRestoreSession(); }, 50);
+            }
+          } catch(e) { console.error('[restore] samContext parse failed', e); }
+        }).catch(function() { window.__samRestorePending = false; });
+      }
+      return;
+    }
+
+    // Local data exists — restore from it
+    if (step === '0' && !_hasLocal) return;
     // Open the wizard panel (idempotent — safe even if already open)
     const _wp = document.getElementById('wizardPage');
     if (_wp) _wp.classList.add('open');
