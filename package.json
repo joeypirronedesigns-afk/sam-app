@@ -7,8 +7,8 @@
   },
   "dependencies": {
     "@vercel/kv": "^1.0.0",
-    "puppeteer-core": "^22.15.0",
+    "puppeteer-core": "^24.42.0",
     "stripe": "^14.0.0",
-    "@sparticuz/chromium": "^123.0.1"
+    "@sparticuz/chromium": "^148.0.0"
   }
 }
