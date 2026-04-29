@@ -6355,7 +6355,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.44" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.45" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6439,7 +6439,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.44</div>
+  <div class="qs-version-stamp">Quiet Studio v9.45</div>
 </div>
 
   </aside>
@@ -12221,7 +12221,7 @@ async function refineVoice() {
     const data = await resp.json();
     if (!resp.ok || !data.ok) throw new Error(data.error || 'Analysis failed');
 
-    writeUserCache({ ...user, voice_profile: data.analysis, voice_version: data.voice_version });
+    writeUserCache({ ...user, voice_profile: data.analysis, voice_version: data.voice_version }); if (typeof fetchVoiceStatus === 'function') setTimeout(fetchVoiceStatus, 500);
 
     const newTraitCount = countVoiceTraits(data.analysis);
     document.getElementById('vtResultBadge').textContent =
