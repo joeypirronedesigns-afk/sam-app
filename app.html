@@ -99,7 +99,7 @@
       z-index: 0;
       opacity: 0.18;
     }
-    .ambient-1 { width: 500px; height: 500px; background: #A78BFA; top: -150px; left: -120px; }
+    .ambient-1 { width: 500px; height: 500px; background: var(--accent); top: -150px; left: -120px; }
     .ambient-2 { width: 400px; height: 400px; background: var(--accent); bottom: 100px; right: -100px; }
     .ambient-3 { width: 300px; height: 300px; background: #38BDF8; top: 50%; left: 50%; transform: translate(-50%,-50%); opacity: 0.07; }
 
@@ -161,7 +161,7 @@
       font-size: 13px;
       font-weight: 600;
       color: #fff;
-      background: linear-gradient(135deg, #6D28D9, #A78BFA, var(--accent));
+      background: linear-gradient(135deg, #6D28D9, var(--accent), var(--accent));
       border: none;
       border-radius: 50px;
       padding: 8px 18px;
@@ -285,7 +285,7 @@
     }
     .hero-title-desktop em {
       font-style: normal;
-      background: linear-gradient(135deg, var(--accent), #A78BFA, #38BDF8);
+      background: linear-gradient(135deg, var(--accent), var(--accent), #38BDF8);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -303,7 +303,7 @@
     }
     .hero-mobile h1 em {
       font-style: normal;
-      background: linear-gradient(135deg, var(--accent), #A78BFA, #38BDF8);
+      background: linear-gradient(135deg, var(--accent), var(--accent), #38BDF8);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -341,7 +341,7 @@
       border-radius: 50px;
       border: none;
       cursor: pointer;
-      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, var(--accent));
+      background: linear-gradient(135deg, #6D28D9, var(--accent) 50%, var(--accent));
       color: #fff;
       transition: all 0.25s;
       box-shadow: 0 0 30px rgba(167,139,250,0.3);
@@ -399,7 +399,7 @@
       margin-top: 5px;
     }
     .grad-pink { background: linear-gradient(135deg, var(--accent), #EC4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .grad-purple { background: linear-gradient(135deg, #A78BFA, #818CF8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .grad-purple { background: linear-gradient(135deg, var(--accent), #818CF8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .grad-cyan { background: linear-gradient(135deg, #67E8F9, #38BDF8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .grad-green { background: linear-gradient(135deg, #6EE7B7, var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 
@@ -419,7 +419,7 @@
       width: 56px;
       height: 56px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #6D28D9, #A78BFA);
+      background: linear-gradient(135deg, #6D28D9, var(--accent));
       border: none;
       cursor: pointer;
       display: flex;
@@ -502,7 +502,7 @@
       width: 34px;
       height: 34px;
       border-radius: 10px;
-      background: linear-gradient(135deg, #6D28D9, #A78BFA);
+      background: linear-gradient(135deg, #6D28D9, var(--accent));
       display: flex;
       align-items: center;
       justify-content: center;
@@ -566,7 +566,7 @@
       border-radius: 50px;
       font-size: 12px;
       font-weight: 700;
-      color: #A78BFA;
+      color: var(--accent);
       cursor: pointer;
       transition: all 0.2s;
       font-family: inherit;
@@ -612,7 +612,7 @@
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #6D28D9, #A78BFA);
+      background: linear-gradient(135deg, #6D28D9, var(--accent));
       border: none;
       cursor: pointer;
       color: #fff;
@@ -667,7 +667,7 @@
       font-weight: 700;
       color: var(--text);
       line-height: 1.4;
-      border-left: 3px solid #A78BFA;
+      border-left: 3px solid var(--accent);
       padding-left: 10px;
       margin-bottom: 8px;
     }
@@ -710,7 +710,7 @@
     }
     .psam-platform-hashtags {
       font-size: 11px;
-      color: #A78BFA;
+      color: var(--accent);
       margin-bottom: 6px;
     }
     .psam-output-actions {
@@ -735,7 +735,7 @@
       font-family: inherit;
     }
     .psam-act-btn:hover { border-color: rgba(167,139,250,0.4); color: #fff; background: rgba(167,139,250,0.1); }
-    .psam-act-save { color: #A78BFA !important; border-color: rgba(167,139,250,0.25) !important; }
+    .psam-act-save { color: var(--accent) !important; border-color: rgba(167,139,250,0.25) !important; }
     .psam-act-save:hover { background: rgba(167,139,250,0.15) !important; }
 
     /* ── TOOL SECTION ── */
@@ -1070,10 +1070,10 @@
     }
 
     .tool-header-title {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
       font-size: 22px;
       font-weight: 700;
-      color: var(--text);
+      color: var(--ink);
       letter-spacing: -0.02em;
     }
 
@@ -1183,9 +1183,9 @@
     .platform-pill:hover { border-color: var(--border2); color: var(--text); }
     .platform-pill.sel {
       color: #ffffff !important;
-      border-color: #A78BFA !important;
+      border-color: var(--accent) !important;
       background: #20808D !important;
-      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, var(--accent)) !important;
+      background: linear-gradient(135deg, #6D28D9, var(--accent) 50%, var(--accent)) !important;
       font-weight: 700 !important;
       box-shadow: 0 0 16px rgba(167,139,250,0.5) !important;
       -webkit-text-fill-color: #ffffff !important;
@@ -1201,8 +1201,8 @@
       align-items: center;
       gap: 8px;
       padding: 11px 14px;
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: var(--surface-2);
+      border: 1px solid var(--rule);
       border-radius: var(--radius);
       cursor: pointer;
       transition: all 0.15s;
@@ -1213,12 +1213,12 @@
       font-weight: 500;
     }
     .opt-btn.sel {
-      background: rgba(124,58,237,0.25) !important;
-      border-color: #A78BFA !important;
-      color: #ffffff !important;
+      background: var(--accent-soft) !important;
+      border-color: var(--accent) !important;
+      color: var(--ink) !important;
       font-weight: 600 !important;
     }
-    .opt-btn:hover { border-color: var(--border2); }
+    .opt-btn:hover { border-color: var(--accent); }
 
     select {
       width: 100%;
@@ -1320,7 +1320,7 @@
       font-weight: 600;
       letter-spacing: 0.02em;
       color: transparent;
-      background: linear-gradient(90deg, #A78BFA, var(--accent), #FBB824, #A78BFA);
+      background: linear-gradient(90deg, var(--accent), var(--accent), #FBB824, var(--accent));
       background-size: 300% 100%;
       -webkit-background-clip: text;
       background-clip: text;
@@ -1565,7 +1565,7 @@
     .setup-sub { font-size: 14px; color: var(--ink-soft); margin-bottom: 24px; line-height: 1.5; }
     .setup-field { margin-bottom: 18px; }
     .setup-field-label { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 8px; }
-    .setup-save-btn { width: 100%; padding: 15px; background: linear-gradient(135deg, #6D28D9, #A78BFA, var(--accent)); border: none; border-radius: var(--radius); font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 600; color: #fff; cursor: pointer; transition: all 0.2s; margin-top: 8px; }
+    .setup-save-btn { width: 100%; padding: 15px; background: linear-gradient(135deg, #6D28D9, var(--accent), var(--accent)); border: none; border-radius: var(--radius); font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 600; color: #fff; cursor: pointer; transition: all 0.2s; margin-top: 8px; }
     .setup-save-btn:hover { transform: translateY(-1px); box-shadow: 0 0 30px rgba(167,139,250,0.3); }
 
     /* Chips */
@@ -1582,38 +1582,38 @@
     /* ── IDEAS BANK ── */
     .ideas-nav-btn{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--ink-soft);background:var(--surface);border:1px solid var(--border);border-radius:50px;padding:7px 14px;cursor:pointer;transition:all 0.2s;position:relative;}
     .ideas-nav-btn:hover{border-color:var(--border2);color:var(--text);}
-    .ideas-count-badge{position:absolute;top:-5px;right:-5px;width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#A78BFA,var(--accent));color:#fff;font-size:10px;font-weight:700;display:none;align-items:center;justify-content:center;border:2px solid var(--bg);}
+    .ideas-count-badge{position:absolute;top:-5px;right:-5px;width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent));color:#fff;font-size:10px;font-weight:700;display:none;align-items:center;justify-content:center;border:2px solid var(--bg);}
     .ideas-count-badge.show{display:flex;}
     .ideas-overlay{display:none;position:fixed;inset:0;z-index:900;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);}
     .ideas-overlay.open{display:block;}
-    .ideas-panel{position:fixed;top:0;right:0;bottom:0;width:100%;max-width:480px;background:rgba(13,11,22,0.98);border-left:1px solid var(--border2);z-index:901;display:flex;flex-direction:column;transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1);overflow:hidden;}
+    .ideas-panel{position:fixed;top:0;right:0;bottom:0;width:100%;max-width:480px;background: var(--paper);border-left: 1px solid var(--rule);z-index:901;display:flex;flex-direction:column;transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1);overflow:hidden;}
     .ideas-panel.open{transform:translateX(0);}
-    .ideas-panel-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid var(--border);flex-shrink:0;position:relative;}
-    .ideas-panel-header::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,#A78BFA,var(--accent),transparent);}
-    .ideas-panel-title{font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--text);}
+    .ideas-panel-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom: 1px solid var(--rule);flex-shrink:0;position:relative;}
+    .ideas-panel-header::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent),transparent);}
+    .ideas-panel-title{font-family: 'Inter', system-ui, sans-serif;font-size:18px;font-weight:700;color: var(--ink);}
     .ideas-panel-title span{font-size:13px;font-weight:500;color:var(--ink-muted);margin-left:8px;font-family:'Inter',sans-serif;}
     .ideas-close-btn{width:32px;height:32px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);color:var(--ink-muted);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;}
     .ideas-close-btn:hover{color:var(--text);border-color:var(--border2);}
-    .ideas-search-bar{padding:12px 20px;border-bottom:1px solid var(--border);flex-shrink:0;display:flex;flex-direction:column;gap:10px;}
+    .ideas-search-bar{padding:12px 20px;border-bottom: 1px solid var(--rule);flex-shrink:0;display:flex;flex-direction:column;gap:10px;}
     .ideas-search-wrap{position:relative;}
     .ideas-search-wrap::before{content:"⌕";position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--ink-muted);font-size:16px;pointer-events:none;z-index:1;}
-    .ideas-search-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 14px 10px 36px;font-family:"Inter",sans-serif;font-size:14px;color:var(--text);-webkit-appearance:none;}
-    .ideas-search-input:focus{outline:none;border-color:var(--border2);}
+    .ideas-search-input{width:100%;background: var(--surface-2);border: 1px solid var(--rule);border-radius:10px;padding:10px 14px 10px 36px;font-family:"Inter",sans-serif;font-size:14px;color: var(--ink);-webkit-appearance:none;}
+    .ideas-search-input:focus{outline:none;border-color: var(--accent);}
     .ideas-search-input::placeholder{color:var(--ink-muted);}
     .ideas-filters{display:flex;gap:6px;flex-wrap:wrap;}
-    .ideas-filter-btn{font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--ink-muted);cursor:pointer;transition:all 0.15s;}
-    .ideas-filter-btn.active{background:linear-gradient(135deg,rgba(109,40,217,0.25),var(--accent-soft));border-color:rgba(167,139,250,0.5);color:var(--text);}
+    .ideas-filter-btn{font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;border: 1px solid var(--rule);background: var(--surface-2);color:var(--ink-muted);cursor:pointer;transition:all 0.15s;}
+    .ideas-filter-btn.active{background: var(--accent-soft);border-color: var(--accent);color: var(--accent);}
     .ideas-list{flex:1;overflow-y:auto;padding:12px 20px 80px;}
     .ideas-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;}
     .ideas-empty-icon{font-size:40px;margin-bottom:16px;}
-    .ideas-empty-title{font-family:"Sora",sans-serif;font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px;}
+    .ideas-empty-title{font-family: 'Inter', system-ui, sans-serif;font-size:18px;font-weight:700;color: var(--ink);margin-bottom:8px;}
     .ideas-empty-sub{font-size:14px;color:var(--ink-muted);line-height:1.6;max-width:280px;}
     .idea-bank-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:10px;position:relative;overflow:hidden;}
     .idea-bank-card::before{content:"";position:absolute;top:0;left:0;width:3px;height:100%;border-radius:14px 0 0 14px;}
     .idea-bank-card:hover{border-color:var(--border2);}
     .idea-bank-card.type-pulse::before{background:var(--accent);}
     .idea-bank-card.type-spark::before{background:var(--accent);}
-    .idea-bank-card.type-wizard::before{background:linear-gradient(180deg,#A78BFA,var(--accent));}
+    .idea-bank-card.type-wizard::before{background:linear-gradient(180deg,var(--accent),var(--accent));}
     .idea-bank-card.type-vision::before{background:var(--vision);}
     .idea-bank-card.type-blueprint::before{background:var(--blueprint);}
     .idea-bank-card.type-lens::before{background:var(--lens);}
@@ -1634,15 +1634,15 @@
     .idea-bank-card-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
     .idea-bank-date{font-size:11px;color:var(--ink-muted);}
     .idea-status-select{display:flex;gap:4px;}
-    .idea-status-btn{font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--ink-muted);cursor:pointer;transition:all 0.15s;}
-    .idea-status-btn.active-saved{background:rgba(167,139,250,0.15);border-color:rgba(167,139,250,0.4);color:var(--accent);}
+    .idea-status-btn{font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;border: 1px solid var(--rule);background:transparent;color:var(--ink-muted);cursor:pointer;transition:all 0.15s;}
+    .idea-status-btn.active-saved{background: var(--accent-soft);border-color: var(--accent);color:var(--accent);}
     .idea-status-btn.active-scripting{background:var(--blueprint-bg);border-color:var(--blueprint-border);color:var(--blueprint);}
     .idea-status-btn.active-filmed{background:rgba(32,128,141,0.15);border-color:rgba(32,128,141,0.4);color:var(--lens);}
     .idea-status-btn.active-posted{background:rgba(32,128,141,0.15);border-color:rgba(32,128,141,0.4);color:var(--vision);}
-    .ideas-panel-footer{padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:10px;flex-shrink:0;background:rgba(13,11,22,0.95);}
-    .ideas-footer-btn{flex:1;padding:10px;border-radius:var(--radius);font-family:"Sora",sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;text-align:center;}
-    .ideas-footer-clear{background:transparent;border:1px solid var(--border);color:var(--ink-muted);}
-    .ideas-footer-export{background:linear-gradient(135deg,rgba(109,40,217,0.2),var(--accent-soft));border:1px solid rgba(167,139,250,0.3);color:var(--text);}
+    .ideas-panel-footer{padding:12px 20px;border-top: 1px solid var(--rule);display:flex;gap:10px;flex-shrink:0;background: var(--paper);}
+    .ideas-footer-btn{flex:1;padding:10px;border-radius:var(--radius);font-family: 'Inter', system-ui, sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;text-align:center;}
+    .ideas-footer-clear{background:transparent;border: 1px solid var(--rule);color:var(--ink-muted);}
+    .ideas-footer-export{background: var(--accent);border: 1px solid var(--rule);color: var(--paper);}
     .save-to-ideas-btn{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted);background:var(--surface-2);border:1px solid var(--rule);border-radius:6px;padding:5px 12px;cursor:pointer;transition:all 0.15s;font-family:'Inter',system-ui,sans-serif;}
     .save-to-ideas-btn:hover{background:var(--paper);border-color:var(--rule-strong);color:var(--ink);}
     .save-to-ideas-btn.saved{color:var(--vision);background:var(--vision-bg);border-color:var(--vision-border);pointer-events:none;}
@@ -1720,7 +1720,7 @@
       font-weight: 700;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      background: linear-gradient(135deg,#A78BFA,var(--accent));
+      background: linear-gradient(135deg,var(--accent),var(--accent));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -1784,7 +1784,7 @@
     }
     .pro-hero-title em {
       font-style: normal;
-      background: linear-gradient(135deg, var(--accent), #A78BFA, #38BDF8);
+      background: linear-gradient(135deg, var(--accent), var(--accent), #38BDF8);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -1849,7 +1849,7 @@
       position: absolute;
       top: 0; left: 8%; right: 8%;
       height: 1px;
-      background: linear-gradient(90deg, transparent, #A78BFA, var(--accent), transparent);
+      background: linear-gradient(90deg, transparent, var(--accent), var(--accent), transparent);
     }
 
     .pro-card-badge {
@@ -1924,7 +1924,7 @@
       letter-spacing: 0.02em;
     }
     .pro-btn-grad {
-      background: linear-gradient(135deg,#6D28D9,#A78BFA 50%,var(--accent));
+      background: linear-gradient(135deg,#6D28D9,var(--accent) 50%,var(--accent));
       color: #fff;
       box-shadow: 0 0 30px rgba(167,139,250,0.3);
     }
@@ -2062,7 +2062,7 @@
                   </div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;">
           <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;">
-            <div style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#A78BFA;margin-bottom:12px;">✦ What you walk out with</div>
+            <div style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">✦ What you walk out with</div>
             <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;">A complete content story</div>
             <div style="font-size:14px;color:var(--ink-soft);line-height:1.6;">Hook that stops the scroll. Word-for-word script. Platform strategy for every channel you care about. Captions and hashtags. All from one real moment or story you shared with SAM.</div>
           </div>
@@ -2087,7 +2087,7 @@
             <div style="font-size:14px;color:var(--ink-soft);line-height:1.6;">English, Spanish, French, Portuguese, German, Italian, Dutch, Japanese, Korean, Hindi, Arabic and Mandarin. SAM doesn't translate your content — it thinks and writes in your language from the start.</div>
           </div>
           <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;">
-            <div style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#A78BFA;margin-bottom:12px;">✦ Your brand. Every time.</div>
+            <div style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">✦ Your brand. Every time.</div>
             <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;">Every document comes out as yours</div>
             <div style="font-size:14px;color:var(--ink-soft);line-height:1.6;">Your logo. Your colors. Your name. Every story, lead magnet and audience resource SAM builds is branded as yours — ready to share, download or hand to a client.</div>
           </div>
@@ -2154,7 +2154,7 @@
       border-radius: 50px;
       border: none;
       cursor: pointer;
-      background: linear-gradient(135deg,#6D28D9,#A78BFA 50%,var(--accent));
+      background: linear-gradient(135deg,#6D28D9,var(--accent) 50%,var(--accent));
       color: #fff;
       box-shadow: 0 0 40px rgba(167,139,250,0.35);
       transition: all 0.25s;
@@ -2200,7 +2200,7 @@
       position: absolute;
       top: 0; left: 8%; right: 8%;
       height: 1px;
-      background: linear-gradient(90deg,transparent,#A78BFA,var(--accent),transparent);
+      background: linear-gradient(90deg,transparent,var(--accent),var(--accent),transparent);
     }
 
     .wl-close {
@@ -2259,7 +2259,7 @@
       font-size: 16px !important;
       color: #F0ECFF !important;
       -webkit-text-fill-color: #F0ECFF !important;
-      caret-color: #A78BFA;
+      caret-color: var(--accent);
       transition: border-color 0.2s;
       -webkit-appearance: none;
       appearance: none;
@@ -2275,7 +2275,7 @@
     .wl-input:-webkit-autofill:focus {
       -webkit-box-shadow: 0 0 0 1000px #1a1428 inset !important;
       -webkit-text-fill-color: #F0ECFF !important;
-      caret-color: #A78BFA;
+      caret-color: var(--accent);
       border-color: rgba(167,139,250,0.5) !important;
     }
     .wl-input:focus { outline: none; border-color: rgba(167,139,250,0.6); background: rgba(255,255,255,0.07); }
@@ -2290,7 +2290,7 @@
       font-size: 15px;
       font-weight: 700;
       cursor: pointer;
-      background: linear-gradient(135deg,#6D28D9,#A78BFA 50%,var(--accent));
+      background: linear-gradient(135deg,#6D28D9,var(--accent) 50%,var(--accent));
       color: #fff;
       box-shadow: 0 0 30px rgba(167,139,250,0.3);
       transition: all 0.2s;
@@ -2376,7 +2376,7 @@
       position: absolute;
       top: 0; left: 0; right: 0;
       height: 2px;
-      background: linear-gradient(90deg, #6D28D9, #A78BFA, var(--accent), #38BDF8);
+      background: linear-gradient(90deg, #6D28D9, var(--accent), var(--accent), #38BDF8);
     }
 
     .trial-sam-logo {
@@ -2400,7 +2400,7 @@
     }
     .trial-headline em {
       font-style: normal;
-      background: linear-gradient(135deg, var(--accent), #A78BFA, #38BDF8);
+      background: linear-gradient(135deg, var(--accent), var(--accent), #38BDF8);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -2444,7 +2444,7 @@
       font-size: 16px !important;
       color: #F0ECFF !important;
       -webkit-text-fill-color: #F0ECFF !important;
-      caret-color: #A78BFA;
+      caret-color: var(--accent);
       transition: border-color 0.2s;
       -webkit-appearance: none;
       appearance: none;
@@ -2459,7 +2459,7 @@
     .trial-input:-webkit-autofill:focus {
       -webkit-box-shadow: 0 0 0 1000px #1a1428 inset !important;
       -webkit-text-fill-color: #F0ECFF !important;
-      caret-color: #A78BFA;
+      caret-color: var(--accent);
     }
     .trial-input::placeholder { color: var(--ink-muted); }
 
@@ -2472,7 +2472,7 @@
       font-size: 16px;
       font-weight: 700;
       cursor: pointer;
-      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, var(--accent));
+      background: linear-gradient(135deg, #6D28D9, var(--accent) 50%, var(--accent));
       color: #fff;
       box-shadow: 0 0 30px rgba(167,139,250,0.35);
       transition: all 0.2s;
@@ -2521,7 +2521,7 @@
       border-radius: 50px;
       border: none;
       cursor: pointer;
-      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, var(--accent));
+      background: linear-gradient(135deg, #6D28D9, var(--accent) 50%, var(--accent));
       color: #fff;
       box-shadow: 0 0 24px rgba(167,139,250,0.3);
       transition: all 0.2s;
@@ -2601,7 +2601,7 @@
       font-weight: 700;
       letter-spacing: -2px;
       line-height: 1;
-      background: linear-gradient(135deg, #A78BFA, var(--accent));
+      background: linear-gradient(135deg, var(--accent), var(--accent));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -2625,7 +2625,7 @@
       font-size: 16px;
       font-weight: 700;
       cursor: pointer;
-      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, var(--accent));
+      background: linear-gradient(135deg, #6D28D9, var(--accent) 50%, var(--accent));
       color: #fff;
       box-shadow: 0 0 30px rgba(167,139,250,0.35);
       transition: all 0.2s;
@@ -2669,7 +2669,7 @@
     .chat-btn {
       width: 56px; height: 56px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, var(--accent));
+      background: linear-gradient(135deg, #6D28D9, var(--accent) 50%, var(--accent));
       border: none;
       cursor: pointer;
       display: flex;
@@ -2767,7 +2767,7 @@
       border-bottom-left-radius: 4px;
     }
     .chat-msg.user .chat-bubble {
-      background: linear-gradient(135deg, #6D28D9, #A78BFA);
+      background: linear-gradient(135deg, #6D28D9, var(--accent));
       color: #fff;
       border-bottom-right-radius: 4px;
     }
@@ -2862,7 +2862,7 @@
     textarea:-webkit-autofill {
       -webkit-box-shadow: 0 0 0 1000px #0D0B16 inset !important;
       -webkit-text-fill-color: #F0ECFF !important;
-      caret-color: #A78BFA;
+      caret-color: var(--accent);
     }
 
     /* Mobile desktop hint — only shows on phones */
@@ -2877,7 +2877,7 @@
       position: relative;
       z-index: 99;
     }
-    .desktop-hint strong { color: #A78BFA; }
+    .desktop-hint strong { color: var(--accent); }
     @media (max-width: 899px) { .desktop-hint { display: block; } }
 
     /* Full-width divider bar with animated down arrows at each end */
@@ -2921,8 +2921,8 @@
       display: block;
       width: 7px;
       height: 7px;
-      border-right: 1.5px solid #A78BFA;
-      border-bottom: 1.5px solid #A78BFA;
+      border-right: 1.5px solid var(--accent);
+      border-bottom: 1.5px solid var(--accent);
       transform: rotate(45deg);
       animation: chev-drop 1.6s ease-in-out infinite;
     }
@@ -3871,7 +3871,7 @@
     }
     .wizard-entry-title em {
       font-style: normal;
-      background: linear-gradient(135deg, var(--accent), #A78BFA, #38BDF8);
+      background: linear-gradient(135deg, var(--accent), var(--accent), #38BDF8);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -3903,7 +3903,7 @@
       -webkit-tap-highlight-color: transparent;
     }
     .wizard-entry-primary {
-      background: linear-gradient(135deg, #6D28D9, #A78BFA 50%, var(--accent));
+      background: linear-gradient(135deg, #6D28D9, var(--accent) 50%, var(--accent));
       color: #fff;
       border: none;
       box-shadow: 0 0 24px rgba(167,139,250,0.3);
@@ -4007,7 +4007,7 @@
       .playbook-cover-badge {
         background: rgba(167,139,250,0.2) !important;
         border: 1px solid rgba(167,139,250,0.4) !important;
-        color: #A78BFA !important;
+        color: var(--accent) !important;
         padding: 6px 16px !important;
         border-radius: 30px !important;
         display: inline-block !important;
@@ -4029,7 +4029,7 @@
       }
 
       .playbook-cover-title em {
-        color: #A78BFA !important;
+        color: var(--accent) !important;
         font-style: normal !important;
       }
 
@@ -4056,7 +4056,7 @@
         font-weight: 700 !important;
         letter-spacing: 0.15em !important;
         text-transform: uppercase !important;
-        color: #A78BFA !important;
+        color: var(--accent) !important;
         margin-bottom: 4pt !important;
       }
 
@@ -4144,7 +4144,7 @@
       }
 
       .arch-opening { border-top: 2.5px solid #38BDF8 !important; }
-      .arch-setup   { border-top: 2.5px solid #A78BFA !important; }
+      .arch-setup   { border-top: 2.5px solid var(--accent) !important; }
       .arch-risk    { border-top: 2.5px solid var(--accent) !important; }
       .arch-turn    { border-top: 2.5px solid #FBBF24 !important; }
       .arch-payoff  { border-top: 2.5px solid var(--accent) !important; }
@@ -4333,7 +4333,7 @@
       /* ── WIZARD WHY BLOCKS ── */
       .wizard-why {
         background: #F4F2EC !important;
-        border-left: 3px solid #A78BFA !important;
+        border-left: 3px solid var(--accent) !important;
         border-radius: 0 6pt 6pt 0 !important;
         padding: 10pt 14pt !important;
         font-size: 9.5pt !important;
@@ -6298,7 +6298,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.29" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.30" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6382,7 +6382,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.29</div>
+  <div class="qs-version-stamp">Quiet Studio v9.30</div>
 </div>
 
   </aside>
@@ -6413,7 +6413,7 @@ body.quiet-studio-shell .qs-rail nav {
     </div>
     <button onclick="window.location.href='/meet'" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--ink);background:linear-gradient(135deg,rgba(109,40,217,0.3),var(--accent-soft));border:1px solid rgba(167,139,250,0.4);border-radius:50px;padding:7px 16px;cursor:pointer;transition:all 0.2s;font-family:'Sora',sans-serif;white-space:nowrap;" onmouseover="this.style.background='linear-gradient(135deg,rgba(109,40,217,0.5),var(--accent-soft))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(109,40,217,0.3),var(--accent-soft))'">✦ Talk with SAM</button>
     <button id="navStoryEngineBtn" onclick="openWizardPage(true)" style="display:none;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent);border-radius:6px;padding:7px 16px;cursor:pointer;transition:all 0.2s;font-family:var(--qs-font-ui);white-space:nowrap;">📖 Story Engine</button>
-    <button onclick="openWorkshop()" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:rgba(240,236,255,0.7);background:none;border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:7px 16px;cursor:pointer;transition:all 0.2s;font-family:'Sora',sans-serif;white-space:nowrap;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.7)'">🛠 Workshop</button>
+    <button onclick="openWorkshop()" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:rgba(240,236,255,0.7);background:none;border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:7px 16px;cursor:pointer;transition:all 0.2s;font-family:'Sora',sans-serif;white-space:nowrap;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.7)'">🛠 Workshop</button>
     <button onclick="openVoiceTrainer()" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent);border-radius:50px;padding:7px 16px;cursor:pointer;transition:all 0.2s;font-family:'Inter',system-ui,sans-serif;white-space:nowrap;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">🧬 Voice DNA</button>
     <button class="nav-signin-btn" onclick="openSignInModal()" style="background:none;border:1px solid var(--rule);color:var(--ink-soft);font-family:'Inter',system-ui,sans-serif;font-size:13px;font-weight:600;padding:8px 18px;border-radius:8px;cursor:pointer;transition:all 0.2s;">Sign in</button>
     <button class="nav-pro-btn" onclick="openProPage()">See plans →</button>
@@ -6441,7 +6441,7 @@ body.quiet-studio-shell .qs-rail nav {
     <div class="hero-badge" style="margin-bottom:28px;">&#10022; THE ONLY AI THAT LEARNS YOUR VOICE</div>
 
     <!-- Headline -->
-    <h1 style="font-family:'Sora',sans-serif;font-size:clamp(32px,5vw,60px);font-weight:800;line-height:1.08;letter-spacing:-0.03em;color:var(--text);margin-bottom:20px;">You have a story.<br/>Posting it shouldn't feel like a <span style="background:linear-gradient(90deg,var(--accent),#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">second job.</span></h1>
+    <h1 style="font-family:'Sora',sans-serif;font-size:clamp(32px,5vw,60px);font-weight:800;line-height:1.08;letter-spacing:-0.03em;color:var(--text);margin-bottom:20px;">You have a story.<br/>Posting it shouldn't feel like a <span style="background:linear-gradient(90deg,var(--accent),var(--accent),#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">second job.</span></h1>
 
     <!-- Subhead -->
     <p style="font-size:clamp(15px,2vw,20px);line-height:1.7;color:var(--ink-soft);max-width:560px;margin:0 auto 36px;">You've spent years finding your voice. SAM remembers every word of it. While every other AI tool starts from zero, SAM's Voice DNA captures how you think, how you phrase things, and what makes your audience trust you — then gets sharper every single time you use her. The longer you work together, the more your content sounds unmistakably like you.</p>
@@ -6461,7 +6461,7 @@ body.quiet-studio-shell .qs-rail nav {
       <div style="width:100%;height:1px;background:rgba(167,139,250,0.15);margin:16px 0;"></div>
       <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;">HOOK</div>
       <div style="font-family:'Sora',sans-serif;font-size:clamp(17px,2.5vw,22px);font-weight:700;color:var(--text);line-height:1.3;margin-bottom:20px;">"I almost quit last week. 3 months of posting. 200 views on my best video."</div>
-      <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#A78BFA;margin-bottom:10px;">SCRIPT</div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;">SCRIPT</div>
       <div style="font-size:14px;color:var(--ink-soft);line-height:1.9;">
         <span style="display:block;font-size:10px;font-weight:700;letter-spacing:0.1em;color:var(--accent-soft);text-transform:uppercase;margin-bottom:4px;">[HOOK — direct to camera]</span>
         I almost quit last week.<br/>
@@ -6495,7 +6495,7 @@ body.quiet-studio-shell .qs-rail nav {
   </div>
 
   <div style="background:#111; border:1px solid #222; border-radius:16px; padding:28px; margin-bottom:20px;">
-    <p style="font-size:11px; font-weight:600; letter-spacing:0.1em; color:#a78bfa; text-transform:uppercase; margin:0 0 16px;">STEP 1 — YOUR PHOTO</p>
+    <p style="font-size:11px; font-weight:600; letter-spacing:0.1em; color:var(--accent); text-transform:uppercase; margin:0 0 16px;">STEP 1 — YOUR PHOTO</p>
     <div id="upload-zone" style="border:2px dashed var(--rule); border-radius:12px; padding:40px; text-align:center; cursor:pointer; position:relative;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--rule)'">
       <div id="upload-placeholder">
         <div style="font-size:32px; margin-bottom:8px;">📷</div>
@@ -6507,14 +6507,14 @@ body.quiet-studio-shell .qs-rail nav {
     <input type="file" id="photo-input" accept="image/*" onchange="handlePhotoUpload(event)" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:2;">
     <div id="enhance-option" style="display:none; margin-top:20px; background:#1a1a2e; border:1px solid #2a2a3e; border-radius:12px; padding:16px;">
       <label style="display:flex; align-items:flex-start; gap:12px; cursor:pointer;">
-        <input type="checkbox" id="ai-enhance" style="margin-top:2px; accent-color:#a78bfa; width:16px; height:16px;">
+        <input type="checkbox" id="ai-enhance" style="margin-top:2px; accent-color:var(--accent); width:16px; height:16px;">
         <div>
           <p style="font-size:14px; font-weight:600; color:#fff; margin:0 0 4px;">Enhance with AI</p>
           <p style="font-size:13px; color:#888; margin:0;">SAM adds visual polish — lighting, color grading, background enhancement — before writing your copy.</p>
         </div>
       </label>
       <div id="enhance-style-row" style="display:none; margin-top:14px; display:flex; gap:8px; flex-wrap:wrap;">
-        <button class="enhance-style-btn" data-style="professional" onclick="selectEnhanceStyle(this)" style="font-size:12px; padding:6px 14px; border-radius:20px; border:1px solid #a78bfa; background:#1a1040; color:#a78bfa; cursor:pointer;">Professional</button>
+        <button class="enhance-style-btn" data-style="professional" onclick="selectEnhanceStyle(this)" style="font-size:12px; padding:6px 14px; border-radius:20px; border:1px solid var(--accent); background:#1a1040; color:var(--accent); cursor:pointer;">Professional</button>
         <button class="enhance-style-btn" data-style="vibrant" onclick="selectEnhanceStyle(this)" style="font-size:12px; padding:6px 14px; border-radius:20px; border:1px solid #333; background:transparent; color:#888; cursor:pointer;">Vibrant</button>
         <button class="enhance-style-btn" data-style="cinematic" onclick="selectEnhanceStyle(this)" style="font-size:12px; padding:6px 14px; border-radius:20px; border:1px solid #333; background:transparent; color:#888; cursor:pointer;">Cinematic</button>
         <button class="enhance-style-btn" data-style="warm" onclick="selectEnhanceStyle(this)" style="font-size:12px; padding:6px 14px; border-radius:20px; border:1px solid #333; background:transparent; color:#888; cursor:pointer;">Warm</button>
@@ -6524,7 +6524,7 @@ body.quiet-studio-shell .qs-rail nav {
   </div>
 
   <div style="background:#111; border:1px solid #222; border-radius:16px; padding:28px; margin-bottom:20px;">
-    <p style="font-size:11px; font-weight:600; letter-spacing:0.1em; color:#a78bfa; text-transform:uppercase; margin:0 0 16px;">STEP 2 — PLATFORMS</p>
+    <p style="font-size:11px; font-weight:600; letter-spacing:0.1em; color:var(--accent); text-transform:uppercase; margin:0 0 16px;">STEP 2 — PLATFORMS</p>
     <div style="display:flex; gap:10px; flex-wrap:wrap;">
       <label class="platform-pill" data-platform="instagram" style="display:flex; align-items:center; gap:8px; padding:10px 18px; border:1px solid #333; border-radius:30px; cursor:pointer;">
         <input type="checkbox" style="display:none;" onchange="togglePlatform(this)"><span>📸</span><span style="color:#ccc; font-size:14px; font-weight:500;">Instagram</span>
@@ -6548,30 +6548,30 @@ body.quiet-studio-shell .qs-rail nav {
   </div>
 
   <div style="background:#111; border:1px solid #222; border-radius:16px; padding:28px; margin-bottom:20px;">
-    <p style="font-size:11px; font-weight:600; letter-spacing:0.1em; color:#a78bfa; text-transform:uppercase; margin:0 0 16px;">STEP 3 — WHAT TO GENERATE</p>
+    <p style="font-size:11px; font-weight:600; letter-spacing:0.1em; color:var(--accent); text-transform:uppercase; margin:0 0 16px;">STEP 3 — WHAT TO GENERATE</p>
     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:10px;">
       <label style="display:flex; align-items:center; gap:10px; padding:12px 16px; border:1px solid #333; border-radius:10px; cursor:pointer;">
-        <input type="checkbox" id="gen-title" checked style="accent-color:#a78bfa;">
+        <input type="checkbox" id="gen-title" checked style="accent-color:var(--accent);">
         <div><p style="font-size:13px; font-weight:600; color:#fff; margin:0;">Title / Headline</p><p style="font-size:11px; color:#666; margin:0;">Hook that stops the scroll</p></div>
       </label>
       <label style="display:flex; align-items:center; gap:10px; padding:12px 16px; border:1px solid #333; border-radius:10px; cursor:pointer;">
-        <input type="checkbox" id="gen-caption" checked style="accent-color:#a78bfa;">
+        <input type="checkbox" id="gen-caption" checked style="accent-color:var(--accent);">
         <div><p style="font-size:13px; font-weight:600; color:#fff; margin:0;">Caption</p><p style="font-size:11px; color:#666; margin:0;">Platform-appropriate, your voice</p></div>
       </label>
       <label style="display:flex; align-items:center; gap:10px; padding:12px 16px; border:1px solid #333; border-radius:10px; cursor:pointer;">
-        <input type="checkbox" id="gen-description" style="accent-color:#a78bfa;">
+        <input type="checkbox" id="gen-description" style="accent-color:var(--accent);">
         <div><p style="font-size:13px; font-weight:600; color:#fff; margin:0;">Description</p><p style="font-size:11px; color:#666; margin:0;">1-4 sentences, platform-matched</p></div>
       </label>
       <label style="display:flex; align-items:center; gap:10px; padding:12px 16px; border:1px solid #333; border-radius:10px; cursor:pointer;">
-        <input type="checkbox" id="gen-cta" checked style="accent-color:#a78bfa;">
+        <input type="checkbox" id="gen-cta" checked style="accent-color:var(--accent);">
         <div><p style="font-size:13px; font-weight:600; color:#fff; margin:0;">Call to Action</p><p style="font-size:11px; color:#666; margin:0;">Specific, not generic</p></div>
       </label>
       <label style="display:flex; align-items:center; gap:10px; padding:12px 16px; border:1px solid #333; border-radius:10px; cursor:pointer;">
-        <input type="checkbox" id="gen-hashtags" checked style="accent-color:#a78bfa;">
+        <input type="checkbox" id="gen-hashtags" checked style="accent-color:var(--accent);">
         <div><p style="font-size:13px; font-weight:600; color:#fff; margin:0;">Hashtags</p><p style="font-size:11px; color:#666; margin:0;">Photo and platform appropriate</p></div>
       </label>
       <label style="display:flex; align-items:center; gap:10px; padding:12px 16px; border:1px solid #333; border-radius:10px; cursor:pointer;">
-        <input type="checkbox" id="gen-alttext" style="accent-color:#a78bfa;">
+        <input type="checkbox" id="gen-alttext" style="accent-color:var(--accent);">
         <div><p style="font-size:13px; font-weight:600; color:#fff; margin:0;">Alt Text</p><p style="font-size:11px; color:#666; margin:0;">Accessibility description</p></div>
       </label>
     </div>
@@ -6584,7 +6584,7 @@ body.quiet-studio-shell .qs-rail nav {
 
 
   <div style="text-align:center; margin-bottom:48px;">
-    <button id="wizard-generate-btn" onclick="runPhotoWizard()" style="background:linear-gradient(135deg,#20808D,#a78bfa); color:#fff; font-size:16px; font-weight:600; padding:16px 48px; border-radius:30px; border:none; cursor:pointer;">Generate My Posts</button>
+    <button id="wizard-generate-btn" onclick="runPhotoWizard()" style="background:linear-gradient(135deg,#20808D,var(--accent)); color:#fff; font-size:16px; font-weight:600; padding:16px 48px; border-radius:30px; border:none; cursor:pointer;">Generate My Posts</button>
     <p style="font-size:13px; color:#555; margin:12px 0 0;">SAM writes platform-perfect copy for every platform you selected</p>
   </div>
 
@@ -6598,12 +6598,12 @@ body.quiet-studio-shell .qs-rail nav {
       <h3 style="font-size:24px; font-weight:700; color:#fff; margin:0 0 32px;">Your posts are ready.</h3>
     </div>
     <div id="enhanced-image-block" style="display:none; margin-bottom:32px;">
-      <p style="font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:#a78bfa; margin-bottom:12px;">AI ENHANCED PHOTO</p>
+      <p style="font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent); margin-bottom:12px;">AI ENHANCED PHOTO</p>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
         <div><p style="font-size:12px; color:#666; margin:0 0 8px;">Original</p><img id="original-img-compare" style="width:100%; border-radius:10px; border:1px solid #222;" alt="Original"></div>
-        <div><p style="font-size:12px; color:#a78bfa; margin:0 0 8px;">Enhanced</p><img id="enhanced-img-result" style="width:100%; border-radius:10px; border:1px solid #a78bfa44;" alt="Enhanced"></div>
+        <div><p style="font-size:12px; color:var(--accent); margin:0 0 8px;">Enhanced</p><img id="enhanced-img-result" style="width:100%; border-radius:10px; border:1px solid var(--accent)44;" alt="Enhanced"></div>
       </div>
-      <a id="download-enhanced" download="sam-enhanced.jpg" style="display:inline-block; margin-top:12px; font-size:13px; color:#a78bfa; text-decoration:none;">Download enhanced photo</a>
+      <a id="download-enhanced" download="sam-enhanced.jpg" style="display:inline-block; margin-top:12px; font-size:13px; color:var(--accent); text-decoration:none;">Download enhanced photo</a>
     </div>
     <div id="wizard-posts-container"></div>
   </div>
@@ -6643,7 +6643,7 @@ document.addEventListener('change', function(e) {
 
 function selectEnhanceStyle(btn) {
   document.querySelectorAll('.enhance-style-btn').forEach(function(b){ b.style.borderColor='#333'; b.style.background='transparent'; b.style.color='#888'; });
-  btn.style.borderColor='#a78bfa'; btn.style.background='#1a1040'; btn.style.color='#a78bfa';
+  btn.style.borderColor='var(--accent)'; btn.style.background='#1a1040'; btn.style.color='var(--accent)';
   wizardState.enhanceStyle = btn.dataset.style;
 }
 
@@ -6651,8 +6651,8 @@ function togglePlatform(cb) {
   var pill = cb.closest('.platform-pill');
   var platform = pill.dataset.platform;
   if(cb.checked) {
-    pill.style.borderColor='#a78bfa'; pill.style.background='#1a1040';
-    pill.querySelector('span:last-child').style.color='#a78bfa';
+    pill.style.borderColor='var(--accent)'; pill.style.background='#1a1040';
+    pill.querySelector('span:last-child').style.color='var(--accent)';
     if(!wizardState.selectedPlatforms.includes(platform)) wizardState.selectedPlatforms.push(platform);
   } else {
     pill.style.borderColor='#333'; pill.style.background='transparent';
@@ -6667,7 +6667,7 @@ function toggleDay(btn) {
     btn.dataset.active='0'; btn.style.borderColor='#333'; btn.style.background='transparent'; btn.style.color='#888';
     wizardState.selectedDays = wizardState.selectedDays.filter(function(d){ return d!==day; });
   } else {
-    btn.dataset.active='1'; btn.style.borderColor='#a78bfa'; btn.style.background='#1a1040'; btn.style.color='#a78bfa';
+    btn.dataset.active='1'; btn.style.borderColor='var(--accent)'; btn.style.background='#1a1040'; btn.style.color='var(--accent)';
     wizardState.selectedDays.push(day);
   }
 }
@@ -6746,7 +6746,7 @@ function renderWizardOutput(text, platforms) {
   var emojis={instagram:'📸',facebook:'👥',linkedin:'💼',twitter:'𝕏',tiktok:'🎵',threads:'🧵'};
   var out='<div style="display:grid; gap:16px;">';
   platforms.forEach(function(p) {
-    var color=colors[p]||'#a78bfa'; var emoji=emojis[p]||''; var name=p.charAt(0).toUpperCase()+p.slice(1);
+    var color=colors[p]||'var(--accent)'; var emoji=emojis[p]||''; var name=p.charAt(0).toUpperCase()+p.slice(1);
     var regex=new RegExp('(?:'+name+'|'+p+')[\s\S]*?(?=\n\n[A-Z]|$)','i');
     var match=text.match(regex); var content=match?match[0]:text;
     out+='<div style="background:#111; border:1px solid #222; border-left:3px solid '+color+'; border-radius:12px; padding:20px;">';
@@ -7187,7 +7187,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
 
         <button class="tool-icon-btn tool-spark" onclick="previewTool('spark')">
           <div class="tool-icon-face">
-            <svg class="tool-icon-svg" viewBox="0 0 28 28" fill="none"><path d="M14 4v3M14 21v3M3 14H6M22 14h3M14 9a5 5 0 100 10 5 5 0 000-10z" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <svg class="tool-icon-svg" viewBox="0 0 28 28" fill="none"><path d="M14 4v3M14 21v3M3 14H6M22 14h3M14 9a5 5 0 100 10 5 5 0 000-10z" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round"/></svg>
           </div>
           <div class="tool-icon-name">The Spark</div>
           <div class="tool-icon-desc">Never run out of things to post</div>
@@ -7219,17 +7219,17 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
 
         <button class="tool-icon-btn tool-reach" onclick="previewTool('reach')">
           <div class="tool-icon-face">
-            <svg class="tool-icon-svg" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="10" r="4" stroke="var(--accent)" stroke-width="1.8"/><path d="M6 24c0-4 3.6-7 8-7s8 3 8 7" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round"/><path d="M21 6l3 3-3 3" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 9H18" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <svg class="tool-icon-svg" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="10" r="4" stroke="var(--accent)" stroke-width="1.8"/><path d="M6 24c0-4 3.6-7 8-7s8 3 8 7" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round"/><path d="M21 6l3 3-3 3" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 9H18" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round"/></svg>
           </div>
           <div class="tool-icon-name">The Reach</div>
           <div class="tool-icon-desc">Post your story to every platform at once</div>
         </button>
 
-        <button class="tool-icon-btn" onclick="if(typeof openIdeasPanel==='function')openIdeasPanel();" style="border-color:rgba(167,139,250,0.2);">
+        <button class="tool-icon-btn" onclick="if(typeof openIdeasPanel==='function')openIdeasPanel();" style="border-color:var(--rule);">
           <div class="tool-icon-face" style="background:rgba(167,139,250,0.08);">
-            <svg class="tool-icon-svg" viewBox="0 0 28 28" fill="none"><path d="M14 4v12M14 20v4" stroke="#A78BFA" stroke-width="2" stroke-linecap="round"/><path d="M8 8l-4-4M20 8l4-4M8 16l-4 4M20 16l4 4" stroke="#A78BFA" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <svg class="tool-icon-svg" viewBox="0 0 28 28" fill="none"><path d="M14 4v12M14 20v4" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"/><path d="M8 8l-4-4M20 8l4-4M8 16l-4 4M20 16l4 4" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round"/></svg>
           </div>
-          <div class="tool-icon-name" style="color:#A78BFA;">💜 My Ideas</div>
+          <div class="tool-icon-name" style="color:var(--accent);">💜 My Ideas</div>
           <div class="tool-icon-desc">Your saved hooks, scripts and concepts</div>
         </button>
 
@@ -7255,7 +7255,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
     <!-- HOW IT WORKS -->
     <div id="howItWorks" style="max-width:680px;margin:0 auto;padding:64px 24px 80px;text-align:center;">
       <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(167,139,250,0.5);margin-bottom:16px;">From your words to ready-to-post — in seconds</div>
-      <h2 style="font-family:'Sora',sans-serif;font-size:clamp(22px,3vw,32px);font-weight:800;color:var(--text);margin-bottom:48px;line-height:1.2;">You talk. SAM builds. You <span style="background:linear-gradient(90deg,var(--accent),#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">film.</span></h2>
+      <h2 style="font-family:'Sora',sans-serif;font-size:clamp(22px,3vw,32px);font-weight:800;color:var(--text);margin-bottom:48px;line-height:1.2;">You talk. SAM builds. You <span style="background:linear-gradient(90deg,var(--accent),var(--accent),#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">film.</span></h2>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:24px;text-align:left;">
         <div style="background:rgba(167,139,250,0.05);border:1px solid rgba(167,139,250,0.15);border-radius:14px;padding:24px;">
           <div style="font-family:'Sora',sans-serif;font-size:28px;font-weight:800;color:rgba(167,139,250,0.3);margin-bottom:12px;">01</div>
@@ -7809,7 +7809,7 @@ const TOOLS = {
     color: 'var(--accent)',
     bg: 'var(--spark-bg)',
     border: 'var(--spark-border)',
-    icon: `<svg width="36" height="36" viewBox="0 0 28 28" fill="none"><path d="M14 4v3M14 21v3M3 14H6M22 14h3M14 9a5 5 0 100 10 5 5 0 000-10z" stroke="#A78BFA" stroke-width="1.8" stroke-linecap="round"/></svg>`,
+    icon: `<svg width="36" height="36" viewBox="0 0 28 28" fill="none"><path d="M14 4v3M14 21v3M3 14H6M22 14h3M14 9a5 5 0 100 10 5 5 0 000-10z" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round"/></svg>`,
     features: [
       'Describe your niche and SAM generates 5 powerful, specific content ideas',
       'Each idea comes with why it will perform and which platform it belongs on',
@@ -9920,10 +9920,10 @@ function showTrialExpiredCard() {
       </div>
 
       <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
-        <button onclick="openStripeCheckout('creator')" style="width:100%;padding:14px;border-radius:999px;background:linear-gradient(90deg,var(--accent),#A78BFA);border:none;color:#09080F;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">
+        <button onclick="openStripeCheckout('creator')" style="width:100%;padding:14px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent));border:none;color:#09080F;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">
           ✦ Creator — $19/mo → Keep going
         </button>
-        <button onclick="openStripeCheckout('pro')" style="width:100%;padding:14px;border-radius:999px;background:rgba(167,139,250,0.15);border:1px solid rgba(167,139,250,0.3);color:#A78BFA;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">
+        <button onclick="openStripeCheckout('pro')" style="width:100%;padding:14px;border-radius:999px;background:rgba(167,139,250,0.15);border:1px solid rgba(167,139,250,0.3);color:var(--accent);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">
           Pro — $39/mo → Unlimited everything
         </button>
         <button onclick="openStripeCheckout('studio')" style="width:100%;padding:14px;border-radius:999px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:rgba(240,236,255,0.5);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">
@@ -10089,7 +10089,7 @@ function saveWizardItem(text, label, type) {
   if (wizBadge) { wizBadge.textContent = existing.length; wizBadge.style.display = 'flex'; }
   // Flash confirmation
   const toast = document.createElement('div');
-  toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#6D28D9,#A78BFA);color:#fff;font-size:13px;font-weight:700;padding:10px 20px;border-radius:50px;z-index:9999;pointer-events:none;animation:fade-in 0.3s ease;';
+  toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#6D28D9,var(--accent));color:#fff;font-size:13px;font-weight:700;padding:10px 20px;border-radius:50px;z-index:9999;pointer-events:none;animation:fade-in 0.3s ease;';
   toast.textContent = '💜 Saved to My Ideas';
   document.body.appendChild(toast);
   setTimeout(() => toast.remove(), 2000);
@@ -10236,7 +10236,7 @@ function _renderChatMessageUI(role, text) {
   div.className = 'chat-msg ' + role;
   const avatar = role === 'sam'
     ? '<div class="chat-msg-avatar">🤖</div>'
-    : '<div class="chat-msg-avatar" style="background:linear-gradient(135deg,#A78BFA,var(--accent));">👤</div>';
+    : '<div class="chat-msg-avatar" style="background:linear-gradient(135deg,var(--accent),var(--accent));">👤</div>';
   const speakBtn = role === 'sam'
     ? '<button onclick="if(typeof SAM_VOICE!==\'undefined\')SAM_VOICE.speak(this.closest(\'[class*=chat-msg]\').querySelector(\'.chat-bubble\').innerText)" style="background:none;border:none;cursor:pointer;color:rgba(240,236,255,0.3);font-size:11px;padding:2px 6px;transition:color 0.2s;" title="Read aloud">🔊</button>'
     : '';
@@ -10478,7 +10478,7 @@ function initPersistentSAM() {
   if (_qrRow) {
     _qrRow.style.display = _devQR ? 'flex' : 'none';
     if (_devQR) {
-      _qrRow.innerHTML = '<button style="font-size:11px;font-weight:600;padding:5px 12px;border-radius:999px;border:1px solid rgba(167,139,250,0.35);background:rgba(167,139,250,0.08);color:#A78BFA;cursor:pointer;white-space:nowrap;" onclick="sendPersistentMessage_quick(\'Write me a TikTok hook about Voice DNA\')">🎬 TikTok hook</button>'
+      _qrRow.innerHTML = '<button style="font-size:11px;font-weight:600;padding:5px 12px;border-radius:999px;border:1px solid rgba(167,139,250,0.35);background:rgba(167,139,250,0.08);color:var(--accent);cursor:pointer;white-space:nowrap;" onclick="sendPersistentMessage_quick(\'Write me a TikTok hook about Voice DNA\')">🎬 TikTok hook</button>'
         + '<button style="font-size:11px;font-weight:600;padding:5px 12px;border-radius:999px;border:1px solid var(--accent-soft);background:var(--accent-soft);color:var(--accent);cursor:pointer;white-space:nowrap;" onclick="sendPersistentMessage_quick(\'Write a LinkedIn founder post about why I built SAM\')">💼 Founder post</button>'
         + '<button style="font-size:11px;font-weight:600;padding:5px 12px;border-radius:999px;border:1px solid rgba(56,189,248,0.35);background:rgba(56,189,248,0.08);color:#38BDF8;cursor:pointer;white-space:nowrap;" onclick="sendPersistentMessage_quick(\'Write an Instagram carousel about SAM vs ChatGPT\')">📱 Carousel</button>'
         + '<button style="font-size:11px;font-weight:600;padding:5px 12px;border-radius:999px;border:1px solid rgba(32,128,141,0.35);background:rgba(32,128,141,0.08);color:var(--accent);cursor:pointer;white-space:nowrap;" onclick="sendPersistentMessage_quick(\'Give me 5 content angles about Voice DNA\')">🧬 Voice DNA</button>';
@@ -11445,7 +11445,7 @@ function printPlaybookOnly() {
       --surface:#F4F2EC;--surface2:#f0eeff;
       --bg:#fff;--radius:10px;--radius-lg:14px;--radius-xl:18px;
       --spark:#20808D;--spark-bg:rgba(32,128,141,0.08);--spark-border:rgba(32,128,141,0.2);
-      --pulse:#A78BFA;--lens:#D97706;--vision:var(--accent);
+      --pulse:var(--accent);--lens:#D97706;--vision:var(--accent);
     }
     body{font-family:'Sora',Arial,sans-serif;color:#09080F;background:#fff;padding:24px;margin:0;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
     @page{size:A4;margin:12mm 14mm;}
@@ -11456,7 +11456,7 @@ function printPlaybookOnly() {
     .playbook-cover{text-align:center;padding:40px 0 32px;border-bottom:1px solid #e8e4f0;margin-bottom:32px;}
     .playbook-cover-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#20808D;background:rgba(32,128,141,0.08);border:1px solid rgba(32,128,141,0.2);padding:5px 14px;border-radius:50px;margin-bottom:20px;}
     .playbook-cover-title{font-family:'Sora',sans-serif;font-size:36px;font-weight:700;letter-spacing:-0.02em;line-height:1.1;color:#09080F;margin-bottom:12px;}
-    .playbook-cover-title em{font-style:normal;background:linear-gradient(135deg,var(--accent),#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .playbook-cover-title em{font-style:normal;background:linear-gradient(135deg,var(--accent),var(--accent),#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
     .playbook-cover-meta{font-size:13px;color:#6b7080;}
     .playbook-section{margin-bottom:32px;padding-bottom:32px;border-bottom:1px solid #e8e4f0;}
     .playbook-section:last-child{border-bottom:none;}
@@ -11465,11 +11465,11 @@ function printPlaybookOnly() {
     .playbook-card{background:#F4F2EC;border:1px solid #e8e4f0;border-radius:14px;padding:18px;margin-bottom:12px;}
     .playbook-card-label{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#6b7080;margin-bottom:8px;}
     .playbook-card-text{font-size:15px;line-height:1.75;color:#09080F;}
-    .playbook-hook{font-family:'Sora',sans-serif;font-size:22px;font-weight:700;line-height:1.3;color:#09080F;padding:20px;background:linear-gradient(135deg,rgba(109,40,217,0.12),var(--accent-soft));border:1px solid rgba(167,139,250,0.25);border-left:4px solid #A78BFA;border-radius:0 14px 14px 0;margin-bottom:10px;letter-spacing:-0.01em;}
+    .playbook-hook{font-family:'Sora',sans-serif;font-size:22px;font-weight:700;line-height:1.3;color:#09080F;padding:20px;background:linear-gradient(135deg,rgba(109,40,217,0.12),var(--accent-soft));border:1px solid rgba(167,139,250,0.25);border-left:4px solid var(--accent);border-radius:0 14px 14px 0;margin-bottom:10px;letter-spacing:-0.01em;}
     .playbook-script{background:#F4F2EC;border:1px solid #e8e4f0;border-radius:14px;padding:20px;font-size:15px;line-height:2.1;color:#09080F;white-space:pre-wrap;}
     .playbook-arch-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
     .playbook-arch-card{background:#F4F2EC;border:1px solid #e8e4f0;border-radius:10px;padding:14px 16px;border-top:2px solid transparent;}
-    .arch-opening{border-top-color:#38BDF8;}.arch-setup{border-top-color:#A78BFA;}.arch-risk{border-top-color:var(--accent);}.arch-turn{border-top-color:#FBBF24;}.arch-payoff{border-top-color:var(--accent);}.arch-cta{border-top-color:var(--accent);}
+    .arch-opening{border-top-color:#38BDF8;}.arch-setup{border-top-color:var(--accent);}.arch-risk{border-top-color:var(--accent);}.arch-turn{border-top-color:#FBBF24;}.arch-payoff{border-top-color:var(--accent);}.arch-cta{border-top-color:var(--accent);}
     .playbook-arch-beat{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#6b7080;margin-bottom:5px;}
     .playbook-arch-text{font-size:14px;color:#09080F;line-height:1.55;}
     .playbook-arch-time{font-size:11px;color:#6b7080;margin-top:4px;}
@@ -11883,7 +11883,7 @@ function printToolOutput(outputId, toolName) {
       table{width:100%;border-collapse:collapse;font-size:9.5pt;}
       /* Reach tool print styles */
       [style*="background:rgba(255,255,255,0.03)"],[style*="background: rgba(255,255,255,0.03)"]{background:#f9f7ff!important;border:1px solid #e0d9f7!important;border-radius:8pt!important;padding:10pt!important;margin-bottom:12pt!important;}
-      [style*="color:rgba(240,236,255"],[style*="color:var(--accent)"],[style*="color:#A78BFA"]{color:#1a1a2e!important;}
+      [style*="color:rgba(240,236,255"],[style*="color:var(--accent)"],[style*="color:var(--accent)"]{color:#1a1a2e!important;}
       [contenteditable]{color:#1a1a2e!important;background:#fff!important;font-size:10.5pt!important;line-height:1.7!important;}
       .eco-tool-card,[style*="border:1px solid rgba(244,114,182"],[style*="border:1px solid rgba(167,139,250"]{background:#f9f7ff!important;border:1px solid #e0d9f7!important;color:#1a1a2e!important;}
       button{display:none!important;}
@@ -13144,7 +13144,7 @@ Include complete reasoning (WHY) for every recommendation.
         <div style="font-size:15px;color:var(--ink-soft);line-height:1.65;margin-bottom:10px;">${errExplain}</div>
         <div style="font-size:13px;color:var(--accent);background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.2);border-radius:var(--radius);padding:12px 16px;margin-bottom:28px;line-height:1.6;">💡 ${errTip}</div>
         <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-          <button onclick="retryPlaybook()" style="padding:14px 32px;background:linear-gradient(135deg,#6D28D9,#A78BFA,var(--accent));color:#fff;border:none;border-radius:var(--radius);font-family:'Sora',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">↻ Try again</button>
+          <button onclick="retryPlaybook()" style="padding:14px 32px;background:linear-gradient(135deg,#6D28D9,var(--accent),var(--accent));color:#fff;border:none;border-radius:var(--radius);font-family:'Sora',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">↻ Try again</button>
           ${isRateLimit ? '<button onclick="openProModal()" style="padding:14px 24px;background:linear-gradient(135deg,rgba(251,191,36,0.2),rgba(251,191,36,0.1));border:1px solid rgba(251,191,36,0.4);border-radius:var(--radius);font-family:\'Sora\',sans-serif;font-size:14px;font-weight:600;color:var(--lens);cursor:pointer;">See plans →</button>' : ''}
           <button onclick="showWizardStep('10')" style="padding:14px 24px;background:transparent;color:var(--ink-muted);border:1px solid var(--border);border-radius:var(--radius);font-family:'Sora',sans-serif;font-size:14px;cursor:pointer;">← Edit my answers</button>
         </div>
@@ -14330,17 +14330,17 @@ function openWizardFromNav() {
 <!-- ── EXPORT CAPTURE MODAL ── -->
 <div id="exportCaptureOverlay" style="display:none;position:fixed;inset:0;z-index:3500;background:rgba(9,8,15,0.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);align-items:center;justify-content:center;padding:20px;overflow-y:auto;">
   <div style="max-width:480px;width:100%;margin:0 auto;background:rgba(13,11,22,0.99);border:1px solid rgba(167,139,250,0.3);border-radius:28px;padding:40px 32px;position:relative;overflow:hidden;">
-    <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#A78BFA,var(--accent),#38BDF8);"></div>
-    <div style="width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#6D28D9,#A78BFA);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 20px;">💜</div>
+    <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent),#38BDF8);"></div>
+    <div style="width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#6D28D9,var(--accent));display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 20px;">💜</div>
     <div style="font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:var(--ink);text-align:center;line-height:1.2;margin-bottom:10px;">Your ideas are ready<br/>to export.</div>
-    <div style="font-size:14px;color:rgba(240,236,255,0.55);text-align:center;line-height:1.65;margin-bottom:28px;">Drop your email and SAM sends them straight to your inbox — plus unlocks <strong style="color:#A78BFA;">7 days free</strong> across all 5 tools.</div>
+    <div style="font-size:14px;color:rgba(240,236,255,0.55);text-align:center;line-height:1.65;margin-bottom:28px;">Drop your email and SAM sends them straight to your inbox — plus unlocks <strong style="color:var(--accent);">7 days free</strong> across all 5 tools.</div>
     <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;">
       <input id="exportCaptureName" type="text" placeholder="Your first name" autocomplete="given-name" style="width:100%;padding:14px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:14px;font-size:15px;color:var(--ink);outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(167,139,250,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />
       <input id="exportCaptureEmail" type="email" placeholder="Your email address" autocomplete="email" inputmode="email" style="width:100%;padding:14px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:14px;font-size:15px;color:var(--ink);outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(167,139,250,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />
       <div id="exportCaptureErr" style="display:none;font-size:13px;color:var(--accent);text-align:center;"></div>
-      <button onclick="submitExportCapture()" id="exportCaptureBtn" style="width:100%;padding:16px;background:linear-gradient(135deg,#6D28D9,#A78BFA,var(--accent));border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">📧 Send my ideas + unlock 7 days free →</button>
+      <button onclick="submitExportCapture()" id="exportCaptureBtn" style="width:100%;padding:16px;background:linear-gradient(135deg,#6D28D9,var(--accent),var(--accent));border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">📧 Send my ideas + unlock 7 days free →</button>
     </div>
-    <div style="text-align:center;font-size:13px;color:rgba(240,236,255,0.35);">Already have an account? <span onclick="closeExportCapture();openSignInModal();" style="color:#A78BFA;cursor:pointer;">Sign in</span></div>
+    <div style="text-align:center;font-size:13px;color:rgba(240,236,255,0.35);">Already have an account? <span onclick="closeExportCapture();openSignInModal();" style="color:var(--accent);cursor:pointer;">Sign in</span></div>
     <button onclick="closeExportCapture()" style="position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.08);border:none;border-radius:50%;width:32px;height:32px;color:rgba(255,255,255,0.4);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;">×</button>
   </div>
 </div>
@@ -14361,7 +14361,7 @@ function openWizardFromNav() {
   <!-- HERO -->
   <div class="pro-hero">
     <div class="pro-hero-badge">✦ STOP FIGURING IT OUT ALONE</div>
-    <div class="pro-hero-title">Five tools.<br/><em style="background:linear-gradient(90deg,var(--accent),#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:normal;">One unfair advantage.</em></div>
+    <div class="pro-hero-title">Five tools.<br/><em style="background:linear-gradient(90deg,var(--accent),var(--accent),#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:normal;">One unfair advantage.</em></div>
     <div class="pro-hero-sub">Most creators are figuring out content alone — the hook, the script, the platform, the caption, all of it. You have SAM. Five tools built around your story so you never start from zero again.</div>
     <div class="pro-value-row">
       <div class="pro-value-pill">✦ 5 tools in one</div>
@@ -14375,7 +14375,7 @@ function openWizardFromNav() {
   <div style="max-width:1100px;margin:0 auto;padding:64px 24px 32px;">
     <div style="text-align:center;margin-bottom:48px;">
       <div style="font-size:11px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:12px;">Everything you were figuring out alone</div>
-      <div style="font-family:'Sora',sans-serif;font-size:clamp(30px,4vw,48px);font-weight:800;color:var(--text);line-height:1.15;">Five tools. One <span style="background:linear-gradient(90deg,var(--accent),#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">ecosystem.</span></div>
+      <div style="font-family:'Sora',sans-serif;font-size:clamp(30px,4vw,48px);font-weight:800;color:var(--text);line-height:1.15;">Five tools. One <span style="background:linear-gradient(90deg,var(--accent),var(--accent),#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">ecosystem.</span></div>
       <div style="font-size:16px;color:var(--ink-soft);margin-top:14px;max-width:560px;margin-left:auto;margin-right:auto;">Every part of SAM was built to do one job perfectly — and hand off to the next.</div>
     </div>
     <div class="pro-tools-showcase-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:24px;align-items:stretch;">
@@ -14403,7 +14403,7 @@ function openWizardFromNav() {
 
       <!-- SPARK -->
       <div style="background:var(--spark-bg);border:1px solid var(--spark-border);border-radius:24px;padding:36px 32px;display:flex;flex-direction:column;gap:0;position:relative;overflow:hidden;">
-        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#A78BFA,#818CF8);border-radius:24px 24px 0 0;"></div>
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),#818CF8);border-radius:24px 24px 0 0;"></div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
           <div style="font-size:11px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">The Spark</div>
           <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(167,139,250,0.5);background:rgba(167,139,250,0.08);padding:3px 8px;border-radius:20px;">Idea Engine</div>
@@ -14516,7 +14516,7 @@ function openWizardFromNav() {
   <div style="max-width:1100px;margin:0 auto;padding:32px 24px 64px;">
     <div style="text-align:center;margin-bottom:40px;">
       <div style="font-size:11px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:12px;">Who SAM was built for</div>
-      <div style="font-family:'Sora',sans-serif;font-size:clamp(24px,3vw,36px);font-weight:800;color:var(--text);">Built for the ones who figured it out the <span style="background:linear-gradient(90deg,var(--accent),#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">hard way.</span></div>
+      <div style="font-family:'Sora',sans-serif;font-size:clamp(24px,3vw,36px);font-weight:800;color:var(--text);">Built for the ones who figured it out the <span style="background:linear-gradient(90deg,var(--accent),var(--accent),#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">hard way.</span></div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;">
 
@@ -14544,11 +14544,11 @@ function openWizardFromNav() {
   <!-- FOUNDER STORY -->
   <div style="max-width:760px;margin:0 auto;padding:0 24px 64px;">
     <div style="background:linear-gradient(135deg,rgba(251,191,36,0.06),rgba(167,139,250,0.06));border:1px solid rgba(251,191,36,0.2);border-radius:24px;padding:40px 40px;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#FBB824,var(--accent),#A78BFA);"></div>
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#FBB824,var(--accent),var(--accent));"></div>
       <div style="font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:rgba(251,191,36,0.6);margin-bottom:16px;">&#10022; THE STORY BEHIND SAM</div>
       <div style="font-family:'Sora',sans-serif;font-size:clamp(18px,2.5vw,24px);font-weight:800;color:var(--ink);line-height:1.2;margin-bottom:20px;">"SAM was built by a self-taught creator<br/>who almost quit."</div>
       <div style="font-size:15px;color:var(--ink-soft);line-height:1.8;margin-bottom:20px;">Joey Pirrone was documenting a complete home renovation — living in a travel trailer in the backyard with his wife Amanda, self-taught, no contractor license, no social media team. Every upload demanded 15 decisions he never signed up to make. He almost stopped posting entirely.<br/><br/>Instead, he built the tool he needed. That tool is SAM.</div>
-      <div style="font-size:16px;font-weight:700;color:#A78BFA;line-height:1.6;">If you've ever felt like social media is a second job nobody hired you for — SAM was built for you.</div>
+      <div style="font-size:16px;font-weight:700;color:var(--accent);line-height:1.6;">If you've ever felt like social media is a second job nobody hired you for — SAM was built for you.</div>
     </div>
   </div>
 
@@ -14596,7 +14596,7 @@ function openWizardFromNav() {
         <div class="pro-feat-row"><div class="pro-feat-icon fi-yes"></div>Download everything as PDF</div>
         <div class="pro-feat-row"><div class="pro-feat-icon fi-no"></div><span class="feat-muted">Unlimited tool runs</span></div>
       </div>
-      <button class="pro-btn pro-btn-grad" style="background:linear-gradient(135deg,var(--accent),#A78BFA);" onclick="window._selectedPlan='creator';handleProSignup('creator')">Get Creator — $29/month →</button>
+      <button class="pro-btn pro-btn-grad" style="background:linear-gradient(135deg,var(--accent),var(--accent));" onclick="window._selectedPlan='creator';handleProSignup('creator')">Get Creator — $29/month →</button>
       <div class="pro-guarantee-row">🔒 Founding rate · 7-day guarantee · Cancel anytime</div>
     </div>
 
@@ -14666,7 +14666,7 @@ function openWizardFromNav() {
     <div class="pro-reviews-grid" style="max-width:900px;margin:0 auto;padding:0 24px;">
 
       <div class="pro-review-card">
-        <div style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#A78BFA;margin-bottom:10px;">✦ What you walk out with</div>
+        <div style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;">✦ What you walk out with</div>
         <div class="pro-review-text">A complete content package — hook, word-for-word script, b-roll directions, platform captions, and a lead magnet. Built from one real moment. Ready to film and post.</div>
       </div>
 
@@ -14978,7 +14978,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
         <button id="voiceCalibBadge" onclick="openVoiceTrainer()" style="display:none;align-items:center;gap:5px;font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-soft);background:transparent;border:1px solid var(--rule);border-radius:6px;padding:3px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:'Inter',system-ui,sans-serif;">🎙 Voice locked in</button>
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
-        <button onclick="devSaveSession()" id="devSaveBtn" style="display:none;font-size:10px;font-weight:700;background:rgba(109,40,217,0.3);color:#A78BFA;border:1px solid rgba(167,139,250,0.3);border-radius:8px;padding:5px 10px;cursor:pointer;">💾 Session</button>
+        <button onclick="devSaveSession()" id="devSaveBtn" style="display:none;font-size:10px;font-weight:700;background:rgba(109,40,217,0.3);color:var(--accent);border:1px solid rgba(167,139,250,0.3);border-radius:8px;padding:5px 10px;cursor:pointer;">💾 Session</button>
         <button onclick="devRestoreSession()" id="devRestoreBtn" style="display:none;font-size:10px;font-weight:700;background:rgba(5,150,105,0.3);color:var(--accent);border:1px solid rgba(32,128,141,0.3);border-radius:8px;padding:5px 10px;cursor:pointer;">⚡ Restore</button>
         <div class="wizard-progress-step" id="wizardStepLabel">Step 1 of 10</div>
         <button id="wizardSaveBtn" onclick="manualSaveSession()" style="font-size:10px;font-weight:600;color:var(--ink-soft);background:transparent;border:1px solid var(--rule);border-radius:6px;padding:4px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:'Inter',system-ui,sans-serif;">Save Session</button>
@@ -15015,7 +15015,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
     <!-- ── ENTRY SCREEN ── -->
     <div class="wizard-step" id="wiz-0">
       <div style="background:linear-gradient(135deg,rgba(167,139,250,0.1),rgba(251,184,36,0.05));border:1.5px solid rgba(167,139,250,0.3);border-radius:14px;padding:16px 18px;margin-bottom:20px;">
-        <div style="font-size:11px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#A78BFA;margin-bottom:6px;">✦ Your brand — step 1 of 1</div>
+        <div style="font-size:11px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;">✦ Your brand — step 1 of 1</div>
         <div style="font-size:13px;color:var(--ink-soft);line-height:1.5;margin-bottom:14px;">Everything SAM builds will be branded as <strong style="color:var(--text);">yours</strong> — playbooks, lead magnets, audience resources. Start by telling SAM who you are.</div>
         <div style="margin-bottom:12px;">
           <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:6px;">Your name or brand name</div>
@@ -15783,10 +15783,10 @@ if (localStorage.getItem('sam_dev') === 'true') {
   <div style="background:#1a1428;border:1px solid rgba(167,139,250,0.3);border-radius:20px;padding:28px 24px;max-width:380px;width:100%;box-sizing:border-box;">
     <div style="font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px;" id="ibEmailConfirmTitle">Send your ideas</div>
     <div style="font-size:14px;color:rgba(240,236,255,0.6);margin-bottom:20px;line-height:1.5;" id="ibEmailConfirmDesc">Loading...</div>
-    <div style="background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);border-radius:12px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:#A78BFA;" id="ibEmailConfirmAddr">...</div>
+    <div style="background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);border-radius:12px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:var(--accent);" id="ibEmailConfirmAddr">...</div>
     <div style="display:flex;gap:10px;">
       <button onclick="closeIbEmailConfirm()" style="flex:1;padding:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:50px;font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:rgba(240,236,255,0.6);cursor:pointer;">Cancel</button>
-      <button id="ibEmailConfirmBtn" onclick="executeIbEmailSend()" style="flex:2;padding:12px;background:linear-gradient(135deg,#6D28D9,#A78BFA,var(--accent));border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#fff;cursor:pointer;">📧 Send now</button>
+      <button id="ibEmailConfirmBtn" onclick="executeIbEmailSend()" style="flex:2;padding:12px;background:linear-gradient(135deg,#6D28D9,var(--accent),var(--accent));border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#fff;cursor:pointer;">📧 Send now</button>
     </div>
     <div style="text-align:center;margin-top:12px;font-size:11px;color:rgba(240,236,255,0.3);">Check spam if it doesn't arrive in 2 minutes</div>
   </div>
@@ -15923,7 +15923,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
         <div style="font-size:13px;color:var(--ink-soft);text-align:center;font-weight:600;">Try everything free for 24 hours</div>
         <input type="text" class="tour-email-input" placeholder="Your first name" id="tourNameInput" style="margin-bottom:0;"/>
         <input type="email" class="tour-email-input" placeholder="your@email.com" id="tourEmailInput"/>
-        <button class="tour-cta-primary" style="background:linear-gradient(135deg,#6D28D9,#A78BFA,var(--accent));" onclick="submitTourEmail()">✦ Start 24hr free trial →</button>
+        <button class="tour-cta-primary" style="background:linear-gradient(135deg,#6D28D9,var(--accent),var(--accent));" onclick="submitTourEmail()">✦ Start 24hr free trial →</button>
         <div style="display:flex;align-items:center;gap:10px;width:100%;margin:4px 0;">
           <div style="flex:1;height:1px;background:rgba(255,255,255,0.08);"></div>
           <div style="font-size:11px;color:var(--ink-muted);">or go straight to pro</div>
@@ -15935,7 +15935,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
             Creator<br/><span style="font-size:13px;">$19/mo</span>
           </button>
           <button onclick="closeTourSplash();setTimeout(()=>openProPage(),200);"
-            style="padding:10px 6px;border:1px solid rgba(167,139,250,0.4);border-radius:12px;background:rgba(167,139,250,0.12);color:#A78BFA;font-family:'Sora',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;line-height:1.3;box-shadow:0 0 16px rgba(167,139,250,0.2);">
+            style="padding:10px 6px;border:1px solid rgba(167,139,250,0.4);border-radius:12px;background:rgba(167,139,250,0.12);color:var(--accent);font-family:'Sora',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;line-height:1.3;box-shadow:0 0 16px rgba(167,139,250,0.2);">
             Pro<br/><span style="font-size:13px;">$39/mo</span>
           </button>
           <button onclick="closeTourSplash();setTimeout(()=>openProPage(),200);"
@@ -15973,7 +15973,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
         <div style="font-size:14px;color:var(--ink-soft);text-align:center;">24 hours. Full access. No card needed.</div>
         <input type="text" class="tour-email-input" placeholder="Your first name" id="tourNameInput" style="margin-bottom:0;"/>
         <input type="email" class="tour-email-input" placeholder="your@email.com" id="tourEmailInput"/>
-        <button class="tour-cta-primary" style="background:linear-gradient(135deg,#6D28D9,#A78BFA,var(--accent));" onclick="submitTourEmail()">✦ Start my 24hr free trial →</button>
+        <button class="tour-cta-primary" style="background:linear-gradient(135deg,#6D28D9,var(--accent),var(--accent));" onclick="submitTourEmail()">✦ Start my 24hr free trial →</button>
       </div>
       <button class="tour-cta-secondary" onclick="closeTourSplash();">Maybe later — back to my tools</button>`;
   }
@@ -15993,7 +15993,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
     closeTourSplash();
     setTimeout(()=>{
       const m=document.createElement('div');
-      m.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#6D28D9,#A78BFA,var(--accent));color:#fff;padding:14px 28px;border-radius:50px;font-family:Sora,sans-serif;font-weight:700;font-size:15px;z-index:9999;box-shadow:0 0 40px rgba(167,139,250,0.4);';
+      m.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#6D28D9,var(--accent),var(--accent));color:#fff;padding:14px 28px;border-radius:50px;font-family:Sora,sans-serif;font-weight:700;font-size:15px;z-index:9999;box-shadow:0 0 40px rgba(167,139,250,0.4);';
       m.textContent="✦ You're in! 24 hours of full access starts now.";
       document.body.appendChild(m);setTimeout(()=>m.remove(),4000);
     },300);
@@ -16025,7 +16025,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 
     // Handle magic link token
     if (token) {
-      showToastMsg('Signing you in...', '#A78BFA');
+      showToastMsg('Signing you in...', 'var(--accent)');
       window.history.replaceState({}, '', '/');
       try {
         const res = await fetch('/api/auth', {
@@ -16051,7 +16051,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 
   function showToastMsg(msg, color) {
     const t = document.createElement('div');
-    t.style.cssText = 'position:fixed;top:24px;left:50%;transform:translateX(-50%);background:' + (color||'#A78BFA') + ';color:#09080F;font-family:Sora,sans-serif;font-size:13px;font-weight:700;padding:12px 24px;border-radius:50px;z-index:9999;white-space:nowrap;box-shadow:0 4px 24px rgba(0,0,0,0.4);';
+    t.style.cssText = 'position:fixed;top:24px;left:50%;transform:translateX(-50%);background:' + (color||'var(--accent)') + ';color:#09080F;font-family:Sora,sans-serif;font-size:13px;font-weight:700;padding:12px 24px;border-radius:50px;z-index:9999;white-space:nowrap;box-shadow:0 4px 24px rgba(0,0,0,0.4);';
     t.textContent = msg;
     document.body.appendChild(t);
     setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity 0.5s'; setTimeout(() => t.remove(), 500); }, 3500);
@@ -16277,7 +16277,7 @@ const SAM_VOICE = {
       if (this.enabled) {
         btn.innerHTML = '🔊 SAM Voice';
         btn.style.borderColor = 'rgba(167,139,250,0.4)';
-        btn.style.color = '#A78BFA';
+        btn.style.color = 'var(--accent)';
       } else {
         btn.innerHTML = '🔇 SAM Voice';
         btn.style.borderColor = 'rgba(255,255,255,0.1)';
@@ -16321,20 +16321,20 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
     <!-- Header -->
     <div style="text-align:center;padding-bottom:4px;">
       <div style="font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:rgba(167,139,250,0.6);margin-bottom:6px;">✦ THE SAM ECOSYSTEM</div>
-      <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:var(--ink);line-height:1.2;margin-bottom:5px;">Five tools. <span style="background:linear-gradient(90deg,var(--accent),#A78BFA,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">One story.</span> All working together.</div>
-      <div style="font-size:11px;color:rgba(240,236,255,0.5);line-height:1.4;">You're inside the <strong style="color:#A78BFA;">SAM Engine</strong> — here's everything else SAM can do.</div>
+      <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:var(--ink);line-height:1.2;margin-bottom:5px;">Five tools. <span style="background:linear-gradient(90deg,var(--accent),var(--accent),#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">One story.</span> All working together.</div>
+      <div style="font-size:11px;color:rgba(240,236,255,0.5);line-height:1.4;">You're inside the <strong style="color:var(--accent);">SAM Engine</strong> — here's everything else SAM can do.</div>
     </div>
 
     <!-- Tools grid -->
     <div style="display:flex;flex-direction:column;gap:10px;">
       
       <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(167,139,250,0.15),var(--accent-soft));border:1.5px solid rgba(167,139,250,0.4);border-radius:12px;cursor:pointer;" onclick="samReturnToWizard()">
-        <div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#6D28D9,#A78BFA);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Sora',sans-serif;font-size:14px;font-weight:800;color:#fff;">S</div>
+        <div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#6D28D9,var(--accent));display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Sora',sans-serif;font-size:14px;font-weight:800;color:#fff;">S</div>
         <div style="flex:1;">
           <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--ink);">SAM Story Engine</div>
           <div style="font-size:11px;color:rgba(240,236,255,0.5);">Your full content strategy — built from your story</div>
         </div>
-        <div style="font-size:10px;font-weight:700;color:#A78BFA;background:rgba(167,139,250,0.2);border:1px solid rgba(167,139,250,0.3);padding:3px 10px;border-radius:20px;white-space:nowrap;">← You are here</div>
+        <div style="font-size:10px;font-weight:700;color:var(--accent);background:rgba(167,139,250,0.2);border:1px solid rgba(167,139,250,0.3);padding:3px 10px;border-radius:20px;white-space:nowrap;">← You are here</div>
       </div>
 
       <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--pulse-bg);border:1px solid var(--pulse-border);border-radius:14px;cursor:pointer;" onclick="closeEcosystemAndOpenTool('pulse')">
@@ -16405,7 +16405,7 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
 
     <!-- Buttons -->
     <div style="display:flex;flex-direction:column;gap:8px;padding-top:4px;">
-      <button onclick="samReturnToWizard()" style="width:100%;padding:13px;background:linear-gradient(135deg,#6D28D9,#A78BFA,var(--accent));border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">
+      <button onclick="samReturnToWizard()" style="width:100%;padding:13px;background:linear-gradient(135deg,#6D28D9,var(--accent),var(--accent));border:none;border-radius:50px;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">
         ← Keep building my story
       </button>
       <button onclick="samExploreTools()" style="width:100%;padding:11px;background:transparent;border:1px solid rgba(255,255,255,0.12);border-radius:50px;font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:rgba(240,236,255,0.6);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,236,255,0.6)'">
