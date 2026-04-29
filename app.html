@@ -6326,7 +6326,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.40" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.41" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6410,7 +6410,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.40</div>
+  <div class="qs-version-stamp">Quiet Studio v9.41</div>
 </div>
 
   </aside>
@@ -8109,7 +8109,7 @@ function openIdeasPicker(targetId) {
         list.appendChild(div);
       });
     } else {
-      list.innerHTML = '<div style="padding:20px;text-align:center;color:rgba(240,236,255,0.3);font-size:13px;">No saved ideas yet</div>';
+      list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--ink-muted);font-size:13px;">No saved ideas yet</div>';
     }
   }
   var overlay = document.getElementById('ideasPickerOverlay');
@@ -8131,8 +8131,8 @@ function reachInsertIdea(text, targetId) {
 }
 
 function closeIdeasPicker() {
-  document.getElementById('ideasPickerOverlay').style.display = 'none';
-  document.getElementById('ideasPickerPanel').style.display = 'none';
+  var _ipo=document.getElementById('ideasPickerOverlay'); if(_ipo) _ipo.style.display='none';
+  var _ipp=document.getElementById('ideasPickerPanel'); if(_ipp) _ipp.style.display='none';
   document.body.style.overflow = '';
   ideasPickerTarget = null;
 }
@@ -16353,9 +16353,9 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
 <!-- ══ SAM ECOSYSTEM OVERLAY ══ -->
 
 <div id="ideasPickerOverlay" onclick="closeIdeasPicker()" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);"></div>
-<div id="ideasPickerPanel" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:601;background:rgba(13,11,22,0.98);border-top:1px solid rgba(167,139,250,0.3);border-radius:20px 20px 0 0;padding:20px 20px 32px;max-height:60vh;overflow-y:auto;">
+<div id="ideasPickerPanel" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:601;background:var(--paper);border-top:1px solid var(--rule);border-radius:20px 20px 0 0;padding:20px 20px 32px;max-height:60vh;overflow-y:auto;">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-    <div style="font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:var(--text);">💜 Use a saved idea</div>
+    <div style="font-family:'Inter',system-ui,sans-serif;font-size:15px;font-weight:700;color:var(--ink);">💜 Use a saved idea</div>
     <button onclick="closeIdeasPicker()" style="background:none;border:none;color:var(--ink-muted);font-size:20px;cursor:pointer;padding:0;">✕</button>
   </div>
   <div id="ideasPickerList"></div>
