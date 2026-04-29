@@ -48,7 +48,7 @@ module.exports = async function handler(req, res) {
 
     const page = await browser.newPage();
     await page.setContent(html, {
-      waitUntil: 'domcontentloaded',
+      waitUntil: 'networkidle0',
       timeout: 30000,
     });
 
