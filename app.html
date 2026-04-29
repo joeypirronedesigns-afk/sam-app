@@ -1130,6 +1130,35 @@
     }
     textarea::placeholder, input::placeholder { color: var(--ink-muted); }
 
+    /* QS shell — tool inputs need dark ink, not dark-shell var(--text) */
+    body.quiet-studio-shell .glass textarea,
+    body.quiet-studio-shell .glass input,
+    body.quiet-studio-shell .input-wrap textarea,
+    body.quiet-studio-shell .input-wrap input {
+      color: var(--ink);
+      -webkit-text-fill-color: var(--ink);
+      caret-color: var(--ink);
+      background: var(--surface-2);
+      border-color: var(--rule);
+    }
+    body.quiet-studio-shell .glass textarea::placeholder,
+    body.quiet-studio-shell .glass input::placeholder,
+    body.quiet-studio-shell .input-wrap textarea::placeholder,
+    body.quiet-studio-shell .input-wrap input::placeholder {
+      color: var(--ink-muted);
+      -webkit-text-fill-color: var(--ink-muted);
+      opacity: 1;
+    }
+    body.quiet-studio-shell .glass textarea:focus,
+    body.quiet-studio-shell .glass input:focus,
+    body.quiet-studio-shell .input-wrap textarea:focus,
+    body.quiet-studio-shell .input-wrap input:focus {
+      background: var(--paper);
+      border-color: var(--accent);
+      color: var(--ink);
+      -webkit-text-fill-color: var(--ink);
+    }
+
     .input-wrap { position: relative; }
 
     .paste-btn {
@@ -6297,7 +6326,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.39" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.40" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6381,7 +6410,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.39</div>
+  <div class="qs-version-stamp">Quiet Studio v9.40</div>
 </div>
 
   </aside>
