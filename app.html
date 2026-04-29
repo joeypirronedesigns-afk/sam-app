@@ -6297,7 +6297,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.33" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.34" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6381,7 +6381,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.33</div>
+  <div class="qs-version-stamp">Quiet Studio v9.34</div>
 </div>
 
   </aside>
@@ -10350,7 +10350,7 @@ let persistentSAMHistory = [];
 
 function getSAMPersistentPrompt() {
   const state = getTrialState();
-  const name = state.name || 'there';
+  const name = (state.name || 'there').split(' ')[0];
   const voiceProfile = getSamVoiceProfile();
   const s = typeof getSetup === 'function' ? getSetup() : {};
   const isDevMode = localStorage.getItem('sam_dev') === 'true';
@@ -10402,7 +10402,7 @@ YOU ARE NOT A SUPPORT BOT. YOU ARE SAM'S VOICE IN THE WORLD. ACT LIKE IT.`;
 WHO YOU ARE TALKING TO:
 Name: ${name}
 Niche/focus: ${s.niche || 'a creator building their audience'}
-${voiceProfile ? 'Their voice DNA: ' + voiceProfile.slice(0, 400) : ''}
+${voiceProfile ? 'Their voice DNA: ' + voiceProfile.slice(0, 800) : ''}
 
 YOUR ROLE:
 You are their answer to EVERYTHING. Stuck on what to post? Talk to SAM. Want to spitball ideas? SAM. Need a hook that actually sounds like them? SAM. You are always here, always paying attention, always building a sharper picture of how they communicate.
@@ -10628,6 +10628,7 @@ window.addEventListener('DOMContentLoaded', function() {
   if (window.innerWidth >= 1024) {
     var fab = document.getElementById('persistentSAMFab');
     var btn = document.getElementById('qsChatCollapseBtn');
+    localStorage.removeItem('sam-persistent-open');
     var wasCollapsed = localStorage.getItem('samColumnCollapsed') === 'true';
     if (wasCollapsed) {
       if (fab) fab.setAttribute('data-collapsed', 'true');
@@ -11221,7 +11222,7 @@ function psamRunPulse(ideaText) {
 }
 
 // ══ SAM IDEAS BANK ══
-const IB={currentFilter:'all',currentStatusFilter:null,load(){try{return JSON.parse(localStorage.getItem('sam-ideas')||'[]')}catch{return[]}},save(ideas){try{localStorage.setItem('sam-ideas',JSON.stringify(ideas))}catch{}this.updateNavBadge()},add(idea){const ideas=this.load();const newText=(idea.text||'').trim();const newType=idea.type||'pulse';const newSub=idea.subtype||'';if(ideas.some(i=>(i.text||'').trim()===newText)){showIbToast('Already saved');return null;}const entry={id:Date.now()+'_'+Math.random().toString(36).slice(2,7),text:newText,type:idea.type||'pulse',subtype:idea.subtype||'',platform:idea.platform||'',status:'saved',date:new Date().toISOString()};ideas.unshift(entry);this.save(ideas);this.updateNavBadge();showIbToast('Saved to Ideas');return entry.id},updateStatus(id,status){const ideas=this.load();const idx=ideas.findIndex(i=>i.id===id);if(idx!==-1){ideas[idx].status=status;this.save(ideas)}},delete(id){this.save(this.load().filter(i=>i.id!==id));renderIdeasList();this.updateNavBadge()},updateNavBadge(){const count=this.load().filter(i=>i.status!=='posted').length;const b=document.getElementById('ideasNavBadge');if(b){b.textContent=count>9?'9+':count;b.classList.toggle('show',count>0)}const l=document.getElementById('ideasCountLabel');if(l){const t=this.load().length;l.textContent=t===0?'0 saved':t+' idea'+(t!==1?'s':'')}},getFiltered(){let ideas=this.load();const q=(document.getElementById('ideasSearchInput')?.value||'').trim().toLowerCase();if(q)ideas=ideas.filter(i=>(i.text||'').toLowerCase().includes(q)||(i.platform||'').toLowerCase().includes(q)||(i.subtype||'').toLowerCase().includes(q));if(this.currentFilter!=='all')ideas=ideas.filter(i=>i.type===this.currentFilter);if(this.currentStatusFilter)ideas=ideas.filter(i=>i.status===this.currentStatusFilter);return ideas}};
+const IB={currentFilter:'all',currentStatusFilter:null,load(){try{return JSON.parse(localStorage.getItem('sam-ideas')||'[]')}catch{return[]}},save(ideas){try{localStorage.setItem('sam-ideas',JSON.stringify(ideas))}catch{}this.updateNavBadge()},add(idea){const ideas=this.load();const newText=(idea.text||'').trim();const newType=idea.type||'pulse';const newSub=idea.subtype||'';if(ideas.some(i=>(i.text||'').trim()===newText)){showIbToast('Already saved');return null;}const entry={id:Date.now()+'_'+Math.random().toString(36).slice(2,7),text:newText,type:idea.type||'pulse',subtype:idea.subtype||'',platform:idea.platform||'',status:'saved',date:new Date().toISOString()};ideas.unshift(entry);this.save(ideas);this.updateNavBadge();showIbToast('Saved to Ideas');return entry.id},updateStatus(id,status){const ideas=this.load();const idx=ideas.findIndex(i=>i.id===id);if(idx!==-1){ideas[idx].status=status;this.save(ideas)}},delete(id){this.save(this.load().filter(i=>i.id!==id));renderIdeasList();this.updateNavBadge()},forceAdd(idea){const ideas=this.load();ideas.unshift({text:(idea.text||'').trim(),type:idea.type||'pulse',subtype:idea.subtype||'',platform:idea.platform||'',status:'saved',id:Date.now()+'_'+Math.random().toString(36).slice(2,7),date:new Date().toISOString()});this.save(ideas);showIbToast('Saved to Ideas');},updateNavBadge(){const count=this.load().filter(i=>i.status!=='posted').length;const b=document.getElementById('ideasNavBadge');if(b){b.textContent=count>9?'9+':count;b.classList.toggle('show',count>0)}const l=document.getElementById('ideasCountLabel');if(l){const t=this.load().length;l.textContent=t===0?'0 saved':t+' idea'+(t!==1?'s':'')}},getFiltered(){let ideas=this.load();const q=(document.getElementById('ideasSearchInput')?.value||'').trim().toLowerCase();if(q)ideas=ideas.filter(i=>(i.text||'').toLowerCase().includes(q)||(i.platform||'').toLowerCase().includes(q)||(i.subtype||'').toLowerCase().includes(q));if(this.currentFilter!=='all')ideas=ideas.filter(i=>i.type===this.currentFilter);if(this.currentStatusFilter)ideas=ideas.filter(i=>i.status===this.currentStatusFilter);return ideas}};
 function openIdeasPanel(){
   // Set export button label based on device
   const btn = document.getElementById('ideasExportBtn');
@@ -11551,7 +11552,7 @@ let ibToastTimer=null;
 function showIbToast(msg){const t=document.getElementById('ibToast');if(!t)return;t.textContent=msg;t.classList.add('show');clearTimeout(ibToastTimer);ibToastTimer=setTimeout(()=>t.classList.remove('show'),2500)}
 function saveToIdeas(opts){return IB.add(opts)}
 function makeIbSaveBtn(text,type,subtype,platform){const e=(text||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,'\\n').slice(0,300);return '<button class="save-to-ideas-btn" onclick="ibSaveBtnClick(this,\''+e+'\',\''+type+'\',\''+(subtype||'')+'\',\''+(platform||'')+'\')">&#128156; Save to Ideas</button>'}
-function ibSaveBtnClick(btn,text,type,subtype,platform){saveToIdeas({text:text.replace(/\\n/g,'\n'),type,subtype,platform});btn.textContent='Saved!';btn.classList.add('saved');IB.updateNavBadge()}
+function ibSaveBtnClick(btn,text,type,subtype,platform){const t=text.replace(/\\n/g,'\n');IB.forceAdd({text:t,type,subtype,platform});btn.textContent='Saved!';btn.classList.add('saved');IB.updateNavBadge()}
 function initIdeasBank(){IB.updateNavBadge()}
 // ══ END SAM IDEAS BANK ══
 
