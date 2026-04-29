@@ -6382,7 +6382,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.50" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.51" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6466,7 +6466,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.50</div>
+  <div class="qs-version-stamp">Quiet Studio v9.51</div>
 </div>
 
   </aside>
@@ -12004,6 +12004,15 @@ function restoreSessionIfAvailable() {
 
 function doRestoreSession() {
   try {
+    // If WS is empty, wait for getCurrentUser to hydrate from server first
+    if (typeof WS !== 'undefined' && !WS.brandName && !WS.storyText) {
+      if (typeof getCurrentUser === 'function') {
+        getCurrentUser().then(function() {
+          setTimeout(function() { doRestoreSession(); }, 100);
+        });
+        return;
+      }
+    }
     const saved = localStorage.getItem('sam_session_v2');
     const step = localStorage.getItem('sam_session_step') || '0';
     if (!saved || step === '0') return;
