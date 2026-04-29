@@ -51,14 +51,14 @@ module.exports = async function handler(req, res) {
             from: 'Joey at SAM <joey@samforcreators.com>',
             to: [email],
             subject: 'Here\'s your link to get back into SAM',
-            html: `<div style="font-family:Arial;padding:40px 32px;background:#09080F;color:#F0ECFF;border-radius:12px;max-width:520px;margin:0 auto;">
-              <h2 style="color:#A78BFA;">Welcome back.</h2>
-              <p style="color:rgba(240,236,255,0.7);">Click the button below to sign back into SAM. This link expires in 15 minutes.</p>
+            html: `<div style="font-family:Arial;padding:40px 32px;background:#FAFAF7;color:#1A1815;border-radius:12px;max-width:520px;margin:0 auto;">
+              <h2 style="color:#1A1815;">Welcome back.</h2>
+              <p style="color:#4A4640;">Click the button below to sign back into SAM. This link expires in 60 minutes.</p>
               <a href="${process.env.SITE_URL || 'https://samforcreators.com'}/app?token=${magicToken}" 
-                style="display:inline-block;padding:16px 32px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);color:#fff;text-decoration:none;border-radius:50px;font-weight:700;margin:24px 0;">
+                style="display:inline-block;padding:16px 32px;background: #20808D;color:#fff;text-decoration:none;border-radius:50px;font-weight:700;margin:24px 0;">
                 ✦ Sign into SAM →
               </a>
-              <p style="color:rgba(240,236,255,0.3);font-size:12px;">If you didn't request this, ignore this email. Link expires in 15 minutes.</p>
+              <p style="color:#8B8680;font-size:12px;">If you didn't request this, ignore this email. Link expires in 60 minutes.</p>
             </div>`
           })
         });

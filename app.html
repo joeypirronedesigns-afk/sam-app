@@ -6297,7 +6297,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.32" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.33" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6381,7 +6381,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.32</div>
+  <div class="qs-version-stamp">Quiet Studio v9.33</div>
 </div>
 
   </aside>
@@ -9659,7 +9659,7 @@ function saveTrialState(obj) {
 // Supabase sam_users is canonical. localStorage is a 5-min read-through cache.
 // No call site should read sam-trial directly after the migration is complete.
 const _SAM_USER_KEY = 'sam-current-user';
-const _SAM_CACHE_TTL = 300000; // 5 minutes
+const _SAM_CACHE_TTL = 86400000; // 24 hours
 
 function readUserCache() {
   try { return JSON.parse(localStorage.getItem(_SAM_USER_KEY) || 'null'); } catch { return null; }
@@ -9770,7 +9770,7 @@ function updateTrialBadge(state) {
   const signInBtn = document.querySelector('.nav-signin-btn');
   if (signInBtn) {
     if (_u && _u.email) {
-      const displayName = _u.name ? _u.name : _u.email.split('@')[0];
+      const displayName = _u.name ? _u.name.split(' ')[0] : _u.email.split('@')[0];
       signInBtn.textContent = '✓ ' + displayName;
       signInBtn.style.borderColor = 'rgba(32,128,141,0.4)';
       signInBtn.style.color = 'var(--accent)';
@@ -16037,7 +16037,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
           writeUserCache(data.user);
           claimAnonymousChatHistory(data.user.email);
           localStorage.setItem('samFirstRunDone', 'true');
-          showToastMsg('Welcome back' + (data.user.name ? ', ' + data.user.name : '') + '! 🎉', 'var(--accent)');
+          showToastMsg('Welcome back' + (data.user.name ? ', ' + data.user.name.split(' ')[0] : '') + '! 🎉', 'var(--accent)');
           setTimeout(() => { window.location.href = window.location.origin + '/app'; }, 1500);
         } else {
           showToastMsg('This link has expired. Use Sign in to get a new one.', 'var(--accent)');
@@ -16050,7 +16050,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 
   function showToastMsg(msg, color) {
     const t = document.createElement('div');
-    t.style.cssText = 'position:fixed;top:24px;left:50%;transform:translateX(-50%);background:' + (color||'var(--accent)') + ';color:#09080F;font-family:Sora,sans-serif;font-size:13px;font-weight:700;padding:12px 24px;border-radius:50px;z-index:9999;white-space:nowrap;box-shadow:0 4px 24px rgba(0,0,0,0.4);';
+    t.style.cssText = 'position:fixed;top:24px;left:50%;transform:translateX(-50%);background:' + (color||'var(--accent)') + ';color:#09080F;font-family:Inter,system-ui,sans-serif;font-size:13px;font-weight:700;padding:12px 24px;border-radius:50px;z-index:9999;white-space:nowrap;box-shadow:0 4px 24px rgba(0,0,0,0.4);';
     t.textContent = msg;
     document.body.appendChild(t);
     setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity 0.5s'; setTimeout(() => t.remove(), 500); }, 3500);
