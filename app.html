@@ -6382,7 +6382,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.47" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.48" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6466,7 +6466,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.47</div>
+  <div class="qs-version-stamp">Quiet Studio v9.48</div>
 </div>
 
   </aside>
@@ -11923,6 +11923,22 @@ function _samSaveSession() {
     localStorage.setItem('sam_session_v2', str);
     localStorage.setItem('sam_session_step', WS._currentStep || '0');
     localStorage.setItem('sam_session_ts', Date.now().toString());
+    // Fire-and-forget: persist to server so Reload Session works across devices/cache clears
+    try {
+      var _ts = (typeof getTrialState === 'function') ? getTrialState() : null;
+      var _email = _ts && _ts.email ? _ts.email.trim().toLowerCase() : null;
+      if (_email && WS._currentStep && parseInt(WS._currentStep) >= 1) {
+        var _ctx = Object.assign({}, WS);
+        delete _ctx.voiceProfile; delete _ctx.voiceCalibrated;
+        delete _ctx.voiceSample; delete _ctx.brandLogo;
+        delete _ctx.storyPhoto; delete _ctx.thumbPhoto;
+        fetch('/api/wizard-save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: _email, context: _ctx })
+        }).catch(function() {});
+      }
+    } catch(_e) {}
     return true;
   } catch(e) {
     console.warn('SAM save failed:', e.message);
