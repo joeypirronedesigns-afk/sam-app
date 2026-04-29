@@ -49,9 +49,9 @@
       --blueprint-bg: rgba(56,189,248,0.12);
       --blueprint-border: rgba(56,189,248,0.25);
 
-      --vision: #34D399;
-      --vision-bg: rgba(52,211,153,0.12);
-      --vision-border: rgba(52,211,153,0.25);
+      --vision: var(--accent);
+      --vision-bg: rgba(32,128,141,0.12);
+      --vision-border: rgba(32,128,141,0.25);
 
       --lens: #FBBF24;
       --lens-bg: rgba(251,191,36,0.12);
@@ -401,7 +401,7 @@
     .grad-pink { background: linear-gradient(135deg, #F472B6, #EC4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .grad-purple { background: linear-gradient(135deg, #A78BFA, #818CF8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .grad-cyan { background: linear-gradient(135deg, #67E8F9, #38BDF8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .grad-green { background: linear-gradient(135deg, #6EE7B7, #34D399); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .grad-green { background: linear-gradient(135deg, #6EE7B7, var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 
 
     /* ── PERSISTENT SAM PANEL ── */
@@ -438,7 +438,7 @@
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      background: #34D399;
+      background: var(--accent);
       border: 2px solid var(--bg);
     }
     .psam-fab-label {
@@ -511,8 +511,8 @@
     }
     .psam-header-info { flex: 1; }
     .psam-header-name { font-size: 13px; font-weight: 700; color: var(--text); }
-    .psam-header-status { font-size: 11px; color: #34D399; display: flex; align-items: center; gap: 4px; }
-    .psam-header-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #34D399; display: inline-block; }
+    .psam-header-status { font-size: 11px; color: var(--accent); display: flex; align-items: center; gap: 4px; }
+    .psam-header-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); display: inline-block; }
     .psam-header-actions { display: flex; gap: 6px; }
     .psam-header-btn {
       background: none;
@@ -807,7 +807,7 @@
     .tool-pulse::before { background: linear-gradient(90deg, transparent, #F472B6, transparent); }
     .tool-spark::before { background: linear-gradient(90deg, transparent, #A78BFA, transparent); }
     .tool-blueprint::before { background: linear-gradient(90deg, transparent, #38BDF8, transparent); }
-    .tool-vision::before { background: linear-gradient(90deg, transparent, #34D399, transparent); }
+    .tool-vision::before { background: linear-gradient(90deg, transparent, var(--accent), transparent); }
     .tool-lens::before { background: linear-gradient(90deg, transparent, #FBBF24, transparent); }
 
     .tool-icon-btn:hover { transform: translateY(-6px); border-color: var(--border2); box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
@@ -890,7 +890,7 @@
 
     .tool-vision .tool-icon-face { background: var(--vision-bg); border: 1px solid var(--vision-border); }
     .tool-vision { border-color: var(--vision-border); }
-    .tool-vision:hover { background: rgba(52,211,153,0.05); }
+    .tool-vision:hover { background: rgba(32,128,141,0.05); }
 
     .tool-lens .tool-icon-face { background: var(--lens-bg); border: 1px solid var(--lens-border); }
     .tool-lens { border-color: var(--lens-border); }
@@ -1265,7 +1265,7 @@
     .run-pulse { background: linear-gradient(135deg, #BE185D, #F472B6); color: #fff; box-shadow: 0 0 24px rgba(244,114,182,0.3); }
     .run-spark { background: linear-gradient(135deg, #5B21B6, #A78BFA); color: #fff; box-shadow: 0 0 24px rgba(167,139,250,0.3); }
     .run-blueprint { background: linear-gradient(135deg, #0369A1, #38BDF8); color: #fff; box-shadow: 0 0 24px rgba(56,189,248,0.3); }
-    .run-vision { background: linear-gradient(135deg, #065F46, #34D399); color: #fff; box-shadow: 0 0 24px rgba(52,211,153,0.3); }
+    .run-vision { background: linear-gradient(135deg, #065F46, var(--accent)); color: #fff; box-shadow: 0 0 24px rgba(32,128,141,0.3); }
     .run-lens { background: linear-gradient(135deg, #92400E, #FBBF24); color: #0A0907; box-shadow: 0 0 24px rgba(251,191,36,0.25); }
 
     /* ── LOADER ── */
@@ -1486,7 +1486,7 @@
       margin-top: 10px;
     }
     .copy-btn:hover { color: var(--text2); border-color: var(--border2); }
-    .copy-btn.copied { color: #34D399; border-color: rgba(52,211,153,0.3); }
+    .copy-btn.copied { color: var(--accent); border-color: rgba(32,128,141,0.3); }
 
     .virality-wrap { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--surface); border-radius: var(--radius); margin-bottom: 10px; }
     .virality-label { font-size: 12px; color: var(--ink-muted); font-weight: 500; flex-shrink: 0; }
@@ -1638,7 +1638,7 @@
     .idea-status-btn.active-saved{background:rgba(167,139,250,0.15);border-color:rgba(167,139,250,0.4);color:var(--accent);}
     .idea-status-btn.active-scripting{background:rgba(56,189,248,0.15);border-color:rgba(56,189,248,0.4);color:var(--blueprint);}
     .idea-status-btn.active-filmed{background:rgba(251,191,36,0.15);border-color:rgba(251,191,36,0.4);color:var(--lens);}
-    .idea-status-btn.active-posted{background:rgba(52,211,153,0.15);border-color:rgba(52,211,153,0.4);color:var(--vision);}
+    .idea-status-btn.active-posted{background:rgba(32,128,141,0.15);border-color:rgba(32,128,141,0.4);color:var(--vision);}
     .ideas-panel-footer{padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:10px;flex-shrink:0;background:rgba(13,11,22,0.95);}
     .ideas-footer-btn{flex:1;padding:10px;border-radius:var(--radius);font-family:"Sora",sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;text-align:center;}
     .ideas-footer-clear{background:transparent;border:1px solid var(--border);color:var(--ink-muted);}
@@ -1905,7 +1905,7 @@
       font-weight: 700;
       margin-top: 1px;
     }
-    .fi-yes { background: rgba(52,211,153,0.12); border: 1px solid rgba(52,211,153,0.25); color: #34D399; }
+    .fi-yes { background: rgba(32,128,141,0.12); border: 1px solid rgba(32,128,141,0.25); color: var(--accent); }
     .fi-no  { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); color: var(--ink-muted); }
     .fi-yes::after { content: '✓'; }
     .fi-no::after  { content: '—'; }
@@ -2050,7 +2050,7 @@
       border-radius: 20px;
       margin-top: 8px;
     }
-    .tag-live { background: rgba(52,211,153,0.12); color: #34D399; border: 1px solid rgba(52,211,153,0.2); }
+    .tag-live { background: rgba(32,128,141,0.12); color: var(--accent); border: 1px solid rgba(32,128,141,0.2); }
     .tag-soon { background: rgba(167,139,250,0.12); color: var(--accent); border: 1px solid var(--spark-border); }
 
     /* Reviews */
@@ -2082,7 +2082,7 @@
             <div style="font-size:14px;color:var(--text2);line-height:1.6;">Upload a screenshot of your TikTok, YouTube or Instagram analytics. SAM reads the numbers, tells you what's working, what's not, and gives you 3 posts to make this week to grow.</div>
           </div>
           <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;">
-            <div style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#34D399;margin-bottom:12px;">✦ 15 languages — written natively</div>
+            <div style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">✦ 15 languages — written natively</div>
             <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;">Written natively. Not translated.</div>
             <div style="font-size:14px;color:var(--text2);line-height:1.6;">English, Spanish, French, Portuguese, German, Italian, Dutch, Japanese, Korean, Hindi, Arabic and Mandarin. SAM doesn't translate your content — it thinks and writes in your language from the start.</div>
           </div>
@@ -2322,9 +2322,9 @@
     .wl-perk-dot {
       width: 20px; height: 20px;
       border-radius: 50%;
-      background: rgba(52,211,153,0.12);
-      border: 1px solid rgba(52,211,153,0.25);
-      color: #34D399;
+      background: rgba(32,128,141,0.12);
+      border: 1px solid rgba(32,128,141,0.25);
+      color: var(--accent);
       font-size: 10px;
       font-weight: 700;
       display: flex; align-items: center; justify-content: center;
@@ -2687,7 +2687,7 @@
       top: 2px; right: 2px;
       width: 12px; height: 12px;
       border-radius: 50%;
-      background: #34D399;
+      background: var(--accent);
       border: 2px solid var(--bg);
     }
 
@@ -2728,8 +2728,8 @@
       flex-shrink: 0;
     }
     .chat-panel-name { font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700; color: var(--text); }
-    .chat-panel-status { font-size: 11px; color: #34D399; display: flex; align-items: center; gap: 4px; }
-    .chat-panel-status::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: #34D399; }
+    .chat-panel-status { font-size: 11px; color: var(--accent); display: flex; align-items: center; gap: 4px; }
+    .chat-panel-status::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
     .chat-close-btn { margin-left: auto; background: transparent; border: none; color: var(--ink-muted); font-size: 18px; cursor: pointer; padding: 4px; transition: color 0.15s; }
     .chat-close-btn:hover { color: var(--text); }
 
@@ -3946,7 +3946,7 @@
       font-family: 'Inter', system-ui, sans-serif;
     }
     .playbook-copy-btn:hover { color: var(--ink); border-color: var(--rule-strong); }
-    .playbook-copy-btn.copied { color: #34D399; border-color: rgba(52,211,153,0.3); }
+    .playbook-copy-btn.copied { color: var(--accent); border-color: rgba(32,128,141,0.3); }
 
     .no-print { }
     @media print {
@@ -4147,7 +4147,7 @@
       .arch-setup   { border-top: 2.5px solid #A78BFA !important; }
       .arch-risk    { border-top: 2.5px solid #F472B6 !important; }
       .arch-turn    { border-top: 2.5px solid #FBBF24 !important; }
-      .arch-payoff  { border-top: 2.5px solid #34D399 !important; }
+      .arch-payoff  { border-top: 2.5px solid var(--accent) !important; }
       .arch-cta     { border-top: 2.5px solid #F472B6 !important; }
 
       .playbook-arch-beat {
@@ -6296,7 +6296,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.19" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.20" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6329,7 +6329,7 @@ body.quiet-studio-shell .qs-rail nav {
 <!-- THE SPINE section -->
 <nav class="qs-dash-rail-section" aria-label="The Spine">
   <div class="qs-dash-rail-section-label">The Spine</div>
-  <button class="qs-dash-rail-item" data-qs-nav="voice-dna" disabled>
+  <button class="qs-dash-rail-item" data-qs-nav="voice-dna" onclick="openVoiceTrainer()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5.5C10.2 6.7 10.2 8.5 9 9.7L7.7 11C6.5 12.2 6.5 14 7.7 15.2C8.9 16.4 8.9 18.2 7.7 19.4"/><path d="M15 4.6C13.8 5.8 13.8 7.6 15 8.8L16.3 10.1C17.5 11.3 17.5 13.1 16.3 14.3C15.1 15.5 15.1 17.3 16.3 18.5"/><path d="M10 7.3C11.3 8 12.7 8 14 7.3"/><path d="M10 12C11.3 12.7 12.7 12.7 14 12"/><path d="M10 16.7C11.3 17.4 12.7 17.4 14 16.7"/></svg>
     Voice DNA
   </button>
@@ -6380,7 +6380,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.19</div>
+  <div class="qs-version-stamp">Quiet Studio v9.20</div>
 </div>
 
   </aside>
@@ -6412,7 +6412,7 @@ body.quiet-studio-shell .qs-rail nav {
     <button onclick="window.location.href='/meet'" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--ink);background:linear-gradient(135deg,rgba(109,40,217,0.3),rgba(244,114,182,0.15));border:1px solid rgba(167,139,250,0.4);border-radius:50px;padding:7px 16px;cursor:pointer;transition:all 0.2s;font-family:'Sora',sans-serif;white-space:nowrap;" onmouseover="this.style.background='linear-gradient(135deg,rgba(109,40,217,0.5),rgba(244,114,182,0.25))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(109,40,217,0.3),rgba(244,114,182,0.15))'">✦ Talk with SAM</button>
     <button id="navStoryEngineBtn" onclick="openWizardPage(true)" style="display:none;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent);border-radius:6px;padding:7px 16px;cursor:pointer;transition:all 0.2s;font-family:var(--qs-font-ui);white-space:nowrap;">📖 Story Engine</button>
     <button onclick="openWorkshop()" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:rgba(240,236,255,0.7);background:none;border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:7px 16px;cursor:pointer;transition:all 0.2s;font-family:'Sora',sans-serif;white-space:nowrap;" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)';this.style.color='#A78BFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(240,236,255,0.7)'">🛠 Workshop</button>
-    <button onclick="openVoiceTrainer()" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:#34D399;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.25);border-radius:50px;padding:7px 16px;cursor:pointer;transition:all 0.2s;font-family:'Sora',sans-serif;white-space:nowrap;" onmouseover="this.style.background='rgba(52,211,153,0.15)';this.style.borderColor='rgba(52,211,153,0.4)'" onmouseout="this.style.background='rgba(52,211,153,0.08)';this.style.borderColor='rgba(52,211,153,0.25)'">🧬 Voice DNA</button>
+    <button onclick="openVoiceTrainer()" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent);border-radius:50px;padding:7px 16px;cursor:pointer;transition:all 0.2s;font-family:'Inter',system-ui,sans-serif;white-space:nowrap;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">🧬 Voice DNA</button>
     <button class="nav-signin-btn" onclick="openSignInModal()" style="background:none;border:1px solid var(--rule);color:var(--ink-soft);font-family:'Inter',system-ui,sans-serif;font-size:13px;font-weight:600;padding:8px 18px;border-radius:8px;cursor:pointer;transition:all 0.2s;">Sign in</button>
     <button class="nav-pro-btn" onclick="openProPage()">See plans →</button>
   </div>
@@ -6430,7 +6430,7 @@ body.quiet-studio-shell .qs-rail nav {
     <div id="heroTrialBanner" style="display:inline-flex;align-items:center;gap:8px;margin-bottom:32px;padding:10px 18px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:50px;flex-wrap:wrap;justify-content:center;">
       <span style="font-size:11px;font-weight:700;color:rgba(167,139,250,0.8);">✦ 7 days free</span>
       <span style="color:rgba(255,255,255,0.15);font-size:11px;">·</span>
-      <span style="font-size:11px;font-weight:700;color:rgba(52,211,153,0.8);">No card needed</span>
+      <span style="font-size:11px;font-weight:700;color:rgba(32,128,141,0.8);">No card needed</span>
       <span style="color:rgba(255,255,255,0.15);font-size:11px;">·</span>
       <span style="font-size:11px;font-weight:700;color:rgba(251,191,36,0.8);">Cancel anytime</span>
     </div>
@@ -6469,7 +6469,7 @@ body.quiet-studio-shell .qs-rail nav {
         <span style="display:block;font-size:10px;font-weight:700;letter-spacing:0.1em;color:rgba(167,139,250,0.7);text-transform:uppercase;margin:10px 0 4px;">[TURN]</span>
         Then I got a DM from somebody I'd never met.<br/>
         She said my video helped her get through her divorce.<br/>
-        <span style="display:block;font-size:10px;font-weight:700;letter-spacing:0.1em;color:rgba(52,211,153,0.7);text-transform:uppercase;margin:10px 0 4px;">[PAYOFF]</span>
+        <span style="display:block;font-size:10px;font-weight:700;letter-spacing:0.1em;color:rgba(32,128,141,0.7);text-transform:uppercase;margin:10px 0 4px;">[PAYOFF]</span>
         I cried in that parking lot. And I kept going.
       </div>
       <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(167,139,250,0.15);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
@@ -6808,12 +6808,12 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
   <section class="qs-dash-spine-section" aria-label="The Spine">
     <div class="qs-dash-spine-label">The Spine</div>
     <div class="qs-dash-spine-grid">
-      <button class="qs-dash-spine-card" disabled aria-label="Voice DNA — coming soon">
+      <button class="qs-dash-spine-card" onclick="openVoiceTrainer()" aria-label="Voice DNA">
         <svg class="qs-dash-spine-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5C10.2 6.7 10.2 8.5 9 9.7L7.7 11C6.5 12.2 6.5 14 7.7 15.2C8.9 16.4 8.9 18.2 7.7 19.4"/><path d="M15 4.6C13.8 5.8 13.8 7.6 15 8.8L16.3 10.1C17.5 11.3 17.5 13.1 16.3 14.3C15.1 15.5 15.1 17.3 16.3 18.5"/><path d="M10 7.3C11.3 8 12.7 8 14 7.3"/><path d="M10 12C11.3 12.7 12.7 12.7 14 12"/><path d="M10 16.7C11.3 17.4 12.7 17.4 14 16.7"/></svg>
         <div class="qs-dash-spine-card-title">Voice DNA</div>
         <div class="qs-dash-spine-card-status qs-dash-spine-card-status--neutral">
           <span class="qs-dash-spine-card-status-dot"></span>
-          Coming soon · v0.5
+          Active · v1.0
         </div>
         <p class="qs-dash-spine-card-copy">Your voice signature locks here. SAM drafts in your register.</p>
       </button>
@@ -7201,7 +7201,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
 
         <button class="tool-icon-btn tool-vision" onclick="previewTool('vision')">
           <div class="tool-icon-face">
-            <svg class="tool-icon-svg" viewBox="0 0 28 28" fill="none"><polygon points="11,8 22,14 11,20" fill="#34D399"/><rect x="6" y="8" width="2.5" height="12" rx="1" fill="#34D399"/></svg>
+            <svg class="tool-icon-svg" viewBox="0 0 28 28" fill="none"><polygon points="11,8 22,14 11,20" fill="var(--accent)"/><rect x="6" y="8" width="2.5" height="12" rx="1" fill="var(--accent)"/></svg>
           </div>
           <div class="tool-icon-name">The Vision</div>
           <div class="tool-icon-desc">One bold concept nobody else has made</div>
@@ -7231,11 +7231,11 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
           <div class="tool-icon-desc">Your saved hooks, scripts and concepts</div>
         </button>
 
-        <button class="tool-icon-btn" onclick="openVoiceTrainer()" style="border-color:rgba(52,211,153,0.2);">
-          <div class="tool-icon-face" style="background:rgba(52,211,153,0.08);">
+        <button class="tool-icon-btn" onclick="openVoiceTrainer()" style="border-color:rgba(32,128,141,0.2);">
+          <div class="tool-icon-face" style="background:rgba(32,128,141,0.08);">
             <span style="font-size:28px;line-height:1;">🧬</span>
           </div>
-          <div class="tool-icon-name" style="color:#34D399;">Voice DNA</div>
+          <div class="tool-icon-name" style="color:var(--accent);">Voice DNA</div>
           <div class="tool-icon-desc">Refine how SAM hears you</div>
         </button>
 
@@ -7244,7 +7244,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
             <svg class="tool-icon-svg" viewBox="0 0 28 28" fill="none"><rect x="5" y="7" width="18" height="14" rx="2" stroke="#888" stroke-width="1.8"/><path d="M14 11v6M11 14h6" stroke="#888" stroke-width="1.8" stroke-linecap="round"/></svg>
           </div>
           <div class="tool-icon-name" style="color:#555;">Video Tool</div>
-          <div class="tool-icon-desc" style="color:#444;">Coming soon — $39/mo Broadcaster</div>
+          <div class="tool-icon-desc" style="color:var(--ink-muted);">Your voice. Every output.</div>
         </div>
 
       </div>
@@ -7265,8 +7265,8 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
           <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;">SAM finds the story</div>
           <div style="font-size:13px;color:var(--ink-muted);line-height:1.6;">SAM reads your moment, diagnoses what makes it powerful, and writes a hook that stops the scroll.</div>
         </div>
-        <div style="background:rgba(52,211,153,0.05);border:1px solid rgba(52,211,153,0.15);border-radius:14px;padding:24px;">
-          <div style="font-family:'Sora',sans-serif;font-size:28px;font-weight:800;color:rgba(52,211,153,0.3);margin-bottom:12px;">03</div>
+        <div style="background:rgba(32,128,141,0.05);border:1px solid rgba(32,128,141,0.15);border-radius:14px;padding:24px;">
+          <div style="font-family:'Sora',sans-serif;font-size:28px;font-weight:800;color:rgba(32,128,141,0.3);margin-bottom:12px;">03</div>
           <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;">Walk out ready to post.</div>
           <div style="font-size:13px;color:var(--ink-muted);line-height:1.6;">Script, captions for every platform, b-roll cues, audience profile, and a lead magnet. Ready to post.</div>
         </div>
@@ -7436,7 +7436,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
       </button>
       <div class="tool-header-bar">
         <div class="tool-header-icon" style="background:var(--vision-bg);border:1px solid var(--vision-border);">
-          <svg width="22" height="22" viewBox="0 0 28 28" fill="none"><polygon points="11,8 22,14 11,20" fill="#34D399"/><rect x="6" y="8" width="2.5" height="12" rx="1" fill="#34D399"/></svg>
+          <svg width="22" height="22" viewBox="0 0 28 28" fill="none"><polygon points="11,8 22,14 11,20" fill="var(--accent)"/><rect x="6" y="8" width="2.5" height="12" rx="1" fill="var(--accent)"/></svg>
         </div>
         <div class="tool-header-title">The Vision</div>
       </div>
@@ -7833,7 +7833,7 @@ const TOOLS = {
     color: 'var(--vision)',
     bg: 'var(--vision-bg)',
     border: 'var(--vision-border)',
-    icon: `<svg width="36" height="36" viewBox="0 0 28 28" fill="none"><polygon points="11,8 22,14 11,20" fill="#34D399"/><rect x="6" y="8" width="2.5" height="12" rx="1" fill="#34D399"/></svg>`,
+    icon: `<svg width="36" height="36" viewBox="0 0 28 28" fill="none"><polygon points="11,8 22,14 11,20" fill="var(--accent)"/><rect x="6" y="8" width="2.5" height="12" rx="1" fill="var(--accent)"/></svg>`,
     features: [
       'SAM generates one bold, unique video concept built for your niche',
       'Comes with the premise, opening hook line, and how-to-film notes',
@@ -8427,7 +8427,7 @@ function reachCopyAll(platformId) {
     if (btn) {
       const orig = btn.textContent;
       btn.textContent = '✓ Copied!';
-      btn.style.color = '#34D399';
+      btn.style.color = 'var(--accent)';
       setTimeout(function() {
         btn.textContent = orig;
         btn.style.color = '#A78BFA';
@@ -8956,7 +8956,7 @@ function renderVision(data) {
   const body = document.getElementById('visionBody');
   if (!data || !data.title) { body.innerHTML = '<div style="color:var(--ink-muted);padding:1rem;">No concept returned. Try again.</div>'; return; }
   const score = data.virality_score && typeof data.virality_score === 'number' ? Math.min(100, Math.max(40, data.virality_score)) : Math.floor(Math.random() * 25) + 72;
-  const scoreColor = score >= 90 ? '#34D399' : score >= 75 ? '#FBBF24' : '#F472B6';
+  const scoreColor = score >= 90 ? 'var(--accent)' : score >= 75 ? '#FBBF24' : '#F472B6';
   let prodItems = '';
   if (Array.isArray(data.production_notes)) prodItems = data.production_notes.map(n=>`<li>${n}</li>`).join('');
   else if (typeof data.production_notes === 'string') prodItems = data.production_notes.split('\n').filter(Boolean).map(n=>`<li>${n.replace(/^[-•▸→]\s*/,'')}</li>`).join('');
@@ -9377,7 +9377,7 @@ function renderLens(data) {
     const ac = data.thumbnail_color || '#F472B6';
     if (hl1 || hl2) {
       html += `<div class="out-block"><div class="out-block-title" style="color:var(--lens);">● Your headlines</div>`;
-      if (hl1) html += `<div style="margin-bottom:10px;"><div style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:rgba(52,211,153,0.8);text-transform:uppercase;margin-bottom:5px;">✓ Safe — clean &amp; relatable</div><div style="background:var(--surface);border-left:3px solid rgba(52,211,153,0.6);border-radius:0 var(--radius) var(--radius) 0;padding:12px 14px;"><div style="font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--text);line-height:1.2;">${hl1}</div>${sub1?`<div style="font-size:13px;color:var(--ink-muted);margin-top:4px;">${sub1}</div>`:''}</div><button class="copy-btn" style="float:none;margin-top:6px;" onclick="copyText(this,'${escQ(hl1+(sub1?'\n'+sub1:''))}')">Copy</button>${makeIbSaveBtn(hl1+(sub1?'\n'+sub1:''),"lens","headline","")}</div>`;
+      if (hl1) html += `<div style="margin-bottom:10px;"><div style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:rgba(32,128,141,0.8);text-transform:uppercase;margin-bottom:5px;">✓ Safe — clean &amp; relatable</div><div style="background:var(--surface);border-left:3px solid rgba(32,128,141,0.6);border-radius:0 var(--radius) var(--radius) 0;padding:12px 14px;"><div style="font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--text);line-height:1.2;">${hl1}</div>${sub1?`<div style="font-size:13px;color:var(--ink-muted);margin-top:4px;">${sub1}</div>`:''}</div><button class="copy-btn" style="float:none;margin-top:6px;" onclick="copyText(this,'${escQ(hl1+(sub1?'\n'+sub1:''))}')">Copy</button>${makeIbSaveBtn(hl1+(sub1?'\n'+sub1:''),"lens","headline","")}</div>`;
       if (hl2) html += `<div style="margin-bottom:10px;"><div style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:rgba(244,114,182,0.8);text-transform:uppercase;margin-bottom:5px;">⚡ Bold — scroll-stopping</div><div style="background:var(--surface);border-left:3px solid rgba(244,114,182,0.6);border-radius:0 var(--radius) var(--radius) 0;padding:12px 14px;"><div style="font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--text);line-height:1.2;">${hl2}</div>${sub2?`<div style="font-size:13px;color:var(--ink-muted);margin-top:4px;">${sub2}</div>`:''}</div><button class="copy-btn" style="float:none;margin-top:6px;" onclick="copyText(this,'${escQ(hl2+(sub2?'\n'+sub2:''))}')">Copy</button>${makeIbSaveBtn(hl2+(sub2?'\n'+sub2:''),"lens","headline","")}</div>`;
       html += `</div>`;
     }
@@ -9386,7 +9386,7 @@ function renderLens(data) {
     const safeTemplate = data.safe_template || 'cinematic';
     const boldTemplate = data.bold_template || 'cornerBurst';
     const templateNames = {cinematic:'Cinematic bars',splitPanel:'Split panel',newsFlash:'News flash panel',giantWord:'Giant word',cornerBurst:'Corner burst',diagonalSlash:'Diagonal slash',stackedBoxes:'Stacked boxes'};
-    html += `<div class="out-block"><div class="out-block-title" style="color:var(--lens);">● Layout direction</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"><div style="background:var(--surface);border-radius:var(--radius);padding:12px;"><div style="font-size:10px;font-weight:700;color:rgba(52,211,153,0.8);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Safe layout</div><div style="font-size:14px;font-weight:500;color:var(--text);">${templateNames[safeTemplate]||safeTemplate}</div></div><div style="background:var(--surface);border-radius:var(--radius);padding:12px;"><div style="font-size:10px;font-weight:700;color:rgba(244,114,182,0.8);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Bold layout</div><div style="font-size:14px;font-weight:500;color:var(--text);">${templateNames[boldTemplate]||boldTemplate}</div></div></div><div style="margin-top:10px;background:var(--surface);border-radius:var(--radius);padding:12px;display:flex;gap:12px;align-items:center;"><div><div style="font-size:10px;font-weight:700;color:var(--ink-muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">Face position</div><div style="font-size:14px;font-weight:500;color:var(--text);">${faceSide==='center'?'Centre — text below':'Face '+faceSide+' — text goes '+textSide}</div></div><div style="margin-left:auto;"><div style="font-size:10px;font-weight:700;color:var(--ink-muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">Accent color</div><div style="display:flex;align-items:center;gap:6px;"><div style="width:20px;height:20px;border-radius:50%;background:${ac};border:2px solid rgba(255,255,255,0.2);"></div><span style="font-size:13px;color:var(--text2);">${ac}</span></div></div></div></div>`;
+    html += `<div class="out-block"><div class="out-block-title" style="color:var(--lens);">● Layout direction</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"><div style="background:var(--surface);border-radius:var(--radius);padding:12px;"><div style="font-size:10px;font-weight:700;color:rgba(32,128,141,0.8);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Safe layout</div><div style="font-size:14px;font-weight:500;color:var(--text);">${templateNames[safeTemplate]||safeTemplate}</div></div><div style="background:var(--surface);border-radius:var(--radius);padding:12px;"><div style="font-size:10px;font-weight:700;color:rgba(244,114,182,0.8);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Bold layout</div><div style="font-size:14px;font-weight:500;color:var(--text);">${templateNames[boldTemplate]||boldTemplate}</div></div></div><div style="margin-top:10px;background:var(--surface);border-radius:var(--radius);padding:12px;display:flex;gap:12px;align-items:center;"><div><div style="font-size:10px;font-weight:700;color:var(--ink-muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">Face position</div><div style="font-size:14px;font-weight:500;color:var(--text);">${faceSide==='center'?'Centre — text below':'Face '+faceSide+' — text goes '+textSide}</div></div><div style="margin-left:auto;"><div style="font-size:10px;font-weight:700;color:var(--ink-muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">Accent color</div><div style="display:flex;align-items:center;gap:6px;"><div style="width:20px;height:20px;border-radius:50%;background:${ac};border:2px solid rgba(255,255,255,0.2);"></div><span style="font-size:13px;color:var(--text2);">${ac}</span></div></div></div></div>`;
     if (data.content_angle) html += `<div class="out-block"><div class="out-block-title" style="color:var(--lens);">● Story angle</div><div style="background:var(--lens-bg);border:1px solid var(--lens-border);border-radius:var(--radius);padding:14px 16px;"><div style="font-size:15px;color:var(--text);line-height:1.6;">${data.content_angle}</div></div>${makeIbSaveBtn(data.content_angle,"lens","angle","")}</div>`;
     const imgSrc = window._lensImgSrc || document.getElementById('previewImg')?.src || '';
     html += `<div class="out-block"><div class="out-block-title" style="color:var(--lens);">● Visual reference <span style="font-size:10px;font-weight:400;color:var(--ink-muted);text-transform:none;letter-spacing:0;">(layout blueprint — finish in Canva or CapCut)</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
@@ -9771,8 +9771,8 @@ function updateTrialBadge(state) {
     if (_u && _u.email) {
       const displayName = _u.name ? _u.name : _u.email.split('@')[0];
       signInBtn.textContent = '✓ ' + displayName;
-      signInBtn.style.borderColor = 'rgba(52,211,153,0.4)';
-      signInBtn.style.color = '#34D399';
+      signInBtn.style.borderColor = 'rgba(32,128,141,0.4)';
+      signInBtn.style.color = 'var(--accent)';
       signInBtn.onclick = null;
     } else {
       signInBtn.textContent = 'Sign in';
@@ -10479,7 +10479,7 @@ function initPersistentSAM() {
       _qrRow.innerHTML = '<button style="font-size:11px;font-weight:600;padding:5px 12px;border-radius:999px;border:1px solid rgba(167,139,250,0.35);background:rgba(167,139,250,0.08);color:#A78BFA;cursor:pointer;white-space:nowrap;" onclick="sendPersistentMessage_quick(\'Write me a TikTok hook about Voice DNA\')">🎬 TikTok hook</button>'
         + '<button style="font-size:11px;font-weight:600;padding:5px 12px;border-radius:999px;border:1px solid rgba(244,114,182,0.35);background:rgba(244,114,182,0.08);color:#F472B6;cursor:pointer;white-space:nowrap;" onclick="sendPersistentMessage_quick(\'Write a LinkedIn founder post about why I built SAM\')">💼 Founder post</button>'
         + '<button style="font-size:11px;font-weight:600;padding:5px 12px;border-radius:999px;border:1px solid rgba(56,189,248,0.35);background:rgba(56,189,248,0.08);color:#38BDF8;cursor:pointer;white-space:nowrap;" onclick="sendPersistentMessage_quick(\'Write an Instagram carousel about SAM vs ChatGPT\')">📱 Carousel</button>'
-        + '<button style="font-size:11px;font-weight:600;padding:5px 12px;border-radius:999px;border:1px solid rgba(52,211,153,0.35);background:rgba(52,211,153,0.08);color:#34D399;cursor:pointer;white-space:nowrap;" onclick="sendPersistentMessage_quick(\'Give me 5 content angles about Voice DNA\')">🧬 Voice DNA</button>';
+        + '<button style="font-size:11px;font-weight:600;padding:5px 12px;border-radius:999px;border:1px solid rgba(32,128,141,0.35);background:rgba(32,128,141,0.08);color:var(--accent);cursor:pointer;white-space:nowrap;" onclick="sendPersistentMessage_quick(\'Give me 5 content angles about Voice DNA\')">🧬 Voice DNA</button>';
     }
   }
 
@@ -11144,7 +11144,7 @@ function renderInlineToolOutput(tool, data, msgs) {
       if (text) navigator.clipboard.writeText(text).then(() => {
         const orig = this.textContent;
         this.textContent = '✓ Copied!';
-        this.style.color = '#34D399';
+        this.style.color = 'var(--accent)';
         setTimeout(() => { this.textContent = orig; this.style.color = ''; }, 2000);
       });
     });
@@ -11187,7 +11187,7 @@ function psamCopy(btn, text) {
   navigator.clipboard.writeText(text.replace(/\\n/g, '\n')).then(() => {
     const orig = btn.textContent;
     btn.textContent = '✓ Copied!';
-    btn.style.color = '#34D399';
+    btn.style.color = 'var(--accent)';
     setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
   });
 }
@@ -11199,7 +11199,7 @@ function psamCopyEl(btn) {
     navigator.clipboard.writeText(scriptEl.innerText).then(() => {
       const orig = btn.textContent;
       btn.textContent = '✓ Copied!';
-      btn.style.color = '#34D399';
+      btn.style.color = 'var(--accent)';
       setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
     });
   }
@@ -11467,7 +11467,7 @@ function printPlaybookOnly() {
     .playbook-script{background:#F4F2EC;border:1px solid #e8e4f0;border-radius:14px;padding:20px;font-size:15px;line-height:2.1;color:#09080F;white-space:pre-wrap;}
     .playbook-arch-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
     .playbook-arch-card{background:#F4F2EC;border:1px solid #e8e4f0;border-radius:10px;padding:14px 16px;border-top:2px solid transparent;}
-    .arch-opening{border-top-color:#38BDF8;}.arch-setup{border-top-color:#A78BFA;}.arch-risk{border-top-color:#F472B6;}.arch-turn{border-top-color:#FBBF24;}.arch-payoff{border-top-color:#34D399;}.arch-cta{border-top-color:#F472B6;}
+    .arch-opening{border-top-color:#38BDF8;}.arch-setup{border-top-color:#A78BFA;}.arch-risk{border-top-color:#F472B6;}.arch-turn{border-top-color:#FBBF24;}.arch-payoff{border-top-color:var(--accent);}.arch-cta{border-top-color:#F472B6;}
     .playbook-arch-beat{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#6b7080;margin-bottom:5px;}
     .playbook-arch-text{font-size:14px;color:#09080F;line-height:1.55;}
     .playbook-arch-time{font-size:11px;color:#6b7080;margin-top:4px;}
@@ -13208,7 +13208,7 @@ ${steer ? 'CREATOR DIRECTION: ' + steer : ''}
       outputLanguage: WS.language || '',
       creatorContext: s.niche || '',
       steer: steer,
-      userId: (localStorage.getItem('sam_uid') || 'anon').replace(/^dev-/, ''),
+      userId: (typeof getTrialState === 'function' && getTrialState().email) ? getTrialState().email : (localStorage.getItem('sam_uid') || 'anon').replace(/^dev-/, ''),
       tier: WS.tier || 'free'
     };
 
@@ -13285,7 +13285,7 @@ function regenRenderSection(key, sectionEl, data) {
 
   // Flash green to signal success
   sectionEl.style.transition = 'box-shadow 0.3s';
-  sectionEl.style.boxShadow = '0 0 0 2px rgba(52,211,153,0.5)';
+  sectionEl.style.boxShadow = '0 0 0 2px rgba(32,128,141,0.5)';
   setTimeout(() => { sectionEl.style.boxShadow = ''; }, 1200);
 
   // Reset button
@@ -13468,7 +13468,7 @@ function renderPlaybook(data) {
       <div class="playbook-section-num">Section 07</div>
       <div class="playbook-section-title">Your thumbnail strategy</div>
       <div class="wizard-why" style="margin-bottom:16px;">Your thumbnail is a billboard. It's the only reason someone clicks. SAM built two options — safe and bold — both written in your voice, both using your photo as the canvas.</div>
-      ${ts.headline_safe ? `<div style="margin-bottom:10px;"><div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(52,211,153,0.8);margin-bottom:6px;">✓ Safe headline</div><div class="playbook-hook" style="font-size:18px;">${ts.headline_safe}</div>${ts.subtext_safe ? `<div style="font-size:13px;color:var(--ink-muted);margin-top:4px;">${ts.subtext_safe}</div>` : ''}<button class="playbook-copy-btn" onclick="wizCopy(this,'${escQ(ts.headline_safe)}')">Copy</button></div>` : ''}
+      ${ts.headline_safe ? `<div style="margin-bottom:10px;"><div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(32,128,141,0.8);margin-bottom:6px;">✓ Safe headline</div><div class="playbook-hook" style="font-size:18px;">${ts.headline_safe}</div>${ts.subtext_safe ? `<div style="font-size:13px;color:var(--ink-muted);margin-top:4px;">${ts.subtext_safe}</div>` : ''}<button class="playbook-copy-btn" onclick="wizCopy(this,'${escQ(ts.headline_safe)}')">Copy</button></div>` : ''}
       ${ts.headline_bold ? `<div style="margin-bottom:10px;"><div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(244,114,182,0.8);margin-bottom:6px;">⚡ Bold headline</div><div class="playbook-hook" style="font-size:18px;border-left-color:var(--pulse);">${ts.headline_bold}</div>${ts.subtext_bold ? `<div style="font-size:13px;color:var(--ink-muted);margin-top:4px;">${ts.subtext_bold}</div>` : ''}<button class="playbook-copy-btn" onclick="wizCopy(this,'${escQ(ts.headline_bold)}')">Copy</button></div>` : ''}
       ${ts.layout_direction ? `<div class="wizard-why" style="margin-top:12px;"><strong>Layout direction:</strong> ${ts.layout_direction}</div>` : ''}
       <button style="width:100%;margin-top:12px;padding:12px;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.3);border-radius:var(--radius);font-size:14px;font-weight:600;color:var(--accent);cursor:pointer;" onclick="window.open('https://www.canva.com/create/youtube-thumbnails/','_blank')">🎨 Take this to Canva →</button>
@@ -14443,10 +14443,10 @@ function openWizardFromNav() {
 
       <!-- VISION -->
       <div style="background:var(--vision-bg);border:1px solid var(--vision-border);border-radius:24px;padding:36px 32px;display:flex;flex-direction:column;gap:0;position:relative;overflow:hidden;">
-        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#34D399,#10B981);border-radius:24px 24px 0 0;"></div>
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),#10B981);border-radius:24px 24px 0 0;"></div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
           <div style="font-size:11px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--vision);">The Vision</div>
-          <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(52,211,153,0.5);background:rgba(52,211,153,0.08);padding:3px 8px;border-radius:20px;">Concept</div>
+          <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(32,128,141,0.5);background:rgba(32,128,141,0.08);padding:3px 8px;border-radius:20px;">Concept</div>
         </div>
         <div style="font-family:'Sora',sans-serif;font-size:22px;font-weight:800;color:var(--text);line-height:1.2;margin-bottom:12px;">One concept.<br/>Nobody else<br/>has it.</div>
         <div style="font-size:13px;font-weight:600;color:var(--vision);font-style:italic;margin-bottom:16px;line-height:1.6;">Kinda like having a film producer who only pitches concepts nobody else has thought of yet.</div>
@@ -14977,7 +14977,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
         <button onclick="devSaveSession()" id="devSaveBtn" style="display:none;font-size:10px;font-weight:700;background:rgba(109,40,217,0.3);color:#A78BFA;border:1px solid rgba(167,139,250,0.3);border-radius:8px;padding:5px 10px;cursor:pointer;">💾 Session</button>
-        <button onclick="devRestoreSession()" id="devRestoreBtn" style="display:none;font-size:10px;font-weight:700;background:rgba(5,150,105,0.3);color:#34D399;border:1px solid rgba(52,211,153,0.3);border-radius:8px;padding:5px 10px;cursor:pointer;">⚡ Restore</button>
+        <button onclick="devRestoreSession()" id="devRestoreBtn" style="display:none;font-size:10px;font-weight:700;background:rgba(5,150,105,0.3);color:var(--accent);border:1px solid rgba(32,128,141,0.3);border-radius:8px;padding:5px 10px;cursor:pointer;">⚡ Restore</button>
         <div class="wizard-progress-step" id="wizardStepLabel">Step 1 of 10</div>
         <button id="wizardSaveBtn" onclick="manualSaveSession()" style="font-size:10px;font-weight:600;color:var(--ink-soft);background:transparent;border:1px solid var(--rule);border-radius:6px;padding:4px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:'Inter',system-ui,sans-serif;">Save Session</button>
         <button onclick="doRestoreSession()" style="font-size:10px;font-weight:600;color:var(--ink-soft);background:transparent;border:1px solid var(--rule);border-radius:6px;padding:4px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:'Inter',system-ui,sans-serif;">Reload Session</button>
@@ -15837,12 +15837,12 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
       svg: '<svg viewBox="0 0 28 28" fill="none" width="44" height="44"><rect x="5" y="7" width="18" height="16" rx="2" stroke="#38BDF8" stroke-width="1.8"/><path d="M5 12h18M10 5v4M18 5v4" stroke="#38BDF8" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="17" r="1" fill="#38BDF8"/><circle cx="14" cy="17" r="1" fill="#38BDF8"/><circle cx="18" cy="17" r="1" fill="#38BDF8"/></svg>'
     },
     {
-      id: 'vision', name: 'The Vision', color: '#34D399',
-      colorBg: 'rgba(52,211,153,0.12)', colorBorder: 'rgba(52,211,153,0.25)',
+      id: 'vision', name: 'The Vision', color: 'var(--accent)',
+      colorBg: 'rgba(32,128,141,0.12)', colorBorder: 'rgba(32,128,141,0.25)',
       tagline: 'One bold, original video concept nobody else has made — built for your niche.',
       features: ["Premise, hook line, and production notes","Real virality score based on concept strength","The unexpected angle that makes it memorable"],
       samLine: "You're consistent — now let's make something that cuts through. <strong>The Vision</strong> generates one bold video concept built specifically for your voice that nobody else has made.",
-      svg: '<svg viewBox="0 0 28 28" fill="none" width="44" height="44"><polygon points="11,8 22,14 11,20" fill="#34D399"/><rect x="6" y="8" width="2.5" height="12" rx="1" fill="#34D399"/></svg>'
+      svg: '<svg viewBox="0 0 28 28" fill="none" width="44" height="44"><polygon points="11,8 22,14 11,20" fill="var(--accent)"/><rect x="6" y="8" width="2.5" height="12" rx="1" fill="var(--accent)"/></svg>'
     },
     {
       id: 'lens', name: 'The Lens', color: '#FBBF24',
@@ -15884,7 +15884,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
           box-shadow:${active?'0 0 24px '+t.colorBg:'none'};position:relative;">
           ${t.svg}
           ${!active&&!done?'<div style="position:absolute;bottom:-3px;right:-3px;font-size:9px;">🔒</div>':''}
-          ${done?'<div style="position:absolute;bottom:-3px;right:-3px;font-size:9px;background:#34D399;border-radius:50%;width:14px;height:14px;display:flex;align-items:center;justify-content:center;color:#000;font-weight:800;">✓</div>':''}
+          ${done?'<div style="position:absolute;bottom:-3px;right:-3px;font-size:9px;background:var(--accent);border-radius:50%;width:14px;height:14px;display:flex;align-items:center;justify-content:center;color:#000;font-weight:800;">✓</div>':''}
         </div>
         <div style="font-size:10px;font-weight:600;color:${active?t.color:'var(--ink-muted)'};">${t.name.replace('The ','')}</div>
       </div>`;
@@ -16016,7 +16016,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 
     // Handle successful payment redirect
     if (payment === 'success' && plan) {
-      showToastMsg('Payment successful! Check your email for your login link. 🎉', '#34D399');
+      showToastMsg('Payment successful! Check your email for your login link. 🎉', 'var(--accent)');
       window.history.replaceState({}, '', '/');
       return;
     }
@@ -16036,7 +16036,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
           writeUserCache(data.user);
           claimAnonymousChatHistory(data.user.email);
           localStorage.setItem('samFirstRunDone', 'true');
-          showToastMsg('Welcome back' + (data.user.name ? ', ' + data.user.name : '') + '! 🎉', '#34D399');
+          showToastMsg('Welcome back' + (data.user.name ? ', ' + data.user.name : '') + '! 🎉', 'var(--accent)');
           setTimeout(() => { window.location.href = window.location.origin + '/app'; }, 1500);
         } else {
           showToastMsg('This link has expired. Use Sign in to get a new one.', '#F472B6');
@@ -16110,7 +16110,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
     if(btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
     const result = await sendMagicLink(email);
     if (result.success) {
-      if(msg) { msg.style.color = '#34D399'; msg.textContent = 'Check your email — link sent! ✓'; }
+      if(msg) { msg.style.color = 'var(--accent)'; msg.textContent = 'Check your email — link sent! ✓'; }
       if(btn) btn.textContent = 'Sent!';
     } else if (result.noAccount) {
       if(msg) { msg.style.color = '#F472B6'; msg.textContent = 'No account found. Start a free trial first.'; }
@@ -16365,9 +16365,9 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
         </div>
       </div>
 
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemAndOpenTool('vision')">
-        <div style="width:34px;height:34px;border-radius:10px;background:rgba(52,211,153,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><polygon points="11,8 22,14 11,20" fill="#34D399"/><rect x="6" y="8" width="2.5" height="12" rx="1" fill="#34D399"/></svg>
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(32,128,141,0.06);border:1px solid rgba(32,128,141,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemAndOpenTool('vision')">
+        <div style="width:34px;height:34px;border-radius:10px;background:rgba(32,128,141,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><polygon points="11,8 22,14 11,20" fill="var(--accent)"/><rect x="6" y="8" width="2.5" height="12" rx="1" fill="var(--accent)"/></svg>
         </div>
         <div>
           <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--ink);">The Vision</div>
@@ -16388,8 +16388,8 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
             <div style="width:36px;height:36px;border-radius:10px;background:rgba(244,114,182,0.15);border:1px solid rgba(244,114,182,0.3);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">📸</div>
             <div><div style="font-size:13px;font-weight:700;color:var(--ink);">The Reach</div><div style="font-size:11px;color:rgba(240,236,255,0.45);">Photo → platform-ready post</div></div>
           </div>
-          <div class="eco-tool-card" onclick="openVoiceTrainer();closeEcosystemOverlay();" style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.15);border-radius:12px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(52,211,153,0.12)'" onmouseout="this.style.background='rgba(52,211,153,0.06)'">
-            <div style="width:36px;height:36px;border-radius:10px;background:rgba(52,211,153,0.15);border:1px solid rgba(52,211,153,0.3);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🧬</div>
+          <div class="eco-tool-card" onclick="openVoiceTrainer();closeEcosystemOverlay();" style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(32,128,141,0.06);border:1px solid rgba(32,128,141,0.15);border-radius:12px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(32,128,141,0.12)'" onmouseout="this.style.background='rgba(32,128,141,0.06)'">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(32,128,141,0.15);border:1px solid rgba(32,128,141,0.3);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🧬</div>
             <div><div style="font-size:13px;font-weight:700;color:var(--ink);">Voice DNA</div><div style="font-size:11px;color:rgba(240,236,255,0.45);">Refine how SAM hears you</div></div>
           </div>
           </div>
@@ -16430,7 +16430,7 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
 .vt-content {
   position: relative; z-index: 1;
   background: rgba(13,11,22,0.98);
-  border: 1px solid rgba(52,211,153,0.3);
+  border: 1px solid rgba(32,128,141,0.3);
   border-radius: var(--radius-xl);
   padding: 24px; max-width: 480px; width: 100%;
   max-height: 90dvh; overflow-y: auto;
@@ -16453,8 +16453,8 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
 .vt-badge {
   display: inline-flex; align-items: center;
   font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
-  color: #34D399; background: rgba(52,211,153,0.1);
-  border: 1px solid rgba(52,211,153,0.25);
+  color: var(--accent); background: rgba(32,128,141,0.1);
+  border: 1px solid rgba(32,128,141,0.25);
   border-radius: 20px; padding: 3px 10px; margin-bottom: 14px;
 }
 .vt-intro {
@@ -16468,21 +16468,21 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
   padding: 12px; resize: vertical; margin-bottom: 10px;
   transition: border-color 0.15s;
 }
-.vt-sample:focus { outline: none; border-color: rgba(52,211,153,0.4); }
+.vt-sample:focus { outline: none; border-color: rgba(32,128,141,0.4); }
 .vt-counter { font-size: 12px; color: var(--ink-muted); text-align: right; margin-bottom: 14px; }
 .vt-submit {
   width: 100%; padding: 14px;
-  background: linear-gradient(135deg, #059669, #34D399);
+  background: linear-gradient(135deg, #059669, var(--accent));
   border: none; border-radius: var(--radius);
   font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 600;
   color: #fff; cursor: pointer; transition: all 0.2s;
 }
 .vt-submit:disabled { opacity: 0.35; cursor: not-allowed; }
-.vt-submit:not(:disabled):hover { transform: translateY(-1px); box-shadow: 0 0 24px rgba(52,211,153,0.3); }
+.vt-submit:not(:disabled):hover { transform: translateY(-1px); box-shadow: 0 0 24px rgba(32,128,141,0.3); }
 .vt-loading { text-align: center; padding: 32px 0; color: var(--text2); font-size: 14px; }
 .vt-spinner {
   width: 28px; height: 28px;
-  border: 3px solid rgba(52,211,153,0.2); border-top-color: #34D399;
+  border: 3px solid rgba(32,128,141,0.2); border-top-color: var(--accent);
   border-radius: 50%; animation: spin 0.8s linear infinite;
   margin: 0 auto 12px;
 }
@@ -16490,8 +16490,8 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
 .vt-result { padding-top: 4px; }
 .vt-result-badge {
   font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
-  color: #34D399; background: rgba(52,211,153,0.1);
-  border: 1px solid rgba(52,211,153,0.25);
+  color: var(--accent); background: rgba(32,128,141,0.1);
+  border: 1px solid rgba(32,128,141,0.25);
   border-radius: 20px; padding: 3px 10px;
   display: inline-flex; margin-bottom: 14px;
 }
@@ -16512,12 +16512,12 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
 }
 .vt-done {
   width: 100%; padding: 12px;
-  background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.3);
+  background: rgba(32,128,141,0.1); border: 1px solid rgba(32,128,141,0.3);
   border-radius: var(--radius); font-family: 'Sora', sans-serif;
-  font-size: 14px; font-weight: 600; color: #34D399;
+  font-size: 14px; font-weight: 600; color: var(--accent);
   cursor: pointer; transition: all 0.15s;
 }
-.vt-done:hover { background: rgba(52,211,153,0.18); }
+.vt-done:hover { background: rgba(32,128,141,0.18); }
 .vt-error {
   font-size: 13px; color: #F87171;
   background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.2);
