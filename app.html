@@ -37,9 +37,9 @@
       --text2: rgba(240,236,255,0.65);
       --text3: rgba(240,236,255,0.38);
 
-      --pulse: #F472B6;
-      --pulse-bg: rgba(244,114,182,0.12);
-      --pulse-border: rgba(244,114,182,0.25);
+      --pulse: var(--accent);
+      --pulse-bg: rgba(32,128,141,0.08);
+      --pulse-border: rgba(32,128,141,0.2);
 
       --spark: #20808D;
       --spark-bg: rgba(32,128,141,0.08);
@@ -804,7 +804,7 @@
       transition: opacity 0.25s;
     }
     .tool-icon-btn:hover::before { opacity: 1; }
-    .tool-pulse::before { background: linear-gradient(90deg, transparent, #F472B6, transparent); }
+    .tool-pulse::before { background: linear-gradient(90deg, transparent, var(--accent), transparent); }
     .tool-spark::before { background: linear-gradient(90deg, transparent, var(--accent), transparent); }
     .tool-blueprint::before { background: linear-gradient(90deg, transparent, var(--accent), transparent); }
     .tool-vision::before { background: linear-gradient(90deg, transparent, var(--accent), transparent); }
@@ -878,7 +878,7 @@
     /* Tool color variants */
     .tool-pulse .tool-icon-face { background: var(--pulse-bg); border: 1px solid var(--pulse-border); }
     .tool-pulse { border-color: var(--pulse-border); }
-    .tool-pulse:hover { background: rgba(244,114,182,0.05); }
+    .tool-pulse:hover { background: var(--surface-2); }
 
     .tool-spark .tool-icon-face { background: var(--spark-bg); border: 1px solid var(--spark-border); }
     .tool-spark { border-color: var(--spark-border); }
@@ -1262,7 +1262,7 @@
     .run-btn:active { transform: scale(0.99); }
     .run-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
-    .run-pulse { background: linear-gradient(135deg, #BE185D, #F472B6); color: #fff; box-shadow: 0 0 24px rgba(244,114,182,0.3); }
+    .run-pulse { background: var(--accent); color: var(--paper); }
     .run-spark { background: var(--accent); color: var(--paper); }
     .run-blueprint { background: var(--accent); color: var(--paper); }
     .run-vision { background: var(--accent); color: var(--paper); }
@@ -1402,7 +1402,7 @@
     .out-block {
       margin-bottom: 20px;
       padding-bottom: 20px;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--rule);
     }
     .out-block:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
 
@@ -1418,16 +1418,16 @@
       gap: 6px;
     }
 
-    .out-text { font-size: 15px; line-height: 1.75; color: var(--text); }
+    .out-text { font-size: 15px; line-height: 1.75; color: var(--ink); }
 
     .hook-display {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
       font-size: 19px;
       font-weight: 600;
       line-height: 1.4;
-      color: var(--text);
+      color: var(--ink);
       padding: 16px 18px;
-      background: var(--surface);
+      background: var(--surface-2);
       border-radius: var(--radius);
       border-left: 3px solid var(--pulse);
       letter-spacing: -0.01em;
@@ -1449,21 +1449,21 @@
     .hook-retry:hover { color: var(--pulse); }
 
     .script-block {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: var(--surface-2);
+      border: 1px solid var(--rule);
       border-radius: var(--radius);
       padding: 16px;
       font-size: 15px;
       line-height: 2;
-      color: var(--text);
+      color: var(--ink);
       white-space: pre-wrap;
     }
     .script-beat { display: block; font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--pulse); margin: 14px 0 4px; }
-    .script-note { display: block; font-size: 12px; color: var(--ink-muted); font-style: italic; padding: 3px 0 3px 12px; border-left: 2px solid var(--border); margin: 4px 0; }
+    .script-note { display: block; font-size: 12px; color: var(--ink-muted); font-style: italic; padding: 3px 0 3px 12px; border-left: 2px solid var(--rule); margin: 4px 0; }
     .script-line { display: block; }
 
     .broll-list { display: flex; flex-direction: column; gap: 0; }
-    .broll-item { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 15px; color: var(--ink-soft); line-height: 1.5; }
+    .broll-item { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--rule); font-size: 15px; color: var(--ink-soft); line-height: 1.5; }
     .broll-item:last-child { border-bottom: none; }
     .broll-arrow { color: var(--pulse); flex-shrink: 0; font-style: normal; }
 
@@ -6298,7 +6298,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.26" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.27" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6382,7 +6382,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.26</div>
+  <div class="qs-version-stamp">Quiet Studio v9.27</div>
 </div>
 
   </aside>
@@ -7284,7 +7284,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
       </button>
       <div class="tool-header-bar">
         <div class="tool-header-icon" style="background:var(--pulse-bg);border:1px solid var(--pulse-border);">
-          <svg width="22" height="22" viewBox="0 0 28 28" fill="none"><path d="M5 8h18M5 13h11M5 18h14" stroke="#F472B6" stroke-width="2" stroke-linecap="round"/></svg>
+          <svg width="22" height="22" viewBox="0 0 28 28" fill="none"><path d="M5 8h18M5 13h11M5 18h14" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"/></svg>
         </div>
         <div class="tool-header-title">The Pulse</div>
       </div>
@@ -7320,7 +7320,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
           <textarea id="pulseInp" placeholder="Tell me what happened — in your own words, unpolished. The more real and specific, the better." oninput="updateChar('pulseInp','pulseChar')" maxlength="1000"></textarea>
           <button class="paste-btn" onclick="pasteToEl('pulseInp')" title="Paste">📋</button>
           <button class="mic-btn" id="micPulse" onclick="toggleMicFor('pulseInp','micPulse')">🎙</button>
-          <button class="mic-btn" onclick="openIdeasPicker('pulseInp')" title="Use a saved idea" style="color:#A78BFA;">💜</button>
+          <button class="mic-btn" onclick="openIdeasPicker('pulseInp')" title="Use a saved idea" style="color:var(--ink-soft);">💜</button>
         </div>
         <div class="char-hint"><span id="pulseChar">0</span> / 1000</div>
         <div class="chips">
@@ -8732,7 +8732,7 @@ function renderPulse(data, contentType, originalText, platforms) {
     const isTxt = textFmts.some(f => (contentType||'').trim() === f.trim());
     if (isTxt) {
       const clean = sc.replace(/\[[A-Z /]+\]/g,'').replace(/\([^)]*\)/gi,'').trim();
-      html += `<div class="out-block"><div class="out-block-title" style="color:var(--pulse);">● Your post — ready to copy</div><div class="out-text" style="background:var(--surface);border-radius:var(--radius);padding:16px;border-left:3px solid var(--pulse);white-space:pre-wrap;">${clean}</div><button class="copy-btn" onclick="copyText(this,'${escQ(clean)}')">Copy</button>${makeIbSaveBtn(clean,"pulse","post",platforms&&platforms[0]?platforms[0]:"")}</div>`;
+      html += `<div class="out-block"><div class="out-block-title" style="color:var(--pulse);">● Your post — ready to copy</div><div class="out-text" style="background:var(--surface-2);border-radius:var(--radius);padding:16px;border-left:3px solid var(--pulse);white-space:pre-wrap;">${clean}</div><button class="copy-btn" onclick="copyText(this,'${escQ(clean)}')">Copy</button>${makeIbSaveBtn(clean,"pulse","post",platforms&&platforms[0]?platforms[0]:"")}</div>`;
     } else {
       const fs = sc.split('\n').map(line => {
         const t = line.trim();
@@ -14382,12 +14382,12 @@ function openWizardFromNav() {
 
       <!-- PULSE -->
       <div style="background:var(--pulse-bg);border:1px solid var(--pulse-border);border-radius:24px;padding:36px 32px;display:flex;flex-direction:column;gap:0;position:relative;overflow:hidden;">
-        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#F472B6,#FB923C);border-radius:24px 24px 0 0;"></div>
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),rgba(32,128,141,0.5));border-radius:24px 24px 0 0;"></div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
           <div style="font-size:11px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--pulse);">The Pulse</div>
-          <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(244,114,182,0.5);background:rgba(244,114,182,0.08);padding:3px 8px;border-radius:20px;">Heartbeat</div>
+          <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);background:var(--pulse-bg);padding:3px 8px;border-radius:20px;">Heartbeat</div>
         </div>
-        <div style="font-family:'Sora',sans-serif;font-size:22px;font-weight:800;color:var(--text);line-height:1.2;margin-bottom:12px;">Your story goes in.<br/>A complete script<br/>comes out.</div>
+        <div style="font-family:'Inter',system-ui,sans-serif;font-size:22px;font-weight:800;color:var(--ink);line-height:1.2;margin-bottom:12px;">Your story goes in.<br/>A complete script<br/>comes out.</div>
         <div style="font-size:13px;font-weight:600;color:var(--pulse);font-style:italic;margin-bottom:16px;line-height:1.6;">Kinda like having a Hollywood screenwriter on call 24/7 — who only writes YOUR stories.</div>
         <div style="font-size:13px;color:var(--ink-soft);line-height:1.6;flex:1;margin-bottom:20px;">Describe any real moment. SAM writes the hook, full word-for-word script, b-roll directions, and every platform caption. Walk in with words. Walk out ready to film.</div>
         <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:20px;">
@@ -15815,12 +15815,12 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 
   const TOUR_TOOLS = [
     {
-      id: 'pulse', name: 'The Pulse', color: '#F472B6',
-      colorBg: 'rgba(244,114,182,0.12)', colorBorder: 'rgba(244,114,182,0.25)',
+      id: 'pulse', name: 'The Pulse', color: 'var(--accent)',
+      colorBg: 'rgba(32,128,141,0.08)', colorBorder: 'rgba(32,128,141,0.2)',
       tagline: 'Turn any real moment into a hook, a word-for-word script, and captions for every platform.',
       features: ["One powerful hook that stops the scroll","Full word-for-word script with delivery notes","Platform captions for every channel you're on"],
       samLine: "You just built your story. Now let's make sure people actually stop and watch it. <strong>The Pulse</strong> takes what you created and turns it into content ready to film — hook, script, captions, all of it.",
-      svg: '<svg viewBox="0 0 28 28" fill="none" width="44" height="44"><path d="M5 8h18M5 13h11M5 18h14" stroke="#F472B6" stroke-width="2" stroke-linecap="round"/></svg>'
+      svg: '<svg viewBox="0 0 28 28" fill="none" width="44" height="44"><path d="M5 8h18M5 13h11M5 18h14" stroke="#20808D" stroke-width="2" stroke-linecap="round"/></svg>'
     },
     {
       id: 'spark', name: 'The Spark', color: '#20808D',
@@ -16337,13 +16337,13 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
         <div style="font-size:10px;font-weight:700;color:#A78BFA;background:rgba(167,139,250,0.2);border:1px solid rgba(167,139,250,0.3);padding:3px 10px;border-radius:20px;white-space:nowrap;">← You are here</div>
       </div>
 
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);border-radius:14px;cursor:pointer;" onclick="closeEcosystemAndOpenTool('pulse')">
-        <div style="width:34px;height:34px;border-radius:10px;background:rgba(244,114,182,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><path d="M5 8h18M5 13h11M5 18h14" stroke="#F472B6" stroke-width="2" stroke-linecap="round"/></svg>
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--pulse-bg);border:1px solid var(--pulse-border);border-radius:14px;cursor:pointer;" onclick="closeEcosystemAndOpenTool('pulse')">
+        <div style="width:34px;height:34px;border-radius:10px;background:var(--pulse-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><path d="M5 8h18M5 13h11M5 18h14" stroke="#20808D" stroke-width="2" stroke-linecap="round"/></svg>
         </div>
         <div>
-          <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--ink);">The Pulse</div>
-          <div style="font-size:11px;color:rgba(240,236,255,0.5);">Any moment → hook, script & captions</div>
+          <div style="font-family:'Inter',system-ui,sans-serif;font-size:13px;font-weight:700;color:var(--ink);">The Pulse</div>
+          <div style="font-size:11px;color:var(--ink-muted);">Any moment → hook, script & captions</div>
         </div>
       </div>
 
