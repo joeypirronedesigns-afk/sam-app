@@ -6131,6 +6131,21 @@ body.quiet-studio-shell #qsChatCollapseBtn { display: none; }
   }
   body.quiet-studio-shell #qsChatCollapseBtn {
     display: block;
+    font-size: 12px;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--rule);
+    background: var(--surface-2);
+    color: var(--ink-soft);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+  }
+  body.quiet-studio-shell #qsChatCollapseBtn:hover {
+    background: var(--rule);
+    color: var(--ink);
   }
   body.quiet-studio-shell .psam-header-btn[title="Close"] {
     display: none;
@@ -6167,6 +6182,21 @@ body.quiet-studio-shell #qsChatCollapseBtn { display: none; }
   }
   body.quiet-studio-shell #qsChatCollapseBtn {
     display: block;
+    font-size: 12px;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--rule);
+    background: var(--surface-2);
+    color: var(--ink-soft);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+  }
+  body.quiet-studio-shell #qsChatCollapseBtn:hover {
+    background: var(--rule);
+    color: var(--ink);
   }
   body.quiet-studio-shell .psam-header-btn[title="Close"] {
     display: none;
@@ -6325,7 +6355,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.42" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.44" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6409,7 +6439,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.42</div>
+  <div class="qs-version-stamp">Quiet Studio v9.44</div>
 </div>
 
   </aside>
@@ -10596,13 +10626,13 @@ function toggleSAMColumn() {
     if (fab) fab.removeAttribute('data-collapsed');
     localStorage.removeItem('samColumnCollapsed');
     var btn = document.getElementById('qsChatCollapseBtn');
-    if (btn) btn.textContent = '‹';
+    if (btn) btn.textContent = '‹ Close';
   } else {
     document.body.classList.add('qs-chat-collapsed');
     if (fab) fab.setAttribute('data-collapsed', 'true');
     localStorage.setItem('samColumnCollapsed', 'true');
     var btn = document.getElementById('qsChatCollapseBtn');
-    if (btn) btn.textContent = '›';
+    if (btn) btn.textContent = '› Talk to SAM';
   }
 }
 
@@ -10613,7 +10643,7 @@ function openTalkWithSAM() {
     if (fab && fab.getAttribute('data-collapsed') === 'true') {
       document.body.classList.remove('qs-chat-collapsed');
       fab.removeAttribute('data-collapsed');
-      if (btn) btn.textContent = '‹';
+      if (btn) btn.textContent = '‹ Close';
       localStorage.setItem('samColumnCollapsed', 'false');
     }
     return;
@@ -10671,20 +10701,12 @@ function closeSAMFullScreen() {
 window.addEventListener('DOMContentLoaded', function() {
   localStorage.removeItem('sam-persistent-open');
   setTimeout(forceNavRefresh, 150);
-  if (window.innerWidth >= 1024) {
-    var fab = document.getElementById('persistentSAMFab');
-    var btn = document.getElementById('qsChatCollapseBtn');
-    localStorage.removeItem('sam-persistent-open');
-    var wasCollapsed = localStorage.getItem('samColumnCollapsed') === 'true';
-    if (wasCollapsed) {
-      if (fab) fab.setAttribute('data-collapsed', 'true');
-      if (btn) btn.textContent = '›';
-    } else {
-      if (fab) fab.removeAttribute('data-collapsed');
-      if (btn) btn.textContent = '‹';
-      localStorage.setItem('samColumnCollapsed', 'false');
-    }
-  }
+  // SAM drawer starts collapsed — user opens manually
+  document.body.classList.add('qs-chat-collapsed');
+  var _fab = document.getElementById('persistentSAMFab');
+  if (_fab) _fab.setAttribute('data-collapsed', 'true');
+  var _btn = document.getElementById('qsChatCollapseBtn');
+  if (_btn) _btn.textContent = '› Talk to SAM';
 });
 
 function addPersistentMessage(role, text, save) {
@@ -14906,7 +14928,7 @@ function openWizardFromNav() {
         <button class="qs-chat-back-btn" id="qsChatBackBtn" title="Back to Today" onclick="closeSAMFullScreen()" aria-label="Back">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
         </button>
-        <button class="psam-header-btn" id="qsChatCollapseBtn" onclick="toggleSAMColumn()" title="Collapse chat column">‹</button>
+        <button class="psam-header-btn" id="qsChatCollapseBtn" onclick="toggleSAMColumn()" title="Collapse chat column">› Talk to SAM</button>
         <button class="psam-header-btn" onclick="clearPersistentHistory()" title="New conversation">↺</button>
         <button class="psam-header-btn" onclick="closePersistentSAM()" title="Close">✕</button>
       </div>
