@@ -53,9 +53,9 @@
       --vision-bg: rgba(32,128,141,0.08);
       --vision-border: rgba(32,128,141,0.2);
 
-      --lens: #FBBF24;
-      --lens-bg: rgba(251,191,36,0.12);
-      --lens-border: rgba(251,191,36,0.25);
+      --lens: var(--accent);
+      --lens-bg: rgba(32,128,141,0.08);
+      --lens-border: rgba(32,128,141,0.2);
 
       --radius: 14px;
       --radius-lg: 20px;
@@ -808,7 +808,7 @@
     .tool-spark::before { background: linear-gradient(90deg, transparent, var(--accent), transparent); }
     .tool-blueprint::before { background: linear-gradient(90deg, transparent, var(--accent), transparent); }
     .tool-vision::before { background: linear-gradient(90deg, transparent, var(--accent), transparent); }
-    .tool-lens::before { background: linear-gradient(90deg, transparent, #FBBF24, transparent); }
+    .tool-lens::before { background: linear-gradient(90deg, transparent, var(--accent), transparent); }
 
     .tool-icon-btn:hover { transform: translateY(-6px); border-color: var(--border2); box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
     .tool-icon-btn:active { transform: scale(0.96); }
@@ -894,7 +894,7 @@
 
     .tool-lens .tool-icon-face { background: var(--lens-bg); border: 1px solid var(--lens-border); }
     .tool-lens { border-color: var(--lens-border); }
-    .tool-lens:hover { background: rgba(251,191,36,0.05); }
+    .tool-lens:hover { background: var(--surface-2); }
 
     /* ── BOTTOM SHEET ── */
     .sheet-overlay {
@@ -1266,7 +1266,7 @@
     .run-spark { background: var(--accent); color: var(--paper); }
     .run-blueprint { background: var(--accent); color: var(--paper); }
     .run-vision { background: var(--accent); color: var(--paper); }
-    .run-lens { background: linear-gradient(135deg, #92400E, #FBBF24); color: #0A0907; box-shadow: 0 0 24px rgba(251,191,36,0.25); }
+    .run-lens { background: var(--accent); color: var(--paper); }
 
     /* ── LOADER ── */
     .loader {
@@ -1546,7 +1546,7 @@
     .prod-list li::before { content: '▸'; color: var(--vision); flex-shrink: 0; margin-top: 1px; }
 
     /* Upload */
-    .drop-zone { border: 2px dashed var(--border); border-radius: var(--radius-lg); padding: 32px 20px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--surface); position: relative; min-height: 120px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px; }
+    .drop-zone { border: 2px dashed var(--rule); border-radius: var(--radius-lg); padding: 32px 20px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--surface-2); position: relative; min-height: 120px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px; }
     .drop-zone:hover { border-color: var(--lens); background: var(--lens-bg); }
     .drop-zone.has-image { border-style: solid; border-color: var(--lens-border); }
     .drop-icon { font-size: 28px; }
@@ -1637,7 +1637,7 @@
     .idea-status-btn{font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--ink-muted);cursor:pointer;transition:all 0.15s;}
     .idea-status-btn.active-saved{background:rgba(167,139,250,0.15);border-color:rgba(167,139,250,0.4);color:var(--accent);}
     .idea-status-btn.active-scripting{background:var(--blueprint-bg);border-color:var(--blueprint-border);color:var(--blueprint);}
-    .idea-status-btn.active-filmed{background:rgba(251,191,36,0.15);border-color:rgba(251,191,36,0.4);color:var(--lens);}
+    .idea-status-btn.active-filmed{background:rgba(32,128,141,0.15);border-color:rgba(32,128,141,0.4);color:var(--lens);}
     .idea-status-btn.active-posted{background:rgba(32,128,141,0.15);border-color:rgba(32,128,141,0.4);color:var(--vision);}
     .ideas-panel-footer{padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:10px;flex-shrink:0;background:rgba(13,11,22,0.95);}
     .ideas-footer-btn{flex:1;padding:10px;border-radius:var(--radius);font-family:"Sora",sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;text-align:center;}
@@ -6298,7 +6298,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.27" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.28" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6382,7 +6382,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.27</div>
+  <div class="qs-version-stamp">Quiet Studio v9.28</div>
 </div>
 
   </aside>
@@ -7493,7 +7493,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
       </button>
       <div class="tool-header-bar">
         <div class="tool-header-icon" style="background:var(--lens-bg);border:1px solid var(--lens-border);">
-          <svg width="22" height="22" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="13" r="5" stroke="#FBBF24" stroke-width="1.8"/><circle cx="14" cy="13" r="2" fill="#FBBF24"/><path d="M14 4v3M14 19v3M4 13H7M21 13h3" stroke="#FBBF24" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <svg width="22" height="22" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="13" r="5" stroke="#20808D" stroke-width="1.8"/><circle cx="14" cy="13" r="2" fill="#20808D"/><path d="M14 4v3M14 19v3M4 13H7M21 13h3" stroke="#20808D" stroke-width="1.5" stroke-linecap="round"/></svg>
         </div>
         <div class="tool-header-title">The Lens</div>
       </div>
@@ -7503,7 +7503,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
           <div style="width:38px;height:38px;border-radius:11px;background:var(--lens-bg);border:1px solid var(--lens-border);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🖼️</div>
           <div>
-            <div style="font-size:15px;font-weight:600;color:var(--text);">Drop a photo</div>
+            <div style="font-size:15px;font-weight:600;color:var(--ink);">Drop a photo</div>
             <div style="font-size:13px;color:var(--ink-soft);margin-top:2px;">SAM builds your thumbnail strategy — headlines, layout, color, captions</div>
           </div>
         </div>
@@ -7532,7 +7532,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
             <textarea id="lensInp" placeholder="e.g. This is from my renovation series — help me build a thumbnail that stops the scroll..." style="min-height:70px;padding-right:94px;"></textarea>
             <button class="paste-btn" onclick="pasteToEl('lensInp')" title="Paste">📋</button>
             <button class="mic-btn" id="micLens" onclick="toggleMicFor('lensInp','micLens')">🎙</button>
-            <button class="mic-btn" onclick="openIdeasPicker('lensInp')" title="Use a saved idea" style="color:#A78BFA;">💜</button>
+            <button class="mic-btn" onclick="openIdeasPicker('lensInp')" title="Use a saved idea" style="color:var(--ink-soft);">💜</button>
           </div>
         </div>
         <div class="loader" id="lensLoader"><div class="loader-dots"><span style="background:var(--lens)"></span><span style="background:var(--lens)"></span><span style="background:var(--lens)"></span></div><div class="loader-text" id="lensLoaderText">SAM is reading your image...</div></div>
@@ -7541,9 +7541,9 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
       </div>
 
       <div style="display:flex;align-items:center;gap:12px;margin:4px 0;">
-        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <div style="flex:1;height:1px;background:var(--rule);"></div>
         <div style="font-size:12px;color:var(--ink-muted);font-weight:600;letter-spacing:0.08em;">OR</div>
-        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <div style="flex:1;height:1px;background:var(--rule);"></div>
       </div>
 
       <!-- Analytics mode -->
@@ -7551,7 +7551,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
           <div style="width:38px;height:38px;border-radius:11px;background:var(--blueprint-bg);border:1px solid var(--blueprint-border);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">📊</div>
           <div>
-            <div style="font-size:15px;font-weight:600;color:var(--text);">Drop an analytics screenshot</div>
+            <div style="font-size:15px;font-weight:600;color:var(--ink);">Drop an analytics screenshot</div>
             <div style="font-size:13px;color:var(--ink-soft);margin-top:2px;">SAM reads your numbers and tells you exactly what to post next</div>
           </div>
         </div>
@@ -7583,7 +7583,7 @@ function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
       <div style="background:var(--pulse-bg);border:1px solid var(--pulse-border);border-radius:var(--radius);padding:14px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
         <div style="font-size:22px;flex-shrink:0;">💡</div>
         <div style="flex:1;min-width:180px;">
-          <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px;">Have a content idea instead?</div>
+          <div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:3px;">Have a content idea instead?</div>
           <div style="font-size:13px;color:var(--ink-soft);">The Pulse builds a full script, hook and platform strategy from any idea.</div>
         </div>
         <button onclick="goHome();setTimeout(()=>previewTool('pulse'),150)" style="background:var(--pulse-bg);border:1px solid var(--pulse-border);border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;color:var(--pulse);cursor:pointer;white-space:nowrap;">Use The Pulse →</button>
@@ -9365,7 +9365,7 @@ function renderLens(data) {
     html += `<div class="upload-result-badge">📊 Analytics detected</div>`;
     if (data.headline) html += `<div class="out-block"><div class="concept-title-big" style="font-size:18px;">${data.headline}</div></div>`;
     if (data.whats_working?.length) html += `<div class="concept-card out-block"><div class="concept-card-label">What's working</div><ul class="prod-list">${data.whats_working.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
-    if (data.whats_not?.length) html += `<div class="concept-card out-block" style="border-color:rgba(251,191,36,0.2);"><div class="concept-card-label">What to improve</div><ul class="prod-list">${data.whats_not.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
+    if (data.whats_not?.length) html += `<div class="concept-card out-block" style="border-color:var(--rule);"><div class="concept-card-label">What to improve</div><ul class="prod-list">${data.whats_not.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
     if (data.post_next?.length) html += `<div class="concept-card out-block" style="border-color:var(--lens-border);background:var(--lens-bg);"><div class="concept-card-label" style="color:var(--lens);">Post this week</div><ul class="prod-list">${data.post_next.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
     if (data.growth_move) html += `<div class="concept-card" style="border-color:var(--lens-border);background:var(--lens-bg);"><div class="concept-card-label" style="color:var(--lens);">Bold growth move</div><div class="concept-card-text">${data.growth_move}</div></div>`;
 
@@ -9379,8 +9379,8 @@ function renderLens(data) {
     const ac = data.thumbnail_color || '#F472B6';
     if (hl1 || hl2) {
       html += `<div class="out-block"><div class="out-block-title" style="color:var(--lens);">● Your headlines</div>`;
-      if (hl1) html += `<div style="margin-bottom:10px;"><div style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:rgba(32,128,141,0.8);text-transform:uppercase;margin-bottom:5px;">✓ Safe — clean &amp; relatable</div><div style="background:var(--surface);border-left:3px solid rgba(32,128,141,0.6);border-radius:0 var(--radius) var(--radius) 0;padding:12px 14px;"><div style="font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--text);line-height:1.2;">${hl1}</div>${sub1?`<div style="font-size:13px;color:var(--ink-muted);margin-top:4px;">${sub1}</div>`:''}</div><button class="copy-btn" style="float:none;margin-top:6px;" onclick="copyText(this,'${escQ(hl1+(sub1?'\n'+sub1:''))}')">Copy</button>${makeIbSaveBtn(hl1+(sub1?'\n'+sub1:''),"lens","headline","")}</div>`;
-      if (hl2) html += `<div style="margin-bottom:10px;"><div style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:rgba(244,114,182,0.8);text-transform:uppercase;margin-bottom:5px;">⚡ Bold — scroll-stopping</div><div style="background:var(--surface);border-left:3px solid rgba(244,114,182,0.6);border-radius:0 var(--radius) var(--radius) 0;padding:12px 14px;"><div style="font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--text);line-height:1.2;">${hl2}</div>${sub2?`<div style="font-size:13px;color:var(--ink-muted);margin-top:4px;">${sub2}</div>`:''}</div><button class="copy-btn" style="float:none;margin-top:6px;" onclick="copyText(this,'${escQ(hl2+(sub2?'\n'+sub2:''))}')">Copy</button>${makeIbSaveBtn(hl2+(sub2?'\n'+sub2:''),"lens","headline","")}</div>`;
+      if (hl1) html += `<div style="margin-bottom:10px;"><div style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:rgba(32,128,141,0.8);text-transform:uppercase;margin-bottom:5px;">✓ Safe — clean &amp; relatable</div><div style="background:var(--surface-2);border-left:3px solid rgba(32,128,141,0.6);border-radius:0 var(--radius) var(--radius) 0;padding:12px 14px;"><div style="font-family:'Inter',system-ui,sans-serif;font-size:18px;font-weight:700;color:var(--ink);line-height:1.2;">${hl1}</div>${sub1?`<div style="font-size:13px;color:var(--ink-muted);margin-top:4px;">${sub1}</div>`:''}</div><button class="copy-btn" style="float:none;margin-top:6px;" onclick="copyText(this,'${escQ(hl1+(sub1?'\n'+sub1:''))}')">Copy</button>${makeIbSaveBtn(hl1+(sub1?'\n'+sub1:''),"lens","headline","")}</div>`;
+      if (hl2) html += `<div style="margin-bottom:10px;"><div style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:rgba(32,128,141,0.8);text-transform:uppercase;margin-bottom:5px;">⚡ Bold — scroll-stopping</div><div style="background:var(--surface-2);border-left:3px solid rgba(32,128,141,0.6);border-radius:0 var(--radius) var(--radius) 0;padding:12px 14px;"><div style="font-family:'Inter',system-ui,sans-serif;font-size:18px;font-weight:700;color:var(--ink);line-height:1.2;">${hl2}</div>${sub2?`<div style="font-size:13px;color:var(--ink-muted);margin-top:4px;">${sub2}</div>`:''}</div><button class="copy-btn" style="float:none;margin-top:6px;" onclick="copyText(this,'${escQ(hl2+(sub2?'\n'+sub2:''))}')">Copy</button>${makeIbSaveBtn(hl2+(sub2?'\n'+sub2:''),"lens","headline","")}</div>`;
       html += `</div>`;
     }
     const faceSide = data.face_side || 'center';
@@ -9388,15 +9388,15 @@ function renderLens(data) {
     const safeTemplate = data.safe_template || 'cinematic';
     const boldTemplate = data.bold_template || 'cornerBurst';
     const templateNames = {cinematic:'Cinematic bars',splitPanel:'Split panel',newsFlash:'News flash panel',giantWord:'Giant word',cornerBurst:'Corner burst',diagonalSlash:'Diagonal slash',stackedBoxes:'Stacked boxes'};
-    html += `<div class="out-block"><div class="out-block-title" style="color:var(--lens);">● Layout direction</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"><div style="background:var(--surface);border-radius:var(--radius);padding:12px;"><div style="font-size:10px;font-weight:700;color:rgba(32,128,141,0.8);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Safe layout</div><div style="font-size:14px;font-weight:500;color:var(--text);">${templateNames[safeTemplate]||safeTemplate}</div></div><div style="background:var(--surface);border-radius:var(--radius);padding:12px;"><div style="font-size:10px;font-weight:700;color:rgba(244,114,182,0.8);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Bold layout</div><div style="font-size:14px;font-weight:500;color:var(--text);">${templateNames[boldTemplate]||boldTemplate}</div></div></div><div style="margin-top:10px;background:var(--surface);border-radius:var(--radius);padding:12px;display:flex;gap:12px;align-items:center;"><div><div style="font-size:10px;font-weight:700;color:var(--ink-muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">Face position</div><div style="font-size:14px;font-weight:500;color:var(--text);">${faceSide==='center'?'Centre — text below':'Face '+faceSide+' — text goes '+textSide}</div></div><div style="margin-left:auto;"><div style="font-size:10px;font-weight:700;color:var(--ink-muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">Accent color</div><div style="display:flex;align-items:center;gap:6px;"><div style="width:20px;height:20px;border-radius:50%;background:${ac};border:2px solid rgba(255,255,255,0.2);"></div><span style="font-size:13px;color:var(--ink-soft);">${ac}</span></div></div></div></div>`;
-    if (data.content_angle) html += `<div class="out-block"><div class="out-block-title" style="color:var(--lens);">● Story angle</div><div style="background:var(--lens-bg);border:1px solid var(--lens-border);border-radius:var(--radius);padding:14px 16px;"><div style="font-size:15px;color:var(--text);line-height:1.6;">${data.content_angle}</div></div>${makeIbSaveBtn(data.content_angle,"lens","angle","")}</div>`;
+    html += `<div class="out-block"><div class="out-block-title" style="color:var(--lens);">● Layout direction</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"><div style="background:var(--surface-2);border-radius:var(--radius);padding:12px;"><div style="font-size:10px;font-weight:700;color:rgba(32,128,141,0.8);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Safe layout</div><div style="font-size:14px;font-weight:500;color:var(--ink);">${templateNames[safeTemplate]||safeTemplate}</div></div><div style="background:var(--surface-2);border-radius:var(--radius);padding:12px;"><div style="font-size:10px;font-weight:700;color:rgba(32,128,141,0.8);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Bold layout</div><div style="font-size:14px;font-weight:500;color:var(--ink);">${templateNames[boldTemplate]||boldTemplate}</div></div></div><div style="margin-top:10px;background:var(--surface-2);border-radius:var(--radius);padding:12px;display:flex;gap:12px;align-items:center;"><div><div style="font-size:10px;font-weight:700;color:var(--ink-muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">Face position</div><div style="font-size:14px;font-weight:500;color:var(--ink);">${faceSide==='center'?'Centre — text below':'Face '+faceSide+' — text goes '+textSide}</div></div><div style="margin-left:auto;"><div style="font-size:10px;font-weight:700;color:var(--ink-muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">Accent color</div><div style="display:flex;align-items:center;gap:6px;"><div style="width:20px;height:20px;border-radius:50%;background:${ac};border:2px solid rgba(255,255,255,0.2);"></div><span style="font-size:13px;color:var(--ink-soft);">${ac}</span></div></div></div></div>`;
+    if (data.content_angle) html += `<div class="out-block"><div class="out-block-title" style="color:var(--lens);">● Story angle</div><div style="background:var(--lens-bg);border:1px solid var(--lens-border);border-radius:var(--radius);padding:14px 16px;"><div style="font-size:15px;color:var(--ink);line-height:1.6;">${data.content_angle}</div></div>${makeIbSaveBtn(data.content_angle,"lens","angle","")}</div>`;
     const imgSrc = window._lensImgSrc || document.getElementById('previewImg')?.src || '';
     html += `<div class="out-block"><div class="out-block-title" style="color:var(--lens);">● Visual reference <span style="font-size:10px;font-weight:400;color:var(--ink-muted);text-transform:none;letter-spacing:0;">(layout blueprint — finish in Canva or CapCut)</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-      <div><div style="font-size:10px;color:var(--ink-muted);margin-bottom:5px;font-weight:500;">16:9 safe</div><div style="position:relative;width:100%;aspect-ratio:16/9;border-radius:8px;overflow:hidden;cursor:pointer;" onclick="downloadCanvas('thumb169scanvas','thumbnail-safe-16x9.png')"><canvas id="thumb169scanvas" style="width:100%;height:100%;display:block;border-radius:8px;"></canvas><div style="position:absolute;top:4px;left:4px;background:rgba(167,139,250,0.8);border-radius:3px;padding:1px 6px;font-size:8px;font-weight:700;color:#fff;letter-spacing:0.06em;">CONCEPT</div><div style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.6);border-radius:4px;padding:2px 7px;font-size:9px;color:#fff;">↓</div></div></div>
-      <div><div style="font-size:10px;color:var(--ink-muted);margin-bottom:5px;font-weight:500;">16:9 bold</div><div style="position:relative;width:100%;aspect-ratio:16/9;border-radius:8px;overflow:hidden;cursor:pointer;" onclick="downloadCanvas('thumb169bcanvas','thumbnail-bold-16x9.png')"><canvas id="thumb169bcanvas" style="width:100%;height:100%;display:block;border-radius:8px;"></canvas><div style="position:absolute;top:4px;left:4px;background:rgba(167,139,250,0.8);border-radius:3px;padding:1px 6px;font-size:8px;font-weight:700;color:#fff;letter-spacing:0.06em;">CONCEPT</div><div style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.6);border-radius:4px;padding:2px 7px;font-size:9px;color:#fff;">↓</div></div></div>
-      <div><div style="font-size:10px;color:var(--ink-muted);margin-bottom:5px;font-weight:500;">9:16 safe</div><div style="position:relative;width:100%;aspect-ratio:9/16;border-radius:8px;overflow:hidden;cursor:pointer;" onclick="downloadCanvas('thumb916scanvas','thumbnail-safe-9x16.png')"><canvas id="thumb916scanvas" style="width:100%;height:100%;display:block;border-radius:8px;"></canvas><div style="position:absolute;top:4px;left:4px;background:rgba(167,139,250,0.8);border-radius:3px;padding:1px 6px;font-size:8px;font-weight:700;color:#fff;letter-spacing:0.06em;">CONCEPT</div><div style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.6);border-radius:4px;padding:2px 7px;font-size:9px;color:#fff;">↓</div></div></div>
-      <div><div style="font-size:10px;color:var(--ink-muted);margin-bottom:5px;font-weight:500;">9:16 bold</div><div style="position:relative;width:100%;aspect-ratio:9/16;border-radius:8px;overflow:hidden;cursor:pointer;" onclick="downloadCanvas('thumb916bcanvas','thumbnail-bold-9x16.png')"><canvas id="thumb916bcanvas" style="width:100%;height:100%;display:block;border-radius:8px;"></canvas><div style="position:absolute;top:4px;left:4px;background:rgba(167,139,250,0.8);border-radius:3px;padding:1px 6px;font-size:8px;font-weight:700;color:#fff;letter-spacing:0.06em;">CONCEPT</div><div style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.6);border-radius:4px;padding:2px 7px;font-size:9px;color:#fff;">↓</div></div></div>
-    </div><button style="width:100%;margin-top:12px;padding:12px;background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(244,114,182,0.1));border:1px solid rgba(167,139,250,0.3);border-radius:var(--radius);font-size:14px;font-weight:600;color:var(--accent);cursor:pointer;" onclick="window.open('https://www.canva.com/create/youtube-thumbnails/','_blank')">🎨 Take this to Canva →</button></div>`;
+      <div><div style="font-size:10px;color:var(--ink-muted);margin-bottom:5px;font-weight:500;">16:9 safe</div><div style="position:relative;width:100%;aspect-ratio:16/9;border-radius:8px;overflow:hidden;cursor:pointer;" onclick="downloadCanvas('thumb169scanvas','thumbnail-safe-16x9.png')"><canvas id="thumb169scanvas" style="width:100%;height:100%;display:block;border-radius:8px;"></canvas><div style="position:absolute;top:4px;left:4px;background:var(--accent);border-radius:3px;padding:1px 6px;font-size:8px;font-weight:700;color:var(--paper);letter-spacing:0.06em;">CONCEPT</div><div style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.6);border-radius:4px;padding:2px 7px;font-size:9px;color:#fff;">↓</div></div></div>
+      <div><div style="font-size:10px;color:var(--ink-muted);margin-bottom:5px;font-weight:500;">16:9 bold</div><div style="position:relative;width:100%;aspect-ratio:16/9;border-radius:8px;overflow:hidden;cursor:pointer;" onclick="downloadCanvas('thumb169bcanvas','thumbnail-bold-16x9.png')"><canvas id="thumb169bcanvas" style="width:100%;height:100%;display:block;border-radius:8px;"></canvas><div style="position:absolute;top:4px;left:4px;background:var(--accent);border-radius:3px;padding:1px 6px;font-size:8px;font-weight:700;color:var(--paper);letter-spacing:0.06em;">CONCEPT</div><div style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.6);border-radius:4px;padding:2px 7px;font-size:9px;color:#fff;">↓</div></div></div>
+      <div><div style="font-size:10px;color:var(--ink-muted);margin-bottom:5px;font-weight:500;">9:16 safe</div><div style="position:relative;width:100%;aspect-ratio:9/16;border-radius:8px;overflow:hidden;cursor:pointer;" onclick="downloadCanvas('thumb916scanvas','thumbnail-safe-9x16.png')"><canvas id="thumb916scanvas" style="width:100%;height:100%;display:block;border-radius:8px;"></canvas><div style="position:absolute;top:4px;left:4px;background:var(--accent);border-radius:3px;padding:1px 6px;font-size:8px;font-weight:700;color:var(--paper);letter-spacing:0.06em;">CONCEPT</div><div style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.6);border-radius:4px;padding:2px 7px;font-size:9px;color:#fff;">↓</div></div></div>
+      <div><div style="font-size:10px;color:var(--ink-muted);margin-bottom:5px;font-weight:500;">9:16 bold</div><div style="position:relative;width:100%;aspect-ratio:9/16;border-radius:8px;overflow:hidden;cursor:pointer;" onclick="downloadCanvas('thumb916bcanvas','thumbnail-bold-9x16.png')"><canvas id="thumb916bcanvas" style="width:100%;height:100%;display:block;border-radius:8px;"></canvas><div style="position:absolute;top:4px;left:4px;background:var(--accent);border-radius:3px;padding:1px 6px;font-size:8px;font-weight:700;color:var(--paper);letter-spacing:0.06em;">CONCEPT</div><div style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.6);border-radius:4px;padding:2px 7px;font-size:9px;color:#fff;">↓</div></div></div>
+    </div><button style="width:100%;margin-top:12px;padding:12px;background:var(--surface-2);border:1px solid var(--rule);border-radius:var(--radius);font-size:14px;font-weight:600;color:var(--accent);cursor:pointer;" onclick="window.open('https://www.canva.com/create/youtube-thumbnails/','_blank')">🎨 Take this to Canva →</button></div>`;
     window._currentLensHeadline = hl1;
     window._currentLensSubtext = sub1;
     window._currentLensHL2 = hl2;
@@ -9412,21 +9412,21 @@ function renderLens(data) {
       if (!lensBody || document.getElementById('lensInlineEditor')) return;
       const editor = document.createElement('div');
       editor.id = 'lensInlineEditor';
-      editor.style.cssText = 'background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.2);border-radius:12px;padding:16px;margin:16px 0;';
+      editor.style.cssText = 'background:var(--surface-2);border:1px solid var(--rule);border-radius:12px;padding:16px;margin:16px 0;';
       editor.innerHTML = `
-        <div style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#A78BFA;margin-bottom:12px;">✏️ Edit your thumbnail text</div>
+        <div style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">✏️ Edit your thumbnail text</div>
         <div style="margin-bottom:10px;">
           <div style="font-size:11px;font-weight:600;color:var(--ink-muted);margin-bottom:4px;">Safe headline</div>
-          <input id="lensEditHL1" type="text" value="${(hl1||'').replace(/"/g,'&quot;')}" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:14px;color:var(--text);box-sizing:border-box;" oninput="lensLiveUpdate()" />
+          <input id="lensEditHL1" type="text" value="${(hl1||'').replace(/"/g,'&quot;')}" style="width:100%;background:var(--surface-2);border:1px solid var(--rule);border-radius:8px;padding:8px 12px;font-size:14px;color:var(--ink);box-sizing:border-box;" oninput="lensLiveUpdate()" />
         </div>
         <div style="margin-bottom:10px;">
           <div style="font-size:11px;font-weight:600;color:var(--ink-muted);margin-bottom:4px;">Bold headline</div>
-          <input id="lensEditHL2" type="text" value="${(hl2||'').replace(/"/g,'&quot;')}" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:14px;color:var(--text);box-sizing:border-box;" oninput="lensLiveUpdate()" />
+          <input id="lensEditHL2" type="text" value="${(hl2||'').replace(/"/g,'&quot;')}" style="width:100%;background:var(--surface-2);border:1px solid var(--rule);border-radius:8px;padding:8px 12px;font-size:14px;color:var(--ink);box-sizing:border-box;" oninput="lensLiveUpdate()" />
         </div>
         <div style="display:flex;align-items:center;gap:16px;margin-bottom:10px;">
           <div>
             <div style="font-size:11px;font-weight:600;color:var(--ink-muted);margin-bottom:4px;">Subtext (safe)</div>
-            <input id="lensEditSub1" type="text" value="${(sub1||'').replace(/"/g,'&quot;')}" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:13px;color:var(--text);box-sizing:border-box;" oninput="lensLiveUpdate()" />
+            <input id="lensEditSub1" type="text" value="${(sub1||'').replace(/"/g,'&quot;')}" style="width:100%;background:var(--surface-2);border:1px solid var(--rule);border-radius:8px;padding:8px 12px;font-size:13px;color:var(--ink);box-sizing:border-box;" oninput="lensLiveUpdate()" />
           </div>
           <div>
             <div style="font-size:11px;font-weight:600;color:var(--ink-muted);margin-bottom:4px;">Accent color</div>
@@ -9436,7 +9436,7 @@ function renderLens(data) {
             </div>
           </div>
         </div>
-        <button onclick="lensLiveUpdate()" style="font-size:12px;font-weight:700;background:linear-gradient(135deg,rgba(167,139,250,0.2),rgba(244,114,182,0.1));border:1px solid rgba(167,139,250,0.3);border-radius:8px;padding:10px 20px;color:#A78BFA;cursor:pointer;width:100%;margin-top:4px;">↻ Update thumbnails</button>
+        <button onclick="lensLiveUpdate()" style="font-size:12px;font-weight:700;background:var(--surface-2);border:1px solid var(--rule);border-radius:8px;padding:10px 20px;color:var(--accent);cursor:pointer;width:100%;margin-top:4px;">↻ Update thumbnails</button>
       `;
       // Insert before the visual reference block
       const allBlocks = lensBody.querySelectorAll('.out-block');
@@ -9457,21 +9457,21 @@ function renderLens(data) {
       if (!lensBody || document.getElementById('lensInlineEditor')) return;
       const editor = document.createElement('div');
       editor.id = 'lensInlineEditor';
-      editor.style.cssText = 'background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.2);border-radius:12px;padding:16px;margin:16px 0;';
+      editor.style.cssText = 'background:var(--surface-2);border:1px solid var(--rule);border-radius:12px;padding:16px;margin:16px 0;';
       editor.innerHTML = `
-        <div style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#A78BFA;margin-bottom:12px;">✏️ Edit your thumbnail text</div>
+        <div style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">✏️ Edit your thumbnail text</div>
         <div style="margin-bottom:10px;">
           <div style="font-size:11px;font-weight:600;color:var(--ink-muted);margin-bottom:4px;">Safe headline</div>
-          <input id="lensEditHL1" type="text" value="${(hl1||'').replace(/"/g,'&quot;')}" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:14px;color:var(--text);box-sizing:border-box;" oninput="lensLiveUpdate()" />
+          <input id="lensEditHL1" type="text" value="${(hl1||'').replace(/"/g,'&quot;')}" style="width:100%;background:var(--surface-2);border:1px solid var(--rule);border-radius:8px;padding:8px 12px;font-size:14px;color:var(--ink);box-sizing:border-box;" oninput="lensLiveUpdate()" />
         </div>
         <div style="margin-bottom:10px;">
           <div style="font-size:11px;font-weight:600;color:var(--ink-muted);margin-bottom:4px;">Bold headline</div>
-          <input id="lensEditHL2" type="text" value="${(hl2||'').replace(/"/g,'&quot;')}" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:14px;color:var(--text);box-sizing:border-box;" oninput="lensLiveUpdate()" />
+          <input id="lensEditHL2" type="text" value="${(hl2||'').replace(/"/g,'&quot;')}" style="width:100%;background:var(--surface-2);border:1px solid var(--rule);border-radius:8px;padding:8px 12px;font-size:14px;color:var(--ink);box-sizing:border-box;" oninput="lensLiveUpdate()" />
         </div>
         <div style="display:flex;align-items:center;gap:16px;margin-bottom:10px;">
           <div>
             <div style="font-size:11px;font-weight:600;color:var(--ink-muted);margin-bottom:4px;">Subtext (safe)</div>
-            <input id="lensEditSub1" type="text" value="${(sub1||'').replace(/"/g,'&quot;')}" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:13px;color:var(--text);box-sizing:border-box;" oninput="lensLiveUpdate()" />
+            <input id="lensEditSub1" type="text" value="${(sub1||'').replace(/"/g,'&quot;')}" style="width:100%;background:var(--surface-2);border:1px solid var(--rule);border-radius:8px;padding:8px 12px;font-size:13px;color:var(--ink);box-sizing:border-box;" oninput="lensLiveUpdate()" />
           </div>
           <div>
             <div style="font-size:11px;font-weight:600;color:var(--ink-muted);margin-bottom:4px;">Accent color</div>
@@ -9497,7 +9497,7 @@ function renderLens(data) {
       html += `<div class="out-block"><div class="out-block-title" style="color:var(--lens);">● Platform captions</div>`;
       data.platforms.forEach(p => {
         if (!p?.platform) return;
-        html += `<div class="platform-strategy"><div class="ps-header"><div class="ps-name">${p.platform}</div><button class="copy-btn" style="float:none;margin:0;" onclick="copyText(this,'${escQ((p.title||'')+'\n'+(p.description||'')+'\n'+(p.hashtags||''))}')">Copy</button>${makeIbSaveBtn((p.title||'')+'\n'+(p.description||'')+'\n'+(p.hashtags||''),"lens","caption",p.platform||"")}</div><div class="ps-body">${p.title?`<div style="font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text);">${p.title}</div>`:''} ${p.description?`<div class="ps-caption">${p.description}</div>`:''} ${p.hashtags?`<div class="ps-hashtags">${p.hashtags}</div>`:''}</div></div>`;
+        html += `<div class="platform-strategy"><div class="ps-header"><div class="ps-name">${p.platform}</div><button class="copy-btn" style="float:none;margin:0;" onclick="copyText(this,'${escQ((p.title||'')+'\n'+(p.description||'')+'\n'+(p.hashtags||''))}')">Copy</button>${makeIbSaveBtn((p.title||'')+'\n'+(p.description||'')+'\n'+(p.hashtags||''),"lens","caption",p.platform||"")}</div><div class="ps-body">${p.title?`<div style="font-size:13px;font-weight:600;margin-bottom:6px;color:var(--ink);">${p.title}</div>`:''} ${p.description?`<div class="ps-caption">${p.description}</div>`:''} ${p.hashtags?`<div class="ps-hashtags">${p.hashtags}</div>`:''}</div></div>`;
       });
       html += `</div>`;
     }
@@ -14483,9 +14483,9 @@ function openWizardFromNav() {
         </div>
 
         <!-- Middle: Mode 1 thumbnail -->
-        <div style="display:flex;flex-direction:column;gap:12px;padding:24px;background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.15);border-radius:16px;">
+        <div style="display:flex;flex-direction:column;gap:12px;padding:24px;background:var(--surface-2);border:1px solid var(--rule);border-radius:16px;">
           <div style="font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--lens);margin-bottom:4px;">Mode 1 — Thumbnail Strategy</div>
-          <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--text);line-height:1.3;">Drop a photo.<br/>Get a scroll-stopping thumbnail concept.</div>
+          <div style="font-family:'Inter',system-ui,sans-serif;font-size:16px;font-weight:700;color:var(--ink);line-height:1.3;">Drop a photo.<br/>Get a scroll-stopping thumbnail concept.</div>
           <div style="font-size:13px;color:var(--ink-soft);line-height:1.6;">Upload any JPG + describe your video. SAM builds safe + bold headline options, overlays text directly on your photo, and suggests layout for vertical and horizontal formats.</div>
           <div style="display:flex;flex-direction:column;gap:7px;margin-top:4px;">
             <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-soft);"><div style="width:5px;height:5px;border-radius:50%;background:var(--lens);flex-shrink:0;"></div>Text overlaid on your actual photo</div>
@@ -14495,7 +14495,7 @@ function openWizardFromNav() {
         </div>
 
         <!-- Right: Mode 2 analytics -->
-        <div style="display:flex;flex-direction:column;gap:12px;padding:24px;background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.15);border-radius:16px;">
+        <div style="display:flex;flex-direction:column;gap:12px;padding:24px;background:var(--surface-2);border:1px solid var(--rule);border-radius:16px;">
           <div style="font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--lens);margin-bottom:4px;">Mode 2 — Analytics Decoder</div>
           <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--text);line-height:1.3;">Screenshot your data.<br/>Know exactly what to do next.</div>
           <div style="font-size:13px;color:var(--ink-soft);line-height:1.6;">Drop any analytics screenshot — YouTube, TikTok, Facebook, Instagram. SAM reads the numbers, explains what they mean in plain English, and tells you exactly what 3 posts to make this week.</div>
@@ -15847,12 +15847,12 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
       svg: '<svg viewBox="0 0 28 28" fill="none" width="44" height="44"><polygon points="11,8 22,14 11,20" fill="var(--accent)"/><rect x="6" y="8" width="2.5" height="12" rx="1" fill="var(--accent)"/></svg>'
     },
     {
-      id: 'lens', name: 'The Lens', color: '#FBBF24',
-      colorBg: 'rgba(251,191,36,0.12)', colorBorder: 'rgba(251,191,36,0.25)',
+      id: 'lens', name: 'The Lens', color: 'var(--accent)',
+      colorBg: 'rgba(32,128,141,0.08)', colorBorder: 'rgba(32,128,141,0.2)',
       tagline: 'Your photo becomes a thumbnail strategy. Your analytics become your next move.',
       features: ["Drop a photo — get a thumbnail strategy","Drop analytics — get your next action","Built around your brand and niche"],
       samLine: "Last one. <strong>The Lens</strong> is SAM's eye — drop a photo and get a full thumbnail strategy, or drop your analytics screenshot and SAM will tell you exactly what to do next.",
-      svg: '<svg viewBox="0 0 28 28" fill="none" width="44" height="44"><circle cx="14" cy="13" r="5" stroke="#FBBF24" stroke-width="1.8"/><circle cx="14" cy="13" r="2" fill="#FBBF24"/><path d="M14 4v3M14 19v3M4 13H7M21 13h3M6.6 6.6l2.1 2.1M19.3 19.3l2.1 2.1M6.6 19.4l2.1-2.1M19.3 6.7l2.1-2.1" stroke="#FBBF24" stroke-width="1.5" stroke-linecap="round"/></svg>'
+      svg: '<svg viewBox="0 0 28 28" fill="none" width="44" height="44"><circle cx="14" cy="13" r="5" stroke="#20808D" stroke-width="1.8"/><circle cx="14" cy="13" r="2" fill="#20808D"/><path d="M14 4v3M14 19v3M4 13H7M21 13h3M6.6 6.6l2.1 2.1M19.3 19.3l2.1 2.1M6.6 19.4l2.1-2.1M19.3 6.7l2.1-2.1" stroke="#20808D" stroke-width="1.5" stroke-linecap="round"/></svg>'
     }
   ];
 
@@ -15939,7 +15939,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
             Pro<br/><span style="font-size:13px;">$39/mo</span>
           </button>
           <button onclick="closeTourSplash();setTimeout(()=>openProPage(),200);"
-            style="padding:10px 6px;border:1px solid rgba(251,191,36,0.3);border-radius:12px;background:rgba(251,191,36,0.08);color:#FBBF24;font-family:'Sora',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;line-height:1.3;">
+            style="padding:10px 6px;border:1px solid var(--rule);border-radius:12px;background:var(--surface-2);color:var(--ink-soft);font-family:'Inter',system-ui,sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;line-height:1.3;">
             Studio<br/><span style="font-size:13px;">$99/mo</span>
           </button>
         </div>
@@ -16377,13 +16377,13 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
         </div>
       </div>
 
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:12px;cursor:pointer;" onclick="closeEcosystemAndOpenTool('lens')">
-        <div style="width:34px;height:34px;border-radius:10px;background:rgba(251,191,36,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="13" r="5" stroke="#FBBF24" stroke-width="1.8"/><circle cx="14" cy="13" r="2" fill="#FBBF24"/><path d="M14 4v3M14 19v3M4 13H7M21 13h3" stroke="#FBBF24" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--lens-bg);border:1px solid var(--lens-border);border-radius:12px;cursor:pointer;" onclick="closeEcosystemAndOpenTool('lens')">
+        <div style="width:34px;height:34px;border-radius:10px;background:var(--lens-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="13" r="5" stroke="#20808D" stroke-width="1.8"/><circle cx="14" cy="13" r="2" fill="#20808D"/><path d="M14 4v3M14 19v3M4 13H7M21 13h3" stroke="#20808D" stroke-width="1.5" stroke-linecap="round"/></svg>
         </div>
         <div>
-          <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--ink);">The Lens <span style="font-size:9px;font-weight:700;background:rgba(251,191,36,0.2);color:#FBBF24;border-radius:20px;padding:2px 7px;vertical-align:middle;margin-left:4px;">2-IN-1</span></div>
-          <div style="font-size:11px;color:rgba(240,236,255,0.5);">Thumbnail strategy from your photo &middot; Decode your analytics &amp; know exactly what to do next</div>
+          <div style="font-family:'Inter',system-ui,sans-serif;font-size:13px;font-weight:700;color:var(--ink);">The Lens <span style="font-size:9px;font-weight:700;background:var(--lens-bg);color:var(--accent);border-radius:20px;padding:2px 7px;vertical-align:middle;margin-left:4px;">2-IN-1</span></div>
+          <div style="font-size:11px;color:var(--ink-muted);">Thumbnail strategy from your photo &middot; Decode your analytics &amp; know exactly what to do next</div>
         </div>
       </div>
           <div class="eco-tool-card" onclick="closeEcosystemAndOpenTool('reach')" style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(244,114,182,0.06);border:1px solid rgba(244,114,182,0.15);border-radius:12px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(244,114,182,0.12)'" onmouseout="this.style.background='rgba(244,114,182,0.06)'">
@@ -16396,8 +16396,8 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
           </div>
           </div>
         <div>
-          <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--ink);">The Lens <span style="font-size:9px;font-weight:700;background:rgba(251,191,36,0.2);color:#FBBF24;border-radius:20px;padding:2px 7px;vertical-align:middle;margin-left:4px;">2-IN-1</span></div>
-          <div style="font-size:11px;color:rgba(240,236,255,0.5);">Thumbnail strategy from your photo · Decode your analytics & know exactly what to do next</div>
+          <div style="font-family:'Inter',system-ui,sans-serif;font-size:13px;font-weight:700;color:var(--ink);">The Lens <span style="font-size:9px;font-weight:700;background:var(--lens-bg);color:var(--accent);border-radius:20px;padding:2px 7px;vertical-align:middle;margin-left:4px;">2-IN-1</span></div>
+          <div style="font-size:11px;color:var(--ink-muted);">Thumbnail strategy from your photo · Decode your analytics & know exactly what to do next</div>
         </div>
       </div>
 
