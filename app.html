@@ -6382,7 +6382,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.46" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.47" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6466,7 +6466,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.46</div>
+  <div class="qs-version-stamp">Quiet Studio v9.47</div>
 </div>
 
   </aside>
@@ -9854,7 +9854,25 @@ async function getCurrentUser() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email })
     }).then(r => r.json());
-    if (data && data.user) { writeUserCache(data.user); renderNavIdentity(data.user); return data.user; }
+    if (data && data.user) {
+      writeUserCache(data.user);
+      renderNavIdentity(data.user);
+      // Hydrate WS from samContext if local session is empty
+      if (data.user.samContext && typeof WS !== 'undefined') {
+        try {
+          var _ctx = JSON.parse(data.user.samContext);
+          if (_ctx && typeof _ctx === 'object') {
+            if (_ctx.brandName && !WS.brandName) WS.brandName = _ctx.brandName;
+            if (_ctx.storyText && !WS.storyText) WS.storyText = _ctx.storyText;
+            if (_ctx.platforms && !WS.platforms) WS.platforms = _ctx.platforms;
+            if (_ctx.creatorType && !WS.creatorType) WS.creatorType = _ctx.creatorType;
+            if (_ctx.diagnosedAudience && !WS.diagnosedAudience) WS.diagnosedAudience = _ctx.diagnosedAudience;
+            if (_ctx.diagnosedPlatforms && !WS.diagnosedPlatforms) WS.diagnosedPlatforms = _ctx.diagnosedPlatforms;
+          }
+        } catch(e) {}
+      }
+      return data.user;
+    }
   } catch {}
   return null;
 }

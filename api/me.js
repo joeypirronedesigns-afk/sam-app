@@ -15,7 +15,7 @@ module.exports = async function handler(req, res) {
   try {
     const enc = encodeURIComponent(email.toLowerCase());
     // uid = email is the canonical row — written by stripe-webhook, not anon device fingerprints
-    const url = `${SUPABASE_URL}/rest/v1/sam_users?email=eq.${enc}&uid=eq.${enc}&select=uid,email,name,tier,voice_profile,sam_context,created_at&limit=1`;
+    const url = `${SUPABASE_URL}/rest/v1/sam_users?email=eq.${enc}&select=uid,email,name,tier,voice_profile,sam_context,created_at&order=last_seen.desc.nullslast&limit=1`;
     const r = await fetch(url, {
       headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
     });
