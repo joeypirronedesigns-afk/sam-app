@@ -6382,7 +6382,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.48" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.49" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6466,7 +6466,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.48</div>
+  <div class="qs-version-stamp">Quiet Studio v9.49</div>
 </div>
 
   </aside>
@@ -9862,12 +9862,23 @@ async function getCurrentUser() {
         try {
           var _ctx = JSON.parse(data.user.samContext);
           if (_ctx && typeof _ctx === 'object') {
+            var _hadData = !!(WS.brandName || WS.storyText);
             if (_ctx.brandName && !WS.brandName) WS.brandName = _ctx.brandName;
             if (_ctx.storyText && !WS.storyText) WS.storyText = _ctx.storyText;
             if (_ctx.platforms && !WS.platforms) WS.platforms = _ctx.platforms;
             if (_ctx.creatorType && !WS.creatorType) WS.creatorType = _ctx.creatorType;
             if (_ctx.diagnosedAudience && !WS.diagnosedAudience) WS.diagnosedAudience = _ctx.diagnosedAudience;
             if (_ctx.diagnosedPlatforms && !WS.diagnosedPlatforms) WS.diagnosedPlatforms = _ctx.diagnosedPlatforms;
+            if (_ctx._currentStep && !WS._currentStep) WS._currentStep = _ctx._currentStep;
+            // Also hydrate localStorage so doRestoreSession can find it
+            if (!_hadData && _ctx.brandName) {
+              try {
+                var _slim = Object.assign({}, _ctx);
+                localStorage.setItem('sam_session_v2', JSON.stringify(_slim));
+                localStorage.setItem('sam_session_step', _ctx._currentStep || '1');
+                localStorage.setItem('sam_session_ts', Date.now().toString());
+              } catch(_le) {}
+            }
           }
         } catch(e) {}
       }
