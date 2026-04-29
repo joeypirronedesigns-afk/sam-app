@@ -761,7 +761,7 @@ function buildPlaybookHTML(pb, brand) {
     </div>`);
   }
 
-  return wrap(`SAM · ${e(brandName)} · ${e(docType)}\`, brandColor, pages.join('
+  return wrap(`SAM · ${e(brandName)} · ${e(docType)}`, brandColor, pages.join('
 '));
 }
 
