@@ -6382,7 +6382,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.55" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.56" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6466,7 +6466,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.55</div>
+  <div class="qs-version-stamp">Quiet Studio v9.56</div>
 </div>
 
   </aside>
@@ -10522,6 +10522,7 @@ async function sendChatMessage() {
         messages: messages,
         systemPrompt: SAM_SYSTEM_PROMPT,
         userId: _uid,
+        userEmail: (_u && _u.email) ? _u.email.toLowerCase() : '',
         voiceProfile: (_u && _u.voiceProfile) || getSamVoiceProfile() || undefined
       })
     });
@@ -10981,7 +10982,8 @@ async function sendPersistentMessage() {
       body: JSON.stringify({
         mode: 'chat',
         messages: messages,
-        systemPrompt: getSAMPersistentPrompt()
+        systemPrompt: getSAMPersistentPrompt(),
+        userEmail: (typeof getCurrentUserCached === 'function' && getCurrentUserCached() && getCurrentUserCached().email) ? getCurrentUserCached().email.toLowerCase() : ''
       })
     });
 
