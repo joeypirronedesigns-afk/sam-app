@@ -6297,7 +6297,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.38" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.39" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6381,7 +6381,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.38</div>
+  <div class="qs-version-stamp">Quiet Studio v9.39</div>
 </div>
 
   </aside>
@@ -9745,25 +9745,27 @@ function resolveNavUser(user) {
 }
 
 function renderNavIdentity(user) {
-  const signInBtn = document.querySelector('.nav-signin-btn');
-  if (!signInBtn) return;
   const resolved = resolveNavUser(user);
   const rawName = resolved && (resolved.name || resolved.full_name || resolved.first_name || resolved.email);
   const label = rawName
     ? (rawName.includes('@') ? rawName.split('@')[0] : rawName.split(' ')[0])
     : null;
-  if (label) {
-    signInBtn.textContent = label;
-    signInBtn.style.color = '';
-    signInBtn.style.borderColor = '';
-    signInBtn.dataset.auth = 'true';
-  } else {
-    signInBtn.textContent = 'Sign in';
-    signInBtn.style.color = '';
-    signInBtn.style.borderColor = '';
-    signInBtn.dataset.auth = 'false';
-    if (typeof openSignInModal === 'function') signInBtn.onclick = openSignInModal;
-  }
+  ['.nav-signin-btn', '.qs-topstrip-signin'].forEach(sel => {
+    const btn = document.querySelector(sel);
+    if (!btn) return;
+    if (label) {
+      btn.textContent = label;
+      btn.style.color = '';
+      btn.style.borderColor = '';
+      btn.dataset.auth = 'true';
+    } else {
+      btn.textContent = 'Sign in';
+      btn.style.color = '';
+      btn.style.borderColor = '';
+      btn.dataset.auth = 'false';
+      if (typeof openSignInModal === 'function') btn.onclick = openSignInModal;
+    }
+  });
 }
 function initTrial() {
   const state = getTrialState();
@@ -9799,7 +9801,7 @@ function updateTrialBadge(state) {
 
   // ── "See plans" — hidden for paid users ─────────────────────────────────────
   const _paid = (_u && _u.paid) || (state && state.paid);
-  document.querySelectorAll('.nav-pro-btn').forEach(el => {
+  document.querySelectorAll('.nav-pro-btn, .qs-topstrip-seeplan').forEach(el => {
     if (_paid) el.style.setProperty('display', 'none', 'important');
     else el.style.removeProperty('display');
   });
