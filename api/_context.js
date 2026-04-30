@@ -206,31 +206,25 @@ function buildToolContext(ctx) {
   const brand = ctx.brand || {};
   const voice = ctx.voice || {};
 
-  const identityName =
-    identity.name ||
-    brand.founderName ||
-    null;
+  // ONLY use schema v2 fields — never fall back to old wizard WS fields
+  // which may contain generated HTML or full playbook text
+  const identityName = identity.name || null;
 
-  const canonicalNiche =
-    brand.niche ||
-    ctx.diagnosedAudience ||
-    null;
+  // Only use brand.niche if it's short and clean (not HTML/generated content)
+  const rawNiche = brand.niche || null;
+  const canonicalNiche = rawNiche && rawNiche.length < 300 && !rawNiche.includes('<') ? rawNiche : null;
 
-  const canonicalStory =
-    identity.selfStory ||
-    brand.story ||
-    ctx.diagnosedStory ||
-    null;
+  // Only use identity.selfStory if it's short and clean
+  const rawStory = identity.selfStory || null;
+  const canonicalStory = rawStory && rawStory.length < 500 && !rawStory.includes('<') ? rawStory : null;
 
   const primaryPlatforms =
     Array.isArray(brand.platforms) && brand.platforms.length
       ? brand.platforms
-      : Array.isArray(ctx.platforms) && ctx.platforms.length
-      ? ctx.platforms
       : [];
 
   const voiceDNAShort =
-    voice.profile
+    voice.profile && !voice.profile.includes('<')
       ? String(voice.profile).slice(0, 400)
       : null;
 
