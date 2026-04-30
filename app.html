@@ -6401,7 +6401,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.79" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.80" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6485,7 +6485,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.79</div>
+  <div class="qs-version-stamp">Quiet Studio v9.80</div>
 </div>
 
   </aside>
@@ -8165,12 +8165,68 @@ function closeSheet() {
   document.getElementById('bottomSheet').style.display = 'none';
   pendingTool = null;
 }
+
+// Builds enriched creatorContext string from SAM brain for the Spark API call.
+// userText is the user's modifier; toolCtx is the canonical brain data.
+// Returns a string fed into creatorContext on the server.
+function buildSparkPrompt(userText, toolCtx) {
+  toolCtx = toolCtx || {};
+  var parts = [];
+  if (toolCtx.canonicalNiche) parts.push(toolCtx.canonicalNiche);
+  if (toolCtx.canonicalStory) parts.push(toolCtx.canonicalStory);
+  if (toolCtx.primaryPlatforms && toolCtx.primaryPlatforms.length) {
+    parts.push('Platforms: ' + toolCtx.primaryPlatforms.join(', '));
+  }
+  // User modifier is appended only if it adds new info
+  var modifier = userText && userText.trim() ? userText.trim() : null;
+  if (modifier && modifier !== parts[0]) parts.push('User focus: ' + modifier);
+  return parts.join(' — ');
+}
+
 function openToolFromSheet() {
   const tool = pendingTool;
   closeSheet();
   if (tool) openTool(tool);
 }
 function openTool(tool) {
+// Pre-fill tool inputs from SAM's brain context
+setTimeout(async function() {
+  var tc = await getToolContext();
+  if (!tc) return;
+  var _tool = tool;
+
+  if (_tool === 'spark') {
+    var el = document.getElementById('sparkInp');
+    if (el && !el.value) {
+      el.value = tc.canonicalNiche || tc.canonicalStory || '';
+    }
+  }
+
+  if (_tool === 'pulse') {
+    var pel = document.getElementById('pulseInp');
+    if (pel && !pel.value) {
+      pel.value = tc.canonicalStory || tc.canonicalNiche || '';
+    }
+  }
+
+  if (_tool === 'blueprint') {
+    var bel = document.getElementById('blueprintInp');
+    if (bel && !bel.value) {
+      var parts = [];
+      if (tc.canonicalNiche) parts.push(tc.canonicalNiche);
+      if (tc.primaryPlatforms && tc.primaryPlatforms.length) parts.push('Platforms: ' + tc.primaryPlatforms.join(', '));
+      bel.value = parts.join(' — ');
+    }
+  }
+
+  if (_tool === 'vision') {
+    var vel = document.getElementById('visionInp');
+    if (vel && !vel.value) {
+      vel.value = tc.canonicalStory || tc.canonicalNiche || '';
+    }
+  }
+}, 200);
+
   currentTool = tool;
   document.getElementById('homeView').style.display = 'none';
   // Autofill tool inputs from wizard story context
@@ -9089,7 +9145,12 @@ async function runSpark() {
   document.getElementById('sparkOutput').classList.remove('show');
   showSamStatus('sparkStatusBar','SAM is generating ideas for your niche...'); startLoaderCycle('spark');
   try {
-    const data = await callAPI({ ...getBase(), mode:'ideas', moment:niche, platforms:[] });
+    var tc = await getToolContext();
+    var base = getBase();
+    var enrichedContext = buildSparkPrompt(niche, tc);
+    if (enrichedContext) base.creatorContext = enrichedContext;
+    if (tc && tc.voiceDNAShort && !base.voiceProfile) base.voiceProfile = tc.voiceDNAShort;
+    const data = await callAPI({ ...base, mode:'ideas', moment:niche, platforms:[] });
     document.getElementById('sparkLoader').classList.remove('show');
     hideSamStatus('sparkStatusBar');
     renderSpark(data);
@@ -9949,6 +10010,30 @@ const _SAM_CACHE_TTL = 86400000; // 24 hours
 
 function readUserCache() {
   try { return JSON.parse(localStorage.getItem(_SAM_USER_KEY) || 'null'); } catch { return null; }
+}
+
+
+// ── TOOL CONTEXT CLIENT HELPER ────────────────────────────────────
+async function getToolContext() {
+  if (window.__toolContext) return window.__toolContext;
+
+  var ts = (typeof getTrialState === 'function') ? getTrialState() : null;
+  var email = ts && ts.email ? ts.email.trim().toLowerCase() : null;
+  if (!email) return null;
+
+  try {
+    var r = await fetch('/api/tool-context', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email })
+    });
+    var data = await r.json();
+    window.__toolContext = data.toolContext || null;
+    return window.__toolContext;
+  } catch (e) {
+    console.error('getToolContext failed', e);
+    return null;
+  }
 }
 
 function writeUserCache(user) {

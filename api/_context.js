@@ -197,4 +197,59 @@ async function saveUserContext(email, ctx, knownUid) {
   } catch(e) { return false; }
 }
 
-module.exports = { normalizeSamContext, mapWizardToSchemaV2, buildBrainPrompt, loadUserContext, saveUserContext, emptySchema };
+
+
+// ── TOOL CONTEXT ─────────────────────────────────────────────────
+function buildToolContext(ctx) {
+  ctx = ctx || {};
+  const identity = ctx.identity || {};
+  const brand = ctx.brand || {};
+  const voice = ctx.voice || {};
+
+  const identityName =
+    identity.name ||
+    brand.founderName ||
+    null;
+
+  const canonicalNiche =
+    brand.niche ||
+    ctx.diagnosedAudience ||
+    null;
+
+  const canonicalStory =
+    identity.selfStory ||
+    brand.story ||
+    ctx.diagnosedStory ||
+    null;
+
+  const primaryPlatforms =
+    Array.isArray(brand.platforms) && brand.platforms.length
+      ? brand.platforms
+      : Array.isArray(ctx.platforms) && ctx.platforms.length
+      ? ctx.platforms
+      : [];
+
+  const voiceDNAShort =
+    voice.profile
+      ? String(voice.profile).slice(0, 400)
+      : null;
+
+  return {
+    identityName,
+    canonicalNiche,
+    canonicalStory,
+    primaryPlatforms,
+    voiceDNAShort
+  };
+}
+
+async function loadUserToolContext(email) {
+  const loaded = await loadUserContext(email);
+  const ctx =
+    loaded && loaded.ctx ? loaded.ctx :
+    loaded && loaded.context ? loaded.context :
+    loaded || {};
+  return buildToolContext(ctx);
+}
+
+module.exports = { normalizeSamContext, mapWizardToSchemaV2, buildBrainPrompt, loadUserContext, saveUserContext, emptySchema, buildToolContext, loadUserToolContext};
