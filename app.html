@@ -6401,7 +6401,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.77" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.78" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6485,7 +6485,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.77</div>
+  <div class="qs-version-stamp">Quiet Studio v9.78</div>
 </div>
 
   </aside>
@@ -8235,7 +8235,6 @@ function _samPrefillWizard(retries) {
   var bn = document.getElementById('brandName');
   if (!bn || bn.value) return;
 
-  // Fastest path — use cached user name directly
   var cached = (typeof getCurrentUserCached === 'function') ? getCurrentUserCached() : null;
   if (cached && cached.name) {
     bn.value = cached.name;
@@ -8244,10 +8243,11 @@ function _samPrefillWizard(retries) {
     return;
   }
 
-  // Retry if cache not ready yet
+  // Cache not ready — retry with increasing delays
   retries = typeof retries === 'number' ? retries : 0;
-  if (retries < 8) {
-    setTimeout(function() { _samPrefillWizard(retries + 1); }, 200);
+  if (retries < 10) {
+    var delay = retries < 3 ? 300 : retries < 6 ? 600 : 1000;
+    setTimeout(function() { _samPrefillWizard(retries + 1); }, delay);
   }
 }
 
