@@ -6401,7 +6401,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.70" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.71" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6485,7 +6485,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.70</div>
+  <div class="qs-version-stamp">Quiet Studio v9.71</div>
 </div>
 
   </aside>
@@ -8234,20 +8234,20 @@ function samReturnToWizard() {
 function _samPrefillWizard() {
   var bn = document.getElementById('brandName');
   if (!bn || bn.value) return;
-  if (typeof getCurrentUser !== 'function') return;
-  getCurrentUser().then(function(user) {
+
+  function _doFill(user) {
     if (!user) return;
     var nameVal = '';
     try {
       var ctx = JSON.parse(user.samContext || '{}');
       nameVal = (ctx.identity && ctx.identity.name) || ctx.brandName || user.name || '';
     } catch(e) { nameVal = user.name || ''; }
-    if (nameVal && !bn.value) {
-      bn.value = nameVal;
+    var bn2 = document.getElementById('brandName');
+    if (nameVal && bn2 && !bn2.value) {
+      bn2.value = nameVal;
       if (typeof WS !== 'undefined') WS.brandName = nameVal;
       if (typeof updateWizardHeader === 'function') updateWizardHeader();
     }
-    // handle
     var bh = document.getElementById('brandHandle');
     if (bh && !bh.value) {
       try {
@@ -8256,7 +8256,18 @@ function _samPrefillWizard() {
         if (h) { bh.value = h; if (typeof WS !== 'undefined') WS.brandHandle = h; }
       } catch(e) {}
     }
-  }).catch(function(){});
+  }
+
+  // Try cached user first (synchronous — fastest path)
+  if (typeof getCurrentUserCached === 'function') {
+    var cached = getCurrentUserCached();
+    if (cached && cached.name) { _doFill(cached); return; }
+  }
+
+  // Fall back to async fetch
+  if (typeof getCurrentUser === 'function') {
+    getCurrentUser().then(_doFill).catch(function(){});
+  }
 }
 
 function openWizardPage(skipCheck) {
