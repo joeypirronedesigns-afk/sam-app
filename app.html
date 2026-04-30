@@ -6401,7 +6401,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.93" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.94" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -11417,7 +11417,11 @@ function checkIdeaSimilarity(text) {
   // Need at least 6 matching words AND at least 40% of the message words to match
   const threshold = Math.max(6, Math.floor(words.length * 0.4));
   for (const idea of ideas.slice(0, 15)) {
+    // Skip wizard/playbook outputs — they're reference docs, not comparable ideas
+    if (idea.type === 'wizard' || idea.type === 'playbook') continue;
     const ideaText = (idea.text || '').toLowerCase();
+    // Skip if the saved idea text is very long (likely a full document)
+    if (ideaText.length > 500) continue;
     const matches = words.filter(w => ideaText.includes(w));
     if (matches.length >= threshold) {
       return {
