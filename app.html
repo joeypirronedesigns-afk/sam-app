@@ -6401,7 +6401,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.69" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.70" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6485,7 +6485,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.57</div>
+  <div class="qs-version-stamp">Quiet Studio v9.70</div>
 </div>
 
   </aside>
@@ -8230,6 +8230,35 @@ function samReturnToWizard() {
   if (typeof closeIdeasPanel === 'function') closeIdeasPanel();
   openWizardPage(true);
 }
+// Global wizard prefill helper — called on open and when step 1 renders
+function _samPrefillWizard() {
+  var bn = document.getElementById('brandName');
+  if (!bn || bn.value) return;
+  if (typeof getCurrentUser !== 'function') return;
+  getCurrentUser().then(function(user) {
+    if (!user) return;
+    var nameVal = '';
+    try {
+      var ctx = JSON.parse(user.samContext || '{}');
+      nameVal = (ctx.identity && ctx.identity.name) || ctx.brandName || user.name || '';
+    } catch(e) { nameVal = user.name || ''; }
+    if (nameVal && !bn.value) {
+      bn.value = nameVal;
+      if (typeof WS !== 'undefined') WS.brandName = nameVal;
+      if (typeof updateWizardHeader === 'function') updateWizardHeader();
+    }
+    // handle
+    var bh = document.getElementById('brandHandle');
+    if (bh && !bh.value) {
+      try {
+        var ctx2 = JSON.parse(user.samContext || '{}');
+        var h = (ctx2.identity && ctx2.identity.handle) || ctx2.brandHandle || '';
+        if (h) { bh.value = h; if (typeof WS !== 'undefined') WS.brandHandle = h; }
+      } catch(e) {}
+    }
+  }).catch(function(){});
+}
+
 function openWizardPage(skipCheck) {
   document.getElementById('wizardPage').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -8243,45 +8272,10 @@ function openWizardPage(skipCheck) {
     else if (typeof showWizardStep === 'function') showWizardStep('0');
   }
   if (window._trialExpired) { setTimeout(() => showTrialExpiredCard(), 800); }
-  // Pre-fill wizard from SAM brain on open — delayed to allow step 1 to render
-  if (typeof getCurrentUser === 'function') {
-    getCurrentUser().then(function(user) {
-      if (!user) return;
-      function _applyWizardPrefill() {
-        var bn = document.getElementById('brandName');
-        if (!bn) return; // step not rendered yet
-        if (bn.value) return; // already filled
-
-        var nameVal = '';
-        if (user.samContext) {
-          try {
-            var ctx = JSON.parse(user.samContext);
-            nameVal = (ctx.identity && ctx.identity.name) || ctx.brandName || user.name || '';
-          } catch(e) { nameVal = user.name || ''; }
-        } else {
-          nameVal = user.name || '';
-        }
-        if (nameVal) {
-          bn.value = nameVal;
-          if (typeof WS !== 'undefined') WS.brandName = nameVal;
-          if (typeof updateWizardHeader === 'function') updateWizardHeader();
-        }
-        // Pre-fill handle
-        var bh = document.getElementById('brandHandle');
-        if (bh && !bh.value && user.samContext) {
-          try {
-            var ctx2 = JSON.parse(user.samContext);
-            var handleVal = (ctx2.identity && ctx2.identity.handle) || ctx2.brandHandle || '';
-            if (handleVal) { bh.value = handleVal; if (typeof WS !== 'undefined') WS.brandHandle = handleVal; }
-          } catch(e) {}
-        }
-      }
-      // Try immediately, then retry after 300ms and 800ms to handle step render delay
-      _applyWizardPrefill();
-      setTimeout(_applyWizardPrefill, 300);
-      setTimeout(_applyWizardPrefill, 800);
-    }).catch(function() {});
-  }
+  // Pre-fill from SAM brain — use global helper with retries
+  _samPrefillWizard();
+  setTimeout(_samPrefillWizard, 500);
+  setTimeout(_samPrefillWizard, 1200);
 }
 function openProPage() {
   window.location.href = 'https://sam-app-git-quietstudio-joeypirronedesigns-1029s-projects.vercel.app/';
@@ -12658,6 +12652,10 @@ function showWizardStep(step) {
 
 function setupWizardStep(step) {
   const s = getSetup();
+
+  if (step === '1') {
+    setTimeout(_samPrefillWizard, 100);
+  }
 
   if (step === '2') {
     // Adapt question based on story type
