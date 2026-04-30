@@ -6401,7 +6401,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.87" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.88" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6485,7 +6485,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.87</div>
+  <div class="qs-version-stamp">Quiet Studio v9.88</div>
 </div>
 
   </aside>
@@ -11142,13 +11142,7 @@ async function sendPersistentMessage() {
   }
 
   // ── Detect intent (non-dev only) ──
-  // Routing guardrails — check before intent detection
-  const _forceConvo = !isMarketingMode && (
-    _shouldForceConversation(text) ||
-    _isMetaDiscussion(text) ||
-    _isSystemReflection(text)
-  );
-  const intent = (!isMarketingMode && !_forceConvo) ? detectSAMIntent(text) : null;
+  const intent = !isMarketingMode ? detectSAMIntent(text) : null;
 
   if (intent) {
     // Announce tool run
@@ -11355,48 +11349,6 @@ SUGGESTION SIGNALS — use these when referencing saved content:
 }
 
 // ── INTENT DETECTION ─────────────────────────────────────────────────────────
-// ── TALK WITH SAM ROUTING GUARDRAILS ────────────────────────────
-var _convoOnlyPhrases = [
-  "don't run any tools", "dont run any tools", "no tools right now",
-  "just talk", "just critique", "stay in the spark", "we're working in the spark",
-  "were working in the spark", "i want to see if you can sound like me",
-  "sound like me", "before we try to fix you", "what's wrong with you",
-  "whats wrong with you", "testing your capabilities", "testing you",
-  "voice dna isn't functioning", "voice dna isnt functioning"
-];
-
-var _toolMarkers = ["idea 1", "idea 2", "idea 3", "the pulse", "hook
-", "captions
-", "script
-"];
-var _metaMarkers = ["does this sound", "sound like me", "be honest", "what's wrong",
-  "you think that sounds", "just discussed", "that make sense", "may be steering",
-  "down the wrong direction", "accidentally", "trained myself on the wrong"];
-
-function _shouldForceConversation(text) {
-  var t = text.toLowerCase();
-  return _convoOnlyPhrases.some(function(p) { return t.includes(p); });
-}
-
-function _isMetaDiscussion(text) {
-  var t = text.toLowerCase();
-  var hasTool = _toolMarkers.some(function(p) { return t.includes(p); });
-  var hasMeta = _metaMarkers.some(function(p) { return t.includes(p); });
-  return hasTool && hasMeta;
-}
-
-function _isSystemReflection(text) {
-  var t = text.toLowerCase();
-  var reflectionMarkers = ["voice dna", "trained myself", "wrong direction",
-    "before we try to fix", "what's wrong with you", "testing you",
-    "your capabilities", "your limitations", "what breaks"];
-  var explicitToolVerbs = ["run the pulse", "generate 5 ideas", "use spark",
-    "run the spark", "run blueprint", "run the vision"];
-  var hasReflection = reflectionMarkers.some(function(p) { return t.includes(p); });
-  var hasExplicit = explicitToolVerbs.some(function(p) { return t.includes(p); });
-  return hasReflection && !hasExplicit;
-}
-
 function detectSAMIntent(text) {
   const t = text.toLowerCase();
 
