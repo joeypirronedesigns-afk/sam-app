@@ -155,7 +155,20 @@ PRIORITY LADDER (use this order):
 4. Voice DNA not calibrated
 5. Otherwise: momentum/consistency verdict
 
-Also generate exactly 3 action items for today's plan. Each must be concrete, time-bounded, and routed to an existing tool. Include them in the JSON as "todays_plan": array of objects with keys: id (string "plan-1" etc), step_number (1-3), label (2-8 words, action-oriented), timebox_minutes (integer 10-45), route (one of: story-engine|reach|voice-dna|spark|all-tools|today), reason (one sentence max). At least 1 of the 3 todays_plan items must be a shipping or distribution action that publishes, adapts, schedules for immediate release, or pushes content outward today, and that item must route to reach or spark.`;
+Also generate exactly 3 action items for today's plan. Each must be concrete, time-bounded, and routed to an existing tool. Include them in the JSON as "todays_plan": array of objects with keys: id (string "plan-1" etc), step_number (1-3), label (2-8 words, action-oriented), timebox_minutes (integer 10-45), route (one of: story-engine|reach|voice-dna|spark|all-tools|today), reason (one sentence max). At least 1 of the 3 todays_plan items must be a shipping or distribution action that publishes, adapts, schedules for immediate release, or pushes content outward today, and that item must route to reach or spark.
+
+ANALYTICS ECHO — REQUIRED when analytics insight is present:
+- The verdict_line or first paragraph MUST explicitly restate at least one "what to improve" metric using the actual numbers from the analytics block (e.g. "under 2% watch retention", "82% drop in 3-second views", "65% reach collapse").
+- At least one of the three todays_plan tasks MUST be a direct operationalization of a "Post this week" or "Bold growth move" item from the analytics block — adapted into a concrete, time-bound action.
+- Do not paraphrase metrics into vague language. If the data says "353 out of 18,900 views hit 1 minute", say that or something equally specific.
+
+EVIDENTIARY DISCIPLINE — STRICT:
+- Only reference facts explicitly present in the user brain context or analytics insight block above.
+- Never invent posting cadence, publish times, draft existence, historical content structure, or audience behavior unless directly stated in the context provided.
+- Never fabricate specifics like "your last 6 posts", "you used to post 4 times a week", "the post you drafted last night", or "your audience reads at 7am" unless that data is present.
+- If evidence is incomplete, speak in probabilities and recommendations — not false specifics.
+- Say "your recent analytics suggest reach decay" not "your last 14 posts opened with a question."
+- Ground every claim in the Lens analytics insight or brain context. If you don't have the data, say what you recommend based on what you do have.`;
 
   const userPrompt = `Today's date: ${briefDate}${brainPrompt}${analyticsBlock}
 Creator niche: ${niche}
