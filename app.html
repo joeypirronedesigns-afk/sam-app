@@ -6382,7 +6382,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.57" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.59" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -7283,7 +7283,7 @@ function hearSAMBrief() {
     }
   }
 
-  function fetchDailyBrief() {
+  function fetchDailyBrief(force) {
     var email = null;
     var timezone = (typeof Intl !== 'undefined' && Intl.DateTimeFormat)
       ? Intl.DateTimeFormat().resolvedOptions().timeZone
@@ -7301,13 +7301,16 @@ function hearSAMBrief() {
 
     var url = '/api/daily-brief?email=' + encodeURIComponent(email)
       + '&timezone=' + encodeURIComponent(timezone)
-      + '&date=' + encodeURIComponent(today);
+      + '&date=' + encodeURIComponent(today)
+      + (force ? '&force=1' : '');
 
     fetch(url)
       .then(function(r) { return r.json(); })
       .then(function(data) { updateSamsRead(data); })
       .catch(function() { /* leave hardcoded fallback */ });
   }
+
+  window.reloadDailyBrief = function(force) { fetchDailyBrief(force); };
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', fetchDailyBrief);
@@ -9263,6 +9266,42 @@ async function runLens(mode) {
     renderLens(data);
     document.getElementById('lensOutput')?.classList.add('show');
     document.getElementById('lensOutput')?.scrollIntoView({ behavior:'smooth', block:'start' });
+
+    if (isAnalytics && data && (data.type === 'analytics' || data.headline)) {
+      try {
+        var _ts = (typeof getTrialState === 'function') ? getTrialState() : null;
+        var _email = _ts && _ts.email ? _ts.email.trim().toLowerCase() : null;
+        if (_email) {
+          var _insight = {
+            type: 'analytics_insight',
+            createdAt: new Date().toISOString(),
+            source: 'lens_vision',
+            platform: 'unknown',
+            confidence: 0.8,
+            findings: {
+              headline: data.headline || null,
+              whatsWorking: data.whats_working || [],
+              whatsNot: data.whats_not || [],
+              postNext: data.post_next || [],
+              growthMove: data.growth_move || null
+            },
+            recommendedShift: data.growth_move || null,
+            expiresAfterDays: 21
+          };
+          fetch('/api/analytics-insight', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: _email, insight: _insight })
+          }).then(function() {
+            try {
+              localStorage.removeItem('sam-daily-brief-cache');
+              localStorage.removeItem('sam-daily-brief-date');
+            } catch(e) {}
+            if (typeof reloadDailyBrief === 'function') reloadDailyBrief(true);
+          }).catch(function() {});
+        }
+      } catch(_e) {}
+    }
   } catch(err) {
     clearInterval(interval);
     if (loader) loader.classList.remove('show');
