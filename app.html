@@ -6401,7 +6401,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.92" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.93" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -11141,8 +11141,8 @@ async function sendPersistentMessage() {
     }
   }
 
-  // ── Detect intent (non-dev only) ──
-  const intent = !isMarketingMode ? detectSAMIntent(text) : null;
+  // ── Detect intent (non-dev only; skip when user is talking *about* tools) ──
+  const intent = (!isMarketingMode && !isDebugOrMeta(text)) ? detectSAMIntent(text) : null;
 
   if (intent) {
     // Announce tool run
@@ -11344,6 +11344,31 @@ Rules: Save immediately when confident. Never ask permission. Never tell the use
 
 SUGGESTION SIGNALS — use these when referencing saved content:
 [IDEA_EXISTS:text preview here]`;
+}
+
+// ── DEBUG / META GUARD ───────────────────────────────────────────────────────
+// Returns true when the user is talking ABOUT the tools rather than USING them,
+// or has explicitly asked not to run any tool. When true, skip intent detection.
+function isDebugOrMeta(text) {
+  const t = text.toLowerCase();
+  const negativeSignals = [
+    "don't run", "dont run", "don't trigger", "dont trigger",
+    "no tools", "without tools", "skip tools", "skip the tools",
+    "just talk", "just chat", "just talking", "just chatting",
+    "don't use the pulse", "dont use the pulse",
+    "don't use pulse", "dont use pulse",
+    "don't launch", "dont launch", "don't start the", "dont start the",
+    "stop running", "don't actually run", "dont actually run",
+    "we're in the spark", "were in the spark", "in the spark",
+    "i'm debugging", "im debugging", "we're debugging", "were debugging",
+    "we're testing", "were testing", "just testing",
+    "in debug mode", "debug mode",
+    "how does the pulse", "what does the pulse", "explain the pulse",
+    "tell me about the pulse", "tell me about the spark",
+    "how does the spark", "what does the spark",
+    "talking about", "let's just discuss", "lets just discuss"
+  ];
+  return negativeSignals.some(sig => t.includes(sig));
 }
 
 // ── INTENT DETECTION ─────────────────────────────────────────────────────────
