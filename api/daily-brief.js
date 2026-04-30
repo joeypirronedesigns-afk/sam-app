@@ -157,6 +157,11 @@ PRIORITY LADDER (use this order):
 
 Also generate exactly 3 action items for today's plan. Each must be concrete, time-bounded, and routed to an existing tool. Include them in the JSON as "todays_plan": array of objects with keys: id (string "plan-1" etc), step_number (1-3), label (2-8 words, action-oriented), timebox_minutes (integer 10-45), route (one of: story-engine|reach|voice-dna|spark|all-tools|today), reason (one sentence max). At least 1 of the 3 todays_plan items must be a shipping or distribution action that publishes, adapts, schedules for immediate release, or pushes content outward today, and that item must route to reach or spark.
 
+COACH MEMORY — when anchor memory block is present:
+- If ANCHOR MEMORY says the creator completed yesterday's anchor: prepend one short line acknowledging that before the metrics sentence. E.g. "You hit yesterday's anchor — now we compound it." Then continue with metrics.
+- If ANCHOR MEMORY says the anchor was missed: prepend one short line acknowledging that before the metrics. E.g. "Yesterday's anchor didn't happen — today we make the smallest possible version non-negotiable." Then continue with metrics.
+- Keep this line to 10 words max. Never effusive. Never punishing.
+
 ANALYTICS ECHO — REQUIRED when analytics insight is present:
 - verdict_line MUST BEGIN with at least one concrete "what to improve" metric using the actual numbers from the analytics block (e.g. "3-second views down 82% and reach down 65%" or "only 353 out of 18,900 views reach 1 minute").
 - If the analytics block includes multiple metrics, pick the most critical 1–2 and include them explicitly in verdict_line.
@@ -172,7 +177,17 @@ EVIDENTIARY DISCIPLINE — STRICT:
 - Say "your recent analytics suggest reach decay" not "your last 14 posts opened with a question."
 - Ground every claim in the Lens analytics insight or brain context. If you don't have the data, say what you recommend based on what you do have.`;
 
-  const userPrompt = `Today's date: ${briefDate}${brainPrompt}${analyticsBlock}
+  // Anchor completion context for coach memory
+  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+  const anchorDone = brain && brain.execution && brain.execution.anchorCompletedToday === true && brain.execution.lastAnchorDate === yesterday;
+  const anchorMissed = brain && brain.execution && brain.execution.lastAnchorDate === yesterday && brain.execution.anchorCompletedToday === false;
+  const anchorBlock = anchorDone
+    ? '\n\nANCHOR MEMORY: The creator completed yesterday\'s anchor task. Acknowledge this first before the metrics — one short line like "You hit yesterday\'s anchor; now we compound it."'
+    : anchorMissed
+      ? '\n\nANCHOR MEMORY: The creator did NOT complete yesterday\'s anchor task. Acknowledge this first before the metrics — one short line like "Yesterday\'s anchor didn\'t happen; today we shrink the move and make it non-negotiable."'
+      : '';
+
+  const userPrompt = `Today's date: ${briefDate}${brainPrompt}${analyticsBlock}${anchorBlock}
 Creator niche: ${niche}
 Platforms: ${platforms}
 Voice DNA: ${voiceCalibrated}
