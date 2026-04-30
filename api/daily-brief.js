@@ -6,6 +6,7 @@
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const { loadUserContext, buildBrainPrompt } = require('./_context');
 
 const FALLBACK_BRIEF = {
   verdict_line: "I'm reading the room before I make today's call.",
@@ -34,9 +35,12 @@ async function supabaseFetch(path, options = {}) {
 
 async function getUserProfile(email) {
   const data = await supabaseFetch(
-    `sam_users?email=eq.${encodeURIComponent(email)}&select=uid,sam_context,voice_profile,voice_calibrated,niche,platforms,story_engine_current_step,reach_platforms_ready&order=last_seen.desc.nullslast&limit=1`
+    `sam_users?email=eq.${encodeURIComponent(email)}&select=uid,email,sam_context,voice_profile,voice_calibrated,niche,platforms,story_engine_current_step,reach_platforms_ready&order=last_seen.desc.nullslast&limit=1`
   );
-  return data && data.length > 0 ? data[0] : null;
+  if (!data || !data.length) return null;
+  const row = data[0];
+  if (!row.email) row.email = email;
+  return row;
 }
 
 async function getCachedBrief(email, briefDate) {
@@ -84,9 +88,48 @@ async function saveBrief(email, briefDate, timezone, brief, profile) {
 }
 
 async function generateBrief(profile, briefDate) {
-  const niche = profile.niche || 'content creator';
-  const platforms = profile.platforms || 'social media';
-  const context = profile.sam_context ? profile.sam_context.slice(0, 1200) : '';
+  const email = profile.email || '';
+  let brain = null;
+  let brainPrompt = '';
+  let analyticsBlock = '';
+
+  try {
+    const loaded = email ? await loadUserContext(email) : { ctx: null };
+    brain = loaded && loaded.ctx ? loaded.ctx : null;
+  } catch(e) {
+    brain = null;
+  }
+
+  if (brain) {
+    brainPrompt = buildBrainPrompt(brain) || '';
+
+    if (brain.analytics && Array.isArray(brain.analytics.insights)) {
+      const now = Date.now();
+      const latestInsight = brain.analytics.insights
+        .filter(i => i && i.createdAt)
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+
+      if (latestInsight) {
+        const ageDays = Math.floor((now - new Date(latestInsight.createdAt).getTime()) / 86400000);
+        const maxAge = latestInsight.expiresAfterDays || 21;
+        if (ageDays <= maxAge && latestInsight.findings) {
+          analyticsBlock = '\n\nLATEST ANALYTICS INSIGHT:\n' +
+            'Headline: ' + (latestInsight.findings.headline || '') + '\n' +
+            'What is working: ' + (latestInsight.findings.whatsWorking || []).join(', ') + '\n' +
+            'What is not working: ' + (latestInsight.findings.whatsNot || []).join(', ') + '\n' +
+            'Recommended shift: ' + (latestInsight.recommendedShift || '') + '\n' +
+            'Captured: ' + latestInsight.createdAt;
+        }
+      }
+    }
+  }
+
+  const niche = (brain && brain.brand && brain.brand.niche) || profile.niche || 'content creator';
+  const platforms = (brain && brain.brand && Array.isArray(brain.brand.platforms) && brain.brand.platforms.length)
+    ? brain.brand.platforms.join(', ')
+    : (profile.platforms || 'social media');
+  const context = (brain && brain.identity && brain.identity.selfStory)
+    || (profile.sam_context ? profile.sam_context.slice(0, 800) : '');
   const voiceCalibrated = profile.voice_calibrated ? 'calibrated' : 'not yet calibrated';
   const storyStep = profile.story_engine_current_step;
   const reachReady = profile.reach_platforms_ready;
@@ -114,7 +157,7 @@ PRIORITY LADDER (use this order):
 
 Also generate exactly 3 action items for today's plan. Each must be concrete, time-bounded, and routed to an existing tool. Include them in the JSON as "todays_plan": array of objects with keys: id (string "plan-1" etc), step_number (1-3), label (2-8 words, action-oriented), timebox_minutes (integer 10-45), route (one of: story-engine|reach|voice-dna|spark|all-tools|today), reason (one sentence max). At least 1 of the 3 todays_plan items must be a shipping or distribution action that publishes, adapts, schedules for immediate release, or pushes content outward today, and that item must route to reach or spark.`;
 
-  const userPrompt = `Today's date: ${briefDate}
+  const userPrompt = `Today's date: ${briefDate}${brainPrompt}${analyticsBlock}
 Creator niche: ${niche}
 Platforms: ${platforms}
 Voice DNA: ${voiceCalibrated}
@@ -179,7 +222,8 @@ module.exports = async function handler(req, res) {
 
   try {
     // Check cache first
-    const cached = await getCachedBrief(email, briefDate);
+    const forceRefresh = req.query.force === '1';
+    const cached = forceRefresh ? null : await getCachedBrief(email, briefDate);
     if (cached) {
       return res.status(200).json({
         verdict_line: cached.verdict_line,

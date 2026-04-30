@@ -16,6 +16,7 @@ function emptySchema() {
     emotional: { confidenceLevel: null, fearPoints: [], burnoutMarkers: [], excitementCues: [], currentState: null },
     creative: { taste: null, signatureIdeas: [], contentWins: [], obsessions: [], avoidances: [] },
     execution: { currentStep: 0, activeProjects: [], unfinishedLoops: [], nextAction: null, weeklyGoal: null },
+    analytics: { insights: [], latestAt: null },
     platforms: {}
   };
 }
@@ -38,11 +39,19 @@ function normalizeSamContext(raw) {
 
   if (parsed.schemaVersion === 2) {
     parsed.lastUpdatedAt = parsed.lastUpdatedAt || new Date().toISOString();
+    if (!parsed.analytics) parsed.analytics = { insights: [], latestAt: null };
     return parsed;
   }
 
   const schema = emptySchema();
   schema.migratedFrom = 'legacy-wizard';
+
+  if (parsed.analytics && Array.isArray(parsed.analytics.insights)) {
+    schema.analytics = {
+      insights: parsed.analytics.insights,
+      latestAt: parsed.analytics.latestAt || new Date().toISOString()
+    };
+  }
 
   schema.identity.name = parsed.brandName || null;
   schema.identity.handle = parsed.brandHandle || null;
