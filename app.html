@@ -6401,7 +6401,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.72" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.73" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6485,7 +6485,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.72</div>
+  <div class="qs-version-stamp">Quiet Studio v9.73</div>
 </div>
 
   </aside>
@@ -8264,12 +8264,36 @@ function _samPrefillWizard() {
   // Try cached user first (synchronous — fastest path)
   if (typeof getCurrentUserCached === 'function') {
     var cached = getCurrentUserCached();
-    if (cached && cached.name) { _doFill(cached); return; }
+    if (cached && cached.name) {
+      _doFill(cached);
+      // Also patch localStorage session so restore doesn't overwrite
+      try {
+        var _sess = localStorage.getItem('sam_session_v2');
+        if (_sess) {
+          var _s = JSON.parse(_sess);
+          if (!_s.brandName) {
+            var _nameForSession = '';
+            try { var _c = JSON.parse(cached.samContext||'{}'); _nameForSession = (_c.identity&&_c.identity.name)||_c.brandName||cached.name||''; } catch(e) { _nameForSession = cached.name||''; }
+            if (_nameForSession) { _s.brandName = _nameForSession; localStorage.setItem('sam_session_v2', JSON.stringify(_s)); }
+          }
+        }
+      } catch(e) {}
+      return;
+    }
   }
 
   // Fall back to async fetch
   if (typeof getCurrentUser === 'function') {
-    getCurrentUser().then(_doFill).catch(function(){});
+    getCurrentUser().then(function(user) {
+      _doFill(user);
+      try {
+        var _sess2 = localStorage.getItem('sam_session_v2');
+        if (_sess2 && user) {
+          var _s2 = JSON.parse(_sess2);
+          if (!_s2.brandName && user.name) { _s2.brandName = user.name; localStorage.setItem('sam_session_v2', JSON.stringify(_s2)); }
+        }
+      } catch(e) {}
+    }).catch(function(){});
   }
 }
 
