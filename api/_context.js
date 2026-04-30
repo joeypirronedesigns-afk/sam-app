@@ -75,6 +75,17 @@ function normalizeSamContext(raw) {
   return schema;
 }
 
+
+// Only accept short, clean text for brain identity fields
+// Rejects generated HTML, playbook content, long AI output
+function _cleanBrainField(val, maxLen) {
+  if (!val || typeof val !== 'string') return null;
+  if (val.includes('<') || val.includes('>')) return null; // reject HTML
+  if (val.includes('✶') || val.includes('S A M C')) return null; // reject playbook markers
+  if (val.length > (maxLen || 600)) return null; // reject long generated content
+  return val.trim() || null;
+}
+
 function mapWizardToSchemaV2(wizardContext, existingCtx) {
   const schema = existingCtx && existingCtx.schemaVersion === 2
     ? JSON.parse(JSON.stringify(existingCtx))
@@ -82,14 +93,18 @@ function mapWizardToSchemaV2(wizardContext, existingCtx) {
 
   schema.lastUpdatedAt = new Date().toISOString();
 
-  if (wizardContext.brandName) schema.identity.name = wizardContext.brandName;
-  if (wizardContext.brandHandle) schema.identity.handle = wizardContext.brandHandle;
-  if (wizardContext.creatorType) schema.identity.creatorType = wizardContext.creatorType;
-  if (wizardContext.storyText) schema.identity.selfStory = wizardContext.storyText;
+  // Use sanitizer to prevent generated/HTML content from polluting brain fields
+  if (wizardContext.brandName) schema.identity.name = _cleanBrainField(wizardContext.brandName, 100) || schema.identity.name;
+  if (wizardContext.brandHandle) schema.identity.handle = _cleanBrainField(wizardContext.brandHandle, 100) || schema.identity.handle;
+  if (wizardContext.creatorType) schema.identity.creatorType = _cleanBrainField(wizardContext.creatorType, 50) || schema.identity.creatorType;
+  var _cleanStory = _cleanBrainField(wizardContext.storyText, 500);
+  if (_cleanStory) schema.identity.selfStory = _cleanStory;
 
-  if (wizardContext.diagnosedAudience) schema.brand.niche = wizardContext.diagnosedAudience;
+  var _cleanNiche = _cleanBrainField(wizardContext.diagnosedAudience, 300);
+  if (_cleanNiche) schema.brand.niche = _cleanNiche;
   if (wizardContext.audienceCustom || wizardContext.audienceConfirm) {
-    schema.brand.audience = wizardContext.audienceCustom || wizardContext.audienceConfirm;
+    var _cleanAud = _cleanBrainField(wizardContext.audienceCustom || wizardContext.audienceConfirm, 200);
+    if (_cleanAud) schema.brand.audience = _cleanAud;
   }
   if (Array.isArray(wizardContext.platforms) && wizardContext.platforms.length) {
     schema.brand.platforms = wizardContext.platforms;
