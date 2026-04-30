@@ -6401,7 +6401,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.85" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.86" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6485,7 +6485,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.85</div>
+  <div class="qs-version-stamp">Quiet Studio v9.86</div>
 </div>
 
   </aside>
@@ -11373,12 +11373,18 @@ function detectSAMIntent(text) {
 // ── CHECK IDEAS BANK FOR SIMILARITY ──────────────────────────────────────────
 function checkIdeaSimilarity(text) {
   // Only check for similarity on substantial content-creation messages
-  // not conversational messages or tool outputs
+  // not conversational messages, tool outputs, or refinement requests
   if (!text || text.length < 60) return null;
   // Skip if this looks like a tool output being pasted in
   var skipPatterns = ['IDEA 1', 'Generate 5 ideas', 'Save as PDF', 'Turn into content', 'SAM ENGINE OUTPUT', 'The Pulse', 'The Spark', 'Blueprint', 'The Vision'];
   for (var i = 0; i < skipPatterns.length; i++) {
     if (text.includes(skipPatterns[i])) return null;
+  }
+  // Skip refinement requests — user is editing not creating new content
+  var refinementPatterns = ["fix it", "refine", "adjust", "sounds like me", "let's fix", "rewrite", "punch up", "make it sound", "doesn't sound", "too generic", "change the", "update this"];
+  var textLower = text.toLowerCase();
+  for (var j = 0; j < refinementPatterns.length; j++) {
+    if (textLower.includes(refinementPatterns[j])) return null;
   }
 
   const ideas = typeof IB !== 'undefined' ? IB.load() : [];
