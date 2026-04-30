@@ -6401,7 +6401,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.78" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.79" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6485,7 +6485,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.78</div>
+  <div class="qs-version-stamp">Quiet Studio v9.79</div>
 </div>
 
   </aside>
@@ -9959,6 +9959,8 @@ function writeUserCache(user) {
       email: user.email, name: user.name, tier: user.tier,
       paid: user.paid, trialStart: user.trialStart
     }));
+    // Pre-fill wizard name field if open
+    if (typeof _samPrefillWizard === 'function') _samPrefillWizard(0);
   } catch {}
 }
 
