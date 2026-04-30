@@ -6401,7 +6401,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.81" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.82" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6485,7 +6485,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.81</div>
+  <div class="qs-version-stamp">Quiet Studio v9.82</div>
 </div>
 
   </aside>
@@ -11372,8 +11372,13 @@ function detectSAMIntent(text) {
 // ── CHECK IDEAS BANK FOR SIMILARITY ──────────────────────────────────────────
 function checkIdeaSimilarity(text) {
   // Only check for similarity on substantial content-creation messages
-  // not conversational messages
+  // not conversational messages or tool outputs
   if (!text || text.length < 60) return null;
+  // Skip if this looks like a tool output being pasted in
+  var skipPatterns = ['IDEA 1', 'Generate 5 ideas', 'Save as PDF', 'Turn into content', 'SAM ENGINE OUTPUT', 'The Pulse', 'The Spark', 'Blueprint', 'The Vision'];
+  for (var i = 0; i < skipPatterns.length; i++) {
+    if (text.includes(skipPatterns[i])) return null;
+  }
 
   const ideas = typeof IB !== 'undefined' ? IB.load() : [];
   if (!ideas.length) return null;
