@@ -1649,7 +1649,7 @@
     .idea-bank-type-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:3px 8px;border-radius:20px;flex-shrink:0;}
     .badge-pulse{background:var(--pulse-bg);color:var(--accent);border:1px solid var(--pulse-border);}
     .badge-spark{background:var(--spark-bg);color:var(--accent);border:1px solid var(--spark-border);}
-    .badge-wizard{background:rgba(167,139,250,0.12);color:var(--accent);border:1px solid rgba(167,139,250,0.25);}
+    .badge-wizard{background:var(--accent-soft);color:var(--accent);border:1px solid var(--rule);}
     .badge-vision{background:var(--vision-bg);color:var(--vision);border:1px solid var(--vision-border);}
     .badge-blueprint{background:var(--blueprint-bg);color:var(--blueprint);border:1px solid var(--blueprint-border);}
     .badge-lens{background:var(--lens-bg);color:var(--lens);border:1px solid var(--lens-border);}
@@ -6401,7 +6401,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.65" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.66" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -7378,15 +7378,15 @@ function hearSAMBrief() {
       </div>
 
       <div class="qs-legacy-workshop-block" style="max-width:860px;margin:0 auto;padding:48px 24px 8px;">
-        <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(167,139,250,0.5);margin-bottom:10px;">Your Studio</div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:10px;">Your Studio</div>
         <h2 style="font-family:'Sora',sans-serif;font-size:clamp(24px,3vw,34px);font-weight:800;color:var(--text);margin:0 0 6px;">Workshop</h2>
         <p style="font-size:14px;color:var(--ink-muted);margin:0 0 32px;line-height:1.6;">Everything SAM has built for you. Pick a tool and keep creating.</p>
       </div>
       <!-- STORY WIZARD HERO ROW (legacy, hidden under QS shell) -->
       <div class="qs-legacy-workshop-block" style="max-width:860px;margin:0 auto 32px;padding:0 24px;">
-        <div style="background:linear-gradient(135deg,rgba(109,40,217,0.15),var(--accent-soft));border:1px solid rgba(167,139,250,0.3);border-radius:20px;padding:28px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;">
+        <div style="background:var(--surface-2);border:1px solid var(--rule);border-radius:20px;padding:28px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;">
           <div style="flex:1;min-width:200px;">
-            <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(167,139,250,0.6);margin-bottom:8px;">✦ Start here</div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:8px;">✦ Start here</div>
             <div style="font-family:'Sora',sans-serif;font-size:clamp(18px,2.5vw,24px);font-weight:800;color:var(--text);margin-bottom:6px;">Story Wizard</div>
             <div style="font-size:14px;color:var(--ink-soft);line-height:1.6;max-width:420px;">Tell SAM one moment. Walk out with a full video script, platform captions, b-roll cues, audience profile, and a lead magnet. This is SAM at full power.</div>
           </div>
@@ -7445,7 +7445,7 @@ function hearSAMBrief() {
         </button>
 
         <button class="tool-icon-btn" onclick="if(typeof openIdeasPanel==='function')openIdeasPanel();" style="border-color:var(--rule);">
-          <div class="tool-icon-face" style="background:rgba(167,139,250,0.08);">
+          <div class="tool-icon-face" style="background:var(--accent-soft);">
             <svg class="tool-icon-svg" viewBox="0 0 28 28" fill="none"><path d="M14 4v12M14 20v4" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"/><path d="M8 8l-4-4M20 8l4-4M8 16l-4 4M20 16l4 4" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round"/></svg>
           </div>
           <div class="tool-icon-name" style="color:var(--accent);">💜 My Ideas</div>
@@ -7473,11 +7473,11 @@ function hearSAMBrief() {
 
     <!-- HOW IT WORKS -->
     <div id="howItWorks" style="max-width:680px;margin:0 auto;padding:64px 24px 80px;text-align:center;">
-      <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(167,139,250,0.5);margin-bottom:16px;">From your words to ready-to-post — in seconds</div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:16px;">From your words to ready-to-post — in seconds</div>
       <h2 style="font-family:'Sora',sans-serif;font-size:clamp(22px,3vw,32px);font-weight:800;color:var(--text);margin-bottom:48px;line-height:1.2;">You talk. SAM builds. You <span style="background:linear-gradient(90deg,var(--accent),var(--accent),#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">film.</span></h2>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:24px;text-align:left;">
-        <div style="background:rgba(167,139,250,0.05);border:1px solid rgba(167,139,250,0.15);border-radius:14px;padding:24px;">
-          <div style="font-family:'Sora',sans-serif;font-size:28px;font-weight:800;color:rgba(167,139,250,0.3);margin-bottom:12px;">01</div>
+        <div style="background:var(--surface-2);border:1px solid var(--rule);border-radius:14px;padding:24px;">
+          <div style="font-family:'Sora',sans-serif;font-size:28px;font-weight:800;color:var(--ink-muted);margin-bottom:12px;">01</div>
           <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;">Tell SAM your moment</div>
           <div style="font-size:13px;color:var(--ink-muted);line-height:1.6;">A win, a setback, an idea — anything real. No prompts, no templates. Just your words.</div>
         </div>
