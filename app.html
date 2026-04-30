@@ -6401,7 +6401,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.80" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.81" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6485,7 +6485,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.80</div>
+  <div class="qs-version-stamp">Quiet Studio v9.81</div>
 </div>
 
   </aside>
@@ -11371,14 +11371,20 @@ function detectSAMIntent(text) {
 
 // ── CHECK IDEAS BANK FOR SIMILARITY ──────────────────────────────────────────
 function checkIdeaSimilarity(text) {
+  // Only check for similarity on substantial content-creation messages
+  // not conversational messages
+  if (!text || text.length < 60) return null;
+
   const ideas = typeof IB !== 'undefined' ? IB.load() : [];
   if (!ideas.length) return null;
 
   const words = text.toLowerCase().split(/\s+/).filter(w => w.length > 4);
+  // Need at least 6 matching words AND at least 40% of the message words to match
+  const threshold = Math.max(6, Math.floor(words.length * 0.4));
   for (const idea of ideas.slice(0, 15)) {
     const ideaText = (idea.text || '').toLowerCase();
     const matches = words.filter(w => ideaText.includes(w));
-    if (matches.length >= 3) {
+    if (matches.length >= threshold) {
       return {
         type: idea.type,
         date: new Date(idea.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
