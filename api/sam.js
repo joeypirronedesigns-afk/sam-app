@@ -165,10 +165,11 @@ module.exports = async function handler(req, res) {
     const check = await checkLimit(userId, tier, 'playbooks', tourStep);
     if (!check.allowed) return res.status(429).json({ error: 'limit_reached', message: check.message });
   }
-  if (mode === 'chat' && req.body.messages) {
-    const check = await checkLimit(userId, tier, 'chatMessages', tourStep);
-    if (!check.allowed) return res.status(429).json({ error: 'limit_reached', message: check.message });
-  }
+  // Chat conversation is unlimited — only tool runs (playbooks, nextTools) count against limits
+  // if (mode === 'chat' && req.body.messages) {
+  //   const check = await checkLimit(userId, tier, 'chatMessages', tourStep);
+  //   if (!check.allowed) return res.status(429).json({ error: 'limit_reached', message: check.message });
+  // }
 
   // ── CHAT MODE ─────────────────────────────────────────────────────────────
   // Two sub-modes:
