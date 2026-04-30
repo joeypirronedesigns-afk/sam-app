@@ -3934,9 +3934,9 @@
       background: linear-gradient(135deg, #6D28D9, var(--accent) 50%, var(--accent));
       color: #fff;
       border: none;
-      box-shadow: 0 0 24px rgba(167,139,250,0.3);
+      box-shadow: 0 0 24px rgba(32,128,141,0.3);
     }
-    .wizard-entry-primary:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(167,139,250,0.45); }
+    .wizard-entry-primary:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(32,128,141,0.45); }
     .wizard-entry-secondary {
       background: var(--surface);
       border: 1px solid var(--border2);
@@ -4033,8 +4033,8 @@
       }
 
       .playbook-cover-badge {
-        background: rgba(167,139,250,0.2) !important;
-        border: 1px solid rgba(167,139,250,0.4) !important;
+        background: rgba(32,128,141,0.2) !important;
+        border: 1px solid rgba(32,128,141,0.4) !important;
         color: var(--accent) !important;
         padding: 6px 16px !important;
         border-radius: 30px !important;
@@ -4452,18 +4452,18 @@
       width: 100%;
       padding: 12px 16px;
       background: #1a1428 !important;
-      border: 1px solid rgba(167,139,250,0.3);
+      border: 1px solid rgba(32,128,141,0.3);
       border-radius: var(--radius);
       font-family: 'Inter', sans-serif;
       font-size: 16px !important;
-      color: #F0ECFF !important;
-      -webkit-text-fill-color: #F0ECFF !important;
+      color: #F4F2EC !important;
+      -webkit-text-fill-color: #F4F2EC !important;
       margin-top: 8px;
       -webkit-appearance: none;
     }
     .brand-text-input:focus {
       outline: none;
-      border-color: rgba(167,139,250,0.6);
+      border-color: rgba(32,128,141,0.6);
     }
     .pro-lock {
       display: inline-flex;
@@ -6401,7 +6401,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.73" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.74" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6485,7 +6485,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.73</div>
+  <div class="qs-version-stamp">Quiet Studio v9.74</div>
 </div>
 
   </aside>
@@ -8231,73 +8231,64 @@ function samReturnToWizard() {
   openWizardPage(true);
 }
 // Global wizard prefill helper — called on open and when step 1 renders
-function _samPrefillWizard() {
-  var bn = document.getElementById('brandName');
-  if (!bn || bn.value) return;
+function _samPrefillWizard(retries) {
+  retries = typeof retries === 'number' ? retries : 0;
 
-  function _doFill(user) {
+  var bn = document.getElementById('brandName');
+  if (!bn) {
+    if (retries < 5) {
+      setTimeout(function() { _samPrefillWizard(retries + 1); }, 200);
+    }
+    return;
+  }
+
+  if (bn.value) return;
+  if (typeof getCurrentUser !== 'function') return;
+
+  getCurrentUser().then(function(user) {
     if (!user) return;
     var nameVal = '';
+
     try {
       var ctx = JSON.parse(user.samContext || '{}');
-      nameVal = (ctx.identity && ctx.identity.name) || ctx.brandName || user.name || '';
-    } catch(e) { nameVal = user.name || ''; }
-    var bn2 = document.getElementById('brandName');
-    if (nameVal && bn2 && !bn2.value) {
-      bn2.value = nameVal;
-      bn2.defaultValue = nameVal;
-      bn2.setAttribute('value', nameVal);
-      bn2.dispatchEvent(new Event('input', { bubbles: true }));
+      nameVal =
+        (ctx.identity && ctx.identity.name) ||
+        ctx.brandName ||
+        user.name ||
+        '';
+    } catch (e) {
+      nameVal = user.name || '';
+    }
+
+    if (nameVal && !bn.value) {
+      bn.value = nameVal;
       if (typeof WS !== 'undefined') WS.brandName = nameVal;
       if (typeof updateWizardHeader === 'function') updateWizardHeader();
     }
+
     var bh = document.getElementById('brandHandle');
     if (bh && !bh.value) {
       try {
         var ctx2 = JSON.parse(user.samContext || '{}');
-        var h = (ctx2.identity && ctx2.identity.handle) || ctx2.brandHandle || '';
-        if (h) { bh.value = h; if (typeof WS !== 'undefined') WS.brandHandle = h; }
-      } catch(e) {}
-    }
-  }
-
-  // Try cached user first (synchronous — fastest path)
-  if (typeof getCurrentUserCached === 'function') {
-    var cached = getCurrentUserCached();
-    if (cached && cached.name) {
-      _doFill(cached);
-      // Also patch localStorage session so restore doesn't overwrite
-      try {
-        var _sess = localStorage.getItem('sam_session_v2');
-        if (_sess) {
-          var _s = JSON.parse(_sess);
-          if (!_s.brandName) {
-            var _nameForSession = '';
-            try { var _c = JSON.parse(cached.samContext||'{}'); _nameForSession = (_c.identity&&_c.identity.name)||_c.brandName||cached.name||''; } catch(e) { _nameForSession = cached.name||''; }
-            if (_nameForSession) { _s.brandName = _nameForSession; localStorage.setItem('sam_session_v2', JSON.stringify(_s)); }
-          }
+        var h =
+          (ctx2.identity && ctx2.identity.handle) ||
+          ctx2.brandHandle ||
+          '';
+        if (h) {
+          bh.value = h;
+          if (typeof WS !== 'undefined') WS.brandHandle = h;
         }
-      } catch(e) {}
-      return;
+      } catch (e2) {}
     }
-  }
-
-  // Fall back to async fetch
-  if (typeof getCurrentUser === 'function') {
-    getCurrentUser().then(function(user) {
-      _doFill(user);
-      try {
-        var _sess2 = localStorage.getItem('sam_session_v2');
-        if (_sess2 && user) {
-          var _s2 = JSON.parse(_sess2);
-          if (!_s2.brandName && user.name) { _s2.brandName = user.name; localStorage.setItem('sam_session_v2', JSON.stringify(_s2)); }
-        }
-      } catch(e) {}
-    }).catch(function(){});
-  }
+  }).catch(function(){});
 }
 
 function openWizardPage(skipCheck) {
+  // Pre-fill from SAM brain — fire now, then retry after render
+  _samPrefillWizard(0);
+  setTimeout(function() { _samPrefillWizard(1); }, 500);
+  setTimeout(function() { _samPrefillWizard(2); }, 1200);
+
   document.getElementById('wizardPage').classList.add('open');
   document.body.style.overflow = 'hidden';
   const _nwb = document.getElementById('navWizardBtn'); if(_nwb) _nwb.style.display = 'flex';
