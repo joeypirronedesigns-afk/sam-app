@@ -6401,7 +6401,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.89" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.90" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -11276,14 +11276,12 @@ function getSAMContext() {
 }
 
 window.getSamVoiceProfile = function() {
-  try {
-    var vp = localStorage.getItem('sam-voice-profile');
-    if (!vp) return '';
-    var parsed = JSON.parse(vp);
-    return parsed.raw || parsed || '';
-  } catch(e) {
-    return localStorage.getItem('sam-voice-profile') || '';
+  // Single source of truth: Supabase-backed user cache only
+  var user = (typeof getCurrentUserCached === 'function') ? getCurrentUserCached() : null;
+  if (user && (user.voiceProfile || user.voice_profile)) {
+    return user.voiceProfile || user.voice_profile || '';
   }
+  return '';
 };
 
 function getSuperSAMPrompt() {
