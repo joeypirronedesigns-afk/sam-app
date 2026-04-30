@@ -59,13 +59,13 @@ async function saveBrief(email, briefDate, timezone, brief, profile) {
   };
   const sourceHash = JSON.stringify(sourceSnapshot);
 
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/sam_daily_briefs`, {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/sam_daily_briefs?on_conflict=email,brief_date`, {
     method: 'POST',
     headers: {
       'apikey': SUPABASE_KEY,
       'Authorization': `Bearer ${SUPABASE_KEY}`,
       'Content-Type': 'application/json',
-      'Prefer': 'resolution=merge-duplicates'
+      'Prefer': 'resolution=merge-duplicates,return=minimal'
     },
     body: JSON.stringify({
       email,
