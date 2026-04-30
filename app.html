@@ -5986,6 +5986,25 @@ body.quiet-studio-shell .qs-dash-plan-number {
   letter-spacing: 0.14em;
 }
 
+body.quiet-studio-shell .qs-task-check {
+  width: 15px;
+  height: 15px;
+  min-width: 15px;
+  margin-right: 2px;
+  accent-color: var(--accent);
+  cursor: pointer;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+body.quiet-studio-shell .qs-task-done {
+  opacity: 0.55;
+}
+
+body.quiet-studio-shell .qs-task-done span {
+  text-decoration: line-through;
+}
+
 /* ============================================================ */
 /* v9.16 — TALK WITH SAM · Quiet Studio cream-paper register   */
 /* ============================================================ */
@@ -6382,7 +6401,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.62" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.63" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -7265,16 +7284,52 @@ function hearSAMBrief() {
         plan.forEach(function(item) {
           var li = document.createElement('li');
           li.className = 'qs-dash-plan-item';
+          li.setAttribute('data-task-id', item.id);
+
+          var checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.className = 'qs-task-check';
+          checkbox.setAttribute('aria-label', 'Mark task done');
+          checkbox.onclick = function(e) {
+            e.stopPropagation();
+            var isDone = checkbox.checked;
+            li.classList.toggle('qs-task-done', isDone);
+            var ts = (typeof getTrialState === 'function') ? getTrialState() : null;
+            var email = ts && ts.email ? ts.email.trim().toLowerCase() : null;
+            if (email) {
+              fetch('/api/brief-outcome', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  email: email,
+                  taskId: item.id,
+                  taskLabel: item.label,
+                  status: isDone ? 'done' : 'pending',
+                  briefDate: new Date().toISOString().slice(0, 10)
+                })
+              }).then(function(r) { return r.json(); }).catch(function() {});
+            }
+          };
+
           if (CTA_PLAN_ROUTES[item.route]) {
             li.style.cursor = 'pointer';
             li.onclick = CTA_PLAN_ROUTES[item.route];
           }
+
           var numSpan = document.createElement('span');
           numSpan.className = 'qs-dash-plan-number';
           numSpan.textContent = String(item.step_number).padStart(2, '0');
+
+          if (item.id === 'plan-1') {
+            numSpan.setAttribute('title', 'Anchor task — SAM defends this one hardest');
+            numSpan.style.color = 'var(--accent)';
+          }
+
           var textSpan = document.createElement('span');
           var timeStr = item.timebox_minutes ? ' · ' + item.timebox_minutes + ' min' : '';
           textSpan.textContent = item.label + timeStr;
+
+          li.appendChild(checkbox);
           li.appendChild(numSpan);
           li.appendChild(textSpan);
           planList.appendChild(li);
