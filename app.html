@@ -6401,7 +6401,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.91" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.92" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6485,7 +6485,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.89</div>
+  <div class="qs-version-stamp" id="qsVersionStamp">Quiet Studio</div>
 </div>
 
   </aside>
@@ -12028,6 +12028,13 @@ function initHeroVisibility() {
 }
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', function() {
+  // Wire version stamp to shell attribute — single source of truth
+  var shell = document.querySelector('[data-qs-shell]');
+  var stamp = document.getElementById('qsVersionStamp');
+  if (shell && stamp) {
+    stamp.textContent = 'Quiet Studio ' + (shell.getAttribute('data-qs-version') || '');
+  }
+
     initPersistentSAM();
     initTrial(); initChat(); initWizard(); initHeroVisibility();
     setTimeout(() => { if (typeof updateWizardHeader === 'function') updateWizardHeader(); }, 300);
