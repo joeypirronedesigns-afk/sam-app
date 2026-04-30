@@ -27,5 +27,24 @@ module.exports = async function handler(req, res) {
     }
   }
 
+  if (body.action === 'save') {
+    const uid = body.email && String(body.email).trim().toLowerCase();
+    const profile = body.profile && String(body.profile).trim();
+    if (!uid || !uid.includes('@')) return res.status(400).json({ error: 'email required' });
+    if (!profile) return res.status(400).json({ error: 'profile required' });
+    try {
+      await supabaseQuery(
+        'sam_users',
+        'PATCH',
+        { voice_profile: profile },
+        `uid=eq.${encodeURIComponent(uid)}`
+      );
+      return res.status(200).json({ ok: true });
+    } catch (e) {
+      console.error('[voice-trainer save]', e);
+      return res.status(500).json({ error: 'save failed' });
+    }
+  }
+
   return res.status(400).json({ error: 'unknown action' });
 };
