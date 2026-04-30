@@ -6401,7 +6401,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.76" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.77" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6485,7 +6485,7 @@ body.quiet-studio-shell .qs-rail nav {
     <span class="qs-dash-status-dot qs-dash-status-dot--healthy" aria-hidden="true"></span>
     <span class="qs-dash-status-text">Voice synced · 2h ago</span>
   </div>
-  <div class="qs-version-stamp">Quiet Studio v9.76</div>
+  <div class="qs-version-stamp">Quiet Studio v9.77</div>
 </div>
 
   </aside>
@@ -8232,59 +8232,23 @@ function samReturnToWizard() {
 }
 // Global wizard prefill helper — called on open and when step 1 renders
 function _samPrefillWizard(retries) {
-  retries = typeof retries === 'number' ? retries : 0;
-
   var bn = document.getElementById('brandName');
-  if (!bn) {
-    if (retries < 5) {
-      setTimeout(function() { _samPrefillWizard(retries + 1); }, 200);
-    }
+  if (!bn || bn.value) return;
+
+  // Fastest path — use cached user name directly
+  var cached = (typeof getCurrentUserCached === 'function') ? getCurrentUserCached() : null;
+  if (cached && cached.name) {
+    bn.value = cached.name;
+    if (typeof WS !== 'undefined') WS.brandName = cached.name;
+    if (typeof updateWizardHeader === 'function') updateWizardHeader();
     return;
   }
 
-  if (bn.value) return;
-
-  // Use getTrialState email to fetch directly — getCurrentUser cache may not have samContext
-  var ts = (typeof getTrialState === 'function') ? getTrialState() : null;
-  var email = ts && ts.email ? ts.email.trim().toLowerCase() : null;
-  if (!email) return;
-
-  fetch('/api/me', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: email })
-  }).then(function(r) { return r.json(); }).then(function(data) {
-    if (!data || !data.user) return;
-    var user = data.user;
-    var nameVal = '';
-
-    try {
-      var ctx = JSON.parse(user.samContext || '{}');
-      nameVal =
-        (ctx.identity && ctx.identity.name) ||
-        ctx.brandName ||
-        user.name ||
-        '';
-    } catch(e) {
-      nameVal = user.name || '';
-    }
-
-    var bn2 = document.getElementById('brandName');
-    if (nameVal && bn2 && !bn2.value) {
-      bn2.value = nameVal;
-      if (typeof WS !== 'undefined') WS.brandName = nameVal;
-      if (typeof updateWizardHeader === 'function') updateWizardHeader();
-    }
-
-    var bh = document.getElementById('brandHandle');
-    if (bh && !bh.value) {
-      try {
-        var ctx2 = JSON.parse(user.samContext || '{}');
-        var h = (ctx2.identity && ctx2.identity.handle) || ctx2.brandHandle || '';
-        if (h) { bh.value = h; if (typeof WS !== 'undefined') WS.brandHandle = h; }
-      } catch(e2) {}
-    }
-  }).catch(function(){});
+  // Retry if cache not ready yet
+  retries = typeof retries === 'number' ? retries : 0;
+  if (retries < 8) {
+    setTimeout(function() { _samPrefillWizard(retries + 1); }, 200);
+  }
 }
 
 function openWizardPage(skipCheck) {
