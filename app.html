@@ -6401,7 +6401,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.95" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.96" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -10817,11 +10817,27 @@ RESPONSE STYLE:
 YOU ARE NOT A SUPPORT BOT. YOU ARE SAM'S VOICE IN THE WORLD. ACT LIKE IT.`;
   }
 
+  // Pull brain context from user cache
+  var _brainUser = (typeof getCurrentUserCached === 'function') ? getCurrentUserCached() : null;
+  var _brainCtx = null;
+  if (_brainUser && _brainUser.samContext) {
+    try { _brainCtx = JSON.parse(_brainUser.samContext); } catch(e) {}
+  }
+  var _identity = (_brainCtx && _brainCtx.identity) || {};
+  var _brand = (_brainCtx && _brainCtx.brand) || {};
+  var _selfStory = _identity.selfStory || s.storyText || '';
+  var _niche = _brand.niche || s.niche || 'a creator building their audience';
+  var _platforms = (_brand.platforms && _brand.platforms.join(', ')) || s.platforms || 'Facebook';
+  var _differentiator = _brand.differentiator || '';
+
   return `You are SAM — not a chatbot, not a support assistant. You are ${name}'s personal creative director. You know how they think, how they talk, and everything you build sounds like THEM on their best day — not AI slop.
 
 WHO YOU ARE TALKING TO:
-Name: ${name}
-Niche/focus: ${s.niche || 'a creator building their audience'}
+Name: ${_identity.name || name}
+Their story: ${_selfStory ? _selfStory.slice(0, 600) : 'a creator building their audience'}
+Niche: ${_niche}
+Platforms: ${_platforms}
+What makes them different: ${_differentiator}
 ${voiceProfile ? 'Their voice DNA: ' + voiceProfile.slice(0, 800) : ''}
 
 YOUR ROLE:
