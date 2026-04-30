@@ -6401,7 +6401,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.67" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.68" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -8243,13 +8243,15 @@ function openWizardPage(skipCheck) {
     else if (typeof showWizardStep === 'function') showWizardStep('0');
   }
   if (window._trialExpired) { setTimeout(() => showTrialExpiredCard(), 800); }
-  // Pre-fill wizard from SAM brain on open
+  // Pre-fill wizard from SAM brain on open — delayed to allow step 1 to render
   if (typeof getCurrentUser === 'function') {
     getCurrentUser().then(function(user) {
       if (!user) return;
-      // Pre-fill brand name from brain
-      var bn = document.getElementById('brandName');
-      if (bn && !bn.value) {
+      function _applyWizardPrefill() {
+        var bn = document.getElementById('brandName');
+        if (!bn) return; // step not rendered yet
+        if (bn.value) return; // already filled
+
         var nameVal = '';
         if (user.samContext) {
           try {
@@ -8264,16 +8266,20 @@ function openWizardPage(skipCheck) {
           if (typeof WS !== 'undefined') WS.brandName = nameVal;
           if (typeof updateWizardHeader === 'function') updateWizardHeader();
         }
+        // Pre-fill handle
+        var bh = document.getElementById('brandHandle');
+        if (bh && !bh.value && user.samContext) {
+          try {
+            var ctx2 = JSON.parse(user.samContext);
+            var handleVal = (ctx2.identity && ctx2.identity.handle) || ctx2.brandHandle || '';
+            if (handleVal) { bh.value = handleVal; if (typeof WS !== 'undefined') WS.brandHandle = handleVal; }
+          } catch(e) {}
+        }
       }
-      // Pre-fill handle
-      var bh = document.getElementById('brandHandle');
-      if (bh && !bh.value && user.samContext) {
-        try {
-          var ctx2 = JSON.parse(user.samContext);
-          var handleVal = (ctx2.identity && ctx2.identity.handle) || ctx2.brandHandle || '';
-          if (handleVal) { bh.value = handleVal; if (typeof WS !== 'undefined') WS.brandHandle = handleVal; }
-        } catch(e) {}
-      }
+      // Try immediately, then retry after 300ms and 800ms to handle step render delay
+      _applyWizardPrefill();
+      setTimeout(_applyWizardPrefill, 300);
+      setTimeout(_applyWizardPrefill, 800);
     }).catch(function() {});
   }
 }
