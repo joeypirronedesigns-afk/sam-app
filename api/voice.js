@@ -5,13 +5,14 @@ module.exports = async function handler(req, res) {
 
   const { userId, samples, existingProfile, source } = req.body;
 
-  // v9.113.1 — Voice DNA gate (mirrors api/voice-trainer.js reference pattern + Position B paid check)
+  // v9.113.3 — Voice DNA gate (mirrors api/voice-trainer.js reference pattern + Position B paid check)
   const _gate = await checkGate({
     email: req.body.email || (userId && userId.includes('@') ? userId : ''),
     userId: userId || 'anon',
-    tool: 'Voice Trainer',
-    copyAnonymous: 'Please sign in to use Voice Trainer.',
-    copyUnpaid: 'Subscribe to use Voice Trainer — $39/month, every tool included, cancel anytime.'
+    tool: 'Voice DNA',
+    descriptor: 'Calibrate SAM to your real writing voice.',
+    ctaAnonymous: 'Sign in to use Voice DNA.',
+    ctaUnpaid: 'Subscribe to use Voice DNA — $39/month, every tool included, cancel anytime.'
   });
   if (!_gate.ok) return res.status(_gate.status).json(_gate.body);
 

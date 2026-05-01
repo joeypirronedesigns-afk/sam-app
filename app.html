@@ -4873,6 +4873,95 @@ body.quiet-studio-shell .qs-rail {
   text-transform: uppercase;
 }
 
+/* ── v9.113.3 LOCKED-STATE COMPONENT ─────────────────────────────────────── */
+.qs-locked-state {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  max-width: 480px;
+  margin: 24px auto;
+  font-family: 'Inter', system-ui, sans-serif;
+  color: var(--ink);
+  text-align: left;
+  box-shadow: 0 1px 2px rgba(26,24,21,0.04);
+}
+.qs-locked-state__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.qs-locked-state__icon {
+  width: 18px; height: 18px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.qs-locked-state__tool {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-style: italic;
+  font-size: 22px;
+  line-height: 1.2;
+  color: var(--ink);
+}
+.qs-locked-state__descriptor {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin-bottom: 16px;
+}
+.qs-locked-state__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.qs-locked-state__cta:hover { background: var(--accent-hover); }
+.qs-locked-state__sub {
+  display: block;
+  font-size: 11px;
+  color: var(--ink-muted);
+  margin-top: 10px;
+  letter-spacing: 0.02em;
+}
+.qs-locked-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26,24,21,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 24px;
+}
+.qs-locked-overlay .qs-locked-state {
+  margin: 0;
+  width: 100%;
+}
+.qs-locked-overlay__close {
+  position: absolute;
+  top: 18px; right: 18px;
+  background: transparent;
+  border: 1px solid var(--rule);
+  color: var(--ink-soft);
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+.qs-locked-overlay__close:hover { background: var(--paper); }
+
 /* ── MOBILE: rail hidden off-canvas at 767px ── */
 @media (max-width: 767px) {
   body.quiet-studio-shell .qs-rail {
@@ -6475,7 +6564,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.113.2" data-qs-descriptor="gate + copy fix" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.113.3" data-qs-descriptor="locked-state UI" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -7137,6 +7226,22 @@ function hearSAMBrief() {
     })
   })
   .then(function(r) {
+    // v9.113.3 — locked-state UI on 401/402
+    if (r.status === 401 || r.status === 402) {
+      return r.json().catch(function () { return {}; }).then(function (gate) {
+        if (typeof showLockedStateOverlay === 'function') {
+          showLockedStateOverlay({
+            tool: gate.tool || 'Hear SAM',
+            descriptor: gate.descriptor || "Hear your draft read back in SAM's voice.",
+            cta: gate.cta || gate.message,
+            state: r.status === 402 ? 'unpaid' : 'anon',
+            context: 'hear_sam'
+          });
+        }
+        if (btn) { btn.textContent = '▶ Hear SAM'; btn.classList.remove('playing'); }
+        throw new Error('gate');
+      });
+    }
     if (!r.ok) throw new Error('Audio error ' + r.status);
     return r.blob();
   })
@@ -8397,14 +8502,30 @@ function _samPrefillWizard(retries) {
 }
 
 function openWizardPage(skipCheck) {
-  // v9.113.1 — Story Engine gates at entry, not Step 12
+  // v9.113.3 — Story Engine gates at entry; locked-state overlay replaces modal/paywall jump
   const _u113 = (typeof getCurrentUserCached === 'function') ? getCurrentUserCached() : null;
   if (!_u113 || !_u113.email) {
-    if (typeof openSignInModal === 'function') openSignInModal();
+    if (typeof showLockedStateOverlay === 'function') {
+      showLockedStateOverlay({
+        tool: 'Story Engine',
+        descriptor: 'Build your full content playbook.',
+        cta: 'Sign in to use Story Engine.',
+        state: 'anon',
+        context: 'story_engine'
+      });
+    } else if (typeof openSignInModal === 'function') openSignInModal();
     return;
   }
   if (!_u113.paid) {
-    if (typeof showPaywall === 'function') showPaywall('story_engine');
+    if (typeof showLockedStateOverlay === 'function') {
+      showLockedStateOverlay({
+        tool: 'Story Engine',
+        descriptor: 'Build your full content playbook.',
+        cta: 'Subscribe to use Story Engine — $39/month, every tool included, cancel anytime.',
+        state: 'unpaid',
+        context: 'story_engine'
+      });
+    } else if (typeof showPaywall === 'function') showPaywall('story_engine');
     else if (typeof openSignInModal === 'function') openSignInModal();
     return;
   }
@@ -8625,11 +8746,18 @@ For each platform write clearly with the platform name as a header. Make every c
       })
     });
 
-    // v9.113.1 — gate copy via toast on 401/402
+    // v9.113.3 — locked-state UI on 401/402 (replaces toast / red error)
     if (resp.status === 401 || resp.status === 402) {
       const gate = await resp.json().catch(() => ({}));
-      if (gate && gate.message && typeof showIbToast === 'function') showIbToast(gate.message);
-      throw new Error(gate.message || gate.error || 'Gate ' + resp.status);
+      document.getElementById('reachLoader').style.display = 'none';
+      document.getElementById('reachBtn').disabled = false;
+      if (typeof mountLockedStateInTool === 'function') {
+        // Reveal the output container so the locked-state has somewhere to land
+        var _reachOut = document.getElementById('reachOutput');
+        if (_reachOut) _reachOut.style.display = 'block';
+        mountLockedStateInTool('reach', gate, resp.status);
+      }
+      return;
     }
 
     const respData = await resp.json();
@@ -8899,6 +9027,107 @@ function showErr(id, msg) {
   el.textContent = 'Something went wrong: ' + (msg || 'Please try again.');
   el.classList.add('show');
 }
+
+// ── v9.113.3 LOCKED-STATE COMPONENT ───────────────────────────────────────
+// Single reusable locked-state UI replacing red error styling for 401/402 gate responses.
+function _qsEsc(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function renderLockedState(opts) {
+  opts = opts || {};
+  var tool = opts.tool || 'This tool';
+  var descriptor = opts.descriptor || '';
+  var state = opts.state === 'unpaid' ? 'unpaid' : 'anon';
+  var cta = opts.cta || (state === 'anon' ? ('Sign in to use ' + tool + '.') : ('Subscribe to use ' + tool + ' — $39/month, every tool included, cancel anytime.'));
+  var lockSvg = '<svg class="qs-locked-state__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>';
+  var sub = state === 'unpaid' ? '<span class="qs-locked-state__sub">every tool included, cancel anytime</span>' : '';
+  var node = document.createElement('div');
+  node.className = 'qs-locked-state';
+  node.setAttribute('data-state', state);
+  node.setAttribute('role', 'region');
+  node.setAttribute('aria-label', tool + ' locked');
+  node.innerHTML =
+    '<div class="qs-locked-state__head">' + lockSvg + '<div class="qs-locked-state__tool">' + _qsEsc(tool) + '</div></div>'
+    + (descriptor ? '<div class="qs-locked-state__descriptor">' + _qsEsc(descriptor) + '</div>' : '')
+    + '<button type="button" class="qs-locked-state__cta">' + _qsEsc(cta) + '</button>'
+    + sub;
+  var btn = node.querySelector('.qs-locked-state__cta');
+  if (btn) {
+    btn.addEventListener('click', function () {
+      if (state === 'anon') {
+        if (typeof openSignInModal === 'function') openSignInModal();
+      } else {
+        if (typeof showPaywall === 'function') showPaywall(opts.context || tool, true);
+        else if (typeof openSignInModal === 'function') openSignInModal();
+      }
+    });
+  }
+  return node;
+}
+window.renderLockedState = renderLockedState;
+
+// Show as a centered overlay (used for Story Engine entry gate and any flow that
+// doesn't have a natural in-tool container).
+function showLockedStateOverlay(opts) {
+  // If already mounted, replace contents instead of stacking
+  var existing = document.getElementById('qsLockedOverlay');
+  if (existing) existing.remove();
+  var overlay = document.createElement('div');
+  overlay.className = 'qs-locked-overlay';
+  overlay.id = 'qsLockedOverlay';
+  var card = renderLockedState(opts);
+  var close = document.createElement('button');
+  close.type = 'button';
+  close.className = 'qs-locked-overlay__close';
+  close.setAttribute('aria-label', 'Close');
+  close.textContent = '×';
+  close.addEventListener('click', function () { overlay.remove(); });
+  overlay.appendChild(close);
+  overlay.appendChild(card);
+  overlay.addEventListener('click', function (e) { if (e.target === overlay) overlay.remove(); });
+  document.body.appendChild(overlay);
+  return overlay;
+}
+window.showLockedStateOverlay = showLockedStateOverlay;
+
+// Map of tool id -> { errId, bodyId, wrapId } for inline locked-state mounting.
+var QS_TOOL_TARGETS = {
+  pulse:     { errId: 'pulseErr',     bodyId: 'pulseBody',     wrapId: 'pulseOutput'     },
+  spark:     { errId: 'sparkErr',     bodyId: 'sparkBody',     wrapId: 'sparkOutput'     },
+  ideas:     { errId: 'sparkErr',     bodyId: 'sparkBody',     wrapId: 'sparkOutput'     },
+  blueprint: { errId: 'blueprintErr', bodyId: 'blueprintBody', wrapId: 'blueprintOutput' },
+  calendar:  { errId: 'blueprintErr', bodyId: 'blueprintBody', wrapId: 'blueprintOutput' },
+  vision:    { errId: 'visionErr',    bodyId: 'visionBody',    wrapId: 'visionOutput'    },
+  concept:   { errId: 'visionErr',    bodyId: 'visionBody',    wrapId: 'visionOutput'    },
+  lens:      { errId: 'lensErr',      bodyId: 'lensBody',      wrapId: 'lensOutput'      },
+  upload:    { errId: 'lensErr',      bodyId: 'lensBody',      wrapId: 'lensOutput'      },
+  reach:     { errId: 'reachErr',     bodyId: 'reachBody',     wrapId: null              }
+};
+
+// Mount locked-state inside a tool's output panel (replaces err-box red style).
+function mountLockedStateInTool(toolId, gateBody, status) {
+  var t = QS_TOOL_TARGETS[toolId];
+  if (!t) { showLockedStateOverlay({ tool: gateBody && gateBody.tool, descriptor: gateBody && gateBody.descriptor, cta: gateBody && gateBody.cta, state: status === 402 ? 'unpaid' : 'anon' }); return; }
+  var err = t.errId && document.getElementById(t.errId);
+  if (err) { err.classList.remove('show'); err.textContent = ''; }
+  var body = t.bodyId && document.getElementById(t.bodyId);
+  if (!body) { showLockedStateOverlay({ tool: gateBody && gateBody.tool, descriptor: gateBody && gateBody.descriptor, cta: gateBody && gateBody.cta, state: status === 402 ? 'unpaid' : 'anon' }); return; }
+  var node = renderLockedState({
+    tool: gateBody && gateBody.tool,
+    descriptor: gateBody && gateBody.descriptor,
+    cta: (gateBody && (gateBody.cta || gateBody.message)) || '',
+    state: status === 402 ? 'unpaid' : 'anon',
+    context: toolId
+  });
+  body.innerHTML = '';
+  body.appendChild(node);
+  if (t.wrapId) {
+    var wrap = document.getElementById(t.wrapId);
+    if (wrap) { wrap.classList.add('show'); wrap.style.display = ''; wrap.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  } else if (body.scrollIntoView) {
+    body.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+window.mountLockedStateInTool = mountLockedStateInTool;
 function copyText(btn, text) {
   navigator.clipboard.writeText(text).then(() => {
     const orig = btn.textContent;
@@ -8954,13 +9183,13 @@ async function callAPI(body) {
     if (bodySizeKB > 3500) throw new Error('Image too large (' + bodySizeKB + 'KB). Please use a smaller image.');
     const r = await fetch('/api/sam', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: bodyStr, signal: controller.signal });
     clearTimeout(timeout);
-    // v9.113.1 — centralized 401/402 gate copy via toast for Spark/Lens/Blueprint/Vision/Pulse/Playbook
+    // v9.113.3 — centralized gate detection. Throw a typed error so each tool's catch can mount the locked-state component.
     if (r.status === 401 || r.status === 402) {
       const gate = await r.json().catch(() => ({}));
-      if (gate && gate.message && typeof showIbToast === 'function') showIbToast(gate.message);
-      const _err = new Error(gate.message || gate.error || 'Gate ' + r.status);
+      const _err = new Error('gate');
       _err.gate = true;
       _err.status = r.status;
+      _err.body = gate;
       throw _err;
     }
     if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.error || 'Server error ' + r.status); }
@@ -9140,7 +9369,11 @@ async function runPulse() {
     clearInterval(pulseInterval);
     document.getElementById('pulseLoader').classList.remove('show');
     hideSamStatus('pulseStatusBar');
-    showErr('pulseErr', err.message);
+    if (err && err.gate) {
+      mountLockedStateInTool('pulse', err.body || {}, err.status);
+    } else {
+      showErr('pulseErr', err.message);
+    }
     document.getElementById('pulseBtn').disabled = false;
   }
 }
@@ -9284,7 +9517,11 @@ async function runSpark() {
   } catch(err) {
     document.getElementById('sparkLoader').classList.remove('show');
     hideSamStatus('sparkStatusBar');
-    showErr('sparkErr', err.message);
+    if (err && err.gate) {
+      mountLockedStateInTool('spark', err.body || {}, err.status);
+    } else {
+      showErr('sparkErr', err.message);
+    }
     document.getElementById('sparkBtn').disabled = false;
   }
 }
@@ -9331,7 +9568,11 @@ async function runBlueprint() {
   } catch(err) {
     document.getElementById('blueprintLoader').classList.remove('show');
     hideSamStatus('blueprintStatusBar');
-    showErr('blueprintErr', err.message);
+    if (err && err.gate) {
+      mountLockedStateInTool('blueprint', err.body || {}, err.status);
+    } else {
+      showErr('blueprintErr', err.message);
+    }
     document.getElementById('blueprintBtn').disabled = false;
   }
 }
@@ -9383,7 +9624,11 @@ async function runVision() {
   } catch(err) {
     document.getElementById('visionLoader').classList.remove('show');
     hideSamStatus('visionStatusBar');
-    showErr('visionErr', err.message);
+    if (err && err.gate) {
+      mountLockedStateInTool('vision', err.body || {}, err.status);
+    } else {
+      showErr('visionErr', err.message);
+    }
     document.getElementById('visionBtn').disabled = false;
   }
 }
@@ -9576,10 +9821,14 @@ async function runLens(mode) {
     clearInterval(interval);
     if (loader) loader.classList.remove('show');
     if (btn) btn.disabled = false;
-    const msg = err.message || 'Something went wrong.';
     hideSamStatus('lensStatusBar');
-    if (errBox) { errBox.textContent = msg; errBox.classList.add('show'); }
-    else alert('Error: ' + msg);
+    if (err && err.gate) {
+      mountLockedStateInTool('lens', err.body || {}, err.status);
+    } else {
+      const msg = err.message || 'Something went wrong.';
+      if (errBox) { errBox.textContent = msg; errBox.classList.add('show'); }
+      else alert('Error: ' + msg);
+    }
   }
 }
 
@@ -11419,13 +11668,24 @@ async function sendPersistentMessage() {
     if (typing) typing.style.display = 'none';
     if (btn) btn.disabled = false;
 
-    // v9.113.1 — surface canonical gate copy on 401/402
+    // v9.113.3 — locked-state UI on 401/402 (appended into chat container)
     if (r.status === 401 || r.status === 402) {
       try {
         const _gateData = await r.json();
-        if (_gateData && _gateData.message) {
-          addPersistentMessage('sam', _gateData.message, true);
-          return;
+        if (typeof renderLockedState === 'function') {
+          const _msgs = document.getElementById('persistentSAMMessages');
+          if (_msgs) {
+            const _node = renderLockedState({
+              tool: _gateData.tool || 'Talk with SAM',
+              descriptor: _gateData.descriptor || 'Chat with SAM about your content, offers, and next moves.',
+              cta: _gateData.cta || _gateData.message,
+              state: r.status === 402 ? 'unpaid' : 'anon',
+              context: 'chat'
+            });
+            _msgs.appendChild(_node);
+            if (typeof scrollPersistentToBottom === 'function') scrollPersistentToBottom();
+            return;
+          }
         }
       } catch (e) {}
     }
@@ -12719,14 +12979,30 @@ function initWizard() {
 
 
   function openWizardPage(skipReturningCheck) {
-    // v9.113.1 — Story Engine gates at entry, not Step 12
+    // v9.113.3 — Story Engine gates at entry; locked-state overlay replaces modal/paywall jump
     const _u113b = (typeof getCurrentUserCached === 'function') ? getCurrentUserCached() : null;
     if (!_u113b || !_u113b.email) {
-      if (typeof openSignInModal === 'function') openSignInModal();
+      if (typeof showLockedStateOverlay === 'function') {
+        showLockedStateOverlay({
+          tool: 'Story Engine',
+          descriptor: 'Build your full content playbook.',
+          cta: 'Sign in to use Story Engine.',
+          state: 'anon',
+          context: 'story_engine'
+        });
+      } else if (typeof openSignInModal === 'function') openSignInModal();
       return;
     }
     if (!_u113b.paid) {
-      if (typeof showPaywall === 'function') showPaywall('story_engine');
+      if (typeof showLockedStateOverlay === 'function') {
+        showLockedStateOverlay({
+          tool: 'Story Engine',
+          descriptor: 'Build your full content playbook.',
+          cta: 'Subscribe to use Story Engine — $39/month, every tool included, cancel anytime.',
+          state: 'unpaid',
+          context: 'story_engine'
+        });
+      } else if (typeof showPaywall === 'function') showPaywall('story_engine');
       else if (typeof openSignInModal === 'function') openSignInModal();
       return;
     }
@@ -13106,6 +13382,21 @@ async function refineVoice() {
         source: 'voice_trainer'
       })
     });
+    // v9.113.3 — locked-state UI on 401/402
+    if (resp.status === 401 || resp.status === 402) {
+      const _gate = await resp.json().catch(() => ({}));
+      document.getElementById('vtLoading').style.display = 'none';
+      if (typeof showLockedStateOverlay === 'function') {
+        showLockedStateOverlay({
+          tool: _gate.tool || 'Voice DNA',
+          descriptor: _gate.descriptor || 'Calibrate SAM to your real writing voice.',
+          cta: _gate.cta || _gate.message,
+          state: resp.status === 402 ? 'unpaid' : 'anon',
+          context: 'voice_dna'
+        });
+      }
+      return;
+    }
     const data = await resp.json();
     if (!resp.ok || !data.ok) throw new Error(data.error || 'Analysis failed');
 
@@ -14831,6 +15122,23 @@ async function downloadPDF(type) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
+
+    // v9.113.3 — locked-state UI on 401/402
+    if (res.status === 401 || res.status === 402) {
+      const _gate = await res.json().catch(() => ({}));
+      if (typeof showLockedStateOverlay === 'function') {
+        showLockedStateOverlay({
+          tool: _gate.tool || 'PDF Export',
+          descriptor: _gate.descriptor || 'Save your playbook as a clean PDF.',
+          cta: _gate.cta || _gate.message,
+          state: res.status === 402 ? 'unpaid' : 'anon',
+          context: 'pdf'
+        });
+      }
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+      return;
+    }
 
     if (res.status === 429) {
       const err = await res.json();

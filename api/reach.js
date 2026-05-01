@@ -12,13 +12,14 @@ module.exports = async function handler(req, res) {
 
   const _body = req.body || {};
 
-  // v9.113.1 — Voice DNA gate
+  // v9.113.3 — Voice DNA gate
   const _gate = await checkGate({
     email: _body.email || _body.userEmail || '',
     userId: _body.userId || 'anon',
     tool: 'The Reach',
-    copyAnonymous: 'Sign in to use The Reach. SAM adapts your captions and creative for every platform — in your voice, every time.',
-    copyUnpaid: 'Subscribe to use The Reach. Adapt one piece of content into the right post for every platform you publish on — $39/month, every tool included, cancel anytime.'
+    descriptor: "Turn one story into the right post for the platform you're publishing on.",
+    ctaAnonymous: 'Sign in to use The Reach.',
+    ctaUnpaid: 'Subscribe to use The Reach — $39/month, every tool included, cancel anytime.'
   });
   if (!_gate.ok) return res.status(_gate.status).json(_gate.body);
 

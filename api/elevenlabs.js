@@ -13,13 +13,14 @@ module.exports = async function handler(req, res) {
 
   const _body = req.body || {};
 
-  // v9.113.1 — Voice DNA gate
+  // v9.113.3 — Voice DNA gate
   const _gate = await checkGate({
     email: _body.email || _body.userEmail || '',
     userId: _body.userId || 'anon',
     tool: 'Hear SAM',
-    copyAnonymous: 'Sign in to hear SAM. Voice playback is tied to your account so she can speak in your tone, not a generic one.',
-    copyUnpaid: 'Subscribe to hear SAM read your work. Turn drafts into voice-ready reads in your tone — $39/month, every tool included, cancel anytime.'
+    descriptor: "Hear your draft read back in SAM's voice.",
+    ctaAnonymous: 'Sign in to hear SAM.',
+    ctaUnpaid: 'Subscribe to hear SAM — $39/month, every tool included, cancel anytime.'
   });
   if (!_gate.ok) return res.status(_gate.status).json(_gate.body);
 

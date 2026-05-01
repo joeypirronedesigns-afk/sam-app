@@ -1,10 +1,26 @@
-// api/_gate.js — v9.113.1
+// api/_gate.js — v9.113.3
 // Voice DNA gate helper: auth + paid check, with founder/dev bypasses preserved.
 // All compute-firing endpoints call checkGate() before any expensive work.
+//
+// Response body shape (v9.113.3):
+//   { error, tool, descriptor, cta }
+// Frontend reads tool + descriptor + cta and renders the locked-state component.
 
-async function checkGate({ email, userId, tool, copyAnonymous, copyUnpaid }) {
+async function checkGate({
+  email,
+  userId,
+  tool,
+  descriptor,
+  ctaAnonymous,
+  ctaUnpaid,
+  // legacy aliases — old call sites still passing these will continue to work
+  copyAnonymous,
+  copyUnpaid
+}) {
   const e = (email || '').toString().trim().toLowerCase();
   const uid = (userId || '').toString();
+  const _ctaAnon = ctaAnonymous || copyAnonymous || '';
+  const _ctaUnpaid = ctaUnpaid || copyUnpaid || '';
 
   // Founder bypass — preserved from api/sam.js:37
   if (e === 'j.pirrone@yahoo.com') return { ok: true };
@@ -16,7 +32,12 @@ async function checkGate({ email, userId, tool, copyAnonymous, copyUnpaid }) {
     return {
       ok: false,
       status: 401,
-      body: { error: 'auth_required', tool, message: copyAnonymous }
+      body: {
+        error: 'auth_required',
+        tool,
+        descriptor: descriptor || '',
+        cta: _ctaAnon
+      }
     };
   }
 
@@ -28,7 +49,12 @@ async function checkGate({ email, userId, tool, copyAnonymous, copyUnpaid }) {
       return {
         ok: false,
         status: 402,
-        body: { error: 'paid_required', tool, message: copyUnpaid }
+        body: {
+          error: 'paid_required',
+          tool,
+          descriptor: descriptor || '',
+          cta: _ctaUnpaid
+        }
       };
     }
   } catch (err) {
@@ -37,7 +63,12 @@ async function checkGate({ email, userId, tool, copyAnonymous, copyUnpaid }) {
     return {
       ok: false,
       status: 401,
-      body: { error: 'auth_required', tool, message: copyAnonymous }
+      body: {
+        error: 'auth_required',
+        tool,
+        descriptor: descriptor || '',
+        cta: _ctaAnon
+      }
     };
   }
 
