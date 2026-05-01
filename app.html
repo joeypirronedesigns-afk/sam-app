@@ -6475,7 +6475,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.113.1.1" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.113.2" data-qs-descriptor="gate + copy fix" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -12292,7 +12292,9 @@ if (document.readyState === 'loading') {
   var shell = document.querySelector('[data-qs-shell]');
   var stamp = document.getElementById('qsVersionStamp');
   if (shell && stamp) {
-    stamp.textContent = 'Quiet Studio ' + (shell.getAttribute('data-qs-version') || '');
+    var _v = (shell.getAttribute('data-qs-version') || '').toUpperCase();
+    var _d = shell.getAttribute('data-qs-descriptor') || '';
+    stamp.textContent = 'QUIET STUDIO ' + _v + (_d ? ' (' + _d + ')' : '');
   }
 
     initPersistentSAM();
