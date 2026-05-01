@@ -6401,7 +6401,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.101" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.102" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -11971,23 +11971,8 @@ function printPlaybookOnly() {
   win.document.write('<div id="wizardPlaybook">' + playbookEl.innerHTML + '</div>');
   win.document.write(nextToolHTML);
   win.document.write('<scr' + 'ipt>window.onload=function(){setTimeout(function(){window.print();},700)};</' + 'script>');
-  win.document.write('
-<!-- Daily Brief Evidence Modal -->
-<div id="briefEvidenceModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(26,24,21,0.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
-  <div style="background:var(--paper);border:1px solid var(--rule);border-radius:20px;padding:32px;max-width:480px;width:90%;max-height:80vh;overflow-y:auto;position:relative;">
-    <button onclick="document.getElementById('briefEvidenceModal').style.display='none'" style="position:absolute;top:16px;right:16px;background:none;border:none;cursor:pointer;font-size:20px;color:var(--ink-muted);">×</button>
-    <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;">Data behind this brief</div>
-    <div style="font-size:13px;color:var(--ink-soft);margin-bottom:20px;">These are the signals SAM used for today's read.</div>
-    <div id="briefEvidenceRows" style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px;"></div>
-    <div id="briefEvidenceEmpty" style="display:none;font-size:13px;color:var(--ink-muted);padding:16px;background:var(--surface-2);border-radius:10px;text-align:center;">No source metrics were attached to this brief yet.<br><span style="font-size:12px;opacity:0.7;">The brief text is visible, but the evidence payload was not saved with this response.</span></div>
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
-      <button onclick="document.getElementById('briefEvidenceModal').style.display='none'" style="font-size:13px;font-weight:600;color:var(--ink-soft);background:none;border:1px solid var(--rule);border-radius:20px;padding:8px 20px;cursor:pointer;font-family:inherit;">Close</button>
-      <button onclick="document.getElementById('briefEvidenceModal').style.display='none';openTool('reach');" style="font-size:13px;font-weight:600;color:var(--accent);background:none;border:none;cursor:pointer;font-family:inherit;">Open full analytics →</button>
-    </div>
-  </div>
-</div>
+  win.document.write('</body></html>');
 
-</body></html>');
   win.document.close();
 }
 </script>
@@ -17432,6 +17417,21 @@ function openDailyBriefDataModal() {
 
 </script>
 
+
+<!-- Daily Brief Evidence Modal -->
+<div id="briefEvidenceModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(26,24,21,0.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
+  <div style="background:var(--paper);border:1px solid var(--rule);border-radius:20px;padding:32px;max-width:480px;width:90%;max-height:80vh;overflow-y:auto;position:relative;">
+    <button onclick="document.getElementById('briefEvidenceModal').style.display='none'" style="position:absolute;top:16px;right:16px;background:none;border:none;cursor:pointer;font-size:20px;color:var(--ink-muted);">×</button>
+    <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;">Data behind this brief</div>
+    <div style="font-size:13px;color:var(--ink-soft);margin-bottom:20px;">These are the signals SAM used for today's read.</div>
+    <div id="briefEvidenceRows" style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px;"></div>
+    <div id="briefEvidenceEmpty" style="display:none;font-size:13px;color:var(--ink-muted);padding:16px;background:var(--surface-2);border-radius:10px;text-align:center;">No source metrics were attached to this brief yet.<br><span style="font-size:12px;opacity:0.7;">Run The Lens on your analytics to populate this.</span></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+      <button onclick="document.getElementById('briefEvidenceModal').style.display='none'" style="font-size:13px;font-weight:600;color:var(--ink-soft);background:none;border:1px solid var(--rule);border-radius:20px;padding:8px 20px;cursor:pointer;font-family:inherit;">Close</button>
+      <button onclick="document.getElementById('briefEvidenceModal').style.display='none';openTool('reach');" style="font-size:13px;font-weight:600;color:var(--accent);background:none;border:none;cursor:pointer;font-family:inherit;">Open full analytics →</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
  
