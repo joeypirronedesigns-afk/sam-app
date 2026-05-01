@@ -519,7 +519,7 @@ Return ONLY this JSON — be CONCISE in every field to fit within token limits:
       {"heading": "Point 4", "body": "2 sentences max."},
       {"heading": "Point 5", "body": "2 sentences max."}
     ],
-    "comment_response": "Under 150 chars. A warm, specific invitation to engage — no DM prompts, no generic CTAs, no 'comment X to get Y' patterns. Write as if the creator is talking directly to a friend."
+    "comment_response": "Under 120 chars. Write ONE specific question the creator would genuinely ask their audience about this exact topic — not about engagement, not about resonating, not about their journey. A real question about the specific subject matter. Example: if the lead magnet is about relocating, ask something like 'where are you thinking about moving?' — not 'what part resonated with you'. Never use: glad this resonated, still figuring it out, what part are you curious about, drop a comment, DM me, save this, share this."
   },
   "focus_directive": "One sentence. The single most important thing to do today."
 }
