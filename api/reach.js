@@ -17,8 +17,8 @@ module.exports = async function handler(req, res) {
     email: _body.email || _body.userEmail || '',
     userId: _body.userId || 'anon',
     tool: 'The Reach',
-    copyAnonymous: 'Sign in to use The Reach. SAM needs your channels and offers to find the right people for you.',
-    copyUnpaid: 'Subscribe to use The Reach. Get a focused outreach map instead of cold guessing — $39/month, every tool included, cancel anytime.'
+    copyAnonymous: 'Sign in to use The Reach. SAM adapts your captions and creative for every platform — in your voice, every time.',
+    copyUnpaid: 'Subscribe to use The Reach. Adapt one piece of content into the right post for every platform you publish on — $39/month, every tool included, cancel anytime.'
   });
   if (!_gate.ok) return res.status(_gate.status).json(_gate.body);
 

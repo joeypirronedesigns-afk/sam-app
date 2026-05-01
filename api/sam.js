@@ -32,8 +32,8 @@ const GATE_COPY = {
   },
   pulse: {
     tool: 'The Pulse',
-    anon: 'Sign in to use The Pulse. SAM needs your niche and examples before she can research the creators worth watching.',
-    unpaid: 'Subscribe to use The Pulse. See which creators and trends actually matter for your niche — $39/month, every tool included, cancel anytime.'
+    anon: 'Sign in to use The Pulse. SAM reads what\'s working in your niche through the lens of what fits you, not generic trends.',
+    unpaid: 'Subscribe to use The Pulse. See the patterns, hooks, and formats actually working in your niche — $39/month, every tool included, cancel anytime.'
   },
   playbook: {
     tool: 'Story Engine',
