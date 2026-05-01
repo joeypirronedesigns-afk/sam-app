@@ -4,6 +4,7 @@
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const { loadUserContext, saveUserContext } = require('./_context');
+const { checkGate } = require('./_gate');
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -14,6 +15,17 @@ module.exports = async function handler(req, res) {
 
   try {
     const { email, insight } = req.body || {};
+
+    // v9.113.1 — Voice DNA gate (mapped to The Vision per brief PART A7)
+    const _gate = await checkGate({
+      email: email || '',
+      userId: (req.body && req.body.userId) || 'anon',
+      tool: 'The Vision',
+      copyAnonymous: 'Sign in to use The Vision. SAM turns your metrics into "what to do next" — but only once she\'s attached to your account.',
+      copyUnpaid: 'Subscribe to use The Vision. Turn noisy analytics into clear narrative and next steps — $39/month, every tool included, cancel anytime.'
+    });
+    if (!_gate.ok) return res.status(_gate.status).json(_gate.body);
+
     if (!email || typeof email !== 'string' || !email.includes('@')) {
       return res.status(200).json({ ok: false, reason: 'invalid email' });
     }

@@ -1,6 +1,8 @@
 // api/reach.js — non-streaming reach tool, works on all mobile browsers
 module.exports.config = { api: { bodyParser: { sizeLimit: '10mb' } } };
 
+const { checkGate } = require('./_gate');
+
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -8,7 +10,19 @@ module.exports = async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { imageBase64, moment } = req.body || {};
+  const _body = req.body || {};
+
+  // v9.113.1 — Voice DNA gate
+  const _gate = await checkGate({
+    email: _body.email || _body.userEmail || '',
+    userId: _body.userId || 'anon',
+    tool: 'The Reach',
+    copyAnonymous: 'Sign in to use The Reach. SAM needs your channels and offers to find the right people for you.',
+    copyUnpaid: 'Subscribe to use The Reach. Get a focused outreach map instead of cold guessing — $39/month, every tool included, cancel anytime.'
+  });
+  if (!_gate.ok) return res.status(_gate.status).json(_gate.body);
+
+  const { imageBase64, moment } = _body;
   if (!imageBase64) return res.status(400).json({ error: 'Image required' });
 
   // Auto-detect image type from base64 header — don't trust client-provided type

@@ -1,6 +1,46 @@
 module.exports.config = { api: { bodyParser: { sizeLimit: "10mb" } } };
 const { trackUser, trackEvent, saveUserProfile, getUserProfile, updateUserEmail, supabaseQuery } = require('./_supabase');
 const { normalizeSamContext, buildBrainPrompt } = require('./_context');
+const { checkGate } = require('./_gate');
+
+// v9.113.1 — Voice DNA gate copy keyed by sam.js mode
+const GATE_COPY = {
+  chat: {
+    tool: 'Talk with SAM',
+    anon: 'Sign in to chat with SAM. SAM works best when she actually knows you.',
+    unpaid: 'Subscribe to chat with SAM. Get a real editorial director in your corner — $39/month, every tool included, cancel anytime.'
+  },
+  spark: {
+    tool: 'The Spark',
+    anon: "Sign in to use The Spark. SAM's ideas get sharper once she knows your voice and audience.",
+    unpaid: 'Subscribe to use The Spark. Get steady, voice-matched content ideas tuned to your niche — $39/month, every tool included, cancel anytime.'
+  },
+  lens: {
+    tool: 'The Lens',
+    anon: 'Sign in to use The Lens. SAM needs to know your channel first before she can read your analytics.',
+    unpaid: "Subscribe to use The Lens. Let SAM read your analytics and surface what's really working — $39/month, every tool included, cancel anytime."
+  },
+  blueprint: {
+    tool: 'The Blueprint',
+    anon: 'Sign in to use The Blueprint. SAM builds your content calendar around your goals, not generic prompts.',
+    unpaid: 'Subscribe to use The Blueprint. Get a structured launch and publishing plan across every channel — $39/month, every tool included, cancel anytime.'
+  },
+  vision: {
+    tool: 'The Vision',
+    anon: 'Sign in to use The Vision. SAM turns your metrics into "what to do next" — but only once she\'s attached to your account.',
+    unpaid: 'Subscribe to use The Vision. Turn noisy analytics into clear narrative and next steps — $39/month, every tool included, cancel anytime.'
+  },
+  pulse: {
+    tool: 'The Pulse',
+    anon: 'Sign in to use The Pulse. SAM needs your niche and examples before she can research the creators worth watching.',
+    unpaid: 'Subscribe to use The Pulse. See which creators and trends actually matter for your niche — $39/month, every tool included, cancel anytime.'
+  },
+  playbook: {
+    tool: 'Story Engine',
+    anon: "Sign in to use Story Engine. Story Engine builds a 12-step content playbook that's tuned to you and your goals.",
+    unpaid: 'Subscribe to build your playbook. Story Engine is part of your SAM membership — $39/month for the full OS: Story Engine, Voice DNA, Daily Briefs, and more. Cancel anytime.'
+  }
+};
 
 async function fetchRecentChatHistory(userId, limit = 20) {
   if (!userId || userId === 'anon' || userId.startsWith('anon-')) return [];
@@ -74,6 +114,20 @@ module.exports = async function handler(req, res) {
   const { mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage, emojiPreference, voiceProfile } = req.body;
   const userId = req.body.userId || req.headers['x-forwarded-for'] || 'anon';
   const tier = req.body.tier || 'free';
+
+  // v9.113.1 — Voice DNA gate. Reject anonymous and unpaid before any expensive compute.
+  const _gateCopy = GATE_COPY[mode];
+  if (_gateCopy) {
+    const _emailForGate = (req.body.email || req.body.userEmail || '').toString();
+    const _gate = await checkGate({
+      email: _emailForGate,
+      userId,
+      tool: _gateCopy.tool,
+      copyAnonymous: _gateCopy.anon,
+      copyUnpaid: _gateCopy.unpaid
+    });
+    if (!_gate.ok) return res.status(_gate.status).json(_gate.body);
+  }
 
   // Load user profile from Supabase (for persistent memory)
   let userProfile = null;

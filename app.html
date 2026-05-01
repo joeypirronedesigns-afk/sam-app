@@ -6475,7 +6475,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.111.4" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.113.1" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -8397,6 +8397,18 @@ function _samPrefillWizard(retries) {
 }
 
 function openWizardPage(skipCheck) {
+  // v9.113.1 — Story Engine gates at entry, not Step 12
+  const _u113 = (typeof getCurrentUserCached === 'function') ? getCurrentUserCached() : null;
+  if (!_u113 || !_u113.email) {
+    if (typeof openSignInModal === 'function') openSignInModal();
+    return;
+  }
+  if (!_u113.paid) {
+    if (typeof showPaywall === 'function') showPaywall('story_engine');
+    else if (typeof openSignInModal === 'function') openSignInModal();
+    return;
+  }
+
   // Pre-fill from SAM brain — fire now, then retry after render
   _samPrefillWizard(0);
   setTimeout(function() { _samPrefillWizard(1); }, 500);
@@ -8612,6 +8624,13 @@ For each platform write clearly with the platform name as a header. Make every c
         platforms: getSelPills('reachPlatforms')
       })
     });
+
+    // v9.113.1 — gate copy via toast on 401/402
+    if (resp.status === 401 || resp.status === 402) {
+      const gate = await resp.json().catch(() => ({}));
+      if (gate && gate.message && typeof showIbToast === 'function') showIbToast(gate.message);
+      throw new Error(gate.message || gate.error || 'Gate ' + resp.status);
+    }
 
     const respData = await resp.json();
     if (!respData.success) throw new Error(respData.error || 'Generation failed');
@@ -8935,6 +8954,15 @@ async function callAPI(body) {
     if (bodySizeKB > 3500) throw new Error('Image too large (' + bodySizeKB + 'KB). Please use a smaller image.');
     const r = await fetch('/api/sam', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: bodyStr, signal: controller.signal });
     clearTimeout(timeout);
+    // v9.113.1 — centralized 401/402 gate copy via toast for Spark/Lens/Blueprint/Vision/Pulse/Playbook
+    if (r.status === 401 || r.status === 402) {
+      const gate = await r.json().catch(() => ({}));
+      if (gate && gate.message && typeof showIbToast === 'function') showIbToast(gate.message);
+      const _err = new Error(gate.message || gate.error || 'Gate ' + r.status);
+      _err.gate = true;
+      _err.status = r.status;
+      throw _err;
+    }
     if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.error || 'Server error ' + r.status); }
     return readStream(r);
   } catch(e) {
@@ -11391,6 +11419,17 @@ async function sendPersistentMessage() {
     if (typing) typing.style.display = 'none';
     if (btn) btn.disabled = false;
 
+    // v9.113.1 — surface canonical gate copy on 401/402
+    if (r.status === 401 || r.status === 402) {
+      try {
+        const _gateData = await r.json();
+        if (_gateData && _gateData.message) {
+          addPersistentMessage('sam', _gateData.message, true);
+          return;
+        }
+      } catch (e) {}
+    }
+
     if (!r.ok) {
       addPersistentMessage('sam', "One sec — hit me again!", true);
       return;
@@ -12678,6 +12717,18 @@ function initWizard() {
 
 
   function openWizardPage(skipReturningCheck) {
+    // v9.113.1 — Story Engine gates at entry, not Step 12
+    const _u113b = (typeof getCurrentUserCached === 'function') ? getCurrentUserCached() : null;
+    if (!_u113b || !_u113b.email) {
+      if (typeof openSignInModal === 'function') openSignInModal();
+      return;
+    }
+    if (!_u113b.paid) {
+      if (typeof showPaywall === 'function') showPaywall('story_engine');
+      else if (typeof openSignInModal === 'function') openSignInModal();
+      return;
+    }
+
     document.getElementById('wizardPage').classList.add('open');
     document.body.style.overflow = 'hidden';
     // v9.111.3 — pulse the Close Story Engine button for ~10s on each open
@@ -13129,6 +13180,97 @@ function closeStoryEngine() {
   closeWizard();
 }
 window.closeStoryEngine = closeStoryEngine;
+
+// v9.113.1 — Sign-out DOM cleanup + auth re-hydration
+function clearPersonalizedDOM() {
+  // Daily Brief Reset Rule — restore showcase verdict + body
+  try {
+    var _verdict = document.querySelector('.qs-dash-sams-read-verdict');
+    if (_verdict) {
+      _verdict.innerHTML = 'Your reach has collapsed 65% in 28 days — <span class="qs-dash-sams-read-verdict-emphasis">something fundamental broke</span> in your posting rhythm.';
+    }
+    var _body = document.querySelector('.qs-dash-sams-read-body');
+    if (_body) {
+      _body.textContent = "You used to post 4 times a week with a strong hook in the first line. The last 14 posts opened with a question, and the last 6 went out after 9pm. The audience you have now reads at 7am. The post you drafted last night is good. Send it now, then take a week to fix the rhythm.";
+    }
+  } catch (e) {}
+
+  // Close any open canvas tools / wizard
+  try { if (typeof closeWizard === 'function') closeWizard(); } catch (e) {}
+
+  // Reset My Ideas badge
+  try {
+    var _ideasBadge = document.getElementById('qsIdeasNavCount');
+    if (_ideasBadge) _ideasBadge.textContent = '0';
+  } catch (e) {}
+
+  // Clear chat history rendering
+  try {
+    var _chatMsgs = document.getElementById('persistentSAMMessages');
+    if (_chatMsgs) _chatMsgs.innerHTML = '';
+    var _chatHistory = document.getElementById('chatMessages');
+    if (_chatHistory) _chatHistory.innerHTML = '';
+  } catch (e) {}
+
+  // localStorage cleanup — clears personalized state including sam-ideas (Principle 3)
+  ['sam-current-user', 'sam-trial', 'sam_session_v2', 'sam_session_step', 'sam_session_ts',
+   'sam-chat-history', 'sam-persistent-history', 'sam_uid', 'samFirstRunDone',
+   'sam-ideas', 'sam-runs', 'sam-wizard-runs', 'sam-wizard-state',
+   'sam-voice-calibrated', 'sam_meet_story', 'sam_user_email'].forEach(function(k) {
+    try { localStorage.removeItem(k); } catch (e) {}
+  });
+}
+window.clearPersonalizedDOM = clearPersonalizedDOM;
+
+function signOut() {
+  clearPersonalizedDOM();
+  window.location.reload();
+}
+window.signOut = signOut;
+
+// v9.113.1 — Auth re-hydration on sign-in success
+async function onAuthSuccess(userRecord) {
+  if (!userRecord || !userRecord.email) return;
+
+  // 1. Migrate user-authored anonymous ideas (Principle 3 exception)
+  try {
+    var _anonIdeas = JSON.parse(localStorage.getItem('sam-ideas') || '[]');
+    if (Array.isArray(_anonIdeas) && _anonIdeas.length > 0) {
+      try {
+        await fetch('/api/memory', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: userRecord.email,
+            action: 'migrate_anon_ideas',
+            ideas: _anonIdeas
+          })
+        }).catch(function () {});
+      } catch (e) {}
+    }
+    // Always clear anon key per brief (server-side handler lands in v9.113.2;
+    // client-only migration in v9.113.1 means anon ideas are not preserved across this transition)
+    localStorage.removeItem('sam-ideas');
+  } catch (e) {}
+
+  // 2. Clear remaining anonymous session state (NOT user-authored)
+  ['sam_session_v2', 'sam_session_step', 'sam_session_ts',
+   'sam-chat-history', 'sam-persistent-history'].forEach(function (k) {
+    try { localStorage.removeItem(k); } catch (e) {}
+  });
+
+  // 3. Hydrate from authenticated record
+  if (typeof writeUserCache === 'function') writeUserCache(userRecord);
+
+  // 4. Re-render nav identity
+  if (typeof renderNavIdentity === 'function') renderNavIdentity(userRecord);
+
+  // 5. Trigger Daily Brief fetch (paid users only get personalized brief; gate enforced server-side)
+  if (typeof fetchDailyBrief === 'function') {
+    try { fetchDailyBrief(); } catch (e) {}
+  }
+}
+window.onAuthSuccess = onAuthSuccess;
 
 // ── NAVIGATION ────────────────────────────────────────────────────────────────
 function showWizardStep(step) {
@@ -16978,7 +17120,12 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
         });
         const data = await res.json();
         if (data.success && data.user) {
-          writeUserCache(data.user); renderNavIdentity(data.user);
+          // v9.113.1 — re-hydrate from authoritative record (no anon bleed; ideas migrated)
+          if (typeof onAuthSuccess === 'function') {
+            await onAuthSuccess(data.user);
+          } else {
+            writeUserCache(data.user); renderNavIdentity(data.user);
+          }
           claimAnonymousChatHistory(data.user.email);
           localStorage.setItem('samFirstRunDone', 'true');
           showToastMsg('Welcome back' + (data.user.name ? ', ' + data.user.name.split(' ')[0] : '') + '! 🎉', 'var(--accent)');
