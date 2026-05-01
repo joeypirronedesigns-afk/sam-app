@@ -3,29 +3,29 @@ const { trackUser, trackEvent, saveUserProfile, getUserProfile, updateUserEmail,
 const { normalizeSamContext, buildBrainPrompt } = require('./_context');
 const { checkGate } = require('./_gate');
 
-// v9.113.1 — Voice DNA gate copy keyed by sam.js mode
+// v9.113.1.1 — Voice DNA gate copy keyed by ACTUAL sam.js mode strings sent by frontend
 const GATE_COPY = {
   chat: {
     tool: 'Talk with SAM',
     anon: 'Sign in to chat with SAM. SAM works best when she actually knows you.',
     unpaid: 'Subscribe to chat with SAM. Get a real editorial director in your corner — $39/month, every tool included, cancel anytime.'
   },
-  spark: {
+  ideas: {
     tool: 'The Spark',
     anon: "Sign in to use The Spark. SAM's ideas get sharper once she knows your voice and audience.",
     unpaid: 'Subscribe to use The Spark. Get steady, voice-matched content ideas tuned to your niche — $39/month, every tool included, cancel anytime.'
   },
-  lens: {
+  upload: {
     tool: 'The Lens',
     anon: 'Sign in to use The Lens. SAM needs to know your channel first before she can read your analytics.',
     unpaid: "Subscribe to use The Lens. Let SAM read your analytics and surface what's really working — $39/month, every tool included, cancel anytime."
   },
-  blueprint: {
+  calendar: {
     tool: 'The Blueprint',
     anon: 'Sign in to use The Blueprint. SAM builds your content calendar around your goals, not generic prompts.',
     unpaid: 'Subscribe to use The Blueprint. Get a structured launch and publishing plan across every channel — $39/month, every tool included, cancel anytime.'
   },
-  vision: {
+  concept: {
     tool: 'The Vision',
     anon: 'Sign in to use The Vision. SAM turns your metrics into "what to do next" — but only once she\'s attached to your account.',
     unpaid: 'Subscribe to use The Vision. Turn noisy analytics into clear narrative and next steps — $39/month, every tool included, cancel anytime.'
@@ -36,6 +36,11 @@ const GATE_COPY = {
     unpaid: 'Subscribe to use The Pulse. See which creators and trends actually matter for your niche — $39/month, every tool included, cancel anytime.'
   },
   playbook: {
+    tool: 'Story Engine',
+    anon: "Sign in to use Story Engine. Story Engine builds a 12-step content playbook that's tuned to you and your goals.",
+    unpaid: 'Subscribe to build your playbook. Story Engine is part of your SAM membership — $39/month for the full OS: Story Engine, Voice DNA, Daily Briefs, and more. Cancel anytime.'
+  },
+  regen_section: {
     tool: 'Story Engine',
     anon: "Sign in to use Story Engine. Story Engine builds a 12-step content playbook that's tuned to you and your goals.",
     unpaid: 'Subscribe to build your playbook. Story Engine is part of your SAM membership — $39/month for the full OS: Story Engine, Voice DNA, Daily Briefs, and more. Cancel anytime.'
@@ -115,9 +120,16 @@ module.exports = async function handler(req, res) {
   const userId = req.body.userId || req.headers['x-forwarded-for'] || 'anon';
   const tier = req.body.tier || 'free';
 
-  // v9.113.1 — Voice DNA gate. Reject anonymous and unpaid before any expensive compute.
+  // v9.113.1.1 — Voice DNA gate. Reject anonymous and unpaid before any expensive compute.
+  // Fail-closed on unknown modes so future tool additions force a deliberate gating decision.
   const _gateCopy = GATE_COPY[mode];
-  if (_gateCopy) {
+  if (!_gateCopy) {
+    return res.status(400).json({
+      error: 'invalid_mode',
+      message: 'Unknown tool mode.'
+    });
+  }
+  {
     const _emailForGate = (req.body.email || req.body.userEmail || '').toString();
     const _gate = await checkGate({
       email: _emailForGate,
