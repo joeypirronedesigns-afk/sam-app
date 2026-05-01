@@ -4571,9 +4571,11 @@ body.quiet-studio-shell .ambient { display: none; }
 
 /* Push legacy top-nav right of the rail */
 body.quiet-studio-shell > nav { display: none !important; }
-/* v9.107 — chat drawer (legacy #chatFab + #chatPanel) is now the canonical Talk with SAM
-   surface in QS shell. Default .chat-fab / .chat-panel CSS already governs visibility:
-   fab is display:flex, panel is display:none until .open is toggled by openChat(). */
+/* v9.109 — legacy chat drawer is hidden again in QS shell. The canonical Talk with SAM
+   surface is #persistentSAMPanel, which mounts as a persistent right rail via the
+   :not(.qs-chat-collapsed) selector group below. */
+body.quiet-studio-shell #chatFab,
+body.quiet-studio-shell #chatPanel { display: none !important; }
 body.quiet-studio-shell .psam-fab-btn,
 body.quiet-studio-shell .psam-fab-label { display: none !important; }
 body.quiet-studio-shell #persistentSAMFab {
@@ -6402,7 +6404,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.107" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.109" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -11054,12 +11056,14 @@ function toggleSAMColumn() {
   var collapsed = document.body.classList.contains('qs-chat-collapsed');
   if (collapsed) {
     document.body.classList.remove('qs-chat-collapsed');
+    document.body.classList.add('qs-sam-rail-open');
     if (fab) fab.removeAttribute('data-collapsed');
     localStorage.removeItem('samColumnCollapsed');
     var btn = document.getElementById('qsChatCollapseBtn');
     if (btn) btn.textContent = '‹ Close';
   } else {
     document.body.classList.add('qs-chat-collapsed');
+    document.body.classList.remove('qs-sam-rail-open');
     if (fab) fab.setAttribute('data-collapsed', 'true');
     localStorage.setItem('samColumnCollapsed', 'true');
     var btn = document.getElementById('qsChatCollapseBtn');
@@ -11068,16 +11072,31 @@ function toggleSAMColumn() {
 }
 
 function openTalkWithSAM() {
-  // v9.107 — route to slide-out drawer (#chatPanel) instead of right-rail un-collapse
-  // or mobile full-screen takeover. openSAMFullScreen() is preserved for any other callers.
-  if (typeof openChat === 'function') {
-    openChat();
+  // v9.109 — desktop toggles the persistent QS right rail; mobile keeps full-screen.
+  // The rail's open state is encoded as "body NOT having qs-chat-collapsed" so existing
+  // CSS at lines ~6160-6259 governs layout (420px/360px width, > main padding-right).
+  // qs-sam-rail-open is also mirrored as a parallel marker (no CSS depends on it yet)
+  // so any future shell-level wiring can hook into a single-name source of truth.
+  if (window.innerWidth >= 1024) {
+    var fab = document.getElementById('persistentSAMFab');
+    var btn = document.getElementById('qsChatCollapseBtn');
+    var collapsed = document.body.classList.contains('qs-chat-collapsed');
+    if (collapsed) {
+      document.body.classList.remove('qs-chat-collapsed');
+      document.body.classList.add('qs-sam-rail-open');
+      if (fab) fab.removeAttribute('data-collapsed');
+      if (btn) btn.textContent = '‹ Close';
+      localStorage.setItem('samColumnCollapsed', 'false');
+    } else {
+      document.body.classList.add('qs-chat-collapsed');
+      document.body.classList.remove('qs-sam-rail-open');
+      if (fab) fab.setAttribute('data-collapsed', 'true');
+      if (btn) btn.textContent = '› Talk to SAM';
+      localStorage.setItem('samColumnCollapsed', 'true');
+    }
     return;
   }
-  // Fallback: simulate fab click if openChat isn't loaded yet
-  var _fabEl = document.getElementById('chatFab');
-  var _btnEl = _fabEl && _fabEl.querySelector('.chat-btn');
-  if (_btnEl) _btnEl.click();
+  openSAMFullScreen();
 }
 
 function openSAMFullScreen() {
