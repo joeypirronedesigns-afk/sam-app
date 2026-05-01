@@ -519,7 +519,7 @@ Return ONLY this JSON — be CONCISE in every field to fit within token limits:
       {"heading": "Point 4", "body": "2 sentences max."},
       {"heading": "Point 5", "body": "2 sentences max."}
     ],
-    "comment_response": "Under 150 chars. Conversational."
+    "comment_response": "Under 150 chars. A warm, specific invitation to engage — no DM prompts, no generic CTAs, no 'comment X to get Y' patterns. Write as if the creator is talking directly to a friend."
   },
   "focus_directive": "One sentence. The single most important thing to do today."
 }

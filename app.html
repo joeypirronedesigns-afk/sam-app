@@ -6401,7 +6401,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.99" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.100" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -17377,6 +17377,59 @@ function closeQSDrawer() {
   document.getElementById('qsDrawer').classList.remove('open');
   document.body.style.overflow = '';
 }
+
+// ── DAILY BRIEF EVIDENCE MODAL ───────────────────────────────────
+function openDailyBriefDataModal() {
+  var modal = document.getElementById('briefEvidenceModal');
+  var rows = document.getElementById('briefEvidenceRows');
+  var empty = document.getElementById('briefEvidenceEmpty');
+  if (!modal) { console.error('briefEvidenceModal not found'); return; }
+
+  var insights = [];
+
+  // Try cached brief payload first
+  try {
+    if (window.__lastBriefPayload && window.__lastBriefPayload.analytics_evidence) {
+      insights = window.__lastBriefPayload.analytics_evidence;
+    }
+  } catch(e) {}
+
+  // Fall back to brain analytics insights
+  if (!insights.length) {
+    try {
+      var cached = (typeof getCurrentUserCached === 'function') ? getCurrentUserCached() : null;
+      if (cached && cached.samContext) {
+        var ctx = JSON.parse(cached.samContext);
+        if (ctx.analytics && ctx.analytics.insights && ctx.analytics.insights.length) {
+          insights = ctx.analytics.insights;
+        }
+      }
+    } catch(e) {}
+  }
+
+  if (rows && insights.length) {
+    rows.innerHTML = insights.map(function(ins) {
+      var label = ins.metric || ins.label || ins.name || 'Metric';
+      var value = ins.value !== undefined ? ins.value : (ins.raw || ins.count || '—');
+      var why = ins.interpretation || ins.why || ins.signal || '';
+      return '<div style="padding:12px 14px;background:var(--surface-2);border:1px solid var(--rule);border-radius:10px;">' +
+        '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">' +
+        '<span style="font-size:13px;font-weight:600;color:var(--ink);">' + label + '</span>' +
+        '<span style="font-size:16px;font-weight:700;color:var(--accent);">' + value + '</span>' +
+        '</div>' +
+        (why ? '<div style="font-size:12px;color:var(--ink-soft);line-height:1.5;">' + why + '</div>' : '') +
+        '</div>';
+    }).join('');
+    if (rows) rows.style.display = 'flex';
+    if (empty) empty.style.display = 'none';
+  } else {
+    if (rows) rows.style.display = 'none';
+    if (empty) empty.style.display = 'block';
+  }
+
+  modal.style.display = 'flex';
+}
+
 </script>
 
 </body>
