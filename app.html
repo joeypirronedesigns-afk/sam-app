@@ -2989,6 +2989,41 @@
     .qs-wizard-switch-tools-btn { display: none !important; }
     @media (max-width: 767px) { .qs-wizard-switch-tools-btn { display: inline-flex !important; } }
 
+    .qs-wizard-close {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background: var(--accent);
+      color: #fff;
+      border: 1px solid var(--accent);
+      border-radius: var(--radius);
+      font-family: 'Sora', system-ui, sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -0.005em;
+      cursor: pointer;
+      transition: background 120ms ease, border-color 120ms ease;
+    }
+    .qs-wizard-close:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+    }
+    .qs-wizard-close-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+    }
+    .qs-wizard-close-icon svg { width: 100%; height: 100%; display: block; }
+    .qs-wizard-close-label { white-space: nowrap; }
+
+    @media (max-width: 768px) {
+      .qs-wizard-close-label { display: none; }
+      .qs-wizard-close { padding: 8px 10px; }
+    }
+
     /* Progress bar */
     .wizard-progress-wrap {
       position: sticky;
@@ -5640,6 +5675,28 @@ body.quiet-studio-shell .qs-dash-rail-item-count {
   color: var(--qs-ink-muted);
 }
 
+.qs-dash-rail-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-family: 'Sora', system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-right: 4px;
+}
+
+.qs-dash-rail-item.is-active .qs-dash-rail-step,
+.qs-dash-rail-item:hover .qs-dash-rail-step {
+  background: var(--accent);
+  color: #fff;
+}
+
 /* ============================================================ */
 /* RAIL — pinned ideas section                                  */
 /* ============================================================ */
@@ -6404,7 +6461,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.110" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.111.2" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6434,18 +6491,21 @@ body.quiet-studio-shell .qs-rail nav {
   </button>
 </nav>
 
-<!-- THE SPINE section -->
-<nav class="qs-dash-rail-section" aria-label="The Spine">
-  <div class="qs-dash-rail-section-label">The Spine</div>
+<!-- BUILD SAM'S BRAIN section -->
+<nav class="qs-dash-rail-section" aria-label="Build SAM's Brain">
+  <div class="qs-dash-rail-section-label">Build SAM's Brain</div>
   <button class="qs-dash-rail-item" data-qs-nav="voice-dna" onclick="openVoiceTrainer()">
+    <span class="qs-dash-rail-step" aria-hidden="true">1</span>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5.5C10.2 6.7 10.2 8.5 9 9.7L7.7 11C6.5 12.2 6.5 14 7.7 15.2C8.9 16.4 8.9 18.2 7.7 19.4"/><path d="M15 4.6C13.8 5.8 13.8 7.6 15 8.8L16.3 10.1C17.5 11.3 17.5 13.1 16.3 14.3C15.1 15.5 15.1 17.3 16.3 18.5"/><path d="M10 7.3C11.3 8 12.7 8 14 7.3"/><path d="M10 12C11.3 12.7 12.7 12.7 14 12"/><path d="M10 16.7C11.3 17.4 12.7 17.4 14 16.7"/></svg>
     Voice DNA
   </button>
   <button class="qs-dash-rail-item" data-qs-nav="story-engine" onclick="openWizardPage()">
+    <span class="qs-dash-rail-step" aria-hidden="true">2</span>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6.5C6 5.7 6.7 5 7.5 5H11.5C12.9 5 14 6.1 14 7.5V18.5C14 17.1 12.9 16 11.5 16H7.5C6.7 16 6 16.7 6 17.5V6.5Z"/><path d="M18 6.5C18 5.7 17.3 5 16.5 5H12.5C11.1 5 10 6.1 10 7.5V18.5C10 17.1 11.1 16 12.5 16H16.5C17.3 16 18 16.7 18 17.5V6.5Z"/></svg>
     Story Engine
   </button>
   <button class="qs-dash-rail-item" data-qs-nav="reach" onclick="openTool('reach')">
+    <span class="qs-dash-rail-step" aria-hidden="true">3</span>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="12" r="2.2"/><circle cx="16.5" cy="7.5" r="1.8"/><circle cx="17" cy="16.5" r="1.8"/><path d="M10.1 10.9L14.7 8.4"/><path d="M10.1 13.1L15.1 15.8"/></svg>
     The Reach
   </button>
@@ -13028,6 +13088,14 @@ function closeWizard() {
   document.body.style.overflow = '';
 }
 
+function closeStoryEngine() {
+  if (typeof _samSaveSession === 'function') {
+    try { _samSaveSession(); } catch (e) { console.warn('Story Engine save failed', e); }
+  }
+  closeWizard();
+}
+window.closeStoryEngine = closeStoryEngine;
+
 // ── NAVIGATION ────────────────────────────────────────────────────────────────
 function showWizardStep(step) {
   wizardCurrentStep = step;
@@ -15830,6 +15898,15 @@ if (localStorage.getItem('sam_dev') === 'true') {
             <button onclick="jumpToStep('12')" class="step-jump-btn">Step 12 — Build playbook</button>
           </div>
         </div>
+        <button class="qs-wizard-close" type="button" onclick="closeStoryEngine()" aria-label="Close Story Engine">
+          <span class="qs-wizard-close-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 6L18 18"/>
+              <path d="M18 6L6 18"/>
+            </svg>
+          </span>
+          <span class="qs-wizard-close-label">Close Story Engine</span>
+        </button>
       </div>
     </div>
     <div class="wizard-progress-bar">
