@@ -3024,6 +3024,20 @@
       .qs-wizard-close { padding: 8px 10px; }
     }
 
+    @keyframes qsWizardClosePulse {
+      0%   { opacity: 1; }
+      50%  { opacity: 0.6; }
+      100% { opacity: 1; }
+    }
+
+    .qs-wizard-close.is-pulsing {
+      animation: qsWizardClosePulse 2s ease-in-out 5;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .qs-wizard-close.is-pulsing { animation: none; }
+    }
+
     /* Progress bar */
     .wizard-progress-wrap {
       position: sticky;
@@ -6461,7 +6475,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.111.2" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.111.3" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -8257,6 +8271,16 @@ function openToolFromSheet() {
   if (tool) openTool(tool);
 }
 function openTool(tool) {
+  // v9.111.3 — auto-close wizard when opening a canvas-replacement tool
+  // Side-panel tools (Talk with SAM, My Ideas) have dedicated functions and never route through openTool().
+  const CANVAS_TOOLS = ['spark', 'reach', 'pulse', 'blueprint', 'vision', 'lens'];
+  const _wizardEl = document.getElementById('wizardPage');
+  if (_wizardEl && _wizardEl.classList.contains('open') && CANVAS_TOOLS.indexOf(tool) !== -1) {
+    if (typeof _samSaveSession === 'function') {
+      try { _samSaveSession(); } catch (e) { console.warn('Wizard save on tool switch failed', e); }
+    }
+    if (typeof closeWizard === 'function') closeWizard();
+  }
 // Pre-fill tool inputs from SAM's brain context — always fresh
 window.__toolContext = null; // clear cache so we get latest brain data
 setTimeout(async function() {
@@ -8384,6 +8408,13 @@ function openWizardPage(skipCheck) {
 
   document.getElementById('wizardPage').classList.add('open');
   document.body.style.overflow = 'hidden';
+  // v9.111.3 — pulse the Close Story Engine button for ~10s on each open
+  const _closeBtn = document.querySelector('.qs-wizard-close');
+  if (_closeBtn) {
+    _closeBtn.classList.remove('is-pulsing');
+    void _closeBtn.offsetWidth;
+    _closeBtn.classList.add('is-pulsing');
+  }
   const _nwb = document.getElementById('navWizardBtn'); if(_nwb) _nwb.style.display = 'flex';
   const step = localStorage.getItem('sam_session_step') || '0';
   const saved = localStorage.getItem('sam_session_v2');
@@ -12653,6 +12684,13 @@ function initWizard() {
   function openWizardPage(skipReturningCheck) {
     document.getElementById('wizardPage').classList.add('open');
     document.body.style.overflow = 'hidden';
+    // v9.111.3 — pulse the Close Story Engine button for ~10s on each open
+    const _closeBtn = document.querySelector('.qs-wizard-close');
+    if (_closeBtn) {
+      _closeBtn.classList.remove('is-pulsing');
+      void _closeBtn.offsetWidth;
+      _closeBtn.classList.add('is-pulsing');
+    }
     const _nwb = document.getElementById('navWizardBtn'); if(_nwb) _nwb.style.display = 'flex';
     const step = localStorage.getItem('sam_session_step') || '0';
     const saved = localStorage.getItem('sam_session_v2');
@@ -13113,6 +13151,11 @@ function showWizardStep(step) {
   document.getElementById('wizardProgressWrap').style.display = isEntry ? 'none' : 'block';
   // On step 12 hide the Next/Back wizard nav but show the print bar
   document.getElementById('wizardNav').style.display = (isEntry || isBuilding) ? 'none' : 'flex';
+  // v9.111.3 — hide Back button on step 0 (no previous step exists)
+  const _wizardBackBtn = document.getElementById('wizardBackBtn');
+  if (_wizardBackBtn) {
+    _wizardBackBtn.style.display = (step === '0' || step === 0 || step === 'entry') ? 'none' : '';
+  }
   // Print bar only shows on step 12 AFTER playbook is built (buildPlaybook sets it)
   // But reset it to none whenever navigating away from 12
   if (step !== '12') {
