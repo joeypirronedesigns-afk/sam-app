@@ -4986,7 +4986,7 @@ body.quiet-studio-shell .qs-dashboard {
   position: fixed;
   inset: 0;
   background: rgba(26, 24, 21, 0.4);
-  z-index: 300;
+  z-index: 999;
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
 }
@@ -5000,7 +5000,7 @@ body.quiet-studio-shell .qs-dashboard {
   max-width: 100vw;
   background: var(--paper);
   border-left: 1px solid var(--rule);
-  z-index: 301;
+  z-index: 1000;
   display: flex;
   flex-direction: column;
   transform: translateX(100%);
@@ -6475,7 +6475,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.111.3" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.111.4" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6528,18 +6528,14 @@ body.quiet-studio-shell .qs-rail nav {
 <!-- MORE section -->
 <nav class="qs-dash-rail-section" aria-label="More">
   <div class="qs-dash-rail-section-label">More</div>
-  <button class="qs-dash-rail-item" data-qs-nav="spark" onclick="openTool('spark')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4L13.7 8.3L18 10L13.7 11.7L12 16L10.3 11.7L6 10L10.3 8.3L12 4Z"/></svg>
-    The Spark
+  <button class="qs-dash-rail-item" data-qs-nav="all-tools" onclick="openQSDrawer()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></svg>
+    All Tools
   </button>
   <button class="qs-dash-rail-item" data-qs-nav="my-ideas" onclick="if(typeof openIdeasPanel==='function')openIdeasPanel()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="7" width="11" height="10" rx="2"/><path d="M9 7V6.5C9 5.7 9.7 5 10.5 5H17.5C18.3 5 19 5.7 19 6.5V13.5C19 14.3 18.3 15 17.5 15H16"/></svg>
     My Ideas
     <span class="qs-dash-rail-item-count" id="qsIdeasNavCount">0</span>
-  </button>
-  <button class="qs-dash-rail-item" data-qs-nav="all-tools" onclick="openQSDrawer()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></svg>
-    All Tools
   </button>
 </nav>
 
@@ -7579,9 +7575,9 @@ function hearSAMBrief() {
 
     <!-- THE PULSE -->
     <div class="tool-wrap" id="tool-pulse">
-      <button class="tool-back-btn" onclick="goHome()">
+      <button class="tool-back-btn" onclick="goHome()" aria-label="Close">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-        All tools
+        Close
       </button>
       <div class="tool-header-bar">
         <div class="tool-header-icon" style="background:var(--pulse-bg);border:1px solid var(--pulse-border);">
@@ -7649,9 +7645,9 @@ function hearSAMBrief() {
 
     <!-- THE SPARK -->
     <div class="tool-wrap" id="tool-spark">
-      <button class="tool-back-btn" onclick="goHome()">
+      <button class="tool-back-btn" onclick="goHome()" aria-label="Close">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-        All tools
+        Close
       </button>
       <div class="tool-header-bar">
         <div class="tool-header-icon" style="background:var(--spark-bg);border:1px solid var(--spark-border);">
@@ -7684,9 +7680,9 @@ function hearSAMBrief() {
 
     <!-- THE BLUEPRINT -->
     <div class="tool-wrap" id="tool-blueprint">
-      <button class="tool-back-btn" onclick="goHome()">
+      <button class="tool-back-btn" onclick="goHome()" aria-label="Close">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-        All tools
+        Close
       </button>
       <div class="tool-header-bar">
         <div class="tool-header-icon" style="background:var(--blueprint-bg);border:1px solid var(--blueprint-border);">
@@ -7733,9 +7729,9 @@ function hearSAMBrief() {
 
     <!-- THE VISION -->
     <div class="tool-wrap" id="tool-vision">
-      <button class="tool-back-btn" onclick="goHome()">
+      <button class="tool-back-btn" onclick="goHome()" aria-label="Close">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-        All tools
+        Close
       </button>
       <div class="tool-header-bar">
         <div class="tool-header-icon" style="background:var(--vision-bg);border:1px solid var(--vision-border);">
@@ -7788,9 +7784,9 @@ function hearSAMBrief() {
 
     <!-- THE LENS -->
     <div class="tool-wrap" id="tool-lens">
-      <button class="tool-back-btn" onclick="goHome()">
+      <button class="tool-back-btn" onclick="goHome()" aria-label="Close">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-        All tools
+        Close
       </button>
       <div class="tool-header-bar">
         <div class="tool-header-icon" style="background:var(--lens-bg);border:1px solid var(--lens-border);">
@@ -7912,9 +7908,9 @@ function hearSAMBrief() {
 
     <!-- THE REACH -->
     <div class="tool-wrap" id="tool-reach">
-      <button class="tool-back-btn" onclick="goHome()">
+      <button class="tool-back-btn" onclick="goHome()" aria-label="Close">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-        All tools
+        Close
       </button>
       <div class="tool-header-bar">
         <div class="tool-header-icon" style="background:var(--surface-2);border:1px solid var(--rule);">
@@ -17539,6 +17535,16 @@ document.addEventListener('DOMContentLoaded', () => SAM_VOICE.init());
       <div class="qs-drawer-tile-text">
         <div class="qs-drawer-tile-name">Pulse</div>
         <div class="qs-drawer-tile-desc">Turn a moment into a hook, script, and shot list</div>
+      </div>
+    </div>
+
+    <div class="qs-drawer-tile" onclick="closeQSDrawer();setTimeout(function(){openTool('spark');},200)">
+      <div class="qs-drawer-tile-icon">
+        <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4L13.7 8.3L18 10L13.7 11.7L12 16L10.3 11.7L6 10L10.3 8.3L12 4Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="qs-drawer-tile-text">
+        <div class="qs-drawer-tile-name">Spark</div>
+        <div class="qs-drawer-tile-desc">5 fresh content ideas tuned to your niche</div>
       </div>
     </div>
 
