@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SAM — AI Creative Director for Serious Creators</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <meta name="description" content="SAM is the AI creative director that learns your voice, understands your current project, and turns your ideas into finished content that sounds like you made it." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --paper: #FAFAF7;
+      --surface: #FFFFFF;
+      --surface-2: #F4F2EC;
+      --rule: #E5E2DB;
+      --rule-strong: #C9C5BC;
+      --ink: #1A1815;
+      --ink-soft: #4A4640;
+      --ink-muted: #8B8680;
+      --ink-faint: #B8B4AB;
+      --accent: #20808D;
+      --accent-hover: #1A6A75;
+      --accent-soft: rgba(32, 128, 141, 0.08);
+      --serif-accent: #8B3A2F;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+      background: var(--paper);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      height: 60px;
+      background: var(--paper);
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .nav-logo {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .nav-return {
+      display: none;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink-muted);
+      text-decoration: none;
+      transition: color 150ms var(--ease);
+    }
+    .nav-return:hover { color: var(--accent); }
+
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--ink);
+      background: transparent;
+      border-radius: 6px;
+      padding: 8px 18px;
+      text-decoration: none;
+      transition: color 150ms var(--ease);
+    }
+    .nav-cta:hover { color: var(--accent); text-decoration: underline; }
+
+    /* ── SHARED ── */
+    .mono-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+
+    hr.divider {
+      border: none;
+      border-top: 1px solid var(--rule);
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--accent);
+      border-radius: 8px;
+      padding: 14px 28px;
+      text-decoration: none;
+      transition: background 150ms var(--ease), transform 120ms var(--ease);
+    }
+    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(0); }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 88px 24px 80px;
+      max-width: 800px;
+    }
+
+    .hero-kicker {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 22px;
+    }
+
+    .hero-headline {
+      font-size: clamp(38px, 5.5vw, 64px);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+      margin-bottom: 28px;
+    }
+
+    .hero-headline em {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--serif-accent);
+      letter-spacing: -0.01em;
+    }
+
+    .hero-body {
+      font-size: 18px;
+      line-height: 1.7;
+      color: var(--ink-soft);
+      max-width: 520px;
+      margin-bottom: 40px;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .hero-note {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: var(--ink-muted);
+    }
+
+    /* ── TOOLS LIST ── */
+    .tools-section {
+      padding: 80px 24px;
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    .tools-section .mono-label { margin-bottom: 40px; }
+
+    .tools-list { border-top: 1px solid var(--rule); }
+
+    .tool-row {
+      display: grid;
+      grid-template-columns: 36px 200px 1fr;
+      gap: 0 24px;
+      align-items: baseline;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .tool-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--ink-faint);
+      padding-top: 2px;
+    }
+
+    .tool-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.4;
+    }
+
+    .tool-tag-inline {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-radius: 3px;
+      padding: 2px 6px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    .tool-desc {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--ink-soft);
+    }
+
+    /* ── CREATOR LOOP ── */
+    .loop-section {
+      padding: 80px 24px;
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    .loop-section .mono-label { margin-bottom: 40px; }
+
+    .loop-list { border-top: 1px solid var(--rule); }
+
+    .loop-row {
+      display: grid;
+      grid-template-columns: 36px 200px 1fr;
+      gap: 0 24px;
+      align-items: baseline;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .loop-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--ink-faint);
+      padding-top: 2px;
+    }
+
+    .loop-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.4;
+    }
+
+    .loop-desc {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--ink-soft);
+    }
+
+    .loop-row-return .loop-num {
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--ink-faint);
+    }
+
+    .loop-row-return .loop-desc {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 17px;
+      line-height: 1.7;
+      color: var(--serif-accent);
+    }
+
+    /* ── WHY SECTION ── */
+    .why-section {
+      padding: 80px 24px;
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    .why-headline {
+      font-size: clamp(24px, 3.5vw, 38px);
+      font-weight: 700;
+      line-height: 1.18;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      max-width: 600px;
+      margin-bottom: 56px;
+    }
+
+    .why-points {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 40px 48px;
+    }
+
+    .why-point-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .why-point-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+
+    .why-point-body {
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--ink-soft);
+    }
+
+    /* ── PRICING ── */
+    .pricing-section {
+      background: var(--surface-2);
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      padding: 80px 24px;
+      text-align: center;
+    }
+
+    .pricing-inner {
+      max-width: 580px;
+      margin: 0 auto;
+    }
+
+    .pricing-inner .mono-label { margin-bottom: 40px; }
+
+    .pricing-card {
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      border-radius: 12px;
+      padding: 40px 36px;
+      text-align: left;
+    }
+
+    .pricing-headline {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+
+    .pricing-subhead {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--ink-soft);
+      margin-bottom: 28px;
+    }
+
+    .pricing-amount {
+      font-size: 34px;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      line-height: 1;
+      margin-bottom: 28px;
+    }
+
+    .pricing-amount span {
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--ink-muted);
+      letter-spacing: 0;
+    }
+
+    .pricing-features {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .pricing-features li {
+      font-size: 14px;
+      color: var(--ink-soft);
+      line-height: 1.5;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .pricing-features li::before {
+      content: '✓';
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .btn-pricing {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: var(--ink);
+      color: var(--surface-2);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      padding: 16px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      margin-bottom: 14px;
+      box-sizing: border-box;
+      transition: opacity 0.15s;
+    }
+
+    .btn-pricing:hover { opacity: 0.85; }
+
+    .pricing-footnote {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      color: var(--ink-muted);
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    /* ── TOOLKIT SECTION ── */
+    .toolkit-section {
+      padding: 80px 24px;
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    .toolkit-bridge {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--ink-muted);
+      margin-bottom: 12px;
+    }
+
+    .toolkit-section > .mono-label { margin-bottom: 48px; }
+
+    .toolkit-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .tk-card {
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      padding: 40px;
+      box-shadow: 0 1px 2px rgba(26,24,21,.04), 0 2px 8px rgba(26,24,21,.04);
+    }
+
+    .tk-name {
+      font-family: 'Instrument Serif', serif;
+      font-size: 28px;
+      font-weight: 400;
+      line-height: 1.2;
+      color: var(--ink);
+      margin-bottom: 32px;
+    }
+
+    .tk-name-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .tk-name-row .tk-name { margin-bottom: 0; }
+
+    .tk-icon {
+      width: 24px;
+      height: 24px;
+      flex: 0 0 24px;
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tk-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .tk-caption {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-size: 16px;
+      line-height: 1.5;
+      color: #6B6760;
+      margin-top: 24px;
+    }
+
+    /* Shared sub-elements */
+    .tk-subhead {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #6B6760;
+      margin-bottom: 16px;
+    }
+
+    .tk-section-head {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .tk-section-head-nb {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .tk-divider {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin: 32px 0;
+    }
+
+    /* Lens */
+    .tk-verdict-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--serif-accent);
+      background: #FAEFEB;
+      padding: 6px 12px;
+      border-radius: 2px;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+
+    .tk-verdict {
+      border-left: 3px solid var(--serif-accent);
+      padding-left: 20px;
+      margin-bottom: 32px;
+    }
+
+    .tk-verdict-text {
+      font-family: 'Instrument Serif', serif;
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 1.3;
+      color: var(--ink);
+    }
+
+    .tk-chevron-bullets {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .tk-chevron-bullets li {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--ink);
+      padding-left: 24px;
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    .tk-chevron-bullets li:last-child { margin-bottom: 0; }
+
+    .tk-chevron-bullets li::before {
+      content: '›';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 18px;
+      line-height: 1.4;
+    }
+
+    /* Pulse */
+    .tk-hook {
+      border-left: 3px solid var(--accent);
+      padding-left: 16px;
+      margin-bottom: 8px;
+    }
+
+    .tk-hook-text {
+      font-family: 'Instrument Serif', serif;
+      font-size: 26px;
+      font-weight: 400;
+      line-height: 1.3;
+      color: var(--ink);
+    }
+
+    .tk-arrow-bullets {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .tk-arrow-bullets li {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--ink);
+      padding-left: 24px;
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    .tk-arrow-bullets li:last-child { margin-bottom: 0; }
+
+    .tk-arrow-bullets li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--serif-accent);
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    /* Blueprint */
+    .tk-day-list { display: flex; flex-direction: column; }
+
+    .tk-day-item {
+      padding-bottom: 24px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid #F0EDE5;
+    }
+
+    .tk-day-item:last-child {
+      padding-bottom: 0;
+      margin-bottom: 0;
+      border-bottom: none;
+    }
+
+    .tk-day-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .tk-day-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+
+    .tk-day-platform {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #6B6760;
+    }
+
+    .tk-day-format {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #6B6760;
+      margin-bottom: 8px;
+    }
+
+    .tk-day-post {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--ink);
+    }
+
+    .tk-hashtags { color: #6B6760; }
+
+    /* Vision */
+    .tk-concept-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 28px;
+      font-weight: 400;
+      line-height: 1.3;
+      color: var(--ink);
+      margin-bottom: 12px;
+    }
+
+    .tk-format-pill {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #6B6760;
+      background: #F0EDE5;
+      padding: 4px 10px;
+      border-radius: 2px;
+      margin-bottom: 24px;
+    }
+
+    .tk-score-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .tk-score-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #6B6760;
+    }
+
+    .tk-score-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--serif-accent);
+    }
+
+    .tk-score-track {
+      width: 100%;
+      height: 6px;
+      background: #F0EDE5;
+      border-radius: 3px;
+      margin-bottom: 32px;
+    }
+
+    .tk-score-fill {
+      height: 100%;
+      width: 74%;
+      background: var(--serif-accent);
+      border-radius: 3px;
+    }
+
+    .tk-reasoning {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--ink);
+    }
+
+    /* Spark */
+    .tk-spark-list { display: flex; flex-direction: column; }
+
+    .tk-spark-item {
+      padding-bottom: 28px;
+      margin-bottom: 28px;
+      border-bottom: 1px solid #F0EDE5;
+    }
+
+    .tk-spark-item:last-child {
+      padding-bottom: 0;
+      margin-bottom: 0;
+      border-bottom: none;
+    }
+
+    .tk-spark-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #6B6760;
+      margin-bottom: 8px;
+    }
+
+    .tk-spark-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .tk-spark-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 19px;
+      font-weight: 400;
+      line-height: 1.35;
+      color: var(--ink);
+    }
+
+    .tk-spark-platform {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      padding-top: 6px;
+      flex-shrink: 0;
+    }
+
+    .tk-spark-reason {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #6B6760;
+    }
+
+    /* My Ideas */
+    .tk-myideas-name-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+
+    .tk-myideas-name-row .tk-name { margin-bottom: 0; }
+
+    .tk-myideas-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      color: #6B6760;
+    }
+
+    .tk-search-field {
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      padding: 12px 16px;
+      border-radius: 2px;
+      font-size: 14px;
+      color: #6B6760;
+      width: 100%;
+      display: block;
+      margin-bottom: 24px;
+    }
+
+    .tk-filter-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #6B6760;
+      margin-bottom: 10px;
+    }
+
+    .tk-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .tk-chip {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      padding: 5px 10px;
+      border-radius: 2px;
+      border: 1px solid var(--rule);
+      color: #6B6760;
+      background: var(--paper);
+    }
+
+    .tk-chip-teal {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: #E8F0F1;
+    }
+
+    .tk-chip-rust {
+      color: var(--serif-accent);
+      border-color: var(--serif-accent);
+      background: #FAEFEB;
+    }
+
+    .tk-ideas-hr {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin: 24px 0;
+    }
+
+    .tk-idea-card {
+      padding-bottom: 24px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid #F0EDE5;
+    }
+
+    .tk-idea-card:last-child {
+      padding-bottom: 0;
+      margin-bottom: 0;
+      border-bottom: none;
+    }
+
+    .tk-idea-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .tk-idea-source { display: flex; align-items: center; }
+
+    .tk-idea-source-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--serif-accent);
+    }
+
+    .tk-idea-source-type {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      color: #6B6760;
+    }
+
+    .tk-idea-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #6B6760;
+    }
+
+    .tk-idea-content {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--ink);
+      margin-bottom: 12px;
+    }
+
+    .tk-stage-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .tk-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 2px;
+      color: #6B6760;
+      background: #F0EDE5;
+    }
+
+    .tk-badge-active {
+      color: #FFFFFF;
+      background: var(--accent);
+    }
+
+    /* ── FINAL CTA ── */
+    .cta-section {
+      padding: 96px 24px;
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .cta-headline {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 18px;
+    }
+
+    .cta-headline em {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--serif-accent);
+    }
+
+    .cta-body {
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--ink-soft);
+      margin-bottom: 36px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--rule);
+      padding: 32px 24px;
+    }
+
+    .footer-inner {
+      max-width: 1040px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .footer-copy {
+      font-size: 12px;
+      color: var(--ink-faint);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      font-size: 12px;
+      color: var(--ink-faint);
+      text-decoration: none;
+      transition: color 150ms;
+    }
+    .footer-links a:hover { color: var(--ink-muted); }
+
+    .footer-version {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--ink-faint);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (min-width: 768px) {
+      .nav { padding: 0 48px; }
+      .hero { padding: 108px 48px 96px; }
+      .loop-section { padding: 88px 48px; }
+      .tools-section { padding: 88px 48px; }
+      .toolkit-section { padding: 88px 48px; }
+      .why-section { padding: 88px 48px; }
+      .pricing-section { padding: 88px 48px; }
+      footer { padding: 32px 48px; }
+    }
+
+    @media (max-width: 767px) {
+      .hero-body { font-size: 16px; }
+
+      .loop-row {
+        grid-template-columns: 28px 1fr;
+        gap: 0 12px;
+        row-gap: 6px;
+        padding: 24px 0;
+        align-items: start;
+      }
+      .loop-name { grid-column: 2; }
+      .loop-desc { grid-column: 2; }
+      .loop-row-return .loop-name { display: none; }
+
+      .tool-row {
+        grid-template-columns: 28px 1fr;
+        gap: 0 12px;
+        row-gap: 6px;
+        padding: 24px 0;
+        align-items: start;
+      }
+      .tool-desc { grid-column: 2; }
+
+      .why-points { gap: 28px; }
+
+      .toolkit-grid {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+      .tk-card { padding: 28px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="/" class="nav-logo">SAM</a>
+    <div class="nav-right">
+      <a href="/app" class="nav-return" id="returnLink">Welcome back →</a>
+      <a href="/meet" class="nav-cta">Meet SAM →</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <p class="hero-kicker">AI creative director for serious creators</p>
+    <h1 class="hero-headline">Your story,<br>in <em>your voice.</em></h1>
+    <p class="hero-body">
+      You're working on something real — a video, a newsletter, a build you're showing up for every day. SAM turns the overwhelm of getting it out of your head into work you're ready to post. The work compounds. The voice stays yours.
+    </p>
+    <div class="hero-actions">
+      <a href="/meet" class="btn-primary">Meet SAM →</a>
+      <span class="hero-note">7 days free · no card needed</span>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- HOW IT WORKS -->
+  <div class="loop-section">
+    <p class="mono-label">How it works</p>
+    <div class="loop-list">
+
+      <div class="loop-row">
+        <span class="loop-num">01</span>
+        <div class="loop-name">Voice DNA</div>
+        <div class="loop-desc">SAM learns how you actually write — your pacing, your structure, the decisions you make when something matters.</div>
+      </div>
+
+      <div class="loop-row">
+        <span class="loop-num">02</span>
+        <div class="loop-name">Story Engine</div>
+        <div class="loop-desc">Twelve steps that move your project from stuck-in-your-head to ready-to-post.</div>
+      </div>
+
+      <div class="loop-row">
+        <span class="loop-num">03</span>
+        <div class="loop-name">Reach</div>
+        <div class="loop-desc">The same story, adapted for eight platforms — each one shaped for its audience and format, not just resized.</div>
+      </div>
+
+      <div class="loop-row loop-row-return">
+        <span class="loop-num">↺</span>
+        <div class="loop-name"></div>
+        <div class="loop-desc">Each post starts ahead of the last.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- TOOLS -->
+  <div class="tools-section">
+    <p class="mono-label">What SAM does</p>
+    <div class="tools-list">
+
+      <div class="tool-row">
+        <span class="tool-num">01</span>
+        <div class="tool-name">Voice DNA <span class="tool-tag-inline">Foundation</span></div>
+        <div class="tool-desc">SAM extracts your writing fingerprint — rhythm, sentence structure, phrasing tendencies, the specific way you build an argument. Then applies it to everything it generates for you, so the output sounds like you made the decisions, not a language model.</div>
+      </div>
+
+      <div class="tool-row">
+        <span class="tool-num">02</span>
+        <div class="tool-name">Story Engine <span class="tool-tag-inline">Build</span></div>
+        <div class="tool-desc">A 12-step guided flow that takes one real moment and turns it into a structured story with a clear arc, a defined audience, and a finished draft ready for any format. Ends with a downloadable PDF playbook.</div>
+      </div>
+
+      <div class="tool-row">
+        <span class="tool-num">03</span>
+        <div class="tool-name">Reach <span class="tool-tag-inline">Distribute</span></div>
+        <div class="tool-desc">Once your story is clear, Reach adapts it for every platform — Instagram, LinkedIn, YouTube, TikTok, X, newsletters, and more. Each version is platform-native and sounds like you. Platform adaptation is what you do after the story exists, not the organizing principle of the tool.</div>
+      </div>
+
+      <div class="tool-row">
+        <span class="tool-num">04</span>
+        <div class="tool-name">Spark <span class="tool-tag-inline">Unstuck</span></div>
+        <div class="tool-desc">Tell SAM your niche. Get five content ideas built specifically for your audience — each with a hook, an angle, and a reason it will land. For when you know your space but don't know what to make next.</div>
+      </div>
+
+      <div class="tool-row">
+        <span class="tool-num">05</span>
+        <div class="tool-name">My Ideas <span class="tool-tag-inline">Remember</span></div>
+        <div class="tool-desc">Every hook, draft, and concept SAM builds is saved to your library — organized by stage, searchable, ready to pull back out. No more losing work to closed tabs and forgotten documents.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- WHY SAM -->
+  <div class="why-section">
+    <h2 class="why-headline">Generic AI gives you output.<br>SAM builds your voice.</h2>
+    <div class="why-points">
+
+      <div class="why-point">
+        <div class="why-point-label">Voice DNA</div>
+        <div class="why-point-title">Everything sounds like you wrote it</div>
+        <div class="why-point-body">Most AI tools produce the same sentence structures regardless of who's using them. SAM extracts your mechanical writing traits — the pauses, the rhythm, the structural tendencies — and preserves them across every generation.</div>
+      </div>
+
+      <div class="why-point">
+        <div class="why-point-label">Continuity</div>
+        <div class="why-point-title">SAM remembers where you left off</div>
+        <div class="why-point-body">Every session, SAM picks up with context from your last conversation, your current project, and your publishing goals. You don't explain yourself again every time you open a new chat.</div>
+      </div>
+
+      <div class="why-point">
+        <div class="why-point-label">Built for creators</div>
+        <div class="why-point-title">Story-first, platform-second</div>
+        <div class="why-point-body">SAM is organized around the actual creative loop: understand your voice, build the story, then distribute it. Reach is what you do after the story is clear — not the organizing principle of the tool.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PRICING -->
+  <div class="pricing-section">
+    <div class="pricing-inner">
+      <p class="mono-label">SAM · STANDARD</p>
+      <div class="pricing-card">
+        <div class="pricing-headline">Everything, every day.</div>
+        <div class="pricing-subhead">All eight tools. Voice DNA always-on. Unlimited drafts. Full daily-use loop.</div>
+        <div class="pricing-amount">$29<span> / month · billed monthly</span></div>
+        <ul class="pricing-features">
+          <li>Voice DNA calibration + ongoing recalibration</li>
+          <li>Story Engine — unlimited content packs</li>
+          <li>The Reach — all 8 platforms, copy &amp; open</li>
+          <li>Pulse, Blueprint, Vision, Spark, Lens — all included</li>
+          <li>Email export of voice signature, drafts, and history</li>
+          <li>Cancel any day — keep what you've made</li>
+        </ul>
+        <a href="/meet" class="btn-pricing">Start 7 days free →</a>
+        <p class="pricing-footnote">No card required for the trial · keep your voice signature either way</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOOLKIT -->
+  <div class="toolkit-section">
+    <p class="toolkit-bridge">The loop is the heartbeat. These are the additional tools that make SAM deeper.</p>
+    <p class="mono-label">The rest of the toolkit</p>
+    <div class="toolkit-grid">
+
+      <!-- Lens -->
+      <div>
+        <div class="tk-card">
+          <div class="tk-name-row">
+            <span class="tk-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                <circle cx="10.5" cy="10.5" r="5.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M14.5 14.5L19 19" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8 12L9.8 10.2L11.3 11.6L13.2 8.9" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <div class="tk-name">Lens</div>
+          </div>
+          <span class="tk-verdict-tag">Analytics detected</span>
+          <div class="tk-verdict">
+            <p class="tk-verdict-text">Your overall account is growing fast but your latest post bombed hard — that gap is the real story.</p>
+          </div>
+          <p class="tk-subhead">What's working</p>
+          <ul class="tk-chevron-bullets">
+            <li>Views doubled in 28 days — 105% growth means the algorithm is starting to pick you up, something is clicking</li>
+            <li>Net followers up 150% is the most underrated stat here — you're not just getting views, you're converting strangers into followers</li>
+            <li>Engagement up 28% alongside views means your audience isn't just scrolling past, they're actually stopping and interacting</li>
+          </ul>
+        </div>
+        <p class="tk-caption">Drop an analytics screenshot. SAM tells you what your numbers actually mean.</p>
+      </div>
+
+      <!-- Pulse -->
+      <div>
+        <div class="tk-card">
+          <div class="tk-name-row">
+            <span class="tk-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                <path d="M3 13H6.2L8.5 8.4L11.1 16L13.6 11.2L15.3 13H21" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <div class="tk-name">Pulse</div>
+          </div>
+          <p class="tk-subhead">Your hook</p>
+          <div class="tk-hook">
+            <p class="tk-hook-text">I moved 1,200 miles from home and bought a house that probably should've been condemned.</p>
+          </div>
+          <hr class="tk-divider" />
+          <p class="tk-subhead">B-roll shots</p>
+          <ul class="tk-arrow-bullets">
+            <li>Wide shot of the cottage exterior — overgrown, weathered, all of it</li>
+            <li>Close-up of original 1950s details — trim, flooring, fixtures before demo</li>
+            <li>You swinging a demo tool into a wall — first real gut punch of the reno</li>
+            <li>Quick pan of the worst damage — water stains, rot, whatever's most brutal</li>
+          </ul>
+        </div>
+        <p class="tk-caption">Describe a moment. SAM turns it into a post.</p>
+      </div>
+
+      <!-- Blueprint -->
+      <div>
+        <div class="tk-card">
+          <div class="tk-name-row">
+            <span class="tk-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                <rect x="4" y="4" width="16" height="16" rx="2.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8 4V20M14 4V20M4 10H14" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M16 14L18 12L20 14" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <div class="tk-name">Blueprint</div>
+          </div>
+          <p class="tk-section-head">Your 7-day plan</p>
+          <div class="tk-day-list">
+            <div class="tk-day-item">
+              <div class="tk-day-meta">
+                <span class="tk-day-label">Monday</span>
+                <span class="tk-day-platform">Facebook Reels</span>
+              </div>
+              <div class="tk-day-format">Reel</div>
+              <p class="tk-day-post">stripped a 1950s cottage down to the bones — no plan, just a demo bar and bad decisions 😅 this thing had layers. literal layers. <span class="tk-hashtags">#OldHouseProblems #CottageRehab #DIY</span></p>
+            </div>
+            <div class="tk-day-item">
+              <div class="tk-day-meta">
+                <span class="tk-day-label">Tuesday</span>
+                <span class="tk-day-platform">Facebook Reels</span>
+              </div>
+              <div class="tk-day-format">Reel</div>
+              <p class="tk-day-post">fort myers kid ends up gutting a 50s cottage in maryland. life is weird. but the bones on this house? actually solid. stay tuned. <span class="tk-hashtags">#CottageRehab #DIYRenovation</span></p>
+            </div>
+            <div class="tk-day-item">
+              <div class="tk-day-meta">
+                <span class="tk-day-label">Wednesday</span>
+                <span class="tk-day-platform">Facebook Reels</span>
+              </div>
+              <div class="tk-day-format">Reel</div>
+              <p class="tk-day-post">moved from florida to indiana to maryland — chasing something different each time. right now i'm chasing whatever's behind this plaster wall. <span class="tk-hashtags">#OldHouseLove #CottageRehab</span></p>
+            </div>
+          </div>
+        </div>
+        <p class="tk-caption">Pick your platforms. SAM builds 7 days of posts with a different angle each time.</p>
+      </div>
+
+      <!-- Vision -->
+      <div>
+        <div class="tk-card">
+          <div class="tk-name-row">
+            <span class="tk-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                <path d="M7 5H5.5C4.7 5 4 5.7 4 6.5V8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M17 5H18.5C19.3 5 20 5.7 20 6.5V8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M7 19H5.5C4.7 19 4 18.3 4 17.5V16" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M17 19H18.5C19.3 19 20 18.3 20 17.5V16" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 9L15 12L10 15V9Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <div class="tk-name">Vision</div>
+          </div>
+          <p class="tk-section-head-nb">Your concept</p>
+          <div class="tk-concept-title">I gutted a 1950s cottage nobody wanted</div>
+          <span class="tk-format-pill">Reel</span>
+          <div class="tk-score-row">
+            <span class="tk-score-label">Scroll-stop score</span>
+            <span class="tk-score-value">74%</span>
+          </div>
+          <div class="tk-score-track"><div class="tk-score-fill"></div></div>
+          <hr class="tk-divider" />
+          <p class="tk-section-head-nb">Why it works</p>
+          <p class="tk-reasoning">People follow places and people before they follow content — a 1950s gut job in Maryland with a Florida guy who bounced through Indianapolis is a specific enough story that it cuts through the noise. The tutorial gives the algorithm a reason to push it, the personal thread gives people a reason to follow.</p>
+        </div>
+        <p class="tk-caption">Pick your platform and concept style. SAM generates a video idea with a scroll-stop score and full filming direction.</p>
+      </div>
+
+      <!-- Spark -->
+      <div>
+        <div class="tk-card">
+          <div class="tk-name-row">
+            <span class="tk-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                <path d="M12 4L13.7 8.3L18 10L13.7 11.7L12 16L10.3 11.7L6 10L10.3 8.3L12 4Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <div class="tk-name">Spark</div>
+          </div>
+          <p class="tk-section-head">Your ideas</p>
+          <div class="tk-spark-list">
+            <div class="tk-spark-item">
+              <div class="tk-spark-num">Idea 01</div>
+              <div class="tk-spark-row">
+                <div class="tk-spark-title">The real reason I gutted a 1950s cottage instead of buying something move-in ready</div>
+                <span class="tk-spark-platform">YouTube</span>
+              </div>
+              <p class="tk-spark-reason">People who follow renovation content don't just want to see the work — they want to know why someone made a hard choice, and this gives Joey a story that's actually his</p>
+            </div>
+            <div class="tk-spark-item">
+              <div class="tk-spark-num">Idea 02</div>
+              <div class="tk-spark-row">
+                <div class="tk-spark-title">What a 1950s Maryland cottage looks like when you pull the walls open for the first time — no filter, no cleanup</div>
+                <span class="tk-spark-platform">TikTok</span>
+              </div>
+              <p class="tk-spark-reason">Raw first-demo footage stops scrollers cold because everyone wants to see what's hiding behind old walls, and the shock factor does the work</p>
+            </div>
+            <div class="tk-spark-item">
+              <div class="tk-spark-num">Idea 03</div>
+              <div class="tk-spark-row">
+                <div class="tk-spark-title">I moved from Florida to Indiana to Maryland — here's what each place actually taught me</div>
+                <span class="tk-spark-platform">Instagram</span>
+              </div>
+              <p class="tk-spark-reason">The multi-state arc is genuinely unusual and gives Joey a personal story hook that separates him from every other renovation account</p>
+            </div>
+          </div>
+        </div>
+        <p class="tk-caption">Tell SAM your niche. SAM gives you 5 specific content ideas with reasoning for why each one will perform.</p>
+      </div>
+
+      <!-- My Ideas -->
+      <div>
+        <div class="tk-card">
+          <div class="tk-myideas-name-row">
+            <span class="tk-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                <rect x="5" y="7" width="11" height="10" rx="2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9 7V6.5C9 5.7 9.7 5 10.5 5H17.5C18.3 5 19 5.7 19 6.5V13.5C19 14.3 18.3 15 17.5 15H16" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span class="tk-name">My Ideas</span>
+            <span class="tk-myideas-count">26 ideas</span>
+          </div>
+          <div class="tk-search-field">Search ideas, hooks, concepts…</div>
+          <p class="tk-filter-label">Source</p>
+          <div class="tk-chip-row">
+            <span class="tk-chip tk-chip-teal">All</span>
+            <span class="tk-chip">Playbook</span>
+            <span class="tk-chip">Pulse</span>
+            <span class="tk-chip">Spark</span>
+            <span class="tk-chip">Vision</span>
+            <span class="tk-chip">Blueprint</span>
+            <span class="tk-chip">Lens</span>
+          </div>
+          <p class="tk-filter-label">Stage</p>
+          <div class="tk-chip-row">
+            <span class="tk-chip tk-chip-rust">Saved</span>
+            <span class="tk-chip">Scripting</span>
+            <span class="tk-chip">Filmed</span>
+            <span class="tk-chip">Posted</span>
+          </div>
+          <hr class="tk-ideas-hr" />
+          <div class="tk-idea-card">
+            <div class="tk-idea-meta">
+              <div class="tk-idea-source">
+                <span class="tk-idea-source-name">PULSE</span>
+                <span class="tk-idea-source-type">&nbsp;— hook</span>
+              </div>
+              <span class="tk-idea-date">Apr 25</span>
+            </div>
+            <p class="tk-idea-content">"Nobody tells you that the scariest part of a renovation isn't the demo — it's the part right before you cover everything up forever."</p>
+            <div class="tk-stage-row">
+              <span class="tk-badge tk-badge-active">SAVED</span>
+              <span class="tk-badge">SCRIPTING</span>
+              <span class="tk-badge">FILMED</span>
+              <span class="tk-badge">POSTED</span>
+            </div>
+          </div>
+          <div class="tk-idea-card">
+            <div class="tk-idea-meta">
+              <div class="tk-idea-source">
+                <span class="tk-idea-source-name">PULSE</span>
+                <span class="tk-idea-source-type">&nbsp;— diagnosis</span>
+              </div>
+              <span class="tk-idea-date">Apr 25</span>
+            </div>
+            <p class="tk-idea-content">"This script hits the emotional core of imposter syndrome meeting unlikely momentum — Joey didn't hire a contractor, didn't hire a social media manager, didn't know what he was…"</p>
+            <div class="tk-stage-row">
+              <span class="tk-badge">SAVED</span>
+              <span class="tk-badge tk-badge-active">SCRIPTING</span>
+              <span class="tk-badge">FILMED</span>
+              <span class="tk-badge">POSTED</span>
+            </div>
+          </div>
+        </div>
+        <p class="tk-caption">Every idea SAM generates lives here — searchable, filterable, and tracked from saved to posted.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FINAL CTA -->
+  <div class="cta-section">
+    <h2 class="cta-headline">Ready to make work that<br><em>sounds like you?</em></h2>
+    <p class="cta-body">7 days free. No credit card. Start with a conversation and see what SAM builds around your voice.</p>
+    <a href="/meet" class="btn-primary">Meet SAM →</a>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <span class="footer-copy">© 2026 SAM for Creators</span>
+      <span class="footer-version">v0.11</span>
+      <div class="footer-links">
+        <a href="mailto:joey@samforcreators.com">Contact</a>
+        <a href="/meet">Start free</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    if (localStorage.getItem('sam_session_v2')) {
+      document.getElementById('returnLink').style.display = 'inline';
+    }
+  </script>
+
+</body>
+</html>
