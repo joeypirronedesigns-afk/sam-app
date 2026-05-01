@@ -6401,7 +6401,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.97" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.98" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -13632,9 +13632,9 @@ async function generateStoryReflection() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         mode: 'chat',
-        userId: _s9UserId,
+        userId: 'anon',
         messages: [{ role: 'user', content: text }],
-        systemPrompt: `You are SAM — a creative intelligence who finds the real story inside what creators share. Read what this person wrote and reflect back the emotional core in 2-3 sentences. Tell them what makes their story powerful, what their audience will connect with, and why it matters. Be specific to what they actually wrote — never generic. Never say "I can see that" or "It sounds like". Speak directly and warmly, as if you already know them. Never use bullet points. End with one sentence that makes them feel ready to keep going.`
+        systemPrompt: `You are SAM. Read what this person wrote and reflect back ONLY the emotional core — maximum 3 sentences, no more. Do NOT write a Facebook post, script, caption, or any content format. Do NOT include dashes, headers, or structured output. Just 3 warm, specific sentences that tell them what makes their story powerful and end with one sentence that makes them feel ready to keep going. Never say "I can see" or "It sounds like". Never use bullet points.`
       })
     });
     const reader = res.body.getReader();
