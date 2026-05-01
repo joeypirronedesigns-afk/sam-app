@@ -3,47 +3,56 @@ const { trackUser, trackEvent, saveUserProfile, getUserProfile, updateUserEmail,
 const { normalizeSamContext, buildBrainPrompt } = require('./_context');
 const { checkGate } = require('./_gate');
 
-// v9.113.1.1 — Voice DNA gate copy keyed by ACTUAL sam.js mode strings sent by frontend
+// v9.113.3 — Voice DNA gate copy keyed by ACTUAL sam.js mode strings sent by frontend.
+// Structure: { tool, descriptor, ctaAnon, ctaUnpaid } — frontend renders locked-state UI.
 const GATE_COPY = {
   chat: {
     tool: 'Talk with SAM',
-    anon: 'Sign in to chat with SAM. SAM works best when she actually knows you.',
-    unpaid: 'Subscribe to chat with SAM. Get a real editorial director in your corner — $39/month, every tool included, cancel anytime.'
+    descriptor: 'Chat with SAM about your content, offers, and next moves.',
+    ctaAnon: 'Sign in to use Talk with SAM.',
+    ctaUnpaid: 'Subscribe to use Talk with SAM — $39/month, every tool included, cancel anytime.'
   },
   ideas: {
     tool: 'The Spark',
-    anon: "Sign in to use The Spark. SAM's ideas get sharper once she knows your voice and audience.",
-    unpaid: 'Subscribe to use The Spark. Get steady, voice-matched content ideas tuned to your niche — $39/month, every tool included, cancel anytime.'
+    descriptor: 'Never run out of things to post.',
+    ctaAnon: 'Sign in to use The Spark.',
+    ctaUnpaid: 'Subscribe to use The Spark — $39/month, every tool included, cancel anytime.'
   },
   upload: {
     tool: 'The Lens',
-    anon: 'Sign in to use The Lens. SAM needs to know your channel first before she can read your analytics.',
-    unpaid: "Subscribe to use The Lens. Let SAM read your analytics and surface what's really working — $39/month, every tool included, cancel anytime."
+    descriptor: 'Make people stop scrolling instantly.',
+    ctaAnon: 'Sign in to use The Lens.',
+    ctaUnpaid: 'Subscribe to use The Lens — $39/month, every tool included, cancel anytime.'
   },
   calendar: {
-    tool: 'The Blueprint',
-    anon: 'Sign in to use The Blueprint. SAM builds your content calendar around your goals, not generic prompts.',
-    unpaid: 'Subscribe to use The Blueprint. Get a structured launch and publishing plan across every channel — $39/month, every tool included, cancel anytime.'
+    tool: 'Blueprint',
+    descriptor: 'Your whole week planned in 30 seconds.',
+    ctaAnon: 'Sign in to use Blueprint.',
+    ctaUnpaid: 'Subscribe to use Blueprint — $39/month, every tool included, cancel anytime.'
   },
   concept: {
     tool: 'The Vision',
-    anon: 'Sign in to use The Vision. SAM turns your metrics into "what to do next" — but only once she\'s attached to your account.',
-    unpaid: 'Subscribe to use The Vision. Turn noisy analytics into clear narrative and next steps — $39/month, every tool included, cancel anytime.'
+    descriptor: 'One bold concept nobody else has made.',
+    ctaAnon: 'Sign in to use The Vision.',
+    ctaUnpaid: 'Subscribe to use The Vision — $39/month, every tool included, cancel anytime.'
   },
   pulse: {
     tool: 'The Pulse',
-    anon: 'Sign in to use The Pulse. SAM reads what\'s working in your niche through the lens of what fits you, not generic trends.',
-    unpaid: 'Subscribe to use The Pulse. See the patterns, hooks, and formats actually working in your niche — $39/month, every tool included, cancel anytime.'
+    descriptor: 'Turn a real moment into your best video.',
+    ctaAnon: 'Sign in to use The Pulse.',
+    ctaUnpaid: 'Subscribe to use The Pulse — $39/month, every tool included, cancel anytime.'
   },
   playbook: {
     tool: 'Story Engine',
-    anon: "Sign in to use Story Engine. Story Engine builds a 12-step content playbook that's tuned to you and your goals.",
-    unpaid: 'Subscribe to build your playbook. Story Engine is part of your SAM membership — $39/month for the full OS: Story Engine, Voice DNA, Daily Briefs, and more. Cancel anytime.'
+    descriptor: 'Build your full content playbook.',
+    ctaAnon: 'Sign in to use Story Engine.',
+    ctaUnpaid: 'Subscribe to use Story Engine — $39/month, every tool included, cancel anytime.'
   },
   regen_section: {
     tool: 'Story Engine',
-    anon: "Sign in to use Story Engine. Story Engine builds a 12-step content playbook that's tuned to you and your goals.",
-    unpaid: 'Subscribe to build your playbook. Story Engine is part of your SAM membership — $39/month for the full OS: Story Engine, Voice DNA, Daily Briefs, and more. Cancel anytime.'
+    descriptor: 'Build your full content playbook.',
+    ctaAnon: 'Sign in to use Story Engine.',
+    ctaUnpaid: 'Subscribe to use Story Engine — $39/month, every tool included, cancel anytime.'
   }
 };
 
@@ -135,8 +144,9 @@ module.exports = async function handler(req, res) {
       email: _emailForGate,
       userId,
       tool: _gateCopy.tool,
-      copyAnonymous: _gateCopy.anon,
-      copyUnpaid: _gateCopy.unpaid
+      descriptor: _gateCopy.descriptor,
+      ctaAnonymous: _gateCopy.ctaAnon,
+      ctaUnpaid: _gateCopy.ctaUnpaid
     });
     if (!_gate.ok) return res.status(_gate.status).json(_gate.body);
   }
