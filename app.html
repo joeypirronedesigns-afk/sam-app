@@ -6401,7 +6401,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.105" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.106" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -10044,15 +10044,60 @@ async function getToolContext() {
 
 function writeUserCache(user) {
   try {
-    localStorage.setItem(_SAM_USER_KEY, JSON.stringify({ ...user, _cachedAt: Date.now() }));
+    if (!user || typeof user !== 'object') return;
+    var prev = null;
+    try { prev = JSON.parse(localStorage.getItem(_SAM_USER_KEY) || 'null') || {}; } catch { prev = {}; }
+    prev = prev || {};
+    // Explicit 13-field schema. Partial writes merge with prev so brain fields survive.
+    var pick = function(a, b) { return (a !== undefined && a !== null) ? a : b; };
+    var cached = {
+      // Original 10 fields — preserved exactly
+      email:          pick(user.email,          prev.email),
+      name:           pick(user.name,           prev.name),
+      tier:           pick(user.tier,           prev.tier),
+      paid:           pick(user.paid,           prev.paid),
+      trialStart:     pick(user.trialStart,     prev.trialStart),
+      paidAt:         pick(user.paidAt,         prev.paidAt),
+      stripeCustomer: pick(user.stripeCustomer, prev.stripeCustomer),
+      createdAt:      pick(user.createdAt,      prev.createdAt),
+      updatedAt:      pick(user.updatedAt,      prev.updatedAt),
+      _cachedAt:      Date.now(),
+      // NEW brain fields — additive, null-safe, snake_case fallback, prev-merge
+      samContext:     user.samContext   || user.sam_context   || prev.samContext   || null,
+      voiceProfile:   user.voiceProfile || user.voice_profile || prev.voiceProfile || null,
+      voiceVersion:   user.voiceVersion || user.voice_version || prev.voiceVersion || null
+    };
+    localStorage.setItem(_SAM_USER_KEY, JSON.stringify(cached));
     // Legacy shim — keeps getTrialState() returning correct data while call sites are migrated
     localStorage.setItem('sam-trial', JSON.stringify({
-      email: user.email, name: user.name, tier: user.tier,
-      paid: user.paid, trialStart: user.trialStart
+      email: cached.email, name: cached.name, tier: cached.tier,
+      paid: cached.paid, trialStart: cached.trialStart
     }));
     // Pre-fill wizard name field if open
     if (typeof _samPrefillWizard === 'function') _samPrefillWizard(0);
   } catch {}
+}
+
+// Bootstrap hydration — fetches /api/me once per app load to backfill brain fields.
+// Runs even if cache is fresh, because pre-brain caches stay valid for 24h and would
+// otherwise never re-hydrate.
+async function hydrateUserCacheBootstrap() {
+  try {
+    if (window.__samCacheHydrated) return;
+    window.__samCacheHydrated = true;
+    var cached = (typeof readUserCache === 'function') ? readUserCache() : null;
+    var trial = (typeof getTrialState === 'function') ? getTrialState() : null;
+    var email = (cached && cached.email) || (trial && trial.email) || null;
+    if (!email) return;
+    var r = await fetch('/api/me', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email })
+    });
+    if (!r.ok) return;
+    var data = await r.json();
+    if (data && data.user) writeUserCache(data.user);
+  } catch (e) { /* fail open */ }
 }
 
 function clearUserCache() {
@@ -10605,13 +10650,16 @@ function initChat() {
     if (hint && !chatOpen && !chatHintDismissed) hint.style.display = 'block';
   }, 30000);
 
-  // Restore from localStorage cache (instant) — fall back to greeting for new users
+  // Restore from localStorage cache (instant) — fall back to greeting for new users.
+  // NOTE: empty-state greeting is render-only (does NOT persist) so it never pollutes sam-chat-history.
   const _chatCached = (() => { try { return JSON.parse(localStorage.getItem('sam-chat-history') || '[]'); } catch { return []; } })();
   if (_chatCached.length > 0) {
     chatHistory = _chatCached;
     chatHistory.forEach(m => _renderChatMessageUI(m.role === 'assistant' ? 'sam' : m.role, m.content));
   } else {
-    addChatMessage('sam', "Hey! I'm SAM — I know everything about this app. What tool are you trying to use, or what are you trying to create? I'll point you in the right direction. 🎯");
+    const _initState = (typeof getTrialState === 'function') ? getTrialState() : {};
+    const _initName = _initState.name ? ', ' + _initState.name.split(' ')[0] : '';
+    _renderChatMessageUI('sam', "Hey" + _initName + " — what's on your mind?");
   }
 
   // Sync from server — server is source of truth for authenticated users
@@ -10673,7 +10721,7 @@ function addChatMessage(role, text) {
   const _chatU = getCurrentUserCached();
   const _chatUserId = (_chatU && _chatU.email ? _chatU.email : 'anon').toLowerCase();
   chatHistory.push({ role: role === 'sam' ? 'assistant' : 'user', content: text, userId: _chatUserId });
-  try { localStorage.setItem('sam-chat-history', JSON.stringify(chatHistory.slice(-40))); } catch {}
+  try { localStorage.setItem('sam-chat-history', JSON.stringify(chatHistory.slice(-SAM_CHAT_MAX_TURNS))); } catch {}
   if (_chatUserId && _chatUserId !== 'anon') {
     const newest = chatHistory[chatHistory.length - 1];
     fetch('/api/memory', {
@@ -10768,10 +10816,24 @@ async function sendChatMessage() {
 // PERSISTENT SAM — Always-on creative partner
 // ══════════════════════════════════════════════════════════════════════════════
 
-const SAM_PERSISTENT_HISTORY_KEY = 'sam-persistent-history';
+const SAM_PERSISTENT_HISTORY_KEY = 'sam-persistent-history'; // legacy — kept only for migration
+const SAM_CHAT_HISTORY_KEY = 'sam-chat-history';             // canonical Talk with SAM key
+const SAM_CHAT_MAX_TURNS = 20;                               // hybrid persistence cap (10 user + 10 assistant)
 const SAM_PERSISTENT_OPEN_KEY = 'sam-persistent-open';
 let persistentSAMOpen = false;
 let persistentSAMHistory = [];
+
+// One-time migration: legacy sam-persistent-history → canonical sam-chat-history.
+// Runs at module load before any reader/writer touches either key.
+(function migrateSAMChatHistory() {
+  try {
+    var legacy = localStorage.getItem(SAM_PERSISTENT_HISTORY_KEY);
+    if (legacy && !localStorage.getItem(SAM_CHAT_HISTORY_KEY)) {
+      localStorage.setItem(SAM_CHAT_HISTORY_KEY, legacy);
+    }
+    localStorage.removeItem(SAM_PERSISTENT_HISTORY_KEY);
+  } catch (e) { /* fail silent */ }
+})();
 
 function getSAMPersistentPrompt() {
   const state = getTrialState();
@@ -10881,14 +10943,15 @@ RESPONSE LENGTH RULE — CRITICAL:
 
 function loadPersistentHistory() {
   try {
-    return JSON.parse(localStorage.getItem(SAM_PERSISTENT_HISTORY_KEY) || '[]');
+    const arr = JSON.parse(localStorage.getItem(SAM_CHAT_HISTORY_KEY) || '[]');
+    return Array.isArray(arr) ? arr : [];
   } catch { return []; }
 }
 
 function savePersistentHistory(history) {
   try {
-    const trimmed = history.slice(-40);
-    localStorage.setItem(SAM_PERSISTENT_HISTORY_KEY, JSON.stringify(trimmed));
+    const trimmed = (history || []).slice(-SAM_CHAT_MAX_TURNS);
+    localStorage.setItem(SAM_CHAT_HISTORY_KEY, JSON.stringify(trimmed));
     // Mirror the newest message to the server for cross-device persistence
     const userId = (getTrialState().email || '').toLowerCase();
     if (userId && trimmed.length > 0) {
@@ -10953,8 +11016,8 @@ function initPersistentSAM() {
       .then(r => r.ok ? r.json() : null)
       .then(data => {
         if (data && Array.isArray(data.messages) && data.messages.length > 0) {
-          persistentSAMHistory = data.messages;
-          localStorage.setItem(SAM_PERSISTENT_HISTORY_KEY, JSON.stringify(persistentSAMHistory));
+          persistentSAMHistory = data.messages.slice(-SAM_CHAT_MAX_TURNS);
+          localStorage.setItem(SAM_CHAT_HISTORY_KEY, JSON.stringify(persistentSAMHistory));
           _renderPersistentHistory(persistentSAMHistory);
         }
       })
@@ -11256,7 +11319,8 @@ async function sendPersistentMessage() {
 
 function clearPersistentHistory() {
   persistentSAMHistory = [];
-  localStorage.removeItem(SAM_PERSISTENT_HISTORY_KEY);
+  try { localStorage.removeItem(SAM_CHAT_HISTORY_KEY); } catch {}
+  try { localStorage.removeItem(SAM_PERSISTENT_HISTORY_KEY); } catch {}
   const msgs = document.getElementById('persistentSAMMessages');
   if (msgs) msgs.innerHTML = '';
   const state = getTrialState();
@@ -12089,11 +12153,13 @@ if (document.readyState === 'loading') {
 
     initPersistentSAM();
     initTrial(); initChat(); initWizard(); initHeroVisibility();
+    hydrateUserCacheBootstrap();
     setTimeout(() => { if (typeof updateWizardHeader === 'function') updateWizardHeader(); }, 300);
     setTimeout(() => { if (localStorage.getItem('sam_uid') && localStorage.getItem('samFirstRunDone')) openWorkshop(); }, 400);
   });
 } else {
   initTrial(); initChat(); initWizard(); initHeroVisibility();
+  hydrateUserCacheBootstrap();
   setTimeout(() => { if (typeof updateWizardHeader === 'function') updateWizardHeader(); }, 300);
   setTimeout(() => { if (localStorage.getItem('sam_uid') && localStorage.getItem('samFirstRunDone')) openWorkshop(); }, 400);
 }
