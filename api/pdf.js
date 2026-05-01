@@ -533,7 +533,11 @@ function callout(text) {
 // ─── PLAYBOOK BUILDER ─────────────────────────────────────────────────────────
 
 function buildPlaybookHTML(pb, brand) {
-  const brandName   = brand.brandName   || 'Your Brand';
+  // Fallback order: wizard brandName → brain identity.name → user.name → 'Your Brand'
+  const brandName = brand.brandName
+    || (brand.samContext && (() => { try { return JSON.parse(brand.samContext).identity && JSON.parse(brand.samContext).identity.name; } catch(e) { return null; } })())
+    || brand.userName
+    || 'Your Brand';
   const brandColor  = brand.brandColor  || '#20808D';
   const brandHandle = brand.brandHandle || '';
   const date        = brand.date        || new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -767,7 +771,11 @@ function buildPlaybookHTML(pb, brand) {
 // ─── LEAD MAGNET BUILDER ──────────────────────────────────────────────────────
 
 function buildLeadMagnetHTML(lm, brand) {
-  const brandName   = brand.brandName   || 'Your Brand';
+  // Fallback order: wizard brandName → brain identity.name → user.name → 'Your Brand'
+  const brandName = brand.brandName
+    || (brand.samContext && (() => { try { return JSON.parse(brand.samContext).identity && JSON.parse(brand.samContext).identity.name; } catch(e) { return null; } })())
+    || brand.userName
+    || 'Your Brand';
   const brandColor  = brand.brandColor  || '#20808D';
   const brandHandle = brand.brandHandle || '';
   const date        = brand.date        || new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
