@@ -722,7 +722,7 @@ function buildPlaybookHTML(pb, brand) {
         ${lm.title ? `<h2 class="section-title">${e(lm.title)}</h2>` : ''}
         ${lm.why   ? callout(lm.why) : ''}
         ${itemsHTML}
-        ${lm.comment_response ? `<div class="sp-16"></div>${card('Comment to Post', lm.comment_response, null)}` : ''}
+        ${lm.comment_response ? `<div class="sp-16"></div>${card('Share This', lm.comment_response, null)}` : ''}
       </div>
       ${ftr(brandName)}
     </div>`);
@@ -819,7 +819,7 @@ function buildLeadMagnetHTML(lm, brand) {
       <div class="section-body">
         ${sLabel("What's Inside")}
         ${itemsHTML}
-        ${lm.comment_response ? `<div class="sp-16"></div>${card('Comment to Post', lm.comment_response, null)}` : ''}
+        ${lm.comment_response ? `<div class="sp-16"></div>${card('Share This', lm.comment_response, null)}` : ''}
       </div>
       ${ftr(brandName)}
     </div>`);
