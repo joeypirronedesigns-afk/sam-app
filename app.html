@@ -6401,7 +6401,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.104" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.105" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -13611,11 +13611,24 @@ async function generateStoryReflection() {
           systemPrompt: 'You are SAM. Respond in 2-3 sentences max. Be specific and emotionally resonant.'
         })
       });
-      const data = await res.json();
-      if (data.result && data.result.reply) {
-        WS.diagnosedStory = data.result.reply;
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let reply = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        for (const line of decoder.decode(value, { stream: true }).split('\n')) {
+          if (!line.startsWith('data: ')) continue;
+          try {
+            const evt = JSON.parse(line.slice(6).trim());
+            if (evt.done && evt.result && evt.result.reply) reply = evt.result.reply;
+          } catch(_) {}
+        }
+      }
+      if (reply) {
+        WS.diagnosedStory = reply;
         saveWizardState();
-        if (diagEl) diagEl.innerHTML = '<div class="sam-diagnosis-reveal">' + mdToHtml(data.result.reply) + '</div>';
+        if (diagEl) diagEl.innerHTML = '<div class="sam-diagnosis-reveal">' + mdToHtml(reply) + '</div>';
         if (nextBtn) nextBtn.disabled = false;
         return;
       }
