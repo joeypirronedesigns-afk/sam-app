@@ -6404,7 +6404,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.109" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.110" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -6461,7 +6461,7 @@ body.quiet-studio-shell .qs-rail nav {
   <button class="qs-dash-rail-item" data-qs-nav="my-ideas" onclick="if(typeof openIdeasPanel==='function')openIdeasPanel()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="7" width="11" height="10" rx="2"/><path d="M9 7V6.5C9 5.7 9.7 5 10.5 5H17.5C18.3 5 19 5.7 19 6.5V13.5C19 14.3 18.3 15 17.5 15H16"/></svg>
     My Ideas
-    <span class="qs-dash-rail-item-count">26</span>
+    <span class="qs-dash-rail-item-count" id="qsIdeasNavCount">0</span>
   </button>
   <button class="qs-dash-rail-item" data-qs-nav="all-tools" onclick="openQSDrawer()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></svg>
@@ -11785,7 +11785,7 @@ function psamRunPulse(ideaText) {
 }
 
 // ══ SAM IDEAS BANK ══
-const IB={currentFilter:'all',currentStatusFilter:null,load(){try{return JSON.parse(localStorage.getItem('sam-ideas')||'[]')}catch{return[]}},save(ideas){try{localStorage.setItem('sam-ideas',JSON.stringify(ideas))}catch{}this.updateNavBadge()},add(idea){const ideas=this.load();const newText=(idea.text||'').trim();const newType=idea.type||'pulse';const newSub=idea.subtype||'';if(ideas.some(i=>(i.text||'').trim()===newText)){showIbToast('Already saved');return null;}const entry={id:Date.now()+'_'+Math.random().toString(36).slice(2,7),text:newText,type:idea.type||'pulse',subtype:idea.subtype||'',platform:idea.platform||'',status:'saved',date:new Date().toISOString()};ideas.unshift(entry);this.save(ideas);this.updateNavBadge();showIbToast('Saved to Ideas');return entry.id},updateStatus(id,status){const ideas=this.load();const idx=ideas.findIndex(i=>i.id===id);if(idx!==-1){ideas[idx].status=status;this.save(ideas)}},delete(id){this.save(this.load().filter(i=>i.id!==id));renderIdeasList();this.updateNavBadge()},forceAdd(idea){const ideas=this.load();ideas.unshift({text:(idea.text||'').trim(),type:idea.type||'pulse',subtype:idea.subtype||'',platform:idea.platform||'',status:'saved',id:Date.now()+'_'+Math.random().toString(36).slice(2,7),date:new Date().toISOString()});this.save(ideas);showIbToast('Saved to Ideas');},updateNavBadge(){const count=this.load().filter(i=>i.status!=='posted').length;const b=document.getElementById('ideasNavBadge');if(b){b.textContent=count>9?'9+':count;b.classList.toggle('show',count>0)}const l=document.getElementById('ideasCountLabel');if(l){const t=this.load().length;l.textContent=t===0?'0 saved':t+' idea'+(t!==1?'s':'')}},getFiltered(){let ideas=this.load();const q=(document.getElementById('ideasSearchInput')?.value||'').trim().toLowerCase();if(q)ideas=ideas.filter(i=>(i.text||'').toLowerCase().includes(q)||(i.platform||'').toLowerCase().includes(q)||(i.subtype||'').toLowerCase().includes(q));if(this.currentFilter!=='all')ideas=ideas.filter(i=>i.type===this.currentFilter);if(this.currentStatusFilter)ideas=ideas.filter(i=>i.status===this.currentStatusFilter);return ideas}};
+const IB={currentFilter:'all',currentStatusFilter:null,load(){try{return JSON.parse(localStorage.getItem('sam-ideas')||'[]')}catch{return[]}},save(ideas){try{localStorage.setItem('sam-ideas',JSON.stringify(ideas))}catch{}this.updateNavBadge()},add(idea){const ideas=this.load();const newText=(idea.text||'').trim();const newType=idea.type||'pulse';const newSub=idea.subtype||'';if(ideas.some(i=>(i.text||'').trim()===newText)){showIbToast('Already saved');return null;}const entry={id:Date.now()+'_'+Math.random().toString(36).slice(2,7),text:newText,type:idea.type||'pulse',subtype:idea.subtype||'',platform:idea.platform||'',status:'saved',date:new Date().toISOString()};ideas.unshift(entry);this.save(ideas);this.updateNavBadge();showIbToast('Saved to Ideas');return entry.id},updateStatus(id,status){const ideas=this.load();const idx=ideas.findIndex(i=>i.id===id);if(idx!==-1){ideas[idx].status=status;this.save(ideas)}},delete(id){this.save(this.load().filter(i=>i.id!==id));renderIdeasList();this.updateNavBadge()},forceAdd(idea){const ideas=this.load();ideas.unshift({text:(idea.text||'').trim(),type:idea.type||'pulse',subtype:idea.subtype||'',platform:idea.platform||'',status:'saved',id:Date.now()+'_'+Math.random().toString(36).slice(2,7),date:new Date().toISOString()});this.save(ideas);showIbToast('Saved to Ideas');},updateNavBadge(){const count=this.load().filter(i=>i.status!=='posted').length;const b=document.getElementById('ideasNavBadge');if(b){b.textContent=count>9?'9+':count;b.classList.toggle('show',count>0)}const l=document.getElementById('ideasCountLabel');if(l){const t=this.load().length;l.textContent=t===0?'0 saved':t+' idea'+(t!==1?'s':'')}/* v9.110 — QS left-rail badge reads from same sam-ideas source as drawer header */const q=document.getElementById('qsIdeasNavCount');if(q){const total=this.load().length;q.textContent=total;q.style.display=total>0?'':'none'}},getFiltered(){let ideas=this.load();const q=(document.getElementById('ideasSearchInput')?.value||'').trim().toLowerCase();if(q)ideas=ideas.filter(i=>(i.text||'').toLowerCase().includes(q)||(i.platform||'').toLowerCase().includes(q)||(i.subtype||'').toLowerCase().includes(q));if(this.currentFilter!=='all')ideas=ideas.filter(i=>i.type===this.currentFilter);if(this.currentStatusFilter)ideas=ideas.filter(i=>i.status===this.currentStatusFilter);return ideas}};
 function openIdeasPanel(){
   // Set export button label based on device
   const btn = document.getElementById('ideasExportBtn');
@@ -12172,12 +12172,14 @@ if (document.readyState === 'loading') {
     initPersistentSAM();
     initTrial(); initChat(); initWizard(); initHeroVisibility();
     hydrateUserCacheBootstrap();
+    if (typeof IB !== 'undefined') IB.updateNavBadge();
     setTimeout(() => { if (typeof updateWizardHeader === 'function') updateWizardHeader(); }, 300);
     setTimeout(() => { if (localStorage.getItem('sam_uid') && localStorage.getItem('samFirstRunDone')) openWorkshop(); }, 400);
   });
 } else {
   initTrial(); initChat(); initWizard(); initHeroVisibility();
   hydrateUserCacheBootstrap();
+  if (typeof IB !== 'undefined') IB.updateNavBadge();
   setTimeout(() => { if (typeof updateWizardHeader === 'function') updateWizardHeader(); }, 300);
   setTimeout(() => { if (localStorage.getItem('sam_uid') && localStorage.getItem('samFirstRunDone')) openWorkshop(); }, 400);
 }
