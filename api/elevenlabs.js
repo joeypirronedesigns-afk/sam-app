@@ -2,6 +2,8 @@
 // Server-side proxy for ElevenLabs text-to-speech.
 // Reads ELEVENLABS_API_KEY from Vercel env var — never exposed to the browser.
 
+const { checkGate } = require('./_gate');
+
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -9,10 +11,22 @@ module.exports = async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
+  const _body = req.body || {};
+
+  // v9.113.1 — Voice DNA gate
+  const _gate = await checkGate({
+    email: _body.email || _body.userEmail || '',
+    userId: _body.userId || 'anon',
+    tool: 'Hear SAM',
+    copyAnonymous: 'Sign in to hear SAM. Voice playback is tied to your account so she can speak in your tone, not a generic one.',
+    copyUnpaid: 'Subscribe to hear SAM read your work. Turn drafts into voice-ready reads in your tone — $39/month, every tool included, cancel anytime.'
+  });
+  if (!_gate.ok) return res.status(_gate.status).json(_gate.body);
+
   const apiKey = process.env.ELEVENLABS_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'ELEVENLABS_API_KEY not configured' });
 
-  const { text, voiceId, modelId, voiceSettings } = req.body || {};
+  const { text, voiceId, modelId, voiceSettings } = _body;
   if (!text) return res.status(400).json({ error: 'text required' });
   if (!voiceId) return res.status(400).json({ error: 'voiceId required' });
 

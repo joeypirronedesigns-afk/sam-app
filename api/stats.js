@@ -19,6 +19,13 @@ async function query(table, filters) {
 export default async function handler(req) {
   const headers = { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' };
   if (req.method === 'OPTIONS') return new Response(null, { status: 200, headers });
+
+  // v9.113.1 — admin lock
+  const _adminSecret = req.headers.get && req.headers.get('x-admin-secret');
+  if (!process.env.ADMIN_SECRET || !_adminSecret || _adminSecret !== process.env.ADMIN_SECRET) {
+    return new Response(JSON.stringify({ error: 'forbidden' }), { status: 403, headers });
+  }
+
   if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return new Response(JSON.stringify({ error: 'Supabase not configured' }), { status: 500, headers });
 
   try {

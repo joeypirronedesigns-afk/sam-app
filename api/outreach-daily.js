@@ -64,6 +64,18 @@ module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Cache-Control', 'no-store, max-age=0');
 
+  // v9.113.1 — cron-secret check
+  // Vercel cron invocations send Authorization: Bearer <CRON_SECRET> automatically.
+  // x-cron-secret accepted as fallback for manual triggering.
+  const _cronSecret = process.env.CRON_SECRET;
+  const _authHeader = (req.headers['authorization'] || '').toString();
+  const _xCronHeader = (req.headers['x-cron-secret'] || '').toString();
+  const _validVercel = _cronSecret && _authHeader === `Bearer ${_cronSecret}`;
+  const _validCustom = _cronSecret && _xCronHeader === _cronSecret;
+  if (!_validVercel && !_validCustom) {
+    return res.status(401).json({ error: 'unauthorized' });
+  }
+
   const runId = shortToken();
   const startTime = Date.now();
 

@@ -7,6 +7,11 @@ const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const { loadUserContext, buildBrainPrompt } = require('./_context');
+const { checkGate } = require('./_gate');
+
+// v9.113.1 — Daily Brief gate copy (per brief PART A3, with one-word tweak: "what matters most today")
+const DAILY_BRIEF_COPY_ANON = 'Sign in to get your daily brief. SAM reads your work and tells you what matters most today.';
+const DAILY_BRIEF_COPY_UNPAID = "Subscribe to get your daily brief. Tuned to your channels and what's working — $39/month, every tool included, cancel anytime.";
 
 const FALLBACK_BRIEF = {
   verdict_line: "I'm reading the room before I make today's call.",
@@ -238,7 +243,7 @@ module.exports = async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
 
   if (!SUPABASE_URL || !SUPABASE_KEY || !ANTHROPIC_API_KEY) {
-    return res.status(200).json(FALLBACK_BRIEF);
+    return res.status(500).json({ error: 'server_misconfigured' });
   }
 
   const raw = req.query.email;
@@ -246,9 +251,15 @@ module.exports = async function handler(req, res) {
   const timezone = req.query.timezone || 'UTC';
   const briefDate = req.query.date || new Date().toISOString().slice(0, 10);
 
-  if (!email || !email.includes('@')) {
-    return res.status(200).json(FALLBACK_BRIEF);
-  }
+  // v9.113.1 — Voice DNA gate (replaces soft FALLBACK_BRIEF return)
+  const _gate = await checkGate({
+    email,
+    userId: req.query.userId || (email ? email : 'anon'),
+    tool: 'Daily Brief',
+    copyAnonymous: DAILY_BRIEF_COPY_ANON,
+    copyUnpaid: DAILY_BRIEF_COPY_UNPAID
+  });
+  if (!_gate.ok) return res.status(_gate.status).json(_gate.body);
 
   try {
     // Check cache first
@@ -267,7 +278,7 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    // Generate fresh brief
+    // Generate fresh brief — paid user but profile not yet seeded; return showcase fallback
     const profile = await getUserProfile(email);
     if (!profile) return res.status(200).json(FALLBACK_BRIEF);
 
@@ -278,6 +289,6 @@ module.exports = async function handler(req, res) {
 
   } catch (err) {
     console.error('daily-brief error:', err);
-    return res.status(200).json(FALLBACK_BRIEF);
+    return res.status(500).json({ error: 'server_error' });
   }
 };

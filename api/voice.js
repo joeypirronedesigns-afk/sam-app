@@ -1,7 +1,20 @@
+const { checkGate } = require('./_gate');
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const { userId, samples, existingProfile, source } = req.body;
+
+  // v9.113.1 — Voice DNA gate (mirrors api/voice-trainer.js reference pattern + Position B paid check)
+  const _gate = await checkGate({
+    email: req.body.email || (userId && userId.includes('@') ? userId : ''),
+    userId: userId || 'anon',
+    tool: 'Voice Trainer',
+    copyAnonymous: 'Please sign in to use Voice Trainer.',
+    copyUnpaid: 'Subscribe to use Voice Trainer — $39/month, every tool included, cancel anytime.'
+  });
+  if (!_gate.ok) return res.status(_gate.status).json(_gate.body);
+
   const uid = userId ? userId.toLowerCase() : null;
   if (!uid || uid === 'anon') return res.status(400).json({ error: 'No user ID' });
   if (!samples || !samples.length) return res.status(400).json({ error: 'No samples provided' });

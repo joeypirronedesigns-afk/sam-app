@@ -1,4 +1,5 @@
 const puppeteerCore = require('puppeteer-core');
+const { checkGate } = require('./_gate');
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -11,6 +12,16 @@ module.exports = async function handler(req, res) {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
     const { type, playbookData, leadMagnetData, brandData, nextToolData } = body;
     if (playbookData && nextToolData) playbookData.nextToolData = nextToolData;
+
+    // v9.113.1 — Voice DNA gate
+    const _gate = await checkGate({
+      email: body.email || body.userEmail || '',
+      userId: body.userId || 'anon',
+      tool: 'PDF Export',
+      copyAnonymous: 'Sign in to download this as a PDF. SAM needs an account to save and hand you a playbook you can keep.',
+      copyUnpaid: 'Subscribe to download your playbooks as PDFs. Keep SAM’s work in your own stack — $39/month, every tool included, cancel anytime.'
+    });
+    if (!_gate.ok) return res.status(_gate.status).json(_gate.body);
 
     if (!type || (type !== 'playbook' && type !== 'leadmagnet')) {
       return res.status(400).json({ error: 'type must be playbook or leadmagnet' });

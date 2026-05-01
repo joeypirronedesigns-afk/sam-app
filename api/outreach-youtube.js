@@ -72,9 +72,19 @@ module.exports = async function handler(req, res) {
   const origin = req.headers.origin || '*';
   res.setHeader('Access-Control-Allow-Origin', origin);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-cron-secret');
   res.setHeader('Cache-Control', 'no-store, max-age=0');
   if (req.method === 'OPTIONS') return res.status(200).end();
+
+  // v9.113.1 — cron-secret check
+  const _cronSecret = process.env.CRON_SECRET;
+  const _authHeader = (req.headers['authorization'] || '').toString();
+  const _xCronHeader = (req.headers['x-cron-secret'] || '').toString();
+  const _validVercel = _cronSecret && _authHeader === `Bearer ${_cronSecret}`;
+  const _validCustom = _cronSecret && _xCronHeader === _cronSecret;
+  if (!_validVercel && !_validCustom) {
+    return res.status(401).json({ error: 'unauthorized' });
+  }
 
   const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
   const APIFY_KEY = process.env.APIFY_API_KEY;
