@@ -6401,7 +6401,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.102" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.103" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -7230,6 +7230,11 @@ function hearSAMBrief() {
   };
 
   function updateSamsRead(data) {
+    // Cache brief payload for evidence modal
+    if (data && data.verdict_line && !data.fallback) {
+      window.__lastBriefPayload = data;
+    }
+
     var metaEl = document.querySelector('.qs-dash-sams-read-meta');
     var verdictEl = document.querySelector('.qs-dash-sams-read-verdict');
     var bodyEl = document.querySelector('.qs-dash-sams-read-body');
@@ -17370,46 +17375,51 @@ function openDailyBriefDataModal() {
   var empty = document.getElementById('briefEvidenceEmpty');
   if (!modal) { console.error('briefEvidenceModal not found'); return; }
 
-  var insights = [];
+  var brief = window.__lastBriefPayload;
 
-  // Try cached brief payload first
-  try {
-    if (window.__lastBriefPayload && window.__lastBriefPayload.analytics_evidence) {
-      insights = window.__lastBriefPayload.analytics_evidence;
-    }
-  } catch(e) {}
+  if (brief && brief.verdict_line) {
+    var reasoning = [];
 
-  // Fall back to brain analytics insights
-  if (!insights.length) {
-    try {
-      var cached = (typeof getCurrentUserCached === 'function') ? getCurrentUserCached() : null;
-      if (cached && cached.samContext) {
-        var ctx = JSON.parse(cached.samContext);
-        if (ctx.analytics && ctx.analytics.insights && ctx.analytics.insights.length) {
-          insights = ctx.analytics.insights;
+    // Signal — what SAM latched onto
+    reasoning.push({
+      signal: brief.verdict_line,
+      why: brief.body || '',
+      lever: brief.todays_plan && brief.todays_plan[0] ? brief.todays_plan[0].reason || brief.todays_plan[0].label : ''
+    });
+
+    // Add plan reasons as secondary signals
+    if (brief.todays_plan && brief.todays_plan.length > 1) {
+      for (var i = 1; i < Math.min(brief.todays_plan.length, 3); i++) {
+        if (brief.todays_plan[i].reason) {
+          reasoning.push({
+            signal: brief.todays_plan[i].label,
+            why: brief.todays_plan[i].reason,
+            lever: ''
+          });
         }
       }
-    } catch(e) {}
-  }
+    }
 
-  if (rows && insights.length) {
-    rows.innerHTML = insights.map(function(ins) {
-      var label = ins.metric || ins.label || ins.name || 'Metric';
-      var value = ins.value !== undefined ? ins.value : (ins.raw || ins.count || '—');
-      var why = ins.interpretation || ins.why || ins.signal || '';
-      return '<div style="padding:12px 14px;background:var(--surface-2);border:1px solid var(--rule);border-radius:10px;">' +
-        '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">' +
-        '<span style="font-size:13px;font-weight:600;color:var(--ink);">' + label + '</span>' +
-        '<span style="font-size:16px;font-weight:700;color:var(--accent);">' + value + '</span>' +
-        '</div>' +
-        (why ? '<div style="font-size:12px;color:var(--ink-soft);line-height:1.5;">' + why + '</div>' : '') +
-        '</div>';
-    }).join('');
-    if (rows) rows.style.display = 'flex';
-    if (empty) empty.style.display = 'none';
+    if (rows) {
+      rows.innerHTML = reasoning.map(function(r, idx) {
+        return '<div style="padding:14px 16px;background:var(--surface-2);border:1px solid var(--rule);border-radius:12px;">' +
+          '<div style="font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;">' +
+            (idx === 0 ? 'Why today' : 'Also') +
+          '</div>' +
+          '<div style="font-size:14px;font-weight:600;color:var(--ink);line-height:1.4;margin-bottom:6px;">' + r.signal + '</div>' +
+          (r.why ? '<div style="font-size:13px;color:var(--ink-soft);line-height:1.5;margin-bottom:6px;">' + r.why + '</div>' : '') +
+          (r.lever ? '<div style="font-size:12px;color:var(--accent);font-weight:600;">→ ' + r.lever + '</div>' : '') +
+          '</div>';
+      }).join('');
+      rows.style.display = 'flex';
+      if (empty) empty.style.display = 'none';
+    }
   } else {
     if (rows) rows.style.display = 'none';
-    if (empty) empty.style.display = 'block';
+    if (empty) {
+      empty.innerHTML = "SAM hasn’t generated today’s read yet.<br><span style=\"font-size:12px;opacity:0.7;\">Reload the page to get today’s brief.</span>";
+      empty.style.display = 'block';
+    }
   }
 
   modal.style.display = 'flex';
