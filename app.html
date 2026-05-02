@@ -6723,6 +6723,284 @@ body:not(.persona-lab-route) #personaLabRoot { display: none !important; }
   pointer-events: none;
 }
 
+/* ---------- Persona Lab v0 — Phase 4.2 form + recipes ---------- */
+.pl-section-label {
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-muted);
+  margin-bottom: 12px;
+}
+.pl-recipes-card { margin-bottom: 14px; }
+.pl-form-card { margin-bottom: 14px; }
+
+.pl-form-row { margin-bottom: 18px; }
+.pl-form-row:last-child { margin-bottom: 0; }
+.pl-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.pl-label-optional {
+  font-weight: 400;
+  color: var(--ink-muted);
+  font-size: 12px;
+  margin-left: 4px;
+}
+.pl-help-text {
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+.pl-textarea, .pl-input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.18s;
+  box-sizing: border-box;
+}
+.pl-textarea { resize: vertical; min-height: 96px; line-height: 1.5; }
+.pl-textarea:focus, .pl-input:focus { border-color: var(--accent); }
+.pl-char-counter {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-faint);
+  text-align: right;
+  margin-top: 4px;
+  letter-spacing: 0.04em;
+}
+.pl-char-counter.over { color: var(--neg); }
+
+.pl-recipes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.pl-recipe-chip {
+  background: transparent;
+  border: 1px solid var(--rule);
+  color: var(--ink-soft);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pl-recipe-chip:hover { border-color: var(--rule-strong); color: var(--ink); }
+.pl-recipe-chip.active {
+  background: var(--lab-rust-soft);
+  border-color: var(--lab-rust-line);
+  color: var(--serif-accent);
+}
+.pl-recipe-note {
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin-top: 10px;
+  font-style: italic;
+  min-height: 18px;
+  line-height: 1.5;
+}
+
+.pl-segmented {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.pl-segmented button {
+  background: transparent;
+  border: 1px solid var(--rule);
+  color: var(--ink-soft);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pl-segmented button:hover { border-color: var(--rule-strong); color: var(--ink); }
+.pl-segmented button.active {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+.pl-tune {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+.pl-tune-row {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+.pl-tune-row:last-child { margin-bottom: 0; }
+@media (max-width: 640px) {
+  .pl-tune-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+}
+.pl-tune-label {
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--ink-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.pl-tune-value {
+  font-size: 12px;
+  color: var(--ink-soft);
+  font-family: 'JetBrains Mono', monospace;
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+}
+.pl-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--rule);
+  outline: none;
+  cursor: pointer;
+}
+.pl-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 2px solid var(--paper);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.pl-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 2px solid var(--paper);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.pl-frag-modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.pl-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.pl-radio input { accent-color: var(--accent); cursor: pointer; }
+.pl-frag-picker {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 6px 14px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+.pl-frag-meta {
+  font-size: 11px;
+  color: var(--ink-muted);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.04em;
+  margin-top: 6px;
+}
+.pl-frag-row {
+  display: grid;
+  grid-template-columns: auto 1fr 110px;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.pl-frag-row:last-child { border-bottom: none; }
+.pl-frag-row input[type="checkbox"] { accent-color: var(--accent); cursor: pointer; }
+.pl-frag-title {
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.3;
+}
+.pl-frag-role {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 5px 6px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  letter-spacing: 0.04em;
+}
+.pl-frag-role:disabled { opacity: 0.4; cursor: not-allowed; }
+.pl-frag-empty {
+  font-size: 13px;
+  color: var(--ink-muted);
+  padding: 8px 0;
+}
+
+.pl-form-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+}
+.pl-compose-btn {
+  background: var(--ink);
+  color: var(--paper);
+  border: 1px solid var(--ink);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 22px;
+  border-radius: 8px;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pl-compose-btn:hover:not(:disabled) {
+  background: var(--ink-soft);
+  border-color: var(--ink-soft);
+}
+.pl-compose-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.pl-compose-note {
+  font-size: 12px;
+  color: var(--ink-muted);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.04em;
+}
+
 </style>
 
 </head>
@@ -6744,7 +7022,7 @@ body:not(.persona-lab-route) #personaLabRoot { display: none !important; }
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.114.0" data-qs-descriptor="Persona Lab UI shell + route guard" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.115.0" data-qs-descriptor="Persona Lab form + recipes (Phase 4.2)" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -18349,6 +18627,37 @@ function openDailyBriefDataModal() {
       .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
+  // Phase 4.2 — recipe presets. Each one-clicks to a coherent {channel, fidelity, loop_type, intent} bundle.
+  var RECIPES = [
+    { id: 'quiet_caption',    label: 'Quiet caption',     channel: 'caption',   fidelity: 3, loop_type: 'simple',   intent: 'reflect',
+      note: 'Tight 2–5 sentences. Reflective, grounded.' },
+    { id: 'process_post',     label: 'Process post',      channel: 'post',      fidelity: 3, loop_type: 'simple',   intent: 'process',
+      note: 'A working-it-out post. Real time, not retrospective.' },
+    { id: 'mythic_monologue', label: 'Mythic monologue',  channel: 'monologue', fidelity: 5, loop_type: 'nested',   intent: 'mythologize',
+      note: '45–90 sec spoken. Archetypal language allowed.' },
+    { id: 'unclosed_thread',  label: 'Unclosed thread',   channel: 'thread',    fidelity: 3, loop_type: 'unclosed', intent: 'provoke',
+      note: 'Punchy lines. Ends on a question that stays live.' },
+    { id: 'announce_post',    label: 'Announce',          channel: 'post',      fidelity: 2, loop_type: 'simple',   intent: 'announce',
+      note: 'Plain register. Lets the news carry the weight.' },
+    { id: 'lab_mythos',       label: 'Full mythos (Lab)', channel: 'monologue', fidelity: 7, loop_type: 'nested',   intent: 'mythologize',
+      note: 'Surreal/dream logic permitted. Still grounded in codex facts.' }
+  ];
+
+  var FIDELITY_LABELS = {
+    1: 'Literal memoir',
+    2: 'Plain → cinematic',
+    3: 'Scored reality',
+    4: 'Cinematic → mythic',
+    5: 'Mythic but true',
+    6: 'Mythic → mythos',
+    7: 'Full mythos (Lab)'
+  };
+
+  var CHANNELS = ['caption', 'post', 'thread', 'monologue', 'script', 'other'];
+  var LOOPS = ['simple', 'nested', 'unclosed'];
+  var INTENTS = ['announce', 'reflect', 'provoke', 'process', 'mythologize'];
+  var FRAGMENT_ROLES = ['direct', 'oblique', 'contrast'];
+
   function renderShell(state) {
     var codex = state.codex || {};
     var displayName = codex.display_name || 'Unknown';
@@ -18357,12 +18666,75 @@ function openDailyBriefDataModal() {
     var canonCount = canon.length;
     var codexVersion = state.codex_version || 1;
     var voiceVersion = (state.user && (state.user.voiceVersion || state.user.voice_version)) || null;
-    var bannedCount = 25;
+    var bannedFromCodex = (codex.voice_profile_seeds && Array.isArray(codex.voice_profile_seeds.banned_phrases))
+      ? codex.voice_profile_seeds.banned_phrases.length : 0;
+    var bannedCount = 25 + bannedFromCodex;
 
     var sceneListItems = canon.slice(0, 8).map(function(ev) {
       return '<li>' + escapeHtml(ev && ev.title ? ev.title : '(untitled scene)') + '</li>';
     }).join('');
     var moreLine = canonCount > 8 ? '<div class="pl-side-more">…and ' + (canonCount - 8) + ' more</div>' : '';
+
+    var form = state.form;
+
+    // Recipes
+    var recipesHtml = RECIPES.map(function(r) {
+      var active = state.activeRecipe === r.id ? ' active' : '';
+      return '<button type="button" class="pl-recipe-chip' + active + '" data-recipe="' + escapeHtml(r.id) + '">' + escapeHtml(r.label) + '</button>';
+    }).join('');
+    var activeNote = '';
+    if (state.activeRecipe) {
+      var ar = RECIPES.filter(function(r) { return r.id === state.activeRecipe; })[0];
+      if (ar) activeNote = ar.note;
+    }
+
+    // Channels
+    var channelsHtml = CHANNELS.map(function(c) {
+      var active = form.channel === c ? ' active' : '';
+      return '<button type="button" class="' + active.trim() + '" data-value="' + c + '">' + c + '</button>';
+    }).join('');
+
+    // Loops
+    var loopsHtml = LOOPS.map(function(l) {
+      var active = form.loop_type === l ? ' active' : '';
+      return '<button type="button" class="' + active.trim() + '" data-value="' + l + '">' + l + '</button>';
+    }).join('');
+
+    // Intents (with leading "none")
+    var intentsHtml = '<button type="button" class="' + (!form.intent ? 'active' : '') + '" data-value="">none</button>' +
+      INTENTS.map(function(i) {
+        var active = form.intent === i ? ' active' : '';
+        return '<button type="button" class="' + active.trim() + '" data-value="' + i + '">' + i + '</button>';
+      }).join('');
+
+    // Fragment picker rows
+    var fragRowsHtml = canon.length
+      ? canon.map(function(ev) {
+          var id = ev && ev.id ? ev.id : '';
+          var title = ev && ev.title ? ev.title : '(untitled scene)';
+          var sel = form.selected[id] || null;
+          var checked = sel ? ' checked' : '';
+          var roleOptions = FRAGMENT_ROLES.map(function(role) {
+            var s = (sel === role) ? ' selected' : '';
+            return '<option value="' + role + '"' + s + '>' + role + '</option>';
+          }).join('');
+          var disabledAttr = sel ? '' : ' disabled';
+          return '<div class="pl-frag-row">' +
+            '<input type="checkbox" data-frag-id="' + escapeHtml(id) + '"' + checked + '>' +
+            '<div class="pl-frag-title">' + escapeHtml(title) + '</div>' +
+            '<select class="pl-frag-role" data-frag-id="' + escapeHtml(id) + '"' + disabledAttr + '>' + roleOptions + '</select>' +
+          '</div>';
+        }).join('')
+      : '<div class="pl-frag-empty">No scenes seeded yet.</div>';
+
+    var selectedCount = Object.keys(form.selected).length;
+
+    var pickerStyle = form.selectionMode === 'manual' ? '' : 'display:none;';
+
+    var momentLen = (form.moment || '').length;
+    var counterClass = momentLen > 1900 ? ' over' : '';
+
+    var canCompose = (form.moment.trim().length > 0) && (form.moment.length <= 2000);
 
     root.innerHTML =
       '<div class="pl-shell">' +
@@ -18381,11 +18753,69 @@ function openDailyBriefDataModal() {
 
         '<div class="pl-grid">' +
           '<div class="pl-col-main">' +
-            '<div class="pl-card">' +
-              '<div style="font-family:\'Fraunces\', Georgia, serif; font-size:18px; color:var(--ink); margin-bottom:8px;">Composer shell ready.</div>' +
-              '<div style="font-size:13px; color:var(--ink-soft); line-height:1.55;">' +
-                'Phase 4.1 — route guard active. The form, recipe picker, tune panel, and draft view land in 4.2 and 4.3.' +
+
+            '<div class="pl-card pl-recipes-card">' +
+              '<div class="pl-section-label">Recipes</div>' +
+              '<div class="pl-recipes" id="plRecipes">' + recipesHtml + '</div>' +
+              '<div class="pl-recipe-note" id="plRecipeNote">' + escapeHtml(activeNote) + '</div>' +
+            '</div>' +
+
+            '<div class="pl-card pl-form-card">' +
+
+              '<div class="pl-form-row">' +
+                '<label class="pl-label" for="plMoment">Moment</label>' +
+                '<div class="pl-help-text">What just happened? 1–3 sentences. The triggering event, not the whole backstory.</div>' +
+                '<textarea id="plMoment" class="pl-textarea" maxlength="2000" placeholder="The phone call. The diner. The moment after.">' + escapeHtml(form.moment) + '</textarea>' +
+                '<div class="pl-char-counter' + counterClass + '"><span id="plMomentCount">' + momentLen + '</span> / 2000</div>' +
               '</div>' +
+
+              '<div class="pl-form-row">' +
+                '<label class="pl-label" for="plTitle">Title<span class="pl-label-optional">(optional)</span></label>' +
+                '<input id="plTitle" class="pl-input" type="text" maxlength="200" placeholder="A short label for your records." value="' + escapeHtml(form.title) + '">' +
+              '</div>' +
+
+              '<div class="pl-form-row">' +
+                '<div class="pl-label">Channel</div>' +
+                '<div class="pl-segmented" id="plChannel" data-field="channel">' + channelsHtml + '</div>' +
+              '</div>' +
+
+              '<div class="pl-form-row">' +
+                '<div class="pl-section-label">Tune</div>' +
+                '<div class="pl-tune">' +
+                  '<div class="pl-tune-row">' +
+                    '<div class="pl-tune-label">Fidelity</div>' +
+                    '<input id="plFidelity" type="range" min="1" max="7" step="1" value="' + form.fidelity + '" class="pl-slider">' +
+                    '<div class="pl-tune-value" id="plFidelityValue">' + form.fidelity + ' — ' + (FIDELITY_LABELS[form.fidelity] || '') + '</div>' +
+                  '</div>' +
+                  '<div class="pl-tune-row">' +
+                    '<div class="pl-tune-label">Loop</div>' +
+                    '<div class="pl-segmented" id="plLoop" data-field="loop_type">' + loopsHtml + '</div>' +
+                    '<div></div>' +
+                  '</div>' +
+                  '<div class="pl-tune-row">' +
+                    '<div class="pl-tune-label">Intent</div>' +
+                    '<div class="pl-segmented" id="plIntent" data-field="intent">' + intentsHtml + '</div>' +
+                    '<div></div>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+
+              '<div class="pl-form-row">' +
+                '<div class="pl-label">Fragments</div>' +
+                '<div class="pl-help-text">Let SAM pick the best fragments, or curate your own. Pick one direct fragment that anchors the piece; oblique and contrast are optional.</div>' +
+                '<div class="pl-frag-modes">' +
+                  '<label class="pl-radio"><input type="radio" name="plFragMode" value="model_select"' + (form.selectionMode === 'model_select' ? ' checked' : '') + '> Let SAM pick</label>' +
+                  '<label class="pl-radio"><input type="radio" name="plFragMode" value="manual"' + (form.selectionMode === 'manual' ? ' checked' : '') + '> Pick scenes manually</label>' +
+                '</div>' +
+                '<div class="pl-frag-picker" id="plFragPicker" style="' + pickerStyle + '">' + fragRowsHtml + '</div>' +
+                '<div class="pl-frag-meta" id="plFragMeta" style="' + pickerStyle + '">Selected: <span id="plFragCount">' + selectedCount + '</span></div>' +
+              '</div>' +
+
+              '<div class="pl-form-actions">' +
+                '<button id="plCompose" class="pl-compose-btn"' + (canCompose ? '' : ' disabled') + '>Compose</button>' +
+                '<span class="pl-compose-note" id="plComposeNote">Compose flow lands in Phase 4.3.</span>' +
+              '</div>' +
+
             '</div>' +
           '</div>' +
 
@@ -18405,7 +18835,205 @@ function openDailyBriefDataModal() {
           '</div>' +
         '</div>' +
       '</div>' +
-      '<div class="pl-version-stamp">Persona Lab v9.114.0</div>';
+      '<div class="pl-version-stamp">Persona Lab v9.115.0</div>';
+
+    bindForm(state, canon);
+  }
+
+  // Bind event listeners after render. Surgical updates avoid re-rendering
+  // the whole tree (which would lose textarea focus and caret position).
+  function bindForm(state, canon) {
+    var form = state.form;
+
+    // Recipe chips → apply preset to form, refresh segmented + tune.
+    var recipesEl = document.getElementById('plRecipes');
+    if (recipesEl) {
+      recipesEl.addEventListener('click', function(e) {
+        var btn = e.target.closest && e.target.closest('[data-recipe]');
+        if (!btn) return;
+        var rid = btn.getAttribute('data-recipe');
+        var recipe = RECIPES.filter(function(r) { return r.id === rid; })[0];
+        if (!recipe) return;
+        form.channel = recipe.channel;
+        form.fidelity = recipe.fidelity;
+        form.loop_type = recipe.loop_type;
+        form.intent = recipe.intent;
+        state.activeRecipe = rid;
+        // Re-render — moment/title preserved in state, so no input data is lost.
+        renderShell(state);
+      });
+    }
+
+    // Moment textarea — inline update + counter.
+    var momentEl = document.getElementById('plMoment');
+    var momentCount = document.getElementById('plMomentCount');
+    var composeBtn = document.getElementById('plCompose');
+    if (momentEl) {
+      momentEl.addEventListener('input', function() {
+        form.moment = momentEl.value;
+        if (momentCount) momentCount.textContent = momentEl.value.length;
+        var counter = momentCount && momentCount.parentElement;
+        if (counter) {
+          if (momentEl.value.length > 1900) counter.classList.add('over');
+          else counter.classList.remove('over');
+        }
+        if (composeBtn) {
+          var ok = momentEl.value.trim().length > 0 && momentEl.value.length <= 2000;
+          composeBtn.disabled = !ok;
+        }
+      });
+    }
+
+    // Title input.
+    var titleEl = document.getElementById('plTitle');
+    if (titleEl) {
+      titleEl.addEventListener('input', function() {
+        form.title = titleEl.value;
+      });
+    }
+
+    // Segmented controls — channel / loop / intent.
+    ['plChannel', 'plLoop', 'plIntent'].forEach(function(elId) {
+      var el = document.getElementById(elId);
+      if (!el) return;
+      var field = el.getAttribute('data-field');
+      el.addEventListener('click', function(e) {
+        var btn = e.target.closest && e.target.closest('button[data-value]');
+        if (!btn) return;
+        var val = btn.getAttribute('data-value');
+        form[field] = val;
+        // Active class swap — no re-render needed.
+        Array.prototype.forEach.call(el.querySelectorAll('button'), function(b) {
+          b.classList.toggle('active', b === btn);
+        });
+        // Manual change clears the active recipe pill.
+        clearActiveRecipe(state);
+      });
+    });
+
+    // Fidelity slider.
+    var fidelityEl = document.getElementById('plFidelity');
+    var fidelityVal = document.getElementById('plFidelityValue');
+    if (fidelityEl) {
+      fidelityEl.addEventListener('input', function() {
+        var v = parseInt(fidelityEl.value, 10);
+        if (Number.isNaN(v)) return;
+        form.fidelity = v;
+        if (fidelityVal) fidelityVal.textContent = v + ' — ' + (FIDELITY_LABELS[v] || '');
+        clearActiveRecipe(state);
+      });
+    }
+
+    // Fragment selection mode toggle.
+    var fragModeEls = document.querySelectorAll('input[name="plFragMode"]');
+    var fragPicker = document.getElementById('plFragPicker');
+    var fragMeta = document.getElementById('plFragMeta');
+    Array.prototype.forEach.call(fragModeEls, function(r) {
+      r.addEventListener('change', function() {
+        if (!r.checked) return;
+        form.selectionMode = r.value;
+        if (fragPicker) fragPicker.style.display = (r.value === 'manual') ? '' : 'none';
+        if (fragMeta) fragMeta.style.display = (r.value === 'manual') ? '' : 'none';
+      });
+    });
+
+    // Fragment row checkboxes + role selects.
+    if (fragPicker) {
+      fragPicker.addEventListener('change', function(e) {
+        var t = e.target;
+        if (!t) return;
+        var fragId = t.getAttribute('data-frag-id');
+        if (!fragId) return;
+
+        if (t.matches('input[type="checkbox"]')) {
+          var roleSel = fragPicker.querySelector('select.pl-frag-role[data-frag-id="' + cssEsc(fragId) + '"]');
+          if (t.checked) {
+            var defaultRole = (roleSel && roleSel.value) || 'direct';
+            form.selected[fragId] = defaultRole;
+            if (roleSel) roleSel.disabled = false;
+          } else {
+            delete form.selected[fragId];
+            if (roleSel) roleSel.disabled = true;
+          }
+          updateFragCount(form);
+        } else if (t.matches('select.pl-frag-role')) {
+          if (form.selected[fragId]) {
+            form.selected[fragId] = t.value;
+          }
+        }
+      });
+    }
+
+    // Help button — placeholder until the explainer modal lands.
+    var helpBtn = document.getElementById('plHelpBtn');
+    if (helpBtn) {
+      helpBtn.addEventListener('click', function() {
+        alert(
+          'Persona Lab — Composer\n\n' +
+          'Moment: the trigger, not the backstory.\n' +
+          'Channel: the surface (caption, post, thread, monologue, script).\n' +
+          'Fidelity: 1 literal → 7 mythos. Defaults to 3 (Scored reality).\n' +
+          'Loop: simple opens & closes; nested opens A/B closes B/A; unclosed leaves tension live.\n' +
+          'Intent: optional emotional posture.\n' +
+          'Fragments: pick a direct anchor; oblique and contrast are optional.\n\n' +
+          'Recipes apply a coherent {channel, fidelity, loop, intent} preset.'
+        );
+      });
+    }
+
+    // Compose button — stub for Phase 4.2. Wire-up lands in 4.3.
+    if (composeBtn) {
+      composeBtn.addEventListener('click', function() {
+        var note = document.getElementById('plComposeNote');
+        if (note) {
+          note.textContent = 'Compose flow lands in Phase 4.3 — payload ready.';
+          note.style.color = 'var(--serif-accent)';
+        }
+        console.log('[persona-lab] compose payload:', buildComposePayload(state));
+      });
+    }
+  }
+
+  function clearActiveRecipe(state) {
+    if (!state.activeRecipe) return;
+    state.activeRecipe = null;
+    var el = document.getElementById('plRecipes');
+    if (el) {
+      Array.prototype.forEach.call(el.querySelectorAll('.pl-recipe-chip'), function(b) {
+        b.classList.remove('active');
+      });
+    }
+    var note = document.getElementById('plRecipeNote');
+    if (note) note.textContent = '';
+  }
+
+  function updateFragCount(form) {
+    var count = Object.keys(form.selected).length;
+    var el = document.getElementById('plFragCount');
+    if (el) el.textContent = count;
+  }
+
+  // CSS.escape polyfill for our limited use (UUID-like fragment ids).
+  function cssEsc(s) {
+    if (window.CSS && typeof window.CSS.escape === 'function') return window.CSS.escape(s);
+    return String(s).replace(/[^a-zA-Z0-9_-]/g, function(c) { return '\\' + c; });
+  }
+
+  // Shape the payload Phase 4.3 will POST to /api/persona-lab/compose.
+  function buildComposePayload(state) {
+    var f = state.form;
+    var selected_fragments = (f.selectionMode === 'manual')
+      ? Object.keys(f.selected).map(function(id) { return { id: id, role: f.selected[id] }; })
+      : [];
+    return {
+      moment: f.moment,
+      title: f.title || null,
+      channel: f.channel,
+      fidelity: f.fidelity,
+      loop_type: f.loop_type,
+      intent: f.intent || null,
+      selected_fragments: selected_fragments
+    };
   }
 
   async function runGate() {
@@ -18429,7 +19057,18 @@ function openDailyBriefDataModal() {
       renderShell({
         codex: data.codex,
         codex_version: data.codex_version,
-        user: cachedUser
+        user: cachedUser,
+        activeRecipe: null,
+        form: {
+          moment: '',
+          title: '',
+          channel: 'post',
+          fidelity: 3,
+          loop_type: 'simple',
+          intent: '',
+          selectionMode: 'model_select',
+          selected: {}
+        }
       });
     } catch (e) {
       console.error('[persona-lab] gate fetch failed:', e);
