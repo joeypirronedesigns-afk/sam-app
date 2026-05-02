@@ -261,4 +261,49 @@ async function loadUserToolContext(email) {
   return buildToolContext(ctx);
 }
 
-module.exports = { normalizeSamContext, mapWizardToSchemaV2, buildBrainPrompt, loadUserContext, saveUserContext, emptySchema, buildToolContext, loadUserToolContext};
+// ── PERSONA LAB SNAPSHOT BOUNDARY (N1) ───────────────────────────
+// getSamContextSnapshot(email)
+// Returns a deep-cloned, sanitized snapshot of the user's samContext for
+// read-only use by the Persona Lab subsystem. NEVER returns a reference to
+// any live mutable record. The Lab MUST go through this adapter so it can
+// never accidentally hold or mutate live brain state (v9.97-class race
+// guard).
+//
+// Sanitization rules:
+//  - Strip transient internal markers (migratedFrom)
+//  - Truncate any string field over 4000 chars (defensive — prevents
+//    pathological codex bloat from leaking generated HTML into the Lab
+//    system prompt)
+//  - Coerce voice.profile to a plain string (or null)
+//  - Always set lastSnapshotAt so consumers can log freshness
+async function getSamContextSnapshot(email) {
+  const loaded = await loadUserContext(email);
+  const live = loaded && loaded.ctx ? loaded.ctx : emptySchema();
+
+  // Deep clone — break every reference to the live object.
+  let snap;
+  try { snap = JSON.parse(JSON.stringify(live)); }
+  catch (_e) { snap = emptySchema(); }
+
+  // Sanitize.
+  if (snap.migratedFrom) delete snap.migratedFrom;
+
+  const _truncate = (s) => (typeof s === 'string' && s.length > 4000) ? s.slice(0, 4000) : s;
+  if (snap.identity) {
+    if (snap.identity.selfStory) snap.identity.selfStory = _truncate(snap.identity.selfStory);
+    if (snap.identity.worldview) snap.identity.worldview = _truncate(snap.identity.worldview);
+    if (snap.identity.values) snap.identity.values = _truncate(snap.identity.values);
+  }
+  if (snap.brand) {
+    if (snap.brand.niche) snap.brand.niche = _truncate(snap.brand.niche);
+    if (snap.brand.differentiator) snap.brand.differentiator = _truncate(snap.brand.differentiator);
+  }
+  if (snap.voice) {
+    snap.voice.profile = (typeof snap.voice.profile === 'string') ? _truncate(snap.voice.profile) : null;
+  }
+
+  snap.lastSnapshotAt = new Date().toISOString();
+  return snap;
+}
+
+module.exports = { normalizeSamContext, mapWizardToSchemaV2, buildBrainPrompt, loadUserContext, saveUserContext, emptySchema, buildToolContext, loadUserToolContext, getSamContextSnapshot };

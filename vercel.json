@@ -72,6 +72,9 @@
     },
     "api/ear-signals.js": {
       "maxDuration": 10
+    },
+    "api/persona-lab/compose.js": {
+      "maxDuration": 60
     }
   },
   "headers": [
