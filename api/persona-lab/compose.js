@@ -239,7 +239,6 @@ module.exports = async function handler(req, res) {
       body: JSON.stringify({
         model: DEFAULT_MODEL,
         max_tokens: requestedMaxTokens,
-        temperature: DEFAULT_TEMPERATURE,
         system: systemPrompt,
         messages: [{ role: 'user', content: userMessage }]
       })
@@ -276,7 +275,7 @@ module.exports = async function handler(req, res) {
     model_version: modelVersionFromResponse,
     codex_version: codexVersion,
     banned_phrases_version: BANNED_PHRASES_VERSION,
-    temperature: DEFAULT_TEMPERATURE,
+    temperature: null,
     system_prompt_version: SYSTEM_PROMPT_VERSION,
     selection_mode: selectionMode,
     snapshot_at: samSnapshot.lastSnapshotAt,
