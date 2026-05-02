@@ -6551,10 +6551,190 @@ body.quiet-studio-shell .qs-rail nav {
 /* END v9.10 DASHBOARD                                          */
 /* ============================================================ */
 
+/* ============================================================ */
+/* PERSONA LAB v0 — UI (lab_access only)                        */
+/* ============================================================ */
+:root {
+  --lab-rust-soft: rgba(139, 58, 47, 0.06);
+  --lab-rust-line: rgba(139, 58, 47, 0.18);
+}
+
+/* Hide the standard shell on /persona-lab */
+body.persona-lab-route .ambient,
+body.persona-lab-route [data-qs-shell],
+body.persona-lab-route > nav,
+body.persona-lab-route > main,
+body.persona-lab-route > footer,
+body.persona-lab-route #wizardPage,
+body.persona-lab-route #trialModal,
+body.persona-lab-route #signInModal,
+body.persona-lab-route #proPage,
+body.persona-lab-route .qs-asksam-chip,
+body.persona-lab-route #voiceTrainerModal,
+body.persona-lab-route #briefEvidenceModal,
+body.persona-lab-route #ideasPanel,
+body.persona-lab-route #qsBrandStory,
+body.persona-lab-route .bottom-sheet,
+body.persona-lab-route .sheet-overlay {
+  display: none !important;
+}
+body.persona-lab-route { background: var(--paper); }
+body:not(.persona-lab-route) #personaLabRoot { display: none !important; }
+
+#personaLabRoot {
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.pl-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 32px 28px 64px;
+}
+
+.pl-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 20px;
+  margin-bottom: 28px;
+}
+.pl-header-left { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.pl-header-right { display: flex; align-items: center; gap: 10px; }
+
+.pl-pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border: 1px solid var(--lab-rust-line);
+  color: var(--serif-accent);
+  background: var(--lab-rust-soft);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-radius: 2px;
+}
+.pl-title {
+  font-family: 'Fraunces', 'Instrument Serif', Georgia, serif;
+  font-weight: 400;
+  font-size: 24px;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.pl-subtitle {
+  font-size: 12px;
+  color: var(--ink-muted);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.04em;
+  margin-top: 4px;
+}
+
+.pl-help-btn {
+  background: transparent;
+  border: 1px solid var(--rule);
+  color: var(--ink-soft);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 7px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.pl-help-btn:hover { border-color: var(--rule-strong); color: var(--ink); }
+
+.pl-grid {
+  display: grid;
+  grid-template-columns: 1fr 240px;
+  gap: 32px;
+  align-items: start;
+}
+@media (max-width: 880px) {
+  .pl-grid { grid-template-columns: 1fr; }
+}
+
+.pl-col-main { min-width: 0; }
+.pl-col-side { min-width: 0; }
+
+.pl-card {
+  background: var(--surface-2);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 18px;
+}
+
+.pl-side-card { margin-bottom: 14px; }
+.pl-side-label {
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-muted);
+  margin-bottom: 10px;
+}
+.pl-side-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--ink-soft);
+  padding: 4px 0;
+}
+.pl-side-row strong { color: var(--ink); font-weight: 600; }
+.pl-side-list { list-style: none; padding: 0; margin: 0; font-size: 13px; color: var(--ink-soft); }
+.pl-side-list li { padding: 4px 0; line-height: 1.4; }
+.pl-side-more { font-size: 12px; color: var(--ink-muted); padding-top: 6px; }
+
+.pl-404 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--ink-muted);
+  font-size: 14px;
+  letter-spacing: 0.05em;
+}
+.pl-404-code { font-size: 64px; font-weight: 600; color: var(--ink); margin-bottom: 10px; letter-spacing: 0; font-family: 'Fraunces', Georgia, serif; }
+.pl-404-line { font-size: 13px; }
+
+.pl-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  color: var(--ink-muted);
+  font-size: 13px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.pl-version-stamp {
+  position: fixed;
+  bottom: 10px;
+  right: 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--ink-faint);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
 </style>
 
 </head>
 <body class="quiet-studio-shell">
+<script>
+(function() {
+  if (window.location.pathname === '/persona-lab') {
+    document.body.classList.add('persona-lab-route');
+    document.title = 'Persona Lab';
+  }
+})();
+</script>
 <div class="ambient ambient-1"></div>
 <div class="ambient ambient-2"></div>
 <div class="ambient ambient-3"></div>
@@ -6564,7 +6744,7 @@ body.quiet-studio-shell .qs-rail nav {
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.113.3" data-qs-descriptor="locked-state UI" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.114.0" data-qs-descriptor="Persona Lab UI shell + route guard" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -18124,6 +18304,146 @@ function openDailyBriefDataModal() {
     </div>
   </div>
 </div>
+
+<!-- ═══════════════════════════════════════════════════
+     PERSONA LAB v0 — UI ROOT (lab_access only)
+     Mounted only when window.location.pathname === '/persona-lab'.
+     The route guard fetches /api/persona-lab/codex and renders 404
+     for anonymous or non-flagged users — Lab existence is never advertised.
+════════════════════════════════════════════════════ -->
+<div id="personaLabRoot" aria-live="polite"></div>
+<script>
+(function() {
+  if (window.location.pathname !== '/persona-lab') return;
+
+  var root = document.getElementById('personaLabRoot');
+  if (!root) return;
+
+  function render404() {
+    root.innerHTML =
+      '<div class="pl-404">' +
+        '<div class="pl-404-code">404</div>' +
+        '<div class="pl-404-line">This page could not be found.</div>' +
+      '</div>';
+  }
+
+  function renderLoading() {
+    root.innerHTML = '<div class="pl-loader">Loading…</div>';
+  }
+
+  function readLabUserEmail() {
+    try {
+      var c = JSON.parse(localStorage.getItem('sam-current-user') || 'null');
+      if (c && c.email) return String(c.email).trim().toLowerCase();
+    } catch (e) {}
+    try {
+      var t = JSON.parse(localStorage.getItem('sam-trial') || 'null');
+      if (t && t.email) return String(t.email).trim().toLowerCase();
+    } catch (e) {}
+    return '';
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function renderShell(state) {
+    var codex = state.codex || {};
+    var displayName = codex.display_name || 'Unknown';
+    var canon = (codex.tiers && codex.tiers.canon_events && Array.isArray(codex.tiers.canon_events.events))
+      ? codex.tiers.canon_events.events : [];
+    var canonCount = canon.length;
+    var codexVersion = state.codex_version || 1;
+    var voiceVersion = (state.user && (state.user.voiceVersion || state.user.voice_version)) || null;
+    var bannedCount = 25;
+
+    var sceneListItems = canon.slice(0, 8).map(function(ev) {
+      return '<li>' + escapeHtml(ev && ev.title ? ev.title : '(untitled scene)') + '</li>';
+    }).join('');
+    var moreLine = canonCount > 8 ? '<div class="pl-side-more">…and ' + (canonCount - 8) + ' more</div>' : '';
+
+    root.innerHTML =
+      '<div class="pl-shell">' +
+        '<div class="pl-header">' +
+          '<div class="pl-header-left">' +
+            '<span class="pl-pill">Lab</span>' +
+            '<div>' +
+              '<div class="pl-title">Composer</div>' +
+              '<div class="pl-subtitle">Codex v' + escapeHtml(codexVersion) + ' · ' + canonCount + ' scenes loaded</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="pl-header-right">' +
+            '<button class="pl-help-btn" type="button" id="plHelpBtn">? How this works</button>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="pl-grid">' +
+          '<div class="pl-col-main">' +
+            '<div class="pl-card">' +
+              '<div style="font-family:\'Fraunces\', Georgia, serif; font-size:18px; color:var(--ink); margin-bottom:8px;">Composer shell ready.</div>' +
+              '<div style="font-size:13px; color:var(--ink-soft); line-height:1.55;">' +
+                'Phase 4.1 — route guard active. The form, recipe picker, tune panel, and draft view land in 4.2 and 4.3.' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="pl-col-side">' +
+            '<div class="pl-card pl-side-card">' +
+              '<div class="pl-side-label">Codex status</div>' +
+              '<div class="pl-side-row"><span>Name</span><strong>' + escapeHtml(displayName) + '</strong></div>' +
+              '<div class="pl-side-row"><span>Canon scenes</span><strong>' + canonCount + '</strong></div>' +
+              '<div class="pl-side-row"><span>Voice DNA</span><strong>' + (voiceVersion ? 'v' + escapeHtml(voiceVersion) : 'not seeded') + '</strong></div>' +
+              '<div class="pl-side-row"><span>Banned phrases</span><strong>' + bannedCount + '</strong></div>' +
+            '</div>' +
+            '<div class="pl-card pl-side-card">' +
+              '<div class="pl-side-label">Available scenes</div>' +
+              (canonCount ? '<ul class="pl-side-list">' + sceneListItems + '</ul>' + moreLine
+                          : '<div style="font-size:13px;color:var(--ink-muted);">No scenes seeded yet.</div>') +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="pl-version-stamp">Persona Lab v9.114.0</div>';
+  }
+
+  async function runGate() {
+    renderLoading();
+    var email = readLabUserEmail();
+    if (!email) { render404(); return; }
+
+    try {
+      var r = await fetch('/api/persona-lab/codex?email=' + encodeURIComponent(email), {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' },
+        cache: 'no-store'
+      });
+      if (r.status !== 200) { render404(); return; }
+      var data = await r.json();
+      if (!data || !data.codex) { render404(); return; }
+
+      var cachedUser = null;
+      try { cachedUser = JSON.parse(localStorage.getItem('sam-current-user') || 'null'); } catch (e) {}
+
+      renderShell({
+        codex: data.codex,
+        codex_version: data.codex_version,
+        user: cachedUser
+      });
+    } catch (e) {
+      console.error('[persona-lab] gate fetch failed:', e);
+      render404();
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', runGate);
+  } else {
+    runGate();
+  }
+})();
+</script>
 </body>
 </html>
  
