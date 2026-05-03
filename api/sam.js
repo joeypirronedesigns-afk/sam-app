@@ -193,37 +193,46 @@ module.exports = async function handler(req, res) {
     trackEvent(userId, mode || 'chat', { tier }).catch(() => {});
     if (req.body.email && userId !== 'anon') {
     await updateUserEmail(userId, req.body.email, req.body.name || null).catch(() => {});
-    // Notify Joey via Zapier Gmail webhook — new user signed up
-    const userName = req.body.name || 'Anonymous';
-    const userEmail = req.body.email;
-    fetch('https://hooks.zapier.com/hooks/catch/27195700/u7evzoc/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        subject: `New SAM user — ${userName}`,
-        body: `New signup on samforcreators.com\n\nName: ${userName}\nEmail: ${userEmail}\nTime: ${new Date().toLocaleString()}\n\nGo to SAM HQ: https://sam-hq.vercel.app`,
-        to: 'samforcreators@gmail.com'
-      })
-    }).catch(() => {});
-    // Slack notification
-    fetch(process.env.SLACK_WEBHOOK_URL || 'https://hooks.slack.com/services/placeholder', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: `🔔 *New SAM user!*\n\n👤 ${userName}\n📧 ${userEmail}\n🕐 ${new Date().toLocaleString()}\n<https://sam-hq.vercel.app|Open SAM HQ>` })
-    }).catch(() => {});
-    // Telegram notification via OpenClaw bot
-    const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
-    const telegramChatId = process.env.TELEGRAM_CHAT_ID || '8734019866';
-    if (telegramToken) {
-      fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
+    // v9.116.5 — only fire signup notifications for ACTUALLY new users.
+    // Pre-v9.116.4 the gate-less path was so leaky that the email/userId combo
+    // rarely both arrived, so this block stayed dormant by accident. Now that
+    // identity threads correctly, every Joey request was re-firing the toast.
+    // Use the email-based userProfile lookup from upstream as the
+    // already-exists signal — if userProfile is set, it's a returning user.
+    const _isExistingUser = !!userProfile;
+    if (!_isExistingUser) {
+      // Notify Joey via Zapier Gmail webhook — new user signed up
+      const userName = req.body.name || 'Anonymous';
+      const userEmail = req.body.email;
+      fetch('https://hooks.zapier.com/hooks/catch/27195700/u7evzoc/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          chat_id: telegramChatId,
-          text: `🔔 New SAM user!\n\n👤 Name: ${userName}\n📧 Email: ${userEmail}\n🕐 ${new Date().toLocaleString()}\n\n👉 sam-hq.vercel.app`,
-          parse_mode: 'Markdown'
+          subject: `New SAM user — ${userName}`,
+          body: `New signup on samforcreators.com\n\nName: ${userName}\nEmail: ${userEmail}\nTime: ${new Date().toLocaleString()}\n\nGo to SAM HQ: https://sam-hq.vercel.app`,
+          to: 'samforcreators@gmail.com'
         })
       }).catch(() => {});
+      // Slack notification
+      fetch(process.env.SLACK_WEBHOOK_URL || 'https://hooks.slack.com/services/placeholder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: `🔔 *New SAM user!*\n\n👤 ${userName}\n📧 ${userEmail}\n🕐 ${new Date().toLocaleString()}\n<https://sam-hq.vercel.app|Open SAM HQ>` })
+      }).catch(() => {});
+      // Telegram notification via OpenClaw bot
+      const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
+      const telegramChatId = process.env.TELEGRAM_CHAT_ID || '8734019866';
+      if (telegramToken) {
+        fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: telegramChatId,
+            text: `🔔 New SAM user!\n\n👤 Name: ${userName}\n📧 Email: ${userEmail}\n🕐 ${new Date().toLocaleString()}\n\n👉 sam-hq.vercel.app`,
+            parse_mode: 'Markdown'
+          })
+        }).catch(() => {});
+      }
     }
   }
   if (req.body.voiceProfile || req.body.samContext) {

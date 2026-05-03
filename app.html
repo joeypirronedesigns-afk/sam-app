@@ -7404,7 +7404,7 @@ body:not(.persona-lab-route) #personaLabRoot { display: none !important; }
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.116.4" data-qs-descriptor="Restore identity threading to /api/sam — gate fix for Talk/Wizard/Spark/Pulse" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.116.5" data-qs-descriptor="Patch Step 12 fetch — final identity threading site + new-user toast gate" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -15302,11 +15302,16 @@ Include complete reasoning (WHY) for every recommendation.
     const _pbDev = localStorage.getItem('sam_dev') === 'true';
     const devUserId = _pbDev ? 'dev-' + _pbRaw : _pbRaw;
     const devTier = _pbDev ? 'studio' : (WS.tier || 'free');
+    // v9.116.5 — Step 12 was missed by the v9.116.4 identity threading; this site
+    // builds payload from scratch instead of spreading getBase(). Add email here.
+    const _pbEmail = ((typeof getCurrentUserCached === 'function' && getCurrentUserCached()) || {}).email || '';
 
     const payload = {
       mode: 'playbook',
-      userId: devUserId,
+      userId: _pbEmail || devUserId,
       tier: devTier,
+      email: _pbEmail || undefined,
+      userEmail: _pbEmail || undefined,
       tourStep: localStorage.getItem('samTourComplete') ? null : (localStorage.getItem('samTourStep') || 0),
       moment: story,
       platforms: WS.platforms,
