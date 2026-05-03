@@ -6771,6 +6771,24 @@ body:not(.persona-lab-route) #personaLabRoot { display: none !important; }
 }
 .pl-textarea { resize: vertical; min-height: 96px; line-height: 1.5; }
 .pl-textarea:focus, .pl-input:focus { border-color: var(--accent); }
+.pl-input,
+.pl-textarea {
+  autocomplete: off;
+}
+.pl-input::selection,
+.pl-textarea::selection {
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+.pl-input:-webkit-autofill,
+.pl-input:-webkit-autofill:focus,
+.pl-textarea:-webkit-autofill,
+.pl-textarea:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--ink);
+  -webkit-box-shadow: 0 0 0 1000px var(--paper) inset;
+  transition: background-color 5000s ease-in-out 0s;
+  caret-color: var(--ink);
+}
 .pl-char-counter {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
@@ -7386,7 +7404,7 @@ body:not(.persona-lab-route) #personaLabRoot { display: none !important; }
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.116.2" data-qs-descriptor="Persona Lab v0 — Phase 4.4 polish" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.116.3" data-qs-descriptor="Persona Lab — neutralize Chrome autofill purple in Moment + Title fields" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -19150,13 +19168,13 @@ function openDailyBriefDataModal() {
               '<div class="pl-form-row">' +
                 '<label class="pl-label" for="plMoment">Moment</label>' +
                 '<div class="pl-help-text">What just happened? 1–3 sentences. The triggering event, not the whole backstory.</div>' +
-                '<textarea id="plMoment" class="pl-textarea" maxlength="2000" placeholder="I killed the trial system. SAM is now invite-only.">' + escapeHtml(form.moment) + '</textarea>' +
+                '<textarea id="plMoment" class="pl-textarea" maxlength="2000" autocomplete="off" placeholder="I killed the trial system. SAM is now invite-only.">' + escapeHtml(form.moment) + '</textarea>' +
                 '<div class="pl-char-counter' + counterClass + '"><span id="plMomentCount">' + momentLen + '</span> / 2000</div>' +
               '</div>' +
 
               '<div class="pl-form-row">' +
                 '<label class="pl-label" for="plTitle">Title<span class="pl-label-optional">(optional)</span></label>' +
-                '<input id="plTitle" class="pl-input" type="text" maxlength="200" placeholder="A short label for your records." value="' + escapeHtml(form.title) + '">' +
+                '<input id="plTitle" class="pl-input" type="text" maxlength="200" autocomplete="off" placeholder="A short label for your records." value="' + escapeHtml(form.title) + '">' +
               '</div>' +
 
               '<div class="pl-form-row">' +
@@ -19229,7 +19247,7 @@ function openDailyBriefDataModal() {
           '</div>' +
         '</div>' +
       '</div>' +
-      '<div class="pl-version-stamp">Persona Lab v9.116.2</div>';
+      '<div class="pl-version-stamp">Persona Lab v9.116.3</div>';
 
     bindForm(state, canon);
   }
