@@ -1,0 +1,3 @@
+# Snapshot files contain potentially sensitive sam_users row data.
+# Keep them on the local machine that ran the cleanup script — don't commit.
+snapshots/*.json
