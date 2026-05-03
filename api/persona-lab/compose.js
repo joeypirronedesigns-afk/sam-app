@@ -20,7 +20,7 @@
 const fs = require('fs');
 const path = require('path');
 const { getSamContextSnapshot } = require('../_context');
-const { assertLabAccess } = require('../_lab_access');
+const { assertPersonaLabUser } = require('../_lab_access');
 const { BANNED_PHRASES, BANNED_PHRASES_VERSION } = require('./banned_phrases_v1');
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -102,18 +102,27 @@ function clampInt(n, min, max, fallback) {
 }
 
 function buildBannedPhrasesList(codex) {
-  const fromCodex = (codex && codex.voice_profile_seeds && Array.isArray(codex.voice_profile_seeds.banned_phrases))
-    ? codex.voice_profile_seeds.banned_phrases : [];
+  const fromV1 = (codex && Array.isArray(codex.banned_phrases)) ? codex.banned_phrases : null;
+  const fromV0 = (codex && codex.voice_profile_seeds && Array.isArray(codex.voice_profile_seeds.banned_phrases))
+    ? codex.voice_profile_seeds.banned_phrases : null;
+  const fromCodex = fromV1 || fromV0 || [];
   const set = new Set();
   BANNED_PHRASES.forEach(p => set.add(p));
   fromCodex.forEach(p => { if (typeof p === 'string' && p.trim()) set.add(p.trim()); });
   return Array.from(set);
 }
 
+function getCanonEvents(codex) {
+  const t = codex && codex.tiers;
+  if (!t) return [];
+  if (t.canonevents && Array.isArray(t.canonevents.events)) return t.canonevents.events;
+  if (t.canon_events && Array.isArray(t.canon_events.events)) return t.canon_events.events;
+  return [];
+}
+
 function summarizeSelectedFragments(selected, codex) {
   if (!Array.isArray(selected) || !selected.length) return 'model_select';
-  const events = (codex && codex.tiers && codex.tiers.canon_events && Array.isArray(codex.tiers.canon_events.events))
-    ? codex.tiers.canon_events.events : [];
+  const events = getCanonEvents(codex);
   const byId = {};
   events.forEach(e => { if (e && e.id) byId[e.id] = e; });
   const lines = selected.map(s => {
@@ -145,8 +154,9 @@ module.exports = async function handler(req, res) {
   const body = req.body || {};
   const userEmail = (body.userEmail || body.email || '').toString().trim().toLowerCase();
 
-  // Lab access gate (404 anon / 403 unflagged / 200+ allowlisted).
-  const gate = await assertLabAccess(req, res, { email: userEmail });
+  // v9.117.0 gate — any authenticated SAM user may compose, provided
+  // their codex has the minimum canon-event count (re-checked below).
+  const gate = await assertPersonaLabUser(req, res, { email: userEmail });
   if (!gate.ok) return;
 
   // Validate request body.
@@ -181,6 +191,12 @@ module.exports = async function handler(req, res) {
   const codex = codexRow.persona_codex;
   const codexVersion = codexRow.codex_version || 1;
 
+  // C2 eligibility — Composer requires at least 3 canon events.
+  const canonCount = getCanonEvents(codex).length;
+  if (canonCount < 3) {
+    return res.status(409).json({ error: 'composer_not_eligible', canon_events: canonCount, minimum: 3 });
+  }
+
   // N1 — read-only snapshot adapter.
   const samSnapshot = await getSamContextSnapshot(gate.email);
 
@@ -201,7 +217,7 @@ module.exports = async function handler(req, res) {
   const namingConvention = dnu.naming_convention || '(none)';
   const factsNever = Array.isArray(dnu.facts_to_never_invent) ? dnu.facts_to_never_invent.join('; ') : '(none)';
 
-  const displayName = codex.display_name || '(unknown)';
+  const displayName = (codex.overview && codex.overview.display_name) || codex.display_name || '(unknown)';
 
   const tpl = loadSystemPromptTemplate();
   const systemPrompt = fillTemplate(tpl, {

@@ -7373,6 +7373,521 @@ body:not(.persona-lab-route) #personaLabRoot { display: none !important; }
 .pl-drawer-body h3:first-child { margin-top: 0; }
 .pl-drawer-body p { margin-bottom: 10px; }
 .pl-drawer-body strong { color: var(--ink); font-weight: 600; }
+/* ============================================================ */
+/* ARCHIVIST (v9.117.0) — Persona Lab build mode UI              */
+/* Uses existing QS tokens only. No new design tokens.           */
+/* ============================================================ */
+body:not(.persona-lab-route) #personaLabBuildRoot { display: none !important; }
+#personaLabBuildRoot {
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Inter', system-ui, sans-serif;
+}
+.lab-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 32px 28px 64px;
+}
+.lab-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 20px;
+  margin-bottom: 28px;
+  gap: 16px;
+}
+.lab-header-left { display: flex; align-items: center; gap: 14px; }
+.lab-pill {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid var(--rule);
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+.lab-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.lab-subtitle {
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin-top: 2px;
+}
+.lab-status-token {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  background: var(--surface-2);
+  border: 1px solid var(--rule);
+  padding: 6px 12px;
+  border-radius: 999px;
+  min-width: 110px;
+  justify-content: center;
+}
+.lab-status-token .lab-status-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--ink-muted);
+  display: inline-block;
+}
+.lab-status-token.is-saving .lab-status-dot { background: #f59e0b; animation: labPulse 1s infinite; }
+.lab-status-token.is-saved .lab-status-dot { background: #10b981; }
+.lab-status-token.is-unsaved .lab-status-dot { background: #f59e0b; }
+.lab-status-token.is-failed .lab-status-dot { background: #ef4444; }
+@keyframes labPulse {
+  0% { opacity: 1; } 50% { opacity: 0.35; } 100% { opacity: 1; }
+}
+
+.lab-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 32px;
+  align-items: start;
+}
+@media (max-width: 820px) {
+  .lab-layout { grid-template-columns: 1fr; gap: 20px; }
+}
+.lab-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: sticky;
+  top: 20px;
+}
+.lab-sidebar-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  padding: 4px 10px 8px;
+}
+.lab-sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: none;
+  color: var(--ink-soft);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s, color 0.15s;
+}
+.lab-sidebar-item:hover { background: var(--surface-2); color: var(--ink); }
+.lab-sidebar-item.is-active {
+  background: var(--accent-soft);
+  border-color: var(--rule);
+  color: var(--ink);
+}
+.lab-sidebar-item .lab-tick {
+  width: 16px; height: 16px; flex: 0 0 16px;
+  border-radius: 50%;
+  border: 1px solid var(--rule);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  color: var(--ink-muted);
+  background: var(--paper);
+}
+.lab-sidebar-item.is-complete .lab-tick {
+  background: #10b981;
+  border-color: #10b981;
+  color: white;
+}
+.lab-sidebar-item-text { flex: 1; }
+.lab-sidebar-item-progress {
+  font-size: 11px;
+  color: var(--ink-muted);
+  font-weight: 400;
+  margin-top: 2px;
+}
+.lab-sidebar-divider {
+  height: 1px;
+  background: var(--rule);
+  margin: 10px 8px;
+}
+.lab-sidebar-action {
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--paper);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.lab-sidebar-action[disabled] {
+  background: var(--surface-2);
+  color: var(--ink-muted);
+  border-color: var(--rule);
+  cursor: not-allowed;
+}
+
+.lab-main { min-width: 0; }
+.lab-section {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  padding: 28px;
+}
+.lab-section-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.lab-section-subtitle {
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  margin-bottom: 24px;
+}
+.lab-section-progress {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+  margin-bottom: 18px;
+  text-transform: uppercase;
+}
+.lab-section-progress.is-met { color: var(--accent); }
+.lab-form-row { margin-bottom: 18px; }
+.lab-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+.lab-help-text {
+  font-size: 12px;
+  color: var(--ink-muted);
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+.lab-input,
+.lab-textarea {
+  width: 100%;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 10px 12px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.lab-input:focus,
+.lab-textarea:focus { border-color: var(--accent); }
+.lab-textarea { min-height: 96px; resize: vertical; line-height: 1.55; }
+
+.lab-chip-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.lab-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface-2);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 13px;
+  color: var(--ink);
+}
+.lab-chip.lab-chip-starter { color: var(--ink-soft); }
+.lab-chip-remove {
+  background: none; border: none; color: var(--ink-muted);
+  cursor: pointer; font-size: 14px; line-height: 1; padding: 0 0 0 2px;
+}
+.lab-chip-remove:hover { color: var(--ink); }
+.lab-chip-input-row {
+  display: flex; gap: 8px; align-items: center; margin-top: 10px;
+}
+.lab-chip-input-row .lab-input { flex: 1; }
+.lab-button-secondary {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.lab-button-secondary:hover { background: var(--surface-2); }
+.lab-button-primary {
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--paper);
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+.lab-button-primary[disabled] {
+  background: var(--surface-2);
+  color: var(--ink-muted);
+  border-color: var(--rule);
+  cursor: not-allowed;
+}
+.lab-button-danger {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ef4444;
+  background: none;
+  border: 1px solid rgba(239,68,68,0.4);
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+.lab-button-danger:hover { background: rgba(239,68,68,0.08); }
+
+.lab-section-actions {
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid var(--rule);
+}
+.lab-section-meta { font-size: 12px; color: var(--ink-muted); }
+.lab-starter-note {
+  font-size: 11px;
+  color: var(--ink-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+/* Splash */
+.lab-splash {
+  max-width: 560px;
+  margin: 80px auto 0;
+  text-align: center;
+  padding: 0 24px;
+}
+.lab-splash-pill {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid var(--rule);
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: 18px;
+}
+.lab-splash-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+.lab-splash-body {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  margin-bottom: 28px;
+}
+
+/* Canon event flow */
+.lab-canon-progress {
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin-bottom: 18px;
+}
+.lab-canon-step-q {
+  font-family: 'Sora', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 14px;
+  line-height: 1.4;
+}
+.lab-canon-input-wrap {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+.lab-canon-input-wrap > .lab-input,
+.lab-canon-input-wrap > .lab-textarea { flex: 1; }
+.lab-canon-mic {
+  flex: 0 0 40px;
+  width: 40px;
+  border-radius: 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--rule);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-soft);
+  transition: background 0.15s, color 0.15s;
+  align-self: stretch;
+  min-height: 40px;
+}
+.lab-canon-mic:hover { background: var(--accent-soft); color: var(--accent); }
+.lab-canon-mic.is-recording {
+  background: rgba(239,68,68,0.12);
+  border-color: rgba(239,68,68,0.5);
+  color: #ef4444;
+  animation: labPulse 1.2s infinite;
+}
+.lab-canon-mic[disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.lab-canon-mic-hint {
+  font-size: 11px;
+  color: var(--ink-muted);
+  margin-top: 6px;
+  font-style: italic;
+}
+.lab-canon-step-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.lab-review {
+  background: var(--surface-2);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 22px;
+  margin-bottom: 18px;
+}
+.lab-review-row { margin-bottom: 12px; }
+.lab-review-row:last-child { margin-bottom: 0; }
+.lab-review-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-bottom: 4px;
+}
+.lab-review-value {
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+.lab-review-value.is-empty { color: var(--ink-muted); font-style: italic; }
+.lab-review-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.lab-event-list { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+.lab-event-card {
+  background: var(--surface-2);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.lab-event-card-body { flex: 1; min-width: 0; }
+.lab-event-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lab-event-card-meta {
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+.lab-event-card-actions { display: flex; gap: 6px; }
+.lab-event-card-action {
+  background: none;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.lab-event-card-action:hover { background: var(--paper); color: var(--ink); }
+
+.lab-modal-overlay {
+  position: fixed; inset: 0; z-index: 99999;
+  background: rgba(26,24,21,0.55);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+}
+.lab-modal {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  padding: 24px;
+  max-width: 420px;
+  width: 90%;
+}
+.lab-modal-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.lab-modal-body {
+  font-size: 14px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  margin-bottom: 18px;
+}
+.lab-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
 .pl-drawer-body code {
   font-family: 'JetBrains Mono', monospace;
   font-size: 12px;
@@ -7389,9 +7904,10 @@ body:not(.persona-lab-route) #personaLabRoot { display: none !important; }
 <body class="quiet-studio-shell">
 <script>
 (function() {
-  if (window.location.pathname === '/persona-lab') {
+  var p = window.location.pathname;
+  if (p === '/persona-lab' || p === '/persona-lab/build') {
     document.body.classList.add('persona-lab-route');
-    document.title = 'Persona Lab';
+    document.title = p === '/persona-lab/build' ? 'Persona Lab — Archivist' : 'Persona Lab';
   }
 })();
 </script>
@@ -7404,7 +7920,7 @@ body:not(.persona-lab-route) #personaLabRoot { display: none !important; }
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.116.9" data-qs-descriptor="Thread identity into /api/pdf — fix Download PDF / Lead Magnet 401" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.117.0" data-qs-descriptor="Ship Archivist hybrid codex builder, add explicit composer eligibility gate, and open Persona Lab to authenticated SAM users via codex-based routing" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -7451,6 +7967,15 @@ body:not(.persona-lab-route) #personaLabRoot { display: none !important; }
     <span class="qs-dash-rail-step" aria-hidden="true">3</span>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="12" r="2.2"/><circle cx="16.5" cy="7.5" r="1.8"/><circle cx="17" cy="16.5" r="1.8"/><path d="M10.1 10.9L14.7 8.4"/><path d="M10.1 13.1L15.1 15.8"/></svg>
     The Reach
+  </button>
+</nav>
+
+<!-- STUDIO section — Persona Lab discovery (authenticated users only) -->
+<nav class="qs-dash-rail-section" aria-label="Studio" id="qsRailStudioSection" style="display:none;">
+  <div class="qs-dash-rail-section-label">Studio</div>
+  <button class="qs-dash-rail-item" data-qs-nav="persona-lab" onclick="navigateToPersonaLab()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3L4 7v6c0 4 3.5 7 8 8 4.5-1 8-4 8-8V7l-8-4z"/><path d="M9 11l2 2 4-4"/></svg>
+    Persona Lab
   </button>
 </nav>
 
@@ -13950,6 +14475,38 @@ function openMeetSAMOverlay() { window.location.href = '/meet'; return; // legac
   }, 100);
 }
 
+// v9.117.0 — Persona Lab rail tile (authenticated users only)
+function navigateToPersonaLab() {
+  // Route guard on /persona-lab handles eligibility (no codex / canon < 3
+  // → redirect to /persona-lab/build).
+  window.location.href = '/persona-lab';
+}
+function _samReadAuthEmail() {
+  try {
+    var c = JSON.parse(localStorage.getItem('sam-current-user') || 'null');
+    if (c && c.email) return String(c.email).trim().toLowerCase();
+  } catch (e) {}
+  try {
+    var t = JSON.parse(localStorage.getItem('sam-trial') || 'null');
+    if (t && t.email) return String(t.email).trim().toLowerCase();
+  } catch (e) {}
+  return '';
+}
+(function initPersonaLabRail() {
+  function reveal() {
+    var section = document.getElementById('qsRailStudioSection');
+    if (!section) return;
+    if (_samReadAuthEmail()) section.style.display = '';
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() { setTimeout(reveal, 200); });
+  } else {
+    setTimeout(reveal, 200);
+  }
+  // Re-check after sign-in flows complete (other init code refreshes user state asynchronously).
+  setTimeout(reveal, 1500);
+})();
+
 // Show Story Engine btn when wizard has been used
 (function initStoryEngineBtn() {
   document.addEventListener('DOMContentLoaded', function() {
@@ -19325,7 +19882,7 @@ function openDailyBriefDataModal() {
           '</div>' +
         '</div>' +
       '</div>' +
-      '<div class="pl-version-stamp">Persona Lab v9.116.3</div>';
+      '<div class="pl-version-stamp">Persona Lab v9.117.0</div>';
 
     bindForm(state, canon);
   }
@@ -19880,6 +20437,26 @@ function openDailyBriefDataModal() {
     };
   }
 
+  // v9.117.0 — schema-tolerant canon-event reader.
+  // Reads new shape (tiers.canonevents.events) first, falls back to old
+  // shape (tiers.canon_events.events). Composer eligibility is canon
+  // count >= 3.
+  function readCanonEvents(codex) {
+    if (!codex || !codex.tiers) return [];
+    var t = codex.tiers;
+    if (t.canonevents && Array.isArray(t.canonevents.events)) return t.canonevents.events;
+    if (t.canon_events && Array.isArray(t.canon_events.events)) return t.canon_events.events;
+    return [];
+  }
+
+  function redirectToBuild(reason) {
+    // Stash a hint so /persona-lab/build can show the right banner.
+    try {
+      sessionStorage.setItem('personaLabArchivist.entryReason', reason || '');
+    } catch (e) {}
+    window.location.replace('/persona-lab/build');
+  }
+
   async function runGate() {
     renderLoading();
     var email = readLabUserEmail();
@@ -19891,9 +20468,31 @@ function openDailyBriefDataModal() {
         headers: { 'Accept': 'application/json' },
         cache: 'no-store'
       });
+
+      // 404 from API has two flavors:
+      //   - 'not_found'       → email not in sam_users (anonymous / unknown). 404 here too.
+      //   - 'codex_not_seeded'→ authed user, no codex row yet. Redirect into Archivist build.
+      if (r.status === 404) {
+        var notFoundData = null;
+        try { notFoundData = await r.json(); } catch (e) {}
+        if (notFoundData && notFoundData.error === 'codex_not_seeded') {
+          redirectToBuild('no_codex');
+          return;
+        }
+        render404();
+        return;
+      }
       if (r.status !== 200) { render404(); return; }
+
       var data = await r.json();
       if (!data || !data.codex) { render404(); return; }
+
+      // Composer eligibility re-check (defense-in-depth — server enforces too).
+      var canonCount = readCanonEvents(data.codex).length;
+      if (canonCount < 3) {
+        redirectToBuild('not_eligible_' + canonCount);
+        return;
+      }
 
       var cachedUser = null;
       try { cachedUser = JSON.parse(localStorage.getItem('sam-current-user') || 'null'); } catch (e) {}
@@ -19933,6 +20532,1398 @@ function openDailyBriefDataModal() {
     document.addEventListener('DOMContentLoaded', runGate);
   } else {
     runGate();
+  }
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════
+     PERSONA LAB ARCHIVIST (v9.117.0) — UI ROOT
+     Mounted only when window.location.pathname === '/persona-lab/build'.
+     The route guard renders 404 for anonymous users (concealment) and
+     a build-mode shell for authenticated SAM users — no lab_access
+     required, codex doesn't need to exist yet.
+
+     v9.117.0 schema policy (locked):
+       - Read both old + new shape (read-both / write-new).
+       - On save, migrate fields to v1 paths and drop the moved keys
+         (display_name, tiers.canon_events, character_traits.contradictions,
+         voice_profile_seeds.banned_phrases, voice_profile_seeds.signature_constructions).
+       - All other unknown fields preserved verbatim.
+════════════════════════════════════════════════════ -->
+<div id="personaLabBuildRoot" aria-live="polite"></div>
+<script>
+(function() {
+  if (window.location.pathname !== '/persona-lab/build') return;
+
+  var root = document.getElementById('personaLabBuildRoot');
+  if (!root) return;
+
+  // ============== Sections ==============
+  var SECTIONS = [
+    { id: 'overview',       label: 'Overview',
+      subtitle: 'Who you are at the surface — name, identity, the loglines a stranger would read first.' },
+    { id: 'canon',          label: 'Canon Events',
+      subtitle: 'Real moments from your actual life. The richer the detail, the better the drafts.' },
+    { id: 'contradictions', label: 'Contradictions',
+      subtitle: 'The tensions in how you think — what you say vs. what you do, what you want vs. what you fear.' },
+    { id: 'beliefs',        label: 'Beliefs & Mythologies',
+      subtitle: 'Your worldview. What you’ve decided is true about the world, even if no one else agrees.' },
+    { id: 'voice',          label: 'Voice Signatures',
+      subtitle: 'The phrases, cadences, and constructions that mark your voice as yours.' },
+    { id: 'banned',         label: 'Banned Phrases',
+      subtitle: 'Lines you’d never say. The negative space matters.' }
+  ];
+
+  // ============== Local storage namespacing ==============
+  var LS_PREFIX = 'personaLabArchivist.';
+  var LS = {
+    activeSection:   LS_PREFIX + 'activeSection',
+    draftEvent:      LS_PREFIX + 'draftEvent',
+    draftStep:       LS_PREFIX + 'draftEventStep',
+    draftEditingId:  LS_PREFIX + 'draftEditingId',
+    lastSavedAt:     LS_PREFIX + 'lastSavedAt',
+    lastStatus:      LS_PREFIX + 'lastSaveStatus',
+    firstRunDone:    LS_PREFIX + 'firstRunComplete',
+    bannedSeeded:    LS_PREFIX + 'bannedPhrasesSeeded'
+  };
+  function lsGet(k, fallback) {
+    try { var v = localStorage.getItem(k); return v == null ? fallback : v; } catch (e) { return fallback; }
+  }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function lsRemove(k) { try { localStorage.removeItem(k); } catch (e) {} }
+
+  // ============== Helpers ==============
+  function escapeHtml(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  function readEmail() {
+    try {
+      var c = JSON.parse(localStorage.getItem('sam-current-user') || 'null');
+      if (c && c.email) return String(c.email).trim().toLowerCase();
+    } catch (e) {}
+    try {
+      var t = JSON.parse(localStorage.getItem('sam-trial') || 'null');
+      if (t && t.email) return String(t.email).trim().toLowerCase();
+    } catch (e) {}
+    return '';
+  }
+  function deepClone(o) { return JSON.parse(JSON.stringify(o == null ? null : o)); }
+
+  // ============== Schema normalizers (read-both, prefer-new) ==============
+  function getOverview(codex) {
+    var c = codex || {};
+    var ov = c.overview && typeof c.overview === 'object' ? c.overview : {};
+    return {
+      display_name: ov.display_name || c.display_name || '',
+      about: ov.about || '',
+      logline: ov.logline || ''
+    };
+  }
+  function getCanonEvents(codex) {
+    var t = codex && codex.tiers;
+    if (!t) return [];
+    if (t.canonevents && Array.isArray(t.canonevents.events)) return t.canonevents.events;
+    if (t.canon_events && Array.isArray(t.canon_events.events)) return t.canon_events.events;
+    return [];
+  }
+  function getContradictions(codex) {
+    var c = codex || {};
+    if (c.traits && Array.isArray(c.traits.contradictions) && c.traits.contradictions.length) {
+      return c.traits.contradictions.slice();
+    }
+    if (c.tiers && c.tiers.character_traits && Array.isArray(c.tiers.character_traits.contradictions)) {
+      return c.tiers.character_traits.contradictions.slice();
+    }
+    return [];
+  }
+  function getBeliefs(codex) {
+    var c = codex || {};
+    var b = (c.beliefs && typeof c.beliefs === 'object') ? c.beliefs : {};
+    var fallbackSpiritual = (c.tiers && c.tiers.origin_geography && c.tiers.origin_geography.family && c.tiers.origin_geography.family.religion) || '';
+    var fallbackSpiritual2 = (c.tiers && c.tiers.worldview_aesthetics && c.tiers.worldview_aesthetics.spirituality) || '';
+    return {
+      worldview: b.worldview || '',
+      spirituality: b.spirituality || fallbackSpiritual2 || fallbackSpiritual || '',
+      mythologies: Array.isArray(b.mythologies) ? b.mythologies.slice() : []
+    };
+  }
+  function getVoiceSignatures(codex) {
+    var c = codex || {};
+    if (c.voice && Array.isArray(c.voice.signatures) && c.voice.signatures.length) {
+      return c.voice.signatures.slice();
+    }
+    if (c.voice_profile_seeds && Array.isArray(c.voice_profile_seeds.signature_constructions)) {
+      return c.voice_profile_seeds.signature_constructions.slice();
+    }
+    return [];
+  }
+  function getBannedPhrases(codex) {
+    var c = codex || {};
+    if (Array.isArray(c.banned_phrases) && c.banned_phrases.length) return c.banned_phrases.slice();
+    if (c.voice_profile_seeds && Array.isArray(c.voice_profile_seeds.banned_phrases)) {
+      return c.voice_profile_seeds.banned_phrases.slice();
+    }
+    return [];
+  }
+
+  // ============== Stable canon ID ==============
+  // Generates next ce## ID using highest existing numeric suffix + 1.
+  // Never renumbers existing events — deletion of ce02 leaves ce03 at ce03.
+  function nextCanonId(events) {
+    var maxN = 0;
+    (events || []).forEach(function(ev) {
+      if (!ev || typeof ev.id !== 'string') return;
+      var m = ev.id.match(/^ce(\d+)$/i);
+      if (m) {
+        var n = parseInt(m[1], 10);
+        if (!isNaN(n) && n > maxN) maxN = n;
+      }
+    });
+    var next = maxN + 1;
+    return 'ce' + (next < 10 ? '0' + next : String(next));
+  }
+
+  // ============== Section completion ==============
+  function isSectionComplete(sectionId, codex) {
+    var c = codex || {};
+    if (sectionId === 'overview')       return !!getOverview(c).display_name.trim();
+    if (sectionId === 'canon')          return getCanonEvents(c).length >= 3;
+    if (sectionId === 'contradictions') return getContradictions(c).length >= 1;
+    if (sectionId === 'beliefs') {
+      var b = getBeliefs(c);
+      return !!(b.worldview && b.worldview.trim()) || !!(b.spirituality && b.spirituality.trim());
+    }
+    if (sectionId === 'voice')          return getVoiceSignatures(c).length >= 1;
+    if (sectionId === 'banned') {
+      // Complete by default once the starter list is available — the
+      // section is never blocking. Customizations don't change completion,
+      // they just remove the "starter" framing.
+      if (getBannedPhrases(c).length > 0) return true;
+      return !!(State.defaults && Array.isArray(State.defaults.banned_phrases) && State.defaults.banned_phrases.length);
+    }
+    return false;
+  }
+
+  // ============== Save migration (write-new) ==============
+  // Returns a deep-cloned codex with v1-path fields populated and the
+  // moved old-shape keys removed. All unknown fields preserved.
+  function migrateCodexForWrite(codex) {
+    var out = deepClone(codex || {});
+    out.overview = (out.overview && typeof out.overview === 'object') ? out.overview : {};
+    out.traits   = (out.traits   && typeof out.traits   === 'object') ? out.traits   : {};
+    out.beliefs  = (out.beliefs  && typeof out.beliefs  === 'object') ? out.beliefs  : {};
+    out.voice    = (out.voice    && typeof out.voice    === 'object') ? out.voice    : {};
+    out.tiers    = (out.tiers    && typeof out.tiers    === 'object') ? out.tiers    : {};
+
+    // overview.display_name (move top-level → overview.display_name)
+    if (!out.overview.display_name && out.display_name) out.overview.display_name = out.display_name;
+    if (out.display_name) delete out.display_name;
+
+    // tiers.canonevents.events (move tiers.canon_events → tiers.canonevents)
+    if (out.tiers.canon_events && Array.isArray(out.tiers.canon_events.events)) {
+      var hasNew = out.tiers.canonevents && Array.isArray(out.tiers.canonevents.events) && out.tiers.canonevents.events.length;
+      if (!hasNew) out.tiers.canonevents = out.tiers.canon_events;
+      delete out.tiers.canon_events;
+    }
+
+    // traits.contradictions (move tiers.character_traits.contradictions → traits.contradictions)
+    if (out.tiers.character_traits && Array.isArray(out.tiers.character_traits.contradictions)) {
+      if (!Array.isArray(out.traits.contradictions) || !out.traits.contradictions.length) {
+        out.traits.contradictions = out.tiers.character_traits.contradictions.slice();
+      }
+      delete out.tiers.character_traits.contradictions;
+    }
+    if (!Array.isArray(out.traits.contradictions)) out.traits.contradictions = [];
+    if (!Array.isArray(out.traits.core)) out.traits.core = [];
+
+    // banned_phrases (move voice_profile_seeds.banned_phrases → top-level banned_phrases)
+    if (out.voice_profile_seeds && Array.isArray(out.voice_profile_seeds.banned_phrases)) {
+      if (!Array.isArray(out.banned_phrases) || !out.banned_phrases.length) {
+        out.banned_phrases = out.voice_profile_seeds.banned_phrases.slice();
+      }
+      delete out.voice_profile_seeds.banned_phrases;
+    }
+    if (!Array.isArray(out.banned_phrases)) out.banned_phrases = [];
+
+    // voice.signatures (move voice_profile_seeds.signature_constructions → voice.signatures)
+    if (out.voice_profile_seeds && Array.isArray(out.voice_profile_seeds.signature_constructions)) {
+      if (!Array.isArray(out.voice.signatures) || !out.voice.signatures.length) {
+        out.voice.signatures = out.voice_profile_seeds.signature_constructions.slice();
+      }
+      delete out.voice_profile_seeds.signature_constructions;
+    }
+    if (!Array.isArray(out.voice.signatures)) out.voice.signatures = [];
+
+    // beliefs.mythologies — array shape only.
+    if (!Array.isArray(out.beliefs.mythologies)) out.beliefs.mythologies = [];
+
+    // meta — touch-only, never wiped.
+    out.meta = (out.meta && typeof out.meta === 'object') ? out.meta : {};
+    out.meta.last_archivist_save_at = new Date().toISOString();
+    out.meta.archivist_schema = 'v1';
+
+    return out;
+  }
+
+  // ============== State ==============
+  var State = {
+    email: '',
+    codex: null,
+    codexVersion: 0,
+    defaults: { banned_phrases: [], banned_phrases_version: 0 },
+    activeSection: 'overview',
+    saveStatus: 'idle',     // 'idle' | 'saving' | 'saved' | 'unsaved' | 'failed'
+    saveStatusAt: null,
+    draftEvent: null,
+    draftStep: 0,
+    draftEditingId: null,
+    entryReason: ''
+  };
+
+  // ============== Render entry points ==============
+  function render404() {
+    root.innerHTML =
+      '<div class="pl-404">' +
+        '<div class="pl-404-code">404</div>' +
+        '<div class="pl-404-line">This page could not be found.</div>' +
+      '</div>';
+  }
+  function renderLoading() {
+    root.innerHTML = '<div class="pl-loader">Loading…</div>';
+  }
+  function renderSplash() {
+    root.innerHTML =
+      '<div class="lab-shell">' +
+        '<div class="lab-splash">' +
+          '<div class="lab-splash-pill">Persona Lab</div>' +
+          '<div class="lab-splash-title">Build your codex.</div>' +
+          '<div class="lab-splash-body">' +
+            'Persona Lab needs a codex — your private archive of real moments. ' +
+            'Real life refracted into your clearest voice. We’ll build it together. ' +
+            'Takes about 20 minutes. You can save and return anytime.' +
+          '</div>' +
+          '<button id="labSplashStart" class="lab-button-primary">Start →</button>' +
+        '</div>' +
+      '</div>';
+    var btn = document.getElementById('labSplashStart');
+    if (btn) {
+      btn.addEventListener('click', function() {
+        lsSet(LS.firstRunDone, '1');
+        State.activeSection = 'overview';
+        lsSet(LS.activeSection, 'overview');
+        renderShell();
+      });
+    }
+  }
+
+  // Status token markup. When 'unsaved' or 'failed', the token doubles as
+  // a manual save button — clicking calls saveCodex() so users on the last
+  // section don't have to switch away to retry.
+  function renderStatusToken() {
+    var label, cls, clickable = false;
+    switch (State.saveStatus) {
+      case 'saving':   label = 'Saving…';         cls = 'is-saving'; break;
+      case 'saved':    label = 'Saved just now';  cls = 'is-saved';  break;
+      case 'unsaved':  label = 'Save changes';    cls = 'is-unsaved'; clickable = true; break;
+      case 'failed':   label = 'Save failed — retry'; cls = 'is-failed'; clickable = true; break;
+      default:         label = 'Ready';           cls = '';
+    }
+    var role = clickable ? ' role="button" tabindex="0" style="cursor:pointer;"' : '';
+    return '<span id="labStatusToken" class="lab-status-token ' + cls + '"' + role + '>' +
+             '<span class="lab-status-dot"></span><span>' + escapeHtml(label) + '</span>' +
+           '</span>';
+  }
+  function bindStatusToken() {
+    var el = document.getElementById('labStatusToken');
+    if (!el) return;
+    if (State.saveStatus !== 'unsaved' && State.saveStatus !== 'failed') return;
+    el.addEventListener('click', function() { saveCodex(); });
+    el.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); saveCodex(); }
+    });
+  }
+
+  // Banner shown when redirected from /persona-lab without enough canon events.
+  function renderEntryBanner() {
+    if (!State.entryReason) return '';
+    var canonCount = getCanonEvents(State.codex).length;
+    if (State.entryReason.indexOf('not_eligible_') === 0) {
+      var n = canonCount; // re-read live count rather than stale redirect hint
+      var remaining = Math.max(0, 3 - n);
+      if (remaining <= 0) return ''; // user already crossed threshold mid-session
+      var word = remaining === 1 ? 'memory' : 'memories';
+      return '<div class="lab-help-text" style="background:var(--accent-soft);border:1px solid var(--rule);border-radius:10px;padding:12px 16px;margin-bottom:18px;font-size:13px;color:var(--ink);">' +
+        'Add ' + remaining + ' more ' + word + ' to unlock Composer.' +
+      '</div>';
+    }
+    if (State.entryReason === 'no_codex') {
+      return ''; // covered by splash + new-user copy
+    }
+    return '';
+  }
+
+  // Shell — header + sidebar + main content area
+  function renderShell() {
+    var sidebar = SECTIONS.map(function(s) {
+      var complete = isSectionComplete(s.id, State.codex);
+      var active = State.activeSection === s.id;
+      var progress = '';
+      if (s.id === 'canon') {
+        var n = getCanonEvents(State.codex).length;
+        if (n < 3) progress = n + ' / 3 minimum';
+        else if (n < 5) progress = n + ' / 5 making drafts richer';
+        else progress = n + ' saved';
+      }
+      return '<button type="button" class="lab-sidebar-item' +
+        (active ? ' is-active' : '') + (complete ? ' is-complete' : '') + '" data-section="' + s.id + '">' +
+        '<span class="lab-tick">' + (complete ? '✓' : '') + '</span>' +
+        '<span class="lab-sidebar-item-text">' +
+          escapeHtml(s.label) +
+          (progress ? '<div class="lab-sidebar-item-progress">' + escapeHtml(progress) + '</div>' : '') +
+        '</span>' +
+        '</button>';
+    }).join('');
+
+    var canonCount = getCanonEvents(State.codex).length;
+    var eligible = canonCount >= 3;
+    var continueDisabled = false;
+    var continueLabel = 'Save & Continue';
+
+    var headerRight =
+      '<div style="display:flex;gap:10px;align-items:center;">' +
+        (eligible ? '<a href="/persona-lab" class="lab-button-secondary" style="text-decoration:none;">Open Composer →</a>' : '') +
+        renderStatusToken() +
+      '</div>';
+
+    root.innerHTML =
+      '<div class="lab-shell">' +
+        '<div class="lab-header">' +
+          '<div class="lab-header-left">' +
+            '<span class="lab-pill">Archivist</span>' +
+            '<div>' +
+              '<div class="lab-title">Codex builder</div>' +
+              '<div class="lab-subtitle">' + canonCount + ' canon event' + (canonCount === 1 ? '' : 's') +
+                ' · v' + escapeHtml(String(State.codexVersion || 0)) + '</div>' +
+            '</div>' +
+          '</div>' +
+          headerRight +
+        '</div>' +
+
+        renderEntryBanner() +
+
+        '<div class="lab-layout">' +
+          '<aside class="lab-sidebar">' +
+            '<div class="lab-sidebar-label">Sections</div>' +
+            sidebar +
+            '<div class="lab-sidebar-divider"></div>' +
+            '<button id="labContinueBtn" class="lab-sidebar-action"' + (continueDisabled ? ' disabled' : '') + '>' +
+              escapeHtml(continueLabel) +
+            '</button>' +
+          '</aside>' +
+          '<section class="lab-main" id="labMain"></section>' +
+        '</div>' +
+      '</div>';
+
+    // Sidebar nav (saves before switching when dirty).
+    var sidebarItems = root.querySelectorAll('[data-section]');
+    for (var i = 0; i < sidebarItems.length; i++) {
+      sidebarItems[i].addEventListener('click', function(e) {
+        var id = e.currentTarget.getAttribute('data-section');
+        switchSection(id);
+      });
+    }
+
+    var contBtn = document.getElementById('labContinueBtn');
+    if (contBtn) contBtn.addEventListener('click', advanceSection);
+
+    bindStatusToken();
+    renderActiveSection();
+  }
+
+  // Save current dirty state, then switch to the requested section.
+  async function switchSection(targetId) {
+    if (State.saveStatus === 'unsaved' && State.codex) {
+      await saveCodex();
+    }
+    State.activeSection = targetId;
+    lsSet(LS.activeSection, targetId);
+    renderShell();
+  }
+  // Move to the next sidebar section (Save & Continue).
+  function advanceSection() {
+    var idx = -1;
+    for (var i = 0; i < SECTIONS.length; i++) if (SECTIONS[i].id === State.activeSection) { idx = i; break; }
+    var nextIdx = (idx + 1) % SECTIONS.length;
+    switchSection(SECTIONS[nextIdx].id);
+  }
+
+  function setStatus(status) {
+    State.saveStatus = status;
+    State.saveStatusAt = Date.now();
+    var el = document.getElementById('labStatusToken');
+    if (el) {
+      el.outerHTML = renderStatusToken();
+      bindStatusToken();
+    }
+  }
+
+  // ============== Save ==============
+  // Persists the current State.codex through POST /api/persona-lab/codex.
+  // Migrates v0 paths to v1 paths before write. On success, swaps in
+  // the server-returned codex (authoritative) and bumps codex_version.
+  async function saveCodex() {
+    if (!State.email || !State.codex) return { ok: false, reason: 'no_state' };
+    setStatus('saving');
+    var payload = migrateCodexForWrite(State.codex);
+    try {
+      var r = await fetch('/api/persona-lab/codex', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        cache: 'no-store',
+        body: JSON.stringify({ email: State.email, codex: payload })
+      });
+      if (!r.ok) {
+        setStatus('failed');
+        return { ok: false, reason: 'http_' + r.status };
+      }
+      var data = await r.json();
+      if (data && data.codex) {
+        State.codex = data.codex;
+        State.codexVersion = data.codex_version || (State.codexVersion + 1);
+      } else {
+        State.codex = payload;
+        State.codexVersion = (State.codexVersion || 0) + 1;
+      }
+      lsSet(LS.lastSavedAt, new Date().toISOString());
+      lsSet(LS.lastStatus, 'saved');
+      setStatus('saved');
+      return { ok: true };
+    } catch (e) {
+      console.error('[archivist] save failed:', e);
+      setStatus('failed');
+      return { ok: false, reason: 'network' };
+    }
+  }
+  // Mark the codex dirty (used by section editors before they trigger save).
+  function markDirty() { setStatus('unsaved'); }
+
+  // ============== Section dispatch ==============
+  function renderActiveSection() {
+    var main = document.getElementById('labMain');
+    if (!main) return;
+    switch (State.activeSection) {
+      case 'overview':       return renderOverview(main);
+      case 'canon':          return renderCanon(main);
+      case 'contradictions': return renderContradictions(main);
+      case 'beliefs':        return renderBeliefs(main);
+      case 'voice':          return renderVoice(main);
+      case 'banned':         return renderBanned(main);
+    }
+    main.innerHTML = '';
+  }
+
+  // ============================================================
+  // Shared helpers for structured sections
+  // ============================================================
+  function sectionHeaderHtml(sectionId, opts) {
+    var s = SECTIONS.filter(function(x) { return x.id === sectionId; })[0] || { label: sectionId, subtitle: '' };
+    opts = opts || {};
+    return '<div class="lab-section-title">' + escapeHtml(s.label) + '</div>' +
+           '<div class="lab-section-subtitle">' + escapeHtml(s.subtitle) + '</div>' +
+           (opts.progress ? '<div class="lab-section-progress' + (opts.progressMet ? ' is-met' : '') + '">' + escapeHtml(opts.progress) + '</div>' : '');
+  }
+  function ensureCodexShape() {
+    if (!State.codex || typeof State.codex !== 'object') State.codex = {};
+    State.codex.overview = State.codex.overview && typeof State.codex.overview === 'object' ? State.codex.overview : {};
+    State.codex.traits = State.codex.traits && typeof State.codex.traits === 'object' ? State.codex.traits : {};
+    if (!Array.isArray(State.codex.traits.contradictions)) State.codex.traits.contradictions = [];
+    if (!Array.isArray(State.codex.traits.core)) State.codex.traits.core = [];
+    State.codex.beliefs = State.codex.beliefs && typeof State.codex.beliefs === 'object' ? State.codex.beliefs : {};
+    if (!Array.isArray(State.codex.beliefs.mythologies)) State.codex.beliefs.mythologies = [];
+    State.codex.voice = State.codex.voice && typeof State.codex.voice === 'object' ? State.codex.voice : {};
+    if (!Array.isArray(State.codex.voice.signatures)) State.codex.voice.signatures = [];
+    if (!Array.isArray(State.codex.banned_phrases)) State.codex.banned_phrases = [];
+  }
+
+  // Render a chip list with add/remove. Re-renders the whole section on change.
+  function renderChipListBlock(items, opts) {
+    opts = opts || {};
+    var starterClass = opts.starter ? ' lab-chip-starter' : '';
+    var chips = (items || []).map(function(item, idx) {
+      return '<span class="lab-chip' + starterClass + '">' +
+        escapeHtml(item) +
+        '<button type="button" class="lab-chip-remove" data-chip-remove="' + idx + '" aria-label="Remove">×</button>' +
+      '</span>';
+    }).join('');
+    var starterNote = opts.starter
+      ? '<div class="lab-starter-note">Starter list from SAM defaults · ' + (items || []).length + ' phrases</div>'
+      : '';
+    return starterNote +
+      '<div class="lab-chip-list">' + (chips || '<span class="lab-help-text">None added yet.</span>') + '</div>' +
+      '<div class="lab-chip-input-row">' +
+        '<input type="text" class="lab-input" data-chip-input placeholder="' + escapeHtml(opts.placeholder || 'Add an item') + '" />' +
+        '<button type="button" class="lab-button-secondary" data-chip-add>Add</button>' +
+      '</div>';
+  }
+  // Bind chip-list events. onAdd(value) and onRemove(idx) mutate state.
+  function bindChipList(host, items, onAdd, onRemove) {
+    var input = host.querySelector('[data-chip-input]');
+    var addBtn = host.querySelector('[data-chip-add]');
+    function commit() {
+      if (!input) return;
+      var v = (input.value || '').trim();
+      if (!v) return;
+      onAdd(v);
+      input.value = '';
+      renderActiveSection();
+    }
+    if (addBtn) addBtn.addEventListener('click', commit);
+    if (input) input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') { e.preventDefault(); commit(); }
+    });
+    var removes = host.querySelectorAll('[data-chip-remove]');
+    for (var i = 0; i < removes.length; i++) {
+      removes[i].addEventListener('click', function(e) {
+        var idx = parseInt(e.currentTarget.getAttribute('data-chip-remove'), 10);
+        if (isNaN(idx)) return;
+        onRemove(idx);
+        renderActiveSection();
+      });
+    }
+  }
+
+  // ============================================================
+  // OVERVIEW
+  // ============================================================
+  function renderOverview(host) {
+    ensureCodexShape();
+    var ov = getOverview(State.codex);
+    var done = !!ov.display_name.trim();
+    host.innerHTML =
+      '<div class="lab-section">' +
+        sectionHeaderHtml('overview', { progress: done ? 'Section complete' : 'Display name needed', progressMet: done }) +
+        '<div class="lab-form-row">' +
+          '<label class="lab-label" for="labOvName">Display name</label>' +
+          '<div class="lab-help-text">What you want to be called inside Persona Lab. Show up as you. First name, full name, or a handle.</div>' +
+          '<input id="labOvName" class="lab-input" type="text" maxlength="80" value="' + escapeHtml(ov.display_name) + '">' +
+        '</div>' +
+        '<div class="lab-form-row">' +
+          '<label class="lab-label" for="labOvAbout">About</label>' +
+          '<div class="lab-help-text">A few sentences someone would read first. Optional but helps Composer ground the voice.</div>' +
+          '<textarea id="labOvAbout" class="lab-textarea" maxlength="800">' + escapeHtml(ov.about) + '</textarea>' +
+        '</div>' +
+        '<div class="lab-form-row">' +
+          '<label class="lab-label" for="labOvLogline">Logline</label>' +
+          '<div class="lab-help-text">One line that captures the through-thread of who you are. Optional.</div>' +
+          '<input id="labOvLogline" class="lab-input" type="text" maxlength="160" value="' + escapeHtml(ov.logline) + '">' +
+        '</div>' +
+      '</div>';
+    function bind(id, key) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('input', function() {
+        State.codex.overview[key] = el.value;
+        if (State.codex.display_name) delete State.codex.display_name;
+        markDirty();
+      });
+    }
+    bind('labOvName',    'display_name');
+    bind('labOvAbout',   'about');
+    bind('labOvLogline', 'logline');
+  }
+
+  // ============================================================
+  // CONTRADICTIONS
+  // ============================================================
+  function renderContradictions(host) {
+    ensureCodexShape();
+    // Read-both at render time. Hydrate v1 path from old shape on first surface.
+    var current = getContradictions(State.codex);
+    if (!State.codex.traits.contradictions.length && current.length) {
+      State.codex.traits.contradictions = current.slice();
+    }
+    var items = State.codex.traits.contradictions;
+    var done = items.length >= 1;
+    host.innerHTML =
+      '<div class="lab-section">' +
+        sectionHeaderHtml('contradictions', { progress: items.length + ' added · 1+ to complete', progressMet: done }) +
+        '<div class="lab-help-text">' +
+          'Each contradiction is one sentence. The cleaner, the better. Examples: ' +
+          '"I want attention but I hate being seen." · "I plan everything, then ignore the plan."' +
+        '</div>' +
+        renderChipListBlock(items, { placeholder: 'Add a contradiction' }) +
+      '</div>';
+    bindChipList(host,
+      items,
+      function(v) { State.codex.traits.contradictions.push(v); markDirty(); },
+      function(idx) { State.codex.traits.contradictions.splice(idx, 1); markDirty(); }
+    );
+  }
+
+  // ============================================================
+  // BELIEFS & MYTHOLOGIES
+  // ============================================================
+  function renderBeliefs(host) {
+    ensureCodexShape();
+    var b = getBeliefs(State.codex);
+    // Hydrate v1 path on first surface.
+    if (!State.codex.beliefs.worldview && b.worldview) State.codex.beliefs.worldview = b.worldview;
+    if (!State.codex.beliefs.spirituality && b.spirituality) State.codex.beliefs.spirituality = b.spirituality;
+    if (!State.codex.beliefs.mythologies.length && b.mythologies.length) State.codex.beliefs.mythologies = b.mythologies.slice();
+    var done = !!(State.codex.beliefs.worldview && State.codex.beliefs.worldview.trim()) ||
+               !!(State.codex.beliefs.spirituality && State.codex.beliefs.spirituality.trim());
+    host.innerHTML =
+      '<div class="lab-section">' +
+        sectionHeaderHtml('beliefs', { progress: done ? 'Section complete' : 'Add at least worldview or spirituality', progressMet: done }) +
+        '<div class="lab-form-row">' +
+          '<label class="lab-label" for="labBelWorldview">Worldview</label>' +
+          '<div class="lab-help-text">Your operating model of how the world works. Politics-adjacent but not partisan.</div>' +
+          '<textarea id="labBelWorldview" class="lab-textarea" maxlength="1200">' + escapeHtml(State.codex.beliefs.worldview || '') + '</textarea>' +
+        '</div>' +
+        '<div class="lab-form-row">' +
+          '<label class="lab-label" for="labBelSpirit">Spirituality</label>' +
+          '<div class="lab-help-text">What you believe about the part of life that resists explanation. Religion, energy, nothing — your call.</div>' +
+          '<textarea id="labBelSpirit" class="lab-textarea" maxlength="1200">' + escapeHtml(State.codex.beliefs.spirituality || '') + '</textarea>' +
+        '</div>' +
+        '<div class="lab-form-row">' +
+          '<label class="lab-label">Mythologies</label>' +
+          '<div class="lab-help-text">Stories, archetypes, or ideas you draw on to explain things. Films, books, lyrics, family lore — anything that lives in your head as a reference.</div>' +
+          renderChipListBlock(State.codex.beliefs.mythologies, { placeholder: 'Add a mythology' }) +
+        '</div>' +
+      '</div>';
+    var wv = document.getElementById('labBelWorldview');
+    if (wv) wv.addEventListener('input', function() { State.codex.beliefs.worldview = wv.value; markDirty(); });
+    var sp = document.getElementById('labBelSpirit');
+    if (sp) sp.addEventListener('input', function() { State.codex.beliefs.spirituality = sp.value; markDirty(); });
+    bindChipList(host,
+      State.codex.beliefs.mythologies,
+      function(v) { State.codex.beliefs.mythologies.push(v); markDirty(); },
+      function(idx) { State.codex.beliefs.mythologies.splice(idx, 1); markDirty(); }
+    );
+  }
+
+  // ============================================================
+  // VOICE SIGNATURES
+  // ============================================================
+  function renderVoice(host) {
+    ensureCodexShape();
+    var current = getVoiceSignatures(State.codex);
+    if (!State.codex.voice.signatures.length && current.length) {
+      State.codex.voice.signatures = current.slice();
+    }
+    var items = State.codex.voice.signatures;
+    var done = items.length >= 1;
+    host.innerHTML =
+      '<div class="lab-section">' +
+        sectionHeaderHtml('voice', { progress: items.length + ' saved · 1+ to complete', progressMet: done }) +
+        '<div class="lab-help-text">' +
+          'A signature is a phrase, cadence, or construction someone would point to and say "that\'s how you talk." ' +
+          'Short. Specific. The kind of thing a parody would lean on.' +
+        '</div>' +
+        renderChipListBlock(items, { placeholder: 'Add a voice signature' }) +
+      '</div>';
+    bindChipList(host,
+      items,
+      function(v) { State.codex.voice.signatures.push(v); markDirty(); },
+      function(idx) { State.codex.voice.signatures.splice(idx, 1); markDirty(); }
+    );
+  }
+
+  // ============================================================
+  // BANNED PHRASES
+  // ============================================================
+  function getEffectiveBannedPhrases() {
+    var fromCodex = (State.codex && Array.isArray(State.codex.banned_phrases)) ? State.codex.banned_phrases : [];
+    if (fromCodex.length) return { items: fromCodex.slice(), isStarter: false };
+    var fromOld = (State.codex && State.codex.voice_profile_seeds && Array.isArray(State.codex.voice_profile_seeds.banned_phrases))
+      ? State.codex.voice_profile_seeds.banned_phrases.slice() : null;
+    if (fromOld && fromOld.length) return { items: fromOld, isStarter: false };
+    var fromDefaults = (State.defaults && Array.isArray(State.defaults.banned_phrases)) ? State.defaults.banned_phrases.slice() : [];
+    return { items: fromDefaults, isStarter: true };
+  }
+  function ensureBannedMaterialized() {
+    // If the user is about to mutate, make sure State.codex.banned_phrases
+    // holds the effective list (so add/remove operate on the right array).
+    var eff = getEffectiveBannedPhrases();
+    if (!State.codex.banned_phrases || !State.codex.banned_phrases.length) {
+      State.codex.banned_phrases = eff.items.slice();
+    }
+  }
+  function renderBanned(host) {
+    ensureCodexShape();
+    var eff = getEffectiveBannedPhrases();
+    host.innerHTML =
+      '<div class="lab-section">' +
+        sectionHeaderHtml('banned', { progress: eff.items.length + ' phrases', progressMet: true }) +
+        '<div class="lab-help-text">' +
+          'Lines you’d never say. The negative space matters. Composer is forbidden from generating these — ' +
+          'or anything that obviously substitutes for them.' +
+        '</div>' +
+        renderChipListBlock(eff.items, { starter: eff.isStarter, placeholder: 'Add a banned phrase' }) +
+        '<div class="lab-section-actions">' +
+          '<span class="lab-section-meta">' + (eff.isStarter ? 'Showing SAM defaults — edits will create your own list.' : 'Customized list (' + eff.items.length + ' phrases)') + '</span>' +
+          (eff.isStarter ? '' : '<button type="button" class="lab-button-secondary" id="labBannedReset">Reset to defaults</button>') +
+        '</div>' +
+      '</div>';
+    bindChipList(host,
+      eff.items,
+      function(v) {
+        ensureBannedMaterialized();
+        if (State.codex.banned_phrases.indexOf(v) === -1) State.codex.banned_phrases.push(v);
+        markDirty();
+      },
+      function(idx) {
+        ensureBannedMaterialized();
+        State.codex.banned_phrases.splice(idx, 1);
+        markDirty();
+      }
+    );
+    var resetBtn = document.getElementById('labBannedReset');
+    if (resetBtn) resetBtn.addEventListener('click', function() {
+      if (!confirm('Reset to the SAM default banned phrases? Your customizations will be lost.')) return;
+      State.codex.banned_phrases = []; // empty → next render falls back to defaults
+      markDirty();
+      renderActiveSection();
+    });
+  }
+
+  // ============================================================
+  // CANON EVENTS — conversational capture flow
+  // 7 sequential questions → draft state in memory + localStorage →
+  // review card → Save event (the only point that mutates the array).
+  // ============================================================
+  var CANON_QUESTIONS = [
+    { id: 'summary',      kind: 'textarea', q: 'Tell me about a moment from your life you remember vividly. Real, specific, with details.',
+      placeholder: 'A moment, not a montage. What happened, in your own words.' },
+    { id: 'age',          kind: 'number',   q: 'How old were you?',
+      placeholder: 'A number is fine — 12, 27, 46…' },
+    { id: 'location',     kind: 'text',     q: 'Where was this?',
+      placeholder: 'A place, room, street, or landscape.' },
+    { id: 'meaning_then', kind: 'textarea', q: 'What did this moment mean to you then?',
+      placeholder: 'How it landed at the time — even if it didn’t make sense yet.' },
+    { id: 'meaning_now',  kind: 'textarea', q: 'What does it mean to you now, looking back?',
+      placeholder: 'What you can see now that you couldn’t see then.' },
+    { id: 'sensory',      kind: 'textarea', q: 'What do you remember seeing, hearing, smelling, or feeling in your body?',
+      placeholder: 'The smell, the light, the sound, the body — whatever’s vivid.' },
+    { id: 'title',        kind: 'text',     q: 'Want to give this a short title? Or leave it blank for now.',
+      placeholder: 'Optional. You can always add one later.' }
+  ];
+  var REVIEW_STEP = CANON_QUESTIONS.length; // 7
+
+  function emptyDraft() {
+    return {
+      summary: '',
+      age: '',
+      location: '',
+      meaning_then: '',
+      meaning_now: '',
+      sensory_narrative: '',
+      title: ''
+    };
+  }
+
+  function persistDraft() {
+    if (State.draftEvent) {
+      lsSet(LS.draftEvent, JSON.stringify(State.draftEvent));
+      lsSet(LS.draftStep, String(State.draftStep));
+      if (State.draftEditingId) lsSet(LS.draftEditingId, State.draftEditingId);
+      else lsRemove(LS.draftEditingId);
+    } else {
+      lsRemove(LS.draftEvent);
+      lsRemove(LS.draftStep);
+      lsRemove(LS.draftEditingId);
+    }
+  }
+  function clearDraft() {
+    State.draftEvent = null;
+    State.draftStep = 0;
+    State.draftEditingId = null;
+    persistDraft();
+  }
+  function startDraft() {
+    State.draftEvent = emptyDraft();
+    State.draftStep = 0;
+    State.draftEditingId = null;
+    persistDraft();
+    renderActiveSection();
+  }
+
+  function getDraftFieldValue(fieldId) {
+    if (!State.draftEvent) return '';
+    if (fieldId === 'sensory') return State.draftEvent.sensory_narrative || '';
+    return State.draftEvent[fieldId] || '';
+  }
+  function setDraftFieldValue(fieldId, value) {
+    if (!State.draftEvent) return;
+    if (fieldId === 'sensory') State.draftEvent.sensory_narrative = value;
+    else State.draftEvent[fieldId] = value;
+  }
+
+  // Build the canon event object that gets appended/updated in the codex.
+  function draftToEvent(draft, id) {
+    var ageNum = parseInt(draft.age, 10);
+    return {
+      id: id,
+      title: (draft.title || '').toString().trim(),
+      summary: (draft.summary || '').toString().trim(),
+      age: isNaN(ageNum) ? null : ageNum,
+      location: (draft.location || '').toString().trim(),
+      meaning_then: (draft.meaning_then || '').toString().trim(),
+      meaning_now: (draft.meaning_now || '').toString().trim(),
+      sensory: {
+        narrative: (draft.sensory_narrative || '').toString().trim(),
+        visual: '',
+        sound: '',
+        smell: '',
+        body: ''
+      },
+      time_period: '',
+      people: [],
+      tags: []
+    };
+  }
+
+  // Counts → progress copy + status message per spec.
+  function canonProgressLine(n) {
+    if (n < 3)  return n + ' / 3 minimum';
+    if (n < 5)  return n + ' / 5 making drafts richer';
+    return n + ' saved';
+  }
+  function canonProgressCopy(n) {
+    if (n === 0) return 'Start with one moment. The more vivid, the better.';
+    if (n === 1) return 'Two more memories will unlock Composer.';
+    if (n === 2) return 'One more memory will unlock Composer.';
+    if (n === 3) return 'Composer unlocked. Adding 2 more will make drafts richer.';
+    if (n === 4) return 'One more memory will give Composer real range.';
+    if (n === 5) return 'Codex looking strong. You can keep adding or move to Composer.';
+    return 'Add more anytime. Ready when you are.';
+  }
+
+  function renderCanon(host) {
+    var events = getCanonEvents(State.codex);
+    var n = events.length;
+    var subtitle = (SECTIONS.filter(function(s){return s.id==='canon';})[0] || {}).subtitle || '';
+    var progressClass = (n >= 3) ? ' is-met' : '';
+    var headerHtml =
+      '<div class="lab-section-title">Canon Events</div>' +
+      '<div class="lab-section-subtitle">' + escapeHtml(subtitle) + '</div>' +
+      '<div class="lab-section-progress' + progressClass + '">' + escapeHtml(canonProgressLine(n)) + '</div>' +
+      '<div class="lab-help-text">' + escapeHtml(canonProgressCopy(n)) + '</div>';
+
+    // No draft? Show list + add button.
+    if (!State.draftEvent) {
+      var listHtml = events.length
+        ? '<div class="lab-event-list">' + events.map(function(ev) {
+            var title = (ev && ev.title) ? ev.title :
+                        (ev && ev.summary ? ev.summary.split(/\.\s|\n/)[0] : '(untitled memory)');
+            var meta = [];
+            if (ev && (ev.age != null && ev.age !== '')) meta.push('age ' + escapeHtml(String(ev.age)));
+            if (ev && ev.location) meta.push(escapeHtml(ev.location));
+            if (ev && ev.id) meta.push(escapeHtml(ev.id));
+            return '<div class="lab-event-card" data-event-id="' + escapeHtml(ev.id || '') + '">' +
+              '<div class="lab-event-card-body">' +
+                '<div class="lab-event-card-title">' + escapeHtml(title) + '</div>' +
+                '<div class="lab-event-card-meta">' + meta.join(' · ') + '</div>' +
+              '</div>' +
+              '<div class="lab-event-card-actions">' +
+                '<button type="button" class="lab-event-card-action" data-action="edit" data-event-id="' + escapeHtml(ev.id || '') + '">Edit</button>' +
+                '<button type="button" class="lab-event-card-action" data-action="delete" data-event-id="' + escapeHtml(ev.id || '') + '">Delete</button>' +
+              '</div>' +
+            '</div>';
+          }).join('') + '</div>'
+        : '<div class="lab-help-text">No memories saved yet. Click below to start your first.</div>';
+      host.innerHTML =
+        '<div class="lab-section">' +
+          headerHtml +
+          listHtml +
+          '<div class="lab-section-actions">' +
+            '<button type="button" class="lab-button-primary" id="labCanonStart">' +
+              (events.length ? 'Add another memory' : 'Add your first memory') +
+            '</button>' +
+            '<span class="lab-section-meta">' + escapeHtml(canonProgressLine(n)) + '</span>' +
+          '</div>' +
+        '</div>';
+      var startBtn = document.getElementById('labCanonStart');
+      if (startBtn) startBtn.addEventListener('click', startDraft);
+
+      // Edit/Delete are wired in Phase 4. Stub the buttons so they don't no-op silently.
+      var actionBtns = host.querySelectorAll('[data-action]');
+      for (var i = 0; i < actionBtns.length; i++) {
+        actionBtns[i].addEventListener('click', function(e) {
+          if (typeof handleCanonCardAction === 'function') {
+            handleCanonCardAction(e.currentTarget.getAttribute('data-action'),
+                                  e.currentTarget.getAttribute('data-event-id'));
+          }
+        });
+      }
+      return;
+    }
+
+    // Review card.
+    if (State.draftStep >= REVIEW_STEP) {
+      var d = State.draftEvent;
+      function row(label, value, isEmpty) {
+        return '<div class="lab-review-row">' +
+          '<div class="lab-review-label">' + escapeHtml(label) + '</div>' +
+          '<div class="lab-review-value' + (isEmpty ? ' is-empty' : '') + '">' +
+            (isEmpty ? '(skipped)' : escapeHtml(value)) +
+          '</div>' +
+        '</div>';
+      }
+      var titleVal = (d.title || '').trim();
+      var ageVal = (d.age + '').trim();
+      var locVal = (d.location || '').trim();
+      var summVal = (d.summary || '').trim();
+      var mtVal = (d.meaning_then || '').trim();
+      var mnVal = (d.meaning_now || '').trim();
+      var seVal = (d.sensory_narrative || '').trim();
+      var canSave = !!summVal; // require at least the moment summary
+
+      host.innerHTML =
+        '<div class="lab-section">' +
+          headerHtml +
+          '<div class="lab-canon-progress">Review your memory before saving.</div>' +
+          '<div class="lab-review">' +
+            row('Title', titleVal || '', !titleVal) +
+            row('Age', ageVal || '', !ageVal) +
+            row('Location', locVal || '', !locVal) +
+            row('What happened', summVal || '', !summVal) +
+            row('What it meant then', mtVal || '', !mtVal) +
+            row('What it means now', mnVal || '', !mnVal) +
+            row('Sensory details', seVal || '', !seVal) +
+          '</div>' +
+          '<div class="lab-review-actions">' +
+            '<button type="button" class="lab-button-primary" id="labReviewSave"' + (canSave ? '' : ' disabled') + '>' +
+              (State.draftEditingId ? 'Update event' : 'Save event') +
+            '</button>' +
+            '<button type="button" class="lab-button-secondary" id="labReviewEdit">Edit answers</button>' +
+            '<button type="button" class="lab-button-danger" id="labReviewDiscard">Discard draft</button>' +
+          '</div>' +
+        '</div>';
+
+      var saveBtn = document.getElementById('labReviewSave');
+      if (saveBtn) saveBtn.addEventListener('click', commitDraftEvent);
+      var editBtn = document.getElementById('labReviewEdit');
+      if (editBtn) editBtn.addEventListener('click', function() {
+        State.draftStep = 0;
+        persistDraft();
+        renderActiveSection();
+      });
+      var discardBtn = document.getElementById('labReviewDiscard');
+      if (discardBtn) discardBtn.addEventListener('click', function() {
+        if (!confirm('Discard this draft? You will lose what you have entered so far.')) return;
+        clearDraft();
+        renderActiveSection();
+      });
+      return;
+    }
+
+    // Question step.
+    var step = State.draftStep;
+    var question = CANON_QUESTIONS[step];
+    var stepLabel = 'Question ' + (step + 1) + ' of ' + CANON_QUESTIONS.length;
+    var currentValue = getDraftFieldValue(question.id);
+    var inputHtml;
+    if (question.kind === 'textarea') {
+      inputHtml = '<div class="lab-canon-input-wrap">' +
+        '<textarea class="lab-textarea" id="labCanonInput" rows="5" placeholder="' + escapeHtml(question.placeholder) + '">' +
+        escapeHtml(currentValue) +
+        '</textarea>' +
+        renderCanonMicButton(question) +
+        '</div>';
+    } else if (question.kind === 'number') {
+      inputHtml = '<div class="lab-canon-input-wrap">' +
+        '<input class="lab-input" id="labCanonInput" type="number" min="0" max="120" placeholder="' + escapeHtml(question.placeholder) + '" value="' + escapeHtml(currentValue) + '">' +
+        renderCanonMicButton(question) +
+        '</div>';
+    } else {
+      inputHtml = '<div class="lab-canon-input-wrap">' +
+        '<input class="lab-input" id="labCanonInput" type="text" placeholder="' + escapeHtml(question.placeholder) + '" value="' + escapeHtml(currentValue) + '">' +
+        renderCanonMicButton(question) +
+        '</div>';
+    }
+
+    var nextLabel = (step === REVIEW_STEP - 1) ? 'Review →' : 'Next →';
+    host.innerHTML =
+      '<div class="lab-section">' +
+        headerHtml +
+        '<div class="lab-canon-progress">' + escapeHtml(stepLabel) + '</div>' +
+        '<div class="lab-canon-step-q">' + escapeHtml(question.q) + '</div>' +
+        inputHtml +
+        '<div class="lab-canon-step-actions">' +
+          '<div>' +
+            (step > 0 ? '<button type="button" class="lab-button-secondary" id="labCanonPrev">← Back</button>' : '') +
+          '</div>' +
+          '<div style="display:flex;gap:10px;align-items:center;">' +
+            '<button type="button" class="lab-button-danger" id="labCanonDiscard">Discard draft</button>' +
+            '<button type="button" class="lab-button-primary" id="labCanonNext">' + nextLabel + '</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+    var input = document.getElementById('labCanonInput');
+    if (input) {
+      input.focus();
+      input.addEventListener('input', function() {
+        setDraftFieldValue(question.id, input.value);
+        persistDraft();
+      });
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && question.kind !== 'textarea') {
+          e.preventDefault();
+          advanceCanonStep();
+        }
+      });
+    }
+    var nextBtn = document.getElementById('labCanonNext');
+    if (nextBtn) nextBtn.addEventListener('click', advanceCanonStep);
+    var prevBtn = document.getElementById('labCanonPrev');
+    if (prevBtn) prevBtn.addEventListener('click', function() {
+      if (State.draftStep > 0) State.draftStep -= 1;
+      persistDraft();
+      renderActiveSection();
+    });
+    var discardBtn2 = document.getElementById('labCanonDiscard');
+    if (discardBtn2) discardBtn2.addEventListener('click', function() {
+      if (!confirm('Discard this draft? You will lose what you have entered so far.')) return;
+      clearDraft();
+      renderActiveSection();
+    });
+
+    // Mic wiring (Phase 5 attaches the actual recognition handler;
+    // for Phase 2 we just render an inert button.)
+    if (typeof attachCanonMic === 'function') attachCanonMic(question);
+  }
+
+  // Web Speech API mic button, only on conversational canon-event response
+  // steps. Hidden on numeric inputs and on browsers without recognition.
+  function _speechSupported() {
+    return !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+  }
+  function renderCanonMicButton(question) {
+    if (question.kind === 'number') return '';
+    if (!_speechSupported()) return '';
+    return '<button type="button" class="lab-canon-mic" id="labCanonMic" aria-label="Dictate your answer" title="Dictate (click again to stop)">' +
+      '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+        '<rect x="9" y="3" width="6" height="11" rx="3"/>' +
+        '<path d="M5 11a7 7 0 0 0 14 0"/>' +
+        '<path d="M12 18v3"/>' +
+      '</svg>' +
+    '</button>';
+  }
+  function attachCanonMic(question) {
+    if (question.kind === 'number') return;
+    var btn = document.getElementById('labCanonMic');
+    var input = document.getElementById('labCanonInput');
+    if (!btn || !input) return;
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) { btn.style.display = 'none'; return; }
+
+    var recognition;
+    try {
+      recognition = new SR();
+    } catch (e) {
+      btn.disabled = true;
+      btn.title = 'Mic unavailable — type your answer';
+      return;
+    }
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    try { recognition.lang = (navigator.language || 'en-US'); } catch (e) {}
+
+    var recording = false;
+    function setRecording(on) {
+      recording = on;
+      btn.classList.toggle('is-recording', on);
+      btn.setAttribute('title', on ? 'Listening… click to stop' : 'Dictate (click again to stop)');
+    }
+    function setUnavailable() {
+      btn.disabled = true;
+      btn.classList.remove('is-recording');
+      btn.setAttribute('title', 'Mic unavailable — type your answer');
+    }
+
+    recognition.onresult = function(e) {
+      var text = '';
+      for (var i = 0; i < e.results.length; i++) {
+        if (e.results[i].isFinal) text += e.results[i][0].transcript;
+      }
+      text = (text || '').trim();
+      if (!text) return;
+      var current = input.value || '';
+      var sep = (current && !/\s$/.test(current)) ? ' ' : '';
+      input.value = current + sep + text;
+      // Trigger input event so the draft state updates.
+      var ev = document.createEvent('Event');
+      ev.initEvent('input', true, true);
+      input.dispatchEvent(ev);
+      // Move caret to end if applicable.
+      try { if (typeof input.setSelectionRange === 'function') input.setSelectionRange(input.value.length, input.value.length); } catch (err) {}
+    };
+    recognition.onerror = function(e) {
+      setRecording(false);
+      var err = e && e.error;
+      if (err === 'not-allowed' || err === 'service-not-allowed') {
+        setUnavailable();
+      }
+      // 'no-speech' / 'aborted' / 'audio-capture' just stop without disabling.
+    };
+    recognition.onend = function() { setRecording(false); };
+
+    btn.addEventListener('click', function() {
+      if (btn.disabled) return;
+      if (recording) {
+        try { recognition.stop(); } catch (e) {}
+        return;
+      }
+      try {
+        recognition.start();
+        setRecording(true);
+      } catch (e) {
+        setRecording(false);
+        setUnavailable();
+      }
+    });
+  }
+
+  function advanceCanonStep() {
+    if (!State.draftEvent) return;
+    var input = document.getElementById('labCanonInput');
+    if (input) setDraftFieldValue(CANON_QUESTIONS[State.draftStep].id, input.value);
+    State.draftStep += 1;
+    if (State.draftStep > REVIEW_STEP) State.draftStep = REVIEW_STEP;
+    persistDraft();
+    renderActiveSection();
+  }
+
+  async function commitDraftEvent() {
+    if (!State.draftEvent || !State.codex) return;
+    var summary = (State.draftEvent.summary || '').trim();
+    if (!summary) { alert('Add at least the moment itself before saving.'); return; }
+
+    var existingEvents = getCanonEvents(State.codex);
+    var working = deepClone(State.codex);
+
+    // Decide which path to write to: prefer existing populated path,
+    // otherwise create the v1 path.
+    var writePath;
+    if (working.tiers && working.tiers.canonevents && Array.isArray(working.tiers.canonevents.events)) {
+      writePath = 'canonevents';
+    } else if (working.tiers && working.tiers.canon_events && Array.isArray(working.tiers.canon_events.events)) {
+      writePath = 'canon_events';
+    } else {
+      writePath = 'canonevents';
+      working.tiers = working.tiers || {};
+      working.tiers.canonevents = working.tiers.canonevents || { events: [] };
+    }
+    if (writePath === 'canonevents') {
+      working.tiers.canonevents = working.tiers.canonevents || { events: [] };
+      if (!Array.isArray(working.tiers.canonevents.events)) working.tiers.canonevents.events = [];
+    } else {
+      working.tiers.canon_events = working.tiers.canon_events || { events: [] };
+      if (!Array.isArray(working.tiers.canon_events.events)) working.tiers.canon_events.events = [];
+    }
+    var events = (writePath === 'canonevents')
+      ? working.tiers.canonevents.events
+      : working.tiers.canon_events.events;
+
+    // Editing existing event vs. appending a new one.
+    if (State.draftEditingId) {
+      var idx = -1;
+      for (var i = 0; i < events.length; i++) if (events[i] && events[i].id === State.draftEditingId) { idx = i; break; }
+      if (idx === -1) {
+        // Edit target gone — fall through to append (rare race).
+        var newId = nextCanonId(events);
+        events.push(draftToEvent(State.draftEvent, newId));
+      } else {
+        // Preserve existing object's unknown fields, overwrite the ones the
+        // conversational flow captures. Keep the stable ID untouched.
+        var preserved = deepClone(events[idx]);
+        var updated = draftToEvent(State.draftEvent, preserved.id);
+        // Merge sensory: keep old subfields if present, layer narrative on top.
+        var oldSensory = (preserved.sensory && typeof preserved.sensory === 'object') ? preserved.sensory : {};
+        updated.sensory = Object.assign({}, oldSensory, updated.sensory);
+        // Merge top-level: keep old keys we don't surface (year, time_of_day, people_present, etc.).
+        events[idx] = Object.assign({}, preserved, updated);
+      }
+    } else {
+      var newId2 = nextCanonId(events);
+      events.push(draftToEvent(State.draftEvent, newId2));
+    }
+
+    var prevCodex = State.codex;
+    State.codex = working;
+
+    var result = await saveCodex();
+    if (!result.ok) {
+      // Roll back optimistic mutation so the user can retry without doubling up.
+      State.codex = prevCodex;
+      alert('Save failed. Please try again — your draft is still here.');
+      return;
+    }
+    clearDraft();
+    renderShell();
+  }
+
+  // Map an existing event object back into a draft shape for editing.
+  // Tolerates Joey's old fields (what_happened, sensory.sight/taste).
+  function eventToDraft(ev) {
+    if (!ev || typeof ev !== 'object') return emptyDraft();
+    var sensory = (ev.sensory && typeof ev.sensory === 'object') ? ev.sensory : {};
+    var narrative = sensory.narrative || '';
+    if (!narrative) {
+      var bits = [sensory.visual || sensory.sight, sensory.sound, sensory.smell, sensory.body, sensory.taste]
+        .filter(function(s) { return s && String(s).trim(); });
+      narrative = bits.join(' · ');
+    }
+    return {
+      summary: ev.summary || ev.what_happened || '',
+      age: (ev.age != null && ev.age !== '') ? String(ev.age) : '',
+      location: ev.location || '',
+      meaning_then: ev.meaning_then || '',
+      meaning_now: ev.meaning_now || '',
+      sensory_narrative: narrative,
+      title: ev.title || ''
+    };
+  }
+
+  async function deleteCanonEvent(eventId) {
+    if (!eventId) return;
+    if (!confirm('Delete this memory? Other event IDs will not renumber.')) return;
+    var working = deepClone(State.codex);
+    var pathArr = null;
+    if (working.tiers && working.tiers.canonevents && Array.isArray(working.tiers.canonevents.events)) {
+      pathArr = working.tiers.canonevents.events;
+    } else if (working.tiers && working.tiers.canon_events && Array.isArray(working.tiers.canon_events.events)) {
+      pathArr = working.tiers.canon_events.events;
+    }
+    if (!pathArr) return;
+    var idx = -1;
+    for (var i = 0; i < pathArr.length; i++) if (pathArr[i] && pathArr[i].id === eventId) { idx = i; break; }
+    if (idx === -1) return;
+    pathArr.splice(idx, 1);
+    var prev = State.codex;
+    State.codex = working;
+    var result = await saveCodex();
+    if (!result.ok) {
+      State.codex = prev;
+      alert('Delete failed. Please try again.');
+      return;
+    }
+    renderShell();
+  }
+
+  function startEditCanonEvent(eventId) {
+    if (!eventId) return;
+    var events = getCanonEvents(State.codex);
+    var ev = null;
+    for (var i = 0; i < events.length; i++) if (events[i] && events[i].id === eventId) { ev = events[i]; break; }
+    if (!ev) return;
+    State.draftEvent = eventToDraft(ev);
+    State.draftStep = 0;
+    State.draftEditingId = eventId;
+    persistDraft();
+    renderActiveSection();
+  }
+
+  function handleCanonCardAction(action, eventId) {
+    if (!eventId) return;
+    if (action === 'edit')   return startEditCanonEvent(eventId);
+    if (action === 'delete') return deleteCanonEvent(eventId);
+  }
+
+  // Expose the few hooks subsequent phases will need.
+  // (Kept minimal to avoid leaking internals; Phases 2/3 attach via this.)
+  window._archivist = {
+    state: State,
+    LS: LS,
+    save: saveCodex,
+    markDirty: markDirty,
+    renderShell: renderShell,
+    renderActiveSection: renderActiveSection,
+    nextCanonId: nextCanonId,
+    helpers: {
+      getOverview: getOverview,
+      getCanonEvents: getCanonEvents,
+      getContradictions: getContradictions,
+      getBeliefs: getBeliefs,
+      getVoiceSignatures: getVoiceSignatures,
+      getBannedPhrases: getBannedPhrases,
+      escapeHtml: escapeHtml,
+      deepClone: deepClone
+    }
+  };
+
+  // ============== Init ==============
+  async function init() {
+    State.email = readEmail();
+    if (!State.email) { render404(); return; }
+
+    try { State.entryReason = sessionStorage.getItem('personaLabArchivist.entryReason') || ''; } catch (e) {}
+
+    renderLoading();
+
+    var data = null;
+    var status = 0;
+    try {
+      var r = await fetch('/api/persona-lab/codex?email=' + encodeURIComponent(State.email), {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' },
+        cache: 'no-store'
+      });
+      status = r.status;
+      try { data = await r.json(); } catch (e) {}
+    } catch (e) {
+      console.error('[archivist] codex fetch failed:', e);
+      render404();
+      return;
+    }
+
+    if (status === 200) {
+      State.codex = (data && data.codex) ? data.codex : {};
+      State.codexVersion = (data && data.codex_version) || 1;
+      State.defaults = (data && data.defaults) || State.defaults;
+    } else if (status === 404 && data && data.error === 'codex_not_seeded') {
+      State.codex = {};
+      State.codexVersion = 0;
+      State.defaults = (data && data.defaults) || State.defaults;
+    } else {
+      // Includes 404 'not_found' (anonymous / unknown email) and any other failures.
+      render404();
+      return;
+    }
+
+    // Restore last-active section if valid.
+    var stored = lsGet(LS.activeSection, '');
+    if (SECTIONS.some(function(s) { return s.id === stored; })) State.activeSection = stored;
+
+    // Restore in-flight draft (canon flow). Phase 2 consumes these.
+    var draftRaw = lsGet(LS.draftEvent, '');
+    if (draftRaw) {
+      try { State.draftEvent = JSON.parse(draftRaw); } catch (e) { State.draftEvent = null; }
+    }
+    var stepRaw = parseInt(lsGet(LS.draftStep, ''), 10);
+    if (!isNaN(stepRaw)) State.draftStep = stepRaw;
+    var editId = lsGet(LS.draftEditingId, '');
+    if (editId) State.draftEditingId = editId;
+
+    // First-run splash. Existing users (codex already seeded) skip it.
+    var hasCodex = State.codexVersion > 0 && Object.keys(State.codex || {}).length > 0;
+    var splashDone = lsGet(LS.firstRunDone, '') === '1' || hasCodex;
+    if (!splashDone) {
+      renderSplash();
+      return;
+    }
+
+    renderShell();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
   }
 })();
 </script>
