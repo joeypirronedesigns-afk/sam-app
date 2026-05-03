@@ -7927,7 +7927,7 @@ body.persona-lab-route:not(.persona-lab-build-route) #personaLabBuildRoot { disp
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.117.1" data-qs-descriptor="Archivist viewport fix — hide the inactive Persona Lab root so /persona-lab/build doesn't push the form 100vh below the fold" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.117.2" data-qs-descriptor="Add ← Back to SAM affordance on Archivist + Composer headers — closes the navigation dead-end without restoring the qs-rail" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -19792,6 +19792,7 @@ function openDailyBriefDataModal() {
             '</div>' +
           '</div>' +
           '<div class="pl-header-right">' +
+            '<a href="/app" class="pl-help-btn" style="text-decoration:none;display:inline-flex;align-items:center;">← Back to SAM</a>' +
             '<button class="pl-help-btn" type="button" id="plHelpBtn">? How this works</button>' +
           '</div>' +
         '</div>' +
@@ -20900,6 +20901,7 @@ function openDailyBriefDataModal() {
 
     var headerRight =
       '<div style="display:flex;gap:10px;align-items:center;">' +
+        '<a href="/app" class="lab-button-secondary" style="text-decoration:none;">← Back to SAM</a>' +
         (eligible ? '<a href="/persona-lab" class="lab-button-secondary" style="text-decoration:none;">Open Composer →</a>' : '') +
         renderStatusToken() +
       '</div>';
