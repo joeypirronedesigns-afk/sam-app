@@ -7404,7 +7404,7 @@ body:not(.persona-lab-route) #personaLabRoot { display: none !important; }
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.116.7" data-qs-descriptor="Step 12 jump-back guard + DB cleanup script (Regression 2 fix)" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.116.9" data-qs-descriptor="Thread identity into /api/pdf — fix Download PDF / Lead Magnet 401" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -15991,7 +15991,13 @@ async function downloadPDF(type) {
       date: new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})
     };
 
-    const userId = WS.email || WS.userId || 'anon-' + (localStorage.getItem('sam_uid') || Math.random().toString(36).slice(2));
+    // v9.116.9 — Thread identity into /api/pdf so the v9.113.1 gate at
+    // api/_gate.js sees the founder/email it needs to bypass. Pre-fix the
+    // legacy `WS.email || WS.userId` fallback never resolved (WS has no email
+    // field), so userId always landed as 'anon-xxx' and the gate 401'd on the
+    // strict auth check. Same root cause as the v9.116.4 /api/sam cascade.
+    const _pdfEmail = ((typeof getCurrentUserCached === 'function' && getCurrentUserCached()) || {}).email || '';
+    const userId = _pdfEmail || WS.email || WS.userId || 'anon-' + (localStorage.getItem('sam_uid') || Math.random().toString(36).slice(2));
     if (!localStorage.getItem('sam_uid')) localStorage.setItem('sam_uid', userId);
     // Dev mode bypass — set localStorage.sam_dev = 'true' to skip rate limits
     const isDevMode = localStorage.getItem('sam_dev') === 'true';
@@ -16015,6 +16021,8 @@ async function downloadPDF(type) {
       type,
       userId,
       tier,
+      email: _pdfEmail || undefined,
+      userEmail: _pdfEmail || undefined,
       brandData,
       playbookData: pb,
       leadMagnetData: pb.lead_magnet || {},
