@@ -7927,7 +7927,7 @@ body.persona-lab-route:not(.persona-lab-build-route) #personaLabBuildRoot { disp
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.117.7" data-qs-descriptor="Ideas dual-write — IB.add / IB.updateStatus / IB.delete / forceAdd / saveWizardItem / clearPostedIdeas now POST to /api/memory so new ideas survive sign-out/sign-in/device changes" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.117.8" data-qs-descriptor="Ideas tightenings — unique constraint migration, on_conflict upsert, retry queue + drain on auth/load, sync telemetry, retry-queue wiped on sign-out, audit clean elsewhere" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -13591,27 +13591,117 @@ function psamRunPulse(ideaText) {
 }
 
 // ══ SAM IDEAS BANK ══
-// v9.117.7 — fire-and-forget server sync for IB mutations. Anonymous users
-// skip the call (no email scope on the server). Errors are logged, not
-// surfaced to the UI; localStorage stays the immediate source of truth so
-// users get optimistic feedback even when offline.
+// v9.117.7 — fire-and-forget server sync for IB mutations.
+// v9.117.8 — adds retry queue + telemetry so failed dual-writes are not
+// silently local-only (the same architectural class as the v9.113.1 bug).
+//
+// Anonymous users skip the call (no email scope on the server). Errors are
+// logged + queued for a later retry; localStorage stays the immediate
+// source of truth so users get optimistic feedback even when offline.
+var _IDEAS_RETRY_QUEUE_KEY = 'sam-ideas-retry-queue';
+var _IDEAS_RETRY_MAX = 50;          // cap so a stuck queue can't grow forever
+var _IDEAS_RETRY_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
+
+function _ideaTelemetry(event, fields) {
+  // Light-weight structured log. Searchable in DevTools console with
+  // "[ideas:telemetry]" prefix. Not posted to a server in v9.117.8 —
+  // wire to /api/log later if we want long-term retention.
+  try {
+    console.log('[ideas:telemetry]', event, Object.assign({ ts: Date.now() }, fields || {}));
+  } catch (e) {}
+}
+
+function _enqueueIdeaRetry(action, payload) {
+  try {
+    var raw = localStorage.getItem(_IDEAS_RETRY_QUEUE_KEY) || '[]';
+    var q = JSON.parse(raw);
+    if (!Array.isArray(q)) q = [];
+    // Coalesce: a later update_idea_status / delete_idea for the same idea_id
+    // supersedes earlier queued mutations on the same id (saves writes,
+    // matches the user's actual intent on retry).
+    var nextIdeaId = (payload && (payload.idea_id || (payload.idea && payload.idea.id))) || null;
+    if (nextIdeaId && (action === 'update_idea_status' || action === 'delete_idea')) {
+      q = q.filter(function (e) {
+        var qid = e && e.payload && (e.payload.idea_id || (e.payload.idea && e.payload.idea.id));
+        return qid !== nextIdeaId;
+      });
+    }
+    q.push({ action: action, payload: payload, queuedAt: Date.now() });
+    // Drop oldest entries if we hit the cap.
+    if (q.length > _IDEAS_RETRY_MAX) q = q.slice(q.length - _IDEAS_RETRY_MAX);
+    localStorage.setItem(_IDEAS_RETRY_QUEUE_KEY, JSON.stringify(q));
+    _ideaTelemetry('queued', { action: action, queueSize: q.length });
+  } catch (e) {
+    console.warn('[ideas:sync] enqueue threw', e && e.message);
+  }
+}
+
+async function _drainIdeaRetryQueue() {
+  var raw, q;
+  try {
+    raw = localStorage.getItem(_IDEAS_RETRY_QUEUE_KEY) || '[]';
+    q = JSON.parse(raw);
+  } catch (e) { q = []; }
+  if (!Array.isArray(q) || !q.length) return;
+
+  var u = null;
+  try { u = JSON.parse(localStorage.getItem('sam-current-user') || 'null'); } catch (e) {}
+  if (!u || !u.email) return;
+
+  // Drop entries past the TTL — these are likely tied to deleted ideas
+  // or schema changes we can't reconcile from the queue alone.
+  var now = Date.now();
+  q = q.filter(function (e) { return e && e.queuedAt && (now - e.queuedAt) < _IDEAS_RETRY_TTL_MS; });
+
+  var remaining = [];
+  var ok = 0;
+  for (var i = 0; i < q.length; i++) {
+    var entry = q[i];
+    var body = Object.assign({ userId: u.email, action: entry.action }, entry.payload || {});
+    try {
+      var r = await fetch('/api/memory', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      if (r && r.ok) { ok++; continue; }
+      remaining.push(entry);
+    } catch (e) {
+      remaining.push(entry);
+    }
+  }
+  try { localStorage.setItem(_IDEAS_RETRY_QUEUE_KEY, JSON.stringify(remaining)); } catch (e) {}
+  _ideaTelemetry('drained', { drained: ok, remaining: remaining.length });
+}
+window._drainIdeaRetryQueue = _drainIdeaRetryQueue;
+
 function _syncIdeaAction(action, payload) {
   try {
     var u = null;
     try { u = JSON.parse(localStorage.getItem('sam-current-user') || 'null'); } catch (e) {}
-    if (!u || !u.email) return;
+    if (!u || !u.email) {
+      // Anonymous — nothing to sync. Don't queue (no auth scope).
+      return;
+    }
     var body = Object.assign({ userId: u.email, action: action }, payload || {});
     fetch('/api/memory', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     }).then(function (r) {
-      if (!r || !r.ok) console.warn('[ideas:sync]', action, r && r.status);
+      if (r && r.ok) {
+        _ideaTelemetry(action + ':ok', { status: r.status });
+        return;
+      }
+      _ideaTelemetry(action + ':fail', { status: r && r.status });
+      _enqueueIdeaRetry(action, payload);
     }).catch(function (e) {
-      console.warn('[ideas:sync] network', action, e && e.message);
+      _ideaTelemetry(action + ':network', { message: e && e.message });
+      _enqueueIdeaRetry(action, payload);
     });
   } catch (e) {
     console.warn('[ideas:sync] threw', e && e.message);
+    _enqueueIdeaRetry(action, payload);
   }
 }
 window._syncIdeaAction = _syncIdeaAction;
@@ -15006,10 +15096,12 @@ function clearPersonalizedDOM() {
     if (_chatHistory) _chatHistory.innerHTML = '';
   } catch (e) {}
 
-  // localStorage cleanup — clears personalized state including sam-ideas (Principle 3)
+  // localStorage cleanup — clears personalized state including sam-ideas (Principle 3).
+  // v9.117.8 — also clears sam-ideas-retry-queue so a queued mutation
+  // from one user can never fire under whoever signs in next.
   ['sam-current-user', 'sam-trial', 'sam_session_v2', 'sam_session_step', 'sam_session_ts',
    'sam-chat-history', 'sam-persistent-history', 'sam_uid', 'samFirstRunDone',
-   'sam-ideas', 'sam-runs', 'sam-wizard-runs', 'sam-wizard-state',
+   'sam-ideas', 'sam-ideas-retry-queue', 'sam-runs', 'sam-wizard-runs', 'sam-wizard-state',
    'sam-voice-calibrated', 'sam_meet_story', 'sam_user_email'].forEach(function(k) {
     try { localStorage.removeItem(k); } catch (e) {}
   });
@@ -15031,6 +15123,8 @@ async function onAuthSuccess(userRecord) {
   //    success. The original v9.113.1 code wiped unconditionally, which
   //    combined with a silent server-side failure (sam_ideas RLS rejecting
   //    anon-key writes) destroyed every user's historical idea bank.
+  //    v9.117.8 — telemetry on success/failure so we don't repeat the
+  //    silent-failure pattern.
   try {
     var _anonIdeas = JSON.parse(localStorage.getItem('sam-ideas') || '[]');
     if (Array.isArray(_anonIdeas) && _anonIdeas.length > 0) {
@@ -15045,14 +15139,19 @@ async function onAuthSuccess(userRecord) {
           })
         });
         if (_migrateResp && _migrateResp.ok) {
+          var _migBody = null;
+          try { _migBody = await _migrateResp.json(); } catch (e) {}
+          if (typeof _ideaTelemetry === 'function') _ideaTelemetry('migrate:ok', { count: _anonIdeas.length, migrated: _migBody && _migBody.migrated });
           // Server-confirmed success — safe to wipe the local copy.
           localStorage.removeItem('sam-ideas');
         } else {
           console.error('[onAuthSuccess] migrate_anon_ideas failed', _migrateResp && _migrateResp.status);
+          if (typeof _ideaTelemetry === 'function') _ideaTelemetry('migrate:fail', { status: _migrateResp && _migrateResp.status, count: _anonIdeas.length });
           // Keep localStorage intact so the next session can retry.
         }
       } catch (e) {
         console.error('[onAuthSuccess] migrate_anon_ideas network error', e && e.message);
+        if (typeof _ideaTelemetry === 'function') _ideaTelemetry('migrate:network', { message: e && e.message, count: _anonIdeas.length });
         // Keep localStorage intact so the next session can retry.
       }
     } else {
@@ -15083,24 +15182,42 @@ async function onAuthSuccess(userRecord) {
   if (typeof _hydrateIdeasFromServer === 'function') {
     try { _hydrateIdeasFromServer(); } catch (e) {}
   }
+
+  // 7. v9.117.8 — drain any queued sync retries (failed mutations from
+  //    earlier sessions) now that we have an authed identity.
+  if (typeof _drainIdeaRetryQueue === 'function') {
+    try { _drainIdeaRetryQueue(); } catch (e) {}
+  }
 }
 window.onAuthSuccess = onAuthSuccess;
 
 // v9.117.6 — Server → localStorage hydrator for the Idea Bank.
 // IB.load() only reads localStorage; without this, ideas authored on
 // another device (or surviving the v9.113.1 wipe-on-success bug) stay
-// invisible. Idempotent: server is source of truth, local-only entries
-// are preserved (dual-write in v9.117.7 will eliminate the local-only case).
+// invisible.
+//
+// Dedupe contract (v9.117.8): merge by EXACT idea_id only. Never collapse
+// near-text-duplicates — those can be legitimate drafts a user wants to
+// keep separate. Server rows always win on matching idea_id; local-only
+// entries (failed dual-write that the retry queue hasn't drained yet)
+// are preserved on the tail.
 async function _hydrateIdeasFromServer() {
   try {
     var u = (typeof getCurrentUserCached === 'function') ? getCurrentUserCached() : null;
     if (!u || !u.email) return;
+    var t0 = Date.now();
     var r = await fetch('/api/memory?kind=ideas&userId=' + encodeURIComponent(u.email), {
       method: 'GET', cache: 'no-store'
     });
-    if (!r || !r.ok) return;
+    if (!r || !r.ok) {
+      if (typeof _ideaTelemetry === 'function') _ideaTelemetry('hydrate:fail', { status: r && r.status });
+      return;
+    }
     var data = await r.json();
-    if (!data || !Array.isArray(data.ideas)) return;
+    if (!data || !Array.isArray(data.ideas)) {
+      if (typeof _ideaTelemetry === 'function') _ideaTelemetry('hydrate:bad_payload', {});
+      return;
+    }
 
     var local = [];
     try { local = JSON.parse(localStorage.getItem('sam-ideas') || '[]'); } catch (e) {}
@@ -15121,19 +15238,32 @@ async function _hydrateIdeasFromServer() {
     if (typeof IB !== 'undefined' && typeof IB.updateNavBadge === 'function') IB.updateNavBadge();
     var panel = document.getElementById('ideasPanel');
     if (panel && panel.classList.contains('open') && typeof renderIdeasList === 'function') renderIdeasList();
+    if (typeof _ideaTelemetry === 'function') {
+      _ideaTelemetry('hydrate:ok', {
+        serverCount: data.ideas.length,
+        localOnly: localOnly.length,
+        ms: Date.now() - t0
+      });
+    }
   } catch (e) {
     console.error('[hydrateIdeasFromServer]', e && e.message);
+    if (typeof _ideaTelemetry === 'function') _ideaTelemetry('hydrate:throw', { message: e && e.message });
   }
 }
 window._hydrateIdeasFromServer = _hydrateIdeasFromServer;
 
 // Fire once on page load for already-authed users (the magic-link path
 // already chains through onAuthSuccess → _hydrateIdeasFromServer).
+// v9.117.8 — also drains the retry queue so failed mutations from a
+// previous session catch up before the user does anything else.
 (function _initIdeasHydrate() {
   function maybeRun() {
     try {
       var c = JSON.parse(localStorage.getItem('sam-current-user') || 'null');
-      if (c && c.email) _hydrateIdeasFromServer();
+      if (c && c.email) {
+        _hydrateIdeasFromServer();
+        if (typeof _drainIdeaRetryQueue === 'function') _drainIdeaRetryQueue();
+      }
     } catch (e) {}
   }
   if (document.readyState === 'loading') {
