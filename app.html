@@ -7176,6 +7176,194 @@ body:not(.persona-lab-route) #personaLabRoot { display: none !important; }
   color: var(--accent);
   background: var(--accent-soft);
 }
+.pl-result-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.pl-result-btn:disabled:hover { border-color: var(--rule); background: transparent; }
+
+/* ---------- Persona Lab v0 — Phase 4.4 polish ---------- */
+
+/* Recipe hover tooltip — example phrasing per Phase 4 brief §9 */
+.pl-recipe-chip { position: relative; }
+.pl-recipe-chip[data-example]:hover::after {
+  content: attr(data-example);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: var(--paper);
+  font-family: 'Fraunces', 'Instrument Serif', Georgia, serif;
+  font-style: italic;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  padding: 8px 12px;
+  border-radius: 6px;
+  white-space: normal;
+  width: max-content;
+  max-width: 280px;
+  line-height: 1.4;
+  z-index: 20;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+}
+.pl-recipe-chip[data-example]:hover::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--ink);
+  z-index: 20;
+  pointer-events: none;
+}
+
+/* First-run hint banner */
+.pl-first-run-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.5;
+}
+.pl-first-run-hint-text { flex: 1; }
+.pl-first-run-dismiss {
+  background: transparent;
+  border: 0;
+  color: var(--ink-muted);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 0 4px;
+  cursor: pointer;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.pl-first-run-dismiss:hover { color: var(--ink); }
+
+/* Promote-to-SAM tooltip on disabled button */
+.pl-promote-wrap { position: relative; display: inline-flex; }
+.pl-promote-wrap:hover .pl-promote-tip {
+  opacity: 1;
+  pointer-events: none;
+}
+.pl-promote-tip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  padding: 7px 10px;
+  border-radius: 6px;
+  white-space: normal;
+  width: max-content;
+  max-width: 260px;
+  line-height: 1.4;
+  opacity: 0;
+  transition: opacity 0.18s;
+  z-index: 20;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+}
+
+/* Help drawer — replaces alert() */
+.pl-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.32);
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s;
+}
+.pl-drawer-overlay.open { opacity: 1; pointer-events: auto; }
+.pl-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(440px, 92vw);
+  background: var(--paper);
+  border-left: 1px solid var(--rule);
+  z-index: 101;
+  transform: translateX(100%);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  box-shadow: -8px 0 32px rgba(0,0,0,0.08);
+}
+.pl-drawer.open { transform: translateX(0); }
+.pl-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 26px 14px;
+  border-bottom: 1px solid var(--rule);
+}
+.pl-drawer-title {
+  font-family: 'Fraunces', 'Instrument Serif', Georgia, serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.pl-drawer-close {
+  background: transparent;
+  border: 1px solid var(--rule);
+  color: var(--ink-soft);
+  font-size: 18px;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  line-height: 1;
+}
+.pl-drawer-close:hover { border-color: var(--rule-strong); color: var(--ink); }
+.pl-drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 22px 26px 32px;
+  font-size: 14px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+.pl-drawer-body h3 {
+  font-family: 'Fraunces', 'Instrument Serif', Georgia, serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+  margin-top: 18px;
+  margin-bottom: 6px;
+}
+.pl-drawer-body h3:first-child { margin-top: 0; }
+.pl-drawer-body p { margin-bottom: 10px; }
+.pl-drawer-body strong { color: var(--ink); font-weight: 600; }
+.pl-drawer-body code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: var(--ink);
+}
 
 </style>
 
@@ -7198,7 +7386,7 @@ body:not(.persona-lab-route) #personaLabRoot { display: none !important; }
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.116.1" data-qs-descriptor="Persona Lab — restore teal active state per design tokens" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.116.2" data-qs-descriptor="Persona Lab v0 — Phase 4.4 polish" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -18808,15 +18996,20 @@ function openDailyBriefDataModal() {
   // option and auto-opens the tune panel.
   var RECIPES = [
     { id: 'quick_announcement', label: 'Quick announcement', fidelity: 3, loop_type: 'simple',   intent: 'announce',
-      note: 'Plain register. Lets the news carry the weight.' },
+      note: 'Plain register. Lets the news carry the weight.',
+      example: 'I killed the trial system. SAM is now invite-only.' },
     { id: 'reflective_post',    label: 'Reflective post',    fidelity: 3, loop_type: 'simple',   intent: 'reflect',
-      note: 'Looking back. Quiet, grounded.' },
+      note: 'Looking back. Quiet, grounded.',
+      example: 'Six months ago I wouldn’t have called this a company. Now I do.' },
     { id: 'processing',         label: 'Processing something', fidelity: 3, loop_type: 'unclosed', intent: 'process',
-      note: 'Working it out in real time. Still in the middle of it.' },
+      note: 'Working it out in real time. Still in the middle of it.',
+      example: 'I don’t know yet whether the rewrite was the right call. Writing while I figure it out.' },
     { id: 'big_mythic',         label: 'Big mythic piece',   fidelity: 5, loop_type: 'nested',   intent: 'mythologize',
-      note: 'Cinematic and archetypal. Mapped to real events.' },
+      note: 'Cinematic and archetypal. Mapped to real events.',
+      example: 'The diner. 2 a.m. The phone face-down on the formica. Something was about to break.' },
     { id: 'voice_note',         label: 'Voice note',         fidelity: 5, loop_type: 'unclosed', intent: 'process',
-      note: 'Spoken cadence. The thinking happens out loud.' },
+      note: 'Spoken cadence. The thinking happens out loud.',
+      example: 'OK so — here’s the thing. I keep coming back to the call. The one I almost didn’t pick up.' },
     { id: 'custom',             label: 'Custom',             fidelity: 3, loop_type: 'simple',   intent: 'announce',
       note: 'Drive it yourself. Tune panel opens for direct control.', custom: true }
   ];
@@ -18862,7 +19055,8 @@ function openDailyBriefDataModal() {
     // Recipes
     var recipesHtml = RECIPES.map(function(r) {
       var active = state.activeRecipe === r.id ? ' active' : '';
-      return '<button type="button" class="pl-recipe-chip' + active + '" data-recipe="' + escapeHtml(r.id) + '">' + escapeHtml(r.label) + '</button>';
+      var exAttr = r.example ? ' data-example="' + escapeHtml(r.example) + '"' : '';
+      return '<button type="button" class="pl-recipe-chip' + active + '" data-recipe="' + escapeHtml(r.id) + '"' + exAttr + '>' + escapeHtml(r.label) + '</button>';
     }).join('');
     var activeNote = '';
     if (state.activeRecipe) {
@@ -18918,8 +19112,17 @@ function openDailyBriefDataModal() {
 
     var canCompose = (form.moment.trim().length > 0) && (form.moment.length <= 2000);
 
+    var firstRunHint = (!state.firstRunDismissed && !state.result) ?
+      '<div class="pl-first-run-hint" id="plFirstRunHint">' +
+        '<div class="pl-first-run-hint-text">' +
+          '<strong>First time here?</strong> Type a real moment, pick where it’ll live, choose a recipe, and hit Compose. The Help button explains everything.' +
+        '</div>' +
+        '<button type="button" class="pl-first-run-dismiss" id="plFirstRunDismiss" aria-label="Dismiss">×</button>' +
+      '</div>' : '';
+
     root.innerHTML =
       '<div class="pl-shell">' +
+        firstRunHint +
         '<div class="pl-header">' +
           '<div class="pl-header-left">' +
             '<span class="pl-pill">Lab</span>' +
@@ -18947,7 +19150,7 @@ function openDailyBriefDataModal() {
               '<div class="pl-form-row">' +
                 '<label class="pl-label" for="plMoment">Moment</label>' +
                 '<div class="pl-help-text">What just happened? 1–3 sentences. The triggering event, not the whole backstory.</div>' +
-                '<textarea id="plMoment" class="pl-textarea" maxlength="2000" placeholder="The phone call. The diner. The moment after.">' + escapeHtml(form.moment) + '</textarea>' +
+                '<textarea id="plMoment" class="pl-textarea" maxlength="2000" placeholder="I killed the trial system. SAM is now invite-only.">' + escapeHtml(form.moment) + '</textarea>' +
                 '<div class="pl-char-counter' + counterClass + '"><span id="plMomentCount">' + momentLen + '</span> / 2000</div>' +
               '</div>' +
 
@@ -19026,7 +19229,7 @@ function openDailyBriefDataModal() {
           '</div>' +
         '</div>' +
       '</div>' +
-      '<div class="pl-version-stamp">Persona Lab v9.116.1</div>';
+      '<div class="pl-version-stamp">Persona Lab v9.116.2</div>';
 
     bindForm(state, canon);
   }
@@ -19176,21 +19379,21 @@ function openDailyBriefDataModal() {
       });
     }
 
-    // Help button — placeholder until the explainer modal lands.
+    // First-run hint dismiss — persists in localStorage.
+    var dismissBtn = document.getElementById('plFirstRunDismiss');
+    if (dismissBtn) {
+      dismissBtn.addEventListener('click', function() {
+        try { localStorage.setItem('persona_lab_first_run_dismissed', '1'); } catch (e) {}
+        state.firstRunDismissed = true;
+        var el = document.getElementById('plFirstRunHint');
+        if (el && el.parentNode) el.parentNode.removeChild(el);
+      });
+    }
+
+    // Help button — opens drawer with brief §14 copy.
     var helpBtn = document.getElementById('plHelpBtn');
     if (helpBtn) {
-      helpBtn.addEventListener('click', function() {
-        alert(
-          'Persona Lab — Composer\n\n' +
-          'Moment: the trigger, not the backstory.\n' +
-          'Channel: the surface (caption, post, thread, monologue, script).\n' +
-          'Fidelity: 1 literal → 7 mythos. Defaults to 3 (Scored reality).\n' +
-          'Loop: simple opens & closes; nested opens A/B closes B/A; unclosed leaves tension live.\n' +
-          'Intent: optional emotional posture.\n' +
-          'Fragments: pick a direct anchor; oblique and contrast are optional.\n\n' +
-          'Recipes apply a coherent {channel, fidelity, loop, intent} preset.'
-        );
-      });
+      helpBtn.addEventListener('click', openHelpDrawer);
     }
 
     // Compose button — Phase 4.3 wires the real /api/persona-lab/compose call.
@@ -19243,6 +19446,86 @@ function openDailyBriefDataModal() {
       document.execCommand('copy');
       document.body.removeChild(ta);
     } catch (e) { /* best-effort */ }
+  }
+
+  // Phase 4.4 — Help drawer per brief §14. Replaces the v0 alert().
+  function openHelpDrawer() {
+    if (document.getElementById('plHelpDrawer')) { closeHelpDrawer(); return; }
+
+    var overlay = document.createElement('div');
+    overlay.className = 'pl-drawer-overlay';
+    overlay.id = 'plHelpOverlay';
+
+    var drawer = document.createElement('div');
+    drawer.className = 'pl-drawer';
+    drawer.id = 'plHelpDrawer';
+    drawer.setAttribute('role', 'dialog');
+    drawer.setAttribute('aria-label', 'Persona Lab — How this works');
+    drawer.innerHTML =
+      '<div class="pl-drawer-head">' +
+        '<div class="pl-drawer-title">How this works</div>' +
+        '<button type="button" class="pl-drawer-close" id="plHelpClose" aria-label="Close">×</button>' +
+      '</div>' +
+      '<div class="pl-drawer-body">' +
+        '<h3>Moment</h3>' +
+        '<p>The trigger, not the backstory. 1–3 sentences. What just happened — the phone call, the diner, the moment after. Composer needs the spark; your codex provides the rest.</p>' +
+
+        '<h3>Channel</h3>' +
+        '<p>The surface the piece lives on: <strong>caption</strong>, <strong>post</strong>, <strong>thread</strong>, <strong>monologue</strong>, or <strong>script</strong>. Channel shapes length and cadence. It’s independent of the recipe — switching channel doesn’t reset your tune.</p>' +
+
+        '<h3>Fidelity</h3>' +
+        '<p>How far from literal you want the piece to sit. <code>1</code> is literal memoir. <code>3</code> is scored reality (the default). <code>5</code> is mythic-but-true. <code>7</code> is full mythos — Lab territory. Move the dial when the moment asks for a different register.</p>' +
+
+        '<h3>Loop</h3>' +
+        '<p><strong>simple</strong> opens and closes the same beat. <strong>nested</strong> opens A, opens B, closes B, then closes A. <strong>unclosed</strong> leaves the tension live — useful when you’re still inside it.</p>' +
+
+        '<h3>Intent</h3>' +
+        '<p>Optional emotional posture: <strong>announce</strong>, <strong>reflect</strong>, <strong>provoke</strong>, <strong>process</strong>, or <strong>mythologize</strong>. Leave it blank if the moment carries its own posture.</p>' +
+
+        '<h3>Fragments</h3>' +
+        '<p>Memory scenes from your codex. Let SAM pick — the model chooses what fits — or curate manually. Pick one <strong>direct</strong> fragment that anchors the piece; <strong>oblique</strong> and <strong>contrast</strong> are optional spice.</p>' +
+
+        '<h3>Recipes</h3>' +
+        '<p>Coherent presets for {fidelity, loop, intent}. Channel stays under your control. Hover any recipe to see an example phrasing it would produce. Choose <strong>Custom</strong> to drive the tune panel yourself — it auto-opens.</p>' +
+
+        '<h3>What Composer does</h3>' +
+        '<p>It pulls your codex (canon scenes + voice DNA + banned phrases), respects your dials, and drafts in your voice. Every draft is annotated with the chips it used and the canon scenes it referenced. Provenance is stamped — codex version, prompt version, banned phrases version, model.</p>' +
+
+        '<h3>What it doesn’t do (yet)</h3>' +
+        '<p>Promote-to-SAM lands later — promotion will run through Story Engine sanitization before anything reaches your public surfaces. For now, <strong>Copy</strong> exports the draft and <strong>Generate again</strong> reruns the same dials.</p>' +
+      '</div>';
+
+    document.body.appendChild(overlay);
+    document.body.appendChild(drawer);
+
+    // Animate open on next frame so the transition fires.
+    requestAnimationFrame(function() {
+      overlay.classList.add('open');
+      drawer.classList.add('open');
+    });
+
+    overlay.addEventListener('click', closeHelpDrawer);
+    var closeBtn = document.getElementById('plHelpClose');
+    if (closeBtn) closeBtn.addEventListener('click', closeHelpDrawer);
+    document.addEventListener('keydown', helpDrawerEscHandler);
+  }
+
+  function helpDrawerEscHandler(e) {
+    if (e.key === 'Escape') closeHelpDrawer();
+  }
+
+  function closeHelpDrawer() {
+    var overlay = document.getElementById('plHelpOverlay');
+    var drawer = document.getElementById('plHelpDrawer');
+    document.removeEventListener('keydown', helpDrawerEscHandler);
+    if (overlay) {
+      overlay.classList.remove('open');
+      setTimeout(function() { if (overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay); }, 220);
+    }
+    if (drawer) {
+      drawer.classList.remove('open');
+      setTimeout(function() { if (drawer && drawer.parentNode) drawer.parentNode.removeChild(drawer); }, 240);
+    }
   }
 
   // Phase 4.3 — execute compose and store result on state.
@@ -19441,6 +19724,10 @@ function openDailyBriefDataModal() {
         '<div class="pl-result-actions">' +
           '<button type="button" class="pl-result-btn primary" id="plCopyDraft">Copy</button>' +
           '<button type="button" class="pl-result-btn" id="plRegen">Generate again</button>' +
+          '<span class="pl-promote-wrap">' +
+            '<button type="button" class="pl-result-btn" id="plPromote" disabled>Promote to SAM</button>' +
+            '<span class="pl-promote-tip">Coming soon. Promotion will run through Story Engine sanitization.</span>' +
+          '</span>' +
         '</div>' +
       '</div>'
     );
@@ -19515,6 +19802,9 @@ function openDailyBriefDataModal() {
       var cachedUser = null;
       try { cachedUser = JSON.parse(localStorage.getItem('sam-current-user') || 'null'); } catch (e) {}
 
+      var firstRunDismissed = false;
+      try { firstRunDismissed = localStorage.getItem('persona_lab_first_run_dismissed') === '1'; } catch (e) {}
+
       renderShell({
         codex: data.codex,
         codex_version: data.codex_version,
@@ -19525,6 +19815,7 @@ function openDailyBriefDataModal() {
         composeNote: '',
         composeError: false,
         result: null,
+        firstRunDismissed: firstRunDismissed,
         form: {
           moment: '',
           title: '',
