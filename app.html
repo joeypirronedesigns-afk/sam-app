@@ -7404,7 +7404,7 @@ body:not(.persona-lab-route) #personaLabRoot { display: none !important; }
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.116.5" data-qs-descriptor="Patch Step 12 fetch — final identity threading site + new-user toast gate" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.116.6" data-qs-descriptor="Restore wizard reflection isolation (Regression 1 fix)" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -15078,14 +15078,24 @@ async function generateStoryReflection() {
   if (hasPhoto) {
     try {
       const photoCaption = photoText || text || 'Analyse this image and describe what story it tells.';
+      // v9.116.6 — Restore wizard reflection isolation. Pull email/userEmail/tier
+      // from getBase() so the gate at api/_gate.js bypasses (founder/email check),
+      // then force userId='anon' literal AFTER so api/sam.js:156 skips the
+      // userProfile lookup and api/sam.js:295 skips the MEMORY/Voice-DNA-evolution
+      // block. voiceProfile is deliberately omitted to avoid the Voice DNA
+      // CRITICAL INSTRUCTION append at api/sam.js:290-293, which would also
+      // contaminate the reflection prompt. This is a deliberate isolation
+      // contract — see /docs/ENGINEERING_NOTE_brain_context_and_persona_lab.md.
+      const _r1Base = (typeof getBase === 'function') ? getBase() : {};
       const res = await fetch('/api/sam', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           mode: 'chat',
-          userId: _s9UserId,
-          email: (_s9UserId && _s9UserId.includes('@')) ? _s9UserId.toLowerCase() : undefined,
-          userEmail: (_s9UserId && _s9UserId.includes('@')) ? _s9UserId.toLowerCase() : undefined,
+          email: _r1Base.email,
+          userEmail: _r1Base.userEmail,
+          tier: _r1Base.tier,
+          userId: 'anon',
           messages: [{
             role: 'user',
             content: [
@@ -15131,15 +15141,19 @@ async function generateStoryReflection() {
 
   // Use API for real text reflection — parse SSE stream
   try {
-    const _s9TextEmail = ((typeof getCurrentUserCached === 'function' && getCurrentUserCached()) || {}).email || '';
+    // v9.116.6 — Same isolation contract as the photo path above. See
+    // /docs/ENGINEERING_NOTE_brain_context_and_persona_lab.md for why
+    // userId is forced to 'anon' AFTER pulling gate fields from getBase().
+    const _r1Base = (typeof getBase === 'function') ? getBase() : {};
     const res = await fetch('/api/sam', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         mode: 'chat',
-        userId: _s9TextEmail || 'anon',
-        email: _s9TextEmail || undefined,
-        userEmail: _s9TextEmail || undefined,
+        email: _r1Base.email,
+        userEmail: _r1Base.userEmail,
+        tier: _r1Base.tier,
+        userId: 'anon',
         messages: [{ role: 'user', content: text }],
         systemPrompt: `You are SAM. Read what this person wrote and reflect back ONLY the emotional core — maximum 3 sentences, no more. Do NOT write a Facebook post, script, caption, or any content format. Do NOT include dashes, headers, or structured output. Just 3 warm, specific sentences that tell them what makes their story powerful and end with one sentence that makes them feel ready to keep going. Never say "I can see" or "It sounds like". Never use bullet points.`
       })
