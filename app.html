@@ -7038,6 +7038,144 @@ body:not(.persona-lab-route) #personaLabRoot { display: none !important; }
   font-family: 'JetBrains Mono', monospace;
   letter-spacing: 0.04em;
 }
+.pl-compose-note.error { color: var(--neg); }
+
+/* ---------- Persona Lab v0 — Phase 4.3 result + explainer ---------- */
+.pl-result-card { margin-bottom: 14px; }
+.pl-result-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.pl-result-head .pl-section-label { margin-bottom: 0; }
+.pl-result-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-muted);
+  letter-spacing: 0.04em;
+}
+.pl-draft {
+  font-family: 'Fraunces', 'Instrument Serif', Georgia, serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ink);
+  white-space: pre-wrap;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 22px 26px;
+  letter-spacing: -0.005em;
+}
+
+.pl-explainer {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+}
+.pl-explainer-title {
+  font-family: 'Fraunces', 'Instrument Serif', Georgia, serif;
+  font-size: 16px;
+  color: var(--ink);
+  margin-bottom: 10px;
+  letter-spacing: -0.005em;
+}
+.pl-explainer-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.pl-explainer-chip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-soft);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 4px 10px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.pl-explainer-chip strong {
+  color: var(--ink);
+  font-weight: 600;
+  margin-left: 4px;
+}
+.pl-scenes-label {
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-muted);
+  margin: 12px 0 6px;
+}
+.pl-scenes-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+.pl-scenes-list li {
+  padding: 3px 0;
+  line-height: 1.4;
+}
+.pl-scenes-list li::before {
+  content: "—";
+  color: var(--ink-faint);
+  margin-right: 8px;
+}
+.pl-scenes-empty {
+  font-size: 12px;
+  color: var(--ink-muted);
+  font-style: italic;
+}
+.pl-provenance {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--rule);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--ink-faint);
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+}
+.pl-result-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+}
+.pl-result-btn {
+  background: transparent;
+  border: 1px solid var(--rule);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pl-result-btn:hover { border-color: var(--rule-strong); background: var(--surface); }
+.pl-result-btn.primary {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.pl-result-btn.primary:hover { background: var(--ink-soft); border-color: var(--ink-soft); }
+.pl-result-btn.copied {
+  border-color: var(--lab-rust-line);
+  color: var(--serif-accent);
+  background: var(--lab-rust-soft);
+}
 
 </style>
 
@@ -18706,9 +18844,13 @@ function openDailyBriefDataModal() {
     var canonCount = canon.length;
     var codexVersion = state.codex_version || 1;
     var voiceVersion = (state.user && (state.user.voiceVersion || state.user.voice_version)) || null;
+    // Codex's voice_profile_seeds.banned_phrases is the canonical user-facing list
+    // (it already contains the engine's v1 constants Joey's seed copied in).
+    // Don't add the constant on top — that double-counts. Fall back to constant
+    // size only when the codex omits the field entirely.
     var bannedFromCodex = (codex.voice_profile_seeds && Array.isArray(codex.voice_profile_seeds.banned_phrases))
       ? codex.voice_profile_seeds.banned_phrases.length : 0;
-    var bannedCount = 25 + bannedFromCodex;
+    var bannedCount = bannedFromCodex || 25;
 
     var sceneListItems = canon.slice(0, 8).map(function(ev) {
       return '<li>' + escapeHtml(ev && ev.title ? ev.title : '(untitled scene)') + '</li>';
@@ -18858,11 +19000,14 @@ function openDailyBriefDataModal() {
               '</div>' +
 
               '<div class="pl-form-actions">' +
-                '<button id="plCompose" class="pl-compose-btn"' + (canCompose ? '' : ' disabled') + '>Compose</button>' +
-                '<span class="pl-compose-note" id="plComposeNote">Compose flow lands in Phase 4.3.</span>' +
+                '<button id="plCompose" class="pl-compose-btn"' + ((canCompose && !state.composing) ? '' : ' disabled') + '>' + (state.composing ? 'Composing…' : 'Compose') + '</button>' +
+                '<span class="pl-compose-note" id="plComposeNote">' + escapeHtml(state.composeNote || '') + '</span>' +
               '</div>' +
 
             '</div>' +
+
+            renderResultCard(state, canon) +
+
           '</div>' +
 
           '<div class="pl-col-side">' +
@@ -18881,7 +19026,7 @@ function openDailyBriefDataModal() {
           '</div>' +
         '</div>' +
       '</div>' +
-      '<div class="pl-version-stamp">Persona Lab v9.115.1</div>';
+      '<div class="pl-version-stamp">Persona Lab v9.116.0</div>';
 
     bindForm(state, canon);
   }
@@ -19048,17 +19193,257 @@ function openDailyBriefDataModal() {
       });
     }
 
-    // Compose button — stub for Phase 4.2. Wire-up lands in 4.3.
+    // Compose button — Phase 4.3 wires the real /api/persona-lab/compose call.
     if (composeBtn) {
       composeBtn.addEventListener('click', function() {
-        var note = document.getElementById('plComposeNote');
-        if (note) {
-          note.textContent = 'Compose flow lands in Phase 4.3 — payload ready.';
-          note.style.color = 'var(--serif-accent)';
-        }
-        console.log('[persona-lab] compose payload:', buildComposePayload(state));
+        runCompose(state);
       });
     }
+
+    // Result card actions — only present once a draft exists.
+    var copyBtn = document.getElementById('plCopyDraft');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', function() {
+        var draft = state.result && state.result.draft ? state.result.draft : '';
+        if (!draft) return;
+        var done = function() {
+          copyBtn.classList.add('copied');
+          var prev = copyBtn.textContent;
+          copyBtn.textContent = 'Copied';
+          setTimeout(function() {
+            copyBtn.classList.remove('copied');
+            copyBtn.textContent = prev;
+          }, 1400);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(draft).then(done, function() {
+            // Fallback: select-and-copy via a hidden textarea.
+            fallbackCopy(draft); done();
+          });
+        } else {
+          fallbackCopy(draft); done();
+        }
+      });
+    }
+    var regenBtn = document.getElementById('plRegen');
+    if (regenBtn) {
+      regenBtn.addEventListener('click', function() {
+        runCompose(state);
+      });
+    }
+  }
+
+  function fallbackCopy(text) {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    } catch (e) { /* best-effort */ }
+  }
+
+  // Phase 4.3 — execute compose and store result on state.
+  async function runCompose(state) {
+    if (state.composing) return;
+    var f = state.form;
+    if (!f.moment || !f.moment.trim()) return;
+
+    state.composing = true;
+    state.composeNote = '';
+    state.composeError = false;
+
+    // Surgical button update so we don't redraw mid-flight.
+    var btn = document.getElementById('plCompose');
+    if (btn) { btn.disabled = true; btn.textContent = 'Composing…'; }
+    var note = document.getElementById('plComposeNote');
+    if (note) {
+      note.classList.remove('error');
+      note.textContent = 'Composing…';
+    }
+
+    var email = readLabUserEmail();
+    var payload = buildComposePayload(state);
+    payload.userEmail = email;
+
+    try {
+      var r = await fetch('/api/persona-lab/compose', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        cache: 'no-store',
+        body: JSON.stringify(payload)
+      });
+      var data = null;
+      try { data = await r.json(); } catch (e) { data = null; }
+
+      if (!r.ok || !data || !data.draft) {
+        var code = (data && data.error) ? data.error : ('http_' + r.status);
+        state.composing = false;
+        state.composeError = true;
+        state.composeNote = 'Compose failed (' + code + '). Try again.';
+        if (btn) { btn.disabled = false; btn.textContent = 'Compose'; }
+        if (note) { note.classList.add('error'); note.textContent = state.composeNote; }
+        return;
+      }
+
+      state.composing = false;
+      state.composeNote = '';
+      state.composeError = false;
+      // Snapshot the dial settings used for this draft so later tweaks to the
+      // form don't alter the explainer of the rendered piece.
+      state.result = {
+        output_id: data.output_id || null,
+        draft: data.draft,
+        used_fragments: Array.isArray(data.used_fragments) ? data.used_fragments : [],
+        used_persona_traits: Array.isArray(data.used_persona_traits) ? data.used_persona_traits : [],
+        fidelity: data.fidelity != null ? data.fidelity : f.fidelity,
+        loop_type: data.loop_type || f.loop_type,
+        intent: data.intent != null ? data.intent : (f.intent || null),
+        channel: f.channel,
+        selection_mode: (data.metadata && data.metadata.selection_mode)
+          || (f.selectionMode === 'manual' ? 'preselected' : 'model_selected'),
+        recipe_label: state.activeRecipe ? recipeLabelById(state.activeRecipe) : null,
+        metadata: data.metadata || {}
+      };
+      renderShell(state);
+
+      // Bring the new draft into view but don't yank focus from the moment box
+      // if the user is still mid-typing for the next iteration.
+      var resultEl = document.getElementById('plResultCard');
+      if (resultEl && resultEl.scrollIntoView) {
+        resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    } catch (e) {
+      console.error('[persona-lab] compose failed:', e);
+      state.composing = false;
+      state.composeError = true;
+      state.composeNote = 'Compose failed (network). Try again.';
+      if (btn) { btn.disabled = false; btn.textContent = 'Compose'; }
+      var n2 = document.getElementById('plComposeNote');
+      if (n2) { n2.classList.add('error'); n2.textContent = state.composeNote; }
+    }
+  }
+
+  function recipeLabelById(id) {
+    var r = RECIPES.filter(function(x) { return x.id === id; })[0];
+    return r ? r.label : null;
+  }
+
+  // Brief §13 string-match shim. The Composer doesn't surface the fragments it
+  // chose under model_select, and even under preselected we only know IDs and
+  // roles. To make "What Composer just did" honest, we look for canon scenes
+  // whose title or distinctive quoted lines actually appear in the draft.
+  // This is a deliberately simple substring match — false negatives are fine
+  // (we just don't claim a scene we can't prove was used); false positives are
+  // limited by minimum length and case-folded comparison.
+  function detectMemoryScenes(draft, canon) {
+    if (!draft || !Array.isArray(canon) || !canon.length) return [];
+    var hay = String(draft).toLowerCase();
+    var hits = [];
+    canon.forEach(function(ev) {
+      if (!ev || !ev.id) return;
+      var title = (ev.title || '').toLowerCase().trim();
+      // Strip leading articles to cope with "the X" titles vs draft wording.
+      var titleCore = title.replace(/^the\s+/, '').replace(/^a\s+/, '').replace(/^an\s+/, '');
+      var matched_via = null;
+
+      if (title.length >= 8 && hay.indexOf(title) !== -1) matched_via = 'title';
+      else if (titleCore.length >= 8 && hay.indexOf(titleCore) !== -1) matched_via = 'title';
+
+      if (!matched_via && Array.isArray(ev.what_was_said)) {
+        for (var i = 0; i < ev.what_was_said.length; i++) {
+          var q = (ev.what_was_said[i] || '').toLowerCase().trim();
+          // Look for a meaningful chunk — short quotes generate too many false hits.
+          if (q.length < 16) continue;
+          // Sample the first 40 chars; full quote is unlikely to appear verbatim.
+          var probe = q.slice(0, 40);
+          if (hay.indexOf(probe) !== -1) { matched_via = 'quote'; break; }
+        }
+      }
+
+      if (matched_via) {
+        hits.push({ id: ev.id, title: ev.title || '(untitled scene)', matched_via: matched_via });
+      }
+    });
+    return hits;
+  }
+
+  function renderResultCard(state, canon) {
+    var r = state.result;
+    if (!r) return '';
+
+    var fidLabel = FIDELITY_LABELS[r.fidelity] || '';
+    var chips = [
+      { k: 'channel',   v: r.channel },
+      { k: 'fidelity',  v: r.fidelity + (fidLabel ? ' · ' + fidLabel : '') },
+      { k: 'loop',      v: r.loop_type },
+      { k: 'intent',    v: r.intent || 'none' },
+      { k: 'fragments', v: r.selection_mode === 'preselected' ? 'you picked' : 'SAM picked' }
+    ];
+    if (r.recipe_label) chips.unshift({ k: 'recipe', v: r.recipe_label });
+
+    var chipsHtml = chips.map(function(c) {
+      return '<span class="pl-explainer-chip">' + escapeHtml(c.k) + '<strong>' + escapeHtml(c.v) + '</strong></span>';
+    }).join('');
+
+    // Memory scenes — start from the API's used_fragments (when preselected)
+    // and merge in shim-detected scenes from the canon. De-duplicate by id.
+    var seen = {};
+    var sceneRows = [];
+    (r.used_fragments || []).forEach(function(uf) {
+      if (!uf || !uf.id || seen[uf.id]) return;
+      seen[uf.id] = true;
+      var ev = (canon || []).filter(function(e) { return e && e.id === uf.id; })[0];
+      var title = (ev && ev.title) || uf.id;
+      var role = uf.role ? ' (' + uf.role + ')' : '';
+      sceneRows.push(escapeHtml(title) + escapeHtml(role) + ' <span style="color:var(--ink-faint);font-size:11px;">selected</span>');
+    });
+    var detected = detectMemoryScenes(r.draft, canon || []);
+    detected.forEach(function(d) {
+      if (seen[d.id]) return;
+      seen[d.id] = true;
+      sceneRows.push(escapeHtml(d.title) + ' <span style="color:var(--ink-faint);font-size:11px;">matched on ' + escapeHtml(d.matched_via) + '</span>');
+    });
+
+    var scenesHtml = sceneRows.length
+      ? '<ul class="pl-scenes-list">' + sceneRows.map(function(s) { return '<li>' + s + '</li>'; }).join('') + '</ul>'
+      : '<div class="pl-scenes-empty">No canon scenes detected in this draft via string match. The model may still have drawn on persona context — Phase 6 adds structured fragment reporting.</div>';
+
+    var meta = r.metadata || {};
+    var prov = [
+      'Codex v' + escapeHtml(meta.codex_version != null ? meta.codex_version : (state.codex_version || 1)),
+      meta.system_prompt_version ? 'Prompt ' + escapeHtml(meta.system_prompt_version) : null,
+      meta.banned_phrases_version != null ? 'Banned phrases v' + escapeHtml(meta.banned_phrases_version) : null,
+      meta.model_version ? 'Model ' + escapeHtml(meta.model_version) : (meta.model ? 'Model ' + escapeHtml(meta.model) : null),
+      meta.request_ms != null ? escapeHtml(meta.request_ms) + 'ms' : null
+    ].filter(Boolean).join(' · ');
+
+    var savedNote = r.output_id ? 'Saved as draft ' + escapeHtml(String(r.output_id).slice(0, 8)) : 'Draft not persisted (Supabase unavailable)';
+
+    return (
+      '<div class="pl-card pl-result-card" id="plResultCard">' +
+        '<div class="pl-result-head">' +
+          '<div class="pl-section-label">Draft</div>' +
+          '<div class="pl-result-meta">' + escapeHtml(savedNote) + '</div>' +
+        '</div>' +
+        '<div class="pl-draft" id="plDraft">' + escapeHtml(r.draft) + '</div>' +
+
+        '<div class="pl-explainer">' +
+          '<div class="pl-explainer-title">What Composer just did</div>' +
+          '<div class="pl-explainer-grid">' + chipsHtml + '</div>' +
+          '<div class="pl-scenes-label">Memory scenes referenced</div>' +
+          scenesHtml +
+          (prov ? '<div class="pl-provenance">' + prov + '</div>' : '') +
+        '</div>' +
+
+        '<div class="pl-result-actions">' +
+          '<button type="button" class="pl-result-btn primary" id="plCopyDraft">Copy</button>' +
+          '<button type="button" class="pl-result-btn" id="plRegen">Generate again</button>' +
+        '</div>' +
+      '</div>'
+    );
   }
 
   function clearActiveRecipe(state) {
@@ -19136,6 +19521,10 @@ function openDailyBriefDataModal() {
         user: cachedUser,
         activeRecipe: null,
         tuneOpen: false,
+        composing: false,
+        composeNote: '',
+        composeError: false,
+        result: null,
         form: {
           moment: '',
           title: '',
