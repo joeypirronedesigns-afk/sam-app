@@ -6841,8 +6841,46 @@ body:not(.persona-lab-route) #personaLabRoot { display: none !important; }
   background: var(--surface);
   border: 1px solid var(--rule);
   border-radius: 8px;
-  padding: 14px 16px;
+  overflow: hidden;
 }
+.pl-tune-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  background: transparent;
+  border: 0;
+  padding: 12px 16px;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+  transition: background 0.18s;
+}
+.pl-tune-head:hover { background: var(--surface-2); }
+.pl-tune-head .pl-section-label { margin-bottom: 0; flex-shrink: 0; }
+.pl-tune-summary {
+  flex: 1;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--ink-soft);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pl-tune-chev {
+  font-size: 12px;
+  color: var(--ink-muted);
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+}
+.pl-tune-head[aria-expanded="true"] .pl-tune-chev { transform: rotate(180deg); }
+.pl-tune-body {
+  padding: 14px 16px;
+  border-top: 1px solid var(--rule);
+}
+.pl-tune-body[hidden] { display: none; }
 .pl-tune-row {
   display: grid;
   grid-template-columns: 80px 1fr auto;
@@ -7022,7 +7060,7 @@ body:not(.persona-lab-route) #personaLabRoot { display: none !important; }
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.115.0" data-qs-descriptor="Persona Lab form + recipes (Phase 4.2)" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.115.1" data-qs-descriptor="Persona Lab recipe + channel alignment" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -18627,20 +18665,22 @@ function openDailyBriefDataModal() {
       .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
-  // Phase 4.2 — recipe presets. Each one-clicks to a coherent {channel, fidelity, loop_type, intent} bundle.
+  // Phase 4 §4 locked recipes. Recipes set fidelity/loop_type/intent only —
+  // channel stays user-driven. Custom is the explicit "drive it yourself"
+  // option and auto-opens the tune panel.
   var RECIPES = [
-    { id: 'quiet_caption',    label: 'Quiet caption',     channel: 'caption',   fidelity: 3, loop_type: 'simple',   intent: 'reflect',
-      note: 'Tight 2–5 sentences. Reflective, grounded.' },
-    { id: 'process_post',     label: 'Process post',      channel: 'post',      fidelity: 3, loop_type: 'simple',   intent: 'process',
-      note: 'A working-it-out post. Real time, not retrospective.' },
-    { id: 'mythic_monologue', label: 'Mythic monologue',  channel: 'monologue', fidelity: 5, loop_type: 'nested',   intent: 'mythologize',
-      note: '45–90 sec spoken. Archetypal language allowed.' },
-    { id: 'unclosed_thread',  label: 'Unclosed thread',   channel: 'thread',    fidelity: 3, loop_type: 'unclosed', intent: 'provoke',
-      note: 'Punchy lines. Ends on a question that stays live.' },
-    { id: 'announce_post',    label: 'Announce',          channel: 'post',      fidelity: 2, loop_type: 'simple',   intent: 'announce',
+    { id: 'quick_announcement', label: 'Quick announcement', fidelity: 3, loop_type: 'simple',   intent: 'announce',
       note: 'Plain register. Lets the news carry the weight.' },
-    { id: 'lab_mythos',       label: 'Full mythos (Lab)', channel: 'monologue', fidelity: 7, loop_type: 'nested',   intent: 'mythologize',
-      note: 'Surreal/dream logic permitted. Still grounded in codex facts.' }
+    { id: 'reflective_post',    label: 'Reflective post',    fidelity: 3, loop_type: 'simple',   intent: 'reflect',
+      note: 'Looking back. Quiet, grounded.' },
+    { id: 'processing',         label: 'Processing something', fidelity: 3, loop_type: 'unclosed', intent: 'process',
+      note: 'Working it out in real time. Still in the middle of it.' },
+    { id: 'big_mythic',         label: 'Big mythic piece',   fidelity: 5, loop_type: 'nested',   intent: 'mythologize',
+      note: 'Cinematic and archetypal. Mapped to real events.' },
+    { id: 'voice_note',         label: 'Voice note',         fidelity: 5, loop_type: 'unclosed', intent: 'process',
+      note: 'Spoken cadence. The thinking happens out loud.' },
+    { id: 'custom',             label: 'Custom',             fidelity: 3, loop_type: 'simple',   intent: 'announce',
+      note: 'Drive it yourself. Tune panel opens for direct control.', custom: true }
   ];
 
   var FIDELITY_LABELS = {
@@ -18653,7 +18693,7 @@ function openDailyBriefDataModal() {
     7: 'Full mythos (Lab)'
   };
 
-  var CHANNELS = ['caption', 'post', 'thread', 'monologue', 'script', 'other'];
+  var CHANNELS = ['caption', 'post', 'monologue', 'thread', 'script'];
   var LOOPS = ['simple', 'nested', 'unclosed'];
   var INTENTS = ['announce', 'reflect', 'provoke', 'process', 'mythologize'];
   var FRAGMENT_ROLES = ['direct', 'oblique', 'contrast'];
@@ -18780,22 +18820,28 @@ function openDailyBriefDataModal() {
               '</div>' +
 
               '<div class="pl-form-row">' +
-                '<div class="pl-section-label">Tune</div>' +
                 '<div class="pl-tune">' +
-                  '<div class="pl-tune-row">' +
-                    '<div class="pl-tune-label">Fidelity</div>' +
-                    '<input id="plFidelity" type="range" min="1" max="7" step="1" value="' + form.fidelity + '" class="pl-slider">' +
-                    '<div class="pl-tune-value" id="plFidelityValue">' + form.fidelity + ' — ' + (FIDELITY_LABELS[form.fidelity] || '') + '</div>' +
-                  '</div>' +
-                  '<div class="pl-tune-row">' +
-                    '<div class="pl-tune-label">Loop</div>' +
-                    '<div class="pl-segmented" id="plLoop" data-field="loop_type">' + loopsHtml + '</div>' +
-                    '<div></div>' +
-                  '</div>' +
-                  '<div class="pl-tune-row">' +
-                    '<div class="pl-tune-label">Intent</div>' +
-                    '<div class="pl-segmented" id="plIntent" data-field="intent">' + intentsHtml + '</div>' +
-                    '<div></div>' +
+                  '<button type="button" class="pl-tune-head" id="plTuneToggle" aria-expanded="' + (state.tuneOpen ? 'true' : 'false') + '" aria-controls="plTuneBody">' +
+                    '<span class="pl-section-label">Tune</span>' +
+                    '<span class="pl-tune-summary" id="plTuneSummary">' + escapeHtml(buildTuneSummary(form)) + '</span>' +
+                    '<span class="pl-tune-chev" aria-hidden="true">▾</span>' +
+                  '</button>' +
+                  '<div class="pl-tune-body" id="plTuneBody"' + (state.tuneOpen ? '' : ' hidden') + '>' +
+                    '<div class="pl-tune-row">' +
+                      '<div class="pl-tune-label">Fidelity</div>' +
+                      '<input id="plFidelity" type="range" min="1" max="7" step="1" value="' + form.fidelity + '" class="pl-slider">' +
+                      '<div class="pl-tune-value" id="plFidelityValue">' + form.fidelity + ' — ' + (FIDELITY_LABELS[form.fidelity] || '') + '</div>' +
+                    '</div>' +
+                    '<div class="pl-tune-row">' +
+                      '<div class="pl-tune-label">Loop</div>' +
+                      '<div class="pl-segmented" id="plLoop" data-field="loop_type">' + loopsHtml + '</div>' +
+                      '<div></div>' +
+                    '</div>' +
+                    '<div class="pl-tune-row">' +
+                      '<div class="pl-tune-label">Intent</div>' +
+                      '<div class="pl-segmented" id="plIntent" data-field="intent">' + intentsHtml + '</div>' +
+                      '<div></div>' +
+                    '</div>' +
                   '</div>' +
                 '</div>' +
               '</div>' +
@@ -18835,7 +18881,7 @@ function openDailyBriefDataModal() {
           '</div>' +
         '</div>' +
       '</div>' +
-      '<div class="pl-version-stamp">Persona Lab v9.115.0</div>';
+      '<div class="pl-version-stamp">Persona Lab v9.115.1</div>';
 
     bindForm(state, canon);
   }
@@ -18845,7 +18891,8 @@ function openDailyBriefDataModal() {
   function bindForm(state, canon) {
     var form = state.form;
 
-    // Recipe chips → apply preset to form, refresh segmented + tune.
+    // Recipe chips → apply preset to form (fidelity/loop/intent only).
+    // Channel is independent. Custom forces the tune panel open.
     var recipesEl = document.getElementById('plRecipes');
     if (recipesEl) {
       recipesEl.addEventListener('click', function(e) {
@@ -18854,11 +18901,11 @@ function openDailyBriefDataModal() {
         var rid = btn.getAttribute('data-recipe');
         var recipe = RECIPES.filter(function(r) { return r.id === rid; })[0];
         if (!recipe) return;
-        form.channel = recipe.channel;
         form.fidelity = recipe.fidelity;
         form.loop_type = recipe.loop_type;
         form.intent = recipe.intent;
         state.activeRecipe = rid;
+        if (recipe.custom) state.tuneOpen = true;
         // Re-render — moment/title preserved in state, so no input data is lost.
         renderShell(state);
       });
@@ -18906,8 +18953,11 @@ function openDailyBriefDataModal() {
         Array.prototype.forEach.call(el.querySelectorAll('button'), function(b) {
           b.classList.toggle('active', b === btn);
         });
-        // Manual change clears the active recipe pill.
-        clearActiveRecipe(state);
+        // Tune fields invalidate the active recipe; channel does not.
+        if (field !== 'channel') {
+          clearActiveRecipe(state);
+          updateTuneSummary(state);
+        }
       });
     });
 
@@ -18921,6 +18971,23 @@ function openDailyBriefDataModal() {
         form.fidelity = v;
         if (fidelityVal) fidelityVal.textContent = v + ' — ' + (FIDELITY_LABELS[v] || '');
         clearActiveRecipe(state);
+        updateTuneSummary(state);
+      });
+    }
+
+    // Tune collapse/expand toggle.
+    var tuneToggle = document.getElementById('plTuneToggle');
+    var tuneBody = document.getElementById('plTuneBody');
+    if (tuneToggle && tuneBody) {
+      tuneToggle.addEventListener('click', function() {
+        state.tuneOpen = !state.tuneOpen;
+        if (state.tuneOpen) {
+          tuneBody.removeAttribute('hidden');
+          tuneToggle.setAttribute('aria-expanded', 'true');
+        } else {
+          tuneBody.setAttribute('hidden', '');
+          tuneToggle.setAttribute('aria-expanded', 'false');
+        }
       });
     }
 
@@ -19013,6 +19080,15 @@ function openDailyBriefDataModal() {
     if (el) el.textContent = count;
   }
 
+  function buildTuneSummary(form) {
+    return 'fidelity ' + form.fidelity + ' · ' + form.loop_type + ' · ' + (form.intent || 'no intent');
+  }
+
+  function updateTuneSummary(state) {
+    var el = document.getElementById('plTuneSummary');
+    if (el) el.textContent = buildTuneSummary(state.form);
+  }
+
   // CSS.escape polyfill for our limited use (UUID-like fragment ids).
   function cssEsc(s) {
     if (window.CSS && typeof window.CSS.escape === 'function') return window.CSS.escape(s);
@@ -19059,6 +19135,7 @@ function openDailyBriefDataModal() {
         codex_version: data.codex_version,
         user: cachedUser,
         activeRecipe: null,
+        tuneOpen: false,
         form: {
           moment: '',
           title: '',
