@@ -7927,7 +7927,7 @@ body.persona-lab-route:not(.persona-lab-build-route) #personaLabBuildRoot { disp
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.117.5" data-qs-descriptor="Story Engine — preserve brand identity prefill across the v9.116.7 Step-12 jump-back guard so completed-run users land at Step 0 with their name/handle intact" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.117.6" data-qs-descriptor="Ideas — fix wipe-regardless-of-success bug, switch sam_ideas writes to service role, add server hydrator so ideas authored on another device or surviving the v9.113.1 silent failure become visible again" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -15000,12 +15000,16 @@ window.signOut = signOut;
 async function onAuthSuccess(userRecord) {
   if (!userRecord || !userRecord.email) return;
 
-  // 1. Migrate user-authored anonymous ideas (Principle 3 exception)
+  // 1. Migrate user-authored anonymous ideas (Principle 3 exception).
+  //    v9.117.6 — only wipe localStorage AFTER the server confirms migration
+  //    success. The original v9.113.1 code wiped unconditionally, which
+  //    combined with a silent server-side failure (sam_ideas RLS rejecting
+  //    anon-key writes) destroyed every user's historical idea bank.
   try {
     var _anonIdeas = JSON.parse(localStorage.getItem('sam-ideas') || '[]');
     if (Array.isArray(_anonIdeas) && _anonIdeas.length > 0) {
       try {
-        await fetch('/api/memory', {
+        var _migrateResp = await fetch('/api/memory', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -15013,12 +15017,22 @@ async function onAuthSuccess(userRecord) {
             action: 'migrate_anon_ideas',
             ideas: _anonIdeas
           })
-        }).catch(function () {});
-      } catch (e) {}
+        });
+        if (_migrateResp && _migrateResp.ok) {
+          // Server-confirmed success — safe to wipe the local copy.
+          localStorage.removeItem('sam-ideas');
+        } else {
+          console.error('[onAuthSuccess] migrate_anon_ideas failed', _migrateResp && _migrateResp.status);
+          // Keep localStorage intact so the next session can retry.
+        }
+      } catch (e) {
+        console.error('[onAuthSuccess] migrate_anon_ideas network error', e && e.message);
+        // Keep localStorage intact so the next session can retry.
+      }
+    } else {
+      // Empty array — safe to remove the key.
+      localStorage.removeItem('sam-ideas');
     }
-    // Always clear anon key per brief (server-side handler lands in v9.113.2;
-    // client-only migration in v9.113.1 means anon ideas are not preserved across this transition)
-    localStorage.removeItem('sam-ideas');
   } catch (e) {}
 
   // 2. Clear remaining anonymous session state (NOT user-authored)
@@ -15037,8 +15051,71 @@ async function onAuthSuccess(userRecord) {
   if (typeof fetchDailyBrief === 'function') {
     try { fetchDailyBrief(); } catch (e) {}
   }
+
+  // 6. v9.117.6 — pull server-backed ideas into localStorage so the panel
+  //    surfaces anything the user authored on another device or session.
+  if (typeof _hydrateIdeasFromServer === 'function') {
+    try { _hydrateIdeasFromServer(); } catch (e) {}
+  }
 }
 window.onAuthSuccess = onAuthSuccess;
+
+// v9.117.6 — Server → localStorage hydrator for the Idea Bank.
+// IB.load() only reads localStorage; without this, ideas authored on
+// another device (or surviving the v9.113.1 wipe-on-success bug) stay
+// invisible. Idempotent: server is source of truth, local-only entries
+// are preserved (dual-write in v9.117.7 will eliminate the local-only case).
+async function _hydrateIdeasFromServer() {
+  try {
+    var u = (typeof getCurrentUserCached === 'function') ? getCurrentUserCached() : null;
+    if (!u || !u.email) return;
+    var r = await fetch('/api/memory?kind=ideas&userId=' + encodeURIComponent(u.email), {
+      method: 'GET', cache: 'no-store'
+    });
+    if (!r || !r.ok) return;
+    var data = await r.json();
+    if (!data || !Array.isArray(data.ideas)) return;
+
+    var local = [];
+    try { local = JSON.parse(localStorage.getItem('sam-ideas') || '[]'); } catch (e) {}
+    if (!Array.isArray(local)) local = [];
+
+    var serverIds = new Set(data.ideas.map(function (i) { return i && i.id; }).filter(Boolean));
+    var localOnly = local.filter(function (i) {
+      return i && i.id && !serverIds.has(i.id);
+    });
+    var merged = data.ideas.slice().concat(localOnly);
+    merged.sort(function (a, b) {
+      var ad = new Date(a && a.date ? a.date : 0).getTime();
+      var bd = new Date(b && b.date ? b.date : 0).getTime();
+      return bd - ad;
+    });
+    localStorage.setItem('sam-ideas', JSON.stringify(merged));
+
+    if (typeof IB !== 'undefined' && typeof IB.updateNavBadge === 'function') IB.updateNavBadge();
+    var panel = document.getElementById('ideasPanel');
+    if (panel && panel.classList.contains('open') && typeof renderIdeasList === 'function') renderIdeasList();
+  } catch (e) {
+    console.error('[hydrateIdeasFromServer]', e && e.message);
+  }
+}
+window._hydrateIdeasFromServer = _hydrateIdeasFromServer;
+
+// Fire once on page load for already-authed users (the magic-link path
+// already chains through onAuthSuccess → _hydrateIdeasFromServer).
+(function _initIdeasHydrate() {
+  function maybeRun() {
+    try {
+      var c = JSON.parse(localStorage.getItem('sam-current-user') || 'null');
+      if (c && c.email) _hydrateIdeasFromServer();
+    } catch (e) {}
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () { setTimeout(maybeRun, 400); });
+  } else {
+    setTimeout(maybeRun, 400);
+  }
+})();
 
 // ── NAVIGATION ────────────────────────────────────────────────────────────────
 function showWizardStep(step) {

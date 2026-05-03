@@ -1,5 +1,6 @@
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const MAX_MESSAGES = 40;
 
 module.exports = async function handler(req, res) {
@@ -9,11 +10,49 @@ module.exports = async function handler(req, res) {
   if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return res.status(500).json({ error: 'Not configured' });
 
   const headers = { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}`, 'Content-Type': 'application/json' };
+  // sam_ideas has RLS enabled; anon-key writes return 401 silently. v9.113.1
+  // shipped migrate_anon_ideas with anon credentials, which is why historical
+  // migrations all dropped on the floor (see v9.117.6 commit). Service-role
+  // is required for any sam_ideas read/write from this handler.
+  const serviceHeaders = SUPABASE_SERVICE_ROLE_KEY
+    ? { apikey: SUPABASE_SERVICE_ROLE_KEY, Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`, 'Content-Type': 'application/json' }
+    : null;
 
-  // GET — load last N messages for a user
+  // GET — load last N messages for a user, or list ideas (kind=ideas).
   if (req.method === 'GET') {
     const userId = (req.query.userId || '').toLowerCase();
     if (!userId) return res.status(400).json({ error: 'userId required' });
+
+    // v9.117.6 — list ideas for the authenticated user.
+    if ((req.query.kind || '').toLowerCase() === 'ideas') {
+      if (!serviceHeaders) return res.status(500).json({ error: 'service_key_not_configured' });
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userId)) return res.status(400).json({ error: 'invalid_email' });
+      try {
+        const r = await fetch(
+          `${SUPABASE_URL}/rest/v1/sam_ideas?user_id=eq.${encodeURIComponent(userId)}&select=idea_id,text,type,subtype,platform,status,created_at&order=created_at.desc&limit=500`,
+          { headers: serviceHeaders }
+        );
+        if (!r.ok) {
+          console.error('[memory:get_ideas] db error', r.status);
+          return res.status(500).json({ error: 'db_error' });
+        }
+        const rows = await r.json();
+        const ideas = (Array.isArray(rows) ? rows : []).map(row => ({
+          id: row.idea_id,
+          text: row.text || '',
+          type: row.type || 'pulse',
+          subtype: row.subtype || '',
+          platform: row.platform || '',
+          status: row.status || 'saved',
+          date: row.created_at || new Date().toISOString()
+        }));
+        return res.status(200).json({ ideas });
+      } catch (err) {
+        console.error('[memory:get_ideas]', err && err.message);
+        return res.status(500).json({ error: 'db_error' });
+      }
+    }
+
     const r = await fetch(`${SUPABASE_URL}/rest/v1/sam_conversations?user_id=eq.${encodeURIComponent(userId)}&order=created_at.desc&limit=${MAX_MESSAGES}`, { headers });
     const rows = await r.json();
     const messages = (rows || []).reverse().map(r => ({ role: r.role, content: r.content }));
@@ -26,8 +65,12 @@ module.exports = async function handler(req, res) {
     const userId = (rawUserId || '').toLowerCase();
     if (!userId) return res.status(400).json({ error: 'userId required' });
 
-    // v9.113.1 — server-side migration of user-authored anonymous ideas
+    // v9.113.1 — server-side migration of user-authored anonymous ideas.
+    // v9.117.6 — switched from anon-key to service-role headers because
+    // sam_ideas has RLS that blocks anon writes (the silent failure that
+    // wiped historical migrations).
     if (action === 'migrate_anon_ideas') {
+      if (!serviceHeaders) return res.status(500).json({ error: 'service_key_not_configured' });
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userId)) {
         return res.status(400).json({ error: 'invalid_email' });
       }
@@ -38,7 +81,7 @@ module.exports = async function handler(req, res) {
         // Load existing idea ids + texts for idempotency check
         const existingResp = await fetch(
           `${SUPABASE_URL}/rest/v1/sam_ideas?user_id=eq.${encodeURIComponent(userId)}&select=idea_id,text`,
-          { headers }
+          { headers: serviceHeaders }
         );
         const existing = existingResp.ok ? (await existingResp.json()) : [];
         const seenIds = new Set((existing || []).map(r => r.idea_id).filter(Boolean));
@@ -68,7 +111,7 @@ module.exports = async function handler(req, res) {
         if (rows.length > 0) {
           const writeResp = await fetch(`${SUPABASE_URL}/rest/v1/sam_ideas`, {
             method: 'POST',
-            headers: { ...headers, Prefer: 'return=minimal' },
+            headers: { ...serviceHeaders, Prefer: 'return=minimal' },
             body: JSON.stringify(rows)
           });
           if (!writeResp.ok) {
