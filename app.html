@@ -6800,9 +6800,9 @@ body:not(.persona-lab-route) #personaLabRoot { display: none !important; }
 }
 .pl-recipe-chip:hover { border-color: var(--rule-strong); color: var(--ink); }
 .pl-recipe-chip.active {
-  background: var(--lab-rust-soft);
-  border-color: var(--lab-rust-line);
-  color: var(--serif-accent);
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 .pl-recipe-note {
   font-size: 12px;
@@ -6832,9 +6832,9 @@ body:not(.persona-lab-route) #personaLabRoot { display: none !important; }
 }
 .pl-segmented button:hover { border-color: var(--rule-strong); color: var(--ink); }
 .pl-segmented button.active {
-  background: var(--ink);
-  color: var(--paper);
-  border-color: var(--ink);
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
 .pl-tune {
@@ -7172,9 +7172,9 @@ body:not(.persona-lab-route) #personaLabRoot { display: none !important; }
 }
 .pl-result-btn.primary:hover { background: var(--ink-soft); border-color: var(--ink-soft); }
 .pl-result-btn.copied {
-  border-color: var(--lab-rust-line);
-  color: var(--serif-accent);
-  background: var(--lab-rust-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
 }
 
 </style>
@@ -7198,7 +7198,7 @@ body:not(.persona-lab-route) #personaLabRoot { display: none !important; }
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.115.1" data-qs-descriptor="Persona Lab recipe + channel alignment" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.116.1" data-qs-descriptor="Persona Lab — restore teal active state per design tokens" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -19026,7 +19026,7 @@ function openDailyBriefDataModal() {
           '</div>' +
         '</div>' +
       '</div>' +
-      '<div class="pl-version-stamp">Persona Lab v9.116.0</div>';
+      '<div class="pl-version-stamp">Persona Lab v9.116.1</div>';
 
     bindForm(state, canon);
   }
