@@ -7404,7 +7404,7 @@ body:not(.persona-lab-route) #personaLabRoot { display: none !important; }
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.116.6" data-qs-descriptor="Restore wizard reflection isolation (Regression 1 fix)" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.116.7" data-qs-descriptor="Step 12 jump-back guard + DB cleanup script (Regression 2 fix)" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -13626,6 +13626,17 @@ function doRestoreSession() {
     const _peek = saved ? JSON.parse(saved) : {};
     const _hasLocal = !!(_peek.brandName || _peek.storyText || (parseInt(_peek._currentStep) >= 1));
 
+    // v9.116.7 — Step 12 jump-back guard (Layer 1: localStorage source).
+    // Catches the Restore-banner-click path: if localStorage already claims
+    // step=12, the user's "starting a new session" intent should not load the
+    // cached playbook. Route to a fresh wizard. openWizardPage already has
+    // this guard at its entry; this layer protects every other doRestoreSession
+    // entry (banner button, jumpToStep, etc.) for the same regression.
+    if (step === '12') {
+      if (typeof startWizard === 'function') startWizard('new');
+      return;
+    }
+
     // No local data — try server samContext (api/me returns samContext camelCase)
     if (!_hasLocal) {
       if (window.__samRestorePending) return; // prevent overlapping boot fetches
@@ -13640,6 +13651,20 @@ function doRestoreSession() {
               _ctx.brandName || _ctx.storyText ||
               (parseInt(_ctx._currentStep) >= 1)
             );
+            // v9.116.7 — Step 12 jump-back guard (Layer 2: hydrated context).
+            // The hydrated samContext can be legacy v1 (top-level _currentStep)
+            // or v2 schema (execution.currentStep). If either reads as 12,
+            // route to startWizard('new') instead of recursively restoring —
+            // the recursive call would otherwise write step=12 to localStorage
+            // and Layer 1 would catch it next pass, but bailing here avoids
+            // the half-restored WS state that Object.assign would leave.
+            var _legacyStep = parseInt(_ctx && _ctx._currentStep);
+            var _v2Step = (_ctx && _ctx.execution && _ctx.execution.currentStep)
+              ? parseInt(_ctx.execution.currentStep) : NaN;
+            if (_usable && (_legacyStep === 12 || _v2Step === 12)) {
+              if (typeof startWizard === 'function') startWizard('new');
+              return;
+            }
             if (_usable) {
               Object.assign(WS, _ctx);
               localStorage.setItem('sam_session_v2', JSON.stringify(_ctx));
