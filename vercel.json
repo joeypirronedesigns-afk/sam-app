@@ -37,6 +37,10 @@
     {
       "source": "/persona-lab",
       "destination": "/app.html"
+    },
+    {
+      "source": "/persona-lab/build",
+      "destination": "/app.html"
     }
   ],
   "functions": {

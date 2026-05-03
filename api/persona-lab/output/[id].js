@@ -8,7 +8,7 @@
 // (and lab-flagged) email, returns 404 — never confirms the row exists
 // for someone else.
 
-const { assertLabAccess } = require('../../_lab_access');
+const { assertPersonaLabUser } = require('../../_lab_access');
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -24,7 +24,7 @@ module.exports = async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'method_not_allowed' });
 
   const email = (req.query && req.query.email ? req.query.email : '').toString().trim().toLowerCase();
-  const gate = await assertLabAccess(req, res, { email });
+  const gate = await assertPersonaLabUser(req, res, { email });
   if (!gate.ok) return;
 
   const id = (req.query && req.query.id ? req.query.id : '').toString();
