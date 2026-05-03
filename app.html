@@ -6580,6 +6580,9 @@ body.persona-lab-route .sheet-overlay {
 }
 body.persona-lab-route { background: var(--paper); }
 body:not(.persona-lab-route) #personaLabRoot { display: none !important; }
+/* /persona-lab/build owns the viewport — hide the Composer root so its
+   min-height: 100vh doesn't push Archivist below the fold. */
+body.persona-lab-build-route #personaLabRoot { display: none !important; }
 
 #personaLabRoot {
   min-height: 100vh;
@@ -7378,6 +7381,9 @@ body:not(.persona-lab-route) #personaLabRoot { display: none !important; }
 /* Uses existing QS tokens only. No new design tokens.           */
 /* ============================================================ */
 body:not(.persona-lab-route) #personaLabBuildRoot { display: none !important; }
+/* Symmetric guard — when on /persona-lab (Composer), hide the Archivist root
+   so its min-height: 100vh doesn't trail underneath. */
+body.persona-lab-route:not(.persona-lab-build-route) #personaLabBuildRoot { display: none !important; }
 #personaLabBuildRoot {
   min-height: 100vh;
   background: var(--paper);
@@ -7907,6 +7913,7 @@ body:not(.persona-lab-route) #personaLabBuildRoot { display: none !important; }
   var p = window.location.pathname;
   if (p === '/persona-lab' || p === '/persona-lab/build') {
     document.body.classList.add('persona-lab-route');
+    if (p === '/persona-lab/build') document.body.classList.add('persona-lab-build-route');
     document.title = p === '/persona-lab/build' ? 'Persona Lab — Archivist' : 'Persona Lab';
   }
 })();
@@ -7920,7 +7927,7 @@ body:not(.persona-lab-route) #personaLabBuildRoot { display: none !important; }
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.117.0" data-qs-descriptor="Ship Archivist hybrid codex builder, add explicit composer eligibility gate, and open Persona Lab to authenticated SAM users via codex-based routing" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.117.1" data-qs-descriptor="Archivist viewport fix — hide the inactive Persona Lab root so /persona-lab/build doesn't push the form 100vh below the fold" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
