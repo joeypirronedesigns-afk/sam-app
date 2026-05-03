@@ -65,6 +65,86 @@ module.exports = async function handler(req, res) {
     const userId = (rawUserId || '').toLowerCase();
     if (!userId) return res.status(400).json({ error: 'userId required' });
 
+    // v9.117.7 — dual-write surface for the Idea Bank (one row per call).
+    // Each action returns { ok: true, ... } on success so the client can
+    // tell the difference between a real network/DB failure and a no-op.
+    if (action === 'add_idea' || action === 'update_idea_status' || action === 'delete_idea') {
+      if (!serviceHeaders) return res.status(500).json({ error: 'service_key_not_configured' });
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userId)) return res.status(400).json({ error: 'invalid_email' });
+
+      try {
+        if (action === 'add_idea') {
+          const idea = req.body.idea;
+          if (!idea || typeof idea !== 'object') return res.status(400).json({ error: 'idea required' });
+          const text = (idea.text || '').toString().trim();
+          if (!text) return res.status(400).json({ error: 'text required' });
+          const ideaId = idea.id || (Date.now() + '_' + Math.random().toString(36).slice(2, 7));
+          const row = {
+            user_id: userId,
+            idea_id: ideaId,
+            text,
+            type: (idea.type || 'pulse').toString(),
+            subtype: (idea.subtype || '').toString(),
+            platform: (idea.platform || '').toString(),
+            status: (idea.status || 'saved').toString(),
+            created_at: idea.date || new Date().toISOString()
+          };
+          // Plain INSERT. The IB client generates idea_ids per save, so
+          // duplicates only occur on user-driven retries; we accept that
+          // possibility rather than depending on a unique-constraint we
+          // can't verify from the migrations folder.
+          const r = await fetch(`${SUPABASE_URL}/rest/v1/sam_ideas`, {
+            method: 'POST',
+            headers: { ...serviceHeaders, Prefer: 'return=minimal' },
+            body: JSON.stringify(row)
+          });
+          if (!r.ok) {
+            const detail = await r.text().catch(function () { return ''; });
+            console.error('[memory:add_idea] insert failed', r.status, detail.slice(0, 200));
+            return res.status(500).json({ error: 'add_failed' });
+          }
+          return res.status(200).json({ ok: true, idea_id: ideaId });
+        }
+
+        if (action === 'update_idea_status') {
+          const ideaId = (req.body.idea_id || '').toString();
+          const status = (req.body.status || '').toString();
+          if (!ideaId) return res.status(400).json({ error: 'idea_id required' });
+          if (!status) return res.status(400).json({ error: 'status required' });
+          const r = await fetch(
+            `${SUPABASE_URL}/rest/v1/sam_ideas?user_id=eq.${encodeURIComponent(userId)}&idea_id=eq.${encodeURIComponent(ideaId)}`,
+            {
+              method: 'PATCH',
+              headers: { ...serviceHeaders, Prefer: 'return=minimal' },
+              body: JSON.stringify({ status })
+            }
+          );
+          if (!r.ok) {
+            console.error('[memory:update_idea_status] patch failed', r.status);
+            return res.status(500).json({ error: 'update_failed' });
+          }
+          return res.status(200).json({ ok: true });
+        }
+
+        if (action === 'delete_idea') {
+          const ideaId = (req.body.idea_id || '').toString();
+          if (!ideaId) return res.status(400).json({ error: 'idea_id required' });
+          const r = await fetch(
+            `${SUPABASE_URL}/rest/v1/sam_ideas?user_id=eq.${encodeURIComponent(userId)}&idea_id=eq.${encodeURIComponent(ideaId)}`,
+            { method: 'DELETE', headers: serviceHeaders }
+          );
+          if (!r.ok) {
+            console.error('[memory:delete_idea] delete failed', r.status);
+            return res.status(500).json({ error: 'delete_failed' });
+          }
+          return res.status(200).json({ ok: true });
+        }
+      } catch (err) {
+        console.error('[memory:idea-mutation]', action, err && err.message);
+        return res.status(500).json({ error: 'server_error' });
+      }
+    }
+
     // v9.113.1 — server-side migration of user-authored anonymous ideas.
     // v9.117.6 — switched from anon-key to service-role headers because
     // sam_ideas has RLS that blocks anon writes (the silent failure that
