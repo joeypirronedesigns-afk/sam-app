@@ -89,15 +89,18 @@ module.exports = async function handler(req, res) {
             status: (idea.status || 'saved').toString(),
             created_at: idea.date || new Date().toISOString()
           };
-          // Plain INSERT. The IB client generates idea_ids per save, so
-          // duplicates only occur on user-driven retries; we accept that
-          // possibility rather than depending on a unique-constraint we
-          // can't verify from the migrations folder.
-          const r = await fetch(`${SUPABASE_URL}/rest/v1/sam_ideas`, {
-            method: 'POST',
-            headers: { ...serviceHeaders, Prefer: 'return=minimal' },
-            body: JSON.stringify(row)
-          });
+          // v9.117.8 — upsert on (user_id, idea_id). Requires the unique
+          // constraint added in migrations/2026-05-03_sam_ideas_unique_idx.sql.
+          // Without that constraint, PostgREST silently degrades to a plain
+          // INSERT and the retry path will create duplicates.
+          const r = await fetch(
+            `${SUPABASE_URL}/rest/v1/sam_ideas?on_conflict=user_id,idea_id`,
+            {
+              method: 'POST',
+              headers: { ...serviceHeaders, Prefer: 'resolution=merge-duplicates,return=minimal' },
+              body: JSON.stringify(row)
+            }
+          );
           if (!r.ok) {
             const detail = await r.text().catch(function () { return ''; });
             console.error('[memory:add_idea] insert failed', r.status, detail.slice(0, 200));
