@@ -17,10 +17,18 @@ async function checkGate({
   copyAnonymous,
   copyUnpaid
 }) {
-  const e = (email || '').toString().trim().toLowerCase();
+  let e = (email || '').toString().trim().toLowerCase();
   const uid = (userId || '').toString();
   const _ctaAnon = ctaAnonymous || copyAnonymous || '';
   const _ctaUnpaid = ctaUnpaid || copyUnpaid || '';
+
+  // v9.116.4 — legacy callers (callAPI/getBase, wizard reflections, regen paths)
+  // pass identity as userId rather than email. If we have a clearly-email-shaped
+  // userId and no explicit email, treat the userId as the email so the gate can
+  // run founder/paid checks instead of failing closed at the auth step.
+  if (!e && uid && uid.includes('@')) {
+    e = uid.toLowerCase();
+  }
 
   // Founder bypass — preserved from api/sam.js:37
   if (e === 'j.pirrone@yahoo.com') return { ok: true };

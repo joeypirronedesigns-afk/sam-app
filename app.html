@@ -7404,7 +7404,7 @@ body:not(.persona-lab-route) #personaLabRoot { display: none !important; }
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.116.3" data-qs-descriptor="Persona Lab — neutralize Chrome autofill purple in Moment + Title fields" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.116.4" data-qs-descriptor="Restore identity threading to /api/sam — gate fix for Talk/Wizard/Spark/Pulse" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -10129,6 +10129,14 @@ function getBase() {
   const voiceProfile = (typeof WS !== 'undefined' && WS.voiceCalibrated && WS.voiceProfile)
     ? WS.voiceProfile : null;
 
+  // v9.116.4 — include identity so the v9.113.1 gate (api/_gate.js) sees email.
+  // Falls back across cache → trial state → legacy uid; sends 'anon' only when truly logged out.
+  const _u = (typeof getCurrentUserCached === 'function') ? getCurrentUserCached() : null;
+  const _trial = (typeof getTrialState === 'function') ? getTrialState() : null;
+  const _email = (_u && _u.email) ? _u.email.toLowerCase()
+               : (_trial && _trial.email ? _trial.email.toLowerCase() : '');
+  const _uid = _email || (localStorage.getItem('sam_uid') || 'anon');
+
   return {
     tone: (wizardDone && WS.pace === 'fast') ? 'Viral/Hype' :
           (wizardDone && WS.pace === 'slow') ? 'Wise/Mentor' :
@@ -10138,7 +10146,11 @@ function getBase() {
     creatorContext: creatorContext,
     audienceDemographics: demographics,
     platforms: (wizardDone && WS.platforms && WS.platforms.length) ? WS.platforms : null,
-    voiceProfile: voiceProfile || undefined
+    voiceProfile: voiceProfile || undefined,
+    email: _email || undefined,
+    userEmail: _email || undefined,
+    userId: _uid,
+    tier: (_u && _u.tier) || 'free'
   };
 }
 
@@ -12776,8 +12788,10 @@ async function runToolInline(tool, userMessage) {
 
   let payload = {};
 
+  // v9.116.4 — spread base so identity (email/userId) flows through the v9.113.1 gate.
   if (tool === 'pulse') {
     payload = {
+      ...base,
       mode: 'pulse',
       moment: userMessage,
       platforms: platforms.length ? platforms : ['TikTok', 'Instagram Reels', 'YouTube Shorts'],
@@ -12785,36 +12799,37 @@ async function runToolInline(tool, userMessage) {
       tone: s.tone || 'Authentic/Natural',
       creatorContext: ctx.niche || '',
       outputLanguage: 'English',
-      userId: (localStorage.getItem('sam_uid') || 'anon').replace(/^dev-/, ''),
-      tier: ctx.tier || 'free',
+      tier: ctx.tier || base.tier || 'free',
       voiceProfile: voiceProfile
     };
   } else if (tool === 'spark') {
     payload = {
+      ...base,
       mode: 'chat',
       messages: [{ role: 'user', content: 'Generate 5 specific content ideas for: ' + (ctx.niche || userMessage) }],
       systemPrompt: 'You are SAM. Generate exactly 5 specific content ideas. Return JSON: {"ideas":[{"title":"idea","why":"reason","best_platform":"platform"}]}. Creator niche: ' + (ctx.niche || '') + '. Return ONLY JSON.'
     };
   } else if (tool === 'blueprint') {
     payload = {
+      ...base,
       mode: 'calendar',
       moment: userMessage,
       platforms: platforms.length ? platforms : ['TikTok', 'Instagram Reels', 'YouTube Shorts'],
       creatorContext: ctx.niche || '',
-      userId: (localStorage.getItem('sam_uid') || 'anon').replace(/^dev-/, ''),
-      tier: ctx.tier || 'free'
+      tier: ctx.tier || base.tier || 'free'
     };
   } else if (tool === 'vision') {
     payload = {
+      ...base,
       mode: 'concept',
       moment: userMessage,
       platforms: platforms.length ? platforms : ['TikTok', 'YouTube'],
       creatorContext: ctx.niche || '',
-      userId: (localStorage.getItem('sam_uid') || 'anon').replace(/^dev-/, ''),
-      tier: ctx.tier || 'free'
+      tier: ctx.tier || base.tier || 'free'
     };
   } else if (tool === 'lens') {
     payload = {
+      ...base,
       mode: 'chat',
       messages: [{ role: 'user', content: userMessage }],
       systemPrompt: 'You are SAM. Analyse this creator situation and give specific, actionable advice on what is working and what to improve. Creator niche: ' + (ctx.niche || '') + '. Be direct, specific, 3-5 bullet points max.'
@@ -15069,6 +15084,8 @@ async function generateStoryReflection() {
         body: JSON.stringify({
           mode: 'chat',
           userId: _s9UserId,
+          email: (_s9UserId && _s9UserId.includes('@')) ? _s9UserId.toLowerCase() : undefined,
+          userEmail: (_s9UserId && _s9UserId.includes('@')) ? _s9UserId.toLowerCase() : undefined,
           messages: [{
             role: 'user',
             content: [
@@ -15114,12 +15131,15 @@ async function generateStoryReflection() {
 
   // Use API for real text reflection — parse SSE stream
   try {
+    const _s9TextEmail = ((typeof getCurrentUserCached === 'function' && getCurrentUserCached()) || {}).email || '';
     const res = await fetch('/api/sam', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         mode: 'chat',
-        userId: 'anon',
+        userId: _s9TextEmail || 'anon',
+        email: _s9TextEmail || undefined,
+        userEmail: _s9TextEmail || undefined,
         messages: [{ role: 'user', content: text }],
         systemPrompt: `You are SAM. Read what this person wrote and reflect back ONLY the emotional core — maximum 3 sentences, no more. Do NOT write a Facebook post, script, caption, or any content format. Do NOT include dashes, headers, or structured output. Just 3 warm, specific sentences that tell them what makes their story powerful and end with one sentence that makes them feel ready to keep going. Never say "I can see" or "It sounds like". Never use bullet points.`
       })
@@ -16130,14 +16150,17 @@ Return ONLY raw JSON (no markdown, no backticks, no explanation):
     const _regenDev = localStorage.getItem('sam_dev') === 'true';
     const regenUid = _regenDev ? 'dev-' + _regenRaw : _regenRaw;
     const regenTier = _regenDev ? 'studio' : 'free';
+    const _regenEmail = ((typeof getCurrentUserCached === 'function' && getCurrentUserCached()) || {}).email || '';
 
     const regenRes = await fetch('/api/sam', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         mode: 'chat',
         userId: regenUid,
         tier: regenTier,
+        email: _regenEmail || undefined,
+        userEmail: _regenEmail || undefined,
         toolPrompt: prompt,
         maxTokens: 3000
       })
@@ -16399,14 +16422,17 @@ Return ONLY valid JSON:
     const _isDev = localStorage.getItem('sam_dev') === 'true';
     const devUid = _isDev ? 'dev-' + _rawUid : _rawUid;
     const devTier = _isDev ? 'studio' : 'free';
-    
+    const _nextEmail = ((typeof getCurrentUserCached === 'function' && getCurrentUserCached()) || {}).email || '';
+
     const nextRes = await fetch('/api/sam', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        mode: 'chat', 
+      body: JSON.stringify({
+        mode: 'chat',
         userId: devUid,
         tier: devTier,
+        email: _nextEmail || undefined,
+        userEmail: _nextEmail || undefined,
         toolPrompt: cfg.prompt
       })
     });
