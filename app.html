@@ -7927,7 +7927,7 @@ body.persona-lab-route:not(.persona-lab-build-route) #personaLabBuildRoot { disp
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.117.6" data-qs-descriptor="Ideas — fix wipe-regardless-of-success bug, switch sam_ideas writes to service role, add server hydrator so ideas authored on another device or surviving the v9.113.1 silent failure become visible again" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.117.7" data-qs-descriptor="Ideas dual-write — IB.add / IB.updateStatus / IB.delete / forceAdd / saveWizardItem / clearPostedIdeas now POST to /api/memory so new ideas survive sign-out/sign-in/device changes" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -12332,6 +12332,8 @@ function saveWizardItem(text, label, type) {
   };
   existing.unshift(idea);
   localStorage.setItem('sam-ideas', JSON.stringify(existing));
+  // v9.117.7 — Story Engine save path also dual-writes to the server.
+  if (typeof _syncIdeaAction === 'function') _syncIdeaAction('add_idea', { idea: idea });
   // Update badge count — both nav and wizard header
   const badge = document.getElementById('ideasNavBadge');
   if (badge) { badge.textContent = existing.length; badge.style.display = 'flex'; }
@@ -13589,7 +13591,31 @@ function psamRunPulse(ideaText) {
 }
 
 // ══ SAM IDEAS BANK ══
-const IB={currentFilter:'all',currentStatusFilter:null,load(){try{return JSON.parse(localStorage.getItem('sam-ideas')||'[]')}catch{return[]}},save(ideas){try{localStorage.setItem('sam-ideas',JSON.stringify(ideas))}catch{}this.updateNavBadge()},add(idea){const ideas=this.load();const newText=(idea.text||'').trim();const newType=idea.type||'pulse';const newSub=idea.subtype||'';if(ideas.some(i=>(i.text||'').trim()===newText)){showIbToast('Already saved');return null;}const entry={id:Date.now()+'_'+Math.random().toString(36).slice(2,7),text:newText,type:idea.type||'pulse',subtype:idea.subtype||'',platform:idea.platform||'',status:'saved',date:new Date().toISOString()};ideas.unshift(entry);this.save(ideas);this.updateNavBadge();showIbToast('Saved to Ideas');return entry.id},updateStatus(id,status){const ideas=this.load();const idx=ideas.findIndex(i=>i.id===id);if(idx!==-1){ideas[idx].status=status;this.save(ideas)}},delete(id){this.save(this.load().filter(i=>i.id!==id));renderIdeasList();this.updateNavBadge()},forceAdd(idea){const ideas=this.load();ideas.unshift({text:(idea.text||'').trim(),type:idea.type||'pulse',subtype:idea.subtype||'',platform:idea.platform||'',status:'saved',id:Date.now()+'_'+Math.random().toString(36).slice(2,7),date:new Date().toISOString()});this.save(ideas);showIbToast('Saved to Ideas');},updateNavBadge(){const count=this.load().filter(i=>i.status!=='posted').length;const b=document.getElementById('ideasNavBadge');if(b){b.textContent=count>9?'9+':count;b.classList.toggle('show',count>0)}const l=document.getElementById('ideasCountLabel');if(l){const t=this.load().length;l.textContent=t===0?'0 saved':t+' idea'+(t!==1?'s':'')}/* v9.110 — QS left-rail badge reads from same sam-ideas source as drawer header */const q=document.getElementById('qsIdeasNavCount');if(q){const total=this.load().length;q.textContent=total;q.style.display=total>0?'':'none'}},getFiltered(){let ideas=this.load();const q=(document.getElementById('ideasSearchInput')?.value||'').trim().toLowerCase();if(q)ideas=ideas.filter(i=>(i.text||'').toLowerCase().includes(q)||(i.platform||'').toLowerCase().includes(q)||(i.subtype||'').toLowerCase().includes(q));if(this.currentFilter!=='all')ideas=ideas.filter(i=>i.type===this.currentFilter);if(this.currentStatusFilter)ideas=ideas.filter(i=>i.status===this.currentStatusFilter);return ideas}};
+// v9.117.7 — fire-and-forget server sync for IB mutations. Anonymous users
+// skip the call (no email scope on the server). Errors are logged, not
+// surfaced to the UI; localStorage stays the immediate source of truth so
+// users get optimistic feedback even when offline.
+function _syncIdeaAction(action, payload) {
+  try {
+    var u = null;
+    try { u = JSON.parse(localStorage.getItem('sam-current-user') || 'null'); } catch (e) {}
+    if (!u || !u.email) return;
+    var body = Object.assign({ userId: u.email, action: action }, payload || {});
+    fetch('/api/memory', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    }).then(function (r) {
+      if (!r || !r.ok) console.warn('[ideas:sync]', action, r && r.status);
+    }).catch(function (e) {
+      console.warn('[ideas:sync] network', action, e && e.message);
+    });
+  } catch (e) {
+    console.warn('[ideas:sync] threw', e && e.message);
+  }
+}
+window._syncIdeaAction = _syncIdeaAction;
+const IB={currentFilter:'all',currentStatusFilter:null,load(){try{return JSON.parse(localStorage.getItem('sam-ideas')||'[]')}catch{return[]}},save(ideas){try{localStorage.setItem('sam-ideas',JSON.stringify(ideas))}catch{}this.updateNavBadge()},add(idea){const ideas=this.load();const newText=(idea.text||'').trim();const newType=idea.type||'pulse';const newSub=idea.subtype||'';if(ideas.some(i=>(i.text||'').trim()===newText)){showIbToast('Already saved');return null;}const entry={id:Date.now()+'_'+Math.random().toString(36).slice(2,7),text:newText,type:idea.type||'pulse',subtype:idea.subtype||'',platform:idea.platform||'',status:'saved',date:new Date().toISOString()};ideas.unshift(entry);this.save(ideas);this.updateNavBadge();_syncIdeaAction('add_idea',{idea:entry});showIbToast('Saved to Ideas');return entry.id},updateStatus(id,status){const ideas=this.load();const idx=ideas.findIndex(i=>i.id===id);if(idx!==-1){ideas[idx].status=status;this.save(ideas);_syncIdeaAction('update_idea_status',{idea_id:id,status:status})}},delete(id){_syncIdeaAction('delete_idea',{idea_id:id});this.save(this.load().filter(i=>i.id!==id));renderIdeasList();this.updateNavBadge()},forceAdd(idea){const ideas=this.load();const _entry={text:(idea.text||'').trim(),type:idea.type||'pulse',subtype:idea.subtype||'',platform:idea.platform||'',status:'saved',id:Date.now()+'_'+Math.random().toString(36).slice(2,7),date:new Date().toISOString()};ideas.unshift(_entry);this.save(ideas);_syncIdeaAction('add_idea',{idea:_entry});showIbToast('Saved to Ideas');},updateNavBadge(){const count=this.load().filter(i=>i.status!=='posted').length;const b=document.getElementById('ideasNavBadge');if(b){b.textContent=count>9?'9+':count;b.classList.toggle('show',count>0)}const l=document.getElementById('ideasCountLabel');if(l){const t=this.load().length;l.textContent=t===0?'0 saved':t+' idea'+(t!==1?'s':'')}/* v9.110 — QS left-rail badge reads from same sam-ideas source as drawer header */const q=document.getElementById('qsIdeasNavCount');if(q){const total=this.load().length;q.textContent=total;q.style.display=total>0?'':'none'}},getFiltered(){let ideas=this.load();const q=(document.getElementById('ideasSearchInput')?.value||'').trim().toLowerCase();if(q)ideas=ideas.filter(i=>(i.text||'').toLowerCase().includes(q)||(i.platform||'').toLowerCase().includes(q)||(i.subtype||'').toLowerCase().includes(q));if(this.currentFilter!=='all')ideas=ideas.filter(i=>i.type===this.currentFilter);if(this.currentStatusFilter)ideas=ideas.filter(i=>i.status===this.currentStatusFilter);return ideas}};
 function openIdeasPanel(){
   // Set export button label based on device
   const btn = document.getElementById('ideasExportBtn');
@@ -13606,7 +13632,7 @@ function ibUpdateStatus(id,status){IB.updateStatus(id,status);const card=documen
 function ibDel(id){const card=document.getElementById('ibc-'+id);if(card){card.style.opacity='0';card.style.transform='translateX(30px)';card.style.transition='all 0.25s';setTimeout(()=>{IB.delete(id);renderIdeasList()},250)}else{IB.delete(id);renderIdeasList()}}
 function ibCopy(text){navigator.clipboard.writeText(text.replace(/\\n/g,'\n')).then(()=>showIbToast('Copied!'))}
 function ibUse(id){const idea=IB.load().find(i=>i.id===id);if(!idea)return;closeIdeasPanel();setTimeout(()=>{if(idea.type==='wizard')openWizardPage();else if(idea.type==='vision')sendToVision(idea.text);else if(idea.type==='blueprint'){openTool('blueprint');setTimeout(()=>{const el=document.getElementById('blueprintInp');if(el){el.value=idea.text;el.focus()}},300)}else sendToPulse(idea.text)},300)}
-function clearPostedIdeas(){if(!confirm('Remove all ideas marked as Posted?'))return;IB.save(IB.load().filter(i=>i.status!=='posted'));renderIdeasList();showIbToast('Cleared')}
+function clearPostedIdeas(){if(!confirm('Remove all ideas marked as Posted?'))return;var _all=IB.load();var _posted=_all.filter(function(i){return i&&i.status==='posted'});_posted.forEach(function(i){if(i&&i.id)_syncIdeaAction('delete_idea',{idea_id:i.id})});IB.save(_all.filter(i=>i.status!=='posted'));renderIdeasList();showIbToast('Cleared')}
 // ── EMAIL CONFIRM STATE ──
 let _ibEmailPending = null;
 
