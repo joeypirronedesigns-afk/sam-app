@@ -7927,7 +7927,7 @@ body.persona-lab-route:not(.persona-lab-build-route) #personaLabBuildRoot { disp
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.117.4" data-qs-descriptor="Composer reads new codex schema (overview.display_name, tiers.canonevents.events, top-level banned_phrases) + favicon now references /favicon.svg" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.117.5" data-qs-descriptor="Story Engine — preserve brand identity prefill across the v9.116.7 Step-12 jump-back guard so completed-run users land at Step 0 with their name/handle intact" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -9922,8 +9922,39 @@ function openWizardPage(skipCheck) {
   if (saved && step !== '0' && step !== '12' && typeof doRestoreSession === 'function') {
     doRestoreSession();
   } else {
+    // v9.117.5 — preserve identity prefill across the v9.116.7 Step-12 guard.
+    // The guard correctly routes step==='12' to a fresh wizard (don't jump to
+    // cached playbook output), but startWizard('new') wipes WS *and* localStorage,
+    // stripping brandName/brandHandle/storyType from a user who legitimately
+    // completed a previous run. Capture those identity fields first, then
+    // re-seed WS + the Step 0 inputs after the wipe so the user doesn't have
+    // to re-type their own name.
+    var _preservedIdentity = null;
+    try {
+      if (saved) {
+        var _prev = JSON.parse(saved);
+        _preservedIdentity = {
+          brandName:   _prev.brandName   || null,
+          brandHandle: _prev.brandHandle || null,
+          storyType:   _prev.storyType   || null,
+          platforms:   Array.isArray(_prev.platforms) ? _prev.platforms.slice() : null
+        };
+      }
+    } catch (e) {}
     if (typeof startWizard === 'function') startWizard('new');
     else if (typeof showWizardStep === 'function') showWizardStep('0');
+    if (_preservedIdentity && typeof WS !== 'undefined') {
+      if (_preservedIdentity.brandName)   WS.brandName   = _preservedIdentity.brandName;
+      if (_preservedIdentity.brandHandle) WS.brandHandle = _preservedIdentity.brandHandle;
+      if (_preservedIdentity.storyType)   WS.storyType   = _preservedIdentity.storyType;
+      if (_preservedIdentity.platforms)   WS.platforms   = _preservedIdentity.platforms;
+      if (typeof saveWizardState === 'function') saveWizardState();
+      var _bnEl = document.getElementById('brandName');
+      if (_bnEl && _preservedIdentity.brandName) _bnEl.value = _preservedIdentity.brandName;
+      var _bhEl = document.getElementById('brandHandle');
+      if (_bhEl && _preservedIdentity.brandHandle) _bhEl.value = _preservedIdentity.brandHandle;
+      if (typeof updateWizardHeader === 'function') updateWizardHeader();
+    }
   }
   if (window._trialExpired) { setTimeout(() => showTrialExpiredCard(), 800); }
   // Pre-fill from SAM brain — use global helper with retries
