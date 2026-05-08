@@ -51,7 +51,7 @@ module.exports = async function handler(req, res) {
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userId)) return res.status(400).json({ error: 'invalid_email' });
       try {
         const r = await fetch(
-          `${SUPABASE_URL}/rest/v1/sam_ideas?user_id=eq.${encodeURIComponent(userId)}&select=idea_id,text,type,subtype,platform,status,created_at&order=created_at.desc&limit=500`,
+          `${SUPABASE_URL}/rest/v1/sam_ideas?user_id=eq.${encodeURIComponent(userId)}&select=idea_id,text,type,subtype,platform,status,created_at&order=created_at.desc&limit=1000`,
           { headers: serviceHeaders }
         );
         if (!r.ok) {

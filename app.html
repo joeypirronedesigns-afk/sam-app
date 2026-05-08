@@ -7927,7 +7927,7 @@ body.persona-lab-route:not(.persona-lab-build-route) #personaLabBuildRoot { disp
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.1" data-qs-descriptor="Timestamp coercion fix — server-side normalizeDate helper coerces epoch-ms numbers to ISO strings before sam_ideas insert; wizard save path now constructs date as ISO string at source. Drains stuck retry queue from prior wizard saves." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.2" data-qs-descriptor="Hydrator hardening — close IB.add race window via late re-read of localStorage; preserve id-less entries instead of dropping them silently; bump server cap 500→1000 and emit hitServerCap signal; expanded hydrate:ok payload (localCount, localMissingIds, mergedCount, hitServerCap) for race + cap detection." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -9933,6 +9933,7 @@ function openWizardPage(skipCheck) {
     try {
       if (saved) {
         var _prev = JSON.parse(saved);
+        console.log('[story-engine:prefill]', { hasSession: !!saved, brandName: _prev && _prev.brandName ? _prev.brandName : null, brandHandle: _prev && _prev.brandHandle ? _prev.brandHandle : null, storyType: _prev && _prev.storyType ? _prev.storyType : null, platformsLen: _prev && _prev.platforms && _prev.platforms.length ? _prev.platforms.length : 0 });
         _preservedIdentity = {
           brandName:   _prev.brandName   || null,
           brandHandle: _prev.brandHandle || null,
@@ -15225,7 +15226,7 @@ async function _hydrateIdeasFromServer() {
     var u = (typeof getCurrentUserCached === 'function') ? getCurrentUserCached() : null;
     if (!u || !u.email) return;
     var t0 = Date.now();
-    var r = await fetch('/api/memory?kind=ideas&userId=' + encodeURIComponent(u.email), {
+    var r = await fetch('/api/memory?kind=ideas&userId=' + encodeURIComponent(u.email) + '&limit=1000', {
       method: 'GET', cache: 'no-store'
     });
     if (!r || !r.ok) {
@@ -15243,10 +15244,27 @@ async function _hydrateIdeasFromServer() {
     if (!Array.isArray(local)) local = [];
 
     var serverIds = new Set(data.ideas.map(function (i) { return i && i.id; }).filter(Boolean));
-    var localOnly = local.filter(function (i) {
-      return i && i.id && !serverIds.has(i.id);
+
+    // v9.118.2 — race close: re-read localStorage immediately before the
+    // merged-array write so any IB.add() that fired during the GET round-trip
+    // is preserved instead of clobbered. The earlier `local` read above is
+    // retained for telemetry shape but is NOT used to build `merged`.
+    var localFresh = [];
+    try { localFresh = JSON.parse(localStorage.getItem('sam-ideas') || '[]'); } catch (e) {}
+    if (!Array.isArray(localFresh)) localFresh = [];
+
+    // v9.118.2 — preserve entries missing ids instead of silently dropping them.
+    // Pre-Patch-2, the filter required `i && i.id`, so any localStorage entry
+    // without an id was excluded from merged and erased on the next setItem.
+    // Now we keep them in a separate bucket and concat them into merged so they
+    // survive hydrate. localMissingIds is surfaced in telemetry so we can detect
+    // any code path that produces id-less ideas and hunt it down.
+    var localWithIds = localFresh.filter(function (i) { return i && i.id; });
+    var localWithoutIds = localFresh.filter(function (i) { return i && !i.id; });
+    var localOnly = localWithIds.filter(function (i) {
+      return !serverIds.has(i.id);
     });
-    var merged = data.ideas.slice().concat(localOnly);
+    var merged = data.ideas.slice().concat(localOnly).concat(localWithoutIds);
     merged.sort(function (a, b) {
       var ad = new Date(a && a.date ? a.date : 0).getTime();
       var bd = new Date(b && b.date ? b.date : 0).getTime();
@@ -15258,9 +15276,24 @@ async function _hydrateIdeasFromServer() {
     var panel = document.getElementById('ideasPanel');
     if (panel && panel.classList.contains('open') && typeof renderIdeasList === 'function') renderIdeasList();
     if (typeof _ideaTelemetry === 'function') {
+      // v9.118.2 — expanded payload to surface the state that previously hid bugs:
+      //   localCount       — how many entries localStorage held at the re-read (race window check)
+      //   localOnly        — entries with id but not on server (existing field, semantics unchanged)
+      //   localMissingIds  — entries without an id, now preserved (Patch 2). Should be 0 in steady state;
+      //                      any non-zero value points to a code path writing id-less ideas.
+      //   mergedCount      — final size of the array we just wrote to localStorage. Useful for the
+      //                      sanity check: serverCount + localOnly + localMissingIds === mergedCount.
+      //   hitServerCap     — true if the server returned exactly the requested limit (1000). When true,
+      //                      additional rows may exist beyond what we received. PostgREST's db-max-rows
+      //                      can also clamp below 1000, so a steady-state count just shy of 1000 is
+      //                      worth investigating even if hitServerCap is false.
       _ideaTelemetry('hydrate:ok', {
         serverCount: data.ideas.length,
+        localCount: localFresh.length,
         localOnly: localOnly.length,
+        localMissingIds: localWithoutIds.length,
+        mergedCount: merged.length,
+        hitServerCap: data.ideas.length === 1000,
         ms: Date.now() - t0
       });
     }
