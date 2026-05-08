@@ -7927,7 +7927,7 @@ body.persona-lab-route:not(.persona-lab-build-route) #personaLabBuildRoot { disp
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.2" data-qs-descriptor="Hydrator hardening — close IB.add race window via late re-read of localStorage; preserve id-less entries instead of dropping them silently; bump server cap 500→1000 and emit hitServerCap signal; expanded hydrate:ok payload (localCount, localMissingIds, mergedCount, hitServerCap) for race + cap detection." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.3" data-qs-descriptor="Retry queue poison-pill detection — entries track attempts/lastTriedAt/lastStatus; drop after 5 failed drain attempts and emit retry:poisoned telemetry instead of looping until 30-day TTL. drained event now includes poisoned count." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -13602,6 +13602,7 @@ function psamRunPulse(ideaText) {
 var _IDEAS_RETRY_QUEUE_KEY = 'sam-ideas-retry-queue';
 var _IDEAS_RETRY_MAX = 50;          // cap so a stuck queue can't grow forever
 var _IDEAS_RETRY_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
+var _IDEAS_RETRY_MAX_ATTEMPTS = 5; // v9.118.3 — drop entries after N failed drain attempts (poison-pill detection)
 
 function _ideaTelemetry(event, fields) {
   // Light-weight structured log. Searchable in DevTools console with
@@ -13646,7 +13647,14 @@ function _enqueueIdeaRetry(action, payload) {
         return qid !== nextIdeaId;
       });
     }
-    q.push({ action: action, payload: payload, queuedAt: Date.now() });
+    q.push({
+      action: action,
+      payload: payload,
+      queuedAt: Date.now(),
+      attempts: 0,         // v9.118.3 — poison-pill tracking
+      lastTriedAt: null,
+      lastStatus: null
+    });
     // Drop oldest entries if we hit the cap.
     if (q.length > _IDEAS_RETRY_MAX) q = q.slice(q.length - _IDEAS_RETRY_MAX);
     localStorage.setItem(_IDEAS_RETRY_QUEUE_KEY, JSON.stringify(q));
@@ -13675,6 +13683,7 @@ async function _drainIdeaRetryQueue() {
 
   var remaining = [];
   var ok = 0;
+  var poisoned = 0;
   for (var i = 0; i < q.length; i++) {
     var entry = q[i];
     var body = Object.assign({ userId: u.email, action: entry.action }, entry.payload || {});
@@ -13685,13 +13694,42 @@ async function _drainIdeaRetryQueue() {
         body: JSON.stringify(body)
       });
       if (r && r.ok) { ok++; continue; }
+      // Failure path: increment attempts, record state, drop if poisoned.
+      entry.attempts = (entry.attempts || 0) + 1;
+      entry.lastTriedAt = now;
+      entry.lastStatus = r ? r.status : 'no_response';
+      if (entry.attempts >= _IDEAS_RETRY_MAX_ATTEMPTS) {
+        poisoned++;
+        _ideaTelemetry('retry:poisoned', {
+          action: entry.action,
+          status: entry.lastStatus,
+          attempts: entry.attempts,
+          ageMs: now - (entry.queuedAt || now)
+        });
+        continue; // do not re-queue
+      }
       remaining.push(entry);
     } catch (e) {
+      // Network/throw path: same accounting, status sentinel differs.
+      entry.attempts = (entry.attempts || 0) + 1;
+      entry.lastTriedAt = now;
+      entry.lastStatus = 'network';
+      if (entry.attempts >= _IDEAS_RETRY_MAX_ATTEMPTS) {
+        poisoned++;
+        _ideaTelemetry('retry:poisoned', {
+          action: entry.action,
+          status: entry.lastStatus,
+          attempts: entry.attempts,
+          ageMs: now - (entry.queuedAt || now),
+          message: e && e.message
+        });
+        continue; // do not re-queue
+      }
       remaining.push(entry);
     }
   }
   try { localStorage.setItem(_IDEAS_RETRY_QUEUE_KEY, JSON.stringify(remaining)); } catch (e) {}
-  _ideaTelemetry('drained', { drained: ok, remaining: remaining.length });
+  _ideaTelemetry('drained', { drained: ok, remaining: remaining.length, poisoned: poisoned });
 }
 window._drainIdeaRetryQueue = _drainIdeaRetryQueue;
 
