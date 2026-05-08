@@ -3,6 +3,28 @@ const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const MAX_MESSAGES = 40;
 
+// Coerce client-supplied date values into ISO 8601 strings before write.
+// Postgres timestamptz cannot ingest a bare epoch-ms integer (raises 22008
+// "date/time field value out of range"). v9.118.1 introduces this helper
+// because the wizard save path (app.html:12328 pre-v9.118.1) sent
+// Date.now() instead of new Date().toISOString(), and stale localStorage +
+// retry queue entries from those builds keep re-POSTing the broken shape.
+function normalizeDate(input) {
+  if (input === null || input === undefined || input === '') {
+    return new Date().toISOString();
+  }
+  if (typeof input === 'number' && Number.isFinite(input)) {
+    return new Date(input).toISOString();
+  }
+  if (typeof input === 'string' && /^\d+$/.test(input)) {
+    return new Date(parseInt(input, 10)).toISOString();
+  }
+  if (typeof input === 'string') {
+    return input;
+  }
+  return new Date().toISOString();
+}
+
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -87,7 +109,7 @@ module.exports = async function handler(req, res) {
             subtype: (idea.subtype || '').toString(),
             platform: (idea.platform || '').toString(),
             status: (idea.status || 'saved').toString(),
-            created_at: idea.date || new Date().toISOString()
+            created_at: normalizeDate(idea.date)
           };
           // v9.117.8 — upsert on (user_id, idea_id). Requires the unique
           // constraint added in migrations/2026-05-03_sam_ideas_unique_idx.sql.
@@ -187,7 +209,7 @@ module.exports = async function handler(req, res) {
             subtype: idea.subtype || '',
             platform: idea.platform || '',
             status: idea.status || 'saved',
-            created_at: idea.date || new Date().toISOString()
+            created_at: normalizeDate(idea.date)
           });
         }
 

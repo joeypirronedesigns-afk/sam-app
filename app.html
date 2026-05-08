@@ -7927,7 +7927,7 @@ body.persona-lab-route:not(.persona-lab-build-route) #personaLabBuildRoot { disp
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.0" data-qs-descriptor="Server telemetry sink — [ideas:telemetry] events POST to /api/telemetry; fire-and-forget, namespaced as ideas:* server-side" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.1" data-qs-descriptor="Timestamp coercion fix — server-side normalizeDate helper coerces epoch-ms numbers to ISO strings before sam_ideas insert; wizard save path now constructs date as ISO string at source. Drains stuck retry queue from prior wizard saves." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -12325,7 +12325,7 @@ function saveWizardItem(text, label, type) {
     label: label || 'From SAM Engine',
     type: type || 'wizard',
     source: 'wizard',
-    date: Date.now(),
+    date: new Date().toISOString(),
     saved: Date.now(),
     status: 'saved',
     platform: ''
