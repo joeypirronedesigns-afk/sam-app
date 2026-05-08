@@ -7927,7 +7927,7 @@ body.persona-lab-route:not(.persona-lab-build-route) #personaLabBuildRoot { disp
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.117.8" data-qs-descriptor="Ideas tightenings — unique constraint migration, on_conflict upsert, retry queue + drain on auth/load, sync telemetry, retry-queue wiped on sign-out, audit clean elsewhere" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.0" data-qs-descriptor="Server telemetry sink — [ideas:telemetry] events POST to /api/telemetry; fire-and-forget, namespaced as ideas:* server-side" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -13604,11 +13604,30 @@ var _IDEAS_RETRY_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 function _ideaTelemetry(event, fields) {
   // Light-weight structured log. Searchable in DevTools console with
-  // "[ideas:telemetry]" prefix. Not posted to a server in v9.117.8 —
-  // wire to /api/log later if we want long-term retention.
+  // "[ideas:telemetry]" prefix. Also fires fire-and-forget to /api/telemetry
+  // (v9.118 T1) for server-side retention. Never throws into the caller.
+  var enriched = Object.assign({ ts: Date.now() }, fields || {});
   try {
-    console.log('[ideas:telemetry]', event, Object.assign({ ts: Date.now() }, fields || {}));
+    console.log('[ideas:telemetry]', event, enriched);
   } catch (e) {}
+  try {
+    var currentUserRaw = localStorage.getItem('sam-current-user') || 'null';
+    var currentUser = JSON.parse(currentUserRaw);
+    var email = (currentUser && currentUser.email) ? currentUser.email : null;
+    var shell = document.querySelector('[data-qs-shell]');
+    var clientVersion = shell ? shell.getAttribute('data-qs-version') : null;
+    fetch('/api/telemetry', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        event: 'ideas:' + event,
+        fields: enriched,
+        email: email,
+        clientVersion: clientVersion
+      }),
+      keepalive: true
+    }).catch(function () { /* swallow network errors */ });
+  } catch (e) { /* swallow build-payload errors */ }
 }
 
 function _enqueueIdeaRetry(action, payload) {
