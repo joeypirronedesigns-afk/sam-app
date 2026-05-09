@@ -7927,7 +7927,7 @@ body.persona-lab-route:not(.persona-lab-build-route) #personaLabBuildRoot { disp
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.5" data-qs-descriptor="Corrected SAM's product awareness — The Reach moved into the trigger-tools list (now 6 tools, not 5) with accurate behavior (photo + platform → ready-to-post copy + opens platform app). Story Engine description expanded to include lead magnets, audience ID, story architecture, scripts with b-roll. Talk with SAM bullet now tells SAM she can actually create posts and answer anything about the app. Fixes wrong answers about Facebook posting and underplayed Story Engine." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.6" data-qs-descriptor="T11 fix — defined sendPersistentMessage_quick as a clone of sendQuickReply, restoring the 4 dev-mode quick-reply buttons in the persistent rail (TikTok hook / Founder post / Carousel / Voice DNA). Buttons were referencing an undefined function; clicks threw ReferenceError. Gated by sam_dev=true so production users were never affected — this restores the internal marketing-content shortcut workflow." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -13004,6 +13004,13 @@ function scrollPersistentToBottom() {
 
 function handlePersistentKey(e) {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendPersistentMessage(); }
+}
+
+function sendPersistentMessage_quick(text) {
+  document.getElementById('persistentSAMInput').value = text;
+  var _qr = document.getElementById('psamQuickRow');
+  if (_qr) _qr.style.display = 'none';
+  sendPersistentMessage();
 }
 
 async function sendPersistentMessage() {
