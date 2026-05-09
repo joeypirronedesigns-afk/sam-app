@@ -587,6 +587,13 @@
     .psam-typing span:nth-child(2) { animation-delay: 0.2s; }
     .psam-typing span:nth-child(3) { animation-delay: 0.4s; }
     @keyframes psamPulse { 0%,80%,100% { transform: scale(0.6); opacity: 0.4; } 40% { transform: scale(1); opacity: 1; } }
+    .psam-quick-replies {
+      display: none;
+      gap: 6px;
+      flex-wrap: wrap;
+      padding: 0 14px 8px;
+      flex-shrink: 0;
+    }
     .psam-input-row {
       display: flex;
       gap: 8px;
@@ -7927,7 +7934,7 @@ body.persona-lab-route:not(.persona-lab-build-route) #personaLabBuildRoot { disp
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.6" data-qs-descriptor="T11 fix — defined sendPersistentMessage_quick as a clone of sendQuickReply, restoring the 4 dev-mode quick-reply buttons in the persistent rail (TikTok hook / Founder post / Carousel / Voice DNA). Buttons were referencing an undefined function; clicks threw ReferenceError. Gated by sam_dev=true so production users were never affected — this restores the internal marketing-content shortcut workflow." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.7" data-qs-descriptor="T11 complete — added missing #psamQuickRow div (HTML) and .psam-quick-replies CSS rule so the four dev-mode quick-reply buttons in the persistent rail actually render. Previous fix in v9.118.6 defined the click handler but the container element never existed in the DOM, so initPersistentSAM() silently no-op'd. Buttons now inject when sam_dev=true; default display:none keeps production users unaffected." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -18109,6 +18116,7 @@ function openWizardFromNav() {
     <div class="psam-typing" id="persistentSAMTyping">
       <span></span><span></span><span></span>
     </div>
+    <div class="psam-quick-replies" id="psamQuickRow"></div>
     <div class="psam-input-row">
       <input class="psam-input" id="persistentSAMInput" placeholder="Talk to SAM..." onkeydown="handlePersistentKey(event)" />
       <button class="psam-send-btn" id="persistentSAMSend" onclick="sendPersistentMessage()">➤</button>
