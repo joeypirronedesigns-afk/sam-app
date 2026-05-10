@@ -1,3 +1,13 @@
 sk-ant-*
 .vercel
-.env*.local
+
+# macOS Finder metadata
+.DS_Store
+
+# Node dependencies (already installed locally; not for repo)
+node_modules/
+
+# Environment variables — defense-in-depth
+.env
+.env.*
+!.env.example
