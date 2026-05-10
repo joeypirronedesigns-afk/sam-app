@@ -7948,7 +7948,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.12" data-qs-descriptor="T14 — :fail telemetry enrichment. New _failContext helper captures status, statusText, and body excerpt (≤500 chars, truncated marker appended). Patched all 3 ideas:fail call sites: _syncIdeaAction adds action+idea_id+payload_bytes; migrate adds count+payload_bytes; hydrate adds latency_ms. All within sam_telemetry's 8KB fields cap. Sync .then callback converted to async to allow await r.text() on the response stream." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.13" data-qs-descriptor="T13 — confused narrator fix. (1) Removed content-creation phrasings ('in my voice', 'write a short', 'sound like me', etc.) from isDebugOrMeta negative signals — they were swallowing legit asks. (2) Broadened detectSAMIntent pulse route to catch direct asks ('write/draft/make me a hook/post/script/caption'). [TRIGGER:tool] confirm-button UX preserved." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -13313,8 +13313,7 @@ function isDebugOrMeta(text) {
     "how does the pulse", "what does the pulse", "explain the pulse",
     "tell me about the pulse", "tell me about the spark",
     "how does the spark", "what does the spark",
-    "talking about", "let's just discuss", "lets just discuss",
-    "create a short", "write a short", "short facebook post", "short post", "take from what i", "from what i just gave", "in my voice", "sound like me", "test my voice", "test if it sounds"
+    "talking about", "let's just discuss", "lets just discuss"
   ];
   return negativeSignals.some(sig => t.includes(sig));
 }
@@ -13322,6 +13321,9 @@ function isDebugOrMeta(text) {
 // ── INTENT DETECTION ─────────────────────────────────────────────────────────
 function detectSAMIntent(text) {
   const t = text.toLowerCase();
+
+  // Pulse triggers — direct content asks (write/draft/give me a [hook|post|script|caption|video|short|reel])
+  if (t.match(/(write|draft|make|give|build|create) me (a|an|some|the)?\s*(hook|post|script|caption|video|short|reel|tiktok|youtube|facebook|linkedin|instagram|reels?|tweet|thread)/)) return 'pulse';
 
   // Pulse triggers — moment/story/something happened
   if (t.match(/i (just|was|went|did|tried|had|made|got|lost|found|built|fixed|broke|started|finished|quit|almost|nearly)|today i|yesterday i|last (week|night|month)|this morning|this week|someone (dm|messaged|commented|said)|my (wife|husband|kid|dog|boss|client|customer)|we (just|finally|actually)/)) return 'pulse';
