@@ -7621,6 +7621,15 @@ body.persona-lab-route:not(.persona-lab-build-route) #personaLabBuildRoot { disp
 .lab-input:focus,
 .lab-textarea:focus { border-color: var(--accent); }
 .lab-textarea { min-height: 96px; resize: vertical; line-height: 1.55; }
+.lab-input:-webkit-autofill,
+.lab-input:-webkit-autofill:focus,
+.lab-textarea:-webkit-autofill,
+.lab-textarea:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--ink);
+  -webkit-box-shadow: 0 0 0 1000px var(--paper) inset;
+  transition: background-color 5000s ease-in-out 0s;
+  caret-color: var(--ink);
+}
 
 .lab-chip-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
 .lab-chip {
@@ -7934,7 +7943,7 @@ body.persona-lab-route:not(.persona-lab-build-route) #personaLabBuildRoot { disp
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.7" data-qs-descriptor="T11 complete — added missing #psamQuickRow div (HTML) and .psam-quick-replies CSS rule so the four dev-mode quick-reply buttons in the persistent rail actually render. Previous fix in v9.118.6 defined the click handler but the container element never existed in the DOM, so initPersistentSAM() silently no-op'd. Buttons now inject when sam_dev=true; default display:none keeps production users unaffected." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.8" data-qs-descriptor="T17 — Chrome autofill purple suppression for Archivist (Codex builder) inputs. Mirrors v9.116.3's existing fix for Composer .pl-input/.pl-textarea, applied to .lab-input/.lab-textarea. Typed text in Codex builder fields was rendering as light purple because Chrome's :-webkit-autofill pseudo-class was overriding the CSS color (var(--ink), near-black). Same root cause Joey fixed in Composer when v9.116.3 shipped; the Archivist surface (added in v9.117.0) never got the same treatment." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
