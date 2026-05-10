@@ -8015,7 +8015,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.17" data-qs-descriptor="T-StoryEngine Patch C.1 — Copy/Save Script buttons fix. Patch C v9.118.16 replaced the .playbook-script DOM with .playbook-script-stack > .script-beat-card structure; the existing wizCopyEl handler queried for the now-stale .script-block/.playbook-script selector and silently wrote empty string to clipboard while still firing the 'Copied!' feedback. Save button threw TypeError synchronously on null.innerText. Fix: new getPlaybookScriptText() helper reads window._lastPlaybookData.script_beats[] and assembles label + timing + content, falling back to full_script / narration_script when beats are empty. Copy and Save buttons both route through the helper instead of DOM-walking. Empty-text guard added to wizCopy for safety against future stale-selector regressions. wizCopyEl preserved unchanged for non-script consumers." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.18" data-qs-descriptor="T-StoryEngine Patch D — Error UI softening for playbook generation pauses. Reframes the four error variants (rate-limit, timeout, parse, generic) from 'system broken' to 'natural pause' — new headlines (Almost there / Your story took a moment / One more pass / You've reached today's limit), softer body copy emphasizing that the story is saved and the second pass usually completes, primary button relabeled 'Continue' (handler unchanged). Visual fixes: 😤 emoji → ◐ glyph (muted, smaller, non-anthropomorphic); title color var(--text) lavender → var(--ink) for QS readability; tip-card lavender RGB chrome → var(--surface-2) / var(--rule) / var(--ink-soft) for QS palette consistency. Functionality untouched: retryPlaybook, showWizardStep, openProModal handlers preserved; classifier substring matches preserved; thrown error messages at L10748/L10753 unchanged." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -16439,32 +16439,32 @@ The story_architecture object below is the structural source of truth — the fu
     const isTimeout = errMsg.includes('timeout') || errMsg.includes('timed out');
     const isParseErr = errMsg.includes('parse') || errMsg.includes('formatted') || errMsg.includes('JSON') || errMsg.includes('Parse error');
     const isRateLimit = errMsg.includes('429') || errMsg.includes('rate') || errMsg.includes('limit');
-    let errTitle = 'SAM hit a snag', errExplain = '', errTip = '';
+    let errTitle = 'One more pass', errExplain = '', errTip = '';
     if (isRateLimit) {
-      errTitle = "You've hit today's limit";
-      errExplain = "SAM's free plan includes a set number of runs per day. Your limit resets at midnight.";
+      errTitle = "You've reached today's limit";
+      errExplain = "Your free plan includes a set number of runs per day. Your limit resets at midnight.";
       errTip = "Upgrade for unlimited runs — from $29/month, cancel anytime.";
     } else if (isTimeout) {
-      errTitle = 'SAM took too long';
-      errExplain = "Your story had a lot of depth and SAM ran out of time. This sometimes happens with longer stories.";
-      errTip = "Try shortening your story slightly, or hit Try Again — it usually works on the second attempt.";
+      errTitle = 'Your story took a moment';
+      errExplain = "Stories with this much depth take longer to assemble. SAM has everything she needs.";
+      errTip = "Tap Continue — your story is saved and the second pass is faster.";
     } else if (isParseErr) {
-      errTitle = 'SAM lost her train of thought';
-      errExplain = "SAM built your story but had trouble sending it all at once. This is rare and almost always fixes itself.";
-      errTip = "Hit Try Again — SAM already knows your story and will rebuild it fast.";
+      errTitle = 'Almost there';
+      errExplain = "SAM has your story — she just needs a second pass to assemble the full playbook.";
+      errTip = "Tap Continue — your story is saved and this usually completes on the next pass.";
     } else {
-      errTitle = 'Something went wrong';
-      errExplain = "SAM ran into an unexpected issue. Your story is saved — you won't lose anything.";
-      errTip = "Try again. If it keeps happening, refresh the page and start from Step 10.";
+      errTitle = 'One more pass';
+      errExplain = "SAM hit a brief pause. Your story is saved — nothing is lost.";
+      errTip = "Tap Continue. If it keeps pausing, refresh the page and start from Step 10.";
     }
     document.getElementById('wizardLoader').innerHTML = `
       <div style="text-align:center;padding:40px 0;max-width:480px;margin:0 auto;">
-        <div style="font-size:36px;margin-bottom:16px;">😤</div>
-        <div style="font-family:'Sora',sans-serif;font-size:22px;font-weight:700;color:var(--text);margin-bottom:10px;">${errTitle}</div>
+        <div style="font-size:32px;margin-bottom:16px;color:var(--ink-muted);">◐</div>
+        <div style="font-family:'Sora',sans-serif;font-size:22px;font-weight:700;color:var(--ink);margin-bottom:10px;">${errTitle}</div>
         <div style="font-size:15px;color:var(--ink-soft);line-height:1.65;margin-bottom:10px;">${errExplain}</div>
-        <div style="font-size:13px;color:var(--accent);background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.2);border-radius:var(--radius);padding:12px 16px;margin-bottom:28px;line-height:1.6;">💡 ${errTip}</div>
+        <div style="font-size:13px;color:var(--ink-soft);background:var(--surface-2);border:1px solid var(--rule);border-radius:var(--radius);padding:12px 16px;margin-bottom:28px;line-height:1.6;">${errTip}</div>
         <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-          <button onclick="retryPlaybook()" style="padding:14px 32px;background:linear-gradient(135deg,#6D28D9,var(--accent),var(--accent));color:#fff;border:none;border-radius:var(--radius);font-family:'Sora',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">↻ Try again</button>
+          <button onclick="retryPlaybook()" style="padding:14px 32px;background:linear-gradient(135deg,#6D28D9,var(--accent),var(--accent));color:#fff;border:none;border-radius:var(--radius);font-family:'Sora',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">Continue</button>
           ${isRateLimit ? '<button onclick="openProModal()" style="padding:14px 24px;background:linear-gradient(135deg,rgba(251,191,36,0.2),rgba(251,191,36,0.1));border:1px solid rgba(251,191,36,0.4);border-radius:var(--radius);font-family:\'Sora\',sans-serif;font-size:14px;font-weight:600;color:var(--lens);cursor:pointer;">See plans →</button>' : ''}
           <button onclick="showWizardStep('10')" style="padding:14px 24px;background:transparent;color:var(--ink-muted);border:1px solid var(--border);border-radius:var(--radius);font-family:'Sora',sans-serif;font-size:14px;cursor:pointer;">← Edit my answers</button>
         </div>
