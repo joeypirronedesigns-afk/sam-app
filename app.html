@@ -7948,7 +7948,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.11" data-qs-descriptor="T9 — suppress Restore banner when sam_session_step === '12'. Banner was firing for completed playbook sessions; clicking Restore hit Exit A in doRestoreSession (startWizard 'new' without removing banner) so it appeared inert. Step 12 = playbook complete, not unfinished — banner shouldn't show." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.12" data-qs-descriptor="T14 — :fail telemetry enrichment. New _failContext helper captures status, statusText, and body excerpt (≤500 chars, truncated marker appended). Patched all 3 ideas:fail call sites: _syncIdeaAction adds action+idea_id+payload_bytes; migrate adds count+payload_bytes; hydrate adds latency_ms. All within sam_telemetry's 8KB fields cap. Sync .then callback converted to async to allow await r.text() on the response stream." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -13644,6 +13644,15 @@ var _IDEAS_RETRY_MAX = 50;          // cap so a stuck queue can't grow forever
 var _IDEAS_RETRY_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 var _IDEAS_RETRY_MAX_ATTEMPTS = 5; // v9.118.3 — drop entries after N failed drain attempts (poison-pill detection)
 
+async function _failContext(r) {
+  var ctx = { status: r && r.status, statusText: r && r.statusText };
+  try {
+    var body = await r.text();
+    if (body) ctx.body = body.length > 500 ? body.slice(0, 500) + '…[truncated]' : body;
+  } catch (e) { ctx.body_err = e && e.message; }
+  return ctx;
+}
+
 function _ideaTelemetry(event, fields) {
   // Light-weight structured log. Searchable in DevTools console with
   // "[ideas:telemetry]" prefix. Also fires fire-and-forget to /api/telemetry
@@ -13786,12 +13795,16 @@ function _syncIdeaAction(action, payload) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
-    }).then(function (r) {
+    }).then(async function (r) {
       if (r && r.ok) {
         _ideaTelemetry(action + ':ok', { status: r.status });
         return;
       }
-      _ideaTelemetry(action + ':fail', { status: r && r.status });
+      var ctx = await _failContext(r);
+      ctx.action = action;
+      ctx.idea_id = (payload && (payload.idea_id || (payload.idea && payload.idea.id))) || null;
+      ctx.payload_bytes = JSON.stringify(body).length;
+      _ideaTelemetry(action + ':fail', ctx);
       _enqueueIdeaRetry(action, payload);
     }).catch(function (e) {
       _ideaTelemetry(action + ':network', { message: e && e.message });
@@ -15244,7 +15257,10 @@ async function onAuthSuccess(userRecord) {
           localStorage.removeItem('sam-ideas');
         } else {
           console.error('[onAuthSuccess] migrate_anon_ideas failed', _migrateResp && _migrateResp.status);
-          if (typeof _ideaTelemetry === 'function') _ideaTelemetry('migrate:fail', { status: _migrateResp && _migrateResp.status, count: _anonIdeas.length });
+          var ctx = await _failContext(_migrateResp);
+          ctx.count = _anonIdeas.length;
+          ctx.payload_bytes = JSON.stringify(_anonIdeas).length;
+          if (typeof _ideaTelemetry === 'function') _ideaTelemetry('migrate:fail', ctx);
           // Keep localStorage intact so the next session can retry.
         }
       } catch (e) {
@@ -15308,7 +15324,9 @@ async function _hydrateIdeasFromServer() {
       method: 'GET', cache: 'no-store'
     });
     if (!r || !r.ok) {
-      if (typeof _ideaTelemetry === 'function') _ideaTelemetry('hydrate:fail', { status: r && r.status });
+      var ctx = await _failContext(r);
+      ctx.latency_ms = Date.now() - t0;
+      if (typeof _ideaTelemetry === 'function') _ideaTelemetry('hydrate:fail', ctx);
       return;
     }
     var data = await r.json();
