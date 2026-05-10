@@ -325,6 +325,64 @@
       html { scroll-behavior: auto; }
       .qs-cta { transition: none; }
     }
+
+    /* Persona Lab section */
+    .qs-persona-lab {
+      padding-block: clamp(3.5rem, 6vw, 5.5rem);
+      border-top: 1px solid var(--rule);
+      background: transparent;
+    }
+    .qs-persona-lab .qs-section-inner {
+      max-width: 760px;
+      margin: 0 auto;
+      padding-inline: 1.25rem;
+    }
+    .qs-persona-lab .qs-section-kicker {
+      margin-bottom: 0.85rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+    .qs-persona-lab h2 {
+      margin: 0 0 1rem 0;
+      max-width: 12ch;
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: clamp(2rem, 3.6vw, 3.1rem);
+      line-height: 0.98;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+    .qs-persona-lab .qs-section-lede,
+    .qs-persona-lab .qs-section-body {
+      max-width: 62ch;
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.72;
+      color: var(--ink-muted);
+    }
+    .qs-persona-lab .qs-section-lede {
+      margin-bottom: 0.9rem;
+      color: var(--ink);
+    }
+    @media (max-width: 720px) {
+      .qs-persona-lab {
+        padding-block: 3rem;
+      }
+      .qs-persona-lab .qs-section-inner {
+        padding-inline: 1rem;
+      }
+      .qs-persona-lab h2 {
+        max-width: none;
+        font-size: clamp(1.8rem, 8vw, 2.5rem);
+      }
+      .qs-persona-lab .qs-section-lede,
+      .qs-persona-lab .qs-section-body {
+        font-size: 0.98rem;
+        line-height: 1.68;
+      }
+    }
   </style>
 </head>
 <body data-qs-landing-version="v9.111">
@@ -394,6 +452,20 @@
           <p>SAM lives as a persistent panel beside whatever you're working on — Spark, Pulse, Reach, Story Engine. You can think out loud. Test angles. Get a second read on a caption before you post it. She doesn't disappear when you switch tools. She's there for the whole workday.</p>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- PERSONA LAB -->
+  <section class="qs-section qs-persona-lab" aria-labelledby="persona-lab-title">
+    <div class="qs-section-inner">
+      <div class="qs-section-kicker">Persona Lab</div>
+      <h2 id="persona-lab-title">One brain gets better when it knows more than your prompts.</h2>
+      <p class="qs-section-lede">
+        Persona Lab gives SAM a deeper understanding of the person behind the work — your voice, your patterns, your canon moments, and the perspective that shapes what you make.
+      </p>
+      <p class="qs-section-body">
+        That context carries across the system, so the work gets sharper over time. Better strategy. More faithful writing. Stronger decisions about what to say next.
+      </p>
     </div>
   </section>
 
