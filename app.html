@@ -8015,7 +8015,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.19" data-qs-descriptor="T-StoryEngine Patch G — Reload Session button fix. Manual Reload Session click now bypasses the step-12 guard that was preventing input restoration after a playbook completed. doRestoreSession() now accepts {intent:'manual'} flag; when set, step-12 sessions are coerced to step 11 (last input step) and routed through Exit C restoration instead of Exit A's startWizard('new') reset. Layer 2 (server-fetched samContext) mirrors the manual override by coercing _ctx._currentStep and _ctx.execution.currentStep to '11' before the recursive restore call. Auto-restore paths (banner click, boot init, post-login retry) continue to call doRestoreSession() with no args, preserving existing step-12 protective behavior. Save Session, server-side persistence, and all other restore paths unchanged. Enables 'regenerate same playbook with one tweak' workflow — user can now reload prior inputs at step 11, modify a single field (e.g., banned phrases), and re-run generation." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.20" data-qs-descriptor="T-StoryEngine Patch H — Two surgical fixes to Patch G regression and pre-existing step-overwrite bug. (1) wizardNext sets window._forceRebuild = true when leaving step 11, forcing setupWizardStep('12') to call buildPlaybook() instead of rendering cached _savedPlaybookHTML. Matches the L15630 comment's stated intent ('Always rebuild if coming from step 11') which previously only fired via wizardBackFromPlaybook. _forceRebuild cleared by buildPlaybook() at function entry to prevent leak. (2) saveWizardState gains empty-state guard mirroring _samSaveSession: when WS has content but _currentStep is unhydrated AND localStorage has a non-'0' step, preserves the existing step instead of clobbering with '0'. Fixes the silent localStorage corruption that caused Reload Session to fail after hard refresh — root cause was boot-time WS hydration paths firing saveWizardState before _currentStep was set, overwriting saved step '12' with '0'. WS data fields still update normally; only step preservation changes. _samSaveSession, doRestoreSession (Patch G), buildPlaybook, all other restore paths unchanged." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -14377,6 +14377,31 @@ function loadWizardState() {
 function saveWizardState() {
   if (typeof WS !== 'undefined') { var _st = WS.storyText || WS.storyRaw || ''; if (_st) localStorage.setItem('sam_meet_story', _st.slice(0,800)); }
   try {
+    // v9.118.20 (Patch H) — Guard against step-overwrite bug. If a boot-time
+    // path fires saveWizardState before WS._currentStep is hydrated, the
+    // unguarded write would clobber a previously-saved step with '0', breaking
+    // Reload Session after hard refresh. Mirror _samSaveSession's empty-state
+    // guard: when WS has content but _currentStep is missing, preserve the
+    // existing localStorage step instead of overwriting.
+    const _hasContent = !!(WS.brandName || WS.storyText || WS.creatorType);
+    const _existingStep = localStorage.getItem('sam_session_step');
+    const _stepUnset = !WS._currentStep || WS._currentStep === '0';
+    if (_hasContent && _stepUnset && _existingStep && _existingStep !== '0') {
+      // WS hydrated but _currentStep not yet set — don't clobber real saved step.
+      // Still update WS data fields (sam-wizard-state, sam_session_v2, sam_session_ts)
+      // because those are still authoritative.
+      const toSave = Object.assign({}, WS);
+      delete toSave.voiceProfile;
+      delete toSave.voiceCalibrated;
+      delete toSave.voiceSample;
+      const str = JSON.stringify(toSave);
+      localStorage.setItem('sam-wizard-state', str);
+      localStorage.setItem('sam_session_v2', str);
+      // sam_session_step preserved (NOT overwritten with '0')
+      localStorage.setItem('sam_session_ts', Date.now().toString());
+      return;
+    }
+    // Normal path — _currentStep is set OR no content yet OR no prior valid step
     const toSave = Object.assign({}, WS);
     delete toSave.voiceProfile;
     delete toSave.voiceCalibrated;
@@ -15660,6 +15685,14 @@ function wizardNext() {
     if (wizardCurrentStep === '8' && WS.format !== 'short' && WS.format !== 'long') {
       WS.photoOption = 'skip';
       showWizardStep('10'); return;
+    }
+    // v9.118.20 (Patch H) — Leaving step 11 always invalidates the cached
+    // playbook HTML so step 12 setup rebuilds via buildPlaybook() instead of
+    // rendering stale cached output. Matches the L15630 comment's stated intent
+    // ("Always rebuild if coming from step 11"). _forceRebuild is consumed by
+    // buildPlaybook() (sets it back to false at function entry).
+    if (wizardCurrentStep === '11') {
+      window._forceRebuild = true;
     }
     showWizardStep(stepOrder[idx + 1]);
     saveWizardState();
