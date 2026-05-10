@@ -8015,7 +8015,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.16" data-qs-descriptor="T-StoryEngine Patch C — Structured script rendering. (1) Server-side parseScriptBeats() in api/sam.js parses [BEAT: ...] markers from full_script and emits additive script_beats[] array on playbook + script-regen responses via streamCall. full_script preserved unchanged for backwards compatibility. (2) UI renderPlaybook script section now consumes data.script_beats and renders structured beat-card stack with canonical labels (Opening / Setup / The Risk / The Turn / The Payoff / Your Call). Falls back to legacy single-paragraph render when script_beats absent or empty. white-space: pre-line preserves internal breaks. regenRenderSection script branch updated identically. window._lastPlaybookData synced with script regen response. (3) PDF Full Script page parallel restructure — same beat-card stack, reuses --pdf-surface/--pdf-rule/--pdf-ink-soft tokens, page-break-inside: avoid keeps beats intact across pages. (4) PDF architecture card labels canonicalized to match UI ('Risk' → 'The Risk', 'Turn' → 'The Turn', 'Payoff' → 'The Payoff', 'CTA' → 'Your Call') — fixes pre-existing UI/PDF label divergence. No per-beat color on script blocks. No prompt/model/schema changes." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.17" data-qs-descriptor="T-StoryEngine Patch C.1 — Copy/Save Script buttons fix. Patch C v9.118.16 replaced the .playbook-script DOM with .playbook-script-stack > .script-beat-card structure; the existing wizCopyEl handler queried for the now-stale .script-block/.playbook-script selector and silently wrote empty string to clipboard while still firing the 'Copied!' feedback. Save button threw TypeError synchronously on null.innerText. Fix: new getPlaybookScriptText() helper reads window._lastPlaybookData.script_beats[] and assembles label + timing + content, falling back to full_script / narration_script when beats are empty. Copy and Save buttons both route through the helper instead of DOM-walking. Empty-text guard added to wizCopy for safety against future stale-selector regressions. wizCopyEl preserved unchanged for non-script consumers." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -16764,8 +16764,8 @@ function renderPlaybook(data) {
         ${data.pacing_note ? `<div class="wizard-why" style="margin-top:12px;"><strong>Delivery note:</strong> ${data.pacing_note}</div>` : ''}
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center;">
-        <button class="playbook-copy-btn" style="margin-top:0;" onclick="wizCopyEl(this)">Copy script</button>
-        <button class="playbook-copy-btn" style="margin-top:0;background:var(--surface-2);border:1px solid var(--rule);color:var(--ink-muted);font-family:'Inter',system-ui,sans-serif;" onclick="saveWizardItem(this.closest('.playbook-section').querySelector('.playbook-script').innerText,'Full script','wizard')">💜 Save</button>
+        <button class="playbook-copy-btn" style="margin-top:0;" onclick="wizCopy(this, getPlaybookScriptText())">Copy script</button>
+        <button class="playbook-copy-btn" style="margin-top:0;background:var(--surface-2);border:1px solid var(--rule);color:var(--ink-muted);font-family:'Inter',system-ui,sans-serif;" onclick="saveWizardItem(getPlaybookScriptText(),'Full script','wizard')">💜 Save</button>
       </div>
       <div class='no-print' style='margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;'><button class='sec-regen-btn' onclick="regenSection('script',this)" style='display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--ink-muted);background:var(--surface-2);border:1px solid var(--rule);border-radius:6px;padding:6px 13px;cursor:pointer;transition:all 0.2s;font-family:inherit;'>↺ Redo</button><input id='sec-steer-script' type='text' placeholder='Optional: steer SAM differently...' onkeydown='if(event.key==="Enter"){event.preventDefault();this.previousElementSibling.click();}' style='flex:1;min-width:120px;max-width:280px;padding:6px 11px;background:var(--paper);border:1px solid var(--rule);border-radius:6px;font-size:11px;color:var(--ink);font-family:inherit;outline:none;'><button onclick="this.previousElementSibling.previousElementSibling.click()" style="flex-shrink:0;padding:6px 12px;background:var(--accent);border:none;border-radius:6px;font-size:11px;font-weight:600;color:var(--paper);cursor:pointer;font-family:'Inter',system-ui,sans-serif;white-space:nowrap;">Apply →</button></div>
     </div>`;
@@ -17031,6 +17031,7 @@ function savePlaybookHistory(data) {
 
 // ── UTILS ─────────────────────────────────────────────────────────────────────
 function wizCopy(btn, text) {
+  if (!text) return;
   navigator.clipboard.writeText(text).then(() => {
     const orig = btn.textContent;
     btn.textContent = 'Copied!';
@@ -17056,6 +17057,19 @@ function wizCopyEl(btn) {
   const block = btn.closest('.playbook-section') || btn.closest('.out-block') || btn.parentElement;
   const scriptBlock = block ? block.querySelector('.script-block, .playbook-script') : btn.previousElementSibling;
   wizCopy(btn, scriptBlock ? (scriptBlock.innerText || scriptBlock.textContent) : '');
+}
+
+// v9.118.17 (Patch C.1) — single source of truth for the Story Engine script copy/save.
+// Reads window._lastPlaybookData (server-emitted), assembles label + timing + content
+// from script_beats[] when present, falls back to raw full_script / narration_script.
+// Render-shape-independent — survives future changes to the script DOM.
+function getPlaybookScriptText() {
+  const pb = window._lastPlaybookData || {};
+  const beats = Array.isArray(pb.script_beats) ? pb.script_beats : [];
+  if (beats.length > 0) {
+    return beats.map(b => `${b.label} (${b.timing})\n${b.content}`).join('\n\n');
+  }
+  return pb.full_script || pb.narration_script || '';
 }
 
 // ── PDF DOWNLOAD via Puppeteer API ────────────────────────────────────────
