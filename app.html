@@ -6766,7 +6766,10 @@ body.persona-lab-build-route #personaLabRoot { display: none !important; }
   margin-bottom: 8px;
   line-height: 1.4;
 }
-.pl-textarea, .pl-input {
+input[type="text"].pl-input,
+.pl-input,
+textarea.pl-textarea,
+.pl-textarea {
   width: 100%;
   background: var(--surface);
   border: 1px solid var(--rule);
@@ -7604,7 +7607,9 @@ body.persona-lab-route:not(.persona-lab-build-route) #personaLabBuildRoot { disp
   line-height: 1.5;
   margin-bottom: 8px;
 }
+input[type="text"].lab-input,
 .lab-input,
+textarea.lab-textarea,
 .lab-textarea {
   width: 100%;
   font-family: inherit;
@@ -7943,7 +7948,7 @@ body.persona-lab-route:not(.persona-lab-build-route) #personaLabBuildRoot { disp
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.8" data-qs-descriptor="T17 — Chrome autofill purple suppression for Archivist (Codex builder) inputs. Mirrors v9.116.3's existing fix for Composer .pl-input/.pl-textarea, applied to .lab-input/.lab-textarea. Typed text in Codex builder fields was rendering as light purple because Chrome's :-webkit-autofill pseudo-class was overriding the CSS color (var(--ink), near-black). Same root cause Joey fixed in Composer when v9.116.3 shipped; the Archivist surface (added in v9.117.0) never got the same treatment." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.9" data-qs-descriptor="T17 actual fix — bumped .lab-input/.lab-textarea (Archivist) and .pl-input/.pl-textarea (Composer) selector specificity so they win the cascade against the global textarea, input[type='text'] rule that was overriding color: var(--text) (#F0ECFF light lavender) and background: rgba(255,255,255,0.04) (near-transparent white). v9.118.8's autofill block was correct but irrelevant — autofill wasn't firing. Real bug was selector specificity loss on <input type='text' class='lab-input'> (input[type='text'] beats .lab-input by 0,0,1,1 vs 0,0,1,0)." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
