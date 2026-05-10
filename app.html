@@ -3755,6 +3755,45 @@
       margin-top: 4px;
     }
 
+    /* v9.118.16 — Story Engine script beat-card stack */
+    .playbook-script-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .script-beat-card {
+      background: var(--surface-2);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .script-beat-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+      gap: 12px;
+    }
+    .script-beat-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+    .script-beat-time {
+      font-size: 11px;
+      color: var(--ink-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .script-beat-copy {
+      font-size: 14px;
+      color: var(--ink);
+      line-height: 1.6;
+      white-space: pre-line;
+    }
+
     /* Lead magnet section — the star */
     .playbook-lead-magnet {
       background: var(--surface-2);
@@ -7976,7 +8015,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.15" data-qs-descriptor="T-StoryEngine Patch A — Voice DNA parity + script beat-fidelity. (1) Inject voiceProfile into Story Engine: frontend playbook + script-regen payloads now send voiceProfile, server playbookPrompt and script-regen prompt now include voiceLine — matches Pulse/Vision pattern. (2) Wizard context now declares story_architecture as structural source of truth. (3) New structural instruction block above JSON schema requires script to realize all six beats in order with [BEAT: ...] labels each on its own line, applies ABT tension (Setup=And, Risk=But, Turn+Payoff=Therefore) and Pixar Story Spine causality (Turn happens because Risk is real, Payoff because of Turn), with voice-over-structure precedence. (4) full_script and narration_script schema descriptions tightened. (5) Script regen now receives current story_architecture and voiceProfile, builds conditional archLines (skips undefined beats), with regen prompt enforcing same beat fidelity. Single-call generation preserved. No PDF/render/architecture-regen changes. Voice fallback graceful for users without samples. Beat-marker-on-own-line format prepares for future render-layer Patch C." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.16" data-qs-descriptor="T-StoryEngine Patch C — Structured script rendering. (1) Server-side parseScriptBeats() in api/sam.js parses [BEAT: ...] markers from full_script and emits additive script_beats[] array on playbook + script-regen responses via streamCall. full_script preserved unchanged for backwards compatibility. (2) UI renderPlaybook script section now consumes data.script_beats and renders structured beat-card stack with canonical labels (Opening / Setup / The Risk / The Turn / The Payoff / Your Call). Falls back to legacy single-paragraph render when script_beats absent or empty. white-space: pre-line preserves internal breaks. regenRenderSection script branch updated identically. window._lastPlaybookData synced with script regen response. (3) PDF Full Script page parallel restructure — same beat-card stack, reuses --pdf-surface/--pdf-rule/--pdf-ink-soft tokens, page-break-inside: avoid keeps beats intact across pages. (4) PDF architecture card labels canonicalized to match UI ('Risk' → 'The Risk', 'Turn' → 'The Turn', 'Payoff' → 'The Payoff', 'CTA' → 'Your Call') — fixes pre-existing UI/PDF label divergence. No per-beat color on script blocks. No prompt/model/schema changes." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -16499,6 +16538,16 @@ ${steer ? 'CREATOR DIRECTION: ' + steer : ''}
 
     const data = await callAPI(payload);
 
+    // v9.118.16 — keep _lastPlaybookData in sync with regen response so subsequent
+    // regens, exports, and copy operations all see the latest data. Script-specific
+    // for now; other sections only need DOM update.
+    if (window._lastPlaybookData && data && sectionKey === 'script') {
+      if (data.full_script !== undefined) window._lastPlaybookData.full_script = data.full_script;
+      if (data.narration_script !== undefined) window._lastPlaybookData.narration_script = data.narration_script;
+      if (data.pacing_note !== undefined) window._lastPlaybookData.pacing_note = data.pacing_note;
+      window._lastPlaybookData.script_beats = Array.isArray(data.script_beats) ? data.script_beats : [];
+    }
+
     // Re-render just this section
     regenRenderSection(sectionKey, sectionEl, data);
 
@@ -16534,8 +16583,8 @@ function regenRenderSection(key, sectionEl, data) {
   } else if (key === 'hook' && data.hook) {
     html = `<div class="playbook-hook">${data.hook}</div>
     ${data.hook_why ? '<div class="wizard-why" style="margin-top:12px;"><strong>Why this hook:</strong> ' + data.hook_why + '</div>' : ''}`;
-  } else if (key === 'script' && (data.full_script || data.narration_script)) {
-    const script = data.narration_script || data.full_script;
+  } else if (key === 'script' && (data.full_script || data.narration_script || (Array.isArray(data.script_beats) && data.script_beats.length))) {
+    const script = data.narration_script || data.full_script || '';
     const formatted = (typeof script === 'string' ? script : JSON.stringify(script))
       .split('\n').map(line => {
         const t = line.trim();
@@ -16544,7 +16593,20 @@ function regenRenderSection(key, sectionEl, data) {
         if (t.startsWith('(') && t.endsWith(')')) return '<span class="script-note">'+t+'</span>';
         return '<span class="script-line">'+t+'</span>';
       }).filter(Boolean).join('\n');
-    html = `<div class="playbook-script">${formatted}</div>
+    // v9.118.16 — structured script_beats render when present; legacy plain render otherwise.
+    const _beats = Array.isArray(data.script_beats) ? data.script_beats : [];
+    const scriptBody = _beats.length > 0
+      ? '<section class="playbook-script-stack">' + _beats.map(b =>
+          '<article class="script-beat-card">' +
+            '<div class="script-beat-meta">' +
+              '<span class="script-beat-label">' + (b.label || '') + '</span>' +
+              '<span class="script-beat-time">' + (b.timing || '') + '</span>' +
+            '</div>' +
+            '<div class="script-beat-copy">' + (b.content || '') + '</div>' +
+          '</article>'
+        ).join('') + '</section>'
+      : '<div class="playbook-script">' + formatted + '</div>';
+    html = `${scriptBody}
     ${data.pacing_note ? '<div class="wizard-why" style="margin-top:12px;"><strong>Delivery note:</strong> ' + data.pacing_note + '</div>' : ''}`;
   } else if (key === 'platforms' && data.platform_strategies) {
     html = data.platform_strategies.map(ps => {
@@ -16679,12 +16741,26 @@ function renderPlaybook(data) {
         return `<span class="script-line">${t}</span>`;
       }).filter(Boolean).join('\n');
 
+    // v9.118.16 — structured script_beats render when present; legacy plain render otherwise.
+    const _scriptBeats = Array.isArray(data.script_beats) ? data.script_beats : [];
+    const scriptBody = _scriptBeats.length > 0
+      ? `<section class="playbook-script-stack">${_scriptBeats.map(b => `
+          <article class="script-beat-card">
+            <div class="script-beat-meta">
+              <span class="script-beat-label">${b.label || ''}</span>
+              <span class="script-beat-time">${b.timing || ''}</span>
+            </div>
+            <div class="script-beat-copy">${b.content || ''}</div>
+          </article>
+        `).join('')}</section>`
+      : `<div class="playbook-script">${formattedScript}</div>`;
+
     html += `<div class="playbook-section" id="playbook-sec-script">
       <div class="playbook-section-num">Section 04</div>
       <div class="playbook-section-title">${scriptLabel}</div>
       <div class="wizard-why" style="margin-bottom:16px;">${scriptNote}</div>
       <div class="regen-content">
-        <div class="playbook-script">${formattedScript}</div>
+        ${scriptBody}
         ${data.pacing_note ? `<div class="wizard-why" style="margin-top:12px;"><strong>Delivery note:</strong> ${data.pacing_note}</div>` : ''}
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center;">

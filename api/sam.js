@@ -3,6 +3,40 @@ const { trackUser, trackEvent, saveUserProfile, getUserProfile, updateUserEmail,
 const { normalizeSamContext, buildBrainPrompt } = require('./_context');
 const { checkGate } = require('./_gate');
 
+// v9.118.16 (Patch C) — derive structured script_beats[] from [BEAT: ...] markers
+// emitted per v9.118.15 instructions. Additive: full_script stays unchanged,
+// script_beats[] is a parallel structured view consumed by both UI and PDF renderers.
+function parseScriptBeats(scriptText) {
+  if (!scriptText || typeof scriptText !== 'string') return [];
+
+  const BEAT_DEFS = [
+    { key: 'opening', label: 'Opening',     timing: '0–3s',     match: /^\s*\[BEAT:\s*Opening\s*\]\s*$/i },
+    { key: 'setup',   label: 'Setup',       timing: '3–15s',    match: /^\s*\[BEAT:\s*Setup\s*\]\s*$/i },
+    { key: 'risk',    label: 'The Risk',    timing: '15–30s',   match: /^\s*\[BEAT:\s*Risk\s*\]\s*$/i },
+    { key: 'turn',    label: 'The Turn',    timing: '30–50s',   match: /^\s*\[BEAT:\s*Turn\s*\]\s*$/i },
+    { key: 'payoff',  label: 'The Payoff',  timing: '50–70s',   match: /^\s*\[BEAT:\s*Payoff\s*\]\s*$/i },
+    { key: 'cta',     label: 'Your Call',   timing: 'Final 5s', match: /^\s*\[BEAT:\s*CTA\s*\]\s*$/i },
+  ];
+
+  const lines = scriptText.split('\n');
+  const beats = [];
+  let current = null;
+
+  for (const line of lines) {
+    const def = BEAT_DEFS.find(d => d.match.test(line));
+    if (def) {
+      if (current) beats.push(current);
+      current = { key: def.key, label: def.label, timing: def.timing, content: '' };
+    } else if (current) {
+      current.content += (current.content ? '\n' : '') + line;
+    }
+    // lines before first marker are discarded
+  }
+  if (current) beats.push(current);
+
+  return beats.map(b => ({ ...b, content: b.content.trim() })).filter(b => b.content);
+}
+
 // v9.113.3 — Voice DNA gate copy keyed by ACTUAL sam.js mode strings sent by frontend.
 // Structure: { tool, descriptor, ctaAnon, ctaUnpaid } — frontend renders locked-state UI.
 const GATE_COPY = {
@@ -517,6 +551,11 @@ NEVER write in generic AI voice when you have this profile. Generic AI voice is:
     catch (e) {
       res.write('data: ' + JSON.stringify({ error: 'SAM had trouble formatting the response. Please try again.' }) + '\n\n');
       res.end(); return;
+    }
+    // v9.118.16 (Patch C) — derive structured script_beats[] from [BEAT: ...] markers.
+    // Additive only; full_script preserved unchanged. Empty array when no markers found.
+    if (parsed && typeof parsed === 'object') {
+      parsed.script_beats = parseScriptBeats(parsed.full_script || parsed.narration_script || '');
     }
     res.write('data: ' + JSON.stringify({ done: true, result: parsed }) + '\n\n');
     res.end();

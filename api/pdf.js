@@ -400,6 +400,47 @@ function sharedCSS(brandColor) {
       color: var(--pdf-ink-soft);
     }
 
+    /* ── Story script beat-card stack (v9.118.16) ─────────────────────── */
+    .script-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 8pt;
+    }
+    .script-beat {
+      background: var(--pdf-surface);
+      border: 1pt solid var(--pdf-rule);
+      border-radius: 6pt;
+      padding: 10pt 12pt;
+      page-break-inside: avoid;
+    }
+    .script-beat-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6pt;
+      gap: 10pt;
+    }
+    .script-beat-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 7.5pt;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.10em;
+      color: var(--pdf-accent);
+    }
+    .script-beat-time {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7.5pt;
+      color: var(--pdf-ink-muted);
+    }
+    .script-beat-copy {
+      font-family: 'Inter', sans-serif;
+      font-size: 9.5pt;
+      line-height: 1.55;
+      color: var(--pdf-ink-soft);
+      white-space: pre-line;
+    }
+
     /* ── Audience rows ───────────────────────────────────────────────── */
     .audience-row {
       display: flex;
@@ -596,12 +637,12 @@ function buildPlaybookHTML(pb, brand) {
   // ── 03 Story Architecture ──────────────────────────────────────────────────
   const arch = pb.story_architecture || {};
   const beats = [
-    { label: 'Opening',  timing: '0–3s',    content: arch.opening },
-    { label: 'Setup',    timing: '3–15s',   content: arch.setup   },
-    { label: 'Risk',     timing: '15–30s',  content: arch.risk    },
-    { label: 'Turn',     timing: '30–50s',  content: arch.turn    },
-    { label: 'Payoff',   timing: '50–70s',  content: arch.payoff  },
-    { label: 'CTA',      timing: 'Final 5s',content: arch.cta     },
+    { label: 'Opening',     timing: '0–3s',     content: arch.opening },
+    { label: 'Setup',       timing: '3–15s',    content: arch.setup   },
+    { label: 'The Risk',    timing: '15–30s',   content: arch.risk    },
+    { label: 'The Turn',    timing: '30–50s',   content: arch.turn    },
+    { label: 'The Payoff',  timing: '50–70s',   content: arch.payoff  },
+    { label: 'Your Call',   timing: 'Final 5s', content: arch.cta     },
   ].filter(b => b.content);
 
   if (beats.length) {
@@ -636,12 +677,27 @@ function buildPlaybookHTML(pb, brand) {
 
   // ── 05 Full Script ─────────────────────────────────────────────────────────
   const script = pb.full_script || pb.narration_script;
-  if (script) {
+  const scriptBeats = Array.isArray(pb.script_beats) ? pb.script_beats : [];
+  if (script || scriptBeats.length) {
+    let scriptBody;
+    if (scriptBeats.length > 0) {
+      scriptBody = `<div class="script-stack">${scriptBeats.map(b => `
+        <div class="script-beat">
+          <div class="script-beat-head">
+            <span class="script-beat-label">${e(b.label)}</span>
+            <span class="script-beat-time">${e(b.timing)}</span>
+          </div>
+          <div class="script-beat-copy">${e(b.content)}</div>
+        </div>
+      `).join('')}</div>`;
+    } else {
+      scriptBody = `<p class="body-copy">${e(script)}</p>`;
+    }
     pages.push(`<div class="pdf-page pdf-page--interior">
       ${hdr(brandName, docType, '05')}
       <div class="section-body">
         ${sLabel('Full Script')}
-        <p class="body-copy">${e(script)}</p>
+        ${scriptBody}
         ${pb.pacing_note ? callout('Pacing: ' + pb.pacing_note) : ''}
       </div>
       ${ftr(brandName)}
