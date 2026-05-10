@@ -7948,7 +7948,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.9" data-qs-descriptor="T17 actual fix — bumped .lab-input/.lab-textarea (Archivist) and .pl-input/.pl-textarea (Composer) selector specificity so they win the cascade against the global textarea, input[type='text'] rule that was overriding color: var(--text) (#F0ECFF light lavender) and background: rgba(255,255,255,0.04) (near-transparent white). v9.118.8's autofill block was correct but irrelevant — autofill wasn't firing. Real bug was selector specificity loss on <input type='text' class='lab-input'> (input[type='text'] beats .lab-input by 0,0,1,1 vs 0,0,1,0)." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.10" data-qs-descriptor="Hide build descriptor from version stamp — descriptor attribute still in DOM as commit-history reference but no longer rendered as visible text in the rail" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -14185,8 +14185,7 @@ if (document.readyState === 'loading') {
   var stamp = document.getElementById('qsVersionStamp');
   if (shell && stamp) {
     var _v = (shell.getAttribute('data-qs-version') || '').toUpperCase();
-    var _d = shell.getAttribute('data-qs-descriptor') || '';
-    stamp.textContent = 'QUIET STUDIO ' + _v + (_d ? ' (' + _d + ')' : '');
+    stamp.textContent = 'QUIET STUDIO ' + _v;
   }
 
     initPersistentSAM();
