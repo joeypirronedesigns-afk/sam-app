@@ -7976,7 +7976,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.14" data-qs-descriptor="T13.1 — fix Pulse output unreadable in persistent rail. Added QS shell overrides for .psam-output-hook (lavender→qs-ink), sec-title, script, why, platform-name (sky-blue→qs-accent), platform-caption, and button hover. Root cause: rail's .psam-output-* classes were authored for the dark shell with --text=#F0ECFF lavender; QS gave .psam-tool-output a cream background but didn't override child text colors, producing 1.06:1 contrast. Main canvas renderPulse uses a separate class namespace and is unaffected." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.15" data-qs-descriptor="T-StoryEngine Patch A — Voice DNA parity + script beat-fidelity. (1) Inject voiceProfile into Story Engine: frontend playbook + script-regen payloads now send voiceProfile, server playbookPrompt and script-regen prompt now include voiceLine — matches Pulse/Vision pattern. (2) Wizard context now declares story_architecture as structural source of truth. (3) New structural instruction block above JSON schema requires script to realize all six beats in order with [BEAT: ...] labels each on its own line, applies ABT tension (Setup=And, Risk=But, Turn+Payoff=Therefore) and Pixar Story Spine causality (Turn happens because Risk is real, Payoff because of Turn), with voice-over-structure precedence. (4) full_script and narration_script schema descriptions tightened. (5) Script regen now receives current story_architecture and voiceProfile, builds conditional archLines (skips undefined beats), with regen prompt enforcing same beat fidelity. Single-call generation preserved. No PDF/render/architecture-regen changes. Voice fallback graceful for users without samples. Beat-marker-on-own-line format prepares for future render-layer Patch C." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -16339,6 +16339,7 @@ IMPORTANT — Write the FULL narration/script based on delivery style.
 Write the COMPLETE audience resource document (lead magnet) in full — 
 not an outline, a real finished document the creator can give their audience.
 Include complete reasoning (WHY) for every recommendation.
+The story_architecture object below is the structural source of truth — the full_script and narration_script must be faithful, beat-by-beat realizations of it.
   `.trim();
 
   try {
@@ -16373,6 +16374,7 @@ Include complete reasoning (WHY) for every recommendation.
       includeThumb: !!(WS.thumbPhoto || WS.storyPhoto),
       imageBase64: WS.thumbPhoto || WS.storyPhoto || null,
       imageType: WS.thumbPhotoType || WS.storyPhotoType || 'image/jpeg',
+      voiceProfile: getSamVoiceProfile(),
     };
 
     const data = await callAPI(payload);
@@ -16490,7 +16492,9 @@ ${steer ? 'CREATOR DIRECTION: ' + steer : ''}
       creatorContext: s.niche || '',
       steer: steer,
       userId: (typeof getTrialState === 'function' && getTrialState().email) ? getTrialState().email : (localStorage.getItem('sam_uid') || 'anon').replace(/^dev-/, ''),
-      tier: WS.tier || 'free'
+      tier: WS.tier || 'free',
+      story_architecture: (window._lastPlaybookData && window._lastPlaybookData.story_architecture) || null,
+      voiceProfile: getSamVoiceProfile()
     };
 
     const data = await callAPI(payload);

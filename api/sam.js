@@ -550,13 +550,22 @@ NEVER write in generic AI voice when you have this profile. Generic AI voice is:
         slow:    "Speaker pace: deliberate. Script can go to 90-120 seconds. Pauses are intentional."
       }[pace] || '';
 
-      const playbookPrompt = `${samIdentity} ${toneContext} ${emojiLine} ${creatorLine} ${demographicsLine} ${languageLine}
+      const playbookPrompt = `${samIdentity} ${toneContext} ${emojiLine} ${creatorLine} ${voiceLine} ${demographicsLine} ${languageLine}
 
 WIZARD CONTEXT:
 ${wizContext}
 
 SCRIPT STYLE: ${scriptStyle}
 ${paceNote}
+
+For the full_script and narration_script fields:
+
+- Write the script as a realization of the story_architecture beats below, in this exact order: Opening, Setup, Risk, Turn, Payoff, CTA.
+- Use [BEAT: Opening], [BEAT: Setup], [BEAT: Risk], [BEAT: Turn], [BEAT: Payoff], [BEAT: CTA] labels so each beat is visibly distinct in the script.
+- IMPORTANT: each [BEAT: ...] marker must appear on its own line, immediately preceding the script content for that beat. Do not put markers mid-paragraph or inline with script text.
+- Apply ABT structure: Setup is the "And", Risk is the "But", Turn + Payoff together are the "Therefore".
+- Make Turn happen because the Risk is real, and Payoff happen because of the Turn. Do not soften or skip the stakes in Risk → Turn → Payoff.
+- When voice and structure conflict, obey the creator's voice profile first and express the structure through their voice — never generic AI or screenwriting-textbook language.
 
 Return ONLY this JSON — be CONCISE in every field to fit within token limits:
 
@@ -572,8 +581,8 @@ Return ONLY this JSON — be CONCISE in every field to fit within token limits:
   },
   "hook": "Under 15 words. Creates an open loop.",
   "hook_why": "One sentence.",
-  "full_script": "Complete script — 200 words max. Use [BEAT] labels.",
-  "narration_script": "If narration delivery — 200 word version. Otherwise null.",
+  "full_script": "Complete script — 200 words max. Realize all six story_architecture beats in order. Use [BEAT: Opening], [BEAT: Setup], [BEAT: Risk], [BEAT: Turn], [BEAT: Payoff], [BEAT: CTA] labels — each marker on its own line, preceding the script content for that beat.",
+  "narration_script": "If narration delivery — 200 word version following the same six-beat fidelity rules as full_script: [BEAT: Opening] [BEAT: Setup] [BEAT: Risk] [BEAT: Turn] [BEAT: Payoff] [BEAT: CTA] in order, each marker on its own line, with the Risk → Turn → Payoff causal chain intact. Otherwise null.",
   "pacing_note": "One sentence.",
   "b_roll": ["shot 1", "shot 2", "shot 3"],
   "platform_strategies": [
@@ -628,6 +637,15 @@ CRITICAL: Return ONLY valid JSON. Keep ALL fields concise — the JSON must be c
       const delivery = req.body.delivery || 'camera';
       const pace = req.body.pace || 'natural';
       const platforms = req.body.platforms || [];
+      const arch = req.body.story_architecture || {};
+      const archLines = [
+        arch.opening ? `Opening: ${arch.opening}` : null,
+        arch.setup ? `Setup: ${arch.setup}` : null,
+        arch.risk ? `Risk: ${arch.risk}` : null,
+        arch.turn ? `Turn: ${arch.turn}` : null,
+        arch.payoff ? `Payoff: ${arch.payoff}` : null,
+        arch.cta ? `CTA: ${arch.cta}` : null,
+      ].filter(Boolean).join('\n');
 
       const sectionPrompts = {
         diagnosis: `Rewrite ONLY the story diagnosis for this creator's moment.
@@ -641,9 +659,22 @@ ${steer ? 'CREATOR DIRECTION: ' + steer : ''}
 Return ONLY: {"hook":"the hook line — punchy, specific, creates an open loop","hook_why":"1 sentence on why this hook works for this story and audience"}`,
 
         script: `Rewrite ONLY the full script for this creator's story.
+
+You are rewriting the script for this existing six-beat story_architecture:
+${archLines}
+
+${voiceLine}
+
 Delivery style: ${delivery}. Pace: ${pace}.
 ${steer ? 'CREATOR DIRECTION: ' + steer : ''}
-Format script lines as plain text. Use [BEAT] for pause markers. Use (note) for delivery notes.
+
+Requirements:
+- Preserve all six beats and keep them in this exact order.
+- Use [BEAT: Opening], [BEAT: Setup], [BEAT: Risk], [BEAT: Turn], [BEAT: Payoff], [BEAT: CTA] labels — each marker on its own line, preceding the script content for that beat.
+- Apply ABT structure and causal flow: Risk is the "But", Turn + Payoff are the "Therefore". Turn happens because the Risk is real; Payoff happens because of the Turn.
+- Make the writing better while keeping the same structure, stakes, and creator's voice.
+
+Format script lines as plain text. Use (note) for delivery notes when helpful.
 Return ONLY: {"full_script":"the complete script","pacing_note":"one delivery tip"}`,
 
         platforms: `Rewrite ONLY the platform strategy — captions and hashtags for each platform.
