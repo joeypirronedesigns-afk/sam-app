@@ -6320,6 +6320,34 @@ body.quiet-studio-shell .psam-output-section {
   border-bottom: 1px solid var(--qs-rule);
 }
 
+body.quiet-studio-shell .psam-output-hook {
+  color: var(--qs-ink);
+  border-left-color: var(--qs-accent);
+}
+body.quiet-studio-shell .psam-output-sec-title {
+  color: var(--qs-ink-muted);
+}
+body.quiet-studio-shell .psam-output-script {
+  background: var(--qs-paper);
+  color: var(--qs-ink);
+}
+body.quiet-studio-shell .psam-output-why {
+  color: var(--qs-ink-soft);
+}
+body.quiet-studio-shell .psam-platform-name {
+  color: var(--qs-accent);
+}
+body.quiet-studio-shell .psam-platform-caption {
+  color: var(--qs-ink-soft);
+}
+body.quiet-studio-shell .psam-act-btn {
+  color: var(--qs-ink-muted);
+}
+body.quiet-studio-shell .psam-act-btn:hover {
+  color: var(--qs-ink);
+  background: var(--qs-surface-2);
+}
+
 body.quiet-studio-shell #qsChatCollapseBtn { display: none; }
 
 /* ============================================================ */
@@ -7948,7 +7976,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.13" data-qs-descriptor="T13 — confused narrator fix. (1) Removed content-creation phrasings ('in my voice', 'write a short', 'sound like me', etc.) from isDebugOrMeta negative signals — they were swallowing legit asks. (2) Broadened detectSAMIntent pulse route to catch direct asks ('write/draft/make me a hook/post/script/caption'). [TRIGGER:tool] confirm-button UX preserved." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.14" data-qs-descriptor="T13.1 — fix Pulse output unreadable in persistent rail. Added QS shell overrides for .psam-output-hook (lavender→qs-ink), sec-title, script, why, platform-name (sky-blue→qs-accent), platform-caption, and button hover. Root cause: rail's .psam-output-* classes were authored for the dark shell with --text=#F0ECFF lavender; QS gave .psam-tool-output a cream background but didn't override child text colors, producing 1.06:1 contrast. Main canvas renderPulse uses a separate class namespace and is unaffected." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
