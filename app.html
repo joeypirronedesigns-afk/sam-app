@@ -8015,7 +8015,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.33" data-qs-descriptor="Patch M.6 — Fix copy/save buttons using delegated event listener + data attribute pattern (replaces broken inline onclick with JSON.stringify). Move format directives into userContent so they survive profileContext appended to system prompt — formats 3-6 (wish-i-knew, mistake, one-tool, no-crew) now have explicit structural constraints in the user message." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.34" data-qs-descriptor="Patch M.7 — Tighten one-tool and no-crew remix format directives. one-tool now requires exact 5-step template (tool + problem → first use moment → measurable result → counterfactual → proof). no-crew now requires naming specific professional roles replaced by solo work, not product features." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -22733,8 +22733,8 @@ function _remixPrompt(formatId, formatLabel, bannedInstruction) {
     'before-after': 'Structure this as a "Before vs. After" contrast — the BEFORE is the problem/struggle state, the AFTER is the transformation. script_outline must alternate: Before → After → Before → After. Hook must name the contrast.',
     'wish-i-knew': 'Structure this as "What I Wish I Knew Before I Started" — each script_outline item is one specific thing the creator genuinely did not know. Must feel like honest hindsight, not a highlight reel.',
     'mistake': 'Structure this as "The Mistake That Changed Everything" — identify ONE specific mistake, what it cost, and what shifted because of it. script_outline must follow: setup the mistake → the moment it happened → the cost → the change → what it means for the viewer.',
-    'one-tool': 'Structure this as "One Tool, One Project, One Result" — laser-focused on a single specific tool or technique, one project it was applied to, and one measurable result. No generalization. script_outline must be concrete and specific.',
-    'no-crew': 'Structure this as "How I Pulled This Off Without a Crew" — emphasize the solo execution angle. Each script_outline item must highlight a specific challenge that normally requires help, and how the creator solved it alone.'
+    'one-tool': 'Structure ONLY as One Tool, One Project, One Result. The script_outline MUST follow this exact template: (1) Name the single tool being featured and the one specific problem it was built or used to solve. (2) Describe the exact moment the tool was first used on the project. (3) The first result it produced — be specific and measurable. (4) What would have taken much longer or failed without it. (5) The final proof that it worked. Hook must name the tool and the project in the same sentence.',
+    'no-crew': 'Structure ONLY as How I Pulled This Off Without a Crew. Each script_outline item MUST name one specific task that normally requires a hired professional (e.g. structural engineer, editor, sound designer, strategist), explain exactly how the creator did it alone, and what that required. Hook must state the scale of the project and that it was done solo. Do NOT list product features — list human roles that were replaced.'
   };
   var specific = formatInstructions[formatId] || ('Remix into the "' + formatLabel + '" format for short-form video.');
   return base + ' ' + specific + ' JSON fields required: format_label (string), hook (string), script_outline (array of 5-7 strings), caption (string), cta (string), why_this_works (string). Keep the creator\'s authentic voice throughout.';
@@ -22788,8 +22788,8 @@ function openExecPackDrawer(mode, formatId, formatLabel) {
       'before-after': 'Structure ONLY as Before vs After. script_outline MUST alternate Before/After pairs. Hook must name the contrast explicitly.',
       'wish-i-knew': 'Structure ONLY as What I Wish I Knew. Each script_outline item is one specific thing not known before starting. Honest hindsight only.',
       'mistake': 'Structure ONLY as The Mistake That Changed Everything. Identify ONE specific mistake. script_outline: (1) setup the mistake, (2) moment it happened, (3) the cost, (4) what changed, (5) what it means for viewer.',
-      'one-tool': 'Structure ONLY as One Tool One Project One Result. Name the specific tool. Name the specific project. Name the specific measurable result. No generalization.',
-      'no-crew': 'Structure ONLY as How I Pulled This Off Without a Crew. Each script_outline item highlights one specific challenge that normally needs help, and exactly how it was solved alone.'
+      'one-tool': 'Structure ONLY as One Tool, One Project, One Result. The script_outline MUST follow this exact template: (1) Name the single tool being featured and the one specific problem it was built or used to solve. (2) Describe the exact moment the tool was first used on the project. (3) The first result it produced — be specific and measurable. (4) What would have taken much longer or failed without it. (5) The final proof that it worked. Hook must name the tool and the project in the same sentence.',
+      'no-crew': 'Structure ONLY as How I Pulled This Off Without a Crew. Each script_outline item MUST name one specific task that normally requires a hired professional (e.g. structural engineer, editor, sound designer, strategist), explain exactly how the creator did it alone, and what that required. Hook must state the scale of the project and that it was done solo. Do NOT list product features — list human roles that were replaced.'
     };
     return fd[formatId] || ('Remix into the ' + formatLabel + ' format.');
   })()) : '';
