@@ -8015,7 +8015,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.32" data-qs-descriptor="Patch M.5 — Fix copy button in Execution Pack drawer (was breaking on special characters in text — replaced inline JSON.stringify onclick with window key pattern). Fix rail text spacing (added 12px horizontal padding to rail content wrapper)." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.33" data-qs-descriptor="Patch M.6 — Fix copy/save buttons using delegated event listener + data attribute pattern (replaces broken inline onclick with JSON.stringify). Move format directives into userContent so they survive profileContext appended to system prompt — formats 3-6 (wish-i-knew, mistake, one-tool, no-crew) now have explicit structural constraints in the user message." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -22782,7 +22782,19 @@ function openExecPackDrawer(mode, formatId, formatLabel) {
     ? _remixPrompt(formatId, formatLabel, _bannedInstruction)
     : 'You are SAM. CRITICAL: Respond ONLY with a valid JSON object. No markdown. No backticks. No preamble. No explanation. Just the raw JSON. Generate a production Execution Pack from the Story Engine playbook. JSON fields required: shoot_plan (array of 4-5 strings), shot_list (array of 5-7 strings), edit_map (array of 4-5 strings), sound_direction (array of 3-4 strings), post_checklist (array of 5-6 strings). Each array item: one concrete scannable bullet, actionable verb, no fluff.' + _bannedInstruction;
 
-  var userContent = 'Story Engine Playbook:\n\nHook: ' + (pd.hook || '') + '\n\nStory Architecture: ' + JSON.stringify(pd.story_architecture || {}) + '\n\nScript: ' + (pd.full_script || '').slice(0, 1200) + '\n\nPacing Note: ' + (pd.pacing_note || '') + '\n\nAudience: ' + JSON.stringify(pd.audience_profile || {}) + '\n\nPlatforms: ' + (pd.platform_strategies || []).map(function(p){ return p.platform; }).join(', ') + '\n\nFocus Directive: ' + (pd.focus_directive || '');
+  var formatDirective = isRemix ? ('\n\nFORMAT DIRECTIVE: ' + (function() {
+    var fd = {
+      'top5': 'Structure ONLY as Top 5 Lessons. Each script_outline item MUST start with "Lesson [N]:" and name one specific numbered lesson learned. No generic advice.',
+      'before-after': 'Structure ONLY as Before vs After. script_outline MUST alternate Before/After pairs. Hook must name the contrast explicitly.',
+      'wish-i-knew': 'Structure ONLY as What I Wish I Knew. Each script_outline item is one specific thing not known before starting. Honest hindsight only.',
+      'mistake': 'Structure ONLY as The Mistake That Changed Everything. Identify ONE specific mistake. script_outline: (1) setup the mistake, (2) moment it happened, (3) the cost, (4) what changed, (5) what it means for viewer.',
+      'one-tool': 'Structure ONLY as One Tool One Project One Result. Name the specific tool. Name the specific project. Name the specific measurable result. No generalization.',
+      'no-crew': 'Structure ONLY as How I Pulled This Off Without a Crew. Each script_outline item highlights one specific challenge that normally needs help, and exactly how it was solved alone.'
+    };
+    return fd[formatId] || ('Remix into the ' + formatLabel + ' format.');
+  })()) : '';
+
+  var userContent = 'Story Engine Playbook:\n\nHook: ' + (pd.hook || '') + '\n\nStory Architecture: ' + JSON.stringify(pd.story_architecture || {}) + '\n\nScript: ' + (pd.full_script || '').slice(0, 1200) + '\n\nPacing Note: ' + (pd.pacing_note || '') + '\n\nAudience: ' + JSON.stringify(pd.audience_profile || {}) + '\n\nPlatforms: ' + (pd.platform_strategies || []).map(function(p){ return p.platform; }).join(', ') + '\n\nFocus Directive: ' + (pd.focus_directive || '') + formatDirective;
 
   fetch('/api/sam', {
     method: 'POST',
@@ -22866,16 +22878,17 @@ function _execPackActions(formatId, data, isRemix) {
     ? 'REMIX: ' + (data.format_label || '') + '\n\nHook: ' + (data.hook || '') + '\n\nScript:\n' + (data.script_outline || []).join('\n') + '\n\nCaption: ' + (data.caption || '') + '\n\nCTA: ' + (data.cta || '')
     : 'EXECUTION PACK\n\nSHOOT PLAN:\n' + (data.shoot_plan || []).join('\n') + '\n\nSHOT LIST:\n' + (data.shot_list || []).join('\n') + '\n\nEDIT MAP:\n' + (data.edit_map || []).join('\n') + '\n\nSOUND DIRECTION:\n' + (data.sound_direction || []).join('\n') + '\n\nPOST CHECKLIST:\n' + (data.post_checklist || []).join('\n');
 
-  var label = isRemix ? 'Remix — ' + (data.format_label || formatId) : 'Execution Pack';
-
-  // Store text on window for copy handler to access safely
-  var copyKey = 'execPackCopyText_' + Date.now();
-  window[copyKey] = text;
+  var label = isRemix ? 'Remix — ' + (data.format_label || formatId || '') : 'Execution Pack';
+  var storeId = 'execpack_copy_' + (isRemix ? (formatId || 'remix') : 'pack');
+  window.__execPackTexts = window.__execPackTexts || {};
+  window.__execPackTexts[storeId] = text;
+  window.__execPackLabels = window.__execPackLabels || {};
+  window.__execPackLabels[storeId] = label;
 
   return '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">'
-    + '<button onclick="var t=window[\'' + copyKey + '\'];if(t){navigator.clipboard.writeText(t).then(function(){var b=document.activeElement;var orig=b.textContent;b.textContent=\'Copied!\';setTimeout(function(){b.textContent=\'Copy\';},1800);}).catch(function(){});}" '
+    + '<button class="ep-copy-btn" data-epid="' + storeId + '" '
     + 'style="padding:8px 16px;background:var(--qs-surface-2);border:1px solid var(--qs-rule);border-radius:var(--qs-radius-md);font-family:\'Inter\',sans-serif;font-size:12px;color:var(--qs-ink-soft);cursor:pointer;">Copy</button>'
-    + '<button onclick="if(typeof saveWizardItem===\'function\'){saveWizardItem(window[\'' + copyKey + '\'],' + JSON.stringify(label) + ',\'wizard\');}this.textContent=\'Saved!\';setTimeout(function(){this.textContent=\'💜 Save\';}.bind(this),1800);" '
+    + '<button class="ep-save-btn" data-epid="' + storeId + '" '
     + 'style="padding:8px 16px;background:var(--qs-surface-2);border:1px solid var(--qs-rule);border-radius:var(--qs-radius-md);font-family:\'Inter\',sans-serif;font-size:12px;color:var(--qs-ink-soft);cursor:pointer;">💜 Save</button>'
     + '</div>';
 }
@@ -22891,6 +22904,32 @@ function openRemixDrawer(formatId, formatLabel, data) {
   title.textContent = formatLabel;
   renderExecPackContent(data, true, formatId, formatLabel);
 }
+
+document.addEventListener('click', function(e) {
+  var copyBtn = e.target.closest('.ep-copy-btn');
+  var saveBtn = e.target.closest('.ep-save-btn');
+  if (copyBtn) {
+    var id = copyBtn.getAttribute('data-epid');
+    var t = window.__execPackTexts && window.__execPackTexts[id];
+    if (!t) return;
+    navigator.clipboard.writeText(t).then(function() {
+      copyBtn.textContent = 'Copied!';
+      setTimeout(function() { copyBtn.textContent = 'Copy'; }, 1800);
+    }).catch(function() {
+      copyBtn.textContent = 'Copy failed';
+      setTimeout(function() { copyBtn.textContent = 'Copy'; }, 1800);
+    });
+  }
+  if (saveBtn) {
+    var id = saveBtn.getAttribute('data-epid');
+    var t = window.__execPackTexts && window.__execPackTexts[id];
+    var l = window.__execPackLabels && window.__execPackLabels[id];
+    if (!t || typeof saveWizardItem !== 'function') return;
+    saveWizardItem(t, l || 'Execution Pack', 'wizard');
+    saveBtn.textContent = 'Saved!';
+    setTimeout(function() { saveBtn.textContent = '💜 Save'; }, 1800);
+  }
+});
 
 function closeExecPackDrawer() {
   var drawer = document.getElementById('execPackDrawer');
