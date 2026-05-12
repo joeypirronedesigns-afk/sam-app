@@ -8015,7 +8015,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.30" data-qs-descriptor="Patch M.3 — Three fixes to Execution Pack. (1) Robust JSON extraction: slice from first { to last } before JSON.parse, handles trailing text from profileContext appended to system prompt. (2) Banned phrases injected into all drawer system prompts via getSamBannedPhrases(). (3) Remix formats differentiated with format-specific structural instructions — each of the 6 formats now has a distinct script_outline structure constraint instead of generic remix instruction." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.31" data-qs-descriptor="Patch M.4 — Execution Pack cache invalidation. Clears sam-exec-pack and all sam-remix-* localStorage keys when: (1) a new playbook is generated (_refreshExecPackRail now wraps render() with cache clear), (2) banned phrases are added or removed in Voice DNA widget. Prevents stale cached results from showing after playbook changes or banned phrase updates." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -14965,7 +14965,14 @@ function triggerRemix(formatId, formatLabel) {
   }
   setTimeout(render, 300);
   setTimeout(render, 1500);
-  window._refreshExecPackRail = render;
+  window._refreshExecPackRail = function() {
+    // Clear stale remix + pack cache so new playbook gets fresh generations
+    localStorage.removeItem('sam-exec-pack');
+    ['top5','before-after','wish-i-knew','mistake','one-tool','no-crew'].forEach(function(id) {
+      localStorage.removeItem('sam-remix-' + id);
+    });
+    render();
+  };
 })();
 
 // Show Story Engine btn when wizard has been used
@@ -15282,6 +15289,8 @@ function vtAddBannedPhrase() {
     phrases.push(phrase);
     localStorage.setItem('sam-banned-phrases', JSON.stringify(phrases));
     vtSaveBannedToCodex(phrases);
+    localStorage.removeItem('sam-exec-pack');
+    ['top5','before-after','wish-i-knew','mistake','one-tool','no-crew'].forEach(function(id){localStorage.removeItem('sam-remix-'+id);});
   }
   input.value = '';
   vtRenderBannedChips();
@@ -15293,6 +15302,8 @@ function vtRemoveBannedPhrase(idx) {
   phrases.splice(idx, 1);
   localStorage.setItem('sam-banned-phrases', JSON.stringify(phrases));
   vtSaveBannedToCodex(phrases);
+  localStorage.removeItem('sam-exec-pack');
+  ['top5','before-after','wish-i-knew','mistake','one-tool','no-crew'].forEach(function(id){localStorage.removeItem('sam-remix-'+id);});
   vtRenderBannedChips();
 }
 
