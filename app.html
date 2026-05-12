@@ -8015,7 +8015,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.20" data-qs-descriptor="T-StoryEngine Patch H — Two surgical fixes to Patch G regression and pre-existing step-overwrite bug. (1) wizardNext sets window._forceRebuild = true when leaving step 11, forcing setupWizardStep('12') to call buildPlaybook() instead of rendering cached _savedPlaybookHTML. Matches the L15630 comment's stated intent ('Always rebuild if coming from step 11') which previously only fired via wizardBackFromPlaybook. _forceRebuild cleared by buildPlaybook() at function entry to prevent leak. (2) saveWizardState gains empty-state guard mirroring _samSaveSession: when WS has content but _currentStep is unhydrated AND localStorage has a non-'0' step, preserves the existing step instead of clobbering with '0'. Fixes the silent localStorage corruption that caused Reload Session to fail after hard refresh — root cause was boot-time WS hydration paths firing saveWizardState before _currentStep was set, overwriting saved step '12' with '0'. WS data fields still update normally; only step preservation changes. _samSaveSession, doRestoreSession (Patch G), buildPlaybook, all other restore paths unchanged." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.21" data-qs-descriptor="T-StoryEngine Patch I — Remove Save Session and Reload Session buttons from wizard top bar. manualSaveSession() orphaned and removed. Patch G manual-intent code reverted from doRestoreSession(): function signature simplified back to no-args, both Layer 1 and Layer 2 step-12→11 manual coercion branches removed, recursive self-call simplified. Auto-restore paths (boot init L10011, banner L14499, post-login retry L14806) unchanged and fully functional. Patch H _forceRebuild and saveWizardState guard preserved. _samSaveSession and all autosave behavior unchanged." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -14465,17 +14465,6 @@ function _samSaveSession() {
   }
 }
 
-function manualSaveSession() {
-  const ok = _samSaveSession();
-  const btn = document.getElementById('wizardSaveBtn');
-  if (btn) {
-    btn.textContent = ok ? '✅' : '❌';
-    btn.dataset.saved = ok ? '1' : '';
-    btn.style.opacity = '1';
-    setTimeout(() => { btn.textContent = '🔖'; btn.style.opacity = '0.5'; }, 2000);
-  }
-}
-
 function restoreSessionIfAvailable() {
   try {
     const saved = localStorage.getItem('sam_session_v2');
@@ -14503,9 +14492,7 @@ function restoreSessionIfAvailable() {
   } catch(e) {}
 }
 
-function doRestoreSession(opts) {
-  opts = opts || {};
-  var manual = opts.intent === 'manual';
+function doRestoreSession() {
   try {
     const saved = localStorage.getItem('sam_session_v2');
     let step = localStorage.getItem('sam_session_step') || '0';
@@ -14518,16 +14505,9 @@ function doRestoreSession(opts) {
     // cached playbook. Route to a fresh wizard. openWizardPage already has
     // this guard at its entry; this layer protects every other doRestoreSession
     // entry (banner button, jumpToStep, etc.) for the same regression.
-    // v9.118.19 (Patch G) — manual user click on Reload Session bypasses
-    // the guard and coerces step 12 → 11, so the user lands on the last
-    // input step with all WS data intact, ready to tweak and re-generate.
     if (step === '12') {
-      if (manual) {
-        step = '11';
-      } else {
-        if (typeof startWizard === 'function') startWizard('new');
-        return;
-      }
+      if (typeof startWizard === 'function') startWizard('new');
+      return;
     }
 
     // No local data — try server samContext (api/me returns samContext camelCase)
@@ -14554,27 +14534,17 @@ function doRestoreSession(opts) {
             var _legacyStep = parseInt(_ctx && _ctx._currentStep);
             var _v2Step = (_ctx && _ctx.execution && _ctx.execution.currentStep)
               ? parseInt(_ctx.execution.currentStep) : NaN;
-            // v9.118.19 (Patch G) — manual override mirrors Layer 1: coerce
-            // step 12 → 11 in the hydrated context so the recursive call's
-            // Layer 1 sees step=11 and proceeds with restoration instead of
-            // resetting via startWizard('new').
+            // v9.116.7 — Step 12 jump-back guard (Layer 2: hydrated context).
             if (_usable && (_legacyStep === 12 || _v2Step === 12)) {
-              if (manual) {
-                _ctx._currentStep = '11';
-                if (_ctx.execution && _ctx.execution.currentStep) {
-                  _ctx.execution.currentStep = '11';
-                }
-              } else {
-                if (typeof startWizard === 'function') startWizard('new');
-                return;
-              }
+              if (typeof startWizard === 'function') startWizard('new');
+              return;
             }
             if (_usable) {
               Object.assign(WS, _ctx);
               localStorage.setItem('sam_session_v2', JSON.stringify(_ctx));
               localStorage.setItem('sam_session_step', String(_ctx._currentStep || '1'));
               localStorage.setItem('sam_session_ts', Date.now().toString());
-              setTimeout(function() { doRestoreSession(manual ? {intent:'manual'} : undefined); }, 50);
+              setTimeout(function() { doRestoreSession(); }, 50);
             }
           } catch(e) { console.error('[restore] samContext parse failed', e); }
         }).catch(function() { window.__samRestorePending = false; });
@@ -18439,8 +18409,6 @@ if (localStorage.getItem('sam_dev') === 'true') {
         <button onclick="devSaveSession()" id="devSaveBtn" style="display:none;font-size:10px;font-weight:700;background:rgba(109,40,217,0.3);color:var(--accent);border:1px solid rgba(167,139,250,0.3);border-radius:8px;padding:5px 10px;cursor:pointer;">💾 Session</button>
         <button onclick="devRestoreSession()" id="devRestoreBtn" style="display:none;font-size:10px;font-weight:700;background:rgba(5,150,105,0.3);color:var(--accent);border:1px solid rgba(32,128,141,0.3);border-radius:8px;padding:5px 10px;cursor:pointer;">⚡ Restore</button>
         <div class="wizard-progress-step" id="wizardStepLabel">Step 1 of 10</div>
-        <button id="wizardSaveBtn" onclick="manualSaveSession()" style="font-size:10px;font-weight:600;color:var(--ink-soft);background:transparent;border:1px solid var(--rule);border-radius:6px;padding:4px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:'Inter',system-ui,sans-serif;">Save Session</button>
-        <button onclick="doRestoreSession({intent:'manual'})" style="font-size:10px;font-weight:600;color:var(--ink-soft);background:transparent;border:1px solid var(--rule);border-radius:6px;padding:4px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:'Inter',system-ui,sans-serif;">Reload Session</button>
         <button onclick="if(typeof openIdeasPanel==='function')openIdeasPanel();" style="font-size:10px;font-weight:600;color:var(--ink-soft);background:transparent;border:1px solid var(--rule);border-radius:6px;padding:4px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;position:relative;font-family:'Inter',system-ui,sans-serif;">✦ My Ideas<span id="wizardIdeasBadge" style="display:none;position:absolute;top:-5px;right:-5px;width:16px;height:16px;border-radius:50%;background:var(--accent);color:var(--paper);font-size:9px;font-weight:700;align-items:center;justify-content:center;border:2px solid var(--paper);"></span></button>
         <div id="wizardStepJumper" style="position:relative;">
           <button onclick="toggleStepJumper()" style="font-size:10px;font-weight:600;color:var(--ink-muted);background:transparent;border:1px solid var(--rule);border-radius:6px;padding:3px 10px;cursor:pointer;letter-spacing:0.04em;font-family:'Inter',system-ui,sans-serif;">Jump ▾</button>
