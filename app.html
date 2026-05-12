@@ -8015,7 +8015,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.27" data-qs-descriptor="Patch M — Execution Pack. Replaces static Recent Threads rail section with a living production command center. Empty state: CTA to run Story Engine. Active state (sam_session_step=12 + _lastPlaybookData): condensed hook/next-move preview + Build Execution Pack button + 6 Remix format cards. Execution Pack drawer: on-demand /api/sam call generates shoot plan, shot list, edit map, sound direction, post checklist as scannable bullets. Remix drawer: on-demand generation remixes existing playbook through selected format lens (Top 5, Before vs After, What I Wish I Knew, The Mistake, One Tool One Result, No Crew). Both cache to localStorage on first generation. Copy and Save to My Ideas on all outputs. Rail refreshes when renderPlaybook() fires." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.28" data-qs-descriptor="Patch M.1 — Fix Execution Pack drawer API call. /api/sam chat mode returns SSE not JSON — replaced .then(r.json()) with readStream(r) and result.reply extraction. Added Try Again button to error state with cache-clear on retry." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -22768,22 +22768,23 @@ function openExecPackDrawer(mode, formatId, formatLabel) {
       maxTokens: 1200
     })
   })
-  .then(function(r) { return r.json(); })
-  .then(function(data) {
-    var text = '';
-    if (data.content) {
-      text = data.content.filter(function(b){ return b.type === 'text'; }).map(function(b){ return b.text; }).join('');
-    } else if (data.choices) {
-      text = data.choices[0].message.content;
-    }
+  .then(function(r) { return (typeof readStream === 'function') ? readStream(r) : r.json(); })
+  .then(function(result) {
+    var text = (result && result.reply) ? result.reply : '';
+    if (!text) throw new Error('empty');
     var clean = text.replace(/```json|```/g, '').trim();
     var parsed = JSON.parse(clean);
     localStorage.setItem(cacheKey, JSON.stringify(parsed));
     renderExecPackContent(parsed, isRemix, formatId, formatLabel);
     if (typeof window._refreshExecPackRail === 'function') window._refreshExecPackRail();
   })
-  .catch(function() {
-    body.innerHTML = '<p style="color:var(--qs-ink-soft);padding:20px;">Something went wrong. Please try again.</p>';
+  .catch(function(e) {
+    console.error('[ExecPack] generation failed:', e);
+    body.innerHTML = '<div style="padding:20px;text-align:center;">'
+      + '<div style="font-size:13px;color:var(--qs-ink-soft);margin-bottom:12px;">SAM had trouble building this. Try again.</div>'
+      + '<button onclick="localStorage.removeItem(\'' + cacheKey + '\');openExecPackDrawer(\'' + (isRemix ? 'remix' : '') + '\',\'' + (formatId||'') + '\',\'' + (formatLabel||'') + '\')" '
+      + 'style="padding:8px 16px;background:var(--qs-accent);color:var(--qs-paper);border:none;border-radius:var(--qs-radius-md);font-family:\'Sora\',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">Try again</button>'
+      + '</div>';
   });
 }
 
