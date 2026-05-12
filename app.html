@@ -8015,7 +8015,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.29" data-qs-descriptor="Patch M.2 — Fix Execution Pack generation. Two fixes: (1) Strengthened system prompts with CRITICAL JSON-only instruction to prevent SAM from responding conversationally. (2) api/sam.js chat mode now reads maxTokens from req.body (capped at 1500) instead of hardcoding 400 — Execution Pack calls send maxTokens:1200 and get sufficient budget for full 5-section output." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.30" data-qs-descriptor="Patch M.3 — Three fixes to Execution Pack. (1) Robust JSON extraction: slice from first { to last } before JSON.parse, handles trailing text from profileContext appended to system prompt. (2) Banned phrases injected into all drawer system prompts via getSamBannedPhrases(). (3) Remix formats differentiated with format-specific structural instructions — each of the 6 formats now has a distinct script_outline structure constraint instead of generic remix instruction." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -22715,6 +22715,20 @@ function openDailyBriefDataModal() {
 <div id="execPackDrawerOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:9998;" onclick="closeExecPackDrawer()"></div>
 
 <script>
+function _remixPrompt(formatId, formatLabel, bannedInstruction) {
+  var base = 'You are SAM. CRITICAL: Respond ONLY with a valid JSON object. No markdown. No backticks. No preamble. No explanation. Just the raw JSON.' + bannedInstruction;
+  var formatInstructions = {
+    'top5': 'Structure this as "Top 5 Lessons" — each lesson must be a specific, numbered insight the creator actually learned. No generic advice. Each item in script_outline must start with "Lesson [N]:" and name the exact lesson.',
+    'before-after': 'Structure this as a "Before vs. After" contrast — the BEFORE is the problem/struggle state, the AFTER is the transformation. script_outline must alternate: Before → After → Before → After. Hook must name the contrast.',
+    'wish-i-knew': 'Structure this as "What I Wish I Knew Before I Started" — each script_outline item is one specific thing the creator genuinely did not know. Must feel like honest hindsight, not a highlight reel.',
+    'mistake': 'Structure this as "The Mistake That Changed Everything" — identify ONE specific mistake, what it cost, and what shifted because of it. script_outline must follow: setup the mistake → the moment it happened → the cost → the change → what it means for the viewer.',
+    'one-tool': 'Structure this as "One Tool, One Project, One Result" — laser-focused on a single specific tool or technique, one project it was applied to, and one measurable result. No generalization. script_outline must be concrete and specific.',
+    'no-crew': 'Structure this as "How I Pulled This Off Without a Crew" — emphasize the solo execution angle. Each script_outline item must highlight a specific challenge that normally requires help, and how the creator solved it alone.'
+  };
+  var specific = formatInstructions[formatId] || ('Remix into the "' + formatLabel + '" format for short-form video.');
+  return base + ' ' + specific + ' JSON fields required: format_label (string), hook (string), script_outline (array of 5-7 strings), caption (string), cta (string), why_this_works (string). Keep the creator\'s authentic voice throughout.';
+}
+
 function openExecPackDrawer(mode, formatId, formatLabel) {
   var drawer = document.getElementById('execPackDrawer');
   var overlay = document.getElementById('execPackDrawerOverlay');
@@ -22748,9 +22762,14 @@ function openExecPackDrawer(mode, formatId, formatLabel) {
   var _u = (typeof getCurrentUserCached === 'function') ? getCurrentUserCached() : null;
   var _email = _u && _u.email ? _u.email.toLowerCase() : '';
 
+  var _bannedPhrasesStr = (typeof getSamBannedPhrases === 'function') ? getSamBannedPhrases() : '';
+  var _bannedInstruction = _bannedPhrasesStr
+    ? ' BANNED PHRASES — Never use these words or phrases under any circumstances: ' + _bannedPhrasesStr + '.'
+    : '';
+
   var systemPrompt = isRemix
-    ? 'You are SAM. CRITICAL: Respond ONLY with a valid JSON object. No markdown. No backticks. No preamble. No explanation. Just the raw JSON. Remix the Story Engine playbook into the "' + formatLabel + '" format for short-form video. Keep the creator\'s voice. JSON fields required: format_label (string), hook (string), script_outline (array of 5-7 strings), caption (string), cta (string), why_this_works (string).'
-    : 'You are SAM. CRITICAL: Respond ONLY with a valid JSON object. No markdown. No backticks. No preamble. No explanation. Just the raw JSON. Generate a production Execution Pack from the Story Engine playbook. JSON fields required: shoot_plan (array of 4-5 strings), shot_list (array of 5-7 strings), edit_map (array of 4-5 strings), sound_direction (array of 3-4 strings), post_checklist (array of 5-6 strings). Each array item: one concrete scannable bullet, actionable verb, no fluff.';
+    ? _remixPrompt(formatId, formatLabel, _bannedInstruction)
+    : 'You are SAM. CRITICAL: Respond ONLY with a valid JSON object. No markdown. No backticks. No preamble. No explanation. Just the raw JSON. Generate a production Execution Pack from the Story Engine playbook. JSON fields required: shoot_plan (array of 4-5 strings), shot_list (array of 5-7 strings), edit_map (array of 4-5 strings), sound_direction (array of 3-4 strings), post_checklist (array of 5-6 strings). Each array item: one concrete scannable bullet, actionable verb, no fluff.' + _bannedInstruction;
 
   var userContent = 'Story Engine Playbook:\n\nHook: ' + (pd.hook || '') + '\n\nStory Architecture: ' + JSON.stringify(pd.story_architecture || {}) + '\n\nScript: ' + (pd.full_script || '').slice(0, 1200) + '\n\nPacing Note: ' + (pd.pacing_note || '') + '\n\nAudience: ' + JSON.stringify(pd.audience_profile || {}) + '\n\nPlatforms: ' + (pd.platform_strategies || []).map(function(p){ return p.platform; }).join(', ') + '\n\nFocus Directive: ' + (pd.focus_directive || '');
 
@@ -22772,7 +22791,13 @@ function openExecPackDrawer(mode, formatId, formatLabel) {
   .then(function(result) {
     var text = (result && result.reply) ? result.reply : '';
     if (!text) throw new Error('empty');
+    // Strip markdown fences
     var clean = text.replace(/```json|```/g, '').trim();
+    // Extract just the JSON object — find first { and last }
+    var start = clean.indexOf('{');
+    var end = clean.lastIndexOf('}');
+    if (start === -1 || end === -1 || end <= start) throw new Error('no JSON object found');
+    clean = clean.slice(start, end + 1);
     var parsed = JSON.parse(clean);
     localStorage.setItem(cacheKey, JSON.stringify(parsed));
     renderExecPackContent(parsed, isRemix, formatId, formatLabel);
