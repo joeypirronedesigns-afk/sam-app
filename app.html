@@ -8015,7 +8015,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.22" data-qs-descriptor="T-StoryEngine Patch J — Fix Hear SAM gate firing for paid users. hearSAMBrief() was posting to /api/elevenlabs without email or userId fields. _gate.js read both as empty/anon and returned 401 (auth_required) before reaching the ElevenLabs API call or the KV paid-check. Fix: read getCurrentUserCached() at top of hearSAMBrief() and inject email + userId into POST body, matching the identity pattern used by every other gated API call in the codebase. No server changes — _gate.js already handles populated identity fields correctly." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.23" data-qs-descriptor="T-StoryEngine Patch L — Persona Lab Save to My Ideas. Adds Save to Ideas button to the Composer result card (#plSaveToIdeas). Button wired in wireResultCardActions() via addEventListener, matching the existing Copy and Regen button pattern. Saves state.result.draft via saveWizardItem(draft, label, 'wizard') — reuses existing My Ideas infrastructure with no new schema or API changes. Label format: 'Persona Lab' or 'Persona Lab — {recipe_label}'. Button shows Saved! confirmation for 1.8s then resets." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -20662,6 +20662,17 @@ function openDailyBriefDataModal() {
         runCompose(state);
       });
     }
+    var saveBtn = document.getElementById('plSaveToIdeas');
+    if (saveBtn) {
+      saveBtn.addEventListener('click', function() {
+        var draft = state.result && state.result.draft ? state.result.draft : '';
+        if (!draft || typeof saveWizardItem !== 'function') return;
+        var label = 'Persona Lab' + (state.result.recipe_label ? ' — ' + state.result.recipe_label : '');
+        saveWizardItem(draft, label, 'wizard');
+        saveBtn.textContent = 'Saved! ✓';
+        setTimeout(function() { saveBtn.textContent = '\u{1F49C} Save to Ideas'; }, 1800);
+      });
+    }
   }
 
   function fallbackCopy(text) {
@@ -20952,6 +20963,7 @@ function openDailyBriefDataModal() {
         '<div class="pl-result-actions">' +
           '<button type="button" class="pl-result-btn primary" id="plCopyDraft">Copy</button>' +
           '<button type="button" class="pl-result-btn" id="plRegen">Generate again</button>' +
+          '<button type="button" class="pl-result-btn" id="plSaveToIdeas">&#128156; Save to Ideas</button>' +
           '<span class="pl-promote-wrap">' +
             '<button type="button" class="pl-result-btn" id="plPromote" disabled>Promote to SAM</button>' +
             '<span class="pl-promote-tip">Coming soon. Promotion will run through Story Engine sanitization.</span>' +
