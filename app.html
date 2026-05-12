@@ -8015,7 +8015,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.28" data-qs-descriptor="Patch M.1 — Fix Execution Pack drawer API call. /api/sam chat mode returns SSE not JSON — replaced .then(r.json()) with readStream(r) and result.reply extraction. Added Try Again button to error state with cache-clear on retry." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.29" data-qs-descriptor="Patch M.2 — Fix Execution Pack generation. Two fixes: (1) Strengthened system prompts with CRITICAL JSON-only instruction to prevent SAM from responding conversationally. (2) api/sam.js chat mode now reads maxTokens from req.body (capped at 1500) instead of hardcoding 400 — Execution Pack calls send maxTokens:1200 and get sufficient budget for full 5-section output." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -22749,8 +22749,8 @@ function openExecPackDrawer(mode, formatId, formatLabel) {
   var _email = _u && _u.email ? _u.email.toLowerCase() : '';
 
   var systemPrompt = isRemix
-    ? 'You are SAM, an AI content strategist. The user has a completed Story Engine playbook. Remix it into the "' + formatLabel + '" format for short-form video (TikTok/Reels/YouTube Shorts). Keep the creator\'s voice. Output a JSON object with fields: format_label (string), hook (string), script_outline (array of 5-7 strings), caption (string), cta (string), why_this_works (string).'
-    : 'You are SAM, an AI content strategist and producer. Based on the Story Engine playbook provided, generate a production Execution Pack. Output a JSON object with fields: shoot_plan (array of 4-5 strings), shot_list (array of 5-7 strings), edit_map (array of 4-5 strings), sound_direction (array of 3-4 strings), post_checklist (array of 5-6 strings). Each item should be a concrete, scannable bullet — one sentence, actionable verb, no fluff.';
+    ? 'You are SAM. CRITICAL: Respond ONLY with a valid JSON object. No markdown. No backticks. No preamble. No explanation. Just the raw JSON. Remix the Story Engine playbook into the "' + formatLabel + '" format for short-form video. Keep the creator\'s voice. JSON fields required: format_label (string), hook (string), script_outline (array of 5-7 strings), caption (string), cta (string), why_this_works (string).'
+    : 'You are SAM. CRITICAL: Respond ONLY with a valid JSON object. No markdown. No backticks. No preamble. No explanation. Just the raw JSON. Generate a production Execution Pack from the Story Engine playbook. JSON fields required: shoot_plan (array of 4-5 strings), shot_list (array of 5-7 strings), edit_map (array of 4-5 strings), sound_direction (array of 3-4 strings), post_checklist (array of 5-6 strings). Each array item: one concrete scannable bullet, actionable verb, no fluff.';
 
   var userContent = 'Story Engine Playbook:\n\nHook: ' + (pd.hook || '') + '\n\nStory Architecture: ' + JSON.stringify(pd.story_architecture || {}) + '\n\nScript: ' + (pd.full_script || '').slice(0, 1200) + '\n\nPacing Note: ' + (pd.pacing_note || '') + '\n\nAudience: ' + JSON.stringify(pd.audience_profile || {}) + '\n\nPlatforms: ' + (pd.platform_strategies || []).map(function(p){ return p.platform; }).join(', ') + '\n\nFocus Directive: ' + (pd.focus_directive || '');
 

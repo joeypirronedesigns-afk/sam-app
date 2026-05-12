@@ -309,7 +309,7 @@ module.exports = async function handler(req, res) {
       // Check if any message has image content — use Sonnet for vision
       const hasImage = messages.some(m => Array.isArray(m.content) && m.content.some(c => c.type === 'image'));
       const chatModel = hasImage ? 'claude-sonnet-4-6' : 'claude-haiku-4-5-20251001';
-      const chatMaxTokens = hasImage ? 600 : 400;
+      const chatMaxTokens = hasImage ? 600 : Math.min(parseInt(req.body.maxTokens) || 400, 1500);
       // Prefer client-sent voiceProfile (localStorage) with Supabase as fallback
       const effectiveVoice = voiceProfile || (userProfile && userProfile.voice_profile) || '';
       let profileContext = '';
