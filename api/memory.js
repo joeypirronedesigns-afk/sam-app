@@ -254,7 +254,7 @@ module.exports = async function handler(req, res) {
       body: JSON.stringify({ user_id: userId, role, content })
     });
     // Keep only last 100 messages per user — trim old ones
-    await fetch(`${SUPABASE_URL}/rest/v1/sam_conversations?user_id=eq.${encodeURIComponent(userId)}&id=lt.(SELECT id FROM sam_conversations WHERE user_id='${userId}' ORDER BY created_at DESC LIMIT 1 OFFSET 100)`, { method: 'DELETE', headers });
+    await fetch(`${SUPABASE_URL}/rest/v1/sam_conversations?user_id=eq.${encodeURIComponent(userId)}&id=lt.(SELECT id FROM sam_conversations WHERE user_id='${encodeURIComponent(userId)}' ORDER BY created_at DESC LIMIT 1 OFFSET 100)`, { method: 'DELETE', headers });
     return res.status(200).json({ ok: true });
   }
 
