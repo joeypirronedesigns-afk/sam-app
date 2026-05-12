@@ -8015,7 +8015,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.34" data-qs-descriptor="Patch M.7 — Tighten one-tool and no-crew remix format directives. one-tool now requires exact 5-step template (tool + problem → first use moment → measurable result → counterfactual → proof). no-crew now requires naming specific professional roles replaced by solo work, not product features." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.35" data-qs-descriptor="Patch M.8 — Persist _lastPlaybookData to localStorage (sam-playbook-data) so Execution Pack rail survives hard refresh. On boot, rehydrates _lastPlaybookData from localStorage if _savedPlaybookData is null. Cleared on new playbook start. Users never see empty Execution Pack state after refresh if they have previously completed a Story Engine run." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -15815,7 +15815,14 @@ function setupWizardStep(step) {
       const wizOutput = document.getElementById('wizardOutput');
       if (wizOutput) {
         wizOutput.innerHTML = window._savedPlaybookHTML;
-        window._lastPlaybookData = window._savedPlaybookData;
+        if (window._savedPlaybookData) {
+          window._lastPlaybookData = window._savedPlaybookData;
+        } else {
+          try {
+            var _pd = localStorage.getItem('sam-playbook-data');
+            if (_pd) window._lastPlaybookData = JSON.parse(_pd);
+          } catch(e) {}
+        }
         document.getElementById('playbookPrintBar').style.display = 'flex';
         // Re-wire any copy buttons
         document.getElementById('wizardPage').scrollTop = 0;
@@ -15872,6 +15879,7 @@ function wizardBackFromPlaybook() {
   window._forceRebuild = true;
   window._savedPlaybookHTML = null;
   window._savedPlaybookData = null;
+  localStorage.removeItem('sam-playbook-data');
   // Store current playbook HTML so we can restore it if they go forward again
   const wizOutput = document.getElementById('wizardOutput');
   if (wizOutput) {
@@ -17199,6 +17207,7 @@ function renderPlaybook(data) {
   }
   // Store playbook data for PDF generation
   window._lastPlaybookData = data;
+  try { localStorage.setItem('sam-playbook-data', JSON.stringify(data)); } catch(e) {}
   if (typeof window._refreshExecPackRail === 'function') window._refreshExecPackRail();
 
   // Save playbook to history
