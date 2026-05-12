@@ -8015,7 +8015,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.35" data-qs-descriptor="Patch M.8 — Persist _lastPlaybookData to localStorage (sam-playbook-data) so Execution Pack rail survives hard refresh. On boot, rehydrates _lastPlaybookData from localStorage if _savedPlaybookData is null. Cleared on new playbook start. Users never see empty Execution Pack state after refresh if they have previously completed a Story Engine run." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.36" data-qs-descriptor="Patch M.8.1 — Fix Execution Pack rail rehydration timing. M.8 placed rehydration inside setupWizardStep which only runs during wizard navigation, not on homepage hard refresh. Moved rehydration to top of initExecPackRail IIFE so _lastPlaybookData is populated before the 300ms render timer fires." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -14933,6 +14933,13 @@ function triggerRemix(formatId, formatLabel) {
 }
 
 (function initExecPackRail() {
+  // Rehydrate _lastPlaybookData from localStorage on boot if not already in memory
+  if (!window._lastPlaybookData) {
+    try {
+      var _pd = localStorage.getItem('sam-playbook-data');
+      if (_pd) window._lastPlaybookData = JSON.parse(_pd);
+    } catch(e) {}
+  }
   function render() {
     var body = document.getElementById('execPackRailBody');
     if (!body) return;
