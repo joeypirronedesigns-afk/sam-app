@@ -8015,7 +8015,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.31" data-qs-descriptor="Patch M.4 — Execution Pack cache invalidation. Clears sam-exec-pack and all sam-remix-* localStorage keys when: (1) a new playbook is generated (_refreshExecPackRail now wraps render() with cache clear), (2) banned phrases are added or removed in Voice DNA widget. Prevents stale cached results from showing after playbook changes or banned phrase updates." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.32" data-qs-descriptor="Patch M.5 — Fix copy button in Execution Pack drawer (was breaking on special characters in text — replaced inline JSON.stringify onclick with window key pattern). Fix rail text spacing (added 12px horizontal padding to rail content wrapper)." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -14951,7 +14951,7 @@ function triggerRemix(formatId, formatLabel) {
     var platforms = (pd.platform_strategies || pd.platform_strategy || []).length || 0;
     var cached = localStorage.getItem('sam-exec-pack');
     var packReady = !!cached;
-    body.innerHTML = '<div style="padding:4px 0 8px;">'
+    body.innerHTML = '<div style="padding:4px 12px 8px;">'
       + '<div style="font-size:11px;color:var(--qs-ink-muted);margin-bottom:4px;font-family:\'Inter\',sans-serif;">YOUR HOOK</div>'
       + '<div style="font-size:12px;color:var(--qs-ink);line-height:1.4;margin-bottom:10px;font-family:\'Inter\',sans-serif;">' + hook.slice(0,80) + (hook.length > 80 ? '&#8230;' : '') + '</div>'
       + '<div style="font-size:11px;color:var(--qs-ink-muted);margin-bottom:4px;font-family:\'Inter\',sans-serif;">NEXT MOVE</div>'
@@ -22867,12 +22867,15 @@ function _execPackActions(formatId, data, isRemix) {
     : 'EXECUTION PACK\n\nSHOOT PLAN:\n' + (data.shoot_plan || []).join('\n') + '\n\nSHOT LIST:\n' + (data.shot_list || []).join('\n') + '\n\nEDIT MAP:\n' + (data.edit_map || []).join('\n') + '\n\nSOUND DIRECTION:\n' + (data.sound_direction || []).join('\n') + '\n\nPOST CHECKLIST:\n' + (data.post_checklist || []).join('\n');
 
   var label = isRemix ? 'Remix — ' + (data.format_label || formatId) : 'Execution Pack';
-  var textJson = JSON.stringify(text);
+
+  // Store text on window for copy handler to access safely
+  var copyKey = 'execPackCopyText_' + Date.now();
+  window[copyKey] = text;
 
   return '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">'
-    + '<button onclick="navigator.clipboard.writeText(' + textJson + ');this.textContent=\'Copied!\';setTimeout(function(){this.textContent=\'Copy\';}.bind(this),1800);" '
+    + '<button onclick="var t=window[\'' + copyKey + '\'];if(t){navigator.clipboard.writeText(t).then(function(){var b=document.activeElement;var orig=b.textContent;b.textContent=\'Copied!\';setTimeout(function(){b.textContent=\'Copy\';},1800);}).catch(function(){});}" '
     + 'style="padding:8px 16px;background:var(--qs-surface-2);border:1px solid var(--qs-rule);border-radius:var(--qs-radius-md);font-family:\'Inter\',sans-serif;font-size:12px;color:var(--qs-ink-soft);cursor:pointer;">Copy</button>'
-    + '<button onclick="saveWizardItem(' + textJson + ',' + JSON.stringify(label) + ',\'wizard\');this.textContent=\'Saved!\';setTimeout(function(){this.textContent=\'💜 Save\';}.bind(this),1800);" '
+    + '<button onclick="if(typeof saveWizardItem===\'function\'){saveWizardItem(window[\'' + copyKey + '\'],' + JSON.stringify(label) + ',\'wizard\');}this.textContent=\'Saved!\';setTimeout(function(){this.textContent=\'💜 Save\';}.bind(this),1800);" '
     + 'style="padding:8px 16px;background:var(--qs-surface-2);border:1px solid var(--qs-rule);border-radius:var(--qs-radius-md);font-family:\'Inter\',sans-serif;font-size:12px;color:var(--qs-ink-soft);cursor:pointer;">💜 Save</button>'
     + '</div>';
 }
