@@ -8015,7 +8015,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.25" data-qs-descriptor="Patch F — Banned phrases injection + Voice DNA quick-add. Phase 1: api/sam.js destructures bannedPhrases from req.body and injects bannedLine into base prompt after voiceLine — hard constraint instruction covering all getBase() tool calls (Pulse, Spark, Blueprint, Vision, Lens). Phase 2: getSamBannedPhrases() global reads localStorage('sam-banned-phrases') as joined string; getBase() passes it as bannedPhrases field. Persona Lab codex fetch hydrates the cache on load. Phase 3: Voice DNA modal gets vtBannedSection widget — chip-based add/remove UI that writes to localStorage and syncs to Persona Lab codex via POST /api/persona-lab/codex. One canonical data store (sam_persona_lab.banned_phrases), two entry points (Voice DNA + Persona Lab Archivist), one enforcement point (voiceLine in api/sam.js)." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.26" data-qs-descriptor="Patch K — Subscription management for paid users. New api/billing-portal.js endpoint: auth + paid gate via KV, reads stripeCustomer, creates Stripe Customer Portal session, returns portal URL. Client: openBillingPortal() posts identity, redirects to Stripe portal on success, shows error alert with support email on failure. UI: .qs-topstrip-manage-sub button added to topstrip, shown only when user.paid via updateTrialBadge(). Requires Stripe Customer Portal configured in Stripe Dashboard before use." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -8118,6 +8118,7 @@ textarea.lab-textarea,
     <div class="qs-topstrip-account">
       <button class="qs-topstrip-signin" onclick="openSignInModal()">Sign in</button>
       <button class="qs-topstrip-seeplan" onclick="openProPage()">See plan</button>
+      <button class="qs-topstrip-manage-sub" onclick="openBillingPortal()" style="display:none;font-size:12px;font-weight:600;color:var(--ink-soft);background:transparent;border:1px solid var(--rule);border-radius:6px;padding:4px 12px;cursor:pointer;font-family:'Inter',system-ui,sans-serif;white-space:nowrap;">Manage subscription</button>
     </div>
   </div>
 
@@ -10057,6 +10058,32 @@ function openWizardPage(skipCheck) {
 }
 function openProPage() {
   window.location.href = 'https://sam-app-git-quietstudio-joeypirronedesigns-1029s-projects.vercel.app/';
+}
+function openBillingPortal() {
+  var _u = (typeof getCurrentUserCached === 'function') ? getCurrentUserCached() : null;
+  var _email = _u && _u.email ? _u.email.toLowerCase() : '';
+  var _uid = _email || 'anon';
+  if (!_email) { openSignInModal(); return; }
+  var btn = document.querySelector('.qs-topstrip-manage-sub');
+  if (btn) { btn.textContent = 'Opening...'; btn.disabled = true; }
+  fetch('/api/billing-portal', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: _email, userId: _uid })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      alert(data.message || 'Unable to open billing portal. Please contact support@samforcreators.com.');
+      if (btn) { btn.textContent = 'Manage subscription'; btn.disabled = false; }
+    }
+  })
+  .catch(function() {
+    alert('Unable to open billing portal. Please try again.');
+    if (btn) { btn.textContent = 'Manage subscription'; btn.disabled = false; }
+  });
 }
 function openMeetSAMOverlay() { window.location.href = '/meet'; }
 function openSignInModal() {
@@ -12134,6 +12161,10 @@ function updateTrialBadge(state) {
     if (_paid) el.style.setProperty('display', 'none', 'important');
     else el.style.removeProperty('display');
   });
+
+  // Show Manage subscription for paid users, hide for free
+  var _manageBtn = document.querySelector('.qs-topstrip-manage-sub');
+  if (_manageBtn) _manageBtn.style.display = _paid ? 'inline-flex' : 'none';
 
   const heroBanner = document.getElementById('heroTrialBanner');
   if (heroBanner) {
