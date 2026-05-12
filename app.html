@@ -8015,7 +8015,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.26" data-qs-descriptor="Patch K — Subscription management for paid users. New api/billing-portal.js endpoint: auth + paid gate via KV, reads stripeCustomer, creates Stripe Customer Portal session, returns portal URL. Client: openBillingPortal() posts identity, redirects to Stripe portal on success, shows error alert with support email on failure. UI: .qs-topstrip-manage-sub button added to topstrip, shown only when user.paid via updateTrialBadge(). Requires Stripe Customer Portal configured in Stripe Dashboard before use." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.27" data-qs-descriptor="Patch M — Execution Pack. Replaces static Recent Threads rail section with a living production command center. Empty state: CTA to run Story Engine. Active state (sam_session_step=12 + _lastPlaybookData): condensed hook/next-move preview + Build Execution Pack button + 6 Remix format cards. Execution Pack drawer: on-demand /api/sam call generates shoot plan, shot list, edit map, sound direction, post checklist as scannable bullets. Remix drawer: on-demand generation remixes existing playbook through selected format lens (Top 5, Before vs After, What I Wish I Knew, The Mistake, One Tool One Result, No Crew). Both cache to localStorage on first generation. Copy and Save to My Ideas on all outputs. Rail refreshes when renderPlaybook() fires." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -8089,16 +8089,15 @@ textarea.lab-textarea,
 </nav>
 
 <!-- MY IDEAS pinned section -->
-<div class="qs-dash-rail-pinned">
-  <div class="qs-dash-rail-section-label" style="padding: 0 4px 6px;">Recent Threads</div>
-  <button class="qs-dash-pinned-tile" data-qs-pinned="library">
-    <div class="qs-dash-pinned-tile-title">The library SAM reads from</div>
-    <div class="qs-dash-pinned-tile-meta">Saved · Scripting · Filmed · Posted</div>
-  </button>
-  <button class="qs-dash-pinned-tile" data-qs-pinned="spark-ideas">
-    <div class="qs-dash-pinned-tile-title">Generate 5 fresh ideas</div>
-    <div class="qs-dash-pinned-tile-meta">From The Spark</div>
-  </button>
+<div class="qs-dash-rail-execpack" id="execPackRail">
+  <!-- Hydrated by initExecPackRail() IIFE -->
+  <div class="qs-dash-rail-section-label" style="padding:0 4px 6px;">Execution Pack</div>
+  <div id="execPackRailBody">
+    <button class="qs-dash-pinned-tile" onclick="openStoryEngineFromRail()" style="text-align:left;width:100%;">
+      <div class="qs-dash-pinned-tile-title" style="color:var(--qs-accent);">&#9654; Run Story Engine</div>
+      <div class="qs-dash-pinned-tile-meta">Complete Step 12 to unlock your Execution Pack</div>
+    </button>
+  </div>
 </div>
 
 <!-- Rail footer — Voice synced status -->
@@ -10058,6 +10057,11 @@ function openWizardPage(skipCheck) {
 }
 function openProPage() {
   window.location.href = 'https://sam-app-git-quietstudio-joeypirronedesigns-1029s-projects.vercel.app/';
+}
+function openStoryEngineFromRail() {
+  var storyEngineBtn = document.querySelector('.qs-dash-rail-item[data-tool="story-engine"], [data-qs-pinned="story-engine"]');
+  if (storyEngineBtn) { storyEngineBtn.click(); return; }
+  if (typeof startWizard === 'function') startWizard('new');
 }
 function openBillingPortal() {
   var _u = (typeof getCurrentUserCached === 'function') ? getCurrentUserCached() : null;
@@ -14902,6 +14906,68 @@ function _samReadAuthEmail() {
   setTimeout(reveal, 1500);
 })();
 
+function _execPackRemixCards() {
+  var formats = [
+    { id: 'top5', label: 'Top 5 Lessons' },
+    { id: 'before-after', label: 'Before vs. After' },
+    { id: 'wish-i-knew', label: 'What I Wish I Knew' },
+    { id: 'mistake', label: 'The Mistake That Changed Everything' },
+    { id: 'one-tool', label: 'One Tool, One Project, One Result' },
+    { id: 'no-crew', label: 'How I Pulled This Off Without a Crew' }
+  ];
+  return formats.map(function(f) {
+    var cached = localStorage.getItem('sam-remix-' + f.id);
+    return '<button onclick="triggerRemix(\'' + f.id + '\',\'' + f.label.replace(/'/g,"\\'") + '\')" '
+      + 'style="display:block;width:100%;text-align:left;padding:6px 10px;margin-bottom:4px;background:var(--qs-surface-2);border:1px solid var(--qs-rule);border-radius:var(--qs-radius-md);font-family:\'Inter\',sans-serif;font-size:11px;color:var(--qs-ink-soft);cursor:pointer;">'
+      + (cached ? '✓ ' : '') + f.label
+      + '</button>';
+  }).join('');
+}
+
+function triggerRemix(formatId, formatLabel) {
+  var pd = window._lastPlaybookData;
+  if (!pd) return;
+  var cached = localStorage.getItem('sam-remix-' + formatId);
+  if (cached) { openRemixDrawer(formatId, formatLabel, JSON.parse(cached)); return; }
+  openExecPackDrawer('remix', formatId, formatLabel);
+}
+
+(function initExecPackRail() {
+  function render() {
+    var body = document.getElementById('execPackRailBody');
+    if (!body) return;
+    var step = localStorage.getItem('sam_session_step');
+    var hasPlaybook = step === '12' && window._lastPlaybookData && window._lastPlaybookData.hook;
+    if (!hasPlaybook) {
+      body.innerHTML = '<button class="qs-dash-pinned-tile" onclick="openStoryEngineFromRail()" style="text-align:left;width:100%;">'
+        + '<div class="qs-dash-pinned-tile-title" style="color:var(--qs-accent);">&#9654; Run Story Engine</div>'
+        + '<div class="qs-dash-pinned-tile-meta">Complete Step 12 to unlock your Execution Pack</div>'
+        + '</button>';
+      return;
+    }
+    var pd = window._lastPlaybookData;
+    var hook = pd.hook || '';
+    var focus = pd.focus_directive || '';
+    var platforms = (pd.platform_strategies || pd.platform_strategy || []).length || 0;
+    var cached = localStorage.getItem('sam-exec-pack');
+    var packReady = !!cached;
+    body.innerHTML = '<div style="padding:4px 0 8px;">'
+      + '<div style="font-size:11px;color:var(--qs-ink-muted);margin-bottom:4px;font-family:\'Inter\',sans-serif;">YOUR HOOK</div>'
+      + '<div style="font-size:12px;color:var(--qs-ink);line-height:1.4;margin-bottom:10px;font-family:\'Inter\',sans-serif;">' + hook.slice(0,80) + (hook.length > 80 ? '&#8230;' : '') + '</div>'
+      + '<div style="font-size:11px;color:var(--qs-ink-muted);margin-bottom:4px;font-family:\'Inter\',sans-serif;">NEXT MOVE</div>'
+      + '<div style="font-size:12px;color:var(--qs-ink);line-height:1.4;margin-bottom:12px;font-family:\'Inter\',sans-serif;">' + focus.slice(0,80) + (focus.length > 80 ? '&#8230;' : '') + '</div>'
+      + '<button onclick="openExecPackDrawer()" style="width:100%;padding:8px 12px;background:var(--qs-accent);color:var(--qs-paper);border:none;border-radius:var(--qs-radius-md);font-family:\'Sora\',sans-serif;font-size:12px;font-weight:700;cursor:pointer;margin-bottom:6px;">'
+      + (packReady ? '&#128203; Open Execution Pack' : '&#9889; Build Execution Pack') + '</button>'
+      + '<div style="font-size:10px;color:var(--qs-ink-muted);text-align:center;margin-bottom:12px;">' + platforms + ' platform' + (platforms !== 1 ? 's' : '') + ' in your strategy</div>'
+      + '<div style="font-size:11px;color:var(--qs-ink-muted);margin-bottom:6px;font-family:\'Inter\',sans-serif;">REMIX THIS STORY</div>'
+      + _execPackRemixCards()
+      + '</div>';
+  }
+  setTimeout(render, 300);
+  setTimeout(render, 1500);
+  window._refreshExecPackRail = render;
+})();
+
 // Show Story Engine btn when wizard has been used
 (function initStoryEngineBtn() {
   document.addEventListener('DOMContentLoaded', function() {
@@ -17122,6 +17188,7 @@ function renderPlaybook(data) {
   }
   // Store playbook data for PDF generation
   window._lastPlaybookData = data;
+  if (typeof window._refreshExecPackRail === 'function') window._refreshExecPackRail();
 
   // Save playbook to history
   savePlaybookHistory(data);
@@ -22635,6 +22702,163 @@ function openDailyBriefDataModal() {
     init();
   }
 })();
+</script>
+
+<!-- Execution Pack Drawer -->
+<div id="execPackDrawer" style="display:none;position:fixed;top:0;right:0;width:420px;max-width:95vw;height:100vh;background:var(--qs-paper);border-left:1px solid var(--qs-rule);z-index:9999;overflow-y:auto;box-shadow:-4px 0 24px rgba(0,0,0,0.12);">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 20px 12px;border-bottom:1px solid var(--qs-rule);position:sticky;top:0;background:var(--qs-paper);z-index:1;">
+    <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--qs-ink);" id="execPackDrawerTitle">Execution Pack</div>
+    <button onclick="closeExecPackDrawer()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--qs-ink-muted);">&times;</button>
+  </div>
+  <div id="execPackDrawerBody" style="padding:20px;"></div>
+</div>
+<div id="execPackDrawerOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:9998;" onclick="closeExecPackDrawer()"></div>
+
+<script>
+function openExecPackDrawer(mode, formatId, formatLabel) {
+  var drawer = document.getElementById('execPackDrawer');
+  var overlay = document.getElementById('execPackDrawerOverlay');
+  var body = document.getElementById('execPackDrawerBody');
+  var title = document.getElementById('execPackDrawerTitle');
+  if (!drawer || !body) return;
+
+  drawer.style.display = 'block';
+  overlay.style.display = 'block';
+  document.body.style.overflow = 'hidden';
+
+  var isRemix = mode === 'remix';
+  title.textContent = isRemix ? (formatLabel || 'Remix') : 'Execution Pack';
+
+  var cacheKey = isRemix ? ('sam-remix-' + formatId) : 'sam-exec-pack';
+  var cached = localStorage.getItem(cacheKey);
+  if (cached) {
+    renderExecPackContent(JSON.parse(cached), isRemix, formatId, formatLabel);
+    return;
+  }
+
+  body.innerHTML = '<div style="text-align:center;padding:40px 0;">'
+    + '<div style="font-size:24px;margin-bottom:12px;">&#9680;</div>'
+    + '<div style="font-family:\'Sora\',sans-serif;font-size:14px;color:var(--qs-ink-soft);">'
+    + (isRemix ? 'SAM is remixing your story…' : 'SAM is building your Execution Pack…')
+    + '</div></div>';
+
+  var pd = window._lastPlaybookData;
+  if (!pd) { body.innerHTML = '<p style="color:var(--qs-ink-soft);padding:20px;">No playbook found. Please complete Story Engine first.</p>'; return; }
+
+  var _u = (typeof getCurrentUserCached === 'function') ? getCurrentUserCached() : null;
+  var _email = _u && _u.email ? _u.email.toLowerCase() : '';
+
+  var systemPrompt = isRemix
+    ? 'You are SAM, an AI content strategist. The user has a completed Story Engine playbook. Remix it into the "' + formatLabel + '" format for short-form video (TikTok/Reels/YouTube Shorts). Keep the creator\'s voice. Output a JSON object with fields: format_label (string), hook (string), script_outline (array of 5-7 strings), caption (string), cta (string), why_this_works (string).'
+    : 'You are SAM, an AI content strategist and producer. Based on the Story Engine playbook provided, generate a production Execution Pack. Output a JSON object with fields: shoot_plan (array of 4-5 strings), shot_list (array of 5-7 strings), edit_map (array of 4-5 strings), sound_direction (array of 3-4 strings), post_checklist (array of 5-6 strings). Each item should be a concrete, scannable bullet — one sentence, actionable verb, no fluff.';
+
+  var userContent = 'Story Engine Playbook:\n\nHook: ' + (pd.hook || '') + '\n\nStory Architecture: ' + JSON.stringify(pd.story_architecture || {}) + '\n\nScript: ' + (pd.full_script || '').slice(0, 1200) + '\n\nPacing Note: ' + (pd.pacing_note || '') + '\n\nAudience: ' + JSON.stringify(pd.audience_profile || {}) + '\n\nPlatforms: ' + (pd.platform_strategies || []).map(function(p){ return p.platform; }).join(', ') + '\n\nFocus Directive: ' + (pd.focus_directive || '');
+
+  fetch('/api/sam', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      mode: 'chat',
+      messages: [{ role: 'user', content: userContent }],
+      systemPrompt: systemPrompt,
+      email: _email,
+      userEmail: _email,
+      userId: _email || 'anon',
+      tier: (_u && _u.tier) || 'free',
+      maxTokens: 1200
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    var text = '';
+    if (data.content) {
+      text = data.content.filter(function(b){ return b.type === 'text'; }).map(function(b){ return b.text; }).join('');
+    } else if (data.choices) {
+      text = data.choices[0].message.content;
+    }
+    var clean = text.replace(/```json|```/g, '').trim();
+    var parsed = JSON.parse(clean);
+    localStorage.setItem(cacheKey, JSON.stringify(parsed));
+    renderExecPackContent(parsed, isRemix, formatId, formatLabel);
+    if (typeof window._refreshExecPackRail === 'function') window._refreshExecPackRail();
+  })
+  .catch(function() {
+    body.innerHTML = '<p style="color:var(--qs-ink-soft);padding:20px;">Something went wrong. Please try again.</p>';
+  });
+}
+
+function renderExecPackContent(data, isRemix, formatId, formatLabel) {
+  var body = document.getElementById('execPackDrawerBody');
+  if (!body) return;
+
+  if (isRemix) {
+    body.innerHTML = '<div style="margin-bottom:20px;">'
+      + '<div style="font-size:11px;color:var(--qs-ink-muted);margin-bottom:4px;">HOOK</div>'
+      + '<div style="font-size:14px;color:var(--qs-ink);font-weight:600;margin-bottom:16px;">' + (data.hook || '') + '</div>'
+      + '<div style="font-size:11px;color:var(--qs-ink-muted);margin-bottom:4px;">SCRIPT OUTLINE</div>'
+      + '<ul style="margin:0 0 16px;padding-left:16px;">' + (data.script_outline || []).map(function(l){ return '<li style="font-size:13px;color:var(--qs-ink);margin-bottom:6px;">' + l + '</li>'; }).join('') + '</ul>'
+      + '<div style="font-size:11px;color:var(--qs-ink-muted);margin-bottom:4px;">CAPTION</div>'
+      + '<div style="font-size:13px;color:var(--qs-ink);margin-bottom:16px;">' + (data.caption || '') + '</div>'
+      + '<div style="font-size:11px;color:var(--qs-ink-muted);margin-bottom:4px;">CTA</div>'
+      + '<div style="font-size:13px;color:var(--qs-ink);margin-bottom:16px;">' + (data.cta || '') + '</div>'
+      + '<div style="font-size:11px;color:var(--qs-ink-muted);margin-bottom:4px;">WHY THIS WORKS</div>'
+      + '<div style="font-size:13px;color:var(--qs-ink-soft);margin-bottom:20px;font-style:italic;">' + (data.why_this_works || '') + '</div>'
+      + _execPackActions(formatId, data, true)
+      + '</div>';
+  } else {
+    var sections = [
+      { key: 'shoot_plan', label: 'SHOOT PLAN' },
+      { key: 'shot_list', label: 'SHOT LIST' },
+      { key: 'edit_map', label: 'EDIT MAP' },
+      { key: 'sound_direction', label: 'SOUND DIRECTION' },
+      { key: 'post_checklist', label: 'POST CHECKLIST' }
+    ];
+    body.innerHTML = sections.map(function(s) {
+      var items = data[s.key] || [];
+      return '<div style="margin-bottom:20px;">'
+        + '<div style="font-size:11px;color:var(--qs-ink-muted);margin-bottom:6px;font-weight:700;">' + s.label + '</div>'
+        + '<ul style="margin:0;padding-left:16px;">'
+        + items.map(function(item){ return '<li style="font-size:13px;color:var(--qs-ink);margin-bottom:6px;line-height:1.4;">' + item + '</li>'; }).join('')
+        + '</ul></div>';
+    }).join('') + _execPackActions(null, data, false);
+  }
+}
+
+function _execPackActions(formatId, data, isRemix) {
+  var text = isRemix
+    ? 'REMIX: ' + (data.format_label || '') + '\n\nHook: ' + (data.hook || '') + '\n\nScript:\n' + (data.script_outline || []).join('\n') + '\n\nCaption: ' + (data.caption || '') + '\n\nCTA: ' + (data.cta || '')
+    : 'EXECUTION PACK\n\nSHOOT PLAN:\n' + (data.shoot_plan || []).join('\n') + '\n\nSHOT LIST:\n' + (data.shot_list || []).join('\n') + '\n\nEDIT MAP:\n' + (data.edit_map || []).join('\n') + '\n\nSOUND DIRECTION:\n' + (data.sound_direction || []).join('\n') + '\n\nPOST CHECKLIST:\n' + (data.post_checklist || []).join('\n');
+
+  var label = isRemix ? 'Remix — ' + (data.format_label || formatId) : 'Execution Pack';
+  var textJson = JSON.stringify(text);
+
+  return '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">'
+    + '<button onclick="navigator.clipboard.writeText(' + textJson + ');this.textContent=\'Copied!\';setTimeout(function(){this.textContent=\'Copy\';}.bind(this),1800);" '
+    + 'style="padding:8px 16px;background:var(--qs-surface-2);border:1px solid var(--qs-rule);border-radius:var(--qs-radius-md);font-family:\'Inter\',sans-serif;font-size:12px;color:var(--qs-ink-soft);cursor:pointer;">Copy</button>'
+    + '<button onclick="saveWizardItem(' + textJson + ',' + JSON.stringify(label) + ',\'wizard\');this.textContent=\'Saved!\';setTimeout(function(){this.textContent=\'💜 Save\';}.bind(this),1800);" '
+    + 'style="padding:8px 16px;background:var(--qs-surface-2);border:1px solid var(--qs-rule);border-radius:var(--qs-radius-md);font-family:\'Inter\',sans-serif;font-size:12px;color:var(--qs-ink-soft);cursor:pointer;">💜 Save</button>'
+    + '</div>';
+}
+
+function openRemixDrawer(formatId, formatLabel, data) {
+  var drawer = document.getElementById('execPackDrawer');
+  var overlay = document.getElementById('execPackDrawerOverlay');
+  var title = document.getElementById('execPackDrawerTitle');
+  if (!drawer) return;
+  drawer.style.display = 'block';
+  overlay.style.display = 'block';
+  document.body.style.overflow = 'hidden';
+  title.textContent = formatLabel;
+  renderExecPackContent(data, true, formatId, formatLabel);
+}
+
+function closeExecPackDrawer() {
+  var drawer = document.getElementById('execPackDrawer');
+  var overlay = document.getElementById('execPackDrawerOverlay');
+  if (drawer) drawer.style.display = 'none';
+  if (overlay) overlay.style.display = 'none';
+  document.body.style.overflow = '';
+}
 </script>
 </body>
 </html>
