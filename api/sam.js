@@ -159,7 +159,7 @@ module.exports = async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage, emojiPreference, voiceProfile } = req.body;
+  const { mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage, emojiPreference, voiceProfile, bannedPhrases } = req.body;
   const userId = req.body.userId || req.headers['x-forwarded-for'] || 'anon';
   const tier = req.body.tier || 'free';
 
@@ -504,9 +504,14 @@ The test: if you showed this output to the creator and they read it out loud, it
 NEVER write in generic AI voice when you have this profile. Generic AI voice is: smooth, balanced, professionally warm, slightly motivational, uses words like "journey", "authentic", "powerful story", "resonate". That is the enemy. Write like the human, not the algorithm.`
     : '';
 
+  const bannedLine = (bannedPhrases && bannedPhrases.trim())
+    ? `BANNED PHRASES — Never use these words or phrases, even loosely paraphrased: ${bannedPhrases.trim()}. This is a hard constraint — treat it like a style rule, not a suggestion.`
+    : '';
+
   const samIdentity = `You are S.A.M. — Strategic Assistant for Making. You are an AI content strategist that helps creators write better scripts, hooks, captions, strategies and content plans.`;
 
-  const base = `${samIdentity} ${toneContext} ${emojiLine} ${hashtagRule} ${creatorLine} ${voiceLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatContext} CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No explanation outside the JSON.`;
+  const base = `${samIdentity} ${toneContext} ${emojiLine} ${hashtagRule} ${creatorLine} ${voiceLine}
+${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatContext} CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No explanation outside the JSON.`;
 
   const streamCall = async (system, userContent, maxTokens) => {
     const r = await fetch('https://api.anthropic.com/v1/messages', {
