@@ -8015,7 +8015,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.43" data-qs-descriptor="Patch P.1 — Paywall tool urgency copy updated to 'One plan. Every tool. Keep building.'" data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.44" data-qs-descriptor="Patch Q — Gate Persona Lab behind paid check. navigateToPersonaLab() now checks getCurrentUserCached().paid before navigating; unpaid users see paywall instead." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -14864,9 +14864,12 @@ function openMeetSAMOverlay() { window.location.href = '/meet'; return; // legac
 
 // v9.117.0 — Persona Lab rail tile (authenticated users only)
 function navigateToPersonaLab() {
-  // Route guard on /persona-lab handles eligibility (no codex / canon < 3
-  // → redirect to /persona-lab/build).
-  window.location.href = '/persona-lab';
+  var _u = (typeof getCurrentUserCached === 'function') ? getCurrentUserCached() : null;
+  if (_u && _u.paid) {
+    window.location.href = '/persona-lab';
+  } else {
+    if (typeof showPaywall === 'function') showPaywall('tool');
+  }
 }
 function _samReadAuthEmail() {
   try {
