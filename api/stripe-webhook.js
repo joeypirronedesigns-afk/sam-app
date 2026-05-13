@@ -30,7 +30,7 @@ module.exports = async function handler(req, res) {
     try {
       await trackUser({ uid: email.toLowerCase(), email: email.toLowerCase(), name, tier: plan });
       await trackSignup({ email: email.toLowerCase(), name, tier: plan, source: 'stripe' });
-      await trackEvent(email.toLowerCase(), 'payment', { plan, amount: plan === 'creator' ? 19 : plan === 'pro' ? 39 : 99 });
+      await trackEvent(email.toLowerCase(), 'payment', { plan, amount: plan === 'creator' ? 39 : plan === 'pro' ? 39 : 99 });
     } catch(e) { console.error('Supabase payment tracking error:', e.message); }
 
     if (email) {
@@ -43,7 +43,6 @@ module.exports = async function handler(req, res) {
           name: name || existing?.name || '',
           tier: plan,
           paid: true,
-          trialStart: existing?.trialStart || Date.now(),
           paidAt: Date.now(),
           stripeCustomer: session.customer,
           createdAt: existing?.createdAt || Date.now(),
