@@ -8015,7 +8015,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.44" data-qs-descriptor="Patch Q — Gate Persona Lab behind paid check. navigateToPersonaLab() now checks getCurrentUserCached().paid before navigating; unpaid users see paywall instead." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.45" data-qs-descriptor="Patch Q.1 — Persona Lab render404 replaced with sign-in prompt. navigateToPersonaLab() now routes: paid→lab, email+unpaid→paywall, no session→sign-in modal." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -14867,8 +14867,10 @@ function navigateToPersonaLab() {
   var _u = (typeof getCurrentUserCached === 'function') ? getCurrentUserCached() : null;
   if (_u && _u.paid) {
     window.location.href = '/persona-lab';
-  } else {
+  } else if (_u && _u.email) {
     if (typeof showPaywall === 'function') showPaywall('tool');
+  } else {
+    if (typeof openSignInModal === 'function') openSignInModal();
   }
 }
 function _samReadAuthEmail() {
@@ -20386,8 +20388,9 @@ function openDailyBriefDataModal() {
   function render404() {
     root.innerHTML =
       '<div class="pl-404">' +
-        '<div class="pl-404-code">404</div>' +
-        '<div class="pl-404-line">This page could not be found.</div>' +
+        '<div class="pl-404-code">Sign in to continue</div>' +
+        '<div class="pl-404-line">Persona Lab is available to SAM Creator members.</div>' +
+        '<button onclick="window.location.href=\'/?signin=1\'" style="margin-top:20px;padding:12px 24px;background:var(--accent,#6c47ff);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;font-family:\'Inter\',sans-serif;">Sign in to your account</button>' +
       '</div>';
   }
 
