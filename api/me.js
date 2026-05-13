@@ -23,12 +23,29 @@ module.exports = async function handler(req, res) {
     const rows = await r.json();
     if (!rows || !rows.length) return res.status(200).json({ user: null });
     const row = rows[0];
+
+    // Check KV for authoritative paid status (Stripe webhook writes here)
+    let kvPaid = false;
+    let kvTier = null;
+    try {
+      const { kv } = require('@vercel/kv');
+      const kvUser = await kv.get(`user:${email.toLowerCase()}`);
+      if (kvUser) {
+        kvPaid = !!kvUser.paid;
+        kvTier = kvUser.tier || null;
+      }
+    } catch(e) { /* KV unavailable — fall back to Supabase */ }
+
+    // Merge: KV paid status wins over Supabase derived paid
+    const effectivePaid = kvPaid || !!(row && row.tier && row.tier !== 'free');
+    const effectiveTier = kvTier || (row && row.tier) || 'free';
+
     return res.status(200).json({
       user: {
         email: row.email,
         name: row.name || '',
-        tier: row.tier || 'free',
-        paid: !!(row.tier && row.tier !== 'free'),
+        tier: effectiveTier,
+        paid: effectivePaid,
         trialStart: row.created_at ? new Date(row.created_at).getTime() : null,
         voiceProfile: row.voice_profile || null,
         voiceVersion: row.voice_version || 0,
