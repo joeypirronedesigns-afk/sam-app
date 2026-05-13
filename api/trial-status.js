@@ -25,27 +25,14 @@ module.exports = async function handler(req, res) {
     const rows = await r.json();
     const user = rows?.[0];
 
-    if (!user) return res.status(200).json({ allowed: true, reason: 'no_account', daysLeft: 7 });
+    if (!user) return res.status(200).json({ allowed: false, reason: 'no_account', daysLeft: 0 });
 
     // Paid tier — always allowed
     if (user.tier && user.tier !== 'free') {
       return res.status(200).json({ allowed: true, reason: 'paid', tier: user.tier });
     }
 
-    // Check trial window
-    const trialDays = user.trial_days || 7;
-    const trialMs = trialDays * 24 * 60 * 60 * 1000;
-    const created = new Date(user.created_at).getTime();
-    const elapsed = Date.now() - created;
-    const daysLeft = Math.max(0, Math.ceil((trialMs - elapsed) / (1000 * 60 * 60 * 24)));
-    const allowed = elapsed < trialMs;
-
-    return res.status(200).json({
-      allowed,
-      reason: allowed ? 'trial_active' : 'trial_expired',
-      daysLeft,
-      tier: user.tier || 'free'
-    });
+    return res.status(200).json({ allowed: false, reason: 'unpaid', daysLeft: 0, tier: user.tier || 'free' });
   } catch(e) {
     // On error, allow access (fail open)
     return res.status(200).json({ allowed: true, reason: 'error', error: e.message });

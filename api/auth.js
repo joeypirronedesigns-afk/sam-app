@@ -31,7 +31,6 @@ module.exports = async function handler(req, res) {
           name: '',
           tier: 'free',
           paid: false,
-          trialStart: Date.now(),
           createdAt: Date.now(),
           updatedAt: Date.now()
         };

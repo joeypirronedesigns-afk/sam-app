@@ -8015,7 +8015,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.38" data-qs-descriptor="Patch N.1 — Wire Stripe link to Keep Building card fallback. Non-entitled users clicking the playbook next-steps card now open Stripe checkout instead of old Vercel preview URL." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.39" data-qs-descriptor="Patch O — Remove free trial. New users no longer get trialStart set in auth.js. trial-status.js returns allowed:false for no_account and all unpaid users. withTrialGate() anonymous trial pass condition removed. Paid or blocked — no middle ground." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -12504,26 +12504,14 @@ function guardedRunFn(originalFn) {
       }
     })
     .catch(() => {
-      // Fail open — allow on error
-      originalFn();
+      // Fail closed — network error means no access
+      showPaywall('tool');
     });
     return;
   }
 
-  // Anonymous user — use localStorage trial
-  if (state.trialStart && (Date.now() - state.trialStart) < TRIAL_DURATION_MS) {
-    originalFn();
-    setTimeout(function() { if(typeof showTourNextNudge === "function") showTourNextNudge(); }, 8000);
-    return;
-  }
-
-  if (state.trialStart && (Date.now() - state.trialStart) >= TRIAL_DURATION_MS) {
-    showPaywall('tool'); return;
-  }
-
-  // No trial started yet — allow, start trial
-  originalFn();
-  setTimeout(function() { if(typeof showTourNextNudge === "function") showTourNextNudge(); }, 8000);
+  // No payment — block immediately
+  showPaywall('tool');
 }
 
 
