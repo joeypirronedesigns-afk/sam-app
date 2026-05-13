@@ -8015,7 +8015,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.41" data-qs-descriptor="Patch O.2 — Remove 'See what's included' secondary link from #paywallOverlay." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.42" data-qs-descriptor="Patch P — Fix paywall silent abort for signed-in unpaid users. Early return now requires email AND paid. Stale $29 copy updated to $39, free-tier messaging removed." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -12325,7 +12325,7 @@ function showTrialExpiredCard() {
 function showPaywall(context, force) {
   // Never show paywall to signed-in users — unless forced by API 429
   const _state = getTrialState();
-  if (_state.email && !force) {
+  if (_state.email && _state.paid && !force) {
     updateTrialBadge(_state);
     return;
   }
@@ -12341,12 +12341,12 @@ function showPaywall(context, force) {
     },
     'lead_magnet': {
       headline: 'Your lead magnet is built.<br/>Time to actually use it.',
-      sub: 'You just created a free resource your audience would trade their email for. Downloading it requires a paid plan — starting at $29/month.',
+      sub: 'You just created a free resource your audience would trade their email for. Downloading it requires a paid plan — $39/month.',
       urgency: 'This is how you grow your list while you sleep.'
     },
     'tool': {
-      headline: 'You' + apos + 've hit your free limit.<br/>You' + apos + 're clearly not messing around.',
-      sub: 'Free accounts get a taste. Paid accounts get the whole thing — unlimited runs, every tool, every time. Starting at $29/month.',
+      headline: 'Your story is ready to build.<br/>You' + apos + 're clearly not messing around.',
+      sub: 'Sign up to keep going. Every tool, every time — $39/month.',
       urgency: 'Pick a plan and keep building.'
     },
     'wizard': {
