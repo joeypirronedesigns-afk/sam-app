@@ -8015,7 +8015,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.36" data-qs-descriptor="Patch M.8.1 — Fix Execution Pack rail rehydration timing. M.8 placed rehydration inside setupWizardStep which only runs during wizard navigation, not on homepage hard refresh. Moved rehydration to top of initExecPackRail IIFE so _lastPlaybookData is populated before the 300ms render timer fires." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.38" data-qs-descriptor="Patch N.1 — Wire Stripe link to Keep Building card fallback. Non-entitled users clicking the playbook next-steps card now open Stripe checkout instead of old Vercel preview URL." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -10056,7 +10056,7 @@ function openWizardPage(skipCheck) {
   setTimeout(_samPrefillWizard, 1200);
 }
 function openProPage() {
-  window.location.href = 'https://sam-app-git-quietstudio-joeypirronedesigns-1029s-projects.vercel.app/';
+  window.open('https://buy.stripe.com/eVqeVfgkOajocUX2Dp8Zq00', '_blank');
 }
 function openStoryEngineFromRail() {
   var storyEngineBtn = document.querySelector('.qs-dash-rail-item[data-tool="story-engine"], [data-qs-pinned="story-engine"]');
@@ -11776,7 +11776,7 @@ function renderLens(data) {
 
 // ── PRO PAGE ──────────────────────────────────────────────────────────────────
 function openProPage() {
-  window.location.href = 'https://sam-app-git-quietstudio-joeypirronedesigns-1029s-projects.vercel.app/';
+  window.open('https://buy.stripe.com/eVqeVfgkOajocUX2Dp8Zq00', '_blank');
 }
 function closeProPage() {
   document.getElementById('proPage').classList.remove('open');
@@ -17163,7 +17163,7 @@ function renderPlaybook(data) {
 
   <!-- WHAT SAM CAN BUILD NEXT -->
   <div class="no-print" style="margin-bottom:16px;">
-    <div style="background:var(--surface-2);border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:8px;padding:16px 20px;cursor:pointer;" onclick="(function(){var ts=typeof getTrialState==='function'?getTrialState():{};var trialActive=ts.email&&ts.trialStart&&(Date.now()-ts.trialStart)<(7*24*60*60*1000);var entitled=ts.paid||trialActive;if(entitled){var el=document.getElementById('samNextSection');if(el)el.scrollIntoView({behavior:'smooth'});}else{window.location.href='https://sam-app-git-quietstudio-joeypirronedesigns-1029s-projects.vercel.app/';}})()">
+    <div style="background:var(--surface-2);border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:8px;padding:16px 20px;cursor:pointer;" onclick="(function(){var ts=typeof getTrialState==='function'?getTrialState():{};var trialActive=ts.email&&ts.trialStart&&(Date.now()-ts.trialStart)<(7*24*60*60*1000);var entitled=ts.paid||trialActive;if(entitled){var el=document.getElementById('samNextSection');if(el)el.scrollIntoView({behavior:'smooth'});}else{window.open('https://buy.stripe.com/eVqeVfgkOajocUX2Dp8Zq00','_blank');}})()">
       <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);font-family:'JetBrains Mono',monospace;margin-bottom:4px;">✦ SAM knows your full story</div>
       <div style="font-family:'Inter',system-ui,sans-serif;font-size:15px;font-weight:600;color:var(--ink);">Keep building — email sequence, content plan, video concept & more →</div>
     </div>
@@ -18468,8 +18468,8 @@ function openWizardFromNav() {
       <div><div style="font-family:'Inter',system-ui,sans-serif;font-size:16px;font-weight:600;color:var(--ink);text-align:left;">SAM Standard</div><div style="font-family:'Inter',system-ui,sans-serif;font-size:13px;color:var(--ink-soft);margin-top:2px;text-align:left;">Unlock downloads, saved work, and every next-step tool.</div></div>
       <div style="font-family:'Inter',system-ui,sans-serif;font-size:18px;font-weight:700;color:var(--ink);flex-shrink:0;margin-left:16px;">$29<span style="font-size:13px;font-weight:400;color:var(--ink-muted)">/mo</span></div>
     </div>
-    <button onclick="window.location.href='https://sam-app-git-quietstudio-joeypirronedesigns-1029s-projects.vercel.app/#pricing';" style="background:var(--accent);color:var(--paper);border:none;border-radius:8px;width:100%;padding:14px;font-size:15px;font-weight:600;font-family:'Inter',system-ui,sans-serif;cursor:pointer;margin-bottom:12px;">Unlock SAM Standard →</button>
-    <div onclick="window.location.href='https://sam-app-git-quietstudio-joeypirronedesigns-1029s-projects.vercel.app/#pricing';" style="color:var(--accent);font-family:'Inter',system-ui,sans-serif;font-size:12px;cursor:pointer;margin-bottom:16px;">See what's included →</div>
+    <button onclick="window.open('https://buy.stripe.com/eVqeVfgkOajocUX2Dp8Zq00','_blank');" style="background:var(--accent);color:var(--paper);border:none;border-radius:8px;width:100%;padding:14px;font-size:15px;font-weight:600;font-family:'Inter',system-ui,sans-serif;cursor:pointer;margin-bottom:12px;">Unlock SAM Standard →</button>
+    <div onclick="window.open('https://buy.stripe.com/eVqeVfgkOajocUX2Dp8Zq00','_blank');" style="color:var(--accent);font-family:'Inter',system-ui,sans-serif;font-size:12px;cursor:pointer;margin-bottom:16px;">See what's included →</div>
     <button onclick="if(typeof openSignInModal==='function')openSignInModal();else document.getElementById('paywallOverlay').classList.remove('open');" style="border:1px solid var(--rule);color:var(--ink-soft);border-radius:8px;background:transparent;width:100%;padding:12px;font-family:'Inter',system-ui,sans-serif;cursor:pointer;margin-bottom:10px;font-size:14px;">Already have access? Sign in</button>
     <div onclick="document.getElementById('paywallOverlay').classList.remove('open');" style="color:var(--ink-muted);font-size:12px;font-family:'Inter',system-ui,sans-serif;cursor:pointer;">Not now</div>
   </div>
@@ -19436,7 +19436,7 @@ if (localStorage.getItem('sam_dev') === 'true') {
 (function(){
 var _oc=window.closeProPage;
 window.closeProPage=function(){if(_oc)_oc();requestAnimationFrame(function(){var p=document.getElementById("proPage");if(p&&!p.classList.contains("open")){p.style.pointerEvents="none";p.style.display="none";}});};
-window.openProPage=function(){window.location.href='https://sam-app-git-quietstudio-joeypirronedesigns-1029s-projects.vercel.app/';};
+window.openProPage=function(){window.open('https://buy.stripe.com/eVqeVfgkOajocUX2Dp8Zq00','_blank');};
 
 // ══════════════════════════════════════════════════════════════════════════════
 // SOFT POPUP v7.56
