@@ -8015,7 +8015,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.45" data-qs-descriptor="Patch Q.1 — Persona Lab render404 replaced with sign-in prompt. navigateToPersonaLab() now routes: paid→lab, email+unpaid→paywall, no session→sign-in modal." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.46" data-qs-descriptor="Patch Q.2 — navigateToPersonaLab() now does fresh /api/me check on click so stale paid:false cache never blocks a paid user. Falls back to cache on network error." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -14865,13 +14865,28 @@ function openMeetSAMOverlay() { window.location.href = '/meet'; return; // legac
 // v9.117.0 — Persona Lab rail tile (authenticated users only)
 function navigateToPersonaLab() {
   var _u = (typeof getCurrentUserCached === 'function') ? getCurrentUserCached() : null;
-  if (_u && _u.paid) {
-    window.location.href = '/persona-lab';
-  } else if (_u && _u.email) {
-    if (typeof showPaywall === 'function') showPaywall('tool');
-  } else {
-    if (typeof openSignInModal === 'function') openSignInModal();
-  }
+  // Always do a fresh server check for Persona Lab — cache may be stale on paid status
+  fetch('/api/me', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: _u && _u.email ? _u.email : '' })
+  })
+  .then(function(r) { return r.ok ? r.json() : null; })
+  .then(function(data) {
+    var user = (data && data.user) ? data.user : _u;
+    if (user && user.paid) {
+      if (typeof writeUserCache === 'function') writeUserCache(user);
+      window.location.href = '/persona-lab';
+    } else if (user && user.email) {
+      if (typeof showPaywall === 'function') showPaywall('tool');
+    } else {
+      if (typeof openSignInModal === 'function') openSignInModal();
+    }
+  })
+  .catch(function() {
+    // Fallback to cache on network error
+    if (_u && _u.paid) { window.location.href = '/persona-lab'; }
+    else if (_u && _u.email) { if (typeof showPaywall === 'function') showPaywall('tool'); }
+    else { if (typeof openSignInModal === 'function') openSignInModal(); }
+  });
 }
 function _samReadAuthEmail() {
   try {
