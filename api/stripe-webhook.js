@@ -107,29 +107,30 @@ module.exports = async function handler(req, res) {
               from: 'Joey at SAM <joey@samforcreators.com>',
               to: [email],
               subject: `Welcome to SAM ${plan.charAt(0).toUpperCase() + plan.slice(1)} — you're in.`,
-              html: `<div style="font-family:'Arial',sans-serif;padding:40px 32px;background:#09080F;color:#F0ECFF;border-radius:12px;max-width:520px;margin:0 auto;">
-  <h1 style="color:#A78BFA;font-size:22px;font-weight:600;margin-bottom:8px;">Welcome${name ? ', ' + name : ''}.</h1>
-  <p style="color:rgba(240,236,255,0.8);font-size:15px;line-height:1.6;margin-bottom:24px;">
-    SAM turns your lived experience into a content strategy that actually sounds like you.
-  </p>
-  <p style="color:rgba(240,236,255,0.7);font-size:14px;line-height:1.6;margin-bottom:8px;">
-    Here's the fastest path to your first real result:
-  </p>
-  <div style="margin-bottom:24px;">
-    <p style="color:#A78BFA;font-size:14px;margin:0 0 4px;"><strong>1. Calibrate Voice DNA</strong></p>
-    <p style="color:rgba(240,236,255,0.6);font-size:13px;margin:0 0 16px;">So SAM writes in your register, not generic AI copy. (10 min)</p>
-    <p style="color:#A78BFA;font-size:14px;margin:0 0 4px;"><strong>2. Run Story Engine</strong></p>
-    <p style="color:rgba(240,236,255,0.6);font-size:13px;margin:0 0 16px;">So one real moment becomes a full 12-step content playbook. (20 min)</p>
-    <p style="color:#A78BFA;font-size:14px;margin:0 0 4px;"><strong>3. Check Today every morning</strong></p>
-    <p style="color:rgba(240,236,255,0.6);font-size:13px;margin:0;">SAM reads your data and tells you what matters next.</p>
+              html: `<div style="font-family:'Inter',Arial,sans-serif;padding:48px 36px;background:#FAFAF7;max-width:520px;margin:0 auto;border-radius:12px;border:1px solid #E5E2DB;">
+  <div style="font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#8B8680;margin-bottom:24px;">SAM for Creators</div>
+  <h1 style="font-family:'Georgia',serif;font-style:italic;font-size:28px;font-weight:400;color:#1A1815;margin:0 0 16px;">Welcome${name ? ', ' + name : ''}.</h1>
+  <p style="font-size:15px;line-height:1.7;color:#4A4640;margin:0 0 32px;">SAM turns your lived experience into a content strategy that actually sounds like you.</p>
+  <div style="border-top:1px solid #E5E2DB;padding-top:24px;margin-bottom:32px;">
+    <p style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#8B8680;margin:0 0 20px;">Your first three moves</p>
+    <div style="margin-bottom:16px;">
+      <p style="margin:0 0 4px;"><span style="font-size:11px;font-weight:700;color:#20808D;">1 &nbsp;</span><span style="font-size:14px;font-weight:600;color:#1A1815;">Calibrate Voice DNA</span></p>
+      <p style="font-size:13px;color:#8B8680;margin:0 0 0 20px;line-height:1.6;">So SAM writes in your register, not generic AI copy. (10 min)</p>
+    </div>
+    <div style="margin-bottom:16px;">
+      <p style="margin:0 0 4px;"><span style="font-size:11px;font-weight:700;color:#20808D;">2 &nbsp;</span><span style="font-size:14px;font-weight:600;color:#1A1815;">Run Story Engine</span></p>
+      <p style="font-size:13px;color:#8B8680;margin:0 0 0 20px;line-height:1.6;">So one real moment becomes a full 12-step content playbook. (20 min)</p>
+    </div>
+    <div>
+      <p style="margin:0 0 4px;"><span style="font-size:11px;font-weight:700;color:#20808D;">3 &nbsp;</span><span style="font-size:14px;font-weight:600;color:#1A1815;">Check Today every morning</span></p>
+      <p style="font-size:13px;color:#8B8680;margin:0 0 0 20px;line-height:1.6;">SAM reads your data and tells you what matters next.</p>
+    </div>
   </div>
-  <a href="https://samforcreators.com/app?token=${magicToken}" style="display:inline-block;padding:14px 28px;background:linear-gradient(135deg,#7C3AED,#A78BFA);color:#fff;text-decoration:none;border-radius:8px;font-size:15px;font-weight:600;margin-bottom:24px;">Start with Voice DNA →</a>
-  <p style="color:rgba(240,236,255,0.4);font-size:12px;margin-bottom:4px;">
-    This link logs you in automatically. Bookmark samforcreators.com to return anytime.
-  </p>
-  <p style="color:rgba(240,236,255,0.3);font-size:12px;margin-top:24px;">
-    samforcreators.com · Reply to cancel anytime
-  </p>
+  <a href="https://samforcreators.com/app?token=${magicToken}" style="display:inline-block;padding:14px 28px;background:#20808D;color:#ffffff;text-decoration:none;border-radius:8px;font-size:14px;font-weight:600;margin-bottom:32px;">Start with Voice DNA →</a>
+  <div style="border-top:1px solid #E5E2DB;padding-top:20px;">
+    <p style="font-size:12px;color:#8B8680;margin:0 0 4px;">This link logs you in automatically. Bookmark samforcreators.com to return anytime.</p>
+    <p style="font-size:12px;color:#B8B4AB;margin:16px 0 0;">samforcreators.com · Reply to cancel anytime</p>
+  </div>
 </div>`
             })
           });
