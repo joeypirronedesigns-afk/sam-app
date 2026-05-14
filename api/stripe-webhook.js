@@ -28,8 +28,33 @@ module.exports = async function handler(req, res) {
 
     // Track in Supabase
     try {
-      await trackUser({ uid: email.toLowerCase(), email: email.toLowerCase(), name, tier: plan });
-      await trackSignup({ email: email.toLowerCase(), name, tier: plan, source: 'stripe' });
+      // Use service role key to bypass RLS on payment webhook
+      const SUPABASE_URL = process.env.SUPABASE_URL;
+      const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+      if (SUPABASE_URL && SERVICE_KEY) {
+        const upsertRes = await fetch(`${SUPABASE_URL}/rest/v1/sam_users`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SERVICE_KEY,
+            'Authorization': `Bearer ${SERVICE_KEY}`,
+            'Prefer': 'resolution=merge-duplicates'
+          },
+          body: JSON.stringify({
+            uid: email.toLowerCase(),
+            email: email.toLowerCase(),
+            name: name || '',
+            tier: plan,
+            last_seen: new Date().toISOString()
+          })
+        });
+        if (!upsertRes.ok) {
+          const errText = await upsertRes.text();
+          console.error('[stripe-webhook] Supabase upsert failed:', upsertRes.status, errText);
+        } else {
+          console.log('[stripe-webhook] Supabase upsert ok for:', email);
+        }
+      }
       await trackEvent(email.toLowerCase(), 'payment', { plan, amount: plan === 'creator' ? 39 : plan === 'pro' ? 39 : 99 });
     } catch(e) { console.error('Supabase payment tracking error:', e.message); }
 
