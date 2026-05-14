@@ -94,7 +94,7 @@ module.exports = async function handler(req, res) {
                 <p><strong>Plan:</strong> ${plan}</p>
                 <p><strong>Name:</strong> ${name || 'Not provided'}</p>
                 <p><strong>Email:</strong> ${email}</p>
-                <p><strong>Amount:</strong> $${plan === 'creator' ? '19' : plan === 'pro' ? '39' : '99'}/month</p>
+                <p><strong>Amount:</strong> $${plan === 'creator' ? '39' : plan === 'pro' ? '39' : '99'}/month</p>
               </div>`
             })
           });
@@ -107,17 +107,30 @@ module.exports = async function handler(req, res) {
               from: 'Joey at SAM <joey@samforcreators.com>',
               to: [email],
               subject: `Welcome to SAM ${plan.charAt(0).toUpperCase() + plan.slice(1)} — you're in.`,
-              html: `<div style="font-family:Arial;padding:40px 32px;background:#09080F;color:#F0ECFF;border-radius:12px;max-width:520px;margin:0 auto;">
-                <h1 style="color:#A78BFA;">Welcome${name ? ', ' + name : ''}.</h1>
-                <p style="color:rgba(240,236,255,0.8);">You're now a SAM ${plan.charAt(0).toUpperCase() + plan.slice(1)} member. Your founding member rate is locked in forever.</p>
-                <p style="color:rgba(240,236,255,0.7);">Click below to jump straight back into SAM with your account active:</p>
-                <a href="https://samforcreators.com?token=${magicToken}" 
-                  style="display:inline-block;padding:16px 32px;background:linear-gradient(135deg,#6D28D9,#A78BFA,#F472B6);color:#fff;text-decoration:none;border-radius:50px;font-weight:700;margin:24px 0;">
-                  ✦ Open SAM now →
-                </a>
-                <p style="color:rgba(240,236,255,0.4);font-size:12px;">This link logs you in automatically. Bookmark samforcreators.com to come back anytime — just use "Sign in" and enter this email.</p>
-                <p style="color:rgba(240,236,255,0.3);font-size:12px;margin-top:24px;">samforcreators.com · Reply to cancel anytime</p>
-              </div>`
+              html: `<div style="font-family:'Arial',sans-serif;padding:40px 32px;background:#09080F;color:#F0ECFF;border-radius:12px;max-width:520px;margin:0 auto;">
+  <h1 style="color:#A78BFA;font-size:22px;font-weight:600;margin-bottom:8px;">Welcome${name ? ', ' + name : ''}.</h1>
+  <p style="color:rgba(240,236,255,0.8);font-size:15px;line-height:1.6;margin-bottom:24px;">
+    SAM turns your lived experience into a content strategy that actually sounds like you.
+  </p>
+  <p style="color:rgba(240,236,255,0.7);font-size:14px;line-height:1.6;margin-bottom:8px;">
+    Here's the fastest path to your first real result:
+  </p>
+  <div style="margin-bottom:24px;">
+    <p style="color:#A78BFA;font-size:14px;margin:0 0 4px;"><strong>1. Calibrate Voice DNA</strong></p>
+    <p style="color:rgba(240,236,255,0.6);font-size:13px;margin:0 0 16px;">So SAM writes in your register, not generic AI copy. (10 min)</p>
+    <p style="color:#A78BFA;font-size:14px;margin:0 0 4px;"><strong>2. Run Story Engine</strong></p>
+    <p style="color:rgba(240,236,255,0.6);font-size:13px;margin:0 0 16px;">So one real moment becomes a full 12-step content playbook. (20 min)</p>
+    <p style="color:#A78BFA;font-size:14px;margin:0 0 4px;"><strong>3. Check Today every morning</strong></p>
+    <p style="color:rgba(240,236,255,0.6);font-size:13px;margin:0;">SAM reads your data and tells you what matters next.</p>
+  </div>
+  <a href="https://samforcreators.com/app?token=${magicToken}" style="display:inline-block;padding:14px 28px;background:linear-gradient(135deg,#7C3AED,#A78BFA);color:#fff;text-decoration:none;border-radius:8px;font-size:15px;font-weight:600;margin-bottom:24px;">Start with Voice DNA →</a>
+  <p style="color:rgba(240,236,255,0.4);font-size:12px;margin-bottom:4px;">
+    This link logs you in automatically. Bookmark samforcreators.com to return anytime.
+  </p>
+  <p style="color:rgba(240,236,255,0.3);font-size:12px;margin-top:24px;">
+    samforcreators.com · Reply to cancel anytime
+  </p>
+</div>`
             })
           });
         }
