@@ -12,7 +12,7 @@ module.exports = async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { action, email, token } = req.body || {};
+  const { action, email, token, name } = req.body || {};
 
   // ── SEND MAGIC LINK ──────────────────────────────────────────────────────
   if (action === 'send_magic_link') {
@@ -28,7 +28,7 @@ module.exports = async function handler(req, res) {
       if (!user) {
         user = {
           email: email.toLowerCase(),
-          name: '',
+          name: (name || '').trim(),
           tier: 'free',
           paid: false,
           createdAt: Date.now(),

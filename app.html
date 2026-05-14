@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.51" data-qs-descriptor="Patch Q.3 — Persona Lab runGate() 404 handling: both not_found and codex_not_seeded now redirect to /persona-lab/build. Paid users with no Supabase row treated as new users, not dead ends." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.52" data-qs-descriptor="Patch Q.3 — Persona Lab runGate() 404 handling: both not_found and codex_not_seeded now redirect to /persona-lab/build. Paid users with no Supabase row treated as new users, not dead ends." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -19736,12 +19736,12 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
     setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity 0.5s'; setTimeout(() => t.remove(), 500); }, 3500);
   }
 
-  async function sendMagicLink(email) {
+  async function sendMagicLink(email, name) {
     try {
       const res = await fetch('/api/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'send_magic_link', email })
+        body: JSON.stringify({ action: 'send_magic_link', email, name })
       });
       const data = await res.json();
       if (data.success) {
@@ -19760,8 +19760,11 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
     m.id = 'signInModal';
     m.style.cssText = 'position:fixed;inset:0;background:rgba(26,24,21,0.5);z-index:999;display:flex;align-items:center;justify-content:center;';
     m.innerHTML = `<div style="max-width:400px;width:90%;background:var(--paper);border:1px solid var(--rule);border-radius:16px;padding:32px 28px;text-align:center;display:flex;flex-direction:column;gap:16px;">
-      <div style="font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:24px;font-weight:400;color:var(--ink);">Welcome back.</div>
-      <div style="font-size:14px;color:var(--ink-soft);line-height:1.6;font-family:'Inter',system-ui,sans-serif;">Enter your email and we'll send you a sign-in link.</div>
+      <div style="font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:24px;font-weight:400;color:var(--ink);">Welcome to SAM.</div>
+      <div style="font-size:14px;color:var(--ink-soft);line-height:1.6;font-family:'Inter',system-ui,sans-serif;">Enter your name and email — we'll send you a sign-in link.</div>
+      <input type="text" id="signInName" placeholder="Your name"
+        style="padding:12px 14px;background:var(--paper);border:1px solid var(--rule);border-radius:8px;color:var(--ink);font-size:14px;outline:none;font-family:'Inter',system-ui,sans-serif;"
+        onkeydown="if(event.key==='Enter')document.getElementById('signInEmail').focus()" />
       <input type="email" id="signInEmail" placeholder="your@email.com"
         style="padding:12px 14px;background:var(--paper);border:1px solid var(--rule);border-radius:8px;color:var(--ink);font-size:14px;outline:none;font-family:'Inter',system-ui,sans-serif;"
         onkeydown="if(event.key==='Enter')document.getElementById('signInSubmit').click()" />
@@ -19782,6 +19785,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
 
   async function handleSignInSubmit() {
     const email = document.getElementById('signInEmail')?.value?.trim();
+    const name = (document.getElementById('signInName') || {}).value?.trim() || '';
     const msg = document.getElementById('signInMsg');
     const btn = document.getElementById('signInSubmit');
     if (!email || !email.includes('@')) {
@@ -19789,7 +19793,7 @@ document.addEventListener("touchend",function(e){var b=e.target.closest(".hook-r
       return;
     }
     if(btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
-    const result = await sendMagicLink(email);
+    const result = await sendMagicLink(email, name);
     if (result.success) {
       if(msg) { msg.style.color = 'var(--accent)'; msg.textContent = 'Check your email — link sent! ✓'; }
       if(btn) btn.textContent = 'Sent!';
