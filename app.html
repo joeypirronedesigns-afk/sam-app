@@ -5016,6 +5016,9 @@ body.quiet-studio-shell .qs-rail {
   }
   body.quiet-studio-shell > nav { left: 0; }
   body.quiet-studio-shell > main { padding-left: 0; }
+  .qs-hamburger { display: flex !important; align-items: center; justify-content: center; }
+  .qs-rail.rail-open { transform: translateX(0) !important; z-index: 999; box-shadow: 4px 0 24px rgba(0,0,0,0.15); }
+  #mobileRailOverlay.rail-open { display: block !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -8015,7 +8018,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.47" data-qs-descriptor="Patch Q.3 — Persona Lab runGate() 404 handling: both not_found and codex_not_seeded now redirect to /persona-lab/build. Paid users with no Supabase row treated as new users, not dead ends." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.48" data-qs-descriptor="Patch Q.3 — Persona Lab runGate() 404 handling: both not_found and codex_not_seeded now redirect to /persona-lab/build. Paid users with no Supabase row treated as new users, not dead ends." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -8035,11 +8038,11 @@ textarea.lab-textarea,
 <!-- DAILY section -->
 <nav class="qs-dash-rail-section" aria-label="Daily">
   <div class="qs-dash-rail-section-label">Daily</div>
-  <button class="qs-dash-rail-item is-active" data-qs-nav="today" onclick="if(typeof closeWizard==='function')closeWizard();">
+  <button class="qs-dash-rail-item is-active" data-qs-nav="today" onclick="if(typeof closeWizard==='function')closeWizard();if(window.innerWidth<=767)toggleMobileRail();">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9.5L12 3L21 9.5V20C21 20.5 20.5 21 20 21H4C3.5 21 3 20.5 3 20V9.5Z"/><path d="M9 21V13H15V21"/></svg>
     Today
   </button>
-  <button class="qs-dash-rail-item" data-qs-nav="talk-with-sam" onclick="openTalkWithSAM()">
+  <button class="qs-dash-rail-item" data-qs-nav="talk-with-sam" onclick="openTalkWithSAM();if(window.innerWidth<=767)toggleMobileRail();">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
     Talk with SAM
   </button>
@@ -8048,17 +8051,17 @@ textarea.lab-textarea,
 <!-- BUILD SAM'S BRAIN section -->
 <nav class="qs-dash-rail-section" aria-label="Build SAM's Brain">
   <div class="qs-dash-rail-section-label">Build SAM's Brain</div>
-  <button class="qs-dash-rail-item" data-qs-nav="voice-dna" onclick="openVoiceTrainer()">
+  <button class="qs-dash-rail-item" data-qs-nav="voice-dna" onclick="openVoiceTrainer();if(window.innerWidth<=767)toggleMobileRail();">
     <span class="qs-dash-rail-step" aria-hidden="true">1</span>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5.5C10.2 6.7 10.2 8.5 9 9.7L7.7 11C6.5 12.2 6.5 14 7.7 15.2C8.9 16.4 8.9 18.2 7.7 19.4"/><path d="M15 4.6C13.8 5.8 13.8 7.6 15 8.8L16.3 10.1C17.5 11.3 17.5 13.1 16.3 14.3C15.1 15.5 15.1 17.3 16.3 18.5"/><path d="M10 7.3C11.3 8 12.7 8 14 7.3"/><path d="M10 12C11.3 12.7 12.7 12.7 14 12"/><path d="M10 16.7C11.3 17.4 12.7 17.4 14 16.7"/></svg>
     Voice DNA
   </button>
-  <button class="qs-dash-rail-item" data-qs-nav="story-engine" onclick="openWizardPage()">
+  <button class="qs-dash-rail-item" data-qs-nav="story-engine" onclick="openWizardPage();if(window.innerWidth<=767)toggleMobileRail();">
     <span class="qs-dash-rail-step" aria-hidden="true">2</span>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6.5C6 5.7 6.7 5 7.5 5H11.5C12.9 5 14 6.1 14 7.5V18.5C14 17.1 12.9 16 11.5 16H7.5C6.7 16 6 16.7 6 17.5V6.5Z"/><path d="M18 6.5C18 5.7 17.3 5 16.5 5H12.5C11.1 5 10 6.1 10 7.5V18.5C10 17.1 11.1 16 12.5 16H16.5C17.3 16 18 16.7 18 17.5V6.5Z"/></svg>
     Story Engine
   </button>
-  <button class="qs-dash-rail-item" data-qs-nav="reach" onclick="openTool('reach')">
+  <button class="qs-dash-rail-item" data-qs-nav="reach" onclick="openTool('reach');if(window.innerWidth<=767)toggleMobileRail();">
     <span class="qs-dash-rail-step" aria-hidden="true">3</span>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="12" r="2.2"/><circle cx="16.5" cy="7.5" r="1.8"/><circle cx="17" cy="16.5" r="1.8"/><path d="M10.1 10.9L14.7 8.4"/><path d="M10.1 13.1L15.1 15.8"/></svg>
     The Reach
@@ -8068,7 +8071,7 @@ textarea.lab-textarea,
 <!-- STUDIO section — Persona Lab discovery (authenticated users only) -->
 <nav class="qs-dash-rail-section" aria-label="Studio" id="qsRailStudioSection" style="display:none;">
   <div class="qs-dash-rail-section-label">Studio</div>
-  <button class="qs-dash-rail-item" data-qs-nav="persona-lab" onclick="navigateToPersonaLab()">
+  <button class="qs-dash-rail-item" data-qs-nav="persona-lab" onclick="navigateToPersonaLab();if(window.innerWidth<=767)toggleMobileRail();">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3L4 7v6c0 4 3.5 7 8 8 4.5-1 8-4 8-8V7l-8-4z"/><path d="M9 11l2 2 4-4"/></svg>
     Persona Lab
   </button>
@@ -8077,11 +8080,11 @@ textarea.lab-textarea,
 <!-- MORE section -->
 <nav class="qs-dash-rail-section" aria-label="More">
   <div class="qs-dash-rail-section-label">More</div>
-  <button class="qs-dash-rail-item" data-qs-nav="all-tools" onclick="openQSDrawer()">
+  <button class="qs-dash-rail-item" data-qs-nav="all-tools" onclick="openQSDrawer();if(window.innerWidth<=767)toggleMobileRail();">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></svg>
     All Tools
   </button>
-  <button class="qs-dash-rail-item" data-qs-nav="my-ideas" onclick="if(typeof openIdeasPanel==='function')openIdeasPanel()">
+  <button class="qs-dash-rail-item" data-qs-nav="my-ideas" onclick="if(typeof openIdeasPanel==='function')openIdeasPanel();if(window.innerWidth<=767)toggleMobileRail();">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="7" width="11" height="10" rx="2"/><path d="M9 7V6.5C9 5.7 9.7 5 10.5 5H17.5C18.3 5 19 5.7 19 6.5V13.5C19 14.3 18.3 15 17.5 15H16"/></svg>
     My Ideas
     <span class="qs-dash-rail-item-count" id="qsIdeasNavCount">0</span>
@@ -8113,6 +8116,13 @@ textarea.lab-textarea,
 
   <!-- QS Top Strip -->
   <div class="qs-topstrip" role="banner">
+    <button class="qs-hamburger" onclick="toggleMobileRail()" aria-label="Menu" style="display:none;background:none;border:none;cursor:pointer;padding:8px;color:var(--ink);flex-shrink:0;">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect y="3" width="20" height="2" rx="1" fill="currentColor"/>
+        <rect y="9" width="20" height="2" rx="1" fill="currentColor"/>
+        <rect y="15" width="20" height="2" rx="1" fill="currentColor"/>
+      </svg>
+    </button>
     <div class="qs-topstrip-wordmark" onclick="goHome()">S<span class="nav-logo-dot">.</span>A<span class="nav-logo-dot">.</span>M<span class="nav-logo-dot">.</span></div>
     <div class="qs-topstrip-account">
       <button class="qs-topstrip-signin" onclick="openSignInModal()">Sign in</button>
@@ -10057,6 +10067,19 @@ function openWizardPage(skipCheck) {
 }
 function openProPage() {
   window.open('https://buy.stripe.com/eVqeVfgkOajocUX2Dp8Zq00', '_blank');
+}
+function toggleMobileRail() {
+  var rail = document.querySelector('.qs-rail');
+  var overlay = document.getElementById('mobileRailOverlay');
+  if (!rail) return;
+  var isOpen = rail.classList.contains('rail-open');
+  if (isOpen) {
+    rail.classList.remove('rail-open');
+    if (overlay) overlay.classList.remove('rail-open');
+  } else {
+    rail.classList.add('rail-open');
+    if (overlay) overlay.classList.add('rail-open');
+  }
 }
 function openStoryEngineFromRail() {
   var storyEngineBtn = document.querySelector('.qs-dash-rail-item[data-tool="story-engine"], [data-qs-pinned="story-engine"]');
@@ -22959,6 +22982,7 @@ function closeExecPackDrawer() {
   document.body.style.overflow = '';
 }
 </script>
+<div id="mobileRailOverlay" onclick="toggleMobileRail()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:998;"></div>
 </body>
 </html>
  
