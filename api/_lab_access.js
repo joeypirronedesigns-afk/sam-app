@@ -61,6 +61,15 @@ async function assertPersonaLabUser(req, res, { email } = {}) {
   }
   const row = await _lookupUser(e);
   if (!row) {
+    // Check KV as fallback — Stripe webhook may have written paid:true before Supabase trackUser ran
+    try {
+      const { kv } = require('@vercel/kv');
+      const kvUser = await kv.get(`user:${e}`);
+      if (kvUser && kvUser.paid) {
+        // KV-only paid user — treat as valid
+        return { ok: true, email: e, row: null, kvOnly: true };
+      }
+    } catch(err) { /* KV unavailable */ }
     res.status(404).json({ error: 'not_found' });
     return { ok: false };
   }
