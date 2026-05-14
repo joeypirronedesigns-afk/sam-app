@@ -5017,8 +5017,10 @@ body.quiet-studio-shell .qs-rail {
   body.quiet-studio-shell > nav { left: 0; }
   body.quiet-studio-shell > main { padding-left: 0; }
   .qs-hamburger { display: flex !important; align-items: center; justify-content: center; }
-  .qs-rail.rail-open { transform: translateX(0) !important; z-index: 1000; box-shadow: 4px 0 24px rgba(0,0,0,0.15); }
-  #mobileRailOverlay.rail-open { display: block !important; z-index: 999; }
+  .qs-rail.rail-open { transform: translateX(0) !important; z-index: 9500 !important; box-shadow: 4px 0 24px rgba(0,0,0,0.15); }
+  #mobileRailOverlay.rail-open { display: block !important; z-index: 9499 !important; }
+  #persistentSAMFab { display: none !important; }
+  body.rail-open #persistentSAMFab { display: none !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -8018,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.49" data-qs-descriptor="Patch Q.3 — Persona Lab runGate() 404 handling: both not_found and codex_not_seeded now redirect to /persona-lab/build. Paid users with no Supabase row treated as new users, not dead ends." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.50" data-qs-descriptor="Patch Q.3 — Persona Lab runGate() 404 handling: both not_found and codex_not_seeded now redirect to /persona-lab/build. Paid users with no Supabase row treated as new users, not dead ends." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -10076,9 +10078,11 @@ function toggleMobileRail() {
   if (isOpen) {
     rail.classList.remove('rail-open');
     if (overlay) overlay.classList.remove('rail-open');
+    document.body.classList.remove('rail-open');
   } else {
     rail.classList.add('rail-open');
     if (overlay) overlay.classList.add('rail-open');
+    document.body.classList.add('rail-open');
   }
 }
 function openStoryEngineFromRail() {
