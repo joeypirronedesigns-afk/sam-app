@@ -8015,7 +8015,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.46" data-qs-descriptor="Patch Q.2 — navigateToPersonaLab() now does fresh /api/me check on click so stale paid:false cache never blocks a paid user. Falls back to cache on network error." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.47" data-qs-descriptor="Patch Q.3 — Persona Lab runGate() 404 handling: both not_found and codex_not_seeded now redirect to /persona-lab/build. Paid users with no Supabase row treated as new users, not dead ends." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -21274,17 +21274,13 @@ function openDailyBriefDataModal() {
         cache: 'no-store'
       });
 
-      // 404 from API has two flavors:
-      //   - 'not_found'       → email not in sam_users (anonymous / unknown). 404 here too.
-      //   - 'codex_not_seeded'→ authed user, no codex row yet. Redirect into Archivist build.
+      // Both codex_not_seeded and not_found redirect to build —
+      // a paid user with no Supabase row is a new user, not a dead end.
       if (r.status === 404) {
         var notFoundData = null;
         try { notFoundData = await r.json(); } catch (e) {}
-        if (notFoundData && notFoundData.error === 'codex_not_seeded') {
-          redirectToBuild('no_codex');
-          return;
-        }
-        render404();
+        var reason = (notFoundData && notFoundData.error) || 'not_found';
+        redirectToBuild(reason);
         return;
       }
       if (r.status !== 200) { render404(); return; }
