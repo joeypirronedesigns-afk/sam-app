@@ -21,20 +21,23 @@ module.exports = async function handler(req, res) {
     });
     if (!r.ok) return res.status(200).json({ user: null });
     const rows = await r.json();
-    if (!rows || !rows.length) return res.status(200).json({ user: null });
-    const row = rows[0];
+    const row = rows && rows.length ? rows[0] : null;
 
-    // Check KV for authoritative paid status (Stripe webhook writes here)
+    // Check KV for authoritative paid status — must happen even if no Supabase row
     let kvPaid = false;
     let kvTier = null;
+    let kvUser = null;
     try {
       const { kv } = require('@vercel/kv');
-      const kvUser = await kv.get(`user:${email.toLowerCase()}`);
+      kvUser = await kv.get(`user:${email.toLowerCase()}`);
       if (kvUser) {
         kvPaid = !!kvUser.paid;
         kvTier = kvUser.tier || null;
       }
-    } catch(e) { /* KV unavailable — fall back to Supabase */ }
+    } catch(e) { /* KV unavailable */ }
+
+    // If no Supabase row AND no KV record — truly unknown user
+    if (!row && !kvUser) return res.status(200).json({ user: null });
 
     // Merge: KV paid status wins over Supabase derived paid
     const effectivePaid = kvPaid || !!(row && row.tier && row.tier !== 'free');
@@ -42,14 +45,14 @@ module.exports = async function handler(req, res) {
 
     return res.status(200).json({
       user: {
-        email: row.email,
-        name: row.name || '',
+        email: (row && row.email) || email.toLowerCase(),
+        name: (row && row.name) || '',
         tier: effectiveTier,
         paid: effectivePaid,
-        trialStart: row.created_at ? new Date(row.created_at).getTime() : null,
-        voiceProfile: row.voice_profile || null,
-        voiceVersion: row.voice_version || 0,
-        samContext: row.sam_context || null
+        trialStart: row && row.created_at ? new Date(row.created_at).getTime() : null,
+        voiceProfile: (row && row.voice_profile) || null,
+        voiceVersion: (row && row.voice_version) || 0,
+        samContext: (row && row.sam_context) || null
       }
     });
   } catch (e) {
