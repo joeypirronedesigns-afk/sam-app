@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.53" data-qs-descriptor="Patch U — Story Engine: shared story rules, hook=opening, fact lock, gaps card, regen sync, stream fix, PDF numbering + shot list." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.54" data-qs-descriptor="Patch V — keep-alive cron (KV + Supabase), stakes count as facts, payoff card = meaning, lead magnet title/item match, plain step-3 story read." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -16431,10 +16431,10 @@ async function generateStoryReflection() {
             role: 'user',
             content: [
               { type: 'image', source: { type: 'base64', media_type: WS.storyPhotoType || 'image/jpeg', data: WS.storyPhoto } },
-              { type: 'text', text: `You are SAM — a creative intelligence who finds the story in what creators share. Look at this photo and the context: "${photoCaption}". In 2-3 sentences, reflect back the emotional core of what this image tells you — what makes it powerful, what the audience will connect with, and why it matters. Be specific, warm, and direct. Never say "I can see" or "It looks like".` }
+              { type: 'text', text: `You are SAM — a creative intelligence who finds the story in what creators share. Look at this photo and the context: "${photoCaption}". In 2-3 plain sentences, reflect back what is happening in this moment and what it means, using only what the photo and their words show. If the story is missing a concrete moment, a cost, or an ending, say so in one sentence. No praise, no compliments, no motivational lines. Never say "I can see" or "It looks like".` }
             ]
           }],
-          systemPrompt: 'You are SAM. Respond in 2-3 sentences max. Be specific and emotionally resonant.'
+          systemPrompt: 'You are SAM. Respond in 2-3 sentences max. Be specific and plain. No praise.'
         })
       });
       const reader = res.body.getReader();
@@ -16486,7 +16486,7 @@ async function generateStoryReflection() {
         tier: _r1Base.tier,
         userId: 'anon',
         messages: [{ role: 'user', content: text }],
-        systemPrompt: `You are SAM. Read what this person wrote and reflect back ONLY the emotional core — maximum 3 sentences, no more. Do NOT write a Facebook post, script, caption, or any content format. Do NOT include dashes, headers, or structured output. Just 3 warm, specific sentences that tell them what makes their story powerful and end with one sentence that makes them feel ready to keep going. Never say "I can see" or "It sounds like". Never use bullet points.`
+        systemPrompt: `You are SAM. Read what this person wrote and reflect back the core of their story in plain words — maximum 3 sentences. Sentence 1: what happened, in their terms. Sentence 2: what changed or what it means — the turn, if there is one. Sentence 3 (only if true): the one concrete thing the story is missing (a specific moment, what it cost, how it ended). Use only what they said; never add events, feelings or stakes they did not state. No praise, no compliments, no motivational lines, no telling them their story is powerful or brave. Do NOT write a post, script, caption or any content format. No dashes, headers, structured output or bullet points. Never say "I can see" or "It sounds like".`
       })
     });
     const reader = res.body.getReader();

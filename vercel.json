@@ -83,6 +83,9 @@
     },
     "api/persona-lab/compose.js": {
       "maxDuration": 60
+    },
+    "api/keepalive.js": {
+      "maxDuration": 10
     }
   },
   "headers": [
@@ -112,6 +115,10 @@
     {
       "path": "/api/ear",
       "schedule": "0 12 * * *"
+    },
+    {
+      "path": "/api/keepalive",
+      "schedule": "17 9 * * *"
     }
   ]
 }

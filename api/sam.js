@@ -531,6 +531,9 @@ NEVER write in generic AI voice when you have this profile. Generic AI voice is:
    Copy every number exactly as the creator said it ("an inch and a half" stays "an inch and a half").
    If a beat needs a concrete detail the moment does not contain, write the beat without it and list
    what is missing in "gaps". If the moment has no real turn yet, say so plainly in the diagnosis.
+   Stakes, consequences, outcomes and feelings count as facts too. If the creator did not say what it
+   cost them or what would happen ("nobody was watching", "it was killing my content"), do not invent it:
+   write the risk beat from what they did say, and add "what this cost you" to "gaps".
 
 3. Each beat has one job:
    opening — the hook. Opens the question. It is the SAME line as "hook", word for word.
@@ -538,6 +541,7 @@ NEVER write in generic AI voice when you have this profile. Generic AI voice is:
    risk    — what it costs if nothing changes. A real cost, not doubt or skepticism.
    turn    — the flip. Something reverses. Not a restatement of the setup.
    payoff  — what it means. The realization or lesson the turn earns; it answers the opening's question.
+             State the meaning, not the event ("I keep fixing what I can see", not "the door rolled").
    cta     — one short action that follows from the payoff.
 
 4. Every question raised must be answered by the payoff. No solution appears before the turn.
@@ -684,7 +688,7 @@ Return ONLY this JSON — be CONCISE in every field to fit within token limits:
     "setup": "12 words max.",
     "risk": "12 words max.",
     "turn": "12 words max.",
-    "payoff": "12 words max. What it means.",
+    "payoff": "18 words max. What it means — the realization the turn earns, not a restatement of the event.",
     "cta": "12 words max."
   },
   "full_script": "Complete script — 200 words max. Realize all six story_architecture beats in order. Use [BEAT: Opening], [BEAT: Setup], [BEAT: Risk], [BEAT: Turn], [BEAT: Payoff], [BEAT: CTA] labels — each marker on its own line, preceding the script content for that beat.",
@@ -710,10 +714,10 @@ Return ONLY this JSON — be CONCISE in every field to fit within token limits:
     "why": "2 sentences."
   },
   "lead_magnet": {
-    "title": "Specific, compelling title",
+    "title": "Specific, compelling title. Never promise a number of steps/beats/questions other than the 5 items below.",
     "why": "2 sentences. The guide must come from what the creator showed or learned in this moment, framed as what they learned — not outside expert advice or claims the creator did not make.",
     "items": [
-      {"heading": "Point 1", "body": "2 sentences max."},
+      {"heading": "Point 1 — teach from this creator's moment in plain words; do not restate SAM's internal instructions", "body": "2 sentences max."},
       {"heading": "Point 2", "body": "2 sentences max."},
       {"heading": "Point 3", "body": "2 sentences max."},
       {"heading": "Point 4", "body": "2 sentences max."},
@@ -762,7 +766,7 @@ Return ONLY: {"diagnosis":"2-3 sentences — what this story is really about ben
 ${STORY_RULES}
 
 ${steer ? 'CREATOR DIRECTION: ' + steer : ''}
-Return ONLY: {"hook":"under 15 words, open loop, true to the moment","hook_why":"one sentence","story_architecture":{"opening":"same as hook","setup":"12 words max","risk":"12 words max","turn":"12 words max","payoff":"12 words max — what it means","cta":"12 words max"},"gaps":["missing details, or empty array"]}`,
+Return ONLY: {"hook":"under 15 words, open loop, true to the moment","hook_why":"one sentence","story_architecture":{"opening":"same as hook","setup":"12 words max","risk":"12 words max","turn":"12 words max","payoff":"18 words max — what it means, not the event","cta":"12 words max"},"gaps":["missing details, or empty array"]}`,
 
         hook: `Rewrite ONLY the opening hook — the single line that stops the scroll.
 ${steer ? 'CREATOR DIRECTION: ' + steer : ''}

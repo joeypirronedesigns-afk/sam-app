@@ -42,7 +42,7 @@ Stripe payment link: https://buy.stripe.com/eVqeVfgkOajocUX2Dp8Zq00
 - Typography: Instrument Serif italic for headings, Inter for UI, JetBrains Mono for code
 - Sidebar: Left nav, 220px wide. Sections: DAILY, BUILD SAM'S BRAIN, STUDIO, MORE, EXECUTION PACK
 - Version stamp: data-qs-version attribute on div[data-qs-shell] — bump on every commit
-- Current version: v9.118.53+
+- Current version: v9.118.54+
 
 ---
 
@@ -64,7 +64,7 @@ Vercel CLI: Installed at /opt/homebrew/bin/vercel, logged in as joeypirronedesig
 
 ---
 
-## Current Version: v9.118.53
+## Current Version: v9.118.54
 
 ### Key Architecture Decisions Made
 - No free trial — Patch O removed it. Paid or blocked. trial-status.js returns allowed:false for all unpaid users.
@@ -87,9 +87,11 @@ Vercel CLI: Installed at /opt/homebrew/bin/vercel, logged in as joeypirronedesig
 - Patch T — Welcome email redesigned with Quiet Studio light theme, correct magic link URL (/app?token=), onboarding copy
 - Security — SQL injection fix in memory.js:257, Stripe webhook uses service role key for Supabase upsert
 - Patch U (v9.118.53) — Story Engine: shared STORY_RULES (beat jobs, no invention, exact numbers, payoff = meaning, short CTA + sign-off) in playbook + architecture/script regens; story_core + gaps in schema; hook copied into opening in code; hashtag rule + platform specs added to playbook prompt; lead magnet grounded in creator's own learning; SSE line-buffer fix for dropped words (streamCall + tool stream); all section regens sync _lastPlaybookData; architecture Redo re-renders hook and rewrites script; hook Redo updates Opening; 'Make it stronger' gaps card in app + PDF; PDF page numbers computed (no gaps); b_roll printed as Shot List page
+- Patch V (v9.118.54) — api/keepalive.js daily cron 09:17 UTC (writes keepalive:last to KV, reads sam_users from Supabase; 500 + log if either fails). STORY_RULES: stakes/outcomes/feelings count as facts → gaps. Payoff card 18 words, meaning not event. Lead magnet title must match 5 items, no restating SAM's internal rules. Step-3 story reflection (generateStoryReflection) rewritten: plain, no praise, names what's missing.
 
 ### Open Task List (v9.118.x)
-- Patch V — Story Engine: 'What's your connection to this?' wizard question (lived it / built it / reviewing it / witnessed it) passed into the prompt; beat timings scaled to script length instead of hardcoded 0–70s
+- Patch W — Story Engine: beat timings scaled to script length instead of hardcoded 0–70s; 'connection to this' wizard question only if founder/role detection keeps missing
+- Ops — Production KV is the Upstash store named 'temp-restore' (restored 2026-10-05 from sam-kv backup 2026-07-20). Do not delete it. Preview SITE_URL points at the stale git-quietstudio alias; fix or remove it.
 - T1 — Server telemetry sink: POST /api/telemetry + sam_telemetry table
 - T2 — Step 0 prefill diagnostic log
 - T4 — Fix localOnly undercount (after T1)
