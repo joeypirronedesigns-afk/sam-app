@@ -401,22 +401,30 @@ PERSONALITY: Confident, direct, warm. Keep responses to 2-4 sentences max. No ja
       const reader = toolRes.body.getReader();
       const decoder = new TextDecoder();
       let full = '';
+      // Patch U.1 — buffer partial SSE lines across chunks (see streamCall).
+      let lineBuf = '';
+      const handleLine = (line) => {
+        if (!line.startsWith('data: ')) return;
+        const raw = line.slice(6).trim();
+        if (!raw || raw === '[DONE]') return;
+        try {
+          const evt = JSON.parse(raw);
+          if (evt.type === 'content_block_delta' && evt.delta?.text) {
+            full += evt.delta.text;
+            res.write('data: ' + JSON.stringify({ t: evt.delta.text }) + '\n\n');
+          }
+        } catch(_) {}
+      };
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        for (const line of decoder.decode(value, { stream: true }).split('\n')) {
-          if (!line.startsWith('data: ')) continue;
-          const raw = line.slice(6).trim();
-          if (raw === '[DONE]') continue;
-          try {
-            const evt = JSON.parse(raw);
-            if (evt.type === 'content_block_delta' && evt.delta?.text) {
-              full += evt.delta.text;
-              res.write('data: ' + JSON.stringify({ t: evt.delta.text }) + '\n\n');
-            }
-          } catch(_) {}
-        }
+        lineBuf += decoder.decode(value, { stream: true });
+        const lines = lineBuf.split('\n');
+        lineBuf = lines.pop();
+        for (const line of lines) handleLine(line);
       }
+      lineBuf += decoder.decode();
+      if (lineBuf) handleLine(lineBuf);
       // Parse and return the JSON
       let clean = full.trim().replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/\s*```$/i,'').trim();
       const first = clean.indexOf('{'), last = clean.lastIndexOf('}');
@@ -510,6 +518,35 @@ NEVER write in generic AI voice when you have this profile. Generic AI voice is:
 
   const samIdentity = `You are S.A.M. — Strategic Assistant for Making. You are an AI content strategist that helps creators write better scripts, hooks, captions, strategies and content plans.`;
 
+  // Patch U.2 — shared story rules. Used by the playbook and by the architecture + script regens
+  // so every path builds structure the same way.
+  const STORY_RULES = `STORY ARCHITECTURE — build this before writing anything else.
+
+1. Find the story first. From the creator's moment, identify:
+   want (what they were after), obstacle (what was in the way),
+   question (what the opening makes the viewer need answered),
+   flip (the belief or situation that reverses at the turn).
+
+2. Use only what the creator gave you. Never invent events, people, pets, places, numbers, or quotes.
+   Copy every number exactly as the creator said it ("an inch and a half" stays "an inch and a half").
+   If a beat needs a concrete detail the moment does not contain, write the beat without it and list
+   what is missing in "gaps". If the moment has no real turn yet, say so plainly in the diagnosis.
+
+3. Each beat has one job:
+   opening — the hook. Opens the question. It is the SAME line as "hook", word for word.
+   setup   — the want and the obstacle. Must NOT reveal the solution or the real cause.
+   risk    — what it costs if nothing changes. A real cost, not doubt or skepticism.
+   turn    — the flip. Something reverses. Not a restatement of the setup.
+   payoff  — what it means. The realization or lesson the turn earns; it answers the opening's question.
+   cta     — one short action that follows from the payoff.
+
+4. Every question raised must be answered by the payoff. No solution appears before the turn.
+
+5. Length follows the material. A short moment makes a short video. Never pad to fill time.
+
+6. Signature sign-off: if the creator has a sign-off line they always use, it may close the script
+   and the captions, after the CTA. It never replaces the CTA or the payoff.`;
+
   const base = `${samIdentity} ${toneContext} ${emojiLine} ${hashtagRule} ${creatorLine} ${voiceLine}
 ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatContext} CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No explanation outside the JSON.`;
 
@@ -531,22 +568,32 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
     const reader = r.body.getReader();
     const decoder = new TextDecoder();
     let full = '';
+    // Patch U.1 — buffer partial SSE lines across network chunks. Previously each chunk was
+    // split and parsed on its own, so a line cut by a chunk boundary failed JSON.parse and its
+    // text delta was silently dropped (missing words in output).
+    let lineBuf = '';
+    const handleLine = (line) => {
+      if (!line.startsWith('data: ')) return;
+      const raw = line.slice(6).trim();
+      if (!raw || raw === '[DONE]') return;
+      try {
+        const evt = JSON.parse(raw);
+        if (evt.type === 'content_block_delta' && evt.delta?.text) {
+          full += evt.delta.text;
+          res.write('data: ' + JSON.stringify({ t: evt.delta.text }) + '\n\n');
+        }
+      } catch (_) {}
+    };
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
-      for (const line of decoder.decode(value, { stream: true }).split('\n')) {
-        if (!line.startsWith('data: ')) continue;
-        const raw = line.slice(6).trim();
-        if (raw === '[DONE]') continue;
-        try {
-          const evt = JSON.parse(raw);
-          if (evt.type === 'content_block_delta' && evt.delta?.text) {
-            full += evt.delta.text;
-            res.write('data: ' + JSON.stringify({ t: evt.delta.text }) + '\n\n');
-          }
-        } catch (_) {}
-      }
+      lineBuf += decoder.decode(value, { stream: true });
+      const lines = lineBuf.split('\n');
+      lineBuf = lines.pop();
+      for (const line of lines) handleLine(line);
     }
+    lineBuf += decoder.decode();
+    if (lineBuf) handleLine(lineBuf);
     let clean = full.trim().replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/\s*```$/i,'').trim();
     const first = clean.indexOf('{');
     const last = clean.lastIndexOf('}');
@@ -556,6 +603,10 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
     catch (e) {
       res.write('data: ' + JSON.stringify({ error: 'SAM had trouble formatting the response. Please try again.' }) + '\n\n');
       res.end(); return;
+    }
+    // Patch U.3 — the hook IS the opening beat. Enforced in code so they can never diverge.
+    if (parsed && typeof parsed === 'object' && parsed.hook && parsed.story_architecture && typeof parsed.story_architecture === 'object') {
+      parsed.story_architecture.opening = parsed.hook;
     }
     // v9.118.16 (Patch C) — derive structured script_beats[] from [BEAT: ...] markers.
     // Additive only; full_script preserved unchanged. Empty array when no markers found.
@@ -589,12 +640,14 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
       }[delivery] || '';
 
       const paceNote = {
-        fast:    "Speaker pace: fast. Script should be tight and punchy. 60 seconds max.",
-        natural: "Speaker pace: natural. Script should breathe. 75-90 seconds.",
-        slow:    "Speaker pace: deliberate. Script can go to 90-120 seconds. Pauses are intentional."
+        fast:    "Speaker pace: fast. Tight and punchy. Never longer than 60 seconds; shorter if the moment is short.",
+        natural: "Speaker pace: natural. Let it breathe. Never longer than 90 seconds; shorter if the moment is short.",
+        slow:    "Speaker pace: deliberate. Pauses are intentional. Never longer than 120 seconds; shorter if the moment is short."
       }[pace] || '';
 
-      const playbookPrompt = `${samIdentity} ${toneContext} ${emojiLine} ${creatorLine} ${voiceLine} ${demographicsLine} ${languageLine}
+      const playbookPrompt = `${samIdentity} ${toneContext} ${emojiLine} ${hashtagRule} ${creatorLine} ${voiceLine} ${demographicsLine} ${languageLine} ${platformContext}
+
+${STORY_RULES}
 
 WIZARD CONTEXT:
 ${wizContext}
@@ -607,24 +660,33 @@ For the full_script and narration_script fields:
 - Write the script as a realization of the story_architecture beats below, in this exact order: Opening, Setup, Risk, Turn, Payoff, CTA.
 - Use [BEAT: Opening], [BEAT: Setup], [BEAT: Risk], [BEAT: Turn], [BEAT: Payoff], [BEAT: CTA] labels so each beat is visibly distinct in the script.
 - IMPORTANT: each [BEAT: ...] marker must appear on its own line, immediately preceding the script content for that beat. Do not put markers mid-paragraph or inline with script text.
-- Apply ABT structure: Setup is the "And", Risk is the "But", Turn + Payoff together are the "Therefore".
+- The [BEAT: Opening] section must begin with the hook, word for word.
+- Setup is the "And", Risk is the "But", Turn is the "Therefore", Payoff is what it means.
 - Make Turn happen because the Risk is real, and Payoff happen because of the Turn. Do not soften or skip the stakes in Risk → Turn → Payoff.
+- The [BEAT: CTA] section is one short line, plus the creator's sign-off if they have one. Nothing else.
 - When voice and structure conflict, obey the creator's voice profile first and express the structure through their voice — never generic AI or screenwriting-textbook language.
 
 Return ONLY this JSON — be CONCISE in every field to fit within token limits:
 
 {
-  "diagnosis": "2 sentences max.",
-  "story_architecture": {
-    "opening": "8 words max",
-    "setup": "8 words max",
-    "risk": "8 words max",
-    "turn": "8 words max",
-    "payoff": "8 words max",
-    "cta": "8 words max"
+  "story_core": {
+    "want": "One sentence, from the creator's own words.",
+    "obstacle": "One sentence.",
+    "question": "The question the opening opens.",
+    "flip": "What reverses at the turn. If nothing does, say 'no turn yet'."
   },
-  "hook": "Under 15 words. Creates an open loop.",
+  "gaps": ["Concrete details the story needs that the creator did not give. Empty array if none."],
+  "diagnosis": "2 sentences max. What the story is really about. If there is no turn yet, say so.",
+  "hook": "Under 15 words. Creates an open loop. Must be true to the moment.",
   "hook_why": "One sentence.",
+  "story_architecture": {
+    "opening": "Copy the hook exactly.",
+    "setup": "12 words max.",
+    "risk": "12 words max.",
+    "turn": "12 words max.",
+    "payoff": "12 words max. What it means.",
+    "cta": "12 words max."
+  },
   "full_script": "Complete script — 200 words max. Realize all six story_architecture beats in order. Use [BEAT: Opening], [BEAT: Setup], [BEAT: Risk], [BEAT: Turn], [BEAT: Payoff], [BEAT: CTA] labels — each marker on its own line, preceding the script content for that beat.",
   "narration_script": "If narration delivery — 200 word version following the same six-beat fidelity rules as full_script: [BEAT: Opening] [BEAT: Setup] [BEAT: Risk] [BEAT: Turn] [BEAT: Payoff] [BEAT: CTA] in order, each marker on its own line, with the Risk → Turn → Payoff causal chain intact. Otherwise null.",
   "pacing_note": "One sentence.",
@@ -649,7 +711,7 @@ Return ONLY this JSON — be CONCISE in every field to fit within token limits:
   },
   "lead_magnet": {
     "title": "Specific, compelling title",
-    "why": "2 sentences.",
+    "why": "2 sentences. The guide must come from what the creator showed or learned in this moment, framed as what they learned — not outside expert advice or claims the creator did not make.",
     "items": [
       {"heading": "Point 1", "body": "2 sentences max."},
       {"heading": "Point 2", "body": "2 sentences max."},
@@ -695,8 +757,12 @@ CRITICAL: Return ONLY valid JSON. Keep ALL fields concise — the JSON must be c
         diagnosis: `Rewrite ONLY the story diagnosis for this creator's moment.
 Return ONLY: {"diagnosis":"2-3 sentences — what this story is really about beneath the surface","diagnosis_why":"1 sentence on why this framing will resonate"}`,
 
-        architecture: `Rewrite ONLY the story architecture — the 6-beat structure.
-Return ONLY: {"story_architecture":{"opening":"hook action/line for 0-3s","setup":"context beat for 3-15s","risk":"stakes beat for 15-30s","turn":"pivot moment for 30-50s","payoff":"resolution for 50-70s","cta":"call to action for final 5s"}}`,
+        architecture: `Rewrite ONLY the story architecture.
+
+${STORY_RULES}
+
+${steer ? 'CREATOR DIRECTION: ' + steer : ''}
+Return ONLY: {"hook":"under 15 words, open loop, true to the moment","hook_why":"one sentence","story_architecture":{"opening":"same as hook","setup":"12 words max","risk":"12 words max","turn":"12 words max","payoff":"12 words max — what it means","cta":"12 words max"},"gaps":["missing details, or empty array"]}`,
 
         hook: `Rewrite ONLY the opening hook — the single line that stops the scroll.
 ${steer ? 'CREATOR DIRECTION: ' + steer : ''}
@@ -712,10 +778,14 @@ ${voiceLine}
 Delivery style: ${delivery}. Pace: ${pace}.
 ${steer ? 'CREATOR DIRECTION: ' + steer : ''}
 
+${STORY_RULES}
+
 Requirements:
+- The Opening section must begin with this line, word for word: ${arch.opening || ''}
 - Preserve all six beats and keep them in this exact order.
+- The CTA section is one short line, plus the creator's sign-off if they have one. Nothing else.
 - Use [BEAT: Opening], [BEAT: Setup], [BEAT: Risk], [BEAT: Turn], [BEAT: Payoff], [BEAT: CTA] labels — each marker on its own line, preceding the script content for that beat.
-- Apply ABT structure and causal flow: Risk is the "But", Turn + Payoff are the "Therefore". Turn happens because the Risk is real; Payoff happens because of the Turn.
+- Causal flow: Risk is the "But", Turn is the "Therefore", Payoff is what it means. Turn happens because the Risk is real; Payoff happens because of the Turn.
 - Make the writing better while keeping the same structure, stakes, and creator's voice.
 
 Format script lines as plain text. Use (note) for delivery notes when helpful.

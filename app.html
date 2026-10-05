@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.52" data-qs-descriptor="Patch Q.3 — Persona Lab runGate() 404 handling: both not_found and codex_not_seeded now redirect to /persona-lab/build. Paid users with no Supabase row treated as new users, not dead ends." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.53" data-qs-descriptor="Patch U — Story Engine: shared story rules, hook=opening, fact lock, gaps card, regen sync, stream fix, PDF numbering + shot list." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -16799,18 +16799,36 @@ ${steer ? 'CREATOR DIRECTION: ' + steer : ''}
 
     const data = await callAPI(payload);
 
-    // v9.118.16 — keep _lastPlaybookData in sync with regen response so subsequent
-    // regens, exports, and copy operations all see the latest data. Script-specific
-    // for now; other sections only need DOM update.
-    if (window._lastPlaybookData && data && sectionKey === 'script') {
-      if (data.full_script !== undefined) window._lastPlaybookData.full_script = data.full_script;
-      if (data.narration_script !== undefined) window._lastPlaybookData.narration_script = data.narration_script;
-      if (data.pacing_note !== undefined) window._lastPlaybookData.pacing_note = data.pacing_note;
-      window._lastPlaybookData.script_beats = Array.isArray(data.script_beats) ? data.script_beats : [];
+    // Patch U.5 — keep _lastPlaybookData in sync for EVERY section, not just script.
+    // Previously an architecture/hook/etc. Redo updated the screen but the PDF still
+    // exported the old data from _lastPlaybookData.
+    if (window._lastPlaybookData && data && typeof data === 'object') {
+      Object.keys(data).forEach(k => { window._lastPlaybookData[k] = data[k]; });
+      if (sectionKey === 'script') {
+        window._lastPlaybookData.script_beats = Array.isArray(data.script_beats) ? data.script_beats : [];
+      }
     }
 
     // Re-render just this section
     regenRenderSection(sectionKey, sectionEl, data);
+
+    // Patch U.5 — a new architecture comes with a new hook, and the old script no longer
+    // matches the beats. Re-render the hook and gaps, then rewrite the script from the
+    // new beats (regenSection('script') sends _lastPlaybookData.story_architecture).
+    if (sectionKey === 'architecture' && data && data.story_architecture) {
+      const hookEl = document.getElementById('playbook-sec-hook');
+      if (hookEl && data.hook) regenRenderSection('hook', hookEl, data);
+      refreshGapsCard();
+      const scriptBtn = document.querySelector('#playbook-sec-script .sec-regen-btn');
+      if (scriptBtn) regenSection('script', scriptBtn);
+    }
+
+    // Patch U.5 — the hook IS the opening beat. A hook Redo updates the Opening card too.
+    if (sectionKey === 'hook' && data && data.hook && window._lastPlaybookData && window._lastPlaybookData.story_architecture) {
+      window._lastPlaybookData.story_architecture.opening = data.hook;
+      const archEl = document.getElementById('playbook-sec-architecture');
+      if (archEl) regenRenderSection('architecture', archEl, { story_architecture: window._lastPlaybookData.story_architecture });
+    }
 
   } catch(err) {
     btnEl.disabled = false;
@@ -16830,7 +16848,8 @@ function regenRenderSection(key, sectionEl, data) {
 
   if (key === 'diagnosis' && data.diagnosis) {
     html = `<div class="playbook-card"><div class="playbook-card-text">${data.diagnosis}</div></div>
-    ${data.diagnosis_why ? '<div class="wizard-why" style="margin-top:12px;"><strong>Why this matters:</strong> ' + data.diagnosis_why + '</div>' : ''}`;
+    ${data.diagnosis_why ? '<div class="wizard-why" style="margin-top:12px;"><strong>Why this matters:</strong> ' + data.diagnosis_why + '</div>' : ''}
+    ${gapsCardHTML((window._lastPlaybookData || {}).gaps)}`;
   } else if (key === 'architecture' && data.story_architecture) {
     const arch = data.story_architecture;
     html = `<div class="playbook-arch-grid">
@@ -16901,6 +16920,28 @@ function regenRenderSection(key, sectionEl, data) {
   if (btn) { btn.disabled = false; btn.innerHTML = '↺ Redo'; }
 }
 
+// Patch U.6 — "Make it stronger": concrete details the story needs that the creator
+// did not give. SAM is told not to invent them, so it lists them here instead.
+function gapsCardHTML(gaps) {
+  const list = Array.isArray(gaps) ? gaps.filter(g => typeof g === 'string' && g.trim()) : [];
+  if (!list.length) return '';
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  return `<div class="playbook-gaps" style="margin-top:12px;background:var(--surface-2);border:1px solid var(--rule);border-radius:var(--radius);padding:14px 16px;">
+    <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:8px;">Make it stronger</div>
+    <div style="font-size:13px;color:var(--ink-soft);margin-bottom:8px;">SAM only used what you told it. Adding these would give the story more to stand on:</div>
+    <ul style="margin:0;padding-left:18px;font-size:14px;color:var(--ink);line-height:1.6;">${list.map(g => '<li>' + esc(g) + '</li>').join('')}</ul>
+  </div>`;
+}
+
+function refreshGapsCard() {
+  const diagEl = document.querySelector('#playbook-sec-diagnosis .regen-content');
+  if (!diagEl) return;
+  const old = diagEl.querySelector('.playbook-gaps');
+  if (old) old.remove();
+  const html = gapsCardHTML((window._lastPlaybookData || {}).gaps);
+  if (html) diagEl.insertAdjacentHTML('beforeend', html);
+}
+
 function renderPlaybook(data) {
   const container = document.getElementById('wizardPlaybook');
   const today = new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
@@ -16926,6 +16967,7 @@ function renderPlaybook(data) {
       <div class="regen-content">
         <div class="playbook-card"><div class="playbook-card-text">${data.diagnosis}</div></div>
         ${data.diagnosis_why ? `<div class="wizard-why" style="margin-top:12px;"><strong>Why this matters:</strong> ${data.diagnosis_why}</div>` : ''}
+        ${gapsCardHTML(data.gaps)}
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center;">
         <button class="playbook-copy-btn" style="margin-top:0;background:var(--surface-2);border:1px solid var(--rule);color:var(--ink-muted);font-family:'Inter',system-ui,sans-serif;" onclick="saveWizardItem(this.closest('.playbook-section').innerText,'Story Diagnosis','wizard')">💜 Save</button>

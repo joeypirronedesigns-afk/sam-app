@@ -598,6 +598,8 @@ function buildPlaybookHTML(pb, brand) {
   const initial     = brandName.charAt(0).toUpperCase();
 
   const pages = [];
+  // Patch U.6 — page number = position in the document, so skipped sections never leave gaps.
+  const pn = () => String(pages.length + 1).padStart(2, '0');
 
   // ── 01 Cover ───────────────────────────────────────────────────────────────
   const coverTitle = pb.hook || pb.lead_magnet?.title || 'Your Story, Engineered.';
@@ -622,13 +624,16 @@ function buildPlaybookHTML(pb, brand) {
   </div>`);
 
   // ── 02 Story Diagnosis ─────────────────────────────────────────────────────
+  // Patch U.6 — gaps: details the story needs that the creator didn't give.
+  const gapsList = (Array.isArray(pb.gaps) ? pb.gaps : []).filter(g => typeof g === 'string' && g.trim());
   if (pb.diagnosis) {
     pages.push(`<div class="pdf-page pdf-page--interior">
-      ${hdr(brandName, docType, '02')}
+      ${hdr(brandName, docType, pn())}
       <div class="section-body">
         ${sLabel('Story Diagnosis')}
         <h2 class="section-title">${e(pb.diagnosis)}</h2>
         ${pb.diagnosis_why ? `<p class="body-copy">${e(pb.diagnosis_why)}</p>` : ''}
+        ${gapsList.length ? `<div class="sp-16"></div>${card('Make It Stronger', gapsList.map(g => '• ' + g).join('\n'), null)}` : ''}
       </div>
       ${ftr(brandName)}
     </div>`);
@@ -653,7 +658,7 @@ function buildPlaybookHTML(pb, brand) {
     </div>`).join('');
 
     pages.push(`<div class="pdf-page pdf-page--interior">
-      ${hdr(brandName, docType, '03')}
+      ${hdr(brandName, docType, pn())}
       <div class="section-body">
         ${sLabel('Story Architecture')}
         <div class="arch-grid">${beatCards}</div>
@@ -665,7 +670,7 @@ function buildPlaybookHTML(pb, brand) {
   // ── 04 Hook ────────────────────────────────────────────────────────────────
   if (pb.hook) {
     pages.push(`<div class="pdf-page pdf-page--interior">
-      ${hdr(brandName, docType, '04')}
+      ${hdr(brandName, docType, pn())}
       <div class="section-body">
         ${sLabel('Your Hook')}
         <div class="hero-hook">${e(pb.hook)}</div>
@@ -694,11 +699,29 @@ function buildPlaybookHTML(pb, brand) {
       scriptBody = `<p class="body-copy">${e(script)}</p>`;
     }
     pages.push(`<div class="pdf-page pdf-page--interior">
-      ${hdr(brandName, docType, '05')}
+      ${hdr(brandName, docType, pn())}
       <div class="section-body">
         ${sLabel('Full Script')}
         ${scriptBody}
         ${pb.pacing_note ? callout('Pacing: ' + pb.pacing_note) : ''}
+      </div>
+      ${ftr(brandName)}
+    </div>`);
+  }
+
+  // ── Shot List (Patch U.6 — b_roll was generated every run but never printed) ──
+  const shots = (Array.isArray(pb.b_roll) ? pb.b_roll : String(pb.b_roll || '').split('\n'))
+    .map(s => (typeof s === 'string' ? s.trim() : '')).filter(Boolean);
+  if (shots.length) {
+    const shotItems = shots.map((shot, idx) => `<div class="lm-item">
+      <div class="lm-num">${String(idx + 1).padStart(2, '0')}</div>
+      <div><div class="lm-body">${e(shot)}</div></div>
+    </div>`).join('');
+    pages.push(`<div class="pdf-page pdf-page--interior">
+      ${hdr(brandName, docType, pn())}
+      <div class="section-body">
+        ${sLabel('Shot List')}
+        ${shotItems}
       </div>
       ${ftr(brandName)}
     </div>`);
@@ -713,7 +736,7 @@ function buildPlaybookHTML(pb, brand) {
     }).join('');
 
     pages.push(`<div class="pdf-page pdf-page--interior">
-      ${hdr(brandName, docType, '06')}
+      ${hdr(brandName, docType, pn())}
       <div class="section-body">
         ${sLabel('Platform Strategy')}
         ${platformCards}
@@ -741,7 +764,7 @@ function buildPlaybookHTML(pb, brand) {
     </div>`).join('');
 
     pages.push(`<div class="pdf-page pdf-page--interior">
-      ${hdr(brandName, docType, '07')}
+      ${hdr(brandName, docType, pn())}
       <div class="section-body">
         ${sLabel('Audience Profile')}
         ${rows}
@@ -758,7 +781,7 @@ function buildPlaybookHTML(pb, brand) {
     const boldBody = [thumb.headline_bold, thumb.subtext_bold].filter(Boolean).join('\n');
 
     pages.push(`<div class="pdf-page pdf-page--interior">
-      ${hdr(brandName, docType, '08')}
+      ${hdr(brandName, docType, pn())}
       <div class="section-body">
         ${sLabel('Thumbnail Strategy')}
         <div class="two-col">
@@ -784,7 +807,7 @@ function buildPlaybookHTML(pb, brand) {
     </div>`).join('');
 
     pages.push(`<div class="pdf-page pdf-page--interior">
-      ${hdr(brandName, docType, '09')}
+      ${hdr(brandName, docType, pn())}
       <div class="section-body">
         ${sLabel('Free Resource')}
         ${lm.title ? `<h2 class="section-title">${e(lm.title)}</h2>` : ''}
@@ -799,7 +822,7 @@ function buildPlaybookHTML(pb, brand) {
   // ── 10 Focus Directive ─────────────────────────────────────────────────────
   if (pb.focus_directive) {
     pages.push(`<div class="pdf-page pdf-page--interior">
-      ${hdr(brandName, docType, '10')}
+      ${hdr(brandName, docType, pn())}
       <div class="section-body">
         ${sLabel('Focus Directive')}
         <h2 class="section-title">Your next move.</h2>
