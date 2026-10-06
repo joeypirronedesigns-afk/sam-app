@@ -552,9 +552,9 @@ function sharedCSS(brandColor) {
 
 // ─── SHARED COMPONENT HELPERS ─────────────────────────────────────────────────
 
-function hdr(brandName, docType, pageNum) {
+function hdr(brandName, docType, pageNum, logo) {
   return `<div class="pdf-header">
-    <div class="pdf-header-left">${e(brandName)}${docType ? ' · ' + e(docType) : ''}</div>
+    <div class="pdf-header-left">${logo ? `<img src="${logo}" alt="" style="height:14pt;width:auto;vertical-align:middle;margin-right:6pt;">` : ''}${e(brandName)}${docType ? ' · ' + e(docType) : ''}</div>
     <div class="pdf-header-right">${e(String(pageNum))}</div>
   </div>`;
 }
@@ -591,7 +591,11 @@ function buildPlaybookHTML(pb, brand) {
   const brandName = brand.brandName
     || (brand.samContext && (() => { try { return JSON.parse(brand.samContext).identity && JSON.parse(brand.samContext).identity.name; } catch(e) { return null; } })())
     || brand.userName
-    || 'Your Brand';
+    || 'SAM for Creators';
+  // Patch AC — only accept a small, well-formed image data URL for the logo.
+  const brandLogo = (typeof brand.brandLogo === 'string'
+    && /^data:image\/(png|jpeg|jpg|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(brand.brandLogo)
+    && brand.brandLogo.length < 300000) ? brand.brandLogo : null;
   const brandColor  = brand.brandColor  || '#20808D';
   const brandHandle = brand.brandHandle || '';
   const date        = brand.date        || new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -608,7 +612,9 @@ function buildPlaybookHTML(pb, brand) {
 
   pages.push(`<div class="pdf-page pdf-page--cover">
     <div class="cover-brand">
-      <div class="brand-initial" style="background:${e(brandColor)}">${e(initial)}</div>
+      ${brandLogo
+        ? `<img src="${brandLogo}" alt="" style="height:40pt;width:auto;max-width:120pt;object-fit:contain;border-radius:4pt;">`
+        : `<div class="brand-initial" style="background:${e(brandColor)}">${e(initial)}</div>`}
       <div>
         <span class="brand-name">${e(brandName)}</span>
         ${brandHandle ? `<span class="brand-handle">${e(brandHandle)}</span>` : ''}
@@ -635,7 +641,7 @@ function buildPlaybookHTML(pb, brand) {
   if (pb.five_second_moment && !/^not found/i.test(pb.five_second_moment)) shapeLines.push('The moment: “' + pb.five_second_moment + '”');
   if (pb.diagnosis) {
     pages.push(`<div class="pdf-page pdf-page--interior">
-      ${hdr(brandName, docType, pn())}
+      ${hdr(brandName, docType, pn(), brandLogo)}
       <div class="section-body">
         ${sLabel('Story Diagnosis')}
         <h2 class="section-title">${e(pb.diagnosis)}</h2>
@@ -669,7 +675,7 @@ function buildPlaybookHTML(pb, brand) {
     </div>`).join('');
 
     pages.push(`<div class="pdf-page pdf-page--interior">
-      ${hdr(brandName, docType, pn())}
+      ${hdr(brandName, docType, pn(), brandLogo)}
       <div class="section-body">
         ${sLabel('Story Architecture')}
         <div class="arch-grid">${beatCards}</div>
@@ -681,7 +687,7 @@ function buildPlaybookHTML(pb, brand) {
   // ── 04 Hook ────────────────────────────────────────────────────────────────
   if (pb.hook) {
     pages.push(`<div class="pdf-page pdf-page--interior">
-      ${hdr(brandName, docType, pn())}
+      ${hdr(brandName, docType, pn(), brandLogo)}
       <div class="section-body">
         ${sLabel('Your Hook')}
         <div class="hero-hook">${e(pb.hook)}</div>
@@ -710,7 +716,7 @@ function buildPlaybookHTML(pb, brand) {
       scriptBody = `<p class="body-copy">${e(script)}</p>`;
     }
     pages.push(`<div class="pdf-page pdf-page--interior">
-      ${hdr(brandName, docType, pn())}
+      ${hdr(brandName, docType, pn(), brandLogo)}
       <div class="section-body">
         ${sLabel('Full Script')}
         ${(pb.is_draft || /^not found/i.test(String(pb.five_second_moment || ''))) ? callout('Draft — this story is missing its moment. Answer SAM\'s questions or add that moment, and SAM will rebuild the script around it.') : ''}
@@ -730,7 +736,7 @@ function buildPlaybookHTML(pb, brand) {
       <div><div class="lm-body">${e(shot)}</div></div>
     </div>`).join('');
     pages.push(`<div class="pdf-page pdf-page--interior">
-      ${hdr(brandName, docType, pn())}
+      ${hdr(brandName, docType, pn(), brandLogo)}
       <div class="section-body">
         ${sLabel('Shot List')}
         ${shotItems}
@@ -753,7 +759,7 @@ function buildPlaybookHTML(pb, brand) {
     }).join('');
 
     pages.push(`<div class="pdf-page pdf-page--interior">
-      ${hdr(brandName, docType, pn())}
+      ${hdr(brandName, docType, pn(), brandLogo)}
       <div class="section-body">
         ${sLabel('Platform Strategy')}
         ${platformCards}
@@ -781,7 +787,7 @@ function buildPlaybookHTML(pb, brand) {
     </div>`).join('');
 
     pages.push(`<div class="pdf-page pdf-page--interior">
-      ${hdr(brandName, docType, pn())}
+      ${hdr(brandName, docType, pn(), brandLogo)}
       <div class="section-body">
         ${sLabel('Audience Profile')}
         ${rows}
@@ -798,7 +804,7 @@ function buildPlaybookHTML(pb, brand) {
     const boldBody = [thumb.headline_bold, thumb.subtext_bold].filter(Boolean).join('\n');
 
     pages.push(`<div class="pdf-page pdf-page--interior">
-      ${hdr(brandName, docType, pn())}
+      ${hdr(brandName, docType, pn(), brandLogo)}
       <div class="section-body">
         ${sLabel('Thumbnail Strategy')}
         <div class="two-col">
@@ -824,7 +830,7 @@ function buildPlaybookHTML(pb, brand) {
     </div>`).join('');
 
     pages.push(`<div class="pdf-page pdf-page--interior">
-      ${hdr(brandName, docType, pn())}
+      ${hdr(brandName, docType, pn(), brandLogo)}
       <div class="section-body">
         ${sLabel('Free Resource')}
         ${lm.title ? `<h2 class="section-title">${e(lm.title)}</h2>` : ''}
@@ -839,7 +845,7 @@ function buildPlaybookHTML(pb, brand) {
   // ── 10 Focus Directive ─────────────────────────────────────────────────────
   if (pb.focus_directive) {
     pages.push(`<div class="pdf-page pdf-page--interior">
-      ${hdr(brandName, docType, pn())}
+      ${hdr(brandName, docType, pn(), brandLogo)}
       <div class="section-body">
         ${sLabel('Focus Directive')}
         <h2 class="section-title">Your next move.</h2>
@@ -861,7 +867,7 @@ function buildPlaybookHTML(pb, brand) {
       </div>`).join('');
 
     pages.push(`<div class="pdf-page pdf-page--interior">
-      ${hdr(brandName, docType, String(pages.length + 1).padStart(2,'0'))}
+      ${hdr(brandName, docType, String(pages.length + 1).padStart(2,'0'), brandLogo)}
       <div class="section-body">
         <div class="meta-label" style="color:#8B3A2F;">Appendix A</div>
         <div class="section-rule"></div>
@@ -883,7 +889,11 @@ function buildLeadMagnetHTML(lm, brand) {
   const brandName = brand.brandName
     || (brand.samContext && (() => { try { return JSON.parse(brand.samContext).identity && JSON.parse(brand.samContext).identity.name; } catch(e) { return null; } })())
     || brand.userName
-    || 'Your Brand';
+    || 'SAM for Creators';
+  // Patch AC — only accept a small, well-formed image data URL for the logo.
+  const brandLogo = (typeof brand.brandLogo === 'string'
+    && /^data:image\/(png|jpeg|jpg|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(brand.brandLogo)
+    && brand.brandLogo.length < 300000) ? brand.brandLogo : null;
   const brandColor  = brand.brandColor  || '#20808D';
   const brandHandle = brand.brandHandle || '';
   const date        = brand.date        || new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -895,7 +905,9 @@ function buildLeadMagnetHTML(lm, brand) {
   // ── Cover ──────────────────────────────────────────────────────────────────
   pages.push(`<div class="pdf-page pdf-page--cover">
     <div class="cover-brand">
-      <div class="brand-initial" style="background:${e(brandColor)}">${e(initial)}</div>
+      ${brandLogo
+        ? `<img src="${brandLogo}" alt="" style="height:40pt;width:auto;max-width:120pt;object-fit:contain;border-radius:4pt;">`
+        : `<div class="brand-initial" style="background:${e(brandColor)}">${e(initial)}</div>`}
       <div>
         <span class="brand-name">${e(brandName)}</span>
         ${brandHandle ? `<span class="brand-handle">${e(brandHandle)}</span>` : ''}
@@ -923,7 +935,7 @@ function buildLeadMagnetHTML(lm, brand) {
     </div>`).join('');
 
     pages.push(`<div class="pdf-page pdf-page--interior">
-      ${hdr(brandName, docType, '02')}
+      ${hdr(brandName, docType, '02', brandLogo)}
       <div class="section-body">
         ${sLabel("What's Inside")}
         ${itemsHTML}

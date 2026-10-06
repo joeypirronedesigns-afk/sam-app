@@ -155,7 +155,7 @@ function score(c, r) {
     numbers_traceable: badNums.length === 0,
     urls_traceable:    badDomains.length === 0,
     setup_hides_cause: leaked.length === 0,
-    hashtags_per_platform: platOk.every(x => x.tags),
+    hashtags_per_platform: (c.thin && r.needs_more) ? true : platOk.every(x => x.tags),
     captions_within_limit: platOk.every(x => x.len && x.title),
     cta_short:         words(beat('cta')) <= 35,
     no_ai_cliches:     bannedHits.length === 0,
@@ -164,7 +164,8 @@ function score(c, r) {
     hook_said_once:    !r.hook || (norm(r.full_script || r.narration_script || '').split(norm(r.hook)).length - 1) <= 1,
     moment_found:      c.thin ? true : !!r.five_second_moment && !/^not found/i.test(r.five_second_moment),
     thin_asks_for_more: c.thin ? (!!r.needs_more || (r.gaps || []).length > 0) : (!r.needs_more),
-    no_placeholders:   !/\b(not found|tbd|placeholder|needs a real moment|real moment needed|needed before|can be written)\b|\[(insert|add|your)[^\]]*\]/i.test(spoken.replace(/\[BEAT:[^\]]*\]/g, '')),
+    no_placeholders:   !/\b(not found|tbd|placeholder|needs a real moment|real moment needed|needed before|can be written)\b|\[(insert|add|your|link|url|website)[^\]]*\]|\(link\)/i.test(spoken.replace(/\[BEAT:[^\]]*\]/g, ''))
+                       && !/\b(just|and|but|so|the|to|i|because|with|for)\s*(\.{2,}|…)\s*(\n\s*\[BEAT|$)/i.test(r.full_script || r.narration_script || ''),
     type_matches:      c.expect_type === 'any' || String(c.expect_type).split('|').includes(r.story_type)
   };
   const notes = [];

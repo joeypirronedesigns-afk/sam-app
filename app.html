@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.68" data-qs-descriptor="Patch AB.1 — every platform gets one short hook line + 3 hashtags; YouTube Shorts hook + hashtags share one 100-character box; optional YouTube description."grand\"."two\"." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.69" data-qs-descriptor="Patch AC - logo in PDF (shrunk on upload, kept across refresh), account name instead of Your Brand, lookalike domains fixed, no link placeholders, sign-off always last, unfinished fragments removed." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -16360,12 +16360,38 @@ function toggleWizardMic2() {
 }
 
 // ── AUDIENCE DIAGNOSIS ────────────────────────────────────────────────────────
+// Patch AC — logos are shrunk once on upload (max 240px) so they can be kept across refreshes and
+// sent with the PDF. The full-size image used to be stripped everywhere ("413 Content Too Large").
+function shrinkLogo(dataUrl, max) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(1, max / Math.max(img.width, img.height));
+      const c = document.createElement('canvas');
+      c.width = Math.max(1, Math.round(img.width * scale));
+      c.height = Math.max(1, Math.round(img.height * scale));
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      let out = c.toDataURL('image/png');
+      if (out.length > 150000) out = c.toDataURL('image/jpeg', 0.85);
+      resolve(out);
+    };
+    img.onerror = () => resolve(null);
+    img.src = dataUrl;
+  });
+}
+function getBrandLogo() {
+  if (WS.brandLogo && WS.brandLogo.length < 200000) return WS.brandLogo;
+  try { return localStorage.getItem('sam_brand_logo') || null; } catch (_) { return null; }
+}
+
 function handleBrandLogo(e) {
   const file = e.target.files?.[0];
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = (ev) => {
-    WS.brandLogo = ev.target.result; // full data URL
+  reader.onload = async (ev) => {
+    const small = await shrinkLogo(ev.target.result, 240);
+    WS.brandLogo = small || ev.target.result;
+    try { if (small) localStorage.setItem('sam_brand_logo', small); } catch (_) {}
     saveWizardState();
     document.getElementById('brandLogoImg').src = ev.target.result;
     document.getElementById('brandLogoPreview').style.display = 'block';
@@ -17283,9 +17309,9 @@ function renderPlaybook(data) {
   // ⑧ AUDIENCE RESOURCE — THE LEAD MAGNET ⭐
   if (data.lead_magnet) {
     const lm = data.lead_magnet;
-    const brandName = (WS.brandName || (document.getElementById('brandName') && document.getElementById('brandName').value) || (()=>{try{return JSON.parse(localStorage.getItem('sam-wizard-state')||'{}').brandName||'';}catch(e){return '';}})() || (()=>{try{return JSON.parse(localStorage.getItem('sam_session_v2')||'{}').brandName||'';}catch(e){return '';}})() || 'Your Brand');
+    const brandName = (WS.brandName || (document.getElementById('brandName') && document.getElementById('brandName').value) || (()=>{try{return JSON.parse(localStorage.getItem('sam-wizard-state')||'{}').brandName||'';}catch(e){return '';}})() || (()=>{try{return JSON.parse(localStorage.getItem('sam_session_v2')||'{}').brandName||'';}catch(e){return '';}})() || (((typeof getCurrentUserCached === 'function' && getCurrentUserCached()) || {}).name) || 'SAM for Creators');
     const brandHandle = WS.brandHandle || '';
-    const brandLogo = WS.brandLogo || null;
+    const brandLogo = getBrandLogo();
     const brandColor = WS.brandColor || '#20808D';
 
     // Brand header HTML for the lead magnet document
@@ -17530,10 +17556,11 @@ async function downloadPDF(type) {
     const pb = window._lastPlaybookData || {};
 
     const brandData = {
-      brandName:  WS.brandName  || s.niche || 'Your Brand',
+      // Patch AC — never print "Your Brand": fall back to the account name.
+      brandName:  WS.brandName  || ((typeof getCurrentUserCached === 'function' && getCurrentUserCached()) || {}).name || s.niche || '',
       brandHandle:WS.brandHandle|| '',
       brandColor: WS.brandColor || '#20808D',
-      brandLogo:  null, // stripped — base64 causes 413 Content Too Large
+      brandLogo:  getBrandLogo(), // Patch AC — small (≤240px) copy, safe to send
       date: new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})
     };
 
@@ -17715,7 +17742,7 @@ async function regenerateLeadMagnet() {
     WS.audienceCustom || '',
   ].filter(Boolean).join(', ');
 
-  const brandName = (WS.brandName || (document.getElementById('brandName') && document.getElementById('brandName').value) || (()=>{try{return JSON.parse(localStorage.getItem('sam-wizard-state')||'{}').brandName||'';}catch(e){return '';}})() || (()=>{try{return JSON.parse(localStorage.getItem('sam_session_v2')||'{}').brandName||'';}catch(e){return '';}})() || 'Your Brand');
+  const brandName = (WS.brandName || (document.getElementById('brandName') && document.getElementById('brandName').value) || (()=>{try{return JSON.parse(localStorage.getItem('sam-wizard-state')||'{}').brandName||'';}catch(e){return '';}})() || (()=>{try{return JSON.parse(localStorage.getItem('sam_session_v2')||'{}').brandName||'';}catch(e){return '';}})() || (((typeof getCurrentUserCached === 'function' && getCurrentUserCached()) || {}).name) || 'SAM for Creators');
   const brandHandle = WS.brandHandle || '';
   const brandColor = WS.brandColor || '#20808D';
   const brandLogo = WS.brandLogo || null;

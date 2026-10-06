@@ -83,10 +83,13 @@ function guardUrls(obj, allowed) {
   if (!allowed.size) return { obj, fixes: [] };
   const fixes = [];
   const list = [...allowed].filter(d => d.split('.')[0].length >= 6);
-  const re = new RegExp(`\\b([a-z0-9-]{4,})\\.(${URL_TLDS})\\b`, 'gi');
+  // Patch AC — catch lookalikes with accented letters ("sáforcreators.com"), not just a-z.
+  const re = new RegExp(`(?<![\\p{L}\\p{N}-])([\\p{L}\\p{N}-]{4,})\\.(${URL_TLDS})(?![\\p{L}\\p{N}])`, 'giu');
   const fix = (str) => str.replace(re, (whole, name, tld) => {
     const dom = (name + '.' + tld).toLowerCase();
     if (allowed.has(dom)) return whole;
+    const plain = dom.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    if (plain !== dom && allowed.has(plain)) { fixes.push(dom + ' → ' + plain); return plain; }
     let best = null, bestScore = 1;
     for (const a of list) {
       if (a.split('.').pop() !== tld.toLowerCase()) continue;
@@ -103,6 +106,52 @@ function guardUrls(obj, allowed) {
     return v;
   };
   return { obj: walk(obj), fixes };
+}
+
+// Patch AC — tidy spoken text: no "[link]" placeholders, no unfinished fragments at the end of a
+// beat ("The work was real. I just.."), and the creator's sign-off always the very last line.
+function tidySpoken(parsed, b) {
+  if (!parsed || typeof parsed !== 'object') return parsed;
+  b = b || {};
+  const LINKPH = /\[(?:link|url|website|insert[^\]]*|add[^\]]*)\]|\(link\)|<link>/i;
+  const dropLinkSentences = t => String(t).split('\n').map(line => {
+    if (!LINKPH.test(line)) return line;
+    const kept = _splitSentences(line).filter(x => x !== '\n' && !LINKPH.test(x)).join('').trim();
+    return kept || line.replace(new RegExp(LINKPH.source, 'gi'), '').replace(/\s{2,}/g, ' ').trim();
+  }).join('\n').replace(/\n{3,}/g, '\n\n').trim();
+  for (const f of ['full_script', 'narration_script']) if (typeof parsed[f] === 'string') parsed[f] = dropLinkSentences(parsed[f]);
+  for (const p of (parsed.platform_strategies || [])) {
+    if (p && typeof p.caption === 'string') p.caption = dropLinkSentences(p.caption);
+    if (p && typeof p.description === 'string') p.description = dropLinkSentences(p.description);
+  }
+  const DANGLE = /(?:^|\s)(just|and|but|so|the|a|an|to|i|was|because|like|then|or|of|my|with|for|that|is)\s*(?:\.{2,}|…)\s*$/i;
+  const SIGN_SRC = _normSentence([b.voiceProfile, b.creatorContext, b.moment].filter(Boolean).join(' '));
+  const fixScript = (text) => {
+    const lines = String(text).split('\n');
+    // fragments: a beat whose last line ends on an unfinished phrase loses that fragment
+    for (let i = 0; i < lines.length; i++) {
+      if (/^\s*\[BEAT:/i.test(lines[i]) || !lines[i].trim()) continue;
+      const next = lines.slice(i + 1).find(l => l.trim());
+      const endsBeat = !next || /^\s*\[BEAT:/i.test(next);
+      if (!endsBeat) continue;
+      const parts = _splitSentences(lines[i]).filter(x => x !== '\n' && x.trim());
+      if (parts.length > 1 && DANGLE.test(parts[parts.length - 1].trim())) lines[i] = parts.slice(0, -1).join('').trim();
+    }
+    // sign-off: a line from the creator's own profile/context sitting before other CTA text moves last
+    const ctaAt = lines.findIndex(l => /^\s*\[BEAT:\s*CTA\s*\]/i.test(l));
+    if (ctaAt >= 0 && SIGN_SRC) {
+      const body = lines.slice(ctaAt + 1).join(' ');
+      const parts = _splitSentences(body).filter(x => x !== '\n' && x.trim());
+      const isSign = x => { const n = _normSentence(x); return n.split(' ').length >= 5 && SIGN_SRC.includes(n); };
+      const sign = parts.filter(isSign), rest = parts.filter(x => !isSign(x));
+      if (sign.length && rest.length && !isSign(parts[parts.length - 1])) {
+        return lines.slice(0, ctaAt + 1).concat([rest.join('').trim() + ' ' + sign.join('').trim()]).join('\n');
+      }
+    }
+    return lines.join('\n');
+  };
+  for (const f of ['full_script', 'narration_script']) if (typeof parsed[f] === 'string') parsed[f] = fixScript(parsed[f]);
+  return parsed;
 }
 
 // Patch X.1 — fact-check pass. After the playbook is written, a fast second model reads
@@ -925,10 +974,12 @@ NEVER write in generic AI voice when you have this profile. Generic AI voice is:
      use an image that is.
    - Keep the button: if the creator ends with a throwaway aside or callback ("Anyway, the coop's done.
      It leans a little."), it is the comic button — keep it as the last spoken line of the video,
-     right after the CTA. Don't move it earlier.
+     right after the CTA (and before the creator's sign-off, if they have one). Don't move it earlier.
 
 10. The hook, script and captions are words the creator will say or post. Never put notes, labels or
-    placeholders in them ("not found", "TBD", "[insert moment]", "needs a real moment"). If the story is
+    placeholders in them ("not found", "TBD", "[insert moment]", "[link]", "needs a real moment"). If the
+    creator didn't give a link, never write "[link]" — say where to find it in words ("search Content
+    Creators United on Facebook") or leave it out. If the story is
     thin, write a short, honest draft using only what the creator gave you — fewer words, not filler —
     and put everything that's missing in "gaps".`;
 
@@ -1101,6 +1152,8 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
         if (parsed.fact_check) parsed.fact_check.removed = [];
       }
     }
+    // Patch AC — tidy spoken text (see tidySpoken).
+    tidySpoken(parsed, req.body);
     // Patch Y.2 — the script's Opening beat must start with the hook, word for word.
     // If its first sentence is a paraphrase of the hook, swap it for the hook; otherwise put the hook first.
     if (parsed && typeof parsed === 'object' && parsed.hook) {
