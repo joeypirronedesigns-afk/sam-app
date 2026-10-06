@@ -49,7 +49,7 @@
       "maxDuration": 60
     },
     "api/sam.js": {
-      "maxDuration": 60
+      "maxDuration": 120
     },
     "api/waitlist.js": {
       "maxDuration": 10

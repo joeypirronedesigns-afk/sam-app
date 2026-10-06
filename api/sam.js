@@ -104,6 +104,81 @@ function guardUrls(obj, allowed) {
   return { obj: walk(obj), fixes };
 }
 
+// Patch X.1 — fact-check pass. After the playbook is written, a fast second model reads
+// the script, hook and captions and lists every sentence that states something the creator
+// did not say (events, numbers, stakes, consequences, feelings, results). Those sentences are
+// removed from the script and captions (never emptying a beat) and reported back so the
+// creator can re-add anything that was actually true. Fails open: on any error or timeout
+// the playbook is returned unchanged.
+const FACT_CHECK_MODEL = 'claude-haiku-4-5-20251001';
+const _normSentence = s => String(s || '').toLowerCase().replace(/[“”"’']/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
+function _splitSentences(text) {
+  return String(text || '').match(/[^.!?\n]+(?:\.\.+|[.!?]+)?["”’']?|\n/g) || [];
+}
+function _removeSentences(text, targets) {
+  if (!text || !targets.length) return { text, removed: [] };
+  const removed = [];
+  const lines = String(text).split('\n');
+  const out = lines.map(line => {
+    if (/^\s*\[BEAT:/i.test(line)) return line;
+    const parts = _splitSentences(line).filter(p => p !== '\n');
+    const kept = parts.filter(p => {
+      const n = _normSentence(p);
+      const hit = n && targets.some(t => t && (n === t || (t.length > 25 && n.includes(t)) || (n.length > 25 && t.includes(n))));
+      if (hit) removed.push(p.trim());
+      return !hit;
+    });
+    // never blank a line that had content — keep the original if everything would go
+    if (parts.length && !kept.length) { removed.splice(removed.length - parts.length, parts.length); return line; }
+    return kept.join('').replace(/\s{2,}/g, ' ').trim();
+  });
+  return { text: out.join('\n'), removed };
+}
+async function factCheckPlaybook(apiKey, source, parsed) {
+  if (!parsed || typeof parsed !== 'object' || !source) return null;
+  const captions = (parsed.platform_strategies || []).map((p, i) => `CAPTION ${i + 1} (${(p && p.platform) || ''}): ${(p && p.caption) || ''}`).join('\n');
+  const checkText = [
+    `HOOK: ${parsed.hook || ''}`,
+    `SCRIPT:\n${parsed.full_script || parsed.narration_script || ''}`,
+    captions
+  ].join('\n\n');
+  const system = `You are a strict fact-checker for a creator's video script. SOURCE is everything the creator actually said. For every sentence in DRAFT, decide whether it is supported by SOURCE.
+A sentence is UNSUPPORTED if it states an event, number, result, consequence, stake, feeling, audience reaction, or claim about other people that SOURCE does not say or clearly imply. Generic claims about audiences ("nobody stays", "you lose people in the first ten seconds") are UNSUPPORTED unless SOURCE says them.
+Rephrasing, shortening, transitions ("Here's the thing", "So"), calls to action, the creator's sign-off, and restating SOURCE in other words are SUPPORTED.
+Return ONLY JSON: {"unsupported":[{"text":"the exact sentence copied from DRAFT","why":"max 8 words"}]}. Empty array if everything is supported.`;
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 15000);
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      signal: ctrl.signal,
+      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({ model: FACT_CHECK_MODEL, max_tokens: 1200, system,
+        messages: [{ role: 'user', content: `SOURCE:\n${source}\n\nDRAFT:\n${checkText}` }] })
+    });
+    if (!r.ok) return null;
+    const j = await r.json();
+    const raw = (j.content || []).map(c => c.text || '').join('');
+    const m = raw.match(/\{[\s\S]*\}/);
+    const list = m ? (JSON.parse(m[0]).unsupported || []) : [];
+    const targets = list.map(u => _normSentence(u && u.text)).filter(t => t.length >= 8);
+    if (!targets.length) return { removed: [], checked: true };
+    const removed = [];
+    for (const f of ['full_script', 'narration_script']) {
+      if (typeof parsed[f] === 'string') { const o = _removeSentences(parsed[f], targets); parsed[f] = o.text; removed.push(...o.removed); }
+    }
+    for (const p of (parsed.platform_strategies || [])) {
+      if (p && typeof p.caption === 'string') { const o = _removeSentences(p.caption, targets); p.caption = o.text; removed.push(...o.removed); }
+    }
+    const unique = [...new Set(removed.map(s => s.replace(/\s+/g, ' ').trim()))].filter(Boolean);
+    return { removed: unique, checked: true };
+  } catch (e) {
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 // v9.113.3 — Voice DNA gate copy keyed by ACTUAL sam.js mode strings sent by frontend.
 // Structure: { tool, descriptor, ctaAnon, ctaUnpaid } — frontend renders locked-state UI.
 const GATE_COPY = {
@@ -589,6 +664,27 @@ NEVER write in generic AI voice when you have this profile. Generic AI voice is:
   // so every path builds structure the same way.
   const STORY_RULES = `STORY ARCHITECTURE — build this before writing anything else.
 
+0. Find the 5-second moment first: the single instant in the creator's story when something changed —
+   a realization, a reversal, a decision (the neighbor pointing at the ground; "my stories were never bad").
+   Quote or closely paraphrase the creator's words. The whole video is built to deliver that moment;
+   everything before it sets it up, everything after it says what it means. If there isn't one yet,
+   write "not found" and ask for it in "gaps".
+
+   Then name the story type and use its shape inside the same six beats:
+   mistake_lesson   — "man in a hole": confident effort → it fails → the real cause is revealed (turn) →
+                      the lesson (payoff). Setup never hints at the real cause.
+   transformation   — before → the moment → after. Setup is who/where they were; payoff is who/where they
+                      are now and what it means. Contrast must be concrete, not adjectives.
+   demo_proof       — "what is / what could be": the frustrating way it is now (setup/risk) → showing the
+                      new way working, live or with results the creator gave (turn) → why it matters (payoff).
+                      Never a feature list. Results only if the creator stated them.
+   origin           — why it started: the problem they lived (setup) → what it cost (risk) → the decision
+                      to build/start/change (turn) → what it means now (payoff).
+   behind_the_scenes — the process: what they set out to do → the surprise or problem mid-way (risk/turn) →
+                      how it turned out and what they learned (payoff).
+   moment_reflection — a small everyday moment → the realization it triggered (turn) → the bigger meaning
+                      (payoff). Keep it small and specific; do not inflate it.
+
 1. Find the story first. From the creator's moment, identify:
    want (what they were after), obstacle (what was in the way),
    question (what the opening makes the viewer need answered),
@@ -622,7 +718,17 @@ NEVER write in generic AI voice when you have this profile. Generic AI voice is:
    Spoken forms count: "Sam for creators.com" is samforcreators.com.
 
 8. Text in the moment that starts "(The creator added, when SAM asked ..." is the creator's own answer.
-   Treat it exactly like the rest of their words — it is the fact to use instead of inventing one.`;
+   Treat it exactly like the rest of their words — it is the fact to use instead of inventing one.
+
+9. Craft checks before you finish:
+   - But / Therefore: each beat connects to the one before it by "but" or "therefore", never "and then".
+     If two beats are joined by "and then", rewrite the later one.
+   - Specific beats general: use the creator's concrete details (numbers, objects, places, their exact
+     words) instead of abstractions ("forty bucks and a Saturday", not "time and money").
+   - Show, then say: put the concrete moment on screen first, the meaning second.
+   - Peak-end: the payoff is the strongest line in the video. Nothing after it except the short CTA and
+     the sign-off.
+   - Open loop: the hook raises a question only the turn or payoff answers. Never answer it in the setup.`;
 
   const base = `${samIdentity} ${toneContext} ${emojiLine} ${hashtagRule} ${creatorLine} ${voiceLine}
 ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatContext} CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No explanation outside the JSON.`;
@@ -687,6 +793,16 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
       const allowed = collectAllowedDomains([b.moment, b.wizardContext, b.creatorContext, b.steer, b.brandHandle, b.brandName]);
       const g = guardUrls(parsed, allowed);
       if (g.fixes.length) console.warn('[url-guard] corrected', g.fixes.join(', '));
+    }
+    // Patch X.1 — fact-check the playbook (and script regens) against what the creator said.
+    if (parsed && typeof parsed === 'object' && (mode === 'playbook' || (mode === 'regen_section' && (req.body || {}).section === 'script'))) {
+      const b = req.body || {};
+      const source = [b.moment ? 'STORY: ' + b.moment : '', b.creatorContext ? 'ABOUT THE CREATOR: ' + b.creatorContext : ''].filter(Boolean).join('\n\n');
+      const fc = await factCheckPlaybook(apiKey, source, parsed);
+      if (fc) {
+        parsed.fact_check = fc;
+        if (fc.removed.length) console.warn('[fact-check] removed', fc.removed.length, 'unsupported sentence(s)');
+      }
     }
     // Patch U.3 — the hook IS the opening beat. Enforced in code so they can never diverge.
     if (parsed && typeof parsed === 'object' && parsed.hook && parsed.story_architecture && typeof parsed.story_architecture === 'object') {
@@ -753,6 +869,8 @@ For the full_script and narration_script fields:
 Return ONLY this JSON — be CONCISE in every field to fit within token limits:
 
 {
+  "story_type": "one of: mistake_lesson, transformation, demo_proof, origin, behind_the_scenes, moment_reflection",
+  "five_second_moment": "The instant something changed, in the creator's words. 'not found' if there isn't one.",
   "story_core": {
     "want": "One sentence, from the creator's own words.",
     "obstacle": "One sentence.",
@@ -846,7 +964,7 @@ Return ONLY: {"diagnosis":"2-3 sentences — what this story is really about ben
 ${STORY_RULES}
 
 ${steer ? 'CREATOR DIRECTION: ' + steer : ''}
-Return ONLY: {"hook":"under 15 words, open loop, true to the moment","hook_why":"one sentence","story_architecture":{"opening":"same as hook","setup":"12 words max","risk":"12 words max","turn":"12 words max","payoff":"18 words max — what it means, not the event","cta":"12 words max"},"gaps":["missing details, or empty array"]}`,
+Return ONLY: {"story_type":"mistake_lesson|transformation|demo_proof|origin|behind_the_scenes|moment_reflection","five_second_moment":"the instant something changed, or not found","hook":"under 15 words, open loop, true to the moment","hook_why":"one sentence","story_architecture":{"opening":"same as hook","setup":"12 words max","risk":"12 words max","turn":"12 words max","payoff":"18 words max — what it means, not the event","cta":"12 words max"},"gaps":["missing details, or empty array"]}`,
 
         hook: `Rewrite ONLY the opening hook — the single line that stops the scroll.
 ${steer ? 'CREATOR DIRECTION: ' + steer : ''}

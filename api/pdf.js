@@ -626,6 +626,12 @@ function buildPlaybookHTML(pb, brand) {
   // ── 02 Story Diagnosis ─────────────────────────────────────────────────────
   // Patch U.6 — gaps: details the story needs that the creator didn't give.
   const gapsList = (Array.isArray(pb.gaps) ? pb.gaps : []).filter(g => typeof g === 'string' && g.trim());
+  // Patch X.2 — story type and the 5-second moment.
+  const _typeLabels = { mistake_lesson: 'Mistake → lesson', transformation: 'Transformation', demo_proof: 'Demo / proof',
+    origin: 'Origin story', behind_the_scenes: 'Behind the scenes', moment_reflection: 'Small moment, big meaning' };
+  const shapeLines = [];
+  if (_typeLabels[pb.story_type]) shapeLines.push('Type: ' + _typeLabels[pb.story_type]);
+  if (pb.five_second_moment && !/^not found/i.test(pb.five_second_moment)) shapeLines.push('The moment: “' + pb.five_second_moment + '”');
   if (pb.diagnosis) {
     pages.push(`<div class="pdf-page pdf-page--interior">
       ${hdr(brandName, docType, pn())}
@@ -633,6 +639,7 @@ function buildPlaybookHTML(pb, brand) {
         ${sLabel('Story Diagnosis')}
         <h2 class="section-title">${e(pb.diagnosis)}</h2>
         ${pb.diagnosis_why ? `<p class="body-copy">${e(pb.diagnosis_why)}</p>` : ''}
+        ${shapeLines.length ? `<div class="sp-16"></div>${card('Story Shape', shapeLines.join('\n'), null)}` : ''}
         ${gapsList.length ? `<div class="sp-16"></div>${card('Make It Stronger', gapsList.map(g => '• ' + g).join('\n'), null)}` : ''}
       </div>
       ${ftr(brandName)}

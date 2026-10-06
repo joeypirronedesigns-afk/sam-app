@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.55" data-qs-descriptor="Patch W — step-3 asks for the missing piece (answer feeds the playbook), buffered reflection reader, URL guard, beat timings scaled to script length, preview sign-in links use the preview host." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.56" data-qs-descriptor="Patch X — fact-check pass removes unsupported lines, story types + 5-second moment + craft rules, 3-question interview at step 3, story eval test set and scorecard." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -16405,36 +16405,49 @@ async function readSamReply(res) {
   return reply;
 }
 
-// Patch W.1 — SAM asks for the missing piece instead of inventing it.
-// The reflection may end with "QUESTION: ..."; show it with an answer box.
+// Patch X.3 — SAM interviews like a storytelling coach: up to 3 questions (the moment, the stakes,
+// the ending), each with its own answer box. Answers feed the playbook as the creator's own words.
 function renderStoryReflection(reply, diagEl) {
-  const m = String(reply).match(/\n?\s*\**QUESTION:?\**\s*(.+)\s*$/i);
-  const question = m ? m[1].trim() : '';
-  const body = m ? String(reply).slice(0, m.index).trim() : String(reply).trim();
-  if (question !== (WS.gapQuestion || '')) WS.gapAnswer = '';
-  WS.gapQuestion = question;
+  const lines = String(reply).split('\n');
+  const questions = [];
+  const bodyLines = [];
+  for (const l of lines) {
+    const m = l.match(/^\s*[-*\d.)\s]*\**QUESTION:?\**\s*(.+)$/i);
+    if (m) { if (questions.length < 3) questions.push(m[1].trim()); }
+    else bodyLines.push(l);
+  }
+  const body = bodyLines.join('\n').trim();
+  const prev = Array.isArray(WS.gapQA) ? WS.gapQA : [];
+  WS.gapQA = questions.map(q => {
+    const old = prev.find(p => p && p.q === q);
+    return { q, a: old ? old.a : '' };
+  });
+  WS.gapQuestion = ''; WS.gapAnswer = '';   // Patch W single-question fields, superseded
   WS.diagnosedStory = body;
   saveWizardState();
   if (!diagEl) return;
   const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   let html = '<div class="sam-diagnosis-reveal">' + mdToHtml(body) + '</div>';
-  if (question) {
+  if (WS.gapQA.length) {
     html += `<div class="wiz-gap-ask" style="margin-top:16px;padding:14px 16px;background:var(--surface-2);border:1px solid var(--rule);border-radius:var(--radius);">
-      <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:6px;">SAM needs one thing</div>
-      <div style="font-size:15px;color:var(--ink);margin-bottom:10px;">${esc(question)}</div>
-      <textarea id="wiz3gapAnswer" class="wizard-textarea" rows="2" style="min-height:64px;" placeholder="Answer in your own words — or skip it, and SAM will leave it out rather than make it up."
-        oninput="WS.gapAnswer=this.value;saveWizardState();">${esc(WS.gapAnswer || '')}</textarea>
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:4px;">SAM has ${WS.gapQA.length === 1 ? 'one question' : WS.gapQA.length + ' questions'}</div>
+      <div style="font-size:13px;color:var(--ink-soft);margin-bottom:12px;">Answer what you can in your own words. Anything you skip, SAM leaves out rather than makes up.</div>
+      ${WS.gapQA.map((qa, i) => `
+        <div style="font-size:15px;color:var(--ink);margin:${i ? '14px' : '0'} 0 8px;">${esc(qa.q)}</div>
+        <textarea class="wizard-textarea" rows="2" style="min-height:56px;" placeholder="Your answer (optional)"
+          oninput="WS.gapQA[${i}].a=this.value;saveWizardState();">${esc(qa.a || '')}</textarea>`).join('')}
     </div>`;
   }
   diagEl.innerHTML = html;
 }
 
-// Patch W.1 — the story text sent to the playbook, plus the creator's answer to SAM's question.
+// Patch X.3 — the story text sent to the playbook, plus every answer the creator gave.
 function getStoryForPlaybook() {
   const story = WS.storyText || '';
-  const a = (WS.gapAnswer || '').trim();
-  if (!a || !WS.gapQuestion) return story;
-  return story + '\n\n(The creator added, when SAM asked "' + WS.gapQuestion + '": ' + a + ')';
+  const qa = (Array.isArray(WS.gapQA) ? WS.gapQA : []).filter(x => x && x.q && (x.a || '').trim());
+  if (!qa.length && WS.gapQuestion && (WS.gapAnswer || '').trim()) qa.push({ q: WS.gapQuestion, a: WS.gapAnswer });
+  if (!qa.length) return story;
+  return story + qa.map(x => '\n\n(The creator added, when SAM asked "' + x.q + '": ' + x.a.trim() + ')').join('');
 }
 
 async function generateStoryReflection() {
@@ -16489,7 +16502,7 @@ async function generateStoryReflection() {
             role: 'user',
             content: [
               { type: 'image', source: { type: 'base64', media_type: WS.storyPhotoType || 'image/jpeg', data: WS.storyPhoto } },
-              { type: 'text', text: `You are SAM — a creative intelligence who finds the story in what creators share. Look at this photo and the context: "${photoCaption}". In 2-3 plain sentences, reflect back what is happening in this moment and what it means, using only what the photo and their words show. No praise, no compliments, no motivational lines. Never say "I can see" or "It looks like". Then, ONLY if the story is missing a concrete moment, a cost, or an ending, add one final line starting with "QUESTION:" that asks them for that single missing detail.` }
+              { type: 'text', text: `You are SAM — a creative intelligence who finds the story in what creators share. Look at this photo and the context: "${photoCaption}". In 2-3 plain sentences, reflect back what is happening in this moment and what it means, using only what the photo and their words show. No praise, no compliments, no motivational lines. Never say "I can see" or "It looks like". Then, for each of these the story is missing — the moment something changed, what it cost them, how it ended — add a line starting with "QUESTION:" (at most 3, most important first).` }
             ]
           }],
           systemPrompt: 'You are SAM. Respond in 2-3 sentences max. Be specific and plain. No praise.'
@@ -16529,7 +16542,7 @@ async function generateStoryReflection() {
         tier: _r1Base.tier,
         userId: 'anon',
         messages: [{ role: 'user', content: text }],
-        systemPrompt: `You are SAM. Read what this person wrote and reflect back the core of their story in plain words — maximum 3 sentences. Sentence 1: what happened, in their terms. Sentence 2: what changed or what it means — the turn, if there is one. Use only what they said; never add events, feelings or stakes they did not state. No praise, no compliments, no motivational lines, no telling them their story is powerful or brave. Do NOT write a post, script, caption or any content format. No dashes, headers, structured output or bullet points. Never say "I can see" or "It sounds like". Then, ONLY if the story is missing something concrete it needs (a specific moment, what it cost them, how it ended), add one final line starting with "QUESTION:" that asks them for that single most important missing detail in plain, short words. If nothing important is missing, do not add the line.`
+        systemPrompt: `You are SAM. Read what this person wrote and reflect back the core of their story in plain words — maximum 3 sentences. Sentence 1: what happened, in their terms. Sentence 2: what changed or what it means — the turn, if there is one. Use only what they said; never add events, feelings or stakes they did not state. No praise, no compliments, no motivational lines, no telling them their story is powerful or brave. Do NOT write a post, script, caption or any content format. No dashes, headers, structured output or bullet points. Never say "I can see" or "It sounds like". Then interview them like a storytelling coach: for each of these that the story is MISSING, add a line starting with "QUESTION:" — at most 3, most important first. (1) The moment: the single instant something changed, if it isn't clear. (2) The stakes: what it cost them or what was at risk, if they didn't say. (3) The ending: how it turned out or the result, if they didn't say. Ask in plain, short words about their specific story, one question per line. If nothing is missing, add no QUESTION lines.`
       })
     });
     const reply = await readSamReply(res);
@@ -16883,6 +16896,7 @@ function regenRenderSection(key, sectionEl, data) {
   if (key === 'diagnosis' && data.diagnosis) {
     html = `<div class="playbook-card"><div class="playbook-card-text">${data.diagnosis}</div></div>
     ${data.diagnosis_why ? '<div class="wizard-why" style="margin-top:12px;"><strong>Why this matters:</strong> ' + data.diagnosis_why + '</div>' : ''}
+    ${storyShapeHTML(window._lastPlaybookData)}
     ${gapsCardHTML((window._lastPlaybookData || {}).gaps)}`;
   } else if (key === 'architecture' && data.story_architecture) {
     const arch = data.story_architecture;
@@ -16921,7 +16935,8 @@ function regenRenderSection(key, sectionEl, data) {
         ).join('') + '</section>'
       : '<div class="playbook-script">' + formatted + '</div>';
     html = `${scriptBody}
-    ${data.pacing_note ? '<div class="wizard-why" style="margin-top:12px;"><strong>Delivery note:</strong> ' + data.pacing_note + '</div>' : ''}`;
+    ${data.pacing_note ? '<div class="wizard-why" style="margin-top:12px;"><strong>Delivery note:</strong> ' + data.pacing_note + '</div>' : ''}
+    ${factCheckHTML(data.fact_check)}`;
   } else if (key === 'platforms' && data.platform_strategies) {
     html = data.platform_strategies.map(ps => {
       if (!ps?.platform) return '';
@@ -16956,6 +16971,36 @@ function regenRenderSection(key, sectionEl, data) {
 
 // Patch U.6 — "Make it stronger": concrete details the story needs that the creator
 // did not give. SAM is told not to invent them, so it lists them here instead.
+// Patch X.2 — story type and the 5-second moment, shown under the diagnosis.
+const STORY_TYPE_LABELS = {
+  mistake_lesson: 'Mistake → lesson', transformation: 'Transformation', demo_proof: 'Demo / proof',
+  origin: 'Origin story', behind_the_scenes: 'Behind the scenes', moment_reflection: 'Small moment, big meaning'
+};
+function storyShapeHTML(d) {
+  if (!d) return '';
+  const label = STORY_TYPE_LABELS[d.story_type] || '';
+  const moment = (d.five_second_moment || '').trim();
+  if (!label && !moment) return '';
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const missing = /^not found/i.test(moment);
+  return `<div class="playbook-shape" style="margin-top:12px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--ink-soft);">
+    ${label ? `<div><span style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted);">Story type</span>&nbsp;&nbsp;${esc(label)}</div>` : ''}
+    ${moment ? `<div><span style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted);">The moment</span>&nbsp;&nbsp;${missing ? 'Not found yet — the video needs one instant where something changed.' : '“' + esc(moment) + '”'}</div>` : ''}
+  </div>`;
+}
+
+// Patch X.1 — lines the fact-check removed because they weren't in what the creator said.
+function factCheckHTML(fc) {
+  const list = (fc && Array.isArray(fc.removed)) ? fc.removed.filter(Boolean) : [];
+  if (!list.length) return '';
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  return `<div class="playbook-factcheck" style="margin-top:12px;background:var(--surface-2);border:1px solid var(--rule);border-radius:var(--radius);padding:14px 16px;">
+    <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:8px;">Removed — not in what you told SAM</div>
+    <div style="font-size:13px;color:var(--ink-soft);margin-bottom:8px;">SAM cut these lines because it couldn't trace them to your story. If one is true, add it back in your own words.</div>
+    <ul style="margin:0;padding-left:18px;font-size:14px;color:var(--ink);line-height:1.6;">${list.map(l => '<li>' + esc(l) + '</li>').join('')}</ul>
+  </div>`;
+}
+
 // Patch W.3 — architecture card timing = the matching script beat's timing (scaled to length).
 function archTime(key, fallback, src) {
   const beats = (src && Array.isArray(src.script_beats)) ? src.script_beats : [];
@@ -17008,6 +17053,7 @@ function renderPlaybook(data) {
       <div class="regen-content">
         <div class="playbook-card"><div class="playbook-card-text">${data.diagnosis}</div></div>
         ${data.diagnosis_why ? `<div class="wizard-why" style="margin-top:12px;"><strong>Why this matters:</strong> ${data.diagnosis_why}</div>` : ''}
+        ${storyShapeHTML(data)}
         ${gapsCardHTML(data.gaps)}
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center;">
@@ -17106,6 +17152,7 @@ function renderPlaybook(data) {
       <div class="regen-content">
         ${scriptBody}
         ${data.pacing_note ? `<div class="wizard-why" style="margin-top:12px;"><strong>Delivery note:</strong> ${data.pacing_note}</div>` : ''}
+        ${factCheckHTML(data.fact_check)}
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center;">
         <button class="playbook-copy-btn" style="margin-top:0;" onclick="wizCopy(this, getPlaybookScriptText())">Copy script</button>
