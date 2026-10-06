@@ -189,6 +189,78 @@ Return ONLY JSON: {"unsupported":[{"text":"the exact sentence copied from DRAFT"
   }
 }
 
+// Patch Z.4 — number guard. Deterministic backstop for the fact-check: any sentence in the
+// script or captions containing a number the creator never said is cut. Same number reading as
+// scripts/story-eval.js: digits, number words, compounds ("four hundred"), ordinals from "third",
+// "250k" = 250,000. "one"/"first"/"second" are ignored (pronoun/adverb); "two" as a counting word
+// ("wrote two things") is allowed.
+const NG_WORDS = { one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10,eleven:11,twelve:12,
+  thirteen:13,fourteen:14,fifteen:15,sixteen:16,seventeen:17,eighteen:18,nineteen:19,twenty:20,thirty:30,
+  forty:40,fifty:50,sixty:60,seventy:70,eighty:80,ninety:90,hundred:100,thousand:1000 };
+const NG_ORD = { third:3, fourth:4, fifth:5, sixth:6, seventh:7, eighth:8, ninth:9, tenth:10 };
+function numbersInText(text, { allowCountingTwo = false } = {}) {
+  const t = String(text || '').toLowerCase().replace(/(\d),(\d)/g, '$1$2');
+  const out = new Set();
+  let m;
+  const dre = /(\d+(?:\.\d+)?)\s*(k|m)?\b/g;
+  while ((m = dre.exec(t))) {
+    const n = Number(m[1]);
+    out.add(n);
+    if (m[2] === 'k') out.add(n * 1000);
+    if (m[2] === 'm') out.add(n * 1000000);
+  }
+  const toks = [...t.matchAll(/\b[a-z]+\b/g)];
+  for (let i = 0; i < toks.length; i++) {
+    const w = toks[i][0];
+    if (NG_ORD[w] !== undefined) { out.add(NG_ORD[w]); continue; }
+    if (w === 'one' || NG_WORDS[w] === undefined) continue;
+    if (allowCountingTwo && w === 'two' && !(toks[i + 1] && (toks[i + 1][0] === 'hundred' || toks[i + 1][0] === 'thousand'))) continue;
+    let val = NG_WORDS[w], j = i;
+    if (val >= 20 && val < 100 && toks[j + 1] && NG_WORDS[toks[j + 1][0]] < 10) { val += NG_WORDS[toks[j + 1][0]]; j++; }
+    while (toks[j + 1] && (toks[j + 1][0] === 'hundred' || toks[j + 1][0] === 'thousand')) { val *= NG_WORDS[toks[j + 1][0]]; j++; }
+    if ((w === 'hundred' || w === 'thousand') && i > 0 && NG_WORDS[toks[i - 1][0]] !== undefined) continue;
+    out.add(val); i = j;
+  }
+  return out;
+}
+function _numberOk(n, src) {
+  return src.has(n) || src.has(n * 1000) || src.has(n / 1000) || src.has(n * 1000000) || src.has(n / 1000000);
+}
+// Remove sentences with untraceable numbers. Unlike _removeSentences this may empty a line,
+// but never empties a whole beat — if a beat would lose all its words, its original lines stay.
+function guardNumbersInScript(text, src) {
+  if (!text) return { text, removed: [] };
+  const lines = String(text).split('\n');
+  const removed = [];
+  const out = lines.map(line => {
+    if (/^\s*\[BEAT:/i.test(line)) return line;
+    const parts = _splitSentences(line).filter(p => p !== '\n');
+    const kept = parts.filter(p => {
+      const bad = [...numbersInText(p, { allowCountingTwo: true })].some(n => !_numberOk(n, src));
+      if (bad) removed.push(p.trim());
+      return !bad;
+    });
+    return kept.join('').replace(/\s{2,}/g, ' ').trim();
+  });
+  // restore any beat that would be left empty
+  let beatStart = 0;
+  const isMarker = l => /^\s*\[BEAT:/i.test(l);
+  for (let i = 0; i <= out.length; i++) {
+    if (i === out.length || (isMarker(out[i]) && i > beatStart)) {
+      const from = isMarker(out[beatStart]) ? beatStart + 1 : beatStart;
+      const hadWords = lines.slice(from, i).some(l => l.trim());
+      const hasWords = out.slice(from, i).some(l => l.trim());
+      if (hadWords && !hasWords) {
+        for (let k = from; k < i; k++) out[k] = lines[k];
+        const restored = lines.slice(from, i).join(' ');
+        for (let r = removed.length - 1; r >= 0; r--) if (restored.includes(removed[r])) removed.splice(r, 1);
+      }
+      beatStart = i;
+    }
+  }
+  return { text: out.filter((l, i) => l.trim() || !lines[i].trim() || isMarker(l)).join('\n'), removed };
+}
+
 // Patch Y.2 — make the spoken first line of the script exactly the hook.
 function enforceHookOpening(script, hook) {
   const h = String(hook || '').trim();
@@ -850,6 +922,28 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
       if (fc) {
         parsed.fact_check = fc;
         if (fc.removed.length) console.warn('[fact-check] removed', fc.removed.length, 'unsupported sentence(s)');
+      }
+    }
+    // Patch Z.4 — cut sentences containing numbers the creator never said (script + captions).
+    if (parsed && typeof parsed === 'object' && (mode === 'playbook' || (mode === 'regen_section' && (req.body || {}).section === 'script'))) {
+      const b = req.body || {};
+      const srcNums = numbersInText([b.moment, b.creatorContext].filter(Boolean).join(' '));
+      const cut = [];
+      for (const f of ['full_script', 'narration_script']) {
+        if (typeof parsed[f] === 'string') { const o = guardNumbersInScript(parsed[f], srcNums); parsed[f] = o.text; cut.push(...o.removed); }
+      }
+      for (const p of (parsed.platform_strategies || [])) {
+        if (p && typeof p.caption === 'string') {
+          const o = _removeSentences(p.caption, _splitSentences(p.caption)
+            .filter(x => [...numbersInText(x, { allowCountingTwo: true })].some(n => !_numberOk(n, srcNums)))
+            .map(_normSentence).filter(Boolean));
+          p.caption = o.text; cut.push(...o.removed);
+        }
+      }
+      if (cut.length) {
+        parsed.fact_check = parsed.fact_check || { removed: [], checked: false };
+        parsed.fact_check.removed = [...new Set([...(parsed.fact_check.removed || []), ...cut.map(x => x.replace(/\s+/g, ' ').trim())])];
+        console.warn('[number-guard] removed', cut.length, 'sentence(s) with untraceable numbers');
       }
     }
     // Patch Z.1 — detect placeholder/meta text that leaked into spoken fields (thin stories).

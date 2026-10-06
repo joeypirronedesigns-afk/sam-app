@@ -42,7 +42,7 @@ Stripe payment link: https://buy.stripe.com/eVqeVfgkOajocUX2Dp8Zq00
 - Typography: Instrument Serif italic for headings, Inter for UI, JetBrains Mono for code
 - Sidebar: Left nav, 220px wide. Sections: DAILY, BUILD SAM'S BRAIN, STUDIO, MORE, EXECUTION PACK
 - Version stamp: data-qs-version attribute on div[data-qs-shell] — bump on every commit
-- Current version: v9.118.59+
+- Current version: v9.118.60+
 
 ---
 
@@ -64,7 +64,7 @@ Vercel CLI: Installed at /opt/homebrew/bin/vercel, logged in as joeypirronedesig
 
 ---
 
-## Current Version: v9.118.59
+## Current Version: v9.118.60
 
 ### Key Architecture Decisions Made
 - No free trial — Patch O removed it. Paid or blocked. trial-status.js returns allowed:false for all unpaid users.
@@ -93,6 +93,7 @@ Vercel CLI: Installed at /opt/homebrew/bin/vercel, logged in as joeypirronedesig
 - Patch Y (v9.118.57) — Fact-check: lines ≥80% made of the creator's own words are never removed; lessons/meaning drawn from the creator's events count as supported. enforceHookOpening(): script Opening beat always starts with the hook (paraphrase replaced, else hook prepended). Eval scorer: ordinals, compound numbers, 'one' ignored, number context shown, multi-type expectations, thin case exempt from six_beats. Baseline before Patch Y: 109/120 (91%).
 - Patch Z (v9.118.58) — STORY_RULES 10: no notes/placeholders in hook/script/captions; thin stories get a short honest draft. Server strips placeholder lines, blanks placeholder hooks, sets parsed.is_draft. 'Draft' banner on the script (app + PDF) when no 5-second moment. Scorer: 13th check no_placeholders; 'first'/'second' no longer counted as numbers. Eval after Patch Y: 116/120 (97%).
 - Patch Z.3 (v9.118.59) — Too-thin stories: server clears placeholder architecture cards/captions and sets needs_more when there is no moment and nothing honest to write; app shows 'SAM needs more before it can write this' with SAM's questions and an 'Add details to my story' button (back to step 2), hides empty architecture/platform sections. Scorer: needs_more counts as correct for the thin case (and as a failure for full stories). Eval after Patch Z: 125/130 (96%).
+- Patch Z.4 (v9.118.60) — Number guard (numbersInText / guardNumbersInScript in api/sam.js): after the fact-check, any script/caption sentence with a number not in the creator's words is cut (never empties a beat); '250k' = 250,000; 'one'/'first'/'second' ignored; 'two' as a counting word allowed. Cuts are listed with the fact-check removals. Scorer uses the same rules. Eval after Patch Z.3: 128/130 (98%) — both misses were invented numbers.
 
 ### Open Task List (v9.118.x)
 - Later — 'connection to this' wizard question only if founder/role detection keeps missing

@@ -39,13 +39,15 @@ function numbersIn(text) {
   const out = new Map();
   const add = (n, idx) => { const k = String(n); if (!out.has(k)) out.set(k, t.slice(Math.max(0, idx - 30), idx + 30).replace(/\s+/g, ' ')); };
   let m;
-  const dre = /\d+(?:\.\d+)?/g;
-  while ((m = dre.exec(t))) add(Number(m[0]), m.index);
+  const dre = /(\d+(?:\.\d+)?)\s*(k|m)?\b/g;
+  while ((m = dre.exec(t))) { const n = Number(m[1]); add(n, m.index); if (m[2] === 'k') add(n * 1000, m.index); if (m[2] === 'm') add(n * 1000000, m.index); }
   const toks = [...t.matchAll(/\b[a-z]+\b/g)];
   for (let i = 0; i < toks.length; i++) {
     const w = toks[i][0];
     if (ORDINALS[w] !== undefined) { add(ORDINALS[w], toks[i].index); continue; }
     if (w === 'one' || NUM_WORDS[w] === undefined) continue;
+    // "two" as a counting word ("wrote two things") isn't a claim — same rule as the server guard.
+    if (w === 'two' && !(toks[i + 1] && (toks[i + 1][0] === 'hundred' || toks[i + 1][0] === 'thousand'))) continue;
     let val = NUM_WORDS[w], j = i;
     // tens + units ("forty five"), then multipliers ("four hundred", "two thousand")
     if (val >= 20 && val < 100 && toks[j + 1] && NUM_WORDS[toks[j + 1][0]] < 10) { val += NUM_WORDS[toks[j + 1][0]]; j++; }
