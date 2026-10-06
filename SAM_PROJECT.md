@@ -101,6 +101,7 @@ Vercel CLI: Installed at /opt/homebrew/bin/vercel, logged in as joeypirronedesig
 - Later — 'connection to this' wizard question only if founder/role detection keeps missing
 - SECURITY — api/_gate.js trusts email/userId from the request body: anyone sending the founder email, or a userId starting with 'dev-', bypasses the paywall and spends the Anthropic key. Fix: verify a server-issued session token instead of body fields.
 - Workflow — run `SAM_EVAL_EMAIL=... node scripts/story-eval.js` before and after every Story Engine change; compare overall %.
+- Hard set — `SAM_EVAL_EMAIL=... node scripts/story-eval.js --cases tests/story-eval/cases-hard.json --show` (two turns, no resolution, buried moment). --show prints each playbook for craft review; must_not_say per case. Eval after Patch Z.6: 130/130 (100%) on the main set.
 - Ops — Production KV is the Upstash store named 'temp-restore' (restored 2026-10-05 from sam-kv backup 2026-07-20). Do not delete it. Preview magic links now use the preview host (Patch W).
 - T1 — Server telemetry sink: POST /api/telemetry + sam_telemetry table
 - T2 — Step 0 prefill diagnostic log

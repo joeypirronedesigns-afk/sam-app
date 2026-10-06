@@ -23,7 +23,11 @@ const EMAIL = process.env.SAM_EVAL_EMAIL || '';
 if (!EMAIL) { console.error('Set SAM_EVAL_EMAIL to an account with access (e.g. your founder email).'); process.exit(1); }
 
 const root = path.join(__dirname, '..');
-const cases = JSON.parse(fs.readFileSync(path.join(root, 'tests/story-eval/cases.json'), 'utf8'))
+// Patch Z.7 — --cases <file> picks a test set (default cases.json); --show prints each playbook
+// (type, moment, hook, beats, script) so the craft can be read and judged, not just the rules.
+const CASES_FILE = argVal('--cases') || 'tests/story-eval/cases.json';
+const SHOW = args.includes('--show');
+const cases = JSON.parse(fs.readFileSync(path.isAbsolute(CASES_FILE) ? CASES_FILE : path.join(root, CASES_FILE), 'utf8'))
   .filter(c => !ONLY.length || ONLY.includes(c.id));
 
 // ── helpers ──────────────────────────────────────────────────────────────────
@@ -132,6 +136,7 @@ function score(c, r) {
     hashtags_max_4:    tags.every(n => n <= 4),
     cta_short:         words(beat('cta')) <= 35,
     no_ai_cliches:     bannedHits.length === 0,
+    respects_must_not_say: !(c.must_not_say || []).some(p => spoken.toLowerCase().includes(String(p).toLowerCase())),
     moment_found:      c.thin ? true : !!r.five_second_moment && !/^not found/i.test(r.five_second_moment),
     thin_asks_for_more: c.thin ? (!!r.needs_more || (r.gaps || []).length > 0) : (!r.needs_more),
     no_placeholders:   !/\b(not found|tbd|placeholder|needs a real moment|real moment needed|needed before|can be written)\b|\[(insert|add|your)[^\]]*\]/i.test(spoken.replace(/\[BEAT:[^\]]*\]/g, '')),
@@ -142,6 +147,8 @@ function score(c, r) {
   if (badDomains.length) notes.push('domains not in story: ' + badDomains.join(', '));
   if (leaked.length) notes.push('setup reveals: ' + leaked.join(', '));
   if (bannedHits.length) notes.push('clichés: ' + bannedHits.join(', '));
+  const saidForbidden = (c.must_not_say || []).filter(p => spoken.toLowerCase().includes(String(p).toLowerCase()));
+  if (saidForbidden.length) notes.push('said what it must not: ' + saidForbidden.join(', '));
   if (!checks.type_matches) notes.push(`type ${r.story_type} (expected ${c.expect_type})`);
   const removed = (r.fact_check && r.fact_check.removed) || [];
   if (removed.length) notes.push(`fact-check removed ${removed.length}: ` + removed.map(s => '"' + s.slice(0, 60) + '"').join(' | '));
@@ -163,6 +170,22 @@ function score(c, r) {
       const failed = Object.entries(s.checks).filter(([, v]) => !v).map(([k]) => k);
       if (failed.length) console.log('   ✗ ' + failed.join(', '));
       s.notes.forEach(n => console.log('   · ' + n));
+      if (SHOW) {
+        const a = result.story_architecture || {};
+        const line = '   ' + '─'.repeat(60);
+        console.log(line);
+        if (c.craft_note) console.log('   TESTING: ' + c.craft_note);
+        console.log(`   TYPE: ${result.story_type || '—'}   ·   MOMENT: ${result.five_second_moment || '—'}`);
+        if (result.needs_more) console.log('   NEEDS MORE: ' + (result.gaps || []).join(' | '));
+        console.log('   HOOK: ' + (result.hook || '—'));
+        ['setup', 'risk', 'turn', 'payoff', 'cta'].forEach(k => console.log(`   ${k.toUpperCase().padEnd(7)}${a[k] || '—'}`));
+        console.log('   SCRIPT:');
+        (result.script_beats || []).forEach(b => console.log(`     [${b.label} ${b.timing}] ${String(b.content).replace(/\s+/g, ' ')}`));
+        const fc = result.fact_check || {};
+        if ((fc.removed || []).length) console.log('   REMOVED: ' + fc.removed.join(' | '));
+        if ((fc.rewritten || []).length) console.log('   REWRITTEN: ' + fc.rewritten.join(' | '));
+        console.log(line + '\n');
+      }
     } catch (e) {
       console.log('ERROR ' + e.message);
       results.push({ id: c.id, error: e.message });

@@ -1,0 +1,29 @@
+[
+  {
+    "id": "deck-underbid",
+    "expect_type": "mistake_lesson|transformation",
+    "creator": "Deck and fence contractor who posts job stories",
+    "reveal": ["neighbor", "brother", "church", "referred", "booked"],
+    "must_not_say": ["underbidding pays off", "worth losing money", "underbid again on purpose"],
+    "craft_note": "Two turns: the loss (but), the referrals (therefore), then a final nuance — he still wouldn't underbid. The payoff must keep that nuance, not flatten it into 'losing money was worth it'.",
+    "input": "Last spring I bid a deck job at 6,800 dollars. I wanted it so bad I came in way under the other two quotes. Halfway through I realized I'd forgotten the footings were on a slope, so I needed almost double the concrete. I ate it. By the end I'd made maybe 300 dollars for five weeks of work. I was so mad at myself I didn't even post about it. Then in August the homeowner called. Her neighbor wanted a deck. Then her brother. Then a guy from her church. Three jobs, all at my real price, and nobody asked for a discount, because she told them I didn't cut corners even when I was losing money. The job I lost money on is the reason I'm booked through spring. I still wouldn't underbid again though."
+  },
+  {
+    "id": "food-truck-lease",
+    "expect_type": "any",
+    "creator": "Food truck owner who sells smoked brisket tacos",
+    "reveal": [],
+    "must_not_say": ["i signed", "we signed", "signed the lease", "i decided", "we decided", "said yes to the lease", "turned down the lease", "made my decision", "made the decision"],
+    "craft_note": "No resolution. The story ends undecided. SAM must not invent a decision; the payoff should be the weight of the choice itself, and the open loop can legitimately stay open (or invite the audience in).",
+    "input": "Three years ago I bought a used food truck for 22,000 dollars with money I borrowed from my dad. Brisket tacos, that's it. Last week the guy who owns the building where I park on Saturdays offered me the restaurant space inside. Real kitchen, 40 seats, no more generator. The rent is more than I make some months. My dad says go for it. My wife says the truck is the reason we have weekends together. I stood in that empty dining room on Tuesday and I could see it, the whole thing, the menu on the wall. Then I drove the truck home and parked it in the driveway and just sat in it for like an hour. I have until Friday to sign. I honestly don't know what I'm going to do."
+  },
+  {
+    "id": "chicken-coop",
+    "expect_type": "moment_reflection|mistake_lesson|transformation",
+    "creator": "Dad who posts backyard homestead projects with his kids",
+    "reveal": ["hand out", "holds her hand", "that's why she runs", "you're chasing her"],
+    "must_not_say": [],
+    "craft_note": "Buried moment inside a funny, distracting ramble. SAM should cut the red herrings (lumber, drill, rain, nail), build on the daughter's line, and keep it funny — not turn it into a sermon.",
+    "input": "Okay so this is a long one. I was building a chicken coop for my daughter's 4-H project, she's nine, and everything that could go wrong went wrong. Wrong lumber delivered. My drill battery died. It rained for three days straight. I stepped on a nail, not bad, got a tetanus shot, whatever. Then we finally get the chickens, six of them, and one of them, Biscuit, will not go in the coop. Every night I'm out there at 10pm with a flashlight chasing a chicken around the yard. My daughter thinks it's the funniest thing she's ever seen. Then one night she comes out in her pajamas, sits down in the grass, and just holds her hand out. And Biscuit walks right up to her and lets her pick her up. Walks her right into the coop. Nine years old. Then she looks at me and goes, Dad, you're chasing her, that's why she runs. Anyway, the coop's done. It leans a little."
+  }
+]
