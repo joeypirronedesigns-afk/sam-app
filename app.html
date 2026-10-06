@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.71" data-qs-descriptor="Patch AE - includes AD (logo on account, Shorts hashtag words, repeated opening, PDF layout, stale tips) plus a sign-off field that always closes the script, and web addresses only when given for that story." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.72" data-qs-descriptor="Patch AF - free guides: audience sees only the guide (no why-it-works note, no comment to post), worksheets keep their lines with real tables and checkboxes, long guides page cleanly, honest intro, no internal story-type labels." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -17439,7 +17439,7 @@ function renderPlaybook(data) {
           ${(lm.items || []).map((item, i) => `
             <div class="playbook-lead-item">
               <div class="playbook-lead-num">${i+1}</div>
-              <div><strong>${item.heading || ''}</strong>${item.heading && item.body ? ' — ' : ''}${item.body || item}</div>
+              <div><strong>${item.heading || ''}</strong>${item.heading && item.body ? ' — ' : ''}<span style="white-space:pre-line;">${item.body || item}</span></div>
             </div>`).join('')}
         </div>
         ${lm.comment_response ? `<div class="playbook-lead-comment no-print">
@@ -17815,6 +17815,11 @@ CRITICAL RULES:
 - Make it genuinely useful — specific, actionable, and tailored to the exact audience described.
 - This should feel like the creator spent hours making it. It should be something their audience saves and returns to.
 - The output is a complete, ready-to-deploy lead magnet. Nothing internal. Nothing explanatory.
+- HONEST: only claims the creator actually made in their story. Never say it will save money or time, that the creator built it, uses it, needed it, or that it is "the exact system" they use — unless the story says so. No invented numbers or results.
+- "intro" is 1-2 sentences the AUDIENCE reads at the top, in the creator's first-person voice: what this is and who it's for.
+- "why" is for the CREATOR only and is never shown to the audience: 1-2 sentences on why it fits their audience.
+- "comment_response" is ONE short question the creator posts with it (under 120 characters).
+- Worksheets/checklists: put each line on its own line (use \n). Use ___ for write-in blanks, [ ] for checkboxes, and | between table columns with one row per line (a header row first, then empty rows like ___|___|___).
 
 CREATOR STORY: ${story.slice(0, 600)}
 CREATOR TYPE: ${s.creatorType || 'personal brand'} — ${brandName}
@@ -17824,7 +17829,7 @@ PERSPECTIVE: ${perspNote}
 ${steer ? '\n\nCRITICAL OVERRIDE — CREATOR DIRECTION (you MUST follow this exactly, it overrides everything above): ' + steer + '\n' : ''}
 
 Return ONLY raw JSON (no markdown, no backticks, no explanation):
-{"title":"...","why":"...","items":[{"heading":"...","body":"..."},{"heading":"...","body":"..."},{"heading":"...","body":"..."},{"heading":"...","body":"..."},{"heading":"...","body":"..."}],"comment_response":"..."}`;
+{"title":"...","intro":"...","why":"...","items":[{"heading":"...","body":"..."},{"heading":"...","body":"..."},{"heading":"...","body":"..."},{"heading":"...","body":"..."},{"heading":"...","body":"..."}],"comment_response":"..."}`;
 
   try {
     // Direct fetch with proper SSE parsing
@@ -17918,7 +17923,7 @@ Return ONLY raw JSON (no markdown, no backticks, no explanation):
         ${(lm.items || []).map((item, i) => `
           <div class="playbook-lead-item">
             <div class="playbook-lead-num">${i+1}</div>
-            <div><strong>${item.heading || ''}</strong>${item.heading && item.body ? ' — ' : ''}${item.body || item}</div>
+            <div><strong>${item.heading || ''}</strong>${item.heading && item.body ? ' — ' : ''}<span style="white-space:pre-line;">${item.body || item}</span></div>
           </div>`).join('')}
       </div>
       ${lm.comment_response ? `<div class="playbook-lead-comment no-print">

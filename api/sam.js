@@ -1218,6 +1218,13 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
         if (parsed.fact_check) parsed.fact_check.removed = [];
       }
     }
+        // Patch AF — internal story-type keys never appear in prose ("This is a moment_reflection about…").
+    if (parsed && typeof parsed === 'object') {
+      const TW = { mistake_lesson: 'a mistake-and-lesson story', transformation: 'a transformation story', demo_proof: 'a show-and-prove story',
+        origin: 'an origin story', behind_the_scenes: 'a behind-the-scenes story', moment_reflection: 'a small moment with a big meaning' };
+      const fixT = t => String(t).replace(/\b(?:an?\s+)?(mistake_lesson|demo_proof|behind_the_scenes|moment_reflection)\b/gi, (m, k) => TW[k.toLowerCase()]);
+      for (const f of ['diagnosis', 'diagnosis_why', 'hook_why', 'focus_directive']) if (typeof parsed[f] === 'string') parsed[f] = fixT(parsed[f]);
+    }
     // Patch AC — tidy spoken text (see tidySpoken).
     tidySpoken(parsed, req.body);
     // Patch Y.2 — the script's Opening beat must start with the hook, word for word.
@@ -1352,7 +1359,8 @@ Return ONLY this JSON — be CONCISE in every field to fit within token limits:
   },
   "lead_magnet": {
     "title": "Specific, compelling title. Never promise a number of steps/beats/questions other than the 5 items below.",
-    "why": "2 sentences. The guide must come from what the creator showed or learned in this moment, framed as what they learned — not outside expert advice or claims the creator did not make.",
+    "intro": "1-2 sentences the AUDIENCE reads at the top of the guide, in the creator's own first-person voice: what this guide is and who it's for. Only what the creator actually said — never claim it saves money or time, that the creator built it, uses it, or needed it, unless they said so.",
+    "why": "2 sentences FOR THE CREATOR ONLY (never shown to the audience): why this guide fits their audience. The guide must come from what the creator showed or learned in this moment — not outside expert advice or claims the creator did not make.",
     "items": [
       {"heading": "Point 1 — teach from this creator's moment in plain words; do not restate SAM's internal instructions", "body": "2 sentences max."},
       {"heading": "Point 2", "body": "2 sentences max."},

@@ -542,6 +542,17 @@ function sharedCSS(brandColor) {
       color: var(--pdf-ink-soft);
     }
 
+    /* Patch AF — worksheet pieces inside a free guide */
+    .lm-line { min-height: 1em; }
+    .lm-gap  { height: 6pt; }
+    .lm-fill { border-bottom: 0.75pt solid var(--pdf-ink-muted); height: 16pt; margin: 2pt 0; opacity: 0.6; }
+    .lm-cb   { display: inline-block; width: 8pt; height: 8pt; border: 0.9pt solid var(--pdf-ink-soft); border-radius: 1.5pt; vertical-align: -1pt; margin: 0 4pt 0 2pt; }
+    .lm-table { width: 100%; border-collapse: collapse; margin: 4pt 0 6pt; font-size: 9pt; }
+    .lm-table th { text-align: left; font-weight: 600; color: var(--pdf-ink); border-bottom: 0.9pt solid var(--pdf-ink-soft); padding: 3pt 5pt; }
+    .lm-table td { border-bottom: 0.5pt solid var(--pdf-rule); padding: 3pt 5pt; height: 15pt; vertical-align: bottom; }
+    .lm-note { margin-top: 14pt; padding: 10pt 12pt; border: 0.75pt dashed var(--pdf-rule); border-radius: 4pt; font-size: 9pt; color: var(--pdf-ink-muted); line-height: 1.55; }
+    .lm-note b { color: var(--pdf-ink-soft); }
+
     /* ── Spacers ─────────────────────────────────────────────────────── */
     .sp-8  { height: 8pt;  flex-shrink: 0; }
     .sp-12 { height: 12pt; flex-shrink: 0; }
@@ -584,6 +595,96 @@ function callout(text) {
   return `<div class="callout-block"><p>${e(text)}</p></div>`;
 }
 
+// ─── Patch AF — FREE GUIDE BODIES ─────────────────────────────────────────────
+// The writer's line breaks are kept. A line with "|" columns becomes a table row (rows of only
+// blanks become empty fill-in rows), "[ ]" / ☐ become printable boxes, a line of underscores is a
+// write-on line. Long guides are split across pages by estimated height, continuing an item if needed.
+const LM_CHARS = 80;          // characters per printed line in the body column
+const LM_PAGE = 42;           // printed lines that fit on an interior page
+const CB_RE = /\[\s?\]|☐|□|❑|◻|▢/g;
+function lmBlocks(body) {
+  const lines = String(body || '').replace(/\r/g, '').split('\n').map(l => l.replace(/\s+$/, ''));
+  const out = [];
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (!line) { if (out.length && out[out.length - 1].t !== 'gap') out.push({ t: 'gap', w: 0.4 }); continue; }
+    if (/\|/.test(line) && line.split('|').length >= 3 || /^\|.*\|$/.test(line)) {
+      let cells = line.split('|').map(c => c.trim());
+      if (cells.length && cells[0] === '') cells.shift();
+      if (cells.length && cells[cells.length - 1] === '') cells.pop();
+      const blank = cells.every(c => /^[_\-–—\s.:$]*$/.test(c));
+      out.push({ t: 'row', cells: blank ? cells.map(() => '') : cells, blank, w: 1.4 });
+      continue;
+    }
+    if (/^[_\s.]{6,}$/.test(line)) { out.push({ t: 'fill', w: 1.3 }); continue; }
+    out.push({ t: 'text', s: line, w: Math.max(1, Math.ceil(line.length / LM_CHARS)) });
+  }
+  while (out.length && out[out.length - 1].t === 'gap') out.pop();
+  return out;
+}
+function lmInline(s) { return e(s).replace(CB_RE, '<span class="lm-cb"></span>'); }
+function lmBlocksHTML(blocks) {
+  let html = '', table = null;
+  const flush = () => {
+    if (!table) return;
+    const head = !table[0].blank && table.length > 1 ? table.shift() : null;
+    const n = Math.max(...(head ? [head] : []).concat(table).map(r => r.cells.length), 1);
+    const cells = (r, tag) => Array.from({ length: n }, (_, i) => `<${tag}>${lmInline(r.cells[i] || '')}</${tag}>`).join('');
+    html += `<table class="lm-table">${head ? `<tr>${cells(head, 'th')}</tr>` : ''}${table.map(r => `<tr>${cells(r, 'td')}</tr>`).join('')}</table>`;
+    table = null;
+  };
+  for (const b of blocks) {
+    if (b.t === 'row') { (table = table || []).push(b); continue; }
+    flush();
+    if (b.t === 'gap') html += '<div class="lm-gap"></div>';
+    else if (b.t === 'fill') html += '<div class="lm-fill"></div>';
+    else html += `<div class="lm-line">${lmInline(b.s)}</div>`;
+  }
+  flush();
+  return html;
+}
+function lmItemHTML(num, heading, blocks) {
+  return `<div class="lm-item">
+      <div class="lm-num">${String(num).padStart(2, '0')}</div>
+      <div style="flex:1;min-width:0;">
+        ${heading ? `<div class="lm-heading">${e(heading)}</div>` : ''}
+        ${blocks.length ? `<div class="lm-body">${lmBlocksHTML(blocks)}</div>` : ''}
+      </div>
+    </div>`;
+}
+// Returns an array of pages; each page is the HTML of the items on it.
+function paginateGuide(items, firstPageUsed, lastExtra) {
+  const pages = [[]]; let used = firstPageUsed;
+  const room = () => LM_PAGE - used;
+  items.forEach((item, idx) => {
+    const blocks = lmBlocks(item.body);
+    const head = item.heading ? 1.6 + Math.ceil(String(item.heading).length / LM_CHARS) - 1 : 0;
+    const total = head + 1.5 + blocks.reduce((a, b) => a + b.w, 0);
+    if (total <= room()) { pages[pages.length - 1].push(lmItemHTML(idx + 1, item.heading, blocks)); used += total; return; }
+    if (total <= LM_PAGE && pages[pages.length - 1].length) { pages.push([lmItemHTML(idx + 1, item.heading, blocks)]); used = total; return; }
+    // too tall for one page: continue it across pages
+    let rest = blocks.slice(), first = true;
+    if (room() < 8 && pages[pages.length - 1].length) { pages.push([]); used = 0; }
+    while (rest.length || first) {
+      const cap = room() - (first ? head : 1.6) - 1.5;
+      const chunk = []; let w = 0;
+      while (rest.length && (w + rest[0].w <= cap || !chunk.length)) { w += rest[0].w; chunk.push(rest.shift()); }
+      pages[pages.length - 1].push(lmItemHTML(idx + 1, first ? item.heading : (item.heading ? item.heading + ' (continued)' : ''), chunk));
+      used += w + (first ? head : 1.6) + 1.5;
+      first = false;
+      if (rest.length) { pages.push([]); used = 0; }
+    }
+  });
+  if (lastExtra && used + lastExtra > LM_PAGE && pages[pages.length - 1].length) pages.push([]);
+  return pages;
+}
+// Patch AF — internal story-type keys never reach the reader.
+const STORY_TYPE_WORDS = { mistake_lesson: 'a mistake-and-lesson story', transformation: 'a transformation story', demo_proof: 'a show-and-prove story',
+  origin: 'an origin story', behind_the_scenes: 'a behind-the-scenes story', moment_reflection: 'a small moment with a big meaning' };
+function plainStoryTypes(t) {
+  return String(t || '').replace(/\b(?:an?\s+)?(mistake_lesson|demo_proof|behind_the_scenes|moment_reflection)\b/gi, (m, k) => STORY_TYPE_WORDS[k.toLowerCase()]);
+}
+
 // ─── PLAYBOOK BUILDER ─────────────────────────────────────────────────────────
 
 function buildPlaybookHTML(pb, brand) {
@@ -608,6 +709,7 @@ function buildPlaybookHTML(pb, brand) {
 
   // ── 01 Cover ───────────────────────────────────────────────────────────────
   const coverTitle = pb.hook || pb.lead_magnet?.title || 'Your Story, Engineered.';
+  if (pb.diagnosis) pb.diagnosis = plainStoryTypes(pb.diagnosis); // Patch AF
   const coverSub   = pb.diagnosis ? pb.diagnosis.split('.')[0] + '.' : '';
 
   pages.push(`<div class="pdf-page pdf-page--cover">
@@ -821,36 +923,23 @@ function buildPlaybookHTML(pb, brand) {
   const lm = pb.lead_magnet || {};
   const lmItems = (lm.items || []).filter(i => i && (i.heading || i.body));
   if (lm.title || lmItems.length) {
-    const itemsHTML = lmItems.map((item, idx) => `<div class="lm-item">
-      <div class="lm-num">${String(idx + 1).padStart(2, '0')}</div>
-      <div>
-        ${item.heading ? `<div class="lm-heading">${e(item.heading)}</div>` : ''}
-        ${item.body    ? `<div class="lm-body">${e(item.body)}</div>` : ''}
-      </div>
-    </div>`);
-
-    // Patch AD — a long guide overflowed one sheet (footer spilled onto a blank page). Split it:
-    // roughly 1,500 characters of text per page, the Share card goes with the last items.
-    const PAGE_BUDGET = 1500;
-    const groups = [[]]; let used = String(lm.title || '').length + String(lm.why || '').length + 200;
-    lmItems.forEach((item, idx) => {
-      const w = String(item.heading || '').length + String(item.body || '').length + 120;
-      if (groups[groups.length - 1].length && used + w > PAGE_BUDGET) { groups.push([]); used = 0; }
-      groups[groups.length - 1].push(idx); used += w;
-    });
-    if (lm.comment_response && used + String(lm.comment_response).length + 150 > PAGE_BUDGET && groups[groups.length - 1].length > 1) {
-      groups.push([groups[groups.length - 1].pop()]);
-    }
-    groups.forEach((g, gi) => {
-      const first = gi === 0, last = gi === groups.length - 1;
+    // Patch AF — pages by estimated height (worksheets run long); the guide shows only what the
+    // audience reads. Why it works + the comment to post are notes for the creator, clearly marked.
+    const titleLines = lm.title ? 3 + Math.ceil(String(lm.title).length / 45) * 1.6 : 0;
+    const introLines = lm.intro ? 2 + Math.ceil(String(lm.intro).length / LM_CHARS) : 0;
+    const noteText = [lm.why ? `<b>Why it works for your audience:</b> ${e(lm.why)}` : '', lm.comment_response ? `<b>Comment to post with it:</b> ${e(lm.comment_response)}` : ''].filter(Boolean).join('<br>');
+    const noteLines = noteText ? 4 + Math.ceil(noteText.length / 95) : 0;
+    const guidePages = paginateGuide(lmItems, titleLines + introLines, noteLines);
+    guidePages.forEach((items, gi) => {
+      const first = gi === 0, last = gi === guidePages.length - 1;
       pages.push(`<div class="pdf-page pdf-page--interior">
       ${hdr(brandName, docType, pn(), brandLogo)}
       <div class="section-body">
         ${sLabel(first ? 'Free Resource' : 'Free Resource (continued)')}
         ${first && lm.title ? `<h2 class="section-title">${e(lm.title)}</h2>` : ''}
-        ${first && lm.why   ? callout(lm.why) : ''}
-        ${g.map(idx => itemsHTML[idx]).join('')}
-        ${last && lm.comment_response ? `<div class="sp-16"></div>${card('Share This', lm.comment_response, null)}` : ''}
+        ${first && lm.intro ? `<p class="body-copy" style="margin-bottom:10pt;">${e(lm.intro)}</p>` : ''}
+        ${items.join('')}
+        ${last && noteText ? `<div class="lm-note"><b>Notes for you — not part of the guide</b><br>${noteText}</div>` : ''}
       </div>
       ${ftr(brandName)}
     </div>`);
@@ -931,33 +1020,27 @@ function buildLeadMagnetHTML(lm, brand) {
     <div class="cover-rule"></div>
     <div class="cover-doc-label">Free Resource</div>
     <h1 class="cover-title">${e(lm.title || 'Your Free Resource')}</h1>
-    ${lm.why ? `<p class="cover-subtitle">${e(lm.why)}</p>` : ''}
+    ${lm.intro ? `<p class="cover-subtitle">${e(lm.intro)}</p>` : ''}
     <div class="cover-dateline">${e(date)} · BUILT BY SAM</div>
     <div class="cover-dateline-rule"></div>
     <div style="flex:1"></div>
     ${ftr(brandName)}
   </div>`);
 
-  // ── Content items ──────────────────────────────────────────────────────────
+  // ── Content items (Patch AF) — only what the audience reads: no "why it works", no comment to post.
   const items = (lm.items || []).filter(i => i && (i.heading || i.body));
   if (items.length) {
-    const itemsHTML = items.map((item, idx) => `<div class="lm-item">
-      <div class="lm-num">${String(idx + 1).padStart(2, '0')}</div>
-      <div>
-        ${item.heading ? `<div class="lm-heading">${e(item.heading)}</div>` : ''}
-        ${item.body    ? `<div class="lm-body">${e(item.body)}</div>` : ''}
-      </div>
-    </div>`).join('');
-
-    pages.push(`<div class="pdf-page pdf-page--interior">
-      ${hdr(brandName, docType, '02', brandLogo)}
+    const guidePages = paginateGuide(items, 0, 0);
+    guidePages.forEach((pageItems, gi) => {
+      pages.push(`<div class="pdf-page pdf-page--interior">
+      ${hdr(brandName, docType, String(gi + 2).padStart(2, '0'), brandLogo)}
       <div class="section-body">
-        ${sLabel("What's Inside")}
-        ${itemsHTML}
-        ${lm.comment_response ? `<div class="sp-16"></div>${card('Share This', lm.comment_response, null)}` : ''}
+        ${sLabel(gi === 0 ? "What's Inside" : "What's Inside (continued)")}
+        ${pageItems.join('')}
       </div>
       ${ftr(brandName)}
     </div>`);
+    });
   }
 
   return wrap(`SAM · ${e(brandName)} · Lead Magnet`, brandColor, pages.join('\n'));
