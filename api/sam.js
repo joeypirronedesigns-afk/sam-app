@@ -1216,9 +1216,9 @@ Return ONLY this JSON — be CONCISE in every field to fit within token limits:
     {
       "platform": "platform name",
       "strategy": "One sentence.",
-      "title": "YouTube only: the video title, max 100 characters, no hashtags. Omit for other platforms.",
-      "caption": "Ready-to-post caption (for YouTube: the description). Caption + hashtags must fit the platform's limit, and the hook must land within the visible preview length.",
-      "hashtags": "#tag1 #tag2 #tag3"
+      "caption": "ONE short, intriguing hook line for this platform (see PLATFORM POSTS) — a tease, not a summary. YouTube Shorts: hook line + hashtags together max 100 characters.",
+      "description": "YouTube only, optional: a longer video description (2-4 sentences, no hashtags). Omit for other platforms.",
+      "hashtags": "#tag1 #tag2 #tag3 — exactly as many as PLATFORM POSTS says (usually 3)"
     }
   ],
   "audience_profile": {
@@ -1317,7 +1317,7 @@ Return ONLY: {"full_script":"the complete script","pacing_note":"one delivery ti
 Platforms: ${platforms.join(', ')}.
 ${steer ? 'CREATOR DIRECTION: ' + steer : ''}
 ${platformPrompt(platforms)}
-Return ONLY: {"platform_strategies":[{"platform":"platform name","strategy":"1 sentence approach","title":"YouTube only: title, max 100 characters, no hashtags","caption":"ready-to-post caption (YouTube: description)","hashtags":"hashtags"}]}`,
+Return ONLY: {"platform_strategies":[{"platform":"platform name","strategy":"1 sentence approach","caption":"one short hook line (YouTube Shorts: hook + hashtags max 100 characters together)","description":"YouTube only, optional longer description","hashtags":"3 hashtags"}]}`,
 
         audience: `Rewrite ONLY the audience profile — deep psychographic breakdown of the ideal viewer.
 ${steer ? 'CREATOR DIRECTION: ' + steer : ''}

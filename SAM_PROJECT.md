@@ -42,7 +42,7 @@ Stripe payment link: https://buy.stripe.com/eVqeVfgkOajocUX2Dp8Zq00
 - Typography: Instrument Serif italic for headings, Inter for UI, JetBrains Mono for code
 - Sidebar: Left nav, 220px wide. Sections: DAILY, BUILD SAM'S BRAIN, STUDIO, MORE, EXECUTION PACK
 - Version stamp: data-qs-version attribute on div[data-qs-shell] — bump on every commit
-- Current version: v9.118.67+
+- Current version: v9.118.68+
 
 ---
 
@@ -64,7 +64,7 @@ Vercel CLI: Installed at /opt/homebrew/bin/vercel, logged in as joeypirronedesig
 
 ---
 
-## Current Version: v9.118.67
+## Current Version: v9.118.68
 
 ### Key Architecture Decisions Made
 - No free trial — Patch O removed it. Paid or blocked. trial-status.js returns allowed:false for all unpaid users.
@@ -103,6 +103,7 @@ Vercel CLI: Installed at /opt/homebrew/bin/vercel, logged in as joeypirronedesig
 - Patch AA (v9.118.66) — SECURITY. api/_session.js: magic-link verify issues a 30-day HttpOnly Secure SameSite=Lax cookie (sam_session) backed by KV auth:<token>. _gate.js trusts the cookie email; founder bypass only for a verified founder session when enforcing; dev- bypass disabled in production when enforcing. Callers pass req (sam, pdf, reach, analytics-insight, voice, daily-brief, elevenlabs); Persona Lab (_lab_access) uses resolveIdentity. auth.js: whoami + logout actions; save_user can no longer set paid/tier (only stripe-webhook can). email-token.js admin-only (it minted a login link for ANY email). ear.js requires CRON_SECRET when set. signOut() calls logout. Rollout: SAM_GATE_ENFORCE unset = soft (cookie wins, legacy logged as [gate] legacy identity); =1 = cookie required. 16/16 unit tests.
 - Patch AA also turned OFF the Apify + Anthropic scanners (Joey saw no benefit): /api/ear and /api/outreach-daily removed from vercel.json crons; ear, outreach-daily, outreach-reddit, outreach-youtube return 410 unless SAM_OUTREACH_ENABLED=1. Consider cancelling the Apify plan.
 - Patch AB (v9.118.67) — api/_platforms.js: current limits incl. hashtags (YouTube title 100 / description 5,000, TikTok 4,000, Instagram 2,200 + max 5 hashtags since Dec 2025, Facebook 2,200, LinkedIn 3,000, X 280, Threads 500) + visible-preview lengths; platformPrompt() replaces the old PLATFORM_SPECS text; hashtagRule defers to per-platform ranges. enforcePlatforms() runs on every parsed result: hashtags moved out of captions into the field, deduped and capped per platform, caption+hashtags trimmed at a sentence to the limit, YouTube title (no hashtags, ≤100, falls back to hook), `limits` object → app/PDF show "Caption 412 / 2,200 · 4/5 hashtags". Schema + platforms regen ask for a YouTube title. Sign-off rule: always the very last line. Number guard + scorer read "22 thousand". Scorecard: SAM_EVAL_COOKIE (sam_session value) for enforced logins; hashtags_per_platform + captions_within_limit replace hashtags_max_4.
+- Patch AB.1 (v9.118.68) — Corrected per Joey: YouTube Shorts upload has ONE 100-character box for hook line AND hashtags together; the long description is a separate optional field (`description`). Every platform now gets one short, intriguing HOOK line (a tease, not a summary) + 3 hashtags (X 2, Threads 1); target length = what shows before "more" (TikTok ~80, IG/FB ~125). Shorts: SAM asked for ~65-char hook + short hashtags (~30 chars for all 3); if it still overflows, the longest hashtag is dropped (min 2) before the hook is trimmed. `title` field removed. App/PDF show "Hook + hashtags 81 / 100 · 3 hashtags" or "112 chars — fits before 'more'", and an "Optional description" block for YouTube. Copy button pastes the Shorts line as one line.
 - Follow-ups from the AA audit: optionally set CRON_SECRET (locks /api/keepalive to Vercel's scheduler); api/me.js and api/memory.js still accept email from the body for reads/writes (privacy, move to resolveIdentity next); CORS '*' on auth endpoints can be tightened.
 
 ### Open Task List (v9.118.x)

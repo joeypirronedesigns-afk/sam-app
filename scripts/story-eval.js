@@ -141,8 +141,10 @@ function score(c, r) {
     const inCaption = (((p && p.caption) || '').match(/(^|\s)#\w+/g) || []).length;
     const total = [...String((p && p.caption) || '')].length + (n ? [...String(p.hashtags)].length + 2 : 0);
     if (!sp) return { tags: n <= 5 && inCaption === 0, len: true, title: true };
-    return { tags: n <= sp.maxTags && inCaption === 0, len: total <= sp.limit,
-             title: sp.key !== 'youtube' || (!!p.title && [...p.title].length <= sp.titleLimit && !/#\w/.test(p.title)) };
+    // Patch AB.1 — exact hashtag count per platform; Shorts hook + hashtags together ≤ 100.
+    const sepLen = sp.combined ? 1 : 2;
+    const used = [...String((p && p.caption) || '')].length + (n ? [...String(p.hashtags)].length + sepLen : 0);
+    return { tags: (sp.combined ? n >= 2 && n <= sp.tags : n === sp.tags) && inCaption === 0, len: used <= sp.limit, title: true };
   });
   const bannedHits = BANNED.filter(b => spoken.toLowerCase().includes(b));
   const hookN = norm(r.hook);

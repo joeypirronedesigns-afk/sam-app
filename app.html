@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.67" data-qs-descriptor="Patch AB — platform-aware captions: current limits incl. hashtags, per-platform hashtag caps (Instagram 5), YouTube title field, code-enforced trimming, live counts; sign-off always last; 22 thousand fix; scorecard cookie."grand\"."two\"." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.68" data-qs-descriptor="Patch AB.1 — every platform gets one short hook line + 3 hashtags; YouTube Shorts hook + hashtags share one 100-character box; optional YouTube description."grand\"."two\"." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -16944,7 +16944,7 @@ function regenRenderSection(key, sectionEl, data) {
   } else if (key === 'platforms' && data.platform_strategies) {
     html = data.platform_strategies.map(ps => {
       if (!ps?.platform) return '';
-      return '<div class="platform-strategy" style="margin-bottom:10px;"><div class="ps-header"><div class="ps-name">'+ps.platform+'</div></div><div class="ps-body">'+(ps.strategy?'<div style="font-size:13px;color:var(--ink-muted);margin-bottom:8px;font-style:italic;">'+ps.strategy+'</div>':'')+(ps.title?'<div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:2px;">Title</div><div style="font-size:15px;font-weight:600;color:var(--ink);margin-bottom:10px;">'+ps.title+'</div>':'')+(ps.caption?'<div class="ps-caption">'+ps.caption+'</div>':'')+(ps.hashtags?'<div class="ps-hashtags">'+ps.hashtags+'</div>':'')+platformLimitsHTML(ps)+'</div></div>';
+      return '<div class="platform-strategy" style="margin-bottom:10px;"><div class="ps-header"><div class="ps-name">'+ps.platform+'</div></div><div class="ps-body">'+(ps.strategy?'<div style="font-size:13px;color:var(--ink-muted);margin-bottom:8px;font-style:italic;">'+ps.strategy+'</div>':'')+(ps.caption?'<div class="ps-caption">'+ps.caption+'</div>':'')+(ps.hashtags?'<div class="ps-hashtags">'+ps.hashtags+'</div>':'')+platformLimitsHTML(ps)+platformDescriptionHTML(ps)+'</div></div>';
     }).join('');
   } else if (key === 'audience' && data.audience_profile) {
     const ap = data.audience_profile;
@@ -16993,17 +16993,26 @@ function storyShapeHTML(d) {
   </div>`;
 }
 
-// Patch AB — "412 / 2,200 · 4/5 hashtags · first 125 show before 'more'" under each caption.
+// Patch AB.1 — every platform: one hook line + 3 hashtags. YouTube Shorts: hook + hashtags share ONE
+// 100-character box. Shows "92 / 100 · 3 hashtags" (or "48 chars — fits before 'more'").
+function platformPostText(ps) {
+  if (!ps) return '';
+  const l = ps.limits || {};
+  return l.combined ? [ps.caption, ps.hashtags].filter(Boolean).join(' ') : [ps.caption, ps.hashtags].filter(Boolean).join('\n\n');
+}
 function platformLimitsHTML(ps) {
   const l = ps && ps.limits;
   if (!l || !l.max) return '';
   const f = n => Number(n || 0).toLocaleString('en-US');
   const parts = [];
-  if (l.titleMax) parts.push('Title ' + f(l.titleUsed) + ' / ' + f(l.titleMax));
-  parts.push((l.titleMax ? 'Description ' : 'Caption ') + f(l.used) + ' / ' + f(l.max));
-  parts.push(l.tags + '/' + l.maxTags + ' hashtags');
-  if (l.visible && l.visible < l.max) parts.push('first ' + l.visible + ' show before "more"');
+  if (l.combined) parts.push('Hook + hashtags ' + f(l.used) + ' / ' + f(l.max));
+  else parts.push(f(l.used) + ' chars' + (l.visible && l.used <= l.visible ? ' — fits before "more"' : (l.visible ? ' — first ' + l.visible + ' show before "more"' : '')));
+  parts.push(l.tags + ' hashtag' + (l.tags === 1 ? '' : 's'));
   return '<div class="ps-limits" style="margin-top:8px;font-size:11px;color:var(--ink-muted);font-family:\'JetBrains Mono\',ui-monospace,monospace;">' + parts.join(' · ') + '</div>';
+}
+function platformDescriptionHTML(ps) {
+  if (!ps || !ps.description) return '';
+  return '<div style="margin-top:12px;padding-top:10px;border-top:1px dashed var(--rule);"><div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:4px;">Optional description</div><div class="ps-caption" style="font-size:13px;">' + ps.description + '</div></div>';
 }
 
 // Patch Z.3 — the "needs more" state: no fake script, just SAM's questions and a way back.
@@ -17217,15 +17226,15 @@ function renderPlaybook(data) {
       html += `<div class="platform-strategy" style="margin-bottom:10px;">
         <div class="ps-header">
           <div class="ps-name">${ps.platform}</div>
-          <button class="copy-btn" style="float:none;margin:0;" onclick="wizCopy(this,'${escQ((ps.title ? ps.title + '\n\n' : '') + (ps.caption||'') + '\n\n' + (ps.hashtags||''))}')">Copy</button>
+          <button class="copy-btn" style="float:none;margin:0;" onclick="wizCopy(this,'${escQ(platformPostText(ps))}')">Copy</button>
           <button class="copy-btn" style="float:none;margin:0;background:var(--surface-2);border:1px solid var(--rule);color:var(--ink-muted);font-family:'Inter',system-ui,sans-serif;" onclick="saveWizardItem('${escQ((ps.caption||'') + '\n' + (ps.hashtags||''))}','${escQ(ps.platform||'')} caption','wizard')">💜 Save</button>
         </div>
         <div class="ps-body">
           ${ps.strategy ? `<div style="font-size:13px;color:var(--ink-muted);margin-bottom:8px;font-style:italic;">${ps.strategy}</div>` : ''}
-          ${ps.title ? `<div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:2px;">Title</div><div style="font-size:15px;font-weight:600;color:var(--ink);margin-bottom:10px;">${ps.title}</div>` : ''}
           ${ps.caption ? `<div class="ps-caption">${ps.caption}</div>` : ''}
           ${ps.hashtags ? `<div class="ps-hashtags">${ps.hashtags}</div>` : ''}
           ${platformLimitsHTML(ps)}
+          ${platformDescriptionHTML(ps)}
         </div>
       </div>`;
     });

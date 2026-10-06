@@ -743,12 +743,13 @@ function buildPlaybookHTML(pb, brand) {
   const platforms = (pb.platform_strategies || []).filter(p => p && (p.strategy || p.caption));
   if (platforms.length) {
     const platformCards = platforms.map(p => {
-      // Patch AB — YouTube title + "used / limit" line.
+      // Patch AB.1 — hook line + 3 hashtags; Shorts shows one combined 100-character line.
       const l = p.limits || {};
       const f = n => Number(n || 0).toLocaleString('en-US');
-      const counts = l.max ? ((l.titleMax ? `Title ${f(l.titleUsed)}/${f(l.titleMax)} · ` : '') + `${l.titleMax ? 'Description' : 'Caption'} ${f(l.used)}/${f(l.max)} · ${l.tags}/${l.maxTags} hashtags`) : '';
-      const body = [p.strategy, p.title ? 'TITLE: ' + p.title : '', p.caption].filter(Boolean).join('\n\n');
-      return card(p.platform, body, [p.hashtags, counts].filter(Boolean).join('\n') || null);
+      const counts = l.max ? (l.combined ? `Hook + hashtags ${f(l.used)}/${f(l.max)}` : `${f(l.used)} chars${l.visible && l.used <= l.visible ? ' — fits before "more"' : ''}`) + ` · ${l.tags} hashtags` : '';
+      const post = l.combined ? [p.caption, p.hashtags].filter(Boolean).join(' ') : p.caption;
+      const body = [p.strategy, post, p.description ? 'OPTIONAL DESCRIPTION: ' + p.description : ''].filter(Boolean).join('\n\n');
+      return card(p.platform, body, [l.combined ? '' : p.hashtags, counts].filter(Boolean).join('\n') || null);
     }).join('');
 
     pages.push(`<div class="pdf-page pdf-page--interior">
