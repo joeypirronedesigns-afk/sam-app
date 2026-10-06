@@ -2,6 +2,7 @@ module.exports.config = { api: { bodyParser: { sizeLimit: "10mb" } } };
 const { trackUser, trackEvent, saveUserProfile, getUserProfile, updateUserEmail, supabaseQuery } = require('./_supabase');
 const { normalizeSamContext, buildBrainPrompt } = require('./_context');
 const { checkGate } = require('./_gate');
+const { platformPrompt, specFor, enforcePlatforms } = require('./_platforms');
 
 // v9.118.16 (Patch C) — derive structured script_beats[] from [BEAT: ...] markers
 // emitted per v9.118.15 instructions. Additive: full_script stays unchanged,
@@ -226,18 +227,20 @@ function numbersInText(text, { allowCountingTwo = false } = {}) {
   const t = String(text || '').toLowerCase().replace(/(\d),(\d)/g, '$1$2');
   const out = new Set();
   let m;
-  const dre = /(\d+(?:\.\d+)?)\s*(k|m)?\b/g;
+  const dre = /(\d+(?:\.\d+)?)\s*(k|m|hundred|thousand|grand|million)?\b/g;
   while ((m = dre.exec(t))) {
     const n = Number(m[1]);
     out.add(n);
-    if (m[2] === 'k') out.add(n * 1000);
-    if (m[2] === 'm') out.add(n * 1000000);
+    const mult = { k: 1e3, thousand: 1e3, grand: 1e3, m: 1e6, million: 1e6, hundred: 100 }[m[2]];
+    if (mult) out.add(n * mult);
   }
   const toks = [...t.matchAll(/\b[a-z]+\b/g)];
   for (let i = 0; i < toks.length; i++) {
     const w = toks[i][0];
     if (NG_ORD[w] !== undefined) { out.add(NG_ORD[w]); continue; }
     if (w === 'one' || NG_WORDS[w] === undefined) continue;
+    // Patch AB — "22 thousand": the multiplier after a digit was already read with the digit.
+    if ((w === 'hundred' || w === 'thousand') && /\d\s*$/.test(t.slice(0, toks[i].index))) continue;
     // Patch Z.9 — "two things" is a count, "two weeks" is a claim: durations never get the exception.
     if (allowCountingTwo && w === 'two' && !(toks[i + 1] && /^(hundred|thousand|seconds?|minutes?|hours?|days?|nights?|weeks?|months?|years?|summers?|winters?|seasons?|times)$/.test(toks[i + 1][0]))) continue;
     let val = NG_WORDS[w], j = i;
@@ -800,7 +803,7 @@ PERSONALITY: Confident, direct, warm. Keep responses to 2-4 sentences max. No ja
   };
   const toneContext = toneMap[tone] || toneMap['Authentic/Natural'];
   const emojiMap = { no: 'Use zero emojis.', few: 'Use 1-2 emojis maximum, only where they add genuine meaning.', lots: 'Use emojis freely and expressively.' };
-const hashtagRule = 'HASHTAG RULE — CRITICAL: Use a maximum of 3-4 hashtags total. Choose only the most specific and relevant ones to this exact post and this creator. Never use generic filler hashtags. Never exceed 4 hashtags regardless of platform.';
+const hashtagRule = 'HASHTAG RULE — CRITICAL: Follow each platform\'s hashtag range in PLATFORM SPECS exactly (if none is given, use 3-4). Put hashtags only in the "hashtags" field, never inside the caption. Choose only the most specific and relevant ones to this exact post and this creator. Never use generic filler hashtags.';
   const emojiLine = emojiMap[emojiPreference] || emojiMap['few'];
   const creatorLine = creatorContext
     ? `CREATOR CONTEXT: ${creatorContext} — Use this to make every output specific to this creator's story, niche, audience and voice. Never write generic content when you have this context.`
@@ -809,7 +812,11 @@ const hashtagRule = 'HASHTAG RULE — CRITICAL: Use a maximum of 3-4 hashtags to
     ? `AUDIENCE DEMOGRAPHICS: ${audienceDemographics}. Tailor vocabulary, cultural references, humour, hook style, caption length and platform recommendations specifically for this demographic.`
     : '';
   const languageLine = outputLanguage ? `Write the ENTIRE output in ${outputLanguage}. JSON field names stay in English.` : '';
-  const platformContext = platforms && platforms.length > 0 ? `PLATFORM SPECS (follow exactly): ${getPlatformContext(platforms)}` : '';
+  // Patch AB — current per-platform limits (hashtags count toward them) from api/_platforms.js;
+  // the old table is only used for platforms the new module doesn't know.
+  const platformContext = platforms && platforms.length > 0
+    ? (platformPrompt(platforms) || `PLATFORM SPECS (follow exactly): ${getPlatformContext(platforms)}`)
+    : '';
   const formatContext = contentType ? `Content format requested: ${contentType}.` : '';
   const voiceLine = voiceProfile
     ? `VOICE PROFILE — THIS IS THE MOST IMPORTANT INSTRUCTION: You have a forensic voice fingerprint built from this creator's ACTUAL writing samples. Real analysis: ${voiceProfile}
@@ -887,7 +894,8 @@ NEVER write in generic AI voice when you have this profile. Generic AI voice is:
 5. Length follows the material. A short moment makes a short video. Never pad to fill time.
 
 6. Signature sign-off: if the creator has a sign-off line they always use, it may close the script
-   and the captions, after the CTA. It never replaces the CTA or the payoff.
+   and the captions. It is always the very last line — the CTA comes before it, never after it.
+   It never replaces the CTA or the payoff.
 
 7. Copy every URL, website, @handle and product name exactly as the creator wrote it. Never respell them.
    Spoken forms count: "Sam for creators.com" is samforcreators.com.
@@ -1121,6 +1129,8 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
     // Additive only; full_script preserved unchanged. Empty array when no markers found.
     if (parsed && typeof parsed === 'object') {
       parsed.script_beats = parseScriptBeats(parsed.full_script || parsed.narration_script || '', (req.body || {}).pace);
+      // Patch AB — platform limits enforced in code (hashtag caps, caption length, YouTube title).
+      enforcePlatforms(parsed);
     }
     res.write('data: ' + JSON.stringify({ done: true, result: parsed }) + '\n\n');
     res.end();
@@ -1206,7 +1216,8 @@ Return ONLY this JSON — be CONCISE in every field to fit within token limits:
     {
       "platform": "platform name",
       "strategy": "One sentence.",
-      "caption": "Ready-to-post caption at correct character limit.",
+      "title": "YouTube only: the video title, max 100 characters, no hashtags. Omit for other platforms.",
+      "caption": "Ready-to-post caption (for YouTube: the description). Caption + hashtags must fit the platform's limit, and the hook must land within the visible preview length.",
       "hashtags": "#tag1 #tag2 #tag3"
     }
   ],
@@ -1305,7 +1316,8 @@ Return ONLY: {"full_script":"the complete script","pacing_note":"one delivery ti
         platforms: `Rewrite ONLY the platform strategy — captions and hashtags for each platform.
 Platforms: ${platforms.join(', ')}.
 ${steer ? 'CREATOR DIRECTION: ' + steer : ''}
-Return ONLY: {"platform_strategies":[{"platform":"platform name","strategy":"1 sentence approach","caption":"ready-to-post caption","hashtags":"hashtags"}]}`,
+${platformPrompt(platforms)}
+Return ONLY: {"platform_strategies":[{"platform":"platform name","strategy":"1 sentence approach","title":"YouTube only: title, max 100 characters, no hashtags","caption":"ready-to-post caption (YouTube: description)","hashtags":"hashtags"}]}`,
 
         audience: `Rewrite ONLY the audience profile — deep psychographic breakdown of the ideal viewer.
 ${steer ? 'CREATOR DIRECTION: ' + steer : ''}

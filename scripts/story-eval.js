@@ -21,6 +21,10 @@ const BASE = (argVal('--base') || 'https://samforcreators.com').replace(/\/$/, '
 const ONLY = (argVal('--only') || '').split(',').map(s => s.trim()).filter(Boolean);
 const EMAIL = process.env.SAM_EVAL_EMAIL || '';
 if (!EMAIL) { console.error('Set SAM_EVAL_EMAIL to an account with access (e.g. your founder email).'); process.exit(1); }
+// Patch AB — with SAM_GATE_ENFORCE on, the API only accepts a real login session. Copy the value of
+// the sam_session cookie (DevTools → Application → Cookies → samforcreators.com) into SAM_EVAL_COOKIE.
+const COOKIE = (process.env.SAM_EVAL_COOKIE || '').replace(/^sam_session=/, '').trim();
+const { specFor } = require(path.join(__dirname, '..', 'api', '_platforms.js'));
 
 const root = path.join(__dirname, '..');
 // Patch Z.7 — --cases <file> picks a test set (default cases.json); --show prints each playbook
@@ -43,13 +47,14 @@ function numbersIn(text, { allowCountingTwo = false } = {}) {
   const out = new Map();
   const add = (n, idx) => { const k = String(n); if (!out.has(k)) out.set(k, t.slice(Math.max(0, idx - 30), idx + 30).replace(/\s+/g, ' ')); };
   let m;
-  const dre = /(\d+(?:\.\d+)?)\s*(k|m|grand)?\b/g;
-  while ((m = dre.exec(t))) { const n = Number(m[1]); add(n, m.index); if (m[2] === 'k' || m[2] === 'grand') add(n * 1000, m.index); if (m[2] === 'm') add(n * 1000000, m.index); }
+  const dre = /(\d+(?:\.\d+)?)\s*(k|m|hundred|thousand|grand|million)?\b/g;
+  while ((m = dre.exec(t))) { const n = Number(m[1]); add(n, m.index); const mult = { k: 1e3, thousand: 1e3, grand: 1e3, m: 1e6, million: 1e6, hundred: 100 }[m[2]]; if (mult) add(n * mult, m.index); }
   const toks = [...t.matchAll(/\b[a-z]+\b/g)];
   for (let i = 0; i < toks.length; i++) {
     const w = toks[i][0];
     if (ORDINALS[w] !== undefined) { add(ORDINALS[w], toks[i].index); continue; }
     if (w === 'one' || NUM_WORDS[w] === undefined) continue;
+    if ((w === 'hundred' || w === 'thousand') && /\d\s*$/.test(t.slice(0, toks[i].index))) continue;
     // "two" as a counting word ("wrote two things") isn't a claim — same rule as the server guard.
     // Patch Z.9 — "two things" is a count, "two weeks" is a claim: durations never get the exception.
     if (allowCountingTwo && w === 'two' && !(toks[i + 1] && /^(hundred|thousand|seconds?|minutes?|hours?|days?|nights?|weeks?|months?|years?|summers?|winters?|seasons?|times)$/.test(toks[i + 1][0]))) continue;
@@ -90,7 +95,10 @@ async function runCase(c) {
     delivery: 'camera', pace: 'natural', storyType: 'moment'
   };
   const t0 = Date.now();
-  const res = await fetch(BASE + '/api/sam', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+  const headers = { 'Content-Type': 'application/json' };
+  if (COOKIE) headers.Cookie = 'sam_session=' + COOKIE;
+  const res = await fetch(BASE + '/api/sam', { method: 'POST', headers, body: JSON.stringify(payload) });
+  if (res.status === 401 && !COOKIE) throw new Error('401 — the site is enforcing logins. Set SAM_EVAL_COOKIE (see top of this script).');
   if (!res.ok || !res.body) throw new Error('HTTP ' + res.status + ' ' + (await res.text().catch(() => '')).slice(0, 200));
   const reader = res.body.getReader();
   const dec = new TextDecoder();
@@ -126,7 +134,16 @@ function score(c, r) {
   const badDomains = [...domainsOut(spoken)].filter(d => !allowed.has(d));
   const setupText = (arch.setup || '') + ' ' + beat('setup');
   const leaked = (c.reveal || []).filter(w => norm(setupText).includes(norm(w)));
-  const tags = (r.platform_strategies || []).map(p => ((p && p.hashtags) || '').split(/\s+/).filter(t => t.startsWith('#')).length);
+  // Patch AB — hashtags and length judged per platform (limits include hashtags).
+  const platOk = (r.platform_strategies || []).map(p => {
+    const sp = specFor(p && p.platform);
+    const n = ((p && p.hashtags) || '').split(/\s+/).filter(t => t.startsWith('#')).length;
+    const inCaption = (((p && p.caption) || '').match(/(^|\s)#\w+/g) || []).length;
+    const total = [...String((p && p.caption) || '')].length + (n ? [...String(p.hashtags)].length + 2 : 0);
+    if (!sp) return { tags: n <= 5 && inCaption === 0, len: true, title: true };
+    return { tags: n <= sp.maxTags && inCaption === 0, len: total <= sp.limit,
+             title: sp.key !== 'youtube' || (!!p.title && [...p.title].length <= sp.titleLimit && !/#\w/.test(p.title)) };
+  });
   const bannedHits = BANNED.filter(b => spoken.toLowerCase().includes(b));
   const hookN = norm(r.hook);
   const checks = {
@@ -136,7 +153,8 @@ function score(c, r) {
     numbers_traceable: badNums.length === 0,
     urls_traceable:    badDomains.length === 0,
     setup_hides_cause: leaked.length === 0,
-    hashtags_max_4:    tags.every(n => n <= 4),
+    hashtags_per_platform: platOk.every(x => x.tags),
+    captions_within_limit: platOk.every(x => x.len && x.title),
     cta_short:         words(beat('cta')) <= 35,
     no_ai_cliches:     bannedHits.length === 0,
     respects_must_not_say: !(c.must_not_say || []).some(p => spoken.toLowerCase().includes(String(p).toLowerCase())),
