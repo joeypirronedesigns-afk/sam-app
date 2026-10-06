@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.65" data-qs-descriptor="Patch Z.10 — concrete hooks from the creator's own details, comic button kept last, architecture cards fact-checked for claims, scorer reads \"grand\"."two\"." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.66" data-qs-descriptor="Patch AA — server-issued session cookie; gate trusts the session, not the request body; save_user can no longer set paid; email-token admin-only; ear cron locked; soft rollout via SAM_GATE_ENFORCE."grand\"."two\"." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -15535,7 +15535,10 @@ window.clearPersonalizedDOM = clearPersonalizedDOM;
 
 function signOut() {
   clearPersonalizedDOM();
-  window.location.reload();
+  // Patch AA — end the server session (clears the HttpOnly cookie) before reloading.
+  fetch('/api/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'logout' }) })
+    .catch(() => {})
+    .finally(() => window.location.reload());
 }
 window.signOut = signOut;
 

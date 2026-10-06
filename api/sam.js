@@ -485,9 +485,11 @@ module.exports = async function handler(req, res) {
       message: 'Unknown tool mode.'
     });
   }
+  let _verifiedEmail = null;
   {
     const _emailForGate = (req.body.email || req.body.userEmail || '').toString();
     const _gate = await checkGate({
+      req,
       email: _emailForGate,
       userId,
       tool: _gateCopy.tool,
@@ -496,6 +498,8 @@ module.exports = async function handler(req, res) {
       ctaUnpaid: _gateCopy.ctaUnpaid
     });
     if (!_gate.ok) return res.status(_gate.status).json(_gate.body);
+    // Patch AA — rate limits and founder/dev exemptions key off the verified session.
+    if (_gate.verified) _verifiedEmail = _gate.email;
   }
 
   // Load user profile from Supabase (for persistent memory)
@@ -596,7 +600,7 @@ module.exports = async function handler(req, res) {
   const tourStep = req.body.tourStep !== undefined ? req.body.tourStep : null;
 
   if (mode === 'playbook') {
-    const check = await checkLimit(userId, tier, 'playbooks', tourStep);
+    const check = await checkLimit(_verifiedEmail || userId, tier, 'playbooks', tourStep);
     if (!check.allowed) return res.status(429).json({ error: 'limit_reached', message: check.message });
   }
   // Chat conversation is unlimited — only tool runs (playbooks, nextTools) count against limits

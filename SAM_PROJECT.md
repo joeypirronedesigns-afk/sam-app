@@ -42,7 +42,7 @@ Stripe payment link: https://buy.stripe.com/eVqeVfgkOajocUX2Dp8Zq00
 - Typography: Instrument Serif italic for headings, Inter for UI, JetBrains Mono for code
 - Sidebar: Left nav, 220px wide. Sections: DAILY, BUILD SAM'S BRAIN, STUDIO, MORE, EXECUTION PACK
 - Version stamp: data-qs-version attribute on div[data-qs-shell] — bump on every commit
-- Current version: v9.118.65+
+- Current version: v9.118.66+
 
 ---
 
@@ -64,7 +64,7 @@ Vercel CLI: Installed at /opt/homebrew/bin/vercel, logged in as joeypirronedesig
 
 ---
 
-## Current Version: v9.118.65
+## Current Version: v9.118.66
 
 ### Key Architecture Decisions Made
 - No free trial — Patch O removed it. Paid or blocked. trial-status.js returns allowed:false for all unpaid users.
@@ -100,10 +100,13 @@ Vercel CLI: Installed at /opt/homebrew/bin/vercel, logged in as joeypirronedesig
 - Patch Z.9 (v9.118.64) — 'two' counting exception no longer covers durations (two weeks/days/years…) in server + scorer. Captions use _removeCaptionSentences (a fully unsupported paragraph can be removed). Fact-check returns hook_unsupported; Z.6 rewrite now also fixes unsupported hook claims (e.g. 'the thing that saved me'). Hard set after Z.8: 47/48 — deck A, food truck A− (hook claim 'saved me'), chicken B+ ('two weeks' in hook, '30 seconds' in a caption, one line after the punchline). Watching: one explanatory line after a punchline.
 - Patch Z.10 (v9.118.65) — Craft: hooks built from a concrete detail the creator gave (no vague teases, no invented contrasts); a closing aside/callback is the comic button and stays the last spoken line. Fact-check now reads architecture cards and returns arch_unsupported → same targeted rewrite as hook (rewrite prompt told to stay concrete). Scorer: 'grand' = ×1000 and server-equivalent number tolerance. Hard set after Z.9: 47/48 — deck A, food truck A (only miss was scorer reading 'twenty-two grand'), chicken A− (vague hook after rewrites, button moved to setup). NEXT SESSION: paywall/session-token fix (top priority), then hook/button re-check on the hard set.
 - Eval after Z.10: hard set 48/48 (100%). Deck A, chicken A (concrete hook 'walked out in her pajamas and got Biscuit into the coop in one try', ends on her line, 'It leans a little' is the last spoken line), food truck A− (see bug below).
+- Patch AA (v9.118.66) — SECURITY. api/_session.js: magic-link verify issues a 30-day HttpOnly Secure SameSite=Lax cookie (sam_session) backed by KV auth:<token>. _gate.js trusts the cookie email; founder bypass only for a verified founder session when enforcing; dev- bypass disabled in production when enforcing. Callers pass req (sam, pdf, reach, analytics-insight, voice, daily-brief, elevenlabs); Persona Lab (_lab_access) uses resolveIdentity. auth.js: whoami + logout actions; save_user can no longer set paid/tier (only stripe-webhook can). email-token.js admin-only (it minted a login link for ANY email). ear.js requires CRON_SECRET when set. signOut() calls logout. Rollout: SAM_GATE_ENFORCE unset = soft (cookie wins, legacy logged as [gate] legacy identity); =1 = cookie required. 16/16 unit tests.
+- Patch AA also turned OFF the Apify + Anthropic scanners (Joey saw no benefit): /api/ear and /api/outreach-daily removed from vercel.json crons; ear, outreach-daily, outreach-reddit, outreach-youtube return 410 unless SAM_OUTREACH_ENABLED=1. Consider cancelling the Apify plan.
+- Follow-ups from the AA audit: optionally set CRON_SECRET (locks /api/keepalive to Vercel's scheduler); api/me.js and api/memory.js still accept email from the body for reads/writes (privacy, move to resolveIdentity next); CORS '*' on auth endpoints can be tightened.
 
 ### Open Task List (v9.118.x)
 - NEXT SESSION (in order):
-  1. Paywall/session-token fix — api/_gate.js trusts email/userId from the request body (founder email or 'dev-' userId = free use of the Anthropic key). Issue a server-side session token at verify_token and check it on every API call.
+  1. DONE in Patch AA (v9.118.66) — finish rollout: sign in via fresh magic link, confirm whoami, then set SAM_GATE_ENFORCE=1 in Vercel and redeploy.
   2. Platform-aware captions: per-platform fields (YouTube title + description, TikTok, Reels, Facebook) with character limits that COUNT hashtags (e.g. YouTube title 100 incl. hashtags), per-platform hashtag counts replacing the global 3–4 rule (they currently conflict for YouTube), code-enforced trimming, live "92/100" counts in the UI. Verify current platform limits by web search before hardcoding.
   3. Brand logo in PDF: app.html (~L17509) sets brandLogo: null ("base64 causes 413") and api/pdf.js never renders a logo. Shrink the logo client-side (~200px) and draw it on the cover + headers. Fall back to the account name, not "Your Brand", when brandName is empty.
   4. No placeholder links: "[link]" appeared in a YouTube caption when no CCU link was given. Add to placeholder detection; with no link, write the CTA without one.

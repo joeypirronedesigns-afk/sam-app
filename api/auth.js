@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const { createSession, getSessionEmail, destroySession } = require('./_session');
 
 async function getKV() {
   const { kv } = require('@vercel/kv');
@@ -96,6 +97,9 @@ module.exports = async function handler(req, res) {
       // Delete used token
       await kv.del(`session:${token}`);
 
+      // Patch AA — issue the real login session (HttpOnly cookie) the gate trusts.
+      await createSession(res, user.email || session.email);
+
       return res.status(200).json({ success: true, user });
     } catch(e) {
       console.error('Token verify error:', e.message);
@@ -103,9 +107,23 @@ module.exports = async function handler(req, res) {
     }
   }
 
+  // ── WHOAMI (Patch AA) — which account the session cookie belongs to ──────────
+  if (action === 'whoami') {
+    const sessionEmail = await getSessionEmail(req);
+    return res.status(200).json({ signedIn: !!sessionEmail, email: sessionEmail || null, enforcing: process.env.SAM_GATE_ENFORCE === '1' });
+  }
+
+  // ── LOGOUT (Patch AA) — end the session and clear the cookie ────────────────
+  if (action === 'logout') {
+    await destroySession(req, res);
+    return res.status(200).json({ success: true });
+  }
+
   // ── SAVE USER (trial signup) ──────────────────────────────────────────────
   if (action === 'save_user') {
-    const { name, tier = 'free', paid = false, trialStart } = req.body;
+    // Patch AA — paid status and tier are NEVER accepted from the browser. Only the Stripe
+    // webhook (server-to-server, signature-checked) can mark an account paid.
+    const { name, trialStart } = req.body;
     if (!email || !email.includes('@')) {
       return res.status(400).json({ error: 'Valid email required' });
     }
@@ -117,8 +135,8 @@ module.exports = async function handler(req, res) {
       const userData = {
         email: email.toLowerCase(),
         name: name || existing?.name || '',
-        tier: paid ? tier : (existing?.tier || 'free'),
-        paid: paid || existing?.paid || false,
+        tier: existing?.tier || 'free',
+        paid: existing?.paid || false,
         trialStart: existing?.trialStart || trialStart || Date.now(),
         createdAt: existing?.createdAt || Date.now(),
         updatedAt: Date.now()

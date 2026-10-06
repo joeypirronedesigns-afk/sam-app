@@ -7,6 +7,7 @@ module.exports = async function handler(req, res) {
 
   // v9.113.3 — Voice DNA gate (mirrors api/voice-trainer.js reference pattern + Position B paid check)
   const _gate = await checkGate({
+      req,
     email: req.body.email || (userId && userId.includes('@') ? userId : ''),
     userId: userId || 'anon',
     tool: 'Voice DNA',

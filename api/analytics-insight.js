@@ -18,6 +18,7 @@ module.exports = async function handler(req, res) {
 
     // v9.113.1 — Voice DNA gate (mapped to The Vision per brief PART A7)
     const _gate = await checkGate({
+      req,
       email: email || '',
       userId: (req.body && req.body.userId) || 'anon',
       tool: 'The Vision',

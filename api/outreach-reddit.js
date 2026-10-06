@@ -53,6 +53,9 @@ HARD RULES:
 Output ONLY the comment text.`;
 
 module.exports = async function handler(req, res) {
+  // Patch AA — scanners turned off (Apify + Anthropic spend with no observed benefit).
+  // Re-enable by setting SAM_OUTREACH_ENABLED=1 in Vercel and restoring the cron in vercel.json.
+  if (process.env.SAM_OUTREACH_ENABLED !== '1') return res.status(410).json({ error: 'disabled' });
   const origin = req.headers.origin || '*';
   res.setHeader('Access-Control-Allow-Origin', origin);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');

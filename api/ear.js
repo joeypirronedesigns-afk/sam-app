@@ -193,6 +193,17 @@ async function slackPost(text) {
 
 // ─── HANDLER ─────────────────────────────────────────────────────────────
 module.exports = async function handler(req, res) {
+  // Patch AA — scanners turned off (Apify + Anthropic spend with no observed benefit).
+  // Re-enable by setting SAM_OUTREACH_ENABLED=1 in Vercel and restoring the cron in vercel.json.
+  if (process.env.SAM_OUTREACH_ENABLED !== '1') return res.status(410).json({ error: 'disabled' });
+  // Patch AA — this cron spends Anthropic + Apify credits; only Vercel's scheduler (or someone
+  // holding CRON_SECRET) may run it. Same check as api/outreach-*.js.
+  const _cronSecret = process.env.CRON_SECRET;
+  if (_cronSecret) {
+    const _auth = (req.headers['authorization'] || '').toString();
+    const _x = (req.headers['x-cron-secret'] || '').toString();
+    if (_auth !== `Bearer ${_cronSecret}` && _x !== _cronSecret) return res.status(401).json({ error: 'unauthorized' });
+  }
   if (!ANTHROPIC_KEY) return res.status(500).json({ error: 'ANTHROPIC_API_KEY not set' });
   if (!APIFY_KEY)     return res.status(500).json({ error: 'APIFY_API_KEY not set' });
 

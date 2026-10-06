@@ -60,6 +60,9 @@ function tagCommentWithToken(comment, token, platform) {
 
 // ─── HANDLER ─────────────────────────────────────────────────────────────
 module.exports = async function handler(req, res) {
+  // Patch AA — scanners turned off (Apify + Anthropic spend with no observed benefit).
+  // Re-enable by setting SAM_OUTREACH_ENABLED=1 in Vercel and restoring the cron in vercel.json.
+  if (process.env.SAM_OUTREACH_ENABLED !== '1') return res.status(410).json({ error: 'disabled' });
   // Allow both GET (for Vercel cron) and POST (for manual trigger)
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Cache-Control', 'no-store, max-age=0');

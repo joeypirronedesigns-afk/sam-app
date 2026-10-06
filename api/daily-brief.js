@@ -253,6 +253,7 @@ module.exports = async function handler(req, res) {
 
   // v9.113.1 — Voice DNA gate (replaces soft FALLBACK_BRIEF return)
   const _gate = await checkGate({
+      req,
     email,
     userId: req.query.userId || (email ? email : 'anon'),
     tool: 'Daily Brief',

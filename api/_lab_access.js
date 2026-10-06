@@ -36,7 +36,9 @@ async function _lookupUser(email) {
 //   - If email is authed but lab_access = false: 403.
 //   - If lab_access = true: returns { ok: true, email: lower }.
 async function assertLabAccess(req, res, { email } = {}) {
-  const e = (email || '').toString().trim().toLowerCase();
+  const { resolveIdentity } = require('./_session');
+  const _id = await resolveIdentity(req, email);
+  const e = (_id.email || '').toString().trim().toLowerCase();
   if (!e || !e.includes('@')) {
     res.status(404).json({ error: 'not_found' });
     return { ok: false };
@@ -54,7 +56,10 @@ async function assertLabAccess(req, res, { email } = {}) {
 //   - Missing/invalid email or email not in sam_users: 404 (concealment).
 //   - Otherwise: { ok: true, email: lower, hasLabAccess: bool }.
 async function assertPersonaLabUser(req, res, { email } = {}) {
-  const e = (email || '').toString().trim().toLowerCase();
+  // Patch AA — prefer the verified session cookie over the email in the request.
+  const { resolveIdentity } = require('./_session');
+  const _id = await resolveIdentity(req, email);
+  const e = (_id.email || '').toString().trim().toLowerCase();
   if (!e || !e.includes('@')) {
     res.status(404).json({ error: 'not_found' });
     return { ok: false };

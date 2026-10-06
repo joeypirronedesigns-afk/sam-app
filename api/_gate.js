@@ -6,7 +6,10 @@
 //   { error, tool, descriptor, cta }
 // Frontend reads tool + descriptor + cta and renders the locked-state component.
 
+const { getSessionEmail, enforcing } = require('./_session');
+
 async function checkGate({
+  req,
   email,
   userId,
   tool,
@@ -30,13 +33,26 @@ async function checkGate({
     e = uid.toLowerCase();
   }
 
-  // Founder bypass — preserved from api/sam.js:37
-  if (e === 'j.pirrone@yahoo.com') return { ok: true };
-  // Dev bypass — preserved from api/sam.js:33
-  if (uid && uid.startsWith('dev-')) return { ok: true };
+  // Patch AA — identity comes from the server-issued session cookie, not the request body.
+  // Soft mode (SAM_GATE_ENFORCE unset): cookie wins when present; otherwise the old body
+  // identity is used and logged. Enforce mode: no cookie = signed out.
+  const _sessionEmail = req ? await getSessionEmail(req) : null;
+  const _enforce = enforcing();
+  if (_sessionEmail) {
+    e = _sessionEmail;
+  } else if (_enforce) {
+    e = '';
+  } else if (e || uid) {
+    console.warn('[gate] legacy identity (no session cookie):', e || uid, '-', tool);
+  }
+
+  // Founder bypass — in enforce mode this only applies to a verified founder session.
+  if (e === 'j.pirrone@yahoo.com') return { ok: true, email: e, verified: !!_sessionEmail };
+  // Dev bypass — never in production once enforcing.
+  if (uid && uid.startsWith('dev-') && !(_enforce && process.env.VERCEL_ENV === 'production')) return { ok: true, email: e || uid, verified: false };
 
   // Auth check
-  if (!e || !e.includes('@') || uid === 'anon') {
+  if (!e || !e.includes('@') || (!_sessionEmail && uid === 'anon')) {
     return {
       ok: false,
       status: 401,
@@ -80,7 +96,7 @@ async function checkGate({
     };
   }
 
-  return { ok: true };
+  return { ok: true, email: e, verified: !!_sessionEmail };
 }
 
 module.exports = { checkGate };

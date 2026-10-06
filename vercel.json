@@ -105,18 +105,6 @@
   ],
   "crons": [
     {
-      "path": "/api/outreach-daily",
-      "schedule": "0 12 * * *"
-    },
-    {
-      "path": "/api/outreach-daily",
-      "schedule": "0 18 * * *"
-    },
-    {
-      "path": "/api/ear",
-      "schedule": "0 12 * * *"
-    },
-    {
       "path": "/api/keepalive",
       "schedule": "17 9 * * *"
     }

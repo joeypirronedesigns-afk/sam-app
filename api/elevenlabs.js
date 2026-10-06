@@ -15,6 +15,7 @@ module.exports = async function handler(req, res) {
 
   // v9.113.3 — Voice DNA gate
   const _gate = await checkGate({
+      req,
     email: _body.email || _body.userEmail || '',
     userId: _body.userId || 'anon',
     tool: 'Hear SAM',
