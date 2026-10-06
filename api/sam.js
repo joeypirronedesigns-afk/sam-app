@@ -108,6 +108,20 @@ function guardUrls(obj, allowed) {
   return { obj: walk(obj), fixes };
 }
 
+// Patch AE — the creator's sign-off, typed once in their brand settings (cleaned; max 200 chars).
+function cleanSignOff(v) {
+  let t = String(v || '').replace(/\s+/g, ' ').trim().replace(/^["'“”‘’]+|["'“”‘’]+$/g, '').trim();
+  if (t.length < 3 || t.length > 200) return '';
+  if (!/[.!?…]$/.test(t)) t += '.';
+  return t;
+}
+// Patch AE — web addresses the creator gave for THIS story (the story, steering notes, wizard steers).
+// Profile/handle domains are not enough on their own: a DIY post shouldn't send people to a brand site.
+function storyDomains(b) {
+  const steers = (String(b.wizardContext || '').match(/^\s*STEERS:.*$/m) || [''])[0];
+  return collectAllowedDomains([b.moment, b.steer, steers]);
+}
+
 // Patch AC — tidy spoken text: no "[link]" placeholders, no unfinished fragments at the end of a
 // beat ("The work was real. I just.."), and the creator's sign-off always the very last line.
 function tidySpoken(parsed, b) {
@@ -120,6 +134,24 @@ function tidySpoken(parsed, b) {
     return kept || line.replace(new RegExp(LINKPH.source, 'gi'), '').replace(/\s{2,}/g, ' ').trim();
   }).join('\n').replace(/\n{3,}/g, '\n\n').trim();
   for (const f of ['full_script', 'narration_script']) if (typeof parsed[f] === 'string') parsed[f] = dropLinkSentences(parsed[f]);
+  // Patch AE — a web address the creator didn't give for this story is left out (its sentence goes;
+  // if that would empty the line, only the address phrase goes).
+  const okDomains = storyDomains(b);
+  const DOM = new RegExp(`(?<![\\p{L}\\p{N}@-])(?:https?:\\/\\/)?(?:www\\.)?([\\p{L}\\p{N}-]{2,}\\.(?:${URL_TLDS}))(?![\\p{L}\\p{N}])(?:\\/[^\\s]*)?`, 'giu');
+  const strayDomain = x => [...String(x).matchAll(DOM)].some(m => !okDomains.has(m[1].toLowerCase()));
+  const dropStrayDomains = t => String(t).split('\n').map(line => {
+    if (!strayDomain(line)) return line;
+    // the sentence splitter would cut "site.com" at its dot, so dots inside addresses are protected first
+    const parts = _splitSentences(line.replace(DOM, d => d.replace(/\./g, '\u2024'))).map(x => x.replace(/\u2024/g, '.'));
+    const kept = parts.filter(x => x !== '\n' && !strayDomain(x)).join('').trim();
+    return kept || line.replace(DOM, m => (strayDomain(m) ? '' : m)).replace(/\s+(?:at|on|via|from)\s*([.!?,;:—-]|$)/gi, '$1').replace(/\s{2,}/g, ' ').trim();
+  }).join('\n').replace(/\n{3,}/g, '\n\n').trim();
+  for (const f of ['full_script', 'narration_script']) if (typeof parsed[f] === 'string') parsed[f] = dropStrayDomains(parsed[f]);
+  for (const p of (parsed.platform_strategies || [])) {
+    if (p && typeof p.caption === 'string') p.caption = dropStrayDomains(p.caption);
+    if (p && typeof p.description === 'string') p.description = dropStrayDomains(p.description);
+  }
+  if (parsed.story_architecture && typeof parsed.story_architecture.cta === 'string') parsed.story_architecture.cta = dropStrayDomains(parsed.story_architecture.cta);
   for (const p of (parsed.platform_strategies || [])) {
     if (p && typeof p.caption === 'string') p.caption = dropLinkSentences(p.caption);
     if (p && typeof p.description === 'string') p.description = dropLinkSentences(p.description);
@@ -150,7 +182,33 @@ function tidySpoken(parsed, b) {
     }
     return lines.join('\n');
   };
+  // Patch AE — the sign-off the creator saved is always the last spoken line (said once).
+  const SIGN = cleanSignOff(b.signOff), signN = _normSentence(SIGN);
+  const addSignOff = (text) => {
+    if (!signN || !String(text).trim()) return text;
+    let lines = String(text).split('\n').map(l => {
+      if (/^\s*\[BEAT:/i.test(l) || !_normSentence(l).includes(signN)) return l;
+      return _splitSentences(l).filter(x => x !== '\n' && _normSentence(x) !== signN).join('').replace(new RegExp(SIGN.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), '').replace(/\s{2,}/g, ' ').trim();
+    });
+    // drop lines emptied above (but keep beat markers)
+    lines = lines.filter((l, i) => l.trim() || !String(text).split('\n')[i].trim());
+    let last = lines.length - 1;
+    while (last >= 0 && !lines[last].trim()) last--;
+    if (last < 0) return text;
+    if (/^\s*\[BEAT:/i.test(lines[last])) lines.splice(last + 1, 0, SIGN);
+    else lines[last] = lines[last].trim() + ' ' + SIGN;
+    return lines.join('\n');
+  };
   for (const f of ['full_script', 'narration_script']) if (typeof parsed[f] === 'string') parsed[f] = fixScript(parsed[f]);
+  for (const f of ['full_script', 'narration_script']) if (typeof parsed[f] === 'string') parsed[f] = addSignOff(parsed[f]);
+  // Patch AD — a delivery tip that quotes a line the script doesn't contain ("the silence after
+  // 'Nobody was watching'") points at nothing: drop it.
+  for (const f of ['pacing_note', 'hook_why', 'visual_note']) {
+    if (typeof parsed[f] !== 'string' || !parsed[f]) continue;
+    const spoken = _normSentence([parsed.full_script, parsed.narration_script, parsed.hook].filter(Boolean).join(' '));
+    const quotes = [...parsed[f].matchAll(/(?:^|[\s(—–-])['‘“"]([^'’”"]{8,}?)['’”"](?=[\s.,;:!?)—–-]|$)/g)].map(q => _normSentence(q[1])).filter(q => q.split(' ').length >= 2);
+    if (spoken && quotes.some(q => !spoken.includes(q))) parsed[f] = '';
+  }
   return parsed;
 }
 
@@ -395,6 +453,10 @@ function enforceHookOpening(script, hook) {
     const covered = hw.filter(w => cw.includes(w)).length / hw.length;
     const extra = cw.filter(w => !hset.has(w)).length;
     if (covered >= 0.7 && extra <= Math.max(4, hw.length * 0.6)) { cut = k; break; }
+    // Patch AD — a shorter restatement of the hook ("I spent months rebuilding a cottage for my parents.")
+    // is a paraphrase too: most of ITS words are already in the hook.
+    if (cw.length >= 4 && cw.filter(w => hset.has(w)).length / cw.length >= 0.75) { cut = k; continue; }
+    if (cut) break;
     if (cw.length > hw.length * 2) break;
   }
   const rest = cut ? parts.slice(cut).join('').trim() : line.trim();
@@ -863,9 +925,13 @@ const hashtagRule = 'HASHTAG RULE — CRITICAL: Follow each platform\'s hashtag 
   const languageLine = outputLanguage ? `Write the ENTIRE output in ${outputLanguage}. JSON field names stay in English.` : '';
   // Patch AB — current per-platform limits (hashtags count toward them) from api/_platforms.js;
   // the old table is only used for platforms the new module doesn't know.
-  const platformContext = platforms && platforms.length > 0
+  const _signOff = cleanSignOff(req.body.signOff);
+  const platformContext = (platforms && platforms.length > 0
     ? (platformPrompt(platforms) || `PLATFORM SPECS (follow exactly): ${getPlatformContext(platforms)}`)
-    : '';
+    : '')
+    // Patch AE — links only from this story; the saved sign-off closes every script.
+    + `\nLINKS: put a web address in the script or posts ONLY if the creator gave it for this story. Otherwise include no web address at all — don't send people to the creator's other sites.`
+    + (_signOff ? `\nCREATOR SIGN-OFF: the spoken script ends with exactly this line, word for word, right after the CTA: "${_signOff}"` : '');
   const formatContext = contentType ? `Content format requested: ${contentType}.` : '';
   const voiceLine = voiceProfile
     ? `VOICE PROFILE — THIS IS THE MOST IMPORTANT INSTRUCTION: You have a forensic voice fingerprint built from this creator's ACTUAL writing samples. Real analysis: ${voiceProfile}

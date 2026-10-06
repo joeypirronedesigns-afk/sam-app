@@ -113,6 +113,35 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({ signedIn: !!sessionEmail, email: sessionEmail || null, enforcing: process.env.SAM_GATE_ENFORCE === '1' });
   }
 
+  // ── BRAND LOGO (Patch AD) — the small logo lives on the account, so the PDF has it on any device ──
+  if (action === 'save_logo' || action === 'get_logo') {
+    const who = await getSessionEmail(req);
+    if (!who) return res.status(401).json({ error: 'Not signed in' });
+    const kv = await getKV();
+    const key = 'logo:' + who.toLowerCase();
+    if (action === 'get_logo') return res.status(200).json({ logo: (await kv.get(key)) || null });
+    const logo = (req.body || {}).logo;
+    if (logo === null) { await kv.del(key); return res.status(200).json({ success: true }); }
+    if (typeof logo !== 'string' || logo.length > 300000
+        || !/^data:image\/(png|jpeg|jpg|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(logo)) {
+      return res.status(400).json({ error: 'Logo must be a small PNG/JPEG image' });
+    }
+    await kv.set(key, logo);
+    return res.status(200).json({ success: true });
+  }
+
+  // ── SIGN-OFF (Patch AE) — the line the creator ends every video with ─────────
+  if (action === 'save_signoff' || action === 'get_signoff') {
+    const who = await getSessionEmail(req);
+    if (!who) return res.status(401).json({ error: 'Not signed in' });
+    const kv = await getKV();
+    const key = 'signoff:' + who.toLowerCase();
+    if (action === 'get_signoff') return res.status(200).json({ signOff: (await kv.get(key)) || '' });
+    const t = String((req.body || {}).signOff || '').replace(/\s+/g, ' ').trim().slice(0, 200);
+    if (t) await kv.set(key, t); else await kv.del(key);
+    return res.status(200).json({ success: true });
+  }
+
   // ── LOGOUT (Patch AA) — end the session and clear the cookie ────────────────
   if (action === 'logout') {
     await destroySession(req, res);

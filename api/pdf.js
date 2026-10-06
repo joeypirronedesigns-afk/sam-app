@@ -575,7 +575,7 @@ function card(label, body, meta) {
   return `<div class="module-card">
     ${label ? `<div class="module-card-label">${e(label)}</div><div class="module-card-divider"></div>` : ''}
     ${body  ? `<div class="module-card-body">${e(body)}</div>` : ''}
-    ${meta  ? `<div class="module-card-meta">${e(meta)}</div>` : ''}
+    ${meta  ? `<div class="module-card-meta">${String(meta).split('\n').filter(Boolean).map(l => `<div>${e(l)}</div>`).join('')}</div>` : ''}
   </div>`;
 }
 
@@ -827,19 +827,34 @@ function buildPlaybookHTML(pb, brand) {
         ${item.heading ? `<div class="lm-heading">${e(item.heading)}</div>` : ''}
         ${item.body    ? `<div class="lm-body">${e(item.body)}</div>` : ''}
       </div>
-    </div>`).join('');
+    </div>`);
 
-    pages.push(`<div class="pdf-page pdf-page--interior">
+    // Patch AD — a long guide overflowed one sheet (footer spilled onto a blank page). Split it:
+    // roughly 1,500 characters of text per page, the Share card goes with the last items.
+    const PAGE_BUDGET = 1500;
+    const groups = [[]]; let used = String(lm.title || '').length + String(lm.why || '').length + 200;
+    lmItems.forEach((item, idx) => {
+      const w = String(item.heading || '').length + String(item.body || '').length + 120;
+      if (groups[groups.length - 1].length && used + w > PAGE_BUDGET) { groups.push([]); used = 0; }
+      groups[groups.length - 1].push(idx); used += w;
+    });
+    if (lm.comment_response && used + String(lm.comment_response).length + 150 > PAGE_BUDGET && groups[groups.length - 1].length > 1) {
+      groups.push([groups[groups.length - 1].pop()]);
+    }
+    groups.forEach((g, gi) => {
+      const first = gi === 0, last = gi === groups.length - 1;
+      pages.push(`<div class="pdf-page pdf-page--interior">
       ${hdr(brandName, docType, pn(), brandLogo)}
       <div class="section-body">
-        ${sLabel('Free Resource')}
-        ${lm.title ? `<h2 class="section-title">${e(lm.title)}</h2>` : ''}
-        ${lm.why   ? callout(lm.why) : ''}
-        ${itemsHTML}
-        ${lm.comment_response ? `<div class="sp-16"></div>${card('Share This', lm.comment_response, null)}` : ''}
+        ${sLabel(first ? 'Free Resource' : 'Free Resource (continued)')}
+        ${first && lm.title ? `<h2 class="section-title">${e(lm.title)}</h2>` : ''}
+        ${first && lm.why   ? callout(lm.why) : ''}
+        ${g.map(idx => itemsHTML[idx]).join('')}
+        ${last && lm.comment_response ? `<div class="sp-16"></div>${card('Share This', lm.comment_response, null)}` : ''}
       </div>
       ${ftr(brandName)}
     </div>`);
+    });
   }
 
   // ── 10 Focus Directive ─────────────────────────────────────────────────────
@@ -969,7 +984,8 @@ ${pagesHTML}
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
 
-function e(value) { return escapeHtml(value); }
+// Patch AD — the PDF fonts have no arrow glyphs (they printed as blank gaps), so arrows become dashes.
+function e(value) { return escapeHtml(String(value == null ? '' : value).replace(/\s*[→⟶➔➜⇒]\s*/g, ' — ')); }
 
 function escapeHtml(value) {
   return String(value || '')

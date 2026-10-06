@@ -96,7 +96,9 @@ function enforcePlatforms(parsed) {
     const tags = [];
     const add = t => { const k = t.toLowerCase(); if (!tags.some(x => x.toLowerCase() === k)) tags.push(t); };
     (caption.match(TAG_RE) || []).forEach(m => add(m.trim()));
-    caption = caption.replace(/(^|\n)((?:\s*#[\p{L}\p{N}_]+)+)\s*(?=\n|$)/gu, '$1').replace(TAG_RE, (m, sp) => sp + m.trim().slice(1));
+    // Patch AD — a run of hashtags at the END of a line (after the hook text) is the hashtag list, not words:
+    // remove it. Only a tag in the middle of a sentence ("my #DIY cottage") becomes a plain word.
+    caption = caption.replace(/((?:[ \t]*#[\p{L}\p{N}_]+)+)[ \t]*(?=\n|$)/gu, '').replace(TAG_RE, (m, sp) => sp + m.trim().slice(1));
     caption = caption.replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
     String(p.hashtags || '').split(/[\s,]+/).filter(t => /^#[\p{L}\p{N}_]+$/u.test(t)).forEach(add);
     let kept = tags.slice(0, s.tags);

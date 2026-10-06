@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.69" data-qs-descriptor="Patch AC - logo in PDF (shrunk on upload, kept across refresh), account name instead of Your Brand, lookalike domains fixed, no link placeholders, sign-off always last, unfinished fragments removed." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.71" data-qs-descriptor="Patch AE - includes AD (logo on account, Shorts hashtag words, repeated opening, PDF layout, stale tips) plus a sign-off field that always closes the script, and web addresses only when given for that story." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -10858,6 +10858,7 @@ function getBase() {
     emojiPreference: s.emoji || 'few',
     outputLanguage: s.lang || '',
     creatorContext: creatorContext,
+    signOff: (typeof getSignOff === 'function' && getSignOff()) || undefined,
     audienceDemographics: demographics,
     platforms: (wizardDone && WS.platforms && WS.platforms.length) ? WS.platforms : null,
     voiceProfile: voiceProfile || undefined,
@@ -16379,6 +16380,57 @@ function shrinkLogo(dataUrl, max) {
     img.src = dataUrl;
   });
 }
+// Patch AE — the creator's sign-off: kept in this browser and on the account, sent with every request.
+function getSignOff() {
+  try { return (WS && WS.signOff) || localStorage.getItem('sam_sign_off') || ''; } catch (_) { return (WS && WS.signOff) || ''; }
+}
+let _signOffTimer = null;
+function setSignOff(v) {
+  const t = String(v || '').slice(0, 200);
+  WS.signOff = t;
+  try { localStorage.setItem('sam_sign_off', t); } catch (_) {}
+  if (typeof saveWizardState === 'function') saveWizardState();
+  clearTimeout(_signOffTimer);
+  _signOffTimer = setTimeout(() => fetch('/api/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin',
+    body: JSON.stringify({ action: 'save_signoff', signOff: t }) }).catch(() => {}), 800);
+}
+async function restoreSignOff() {
+  let t = '';
+  try { t = localStorage.getItem('sam_sign_off') || ''; } catch (_) {}
+  if (!t) {
+    try {
+      const r = await fetch('/api/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin',
+        body: JSON.stringify({ action: 'get_signoff' }) });
+      if (r.ok) { t = (await r.json()).signOff || ''; if (t) try { localStorage.setItem('sam_sign_off', t); } catch (_) {} }
+    } catch (_) {}
+  }
+  if (t && typeof WS === 'object' && WS && !WS.signOff) WS.signOff = t;
+  const el = document.getElementById('brandSignOff'); if (el && t && !el.value) el.value = t;
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => restoreSignOff());
+else setTimeout(restoreSignOff, 0);
+
+// Patch AD — on load, bring the saved logo back (this browser first, then the account) and show it.
+function showBrandLogoPreview(src) {
+  const img = document.getElementById('brandLogoImg'); if (!img || !src) return;
+  img.src = src;
+  const pv = document.getElementById('brandLogoPreview'), em = document.getElementById('brandLogoEmpty'), zn = document.getElementById('brandLogoZone');
+  if (pv) pv.style.display = 'block'; if (em) em.style.display = 'none'; if (zn) zn.classList.add('has-logo');
+}
+async function restoreBrandLogo() {
+  let logo = null;
+  try { logo = localStorage.getItem('sam_brand_logo'); } catch (_) {}
+  if (!logo) {
+    try {
+      const r = await fetch('/api/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin',
+        body: JSON.stringify({ action: 'get_logo' }) });
+      if (r.ok) { logo = (await r.json()).logo || null; if (logo) try { localStorage.setItem('sam_brand_logo', logo); } catch (_) {} }
+    } catch (_) {}
+  }
+  if (logo) { if (typeof WS === 'object' && WS && !WS.brandLogo) WS.brandLogo = logo; showBrandLogoPreview(logo); }
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => restoreBrandLogo());
+else setTimeout(restoreBrandLogo, 0);
 function getBrandLogo() {
   if (WS.brandLogo && WS.brandLogo.length < 200000) return WS.brandLogo;
   try { return localStorage.getItem('sam_brand_logo') || null; } catch (_) { return null; }
@@ -16392,6 +16444,9 @@ function handleBrandLogo(e) {
     const small = await shrinkLogo(ev.target.result, 240);
     WS.brandLogo = small || ev.target.result;
     try { if (small) localStorage.setItem('sam_brand_logo', small); } catch (_) {}
+    // Patch AD — keep it on the account too, so the PDF has it on any device / after clearing the browser.
+    if (small) fetch('/api/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin',
+      body: JSON.stringify({ action: 'save_logo', logo: small }) }).catch(() => {});
     saveWizardState();
     document.getElementById('brandLogoImg').src = ev.target.result;
     document.getElementById('brandLogoPreview').style.display = 'block';
@@ -16738,6 +16793,7 @@ The story_architecture object below is the structural source of truth — the fu
       creatorContext: s.niche || '',
       audienceDemographics: audienceContext,
       wizardContext: context,
+      signOff: getSignOff() || undefined,
       delivery: WS.delivery || 'camera',
       pace: WS.pace || 'natural',
       storyType: WS.storyType || 'moment',
@@ -16861,6 +16917,7 @@ ${steer ? 'CREATOR DIRECTION: ' + steer : ''}
       outputLanguage: WS.language || '',
       creatorContext: s.niche || '',
       steer: steer,
+      signOff: getSignOff() || undefined,
       userId: (typeof getTrialState === 'function' && getTrialState().email) ? getTrialState().email : (localStorage.getItem('sam_uid') || 'anon').replace(/^dev-/, ''),
       tier: WS.tier || 'free',
       story_architecture: (window._lastPlaybookData && window._lastPlaybookData.story_architecture) || null,
@@ -18908,6 +18965,10 @@ if (localStorage.getItem('sam_dev') === 'true') {
         <div>
           <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:6px;">Your handle or website <span style="font-weight:400;text-transform:none;opacity:0.6;">(optional)</span></div>
           <input type="text" class="brand-text-input" id="brandHandle" placeholder="e.g. @themindfulchef · themindfulchef.com" oninput="WS.brandHandle=this.value;saveWizardState();" />
+        </div>
+        <div style="margin-top:12px;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:6px;">Your sign-off <span style="font-weight:400;text-transform:none;opacity:0.6;">(optional — the line you end every video with)</span></div>
+          <input type="text" class="brand-text-input" id="brandSignOff" maxlength="200" placeholder="e.g. I'm self-taught, documenting everything, and taking you with me." oninput="setSignOff(this.value);" />
         </div>
       </div>
 
