@@ -120,8 +120,8 @@ function score(c, r) {
   const bannedHits = BANNED.filter(b => spoken.toLowerCase().includes(b));
   const hookN = norm(r.hook);
   const checks = {
-    hook_is_opening:   !!r.hook && norm(arch.opening) === hookN,
-    script_opens_with_hook: !!hookN && norm(beat('opening')).startsWith(hookN.split(' ').slice(0, 6).join(' ')),
+    hook_is_opening:   (c.thin && r.needs_more) ? true : (!!r.hook && norm(arch.opening) === hookN),
+    script_opens_with_hook: (c.thin && r.needs_more) ? true : (!!hookN && norm(beat('opening')).startsWith(hookN.split(' ').slice(0, 6).join(' '))),
     six_beats:         c.thin ? true : ['opening', 'setup', 'risk', 'turn', 'payoff', 'cta'].every(k => beat(k)),
     numbers_traceable: badNums.length === 0,
     urls_traceable:    badDomains.length === 0,
@@ -130,8 +130,8 @@ function score(c, r) {
     cta_short:         words(beat('cta')) <= 35,
     no_ai_cliches:     bannedHits.length === 0,
     moment_found:      c.thin ? true : !!r.five_second_moment && !/^not found/i.test(r.five_second_moment),
-    thin_asks_for_more: c.thin ? ((r.gaps || []).length > 0 || /^not found/i.test(r.five_second_moment || '')) : true,
-    no_placeholders:   !/\b(not found|tbd|placeholder|needs a real moment|real moment needed)\b|\[(insert|add|your)[^\]]*\]/i.test(spoken.replace(/\[BEAT:[^\]]*\]/g, '')),
+    thin_asks_for_more: c.thin ? (!!r.needs_more || (r.gaps || []).length > 0) : (!r.needs_more),
+    no_placeholders:   !/\b(not found|tbd|placeholder|needs a real moment|real moment needed|needed before|can be written)\b|\[(insert|add|your)[^\]]*\]/i.test(spoken.replace(/\[BEAT:[^\]]*\]/g, '')),
     type_matches:      c.expect_type === 'any' || String(c.expect_type).split('|').includes(r.story_type)
   };
   const notes = [];

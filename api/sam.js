@@ -854,7 +854,7 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
     }
     // Patch Z.1 — detect placeholder/meta text that leaked into spoken fields (thin stories).
     if (parsed && typeof parsed === 'object') {
-      const PLACEHOLDER = /\b(not found|tbd|to be determined|placeholder|needs a real moment|real moment needed)\b|\[(insert|add|your)[^\]]*\]/i;
+      const PLACEHOLDER = /\b(not found|tbd|to be determined|placeholder|needs a real moment|real moment needed|needed before|can be written|n\/a)\b|\[(insert|add|your)[^\]]*\]/i;
       const spokenFields = [parsed.hook, parsed.full_script, parsed.narration_script,
         ...((parsed.platform_strategies || []).map(p => p && p.caption))];
       parsed.is_draft = /^not found/i.test(String(parsed.five_second_moment || '')) || spokenFields.some(t => typeof t === 'string' && PLACEHOLDER.test(t));
@@ -862,6 +862,20 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
       for (const f of ['full_script', 'narration_script']) {
         if (typeof parsed[f] === 'string') parsed[f] = parsed[f].split('\n').filter(l => !PLACEHOLDER.test(l) || /^\s*\[BEAT:/i.test(l)).join('\n');
       }
+      // Patch Z.3 — clear placeholder architecture cards and captions.
+      if (parsed.story_architecture && typeof parsed.story_architecture === 'object') {
+        for (const k of Object.keys(parsed.story_architecture)) {
+          if (typeof parsed.story_architecture[k] === 'string' && PLACEHOLDER.test(parsed.story_architecture[k])) parsed.story_architecture[k] = '';
+        }
+      }
+      for (const p of (parsed.platform_strategies || [])) {
+        if (p && typeof p.caption === 'string' && PLACEHOLDER.test(p.caption)) p.caption = '';
+      }
+      // Too thin to write honestly: SAM asks instead of writing (needs_more).
+      const scriptHasWords = String(parsed.full_script || parsed.narration_script || '').split('\n')
+        .some(l => l.trim() && !/^\s*\[BEAT:/i.test(l));
+      const archHasWords = Object.values(parsed.story_architecture || {}).some(v => typeof v === 'string' && v.trim());
+      parsed.needs_more = /^not found/i.test(String(parsed.five_second_moment || '')) && !scriptHasWords && !archHasWords;
     }
     // Patch Y.2 — the script's Opening beat must start with the hook, word for word.
     // If its first sentence is a paraphrase of the hook, swap it for the hook; otherwise put the hook first.

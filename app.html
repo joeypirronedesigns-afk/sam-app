@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.58" data-qs-descriptor="Patch Z — no placeholder text in scripts; thin stories get an honest short draft with a Draft banner; scorecard checks for placeholders." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.59" data-qs-descriptor="Patch Z.3 — too-thin stories show SAM needs more (questions + way back) instead of placeholder cards; placeholder captions/cards cleared." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -16990,6 +16990,18 @@ function storyShapeHTML(d) {
   </div>`;
 }
 
+// Patch Z.3 — the "needs more" state: no fake script, just SAM's questions and a way back.
+function needsMoreHTML(d) {
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const qs = (Array.isArray(d.gaps) ? d.gaps : []).filter(g => typeof g === 'string' && g.trim()).slice(0, 6);
+  return `<div class="playbook-section" id="playbook-sec-needs-more">
+    <div class="playbook-section-title">SAM needs more before it can write this</div>
+    <div class="wizard-why" style="margin-bottom:14px;">There isn't a moment in this story yet — an instant where something changed. SAM won't make one up. Add a few of these details to your story and SAM will build the whole playbook around them.</div>
+    ${qs.length ? `<ol style="margin:0 0 16px;padding-left:20px;font-size:15px;color:var(--ink);line-height:1.7;">${qs.map(q => '<li>' + esc(q) + '</li>').join('')}</ol>` : ''}
+    <button class="no-print" onclick="wizardBackFromPlaybook(); showWizardStep('2');" style="padding:12px 22px;background:var(--accent);color:var(--paper);border:none;border-radius:var(--radius);font-size:14px;font-weight:600;cursor:pointer;">Add details to my story →</button>
+  </div>`;
+}
+
 // Patch Z.2 — thin stories get an honest draft, clearly labelled as one.
 function draftBannerHTML(d) {
   if (!d || !(d.is_draft || /^not found/i.test(String(d.five_second_moment || '')))) return '';
@@ -17076,8 +17088,11 @@ function renderPlaybook(data) {
     </div>`;
   }
 
+  // Patch Z.3 — too thin to write honestly: SAM asks for what it needs instead of inventing it.
+  if (data.needs_more) html += needsMoreHTML(data);
+
   // ② STORY ARCHITECTURE
-  if (data.story_architecture) {
+  if (data.story_architecture && !data.needs_more) {
     const arch = data.story_architecture;
     html += `<div class="playbook-section" id="playbook-sec-architecture">
       <div class="playbook-section-num">Section 02</div>
@@ -17174,7 +17189,7 @@ function renderPlaybook(data) {
   }
 
   // ⑤ PLATFORM STRATEGY
-  if (data.platform_strategies && Array.isArray(data.platform_strategies) && data.platform_strategies.length) {
+  if (data.platform_strategies && Array.isArray(data.platform_strategies) && data.platform_strategies.length && !data.needs_more) {
     html += `<div class="playbook-section" id="playbook-sec-platforms">
       <div class="playbook-section-num">Section 05</div>
       <div class="playbook-section-title">Your platform strategy</div>

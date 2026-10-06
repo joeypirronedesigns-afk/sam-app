@@ -42,7 +42,7 @@ Stripe payment link: https://buy.stripe.com/eVqeVfgkOajocUX2Dp8Zq00
 - Typography: Instrument Serif italic for headings, Inter for UI, JetBrains Mono for code
 - Sidebar: Left nav, 220px wide. Sections: DAILY, BUILD SAM'S BRAIN, STUDIO, MORE, EXECUTION PACK
 - Version stamp: data-qs-version attribute on div[data-qs-shell] — bump on every commit
-- Current version: v9.118.58+
+- Current version: v9.118.59+
 
 ---
 
@@ -64,7 +64,7 @@ Vercel CLI: Installed at /opt/homebrew/bin/vercel, logged in as joeypirronedesig
 
 ---
 
-## Current Version: v9.118.58
+## Current Version: v9.118.59
 
 ### Key Architecture Decisions Made
 - No free trial — Patch O removed it. Paid or blocked. trial-status.js returns allowed:false for all unpaid users.
@@ -92,6 +92,7 @@ Vercel CLI: Installed at /opt/homebrew/bin/vercel, logged in as joeypirronedesig
 - Patch X (v9.118.56) — Fact-check pass (factCheckPlaybook, Haiku 4.5, 15s timeout, fails open) after playbook + script regens: removes script/caption sentences not supported by the creator's words + answers; listed in app as "Removed — not in what you told SAM". STORY_RULES: 5-second moment first, six story types (mistake_lesson, transformation, demo_proof, origin, behind_the_scenes, moment_reflection) mapped onto the six beats, craft checks (but/therefore, specificity, show-then-say, peak-end, open loop). Schema: story_type, five_second_moment (shown under diagnosis in app + PDF "Story Shape"). Step 3 interview: up to 3 QUESTION lines (moment, stakes, ending), each with an answer box (WS.gapQA). api/sam.js maxDuration 120s. Eval: tests/story-eval/cases.json (10 cases) + scripts/story-eval.js (12 automatic checks, results in tests/story-eval/results/).
 - Patch Y (v9.118.57) — Fact-check: lines ≥80% made of the creator's own words are never removed; lessons/meaning drawn from the creator's events count as supported. enforceHookOpening(): script Opening beat always starts with the hook (paraphrase replaced, else hook prepended). Eval scorer: ordinals, compound numbers, 'one' ignored, number context shown, multi-type expectations, thin case exempt from six_beats. Baseline before Patch Y: 109/120 (91%).
 - Patch Z (v9.118.58) — STORY_RULES 10: no notes/placeholders in hook/script/captions; thin stories get a short honest draft. Server strips placeholder lines, blanks placeholder hooks, sets parsed.is_draft. 'Draft' banner on the script (app + PDF) when no 5-second moment. Scorer: 13th check no_placeholders; 'first'/'second' no longer counted as numbers. Eval after Patch Y: 116/120 (97%).
+- Patch Z.3 (v9.118.59) — Too-thin stories: server clears placeholder architecture cards/captions and sets needs_more when there is no moment and nothing honest to write; app shows 'SAM needs more before it can write this' with SAM's questions and an 'Add details to my story' button (back to step 2), hides empty architecture/platform sections. Scorer: needs_more counts as correct for the thin case (and as a failure for full stories). Eval after Patch Z: 125/130 (96%).
 
 ### Open Task List (v9.118.x)
 - Later — 'connection to this' wizard question only if founder/role detection keeps missing

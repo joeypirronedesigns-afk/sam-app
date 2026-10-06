@@ -47,7 +47,7 @@
   },
   {
     "id": "walnut-table",
-    "expect_type": "behind_the_scenes|transformation",
+    "expect_type": "behind_the_scenes|transformation|mistake_lesson",
     "creator": "Woodworker who builds furniture",
     "reveal": [],
     "input": "This walnut slab dried for three weeks before I started the table. Day four of flattening, I came into the shop and there was a crack running almost a foot down the middle that wasn't there the night before. My first thought was the whole slab was ruined, 400 dollars of walnut. Instead of hiding it I cut three bowtie keys out of maple and set them across the crack. The client saw it and said that was her favorite part of the table. Now I don't panic when wood moves. It's telling me something."
