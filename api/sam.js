@@ -965,11 +965,21 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
       for (const p of (parsed.platform_strategies || [])) {
         if (p && typeof p.caption === 'string' && PLACEHOLDER.test(p.caption)) p.caption = '';
       }
-      // Too thin to write honestly: SAM asks instead of writing (needs_more).
-      const scriptHasWords = String(parsed.full_script || parsed.narration_script || '').split('\n')
-        .some(l => l.trim() && !/^\s*\[BEAT:/i.test(l));
-      const archHasWords = Object.values(parsed.story_architecture || {}).some(v => typeof v === 'string' && v.trim());
-      parsed.needs_more = /^not found/i.test(String(parsed.five_second_moment || '')) && !scriptHasWords && !archHasWords;
+      // Patch Z.5 — too thin to write honestly. This is decided by SAM's own judgment (no 5-second
+      // moment found), not by matching placeholder wording, which varies run to run. When there is
+      // no moment, nothing spoken is kept: SAM asks for the missing pieces instead.
+      parsed.needs_more = /^\s*(not found|none|no moment|n\/a)\b/i.test(String(parsed.five_second_moment || ''));
+      if (parsed.needs_more) {
+        parsed.hook = '';
+        parsed.hook_why = '';
+        if (parsed.story_architecture && typeof parsed.story_architecture === 'object') {
+          for (const k of Object.keys(parsed.story_architecture)) parsed.story_architecture[k] = '';
+        }
+        parsed.full_script = '';
+        if (parsed.narration_script) parsed.narration_script = '';
+        for (const p of (parsed.platform_strategies || [])) if (p) p.caption = '';
+        if (parsed.fact_check) parsed.fact_check.removed = [];
+      }
     }
     // Patch Y.2 — the script's Opening beat must start with the hook, word for word.
     // If its first sentence is a paraphrase of the hook, swap it for the hook; otherwise put the hook first.
