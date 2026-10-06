@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.72" data-qs-descriptor="Patch AF - free guides: audience sees only the guide (no why-it-works note, no comment to post), worksheets keep their lines with real tables and checkboxes, long guides page cleanly, honest intro, no internal story-type labels." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.73" data-qs-descriptor="Patch AG - free guides checked against the story (no invented claims or promised results), guide title count matches its items, story cards in first person." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -17849,7 +17849,10 @@ Return ONLY raw JSON (no markdown, no backticks, no explanation):
         email: _regenEmail || undefined,
         userEmail: _regenEmail || undefined,
         toolPrompt: prompt,
-        maxTokens: 3000
+        maxTokens: 3000,
+        // Patch AG — the server checks the guide against what the creator actually said
+        guideCheck: true,
+        guideSource: ['STORY: ' + story, s.niche ? 'ABOUT THE CREATOR: ' + s.niche : ''].filter(Boolean).join('\n\n')
       })
     });
 

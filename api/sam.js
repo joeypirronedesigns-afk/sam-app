@@ -321,6 +321,73 @@ Return ONLY JSON: {"unsupported":[{"text":"the exact sentence copied from DRAFT"
   }
 }
 
+
+// Patch AG — free guides get checked too. The reader-facing intro and item text may teach and advise
+// freely, but anything stated about the CREATOR (their experience, results, tools, what they wish or
+// use) or promised as an outcome ("will save you thousands") must come from what the creator said.
+// Worksheet lines (blanks, tables, checkboxes) are never touched; a body is never emptied.
+const _guideProse = line => !!line.trim() && !/_{3,}|\||\[\s?\]|☐|□/.test(line);
+function fixGuideTitle(lm) {
+  if (!lm || typeof lm.title !== 'string' || !Array.isArray(lm.items)) return lm;
+  const n = lm.items.filter(i => i && (i.heading || i.body)).length;
+  if (n < 2) return lm;
+  const W = { one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10 };
+  lm.title = lm.title.replace(/\b(one|two|three|four|five|six|seven|eight|nine|ten|\d{1,2})\s+(thing|lesson|question|tip|step|way|mistake|rule|sign|reason|truth|habit|idea|secret)(s?)\b/i,
+    (m, num, noun) => {
+      const v = W[num.toLowerCase()] || Number(num);
+      if (v === n) return m;
+      const cap = /^[A-Z]/.test(noun);
+      return `${n} ${cap ? noun[0].toUpperCase() + noun.slice(1).toLowerCase() : noun.toLowerCase()}s`;
+    });
+  return lm;
+}
+async function factCheckGuide(apiKey, source, lm) {
+  if (!lm || typeof lm !== 'object' || !source || !apiKey) return null;
+  const items = Array.isArray(lm.items) ? lm.items : [];
+  const draft = [
+    lm.intro ? 'INTRO: ' + lm.intro : '',
+    ...items.map((it, i) => `ITEM ${i + 1}: ` + String((it && it.body) || '').split('\n').filter(_guideProse).join(' '))
+  ].filter(Boolean).join('\n');
+  if (!draft.trim()) return null;
+  const system = `You check a free guide a creator will give their audience. SOURCE is everything the creator actually said about themselves.
+Flag ONLY sentences in DRAFT that (a) state something about the CREATOR — their experience, history, numbers, results, feelings, tools they built or use, what they wish they'd had, what they learned — that SOURCE does not say or clearly imply, or (b) promise the reader a result ("will save you thousands", "guaranteed", "the exact system I use").
+Advice, instructions and general how-to aimed at the reader are fine. Restating what the creator said in other words is fine.
+Return ONLY JSON: {"unsupported":[{"text":"the exact sentence copied from DRAFT"}]}. Empty array if nothing is wrong.`;
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 15000);
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST', signal: ctrl.signal,
+      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({ model: FACT_CHECK_MODEL, max_tokens: 800, system,
+        messages: [{ role: 'user', content: `SOURCE:\n${source}\n\nDRAFT:\n${draft}` }] })
+    });
+    if (!r.ok) return null;
+    const j = await r.json();
+    const m = (j.content || []).map(c => c.text || '').join('').match(/\{[\s\S]*\}/);
+    const targets = (m ? (JSON.parse(m[0]).unsupported || []) : []).map(u => _normSentence(u && u.text)).filter(t => t.length >= 8);
+    return { removed: applyGuideCuts(lm, targets) };
+  } catch (e) { return null; } finally { clearTimeout(timer); }
+}
+function applyGuideCuts(lm, targets) {
+  if (!targets.length) return [];
+  const removed = [];
+  const bad = x => { const n = _normSentence(x); return !!n && targets.some(t => n === t || (t.length > 20 && n.includes(t)) || (n.length > 20 && t.includes(n))); };
+  const cut = text => String(text).split('\n').map(line => {
+    if (!_guideProse(line)) return line;
+    const parts = _splitSentences(line).filter(x => x !== '\n');
+    const keep = parts.filter(x => !bad(x));
+    if (keep.length === parts.length) return line;
+    parts.filter(bad).forEach(x => removed.push(x.trim()));
+    return keep.join('').trim();
+  }).filter((l, i, a) => l.trim() || !_guideProse(String(text).split('\n')[i] || 'x')).join('\n').trim();
+  if (typeof lm.intro === 'string') { const o = cut(lm.intro); lm.intro = o; }
+  for (const it of (lm.items || [])) {
+    if (it && typeof it.body === 'string') { const o = cut(it.body); if (o.trim()) it.body = o; }
+  }
+  return [...new Set(removed)];
+}
+
 // Patch Z.4 — number guard. Deterministic backstop for the fact-check: any sentence in the
 // script or captions containing a number the creator never said is cut. Same number reading as
 // scripts/story-eval.js: digits, number words, compounds ("four hundred"), ordinals from "third",
@@ -874,6 +941,12 @@ PERSONALITY: Confident, direct, warm. Keep responses to 2-4 sentences max. No ja
           return res.end();
         }
       }
+      // Patch AG — a regenerated free guide is checked against the creator's story before it's returned.
+      if (req.body.guideCheck && parsed && Array.isArray(parsed.items)) {
+        const src = String(req.body.guideSource || '').slice(0, 4000);
+        fixGuideTitle(parsed);
+        if (src) { const gc = await factCheckGuide(apiKey, src, parsed); if (gc && gc.removed.length) console.warn('[guide-check] removed', gc.removed.length); }
+      }
       // Return as reply field so client-side parsing works consistently
       res.write('data: ' + JSON.stringify({ done: true, result: { reply: JSON.stringify(parsed) } }) + '\n\n');
       return res.end();
@@ -1117,7 +1190,13 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
     if (parsed && typeof parsed === 'object' && (mode === 'playbook' || (mode === 'regen_section' && (req.body || {}).section === 'script'))) {
       const b = req.body || {};
       const source = [b.moment ? 'STORY: ' + b.moment : '', b.creatorContext ? 'ABOUT THE CREATOR: ' + b.creatorContext : ''].filter(Boolean).join('\n\n');
-      const fc = await factCheckPlaybook(apiKey, source, parsed);
+      // Patch AG — the free guide is checked alongside the script (in parallel, so no extra wait).
+      const [fc, gc] = await Promise.all([
+        factCheckPlaybook(apiKey, source, parsed),
+        mode === 'playbook' && parsed.lead_magnet ? factCheckGuide(apiKey, source, parsed.lead_magnet) : null
+      ]);
+      if (mode === 'playbook' && parsed.lead_magnet) fixGuideTitle(parsed.lead_magnet);
+      if (gc && gc.removed.length) { parsed.lead_magnet_check = gc; console.warn('[guide-check] removed', gc.removed.length, 'sentence(s)'); }
       if (fc) {
         parsed.fact_check = fc;
         if (fc.removed.length) console.warn('[fact-check] removed', fc.removed.length, 'unsupported sentence(s)');
@@ -1181,6 +1260,47 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
           parsed.fact_check.rewritten = fixedLog;
           console.warn('[number-guard] rewrote', fixedLog.length, 'hook/card line(s) with untraceable numbers');
         }
+      }
+    }
+    // Patch AG — last resort for numbers: when a line with an untraceable small number had to stay (it was
+    // a beat's only sentence, or a hook/card rewrite failed), soften the number word instead
+    // ("Six words on a sticky note" → "A few words on a sticky note"). Digits are left to the guards above.
+    if (parsed && typeof parsed === 'object' && (mode === 'playbook' || mode === 'regen_section')) {
+      const b = req.body || {};
+      const srcNums = numbersInText([b.moment, b.creatorContext].filter(Boolean).join(' '));
+      const SMALL = { two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12 };
+      const soften = t => {
+        if (typeof t !== 'string' || !t) return t;
+        return t.replace(/\b(two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\b(?=\s+[a-z])/gi, (w, _k, off, all) => {
+          const n = SMALL[w.toLowerCase()];
+          if (_numberOk(n, srcNums)) return w;
+          // "two things" (a count of things SAM listed) is allowed by the guards — leave it
+          if (n === 2 && !/^\s+(hundred|thousand|seconds?|minutes?|hours?|days?|nights?|weeks?|months?|years?|summers?|winters?|seasons?|times)\b/i.test(all.slice(off + w.length))) return w;
+          return /^[A-Z]/.test(w) ? 'A few' : 'a few';
+        });
+      };
+      parsed.hook = soften(parsed.hook);
+      for (const f of ['full_script', 'narration_script']) parsed[f] = soften(parsed[f]);
+      for (const p of (parsed.platform_strategies || [])) if (p) { p.caption = soften(p.caption); if (p.description) p.description = soften(p.description); }
+      if (parsed.story_architecture && typeof parsed.story_architecture === 'object') {
+        for (const k of Object.keys(parsed.story_architecture)) parsed.story_architecture[k] = soften(parsed.story_architecture[k]);
+      }
+    }
+    // Patch AG — a beat left empty (model skipped it, or every sentence was cut) is filled from its card.
+    if (parsed && typeof parsed === 'object' && parsed.story_architecture && typeof parsed.story_architecture === 'object') {
+      const CARD = { opening: 'opening', setup: 'setup', risk: 'risk', 'the risk': 'risk', turn: 'turn', 'the turn': 'turn', payoff: 'payoff', 'the payoff': 'payoff', cta: 'cta' };
+      for (const f of ['full_script', 'narration_script']) {
+        if (typeof parsed[f] !== 'string' || !parsed[f].trim()) continue;
+        const lines = parsed[f].split('\n');
+        for (let i = 0; i < lines.length; i++) {
+          const mk = lines[i].match(/^\s*\[BEAT:\s*([^\]]+)\]\s*$/i);
+          if (!mk) continue;
+          let j = i + 1; while (j < lines.length && !lines[j].trim()) j++;
+          const empty = j >= lines.length || /^\s*\[BEAT:/i.test(lines[j]);
+          const card = parsed.story_architecture[CARD[mk[1].trim().toLowerCase()]];
+          if (empty && typeof card === 'string' && card.trim()) lines.splice(i + 1, 0, card.trim());
+        }
+        parsed[f] = lines.join('\n');
       }
     }
     // Patch Z.1 — detect placeholder/meta text that leaked into spoken fields (thin stories).
@@ -1328,11 +1448,11 @@ Return ONLY this JSON — be CONCISE in every field to fit within token limits:
   "hook_why": "One sentence.",
   "story_architecture": {
     "opening": "Copy the hook exactly.",
-    "setup": "12 words max.",
-    "risk": "12 words max.",
-    "turn": "12 words max.",
-    "payoff": "18 words max. What it means — the realization the turn earns, not a restatement of the event.",
-    "cta": "12 words max."
+    "setup": "12 words max, in the creator's first-person voice (I, my) — never he/his.",
+    "risk": "12 words max, in the creator's first-person voice (I, my) — never he/his.",
+    "turn": "12 words max, in the creator's first-person voice (I, my) — never he/his.",
+    "payoff": "18 words max, first person (I, my). What it means — the realization the turn earns, not a restatement of the event.",
+    "cta": "12 words max, first person."
   },
   "full_script": "Complete script — 200 words max. Realize all six story_architecture beats in order. Use [BEAT: Opening], [BEAT: Setup], [BEAT: Risk], [BEAT: Turn], [BEAT: Payoff], [BEAT: CTA] labels — each marker on its own line, preceding the script content for that beat.",
   "narration_script": "If narration delivery — 200 word version following the same six-beat fidelity rules as full_script: [BEAT: Opening] [BEAT: Setup] [BEAT: Risk] [BEAT: Turn] [BEAT: Payoff] [BEAT: CTA] in order, each marker on its own line, with the Risk → Turn → Payoff causal chain intact. Otherwise null.",
@@ -1411,7 +1531,7 @@ Return ONLY: {"diagnosis":"2-3 sentences — what this story is really about ben
 ${STORY_RULES}
 
 ${steer ? 'CREATOR DIRECTION: ' + steer : ''}
-Return ONLY: {"story_type":"mistake_lesson|transformation|demo_proof|origin|behind_the_scenes|moment_reflection","five_second_moment":"the instant something changed, or not found","hook":"under 15 words, open loop, true to the moment","hook_why":"one sentence","story_architecture":{"opening":"same as hook","setup":"12 words max","risk":"12 words max","turn":"12 words max","payoff":"18 words max — what it means, not the event","cta":"12 words max"},"gaps":["missing details, or empty array"]}`,
+Return ONLY: {"story_type":"mistake_lesson|transformation|demo_proof|origin|behind_the_scenes|moment_reflection","five_second_moment":"the instant something changed, or not found","hook":"under 15 words, open loop, true to the moment","hook_why":"one sentence","story_architecture":{"opening":"same as hook","setup":"12 words max, first person","risk":"12 words max, first person","turn":"12 words max, first person","payoff":"18 words max, first person — what it means, not the event","cta":"12 words max"},"gaps":["missing details, or empty array"]}`,
 
         hook: `Rewrite ONLY the opening hook — the single line that stops the scroll.
 ${steer ? 'CREATOR DIRECTION: ' + steer : ''}
