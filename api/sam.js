@@ -261,6 +261,37 @@ function guardNumbersInScript(text, src) {
   return { text: out.filter((l, i) => l.trim() || !lines[i].trim() || isMarker(l)).join('\n'), removed };
 }
 
+// Patch Z.6 — the hook and architecture cards can't simply lose a sentence (a hook must exist),
+// so lines there with untraceable numbers get a targeted rewrite by a fast model, then are
+// re-checked. If a card still has one, the offending sentence is dropped when another remains.
+async function rewriteWithoutNumbers(apiKey, source, lines) {
+  const keys = Object.keys(lines);
+  if (!keys.length) return {};
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 10000);
+  try {
+    const system = `You fix lines in a creator's video plan. Each line contains a number, quantity, percentage or statistic that the creator never said. Rewrite each line so it keeps its meaning, voice and roughly its length, but contains NO number or quantity that is not in SOURCE. Do not add any new facts. Return ONLY JSON mapping each key to its rewritten line.`;
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST', signal: ctrl.signal,
+      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({ model: FACT_CHECK_MODEL, max_tokens: 600, system,
+        messages: [{ role: 'user', content: `SOURCE:\n${source}\n\nLINES:\n${JSON.stringify(lines, null, 2)}` }] })
+    });
+    if (!r.ok) return {};
+    const j = await r.json();
+    const raw = (j.content || []).map(c => c.text || '').join('');
+    const m = raw.match(/\{[\s\S]*\}/);
+    const out = m ? JSON.parse(m[0]) : {};
+    const clean = {};
+    for (const k of keys) if (typeof out[k] === 'string' && out[k].trim()) clean[k] = out[k].trim();
+    return clean;
+  } catch (e) {
+    return {};
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 // Patch Y.2 — make the spoken first line of the script exactly the hook.
 function enforceHookOpening(script, hook) {
   const h = String(hook || '').trim();
@@ -944,6 +975,39 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
         parsed.fact_check = parsed.fact_check || { removed: [], checked: false };
         parsed.fact_check.removed = [...new Set([...(parsed.fact_check.removed || []), ...cut.map(x => x.replace(/\s+/g, ' ').trim())])];
         console.warn('[number-guard] removed', cut.length, 'sentence(s) with untraceable numbers');
+      }
+    }
+    // Patch Z.6 — same number rule for the hook and the architecture cards.
+    if (parsed && typeof parsed === 'object' && (mode === 'playbook' || mode === 'regen_section')) {
+      const b = req.body || {};
+      const srcText = [b.moment, b.creatorContext].filter(Boolean).join(' ');
+      const srcNums = numbersInText(srcText);
+      const hasBad = t => typeof t === 'string' && [...numbersInText(t, { allowCountingTwo: true })].some(n => !_numberOk(n, srcNums));
+      const arch = (parsed.story_architecture && typeof parsed.story_architecture === 'object') ? parsed.story_architecture : {};
+      const lines = {};
+      if (hasBad(parsed.hook)) lines.hook = parsed.hook;
+      for (const k of Object.keys(arch)) if (hasBad(arch[k])) lines['arch_' + k] = arch[k];
+      if (Object.keys(lines).length) {
+        const fixed = await rewriteWithoutNumbers(apiKey, srcText, lines);
+        const fixedLog = [];
+        for (const key of Object.keys(lines)) {
+          const candidate = fixed[key];
+          const target = key === 'hook' ? 'hook' : key.slice(5);
+          if (candidate && !hasBad(candidate)) {
+            if (key === 'hook') parsed.hook = candidate; else arch[target] = candidate;
+            fixedLog.push(lines[key]);
+          } else if (key !== 'hook') {
+            // last resort for cards: drop only the offending sentence(s) if anything else remains
+            const parts = _splitSentences(arch[target]).filter(p => p !== '\n' && p.trim());
+            const kept = parts.filter(p => !hasBad(p));
+            if (kept.length) { arch[target] = kept.join(' ').replace(/\s{2,}/g, ' ').trim(); fixedLog.push(lines[key]); }
+          }
+        }
+        if (fixedLog.length) {
+          parsed.fact_check = parsed.fact_check || { removed: [], checked: false };
+          parsed.fact_check.rewritten = fixedLog;
+          console.warn('[number-guard] rewrote', fixedLog.length, 'hook/card line(s) with untraceable numbers');
+        }
       }
     }
     // Patch Z.1 — detect placeholder/meta text that leaked into spoken fields (thin stories).

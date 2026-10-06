@@ -34,7 +34,7 @@ const NUM_WORDS = { one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine
 // (it's mostly a pronoun: "the one thing"). Returns Map(number -> first context snippet).
 // 'first'/'second' are skipped: usually adverbs ("I blamed the seeds first", "wait a second").
 const ORDINALS = { third:3, fourth:4, fifth:5, sixth:6, seventh:7, eighth:8, ninth:9, tenth:10 };
-function numbersIn(text) {
+function numbersIn(text, { allowCountingTwo = false } = {}) {
   const t = String(text || '').toLowerCase().replace(/(\d),(\d)/g, '$1$2');
   const out = new Map();
   const add = (n, idx) => { const k = String(n); if (!out.has(k)) out.set(k, t.slice(Math.max(0, idx - 30), idx + 30).replace(/\s+/g, ' ')); };
@@ -47,7 +47,7 @@ function numbersIn(text) {
     if (ORDINALS[w] !== undefined) { add(ORDINALS[w], toks[i].index); continue; }
     if (w === 'one' || NUM_WORDS[w] === undefined) continue;
     // "two" as a counting word ("wrote two things") isn't a claim — same rule as the server guard.
-    if (w === 'two' && !(toks[i + 1] && (toks[i + 1][0] === 'hundred' || toks[i + 1][0] === 'thousand'))) continue;
+    if (allowCountingTwo && w === 'two' && !(toks[i + 1] && (toks[i + 1][0] === 'hundred' || toks[i + 1][0] === 'thousand'))) continue;
     let val = NUM_WORDS[w], j = i;
     // tens + units ("forty five"), then multipliers ("four hundred", "two thousand")
     if (val >= 20 && val < 100 && toks[j + 1] && NUM_WORDS[toks[j + 1][0]] < 10) { val += NUM_WORDS[toks[j + 1][0]]; j++; }
@@ -112,7 +112,8 @@ function score(c, r) {
   const captions = (r.platform_strategies || []).map(p => (p && p.caption) || '').join('\n');
   const spoken = [r.full_script || r.narration_script || '', captions, Object.values(arch).join('\n'), r.hook || ''].join('\n');
   const inNums = numbersIn(c.input + ' ' + c.creator);
-  const outNums = numbersIn(spoken.replace(/\[BEAT:[^\]]*\]/g, ''));
+  // Patch Z.6 — 'two' as a counting word is only excused in SAM's output, never in the story itself.
+  const outNums = numbersIn(spoken.replace(/\[BEAT:[^\]]*\]/g, ''), { allowCountingTwo: true });
   const badNums = [...outNums.keys()].filter(n => !inNums.has(n)).map(n => `${n} ("…${outNums.get(n)}…")`);
   const allowed = domainsTyped(c.input + ' ' + c.creator);
   const badDomains = [...domainsOut(spoken)].filter(d => !allowed.has(d));

@@ -42,7 +42,7 @@ Stripe payment link: https://buy.stripe.com/eVqeVfgkOajocUX2Dp8Zq00
 - Typography: Instrument Serif italic for headings, Inter for UI, JetBrains Mono for code
 - Sidebar: Left nav, 220px wide. Sections: DAILY, BUILD SAM'S BRAIN, STUDIO, MORE, EXECUTION PACK
 - Version stamp: data-qs-version attribute on div[data-qs-shell] — bump on every commit
-- Current version: v9.118.61+
+- Current version: v9.118.62+
 
 ---
 
@@ -64,7 +64,7 @@ Vercel CLI: Installed at /opt/homebrew/bin/vercel, logged in as joeypirronedesig
 
 ---
 
-## Current Version: v9.118.61
+## Current Version: v9.118.62
 
 ### Key Architecture Decisions Made
 - No free trial — Patch O removed it. Paid or blocked. trial-status.js returns allowed:false for all unpaid users.
@@ -95,6 +95,7 @@ Vercel CLI: Installed at /opt/homebrew/bin/vercel, logged in as joeypirronedesig
 - Patch Z.3 (v9.118.59) — Too-thin stories: server clears placeholder architecture cards/captions and sets needs_more when there is no moment and nothing honest to write; app shows 'SAM needs more before it can write this' with SAM's questions and an 'Add details to my story' button (back to step 2), hides empty architecture/platform sections. Scorer: needs_more counts as correct for the thin case (and as a failure for full stories). Eval after Patch Z: 125/130 (96%).
 - Patch Z.4 (v9.118.60) — Number guard (numbersInText / guardNumbersInScript in api/sam.js): after the fact-check, any script/caption sentence with a number not in the creator's words is cut (never empties a beat); '250k' = 250,000; 'one'/'first'/'second' ignored; 'two' as a counting word allowed. Cuts are listed with the fact-check removals. Scorer uses the same rules. Eval after Patch Z.3: 128/130 (98%) — both misses were invented numbers.
 - Patch Z.5 (v9.118.61) — needs_more = five_second_moment is 'not found' (SAM's judgment), not placeholder text matching; when set, hook, architecture, script and captions are cleared and the app shows the needs-more section. Eval after Z.4: 126/130 (97%) — thin case wrote unrecognised meta text; tomato 'a fourth' (from 'three summers') left on an architecture card, accepted as arithmetic.
+- Patch Z.6 (v9.118.62) — Hook + architecture cards with untraceable numbers get a targeted Haiku rewrite (rewriteWithoutNumbers, 10s, fails open), re-checked; cards fall back to dropping the offending sentence. Logged in fact_check.rewritten. Runs before hook enforcement so the script still opens with the (fixed) hook. Scorer: 'two' counting-word exception applies to SAM's output only, not the story. Eval after Z.5: 127/130 (98%) — 'six words' and '100% my fault' survived on hook/cards; '2 weeks' was a scorer bug.
 
 ### Open Task List (v9.118.x)
 - Later — 'connection to this' wizard question only if founder/role detection keeps missing
