@@ -137,6 +137,8 @@ function score(c, r) {
     cta_short:         words(beat('cta')) <= 35,
     no_ai_cliches:     bannedHits.length === 0,
     respects_must_not_say: !(c.must_not_say || []).some(p => spoken.toLowerCase().includes(String(p).toLowerCase())),
+    keeps_must_keep:   (c.must_keep || []).every(p => norm(spoken).includes(norm(p))),
+    hook_said_once:    !r.hook || (norm(r.full_script || r.narration_script || '').split(norm(r.hook)).length - 1) <= 1,
     moment_found:      c.thin ? true : !!r.five_second_moment && !/^not found/i.test(r.five_second_moment),
     thin_asks_for_more: c.thin ? (!!r.needs_more || (r.gaps || []).length > 0) : (!r.needs_more),
     no_placeholders:   !/\b(not found|tbd|placeholder|needs a real moment|real moment needed|needed before|can be written)\b|\[(insert|add|your)[^\]]*\]/i.test(spoken.replace(/\[BEAT:[^\]]*\]/g, '')),
@@ -147,6 +149,8 @@ function score(c, r) {
   if (badDomains.length) notes.push('domains not in story: ' + badDomains.join(', '));
   if (leaked.length) notes.push('setup reveals: ' + leaked.join(', '));
   if (bannedHits.length) notes.push('clichés: ' + bannedHits.join(', '));
+  const dropped = (c.must_keep || []).filter(p => !norm(spoken).includes(norm(p)));
+  if (dropped.length) notes.push('dropped what it must keep: ' + dropped.join(', '));
   const saidForbidden = (c.must_not_say || []).filter(p => spoken.toLowerCase().includes(String(p).toLowerCase()));
   if (saidForbidden.length) notes.push('said what it must not: ' + saidForbidden.join(', '));
   if (!checks.type_matches) notes.push(`type ${r.story_type} (expected ${c.expect_type})`);

@@ -872,6 +872,12 @@ NEVER write in generic AI voice when you have this profile. Generic AI voice is:
    - Specific beats general: use the creator's concrete details (numbers, objects, places, their exact
      words) instead of abstractions ("forty bucks and a Saturday", not "time and money").
    - Show, then say: put the concrete moment on screen first, the meaning second.
+   - The creator's last word is protected: if their story ends with a qualifier, contradiction or second
+     thought ("I still wouldn't underbid again though", "I honestly don't know what I'm going to do"),
+     that line belongs in the payoff, in their words. It is often what makes the story true. Never drop it
+     and never resolve it into a neater lesson than they gave.
+   - Don't explain the punchline: when the creator's own line is the peak (a quote, a comeback, a twist),
+     end the payoff on it or one beat after it. Do not add a moral or an explanation of what it meant.
    - Peak-end: the payoff is the strongest line in the video. Nothing after it except the short CTA and
      the sign-off.
    - Open loop: the hook raises a question only the turn or payoff answers. Never answer it in the setup.
@@ -994,7 +1000,13 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
           const candidate = fixed[key];
           const target = key === 'hook' ? 'hook' : key.slice(5);
           if (candidate && !hasBad(candidate)) {
-            if (key === 'hook') parsed.hook = candidate; else arch[target] = candidate;
+            if (key === 'hook') {
+              // Patch Z.8 — swap the old hook out of the script too, so it never appears twice.
+              for (const f of ['full_script', 'narration_script']) {
+                if (typeof parsed[f] === 'string' && parsed[f].includes(lines.hook)) parsed[f] = parsed[f].split(lines.hook).join(candidate);
+              }
+              parsed.hook = candidate;
+            } else arch[target] = candidate;
             fixedLog.push(lines[key]);
           } else if (key !== 'hook') {
             // last resort for cards: drop only the offending sentence(s) if anything else remains
@@ -1050,6 +1062,19 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
     if (parsed && typeof parsed === 'object' && parsed.hook) {
       for (const f of ['full_script', 'narration_script']) {
         if (typeof parsed[f] === 'string') parsed[f] = enforceHookOpening(parsed[f], parsed.hook);
+      }
+    }
+    // Patch Z.8 — second number pass once the hook leads the Opening beat.
+    if (parsed && typeof parsed === 'object' && (mode === 'playbook' || (mode === 'regen_section' && (req.body || {}).section === 'script'))) {
+      const b = req.body || {};
+      const srcNums2 = numbersInText([b.moment, b.creatorContext].filter(Boolean).join(' '));
+      const cut2 = [];
+      for (const f of ['full_script', 'narration_script']) {
+        if (typeof parsed[f] === 'string') { const o = guardNumbersInScript(parsed[f], srcNums2); parsed[f] = o.text; cut2.push(...o.removed); }
+      }
+      if (cut2.length) {
+        parsed.fact_check = parsed.fact_check || { removed: [], checked: false };
+        parsed.fact_check.removed = [...new Set([...(parsed.fact_check.removed || []), ...cut2.map(x => x.replace(/\s+/g, ' ').trim())])];
       }
     }
     // Patch U.3 — the hook IS the opening beat. Enforced in code so they can never diverge.
