@@ -771,7 +771,12 @@ NEVER write in generic AI voice when you have this profile. Generic AI voice is:
    - Show, then say: put the concrete moment on screen first, the meaning second.
    - Peak-end: the payoff is the strongest line in the video. Nothing after it except the short CTA and
      the sign-off.
-   - Open loop: the hook raises a question only the turn or payoff answers. Never answer it in the setup.`;
+   - Open loop: the hook raises a question only the turn or payoff answers. Never answer it in the setup.
+
+10. The hook, script and captions are words the creator will say or post. Never put notes, labels or
+    placeholders in them ("not found", "TBD", "[insert moment]", "needs a real moment"). If the story is
+    thin, write a short, honest draft using only what the creator gave you — fewer words, not filler —
+    and put everything that's missing in "gaps".`;
 
   const base = `${samIdentity} ${toneContext} ${emojiLine} ${hashtagRule} ${creatorLine} ${voiceLine}
 ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatContext} CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No explanation outside the JSON.`;
@@ -845,6 +850,17 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
       if (fc) {
         parsed.fact_check = fc;
         if (fc.removed.length) console.warn('[fact-check] removed', fc.removed.length, 'unsupported sentence(s)');
+      }
+    }
+    // Patch Z.1 — detect placeholder/meta text that leaked into spoken fields (thin stories).
+    if (parsed && typeof parsed === 'object') {
+      const PLACEHOLDER = /\b(not found|tbd|to be determined|placeholder|needs a real moment|real moment needed)\b|\[(insert|add|your)[^\]]*\]/i;
+      const spokenFields = [parsed.hook, parsed.full_script, parsed.narration_script,
+        ...((parsed.platform_strategies || []).map(p => p && p.caption))];
+      parsed.is_draft = /^not found/i.test(String(parsed.five_second_moment || '')) || spokenFields.some(t => typeof t === 'string' && PLACEHOLDER.test(t));
+      if (typeof parsed.hook === 'string' && PLACEHOLDER.test(parsed.hook)) parsed.hook = '';
+      for (const f of ['full_script', 'narration_script']) {
+        if (typeof parsed[f] === 'string') parsed[f] = parsed[f].split('\n').filter(l => !PLACEHOLDER.test(l) || /^\s*\[BEAT:/i.test(l)).join('\n');
       }
     }
     // Patch Y.2 — the script's Opening beat must start with the hook, word for word.

@@ -32,7 +32,8 @@ const NUM_WORDS = { one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine
   forty:40,fifty:50,sixty:60,seventy:70,eighty:80,ninety:90,hundred:100,thousand:1000 };
 // Patch Y.3 — ordinals, compound numbers ("four hundred" = 400), and "one" ignored
 // (it's mostly a pronoun: "the one thing"). Returns Map(number -> first context snippet).
-const ORDINALS = { first:1, second:2, third:3, fourth:4, fifth:5, sixth:6, seventh:7, eighth:8, ninth:9, tenth:10 };
+// 'first'/'second' are skipped: usually adverbs ("I blamed the seeds first", "wait a second").
+const ORDINALS = { third:3, fourth:4, fifth:5, sixth:6, seventh:7, eighth:8, ninth:9, tenth:10 };
 function numbersIn(text) {
   const t = String(text || '').toLowerCase().replace(/(\d),(\d)/g, '$1$2');
   const out = new Map();
@@ -130,6 +131,7 @@ function score(c, r) {
     no_ai_cliches:     bannedHits.length === 0,
     moment_found:      c.thin ? true : !!r.five_second_moment && !/^not found/i.test(r.five_second_moment),
     thin_asks_for_more: c.thin ? ((r.gaps || []).length > 0 || /^not found/i.test(r.five_second_moment || '')) : true,
+    no_placeholders:   !/\b(not found|tbd|placeholder|needs a real moment|real moment needed)\b|\[(insert|add|your)[^\]]*\]/i.test(spoken.replace(/\[BEAT:[^\]]*\]/g, '')),
     type_matches:      c.expect_type === 'any' || String(c.expect_type).split('|').includes(r.story_type)
   };
   const notes = [];

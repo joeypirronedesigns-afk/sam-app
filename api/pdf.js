@@ -712,6 +712,7 @@ function buildPlaybookHTML(pb, brand) {
       ${hdr(brandName, docType, pn())}
       <div class="section-body">
         ${sLabel('Full Script')}
+        ${(pb.is_draft || /^not found/i.test(String(pb.five_second_moment || ''))) ? callout('Draft — this story is missing its moment. Answer SAM\'s questions or add that moment, and SAM will rebuild the script around it.') : ''}
         ${scriptBody}
         ${pb.pacing_note ? callout('Pacing: ' + pb.pacing_note) : ''}
       </div>
