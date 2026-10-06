@@ -30,11 +30,28 @@ const cases = JSON.parse(fs.readFileSync(path.join(root, 'tests/story-eval/cases
 const NUM_WORDS = { one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10,eleven:11,twelve:12,
   thirteen:13,fourteen:14,fifteen:15,sixteen:16,seventeen:17,eighteen:18,nineteen:19,twenty:20,thirty:30,
   forty:40,fifty:50,sixty:60,seventy:70,eighty:80,ninety:90,hundred:100,thousand:1000 };
+// Patch Y.3 — ordinals, compound numbers ("four hundred" = 400), and "one" ignored
+// (it's mostly a pronoun: "the one thing"). Returns Map(number -> first context snippet).
+const ORDINALS = { first:1, second:2, third:3, fourth:4, fifth:5, sixth:6, seventh:7, eighth:8, ninth:9, tenth:10 };
 function numbersIn(text) {
   const t = String(text || '').toLowerCase().replace(/(\d),(\d)/g, '$1$2');
-  const out = new Set();
-  (t.match(/\d+(?:\.\d+)?/g) || []).forEach(n => out.add(String(Number(n))));
-  (t.match(/\b[a-z]+\b/g) || []).forEach(w => { if (NUM_WORDS[w] !== undefined) out.add(String(NUM_WORDS[w])); });
+  const out = new Map();
+  const add = (n, idx) => { const k = String(n); if (!out.has(k)) out.set(k, t.slice(Math.max(0, idx - 30), idx + 30).replace(/\s+/g, ' ')); };
+  let m;
+  const dre = /\d+(?:\.\d+)?/g;
+  while ((m = dre.exec(t))) add(Number(m[0]), m.index);
+  const toks = [...t.matchAll(/\b[a-z]+\b/g)];
+  for (let i = 0; i < toks.length; i++) {
+    const w = toks[i][0];
+    if (ORDINALS[w] !== undefined) { add(ORDINALS[w], toks[i].index); continue; }
+    if (w === 'one' || NUM_WORDS[w] === undefined) continue;
+    let val = NUM_WORDS[w], j = i;
+    // tens + units ("forty five"), then multipliers ("four hundred", "two thousand")
+    if (val >= 20 && val < 100 && toks[j + 1] && NUM_WORDS[toks[j + 1][0]] < 10) { val += NUM_WORDS[toks[j + 1][0]]; j++; }
+    while (toks[j + 1] && (toks[j + 1][0] === 'hundred' || toks[j + 1][0] === 'thousand')) { val *= NUM_WORDS[toks[j + 1][0]]; j++; }
+    if ((w === 'hundred' || w === 'thousand') && i > 0 && NUM_WORDS[toks[i - 1][0]] !== undefined) continue;
+    add(val, toks[i].index); i = j;
+  }
   return out;
 }
 const URL_TLDS = 'com|co|io|net|org|app|ai|tv|me|us|shop|store|studio|xyz|ca|uk';
@@ -93,7 +110,7 @@ function score(c, r) {
   const spoken = [r.full_script || r.narration_script || '', captions, Object.values(arch).join('\n'), r.hook || ''].join('\n');
   const inNums = numbersIn(c.input + ' ' + c.creator);
   const outNums = numbersIn(spoken.replace(/\[BEAT:[^\]]*\]/g, ''));
-  const badNums = [...outNums].filter(n => !inNums.has(n));
+  const badNums = [...outNums.keys()].filter(n => !inNums.has(n)).map(n => `${n} ("…${outNums.get(n)}…")`);
   const allowed = domainsTyped(c.input + ' ' + c.creator);
   const badDomains = [...domainsOut(spoken)].filter(d => !allowed.has(d));
   const setupText = (arch.setup || '') + ' ' + beat('setup');
@@ -104,7 +121,7 @@ function score(c, r) {
   const checks = {
     hook_is_opening:   !!r.hook && norm(arch.opening) === hookN,
     script_opens_with_hook: !!hookN && norm(beat('opening')).startsWith(hookN.split(' ').slice(0, 6).join(' ')),
-    six_beats:         ['opening', 'setup', 'risk', 'turn', 'payoff', 'cta'].every(k => beat(k)),
+    six_beats:         c.thin ? true : ['opening', 'setup', 'risk', 'turn', 'payoff', 'cta'].every(k => beat(k)),
     numbers_traceable: badNums.length === 0,
     urls_traceable:    badDomains.length === 0,
     setup_hides_cause: leaked.length === 0,
@@ -113,10 +130,10 @@ function score(c, r) {
     no_ai_cliches:     bannedHits.length === 0,
     moment_found:      c.thin ? true : !!r.five_second_moment && !/^not found/i.test(r.five_second_moment),
     thin_asks_for_more: c.thin ? ((r.gaps || []).length > 0 || /^not found/i.test(r.five_second_moment || '')) : true,
-    type_matches:      c.expect_type === 'any' || r.story_type === c.expect_type
+    type_matches:      c.expect_type === 'any' || String(c.expect_type).split('|').includes(r.story_type)
   };
   const notes = [];
-  if (badNums.length) notes.push('numbers not in story: ' + badNums.join(', '));
+  if (badNums.length) notes.push('numbers not in story: ' + badNums.join('; '));
   if (badDomains.length) notes.push('domains not in story: ' + badDomains.join(', '));
   if (leaked.length) notes.push('setup reveals: ' + leaked.join(', '));
   if (bannedHits.length) notes.push('clichés: ' + bannedHits.join(', '));

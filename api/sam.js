@@ -145,6 +145,7 @@ async function factCheckPlaybook(apiKey, source, parsed) {
   const system = `You are a strict fact-checker for a creator's video script. SOURCE is everything the creator actually said. For every sentence in DRAFT, decide whether it is supported by SOURCE.
 A sentence is UNSUPPORTED if it states an event, number, result, consequence, stake, feeling, audience reaction, or claim about other people that SOURCE does not say or clearly imply. Generic claims about audiences ("nobody stays", "you lose people in the first ten seconds") are UNSUPPORTED unless SOURCE says them.
 Rephrasing, shortening, transitions ("Here's the thing", "So"), calls to action, the creator's sign-off, and restating SOURCE in other words are SUPPORTED.
+A sentence that states the MEANING or LESSON of events that are in SOURCE ("The start doesn't have to be impressive", "I keep fixing what I can see") is SUPPORTED — interpreting the creator's own events is the writer's job. Only flag it if it adds a new fact.
 Return ONLY JSON: {"unsupported":[{"text":"the exact sentence copied from DRAFT","why":"max 8 words"}]}. Empty array if everything is supported.`;
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 15000);
@@ -161,7 +162,16 @@ Return ONLY JSON: {"unsupported":[{"text":"the exact sentence copied from DRAFT"
     const raw = (j.content || []).map(c => c.text || '').join('');
     const m = raw.match(/\{[\s\S]*\}/);
     const list = m ? (JSON.parse(m[0]).unsupported || []) : [];
-    const targets = list.map(u => _normSentence(u && u.text)).filter(t => t.length >= 8);
+    // Patch Y.1 — never remove a sentence that is mostly the creator's own words. The checker
+    // occasionally flags lines copied straight from SOURCE; a word-overlap test overrules it.
+    const srcWords = new Set(_normSentence(source).split(' ').filter(Boolean));
+    const STOP = new Set('a an the and or but so to of in on at for with it its i im ive id my me you your was were is are be been just that this then like really'.split(' '));
+    const mostlyFromSource = (t) => {
+      const w = t.split(' ').filter(x => x && !STOP.has(x));
+      if (!w.length) return true;
+      return w.filter(x => srcWords.has(x)).length / w.length >= 0.8;
+    };
+    const targets = list.map(u => _normSentence(u && u.text)).filter(t => t.length >= 8 && !mostlyFromSource(t));
     if (!targets.length) return { removed: [], checked: true };
     const removed = [];
     for (const f of ['full_script', 'narration_script']) {
@@ -177,6 +187,39 @@ Return ONLY JSON: {"unsupported":[{"text":"the exact sentence copied from DRAFT"
   } finally {
     clearTimeout(timer);
   }
+}
+
+// Patch Y.2 — make the spoken first line of the script exactly the hook.
+function enforceHookOpening(script, hook) {
+  const h = String(hook || '').trim();
+  if (!h || !script) return script;
+  const lines = String(script).split('\n');
+  const at = lines.findIndex(l => /^\s*\[BEAT:\s*Opening\s*\]\s*$/i.test(l));
+  // first content line of the Opening beat (or of the script, if there are no markers)
+  let i = at >= 0 ? at + 1 : 0;
+  while (i < lines.length && !lines[i].trim()) i++;
+  if (i >= lines.length || /^\s*\[BEAT:/i.test(lines[i])) {
+    lines.splice(at >= 0 ? at + 1 : 0, 0, h);
+    return lines.join('\n');
+  }
+  const line = lines[i];
+  const nh = _normSentence(h), nl = _normSentence(line);
+  if (nl.startsWith(nh)) return script;
+  const parts = _splitSentences(line).filter(p => p !== '\n');
+  const hw = nh.split(' ').filter(Boolean), hset = new Set(hw);
+  // Find the shortest run of leading sentences that covers most of the hook's words
+  // (a paraphrase can span a "..." pause), then swap that run for the hook.
+  let cut = 0;
+  for (let k = 1; k <= parts.length; k++) {
+    const cw = _normSentence(parts.slice(0, k).join(' ')).split(' ').filter(Boolean);
+    const covered = hw.filter(w => cw.includes(w)).length / hw.length;
+    const extra = cw.filter(w => !hset.has(w)).length;
+    if (covered >= 0.7 && extra <= Math.max(4, hw.length * 0.6)) { cut = k; break; }
+    if (cw.length > hw.length * 2) break;
+  }
+  const rest = cut ? parts.slice(cut).join('').trim() : line.trim();
+  lines[i] = rest ? h + ' ' + rest : h;
+  return lines.join('\n');
 }
 
 // v9.113.3 — Voice DNA gate copy keyed by ACTUAL sam.js mode strings sent by frontend.
@@ -802,6 +845,13 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
       if (fc) {
         parsed.fact_check = fc;
         if (fc.removed.length) console.warn('[fact-check] removed', fc.removed.length, 'unsupported sentence(s)');
+      }
+    }
+    // Patch Y.2 — the script's Opening beat must start with the hook, word for word.
+    // If its first sentence is a paraphrase of the hook, swap it for the hook; otherwise put the hook first.
+    if (parsed && typeof parsed === 'object' && parsed.hook) {
+      for (const f of ['full_script', 'narration_script']) {
+        if (typeof parsed[f] === 'string') parsed[f] = enforceHookOpening(parsed[f], parsed.hook);
       }
     }
     // Patch U.3 — the hook IS the opening beat. Enforced in code so they can never diverge.

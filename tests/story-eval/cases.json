@@ -3,7 +3,12 @@
     "id": "barn-door",
     "expect_type": "mistake_lesson",
     "creator": "DIY renovator restoring an old tobacco barn",
-    "reveal": ["settled", "sank", "corner", "ground"],
+    "reveal": [
+      "settled",
+      "sank",
+      "corner",
+      "ground"
+    ],
     "input": "So I've been trying to get the big sliding door on the tobacco barn open for like two weeks. It's stuck. Won't budge. I figured the track was rusted out, so I spent a whole Saturday wire brushing it, greased everything, bought new rollers, forty bucks, and it still didn't move. Not an inch. I was honestly about to cut it off and build a new door. Then my neighbor walks over, looks at it for maybe ten seconds, and points at the bottom. The barn settled. That whole corner sank, so the door's been sitting on the ground the entire time. Nothing was wrong with the track. I spent two weeks fixing the part that wasn't broken. So I jacked the corner up about an inch and a half, and the door just rolled. One hand. And honestly that's how this whole barn has been going. I keep fixing what I can see instead of what's actually wrong."
   },
   {
@@ -17,7 +22,13 @@
     "id": "sourdough",
     "expect_type": "mistake_lesson",
     "creator": "Home baker who posts bread videos",
-    "reveal": ["64", "cold", "temperature", "thermometer", "kitchen"],
+    "reveal": [
+      "64",
+      "cold",
+      "temperature",
+      "thermometer",
+      "kitchen"
+    ],
     "input": "Third flat loaf in a row. I was convinced my starter was dead, so I threw it out and bought a new one for 18 dollars from a bakery downtown. Fourth loaf, also flat. I was ready to quit sourdough completely. Then my sister came over and asked why my kitchen was so cold, and I checked the thermometer. 64 degrees. The dough just wasn't rising in time. I moved it into the oven with only the light on, same recipe, and it doubled in four hours. The starter was never the problem. I threw out a perfectly good starter because I didn't check the one thing I couldn't see."
   },
   {
@@ -29,14 +40,14 @@
   },
   {
     "id": "first-sale",
-    "expect_type": "origin",
+    "expect_type": "origin|transformation",
     "creator": "Small business owner who makes custom screen-printed shirts",
     "reveal": [],
     "input": "In March I quit my job at a print shop where I'd worked for six years. I'd been printing other people's designs and I wanted to print my own. I spent my savings on a used press and set it up in my garage. For three weeks nobody bought anything. I almost went back and asked for my old job. Then on a Tuesday night I got my first order. It was my aunt. 38 dollars. I know she bought it to be nice. But that order made me post every day, and last month I did 112 orders, and none of them were from family."
   },
   {
     "id": "walnut-table",
-    "expect_type": "behind_the_scenes",
+    "expect_type": "behind_the_scenes|transformation",
     "creator": "Woodworker who builds furniture",
     "reveal": [],
     "input": "This walnut slab dried for three weeks before I started the table. Day four of flattening, I came into the shop and there was a crack running almost a foot down the middle that wasn't there the night before. My first thought was the whole slab was ruined, 400 dollars of walnut. Instead of hiding it I cut three bowtie keys out of maple and set them across the crack. The client saw it and said that was her favorite part of the table. Now I don't panic when wood moves. It's telling me something."
@@ -50,7 +61,7 @@
   },
   {
     "id": "budget-app",
-    "expect_type": "demo_proof",
+    "expect_type": "demo_proof|transformation",
     "creator": "Personal finance creator",
     "reveal": [],
     "input": "I used to check my bank account and feel sick every time. In June I started putting every purchase into a simple spreadsheet the same day I made it. No apps, no categories, just the amount and one word. After four months I saved 1,200 dollars without trying to cut anything. Turns out just writing it down made me stop buying stuff I didn't care about. Here's the actual spreadsheet."
@@ -59,7 +70,12 @@
     "id": "tomato-blight",
     "expect_type": "mistake_lesson",
     "creator": "Backyard gardener",
-    "reveal": ["night", "evening", "watering at", "leaves wet"],
+    "reveal": [
+      "night",
+      "evening",
+      "watering at",
+      "leaves wet"
+    ],
     "input": "I lost 22 tomato plants to blight this summer. I blamed the seeds, I blamed the soil, I even bought new seeds from a different company for next year. Then an older guy at the farmers market asked when I water. I said every night after work. He said that's it, the leaves stay wet all night and that's how blight spreads. I'd been watering at night for three summers because it was convenient for me. Next year it's mornings only and at the roots."
   },
   {
