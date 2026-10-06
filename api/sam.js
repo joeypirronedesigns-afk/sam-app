@@ -115,6 +115,18 @@ const _normSentence = s => String(s || '').toLowerCase().replace(/[“”"’']/
 function _splitSentences(text) {
   return String(text || '').match(/[^.!?\n]+(?:\.\.+|[.!?]+)?["”’']?|\n/g) || [];
 }
+// Patch Z.9 — captions are paragraphs, not beats: a paragraph that is entirely unsupported can go.
+function _removeCaptionSentences(text, isBad) {
+  if (!text) return { text, removed: [] };
+  const removed = [];
+  const out = String(text).split('\n').map(line => {
+    const parts = _splitSentences(line).filter(p => p !== '\n');
+    if (!parts.length) return line;
+    const kept = parts.filter(p => { const bad = isBad(p); if (bad) removed.push(p.trim()); return !bad; });
+    return kept.join('').replace(/\s{2,}/g, ' ').trim();
+  });
+  return { text: out.join('\n').replace(/\n{3,}/g, '\n\n').trim(), removed };
+}
 function _removeSentences(text, targets) {
   if (!text || !targets.length) return { text, removed: [] };
   const removed = [];
@@ -172,16 +184,22 @@ Return ONLY JSON: {"unsupported":[{"text":"the exact sentence copied from DRAFT"
       return w.filter(x => srcWords.has(x)).length / w.length >= 0.8;
     };
     const targets = list.map(u => _normSentence(u && u.text)).filter(t => t.length >= 8 && !mostlyFromSource(t));
-    if (!targets.length) return { removed: [], checked: true };
+    // Patch Z.9 — the hook can't be cut, so an unsupported hook is flagged for a targeted rewrite.
+    const hookN = _normSentence(parsed.hook);
+    const hookUnsupported = !!hookN && targets.some(t => t === hookN || hookN.includes(t) || t.includes(hookN));
+    if (!targets.length) return { removed: [], checked: true, hook_unsupported: false };
     const removed = [];
     for (const f of ['full_script', 'narration_script']) {
       if (typeof parsed[f] === 'string') { const o = _removeSentences(parsed[f], targets); parsed[f] = o.text; removed.push(...o.removed); }
     }
     for (const p of (parsed.platform_strategies || [])) {
-      if (p && typeof p.caption === 'string') { const o = _removeSentences(p.caption, targets); p.caption = o.text; removed.push(...o.removed); }
+      if (p && typeof p.caption === 'string') {
+        const o = _removeCaptionSentences(p.caption, x => { const n = _normSentence(x); return !!n && targets.some(t => n === t || (t.length > 25 && n.includes(t)) || (n.length > 25 && t.includes(n))); });
+        p.caption = o.text; removed.push(...o.removed);
+      }
     }
     const unique = [...new Set(removed.map(s => s.replace(/\s+/g, ' ').trim()))].filter(Boolean);
-    return { removed: unique, checked: true };
+    return { removed: unique, checked: true, hook_unsupported: hookUnsupported };
   } catch (e) {
     return null;
   } finally {
@@ -214,7 +232,8 @@ function numbersInText(text, { allowCountingTwo = false } = {}) {
     const w = toks[i][0];
     if (NG_ORD[w] !== undefined) { out.add(NG_ORD[w]); continue; }
     if (w === 'one' || NG_WORDS[w] === undefined) continue;
-    if (allowCountingTwo && w === 'two' && !(toks[i + 1] && (toks[i + 1][0] === 'hundred' || toks[i + 1][0] === 'thousand'))) continue;
+    // Patch Z.9 — "two things" is a count, "two weeks" is a claim: durations never get the exception.
+    if (allowCountingTwo && w === 'two' && !(toks[i + 1] && /^(hundred|thousand|seconds?|minutes?|hours?|days?|nights?|weeks?|months?|years?|summers?|winters?|seasons?|times)$/.test(toks[i + 1][0]))) continue;
     let val = NG_WORDS[w], j = i;
     if (val >= 20 && val < 100 && toks[j + 1] && NG_WORDS[toks[j + 1][0]] < 10) { val += NG_WORDS[toks[j + 1][0]]; j++; }
     while (toks[j + 1] && (toks[j + 1][0] === 'hundred' || toks[j + 1][0] === 'thousand')) { val *= NG_WORDS[toks[j + 1][0]]; j++; }
@@ -270,7 +289,7 @@ async function rewriteWithoutNumbers(apiKey, source, lines) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 10000);
   try {
-    const system = `You fix lines in a creator's video plan. Each line contains a number, quantity, percentage or statistic that the creator never said. Rewrite each line so it keeps its meaning, voice and roughly its length, but contains NO number or quantity that is not in SOURCE. Do not add any new facts. Return ONLY JSON mapping each key to its rewritten line.`;
+    const system = `You fix lines in a creator's video plan. Each line contains a number, quantity, percentage, statistic or claim that the creator never said (for example "the thing that saved me" when they never said it saved them). Rewrite each line so it keeps its meaning, voice, hook energy and roughly its length, but says nothing that is not in SOURCE. Do not add any new facts. Return ONLY JSON mapping each key to its rewritten line.`;
     const r = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST', signal: ctrl.signal,
       headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
@@ -971,9 +990,7 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
       }
       for (const p of (parsed.platform_strategies || [])) {
         if (p && typeof p.caption === 'string') {
-          const o = _removeSentences(p.caption, _splitSentences(p.caption)
-            .filter(x => [...numbersInText(x, { allowCountingTwo: true })].some(n => !_numberOk(n, srcNums)))
-            .map(_normSentence).filter(Boolean));
+          const o = _removeCaptionSentences(p.caption, x => [...numbersInText(x, { allowCountingTwo: true })].some(n => !_numberOk(n, srcNums)));
           p.caption = o.text; cut.push(...o.removed);
         }
       }
@@ -991,7 +1008,7 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
       const hasBad = t => typeof t === 'string' && [...numbersInText(t, { allowCountingTwo: true })].some(n => !_numberOk(n, srcNums));
       const arch = (parsed.story_architecture && typeof parsed.story_architecture === 'object') ? parsed.story_architecture : {};
       const lines = {};
-      if (hasBad(parsed.hook)) lines.hook = parsed.hook;
+      if (hasBad(parsed.hook) || (parsed.fact_check && parsed.fact_check.hook_unsupported)) lines.hook = parsed.hook;
       for (const k of Object.keys(arch)) if (hasBad(arch[k])) lines['arch_' + k] = arch[k];
       if (Object.keys(lines).length) {
         const fixed = await rewriteWithoutNumbers(apiKey, srcText, lines);

@@ -51,7 +51,8 @@ function numbersIn(text, { allowCountingTwo = false } = {}) {
     if (ORDINALS[w] !== undefined) { add(ORDINALS[w], toks[i].index); continue; }
     if (w === 'one' || NUM_WORDS[w] === undefined) continue;
     // "two" as a counting word ("wrote two things") isn't a claim — same rule as the server guard.
-    if (allowCountingTwo && w === 'two' && !(toks[i + 1] && (toks[i + 1][0] === 'hundred' || toks[i + 1][0] === 'thousand'))) continue;
+    // Patch Z.9 — "two things" is a count, "two weeks" is a claim: durations never get the exception.
+    if (allowCountingTwo && w === 'two' && !(toks[i + 1] && /^(hundred|thousand|seconds?|minutes?|hours?|days?|nights?|weeks?|months?|years?|summers?|winters?|seasons?|times)$/.test(toks[i + 1][0]))) continue;
     let val = NUM_WORDS[w], j = i;
     // tens + units ("forty five"), then multipliers ("four hundred", "two thousand")
     if (val >= 20 && val < 100 && toks[j + 1] && NUM_WORDS[toks[j + 1][0]] < 10) { val += NUM_WORDS[toks[j + 1][0]]; j++; }
