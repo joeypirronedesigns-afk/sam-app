@@ -41,6 +41,13 @@ module.exports = async function handler(req, res) {
       const magicToken = crypto.randomBytes(32).toString('hex');
       await kv.set(`session:${magicToken}`, { email: email.toLowerCase() }, { ex: 3600 }); // 60 min expiry
 
+      // Patch W.4 — on preview deployments, link back to the preview that sent the email
+      // (SITE_URL for Preview pointed at a stale git-branch alias with old code).
+      const _host = (req.headers['x-forwarded-host'] || req.headers.host || '').split(',')[0].trim();
+      const linkBase = (process.env.VERCEL_ENV === 'preview' && /\.vercel\.app$/i.test(_host))
+        ? `https://${_host}`
+        : (process.env.SITE_URL || 'https://samforcreators.com');
+
       // Send magic link email
       if (process.env.RESEND_API_KEY) {
         await fetch('https://api.resend.com/emails', {
@@ -53,7 +60,7 @@ module.exports = async function handler(req, res) {
             html: `<div style="font-family:Arial;padding:40px 32px;background:#FAFAF7;color:#1A1815;border-radius:12px;max-width:520px;margin:0 auto;">
               <h2 style="color:#1A1815;">Welcome back.</h2>
               <p style="color:#4A4640;">Click the button below to sign back into SAM. This link expires in 60 minutes.</p>
-              <a href="${process.env.SITE_URL || 'https://samforcreators.com'}/app?token=${magicToken}" 
+              <a href="${linkBase}/app?token=${magicToken}" 
                 style="display:inline-block;padding:16px 32px;background: #20808D;color:#fff;text-decoration:none;border-radius:50px;font-weight:700;margin:24px 0;">
                 ✦ Sign into SAM →
               </a>

@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.54" data-qs-descriptor="Patch V — keep-alive cron (KV + Supabase), stakes count as facts, payoff card = meaning, lead magnet title/item match, plain step-3 story read." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.55" data-qs-descriptor="Patch W — step-3 asks for the missing piece (answer feeds the playbook), buffered reflection reader, URL guard, beat timings scaled to script length, preview sign-in links use the preview host." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -16379,6 +16379,64 @@ function selectBrandColor(swatch, color) {
   saveWizardState();
 }
 
+// Patch W.1 — buffered SSE reader for the step-3 reflection. The old inline loops split each
+// network chunk on its own, so the final {done,result} message could be cut and silently lost.
+async function readSamReply(res) {
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buf = '', reply = '';
+  const handle = (line) => {
+    if (!line.startsWith('data: ')) return;
+    try {
+      const evt = JSON.parse(line.slice(6).trim());
+      if (evt.done && evt.result && evt.result.reply) reply = evt.result.reply;
+    } catch(_) {}
+  };
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buf += decoder.decode(value, { stream: true });
+    const lines = buf.split('\n');
+    buf = lines.pop();
+    lines.forEach(handle);
+  }
+  buf += decoder.decode();
+  if (buf) handle(buf);
+  return reply;
+}
+
+// Patch W.1 — SAM asks for the missing piece instead of inventing it.
+// The reflection may end with "QUESTION: ..."; show it with an answer box.
+function renderStoryReflection(reply, diagEl) {
+  const m = String(reply).match(/\n?\s*\**QUESTION:?\**\s*(.+)\s*$/i);
+  const question = m ? m[1].trim() : '';
+  const body = m ? String(reply).slice(0, m.index).trim() : String(reply).trim();
+  if (question !== (WS.gapQuestion || '')) WS.gapAnswer = '';
+  WS.gapQuestion = question;
+  WS.diagnosedStory = body;
+  saveWizardState();
+  if (!diagEl) return;
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  let html = '<div class="sam-diagnosis-reveal">' + mdToHtml(body) + '</div>';
+  if (question) {
+    html += `<div class="wiz-gap-ask" style="margin-top:16px;padding:14px 16px;background:var(--surface-2);border:1px solid var(--rule);border-radius:var(--radius);">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:6px;">SAM needs one thing</div>
+      <div style="font-size:15px;color:var(--ink);margin-bottom:10px;">${esc(question)}</div>
+      <textarea id="wiz3gapAnswer" class="wizard-textarea" rows="2" style="min-height:64px;" placeholder="Answer in your own words — or skip it, and SAM will leave it out rather than make it up."
+        oninput="WS.gapAnswer=this.value;saveWizardState();">${esc(WS.gapAnswer || '')}</textarea>
+    </div>`;
+  }
+  diagEl.innerHTML = html;
+}
+
+// Patch W.1 — the story text sent to the playbook, plus the creator's answer to SAM's question.
+function getStoryForPlaybook() {
+  const story = WS.storyText || '';
+  const a = (WS.gapAnswer || '').trim();
+  if (!a || !WS.gapQuestion) return story;
+  return story + '\n\n(The creator added, when SAM asked "' + WS.gapQuestion + '": ' + a + ')';
+}
+
 async function generateStoryReflection() {
   const diagEl = document.getElementById('wiz3diagText');
   const nextBtn = document.getElementById('wizardNextBtn');
@@ -16431,30 +16489,15 @@ async function generateStoryReflection() {
             role: 'user',
             content: [
               { type: 'image', source: { type: 'base64', media_type: WS.storyPhotoType || 'image/jpeg', data: WS.storyPhoto } },
-              { type: 'text', text: `You are SAM — a creative intelligence who finds the story in what creators share. Look at this photo and the context: "${photoCaption}". In 2-3 plain sentences, reflect back what is happening in this moment and what it means, using only what the photo and their words show. If the story is missing a concrete moment, a cost, or an ending, say so in one sentence. No praise, no compliments, no motivational lines. Never say "I can see" or "It looks like".` }
+              { type: 'text', text: `You are SAM — a creative intelligence who finds the story in what creators share. Look at this photo and the context: "${photoCaption}". In 2-3 plain sentences, reflect back what is happening in this moment and what it means, using only what the photo and their words show. No praise, no compliments, no motivational lines. Never say "I can see" or "It looks like". Then, ONLY if the story is missing a concrete moment, a cost, or an ending, add one final line starting with "QUESTION:" that asks them for that single missing detail.` }
             ]
           }],
           systemPrompt: 'You are SAM. Respond in 2-3 sentences max. Be specific and plain. No praise.'
         })
       });
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let reply = '';
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        for (const line of decoder.decode(value, { stream: true }).split('\n')) {
-          if (!line.startsWith('data: ')) continue;
-          try {
-            const evt = JSON.parse(line.slice(6).trim());
-            if (evt.done && evt.result && evt.result.reply) reply = evt.result.reply;
-          } catch(_) {}
-        }
-      }
+      const reply = await readSamReply(res);
       if (reply) {
-        WS.diagnosedStory = reply;
-        saveWizardState();
-        if (diagEl) diagEl.innerHTML = '<div class="sam-diagnosis-reveal">' + mdToHtml(reply) + '</div>';
+        renderStoryReflection(reply, diagEl);
         if (nextBtn) nextBtn.disabled = false;
         return;
       }
@@ -16486,27 +16529,12 @@ async function generateStoryReflection() {
         tier: _r1Base.tier,
         userId: 'anon',
         messages: [{ role: 'user', content: text }],
-        systemPrompt: `You are SAM. Read what this person wrote and reflect back the core of their story in plain words — maximum 3 sentences. Sentence 1: what happened, in their terms. Sentence 2: what changed or what it means — the turn, if there is one. Sentence 3 (only if true): the one concrete thing the story is missing (a specific moment, what it cost, how it ended). Use only what they said; never add events, feelings or stakes they did not state. No praise, no compliments, no motivational lines, no telling them their story is powerful or brave. Do NOT write a post, script, caption or any content format. No dashes, headers, structured output or bullet points. Never say "I can see" or "It sounds like".`
+        systemPrompt: `You are SAM. Read what this person wrote and reflect back the core of their story in plain words — maximum 3 sentences. Sentence 1: what happened, in their terms. Sentence 2: what changed or what it means — the turn, if there is one. Use only what they said; never add events, feelings or stakes they did not state. No praise, no compliments, no motivational lines, no telling them their story is powerful or brave. Do NOT write a post, script, caption or any content format. No dashes, headers, structured output or bullet points. Never say "I can see" or "It sounds like". Then, ONLY if the story is missing something concrete it needs (a specific moment, what it cost them, how it ended), add one final line starting with "QUESTION:" that asks them for that single most important missing detail in plain, short words. If nothing important is missing, do not add the line.`
       })
     });
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder();
-    let reply = '';
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      for (const line of decoder.decode(value, { stream: true }).split('\n')) {
-        if (!line.startsWith('data: ')) continue;
-        try {
-          const evt = JSON.parse(line.slice(6).trim());
-          if (evt.done && evt.result && evt.result.reply) reply = evt.result.reply;
-        } catch(_) {}
-      }
-    }
+    const reply = await readSamReply(res);
     if (reply) {
-      WS.diagnosedStory = reply;
-      saveWizardState();
-      if (diagEl) diagEl.innerHTML = '<div class="sam-diagnosis-reveal">' + mdToHtml(reply) + '</div>';
+      renderStoryReflection(reply, diagEl);
       if (nextBtn) nextBtn.disabled = false;
       return;
     }
@@ -16659,7 +16687,7 @@ The story_architecture object below is the structural source of truth — the fu
       email: _pbEmail || undefined,
       userEmail: _pbEmail || undefined,
       tourStep: localStorage.getItem('samTourComplete') ? null : (localStorage.getItem('samTourStep') || 0),
-      moment: story,
+      moment: getStoryForPlaybook(),
       platforms: WS.platforms,
       contentType: WS.format || 'short-form video',
       tone: s.tone || 'Authentic/Natural',
@@ -16782,7 +16810,7 @@ ${steer ? 'CREATOR DIRECTION: ' + steer : ''}
       section: sectionKey,
       sectionLabel: label,
       wizardContext: context,
-      moment: WS.storyText || '',
+      moment: getStoryForPlaybook(),
       platforms: WS.platforms || [],
       delivery: WS.delivery || 'camera',
       pace: WS.pace || 'natural',
@@ -16823,6 +16851,12 @@ ${steer ? 'CREATOR DIRECTION: ' + steer : ''}
       if (scriptBtn) regenSection('script', scriptBtn);
     }
 
+    // Patch W.3 — a rewritten script changes beat lengths; refresh the architecture card timings.
+    if (sectionKey === 'script' && window._lastPlaybookData && window._lastPlaybookData.story_architecture) {
+      const archEl2 = document.getElementById('playbook-sec-architecture');
+      if (archEl2) regenRenderSection('architecture', archEl2, { story_architecture: window._lastPlaybookData.story_architecture });
+    }
+
     // Patch U.5 — the hook IS the opening beat. A hook Redo updates the Opening card too.
     if (sectionKey === 'hook' && data && data.hook && window._lastPlaybookData && window._lastPlaybookData.story_architecture) {
       window._lastPlaybookData.story_architecture.opening = data.hook;
@@ -16853,12 +16887,12 @@ function regenRenderSection(key, sectionEl, data) {
   } else if (key === 'architecture' && data.story_architecture) {
     const arch = data.story_architecture;
     html = `<div class="playbook-arch-grid">
-      ${arch.opening ? '<div class="playbook-arch-card arch-opening"><div class="playbook-arch-beat">Opening (0–3s)</div><div class="playbook-arch-text">'+arch.opening+'</div><div class="playbook-arch-time">Stop the scroll</div></div>' : ''}
-      ${arch.setup ? '<div class="playbook-arch-card arch-setup"><div class="playbook-arch-beat">Setup (3–15s)</div><div class="playbook-arch-text">'+arch.setup+'</div><div class="playbook-arch-time">Make them care</div></div>' : ''}
-      ${arch.risk ? '<div class="playbook-arch-card arch-risk"><div class="playbook-arch-beat">The Risk (15–30s)</div><div class="playbook-arch-text">'+arch.risk+'</div><div class="playbook-arch-time">Raise the stakes</div></div>' : ''}
-      ${arch.turn ? '<div class="playbook-arch-card arch-turn"><div class="playbook-arch-beat">The Turn (30–50s)</div><div class="playbook-arch-text">'+arch.turn+'</div><div class="playbook-arch-time">The moment everything changes</div></div>' : ''}
-      ${arch.payoff ? '<div class="playbook-arch-card arch-payoff"><div class="playbook-arch-beat">The Payoff (50–70s)</div><div class="playbook-arch-text">'+arch.payoff+'</div><div class="playbook-arch-time">The emotional resolution</div></div>' : ''}
-      ${arch.cta ? '<div class="playbook-arch-card arch-cta"><div class="playbook-arch-beat">Your Call (final 5s)</div><div class="playbook-arch-text">'+arch.cta+'</div><div class="playbook-arch-time">What you want them to do</div></div>' : ''}
+      ${arch.opening ? '<div class="playbook-arch-card arch-opening"><div class="playbook-arch-beat">Opening ('+archTime('opening','0–3s',window._lastPlaybookData)+')</div><div class="playbook-arch-text">'+arch.opening+'</div><div class="playbook-arch-time">Stop the scroll</div></div>' : ''}
+      ${arch.setup ? '<div class="playbook-arch-card arch-setup"><div class="playbook-arch-beat">Setup ('+archTime('setup','3–15s',window._lastPlaybookData)+')</div><div class="playbook-arch-text">'+arch.setup+'</div><div class="playbook-arch-time">Make them care</div></div>' : ''}
+      ${arch.risk ? '<div class="playbook-arch-card arch-risk"><div class="playbook-arch-beat">The Risk ('+archTime('risk','15–30s',window._lastPlaybookData)+')</div><div class="playbook-arch-text">'+arch.risk+'</div><div class="playbook-arch-time">Raise the stakes</div></div>' : ''}
+      ${arch.turn ? '<div class="playbook-arch-card arch-turn"><div class="playbook-arch-beat">The Turn ('+archTime('turn','30–50s',window._lastPlaybookData)+')</div><div class="playbook-arch-text">'+arch.turn+'</div><div class="playbook-arch-time">The moment everything changes</div></div>' : ''}
+      ${arch.payoff ? '<div class="playbook-arch-card arch-payoff"><div class="playbook-arch-beat">The Payoff ('+archTime('payoff','50–70s',window._lastPlaybookData)+')</div><div class="playbook-arch-text">'+arch.payoff+'</div><div class="playbook-arch-time">The emotional resolution</div></div>' : ''}
+      ${arch.cta ? '<div class="playbook-arch-card arch-cta"><div class="playbook-arch-beat">Your Call ('+archTime('cta','final 5s',window._lastPlaybookData)+')</div><div class="playbook-arch-text">'+arch.cta+'</div><div class="playbook-arch-time">What you want them to do</div></div>' : ''}
     </div>`;
   } else if (key === 'hook' && data.hook) {
     html = `<div class="playbook-hook">${data.hook}</div>
@@ -16922,6 +16956,13 @@ function regenRenderSection(key, sectionEl, data) {
 
 // Patch U.6 — "Make it stronger": concrete details the story needs that the creator
 // did not give. SAM is told not to invent them, so it lists them here instead.
+// Patch W.3 — architecture card timing = the matching script beat's timing (scaled to length).
+function archTime(key, fallback, src) {
+  const beats = (src && Array.isArray(src.script_beats)) ? src.script_beats : [];
+  const b = beats.find(x => x && x.key === key);
+  return (b && b.timing) ? b.timing : fallback;
+}
+
 function gapsCardHTML(gaps) {
   const list = Array.isArray(gaps) ? gaps.filter(g => typeof g === 'string' && g.trim()) : [];
   if (!list.length) return '';
@@ -16988,12 +17029,12 @@ function renderPlaybook(data) {
       <div class="wizard-why" style="margin-bottom:16px;">Every story that holds attention follows a structure. This is yours — mapped out so you know exactly where you're going before you press record.</div>
       <div class="regen-content">
         <div class="playbook-arch-grid">
-          ${arch.opening ? `<div class="playbook-arch-card arch-opening"><div class="playbook-arch-beat">Opening (0–3s)</div><div class="playbook-arch-text">${arch.opening}</div><div class="playbook-arch-time">Stop the scroll</div></div>` : ''}
-          ${arch.setup ? `<div class="playbook-arch-card arch-setup"><div class="playbook-arch-beat">Setup (3–15s)</div><div class="playbook-arch-text">${arch.setup}</div><div class="playbook-arch-time">Make them care</div></div>` : ''}
-          ${arch.risk ? `<div class="playbook-arch-card arch-risk"><div class="playbook-arch-beat">The Risk (15–30s)</div><div class="playbook-arch-text">${arch.risk}</div><div class="playbook-arch-time">Raise the stakes</div></div>` : ''}
-          ${arch.turn ? `<div class="playbook-arch-card arch-turn"><div class="playbook-arch-beat">The Turn (30–50s)</div><div class="playbook-arch-text">${arch.turn}</div><div class="playbook-arch-time">The moment everything changes</div></div>` : ''}
-          ${arch.payoff ? `<div class="playbook-arch-card arch-payoff"><div class="playbook-arch-beat">The Payoff (50–70s)</div><div class="playbook-arch-text">${arch.payoff}</div><div class="playbook-arch-time">The emotional resolution</div></div>` : ''}
-          ${arch.cta ? `<div class="playbook-arch-card arch-cta"><div class="playbook-arch-beat">Your Call (final 5s)</div><div class="playbook-arch-text">${arch.cta}</div><div class="playbook-arch-time">What you want them to do</div></div>` : ''}
+          ${arch.opening ? `<div class="playbook-arch-card arch-opening"><div class="playbook-arch-beat">Opening (${archTime('opening','0–3s',data)})</div><div class="playbook-arch-text">${arch.opening}</div><div class="playbook-arch-time">Stop the scroll</div></div>` : ''}
+          ${arch.setup ? `<div class="playbook-arch-card arch-setup"><div class="playbook-arch-beat">Setup (${archTime('setup','3–15s',data)})</div><div class="playbook-arch-text">${arch.setup}</div><div class="playbook-arch-time">Make them care</div></div>` : ''}
+          ${arch.risk ? `<div class="playbook-arch-card arch-risk"><div class="playbook-arch-beat">The Risk (${archTime('risk','15–30s',data)})</div><div class="playbook-arch-text">${arch.risk}</div><div class="playbook-arch-time">Raise the stakes</div></div>` : ''}
+          ${arch.turn ? `<div class="playbook-arch-card arch-turn"><div class="playbook-arch-beat">The Turn (${archTime('turn','30–50s',data)})</div><div class="playbook-arch-text">${arch.turn}</div><div class="playbook-arch-time">The moment everything changes</div></div>` : ''}
+          ${arch.payoff ? `<div class="playbook-arch-card arch-payoff"><div class="playbook-arch-beat">The Payoff (${archTime('payoff','50–70s',data)})</div><div class="playbook-arch-text">${arch.payoff}</div><div class="playbook-arch-time">The emotional resolution</div></div>` : ''}
+          ${arch.cta ? `<div class="playbook-arch-card arch-cta"><div class="playbook-arch-beat">Your Call (${archTime('cta','final 5s',data)})</div><div class="playbook-arch-text">${arch.cta}</div><div class="playbook-arch-time">What you want them to do</div></div>` : ''}
         </div>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center;">

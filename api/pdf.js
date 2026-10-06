@@ -641,13 +641,16 @@ function buildPlaybookHTML(pb, brand) {
 
   // ── 03 Story Architecture ──────────────────────────────────────────────────
   const arch = pb.story_architecture || {};
+  // Patch W.3 — use the script's scaled beat timings when available.
+  const _sb = Array.isArray(pb.script_beats) ? pb.script_beats : [];
+  const _t = (key, fb) => { const b = _sb.find(x => x && x.key === key); return (b && b.timing) ? b.timing : fb; };
   const beats = [
-    { label: 'Opening',     timing: '0–3s',     content: arch.opening },
-    { label: 'Setup',       timing: '3–15s',    content: arch.setup   },
-    { label: 'The Risk',    timing: '15–30s',   content: arch.risk    },
-    { label: 'The Turn',    timing: '30–50s',   content: arch.turn    },
-    { label: 'The Payoff',  timing: '50–70s',   content: arch.payoff  },
-    { label: 'Your Call',   timing: 'Final 5s', content: arch.cta     },
+    { label: 'Opening',     timing: _t('opening', '0–3s'),     content: arch.opening },
+    { label: 'Setup',       timing: _t('setup',   '3–15s'),    content: arch.setup   },
+    { label: 'The Risk',    timing: _t('risk',    '15–30s'),   content: arch.risk    },
+    { label: 'The Turn',    timing: _t('turn',    '30–50s'),   content: arch.turn    },
+    { label: 'The Payoff',  timing: _t('payoff',  '50–70s'),   content: arch.payoff  },
+    { label: 'Your Call',   timing: _t('cta',     'Final 5s'), content: arch.cta     },
   ].filter(b => b.content);
 
   if (beats.length) {

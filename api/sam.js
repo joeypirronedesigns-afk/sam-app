@@ -6,7 +6,7 @@ const { checkGate } = require('./_gate');
 // v9.118.16 (Patch C) — derive structured script_beats[] from [BEAT: ...] markers
 // emitted per v9.118.15 instructions. Additive: full_script stays unchanged,
 // script_beats[] is a parallel structured view consumed by both UI and PDF renderers.
-function parseScriptBeats(scriptText) {
+function parseScriptBeats(scriptText, pace) {
   if (!scriptText || typeof scriptText !== 'string') return [];
 
   const BEAT_DEFS = [
@@ -34,7 +34,74 @@ function parseScriptBeats(scriptText) {
   }
   if (current) beats.push(current);
 
-  return beats.map(b => ({ ...b, content: b.content.trim() })).filter(b => b.content);
+  const out = beats.map(b => ({ ...b, content: b.content.trim() })).filter(b => b.content);
+
+  // Patch W.3 — timings follow the actual script length instead of a fixed 0–70s template.
+  // Words-per-minute by pace; delivery notes in (parentheses) are not spoken.
+  const wpm = { fast: 170, natural: 150, slow: 125 }[pace] || 150;
+  let t = 0;
+  for (const b of out) {
+    const words = b.content.replace(/\([^)]*\)/g, ' ').split(/\s+/).filter(Boolean).length;
+    const secs = Math.max(2, Math.round(words / wpm * 60));
+    const start = Math.round(t), end = Math.round(t + secs);
+    b.timing = start + '–' + end + 's';
+    t += secs;
+  }
+  return out;
+}
+
+// Patch W.2 — URL guard. The model sometimes misspells the creator's own domain in
+// ready-to-post captions (e.g. "societyforcreators.com" for "samforcreators.com").
+// Allowed domains = anything that appears in what the creator typed (spoken forms like
+// "Sam for creators.com" are joined). Output domains that are near-misses of an allowed
+// domain are corrected; unrelated domains (tiktok.com, etc.) are left alone.
+const URL_TLDS = 'com|co|io|net|org|app|ai|tv|me|us|shop|store|studio|xyz|ca|uk';
+function collectAllowedDomains(texts) {
+  const allowed = new Set();
+  const re = new RegExp(`((?:[a-z0-9-]+\\s+){0,3}[a-z0-9-]+)\\s*\\.\\s*(${URL_TLDS})\\b`, 'gi');
+  for (const t of texts) {
+    if (!t || typeof t !== 'string') continue;
+    let m;
+    while ((m = re.exec(t))) {
+      const words = m[1].toLowerCase().split(/\s+/).filter(Boolean);
+      const tld = m[2].toLowerCase();
+      for (let k = 1; k <= words.length; k++) allowed.add(words.slice(-k).join('') + '.' + tld);
+    }
+  }
+  return allowed;
+}
+function editDistance(a, b) {
+  const d = Array.from({ length: a.length + 1 }, (_, i) => [i]);
+  for (let j = 1; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++)
+    for (let j = 1; j <= b.length; j++)
+      d[i][j] = Math.min(d[i-1][j] + 1, d[i][j-1] + 1, d[i-1][j-1] + (a[i-1] === b[j-1] ? 0 : 1));
+  return d[a.length][b.length];
+}
+function guardUrls(obj, allowed) {
+  if (!allowed.size) return { obj, fixes: [] };
+  const fixes = [];
+  const list = [...allowed].filter(d => d.split('.')[0].length >= 6);
+  const re = new RegExp(`\\b([a-z0-9-]{4,})\\.(${URL_TLDS})\\b`, 'gi');
+  const fix = (str) => str.replace(re, (whole, name, tld) => {
+    const dom = (name + '.' + tld).toLowerCase();
+    if (allowed.has(dom)) return whole;
+    let best = null, bestScore = 1;
+    for (const a of list) {
+      if (a.split('.').pop() !== tld.toLowerCase()) continue;
+      const score = editDistance(dom, a) / Math.max(dom.length, a.length);
+      if (score < bestScore) { bestScore = score; best = a; }
+    }
+    if (best && bestScore <= 0.4) { fixes.push(dom + ' → ' + best); return best; }
+    return whole;
+  });
+  const walk = (v) => {
+    if (typeof v === 'string') return fix(v);
+    if (Array.isArray(v)) return v.map(walk);
+    if (v && typeof v === 'object') { for (const k of Object.keys(v)) v[k] = walk(v[k]); return v; }
+    return v;
+  };
+  return { obj: walk(obj), fixes };
 }
 
 // v9.113.3 — Voice DNA gate copy keyed by ACTUAL sam.js mode strings sent by frontend.
@@ -549,7 +616,13 @@ NEVER write in generic AI voice when you have this profile. Generic AI voice is:
 5. Length follows the material. A short moment makes a short video. Never pad to fill time.
 
 6. Signature sign-off: if the creator has a sign-off line they always use, it may close the script
-   and the captions, after the CTA. It never replaces the CTA or the payoff.`;
+   and the captions, after the CTA. It never replaces the CTA or the payoff.
+
+7. Copy every URL, website, @handle and product name exactly as the creator wrote it. Never respell them.
+   Spoken forms count: "Sam for creators.com" is samforcreators.com.
+
+8. Text in the moment that starts "(The creator added, when SAM asked ..." is the creator's own answer.
+   Treat it exactly like the rest of their words — it is the fact to use instead of inventing one.`;
 
   const base = `${samIdentity} ${toneContext} ${emojiLine} ${hashtagRule} ${creatorLine} ${voiceLine}
 ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatContext} CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No explanation outside the JSON.`;
@@ -608,6 +681,13 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
       res.write('data: ' + JSON.stringify({ error: 'SAM had trouble formatting the response. Please try again.' }) + '\n\n');
       res.end(); return;
     }
+    // Patch W.2 — correct near-miss spellings of the creator's own domains in every output field.
+    if (parsed && typeof parsed === 'object') {
+      const b = req.body || {};
+      const allowed = collectAllowedDomains([b.moment, b.wizardContext, b.creatorContext, b.steer, b.brandHandle, b.brandName]);
+      const g = guardUrls(parsed, allowed);
+      if (g.fixes.length) console.warn('[url-guard] corrected', g.fixes.join(', '));
+    }
     // Patch U.3 — the hook IS the opening beat. Enforced in code so they can never diverge.
     if (parsed && typeof parsed === 'object' && parsed.hook && parsed.story_architecture && typeof parsed.story_architecture === 'object') {
       parsed.story_architecture.opening = parsed.hook;
@@ -615,7 +695,7 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
     // v9.118.16 (Patch C) — derive structured script_beats[] from [BEAT: ...] markers.
     // Additive only; full_script preserved unchanged. Empty array when no markers found.
     if (parsed && typeof parsed === 'object') {
-      parsed.script_beats = parseScriptBeats(parsed.full_script || parsed.narration_script || '');
+      parsed.script_beats = parseScriptBeats(parsed.full_script || parsed.narration_script || '', (req.body || {}).pace);
     }
     res.write('data: ' + JSON.stringify({ done: true, result: parsed }) + '\n\n');
     res.end();
