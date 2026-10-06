@@ -42,7 +42,7 @@ Stripe payment link: https://buy.stripe.com/eVqeVfgkOajocUX2Dp8Zq00
 - Typography: Instrument Serif italic for headings, Inter for UI, JetBrains Mono for code
 - Sidebar: Left nav, 220px wide. Sections: DAILY, BUILD SAM'S BRAIN, STUDIO, MORE, EXECUTION PACK
 - Version stamp: data-qs-version attribute on div[data-qs-shell] — bump on every commit
-- Current version: v9.118.64+
+- Current version: v9.118.65+
 
 ---
 
@@ -64,7 +64,7 @@ Vercel CLI: Installed at /opt/homebrew/bin/vercel, logged in as joeypirronedesig
 
 ---
 
-## Current Version: v9.118.64
+## Current Version: v9.118.65
 
 ### Key Architecture Decisions Made
 - No free trial — Patch O removed it. Paid or blocked. trial-status.js returns allowed:false for all unpaid users.
@@ -98,6 +98,7 @@ Vercel CLI: Installed at /opt/homebrew/bin/vercel, logged in as joeypirronedesig
 - Patch Z.6 (v9.118.62) — Hook + architecture cards with untraceable numbers get a targeted Haiku rewrite (rewriteWithoutNumbers, 10s, fails open), re-checked; cards fall back to dropping the offending sentence. Logged in fact_check.rewritten. Runs before hook enforcement so the script still opens with the (fixed) hook. Scorer: 'two' counting-word exception applies to SAM's output only, not the story. Eval after Z.5: 127/130 (98%) — 'six words' and '100% my fault' survived on hook/cards; '2 weeks' was a scorer bug.
 - Patch Z.8 (v9.118.63) — Craft rules: creator's last word (final qualifier/contradiction) stays in the payoff; don't explain the punchline (end on the creator's line). Bug: rewritten hook now replaces the old hook in the script (was duplicated); second number-guard pass after hook enforcement. Scorer: must_keep + hook_said_once. Hard set before Z.8: 41/42 — deck dropped 'I still wouldn't underbid again', chicken explained the punchline and duplicated the hook; food truck graded A.
 - Patch Z.9 (v9.118.64) — 'two' counting exception no longer covers durations (two weeks/days/years…) in server + scorer. Captions use _removeCaptionSentences (a fully unsupported paragraph can be removed). Fact-check returns hook_unsupported; Z.6 rewrite now also fixes unsupported hook claims (e.g. 'the thing that saved me'). Hard set after Z.8: 47/48 — deck A, food truck A− (hook claim 'saved me'), chicken B+ ('two weeks' in hook, '30 seconds' in a caption, one line after the punchline). Watching: one explanatory line after a punchline.
+- Patch Z.10 (v9.118.65) — Craft: hooks built from a concrete detail the creator gave (no vague teases, no invented contrasts); a closing aside/callback is the comic button and stays the last spoken line. Fact-check now reads architecture cards and returns arch_unsupported → same targeted rewrite as hook (rewrite prompt told to stay concrete). Scorer: 'grand' = ×1000 and server-equivalent number tolerance. Hard set after Z.9: 47/48 — deck A, food truck A (only miss was scorer reading 'twenty-two grand'), chicken A− (vague hook after rewrites, button moved to setup). NEXT SESSION: paywall/session-token fix (top priority), then hook/button re-check on the hard set.
 
 ### Open Task List (v9.118.x)
 - Later — 'connection to this' wizard question only if founder/role detection keeps missing

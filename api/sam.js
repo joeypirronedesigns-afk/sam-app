@@ -151,6 +151,8 @@ async function factCheckPlaybook(apiKey, source, parsed) {
   const captions = (parsed.platform_strategies || []).map((p, i) => `CAPTION ${i + 1} (${(p && p.platform) || ''}): ${(p && p.caption) || ''}`).join('\n');
   const checkText = [
     `HOOK: ${parsed.hook || ''}`,
+    // Patch Z.10 — architecture cards are checked for invented claims too.
+    `CARDS:\n${Object.entries(parsed.story_architecture || {}).filter(([k, v]) => k !== 'opening' && typeof v === 'string' && v.trim()).map(([k, v]) => k.toUpperCase() + ': ' + v).join('\n')}`,
     `SCRIPT:\n${parsed.full_script || parsed.narration_script || ''}`,
     captions
   ].join('\n\n');
@@ -187,7 +189,11 @@ Return ONLY JSON: {"unsupported":[{"text":"the exact sentence copied from DRAFT"
     // Patch Z.9 — the hook can't be cut, so an unsupported hook is flagged for a targeted rewrite.
     const hookN = _normSentence(parsed.hook);
     const hookUnsupported = !!hookN && targets.some(t => t === hookN || hookN.includes(t) || t.includes(hookN));
-    if (!targets.length) return { removed: [], checked: true, hook_unsupported: false };
+    const archUnsupported = Object.entries(parsed.story_architecture || {})
+      .filter(([k, v]) => k !== 'opening' && typeof v === 'string' && v.trim())
+      .filter(([k, v]) => { const n = _normSentence(v); return targets.some(t => n === t || n.includes(t) || (n.length > 20 && t.includes(n))); })
+      .map(([k]) => k);
+    if (!targets.length) return { removed: [], checked: true, hook_unsupported: false, arch_unsupported: [] };
     const removed = [];
     for (const f of ['full_script', 'narration_script']) {
       if (typeof parsed[f] === 'string') { const o = _removeSentences(parsed[f], targets); parsed[f] = o.text; removed.push(...o.removed); }
@@ -199,7 +205,7 @@ Return ONLY JSON: {"unsupported":[{"text":"the exact sentence copied from DRAFT"
       }
     }
     const unique = [...new Set(removed.map(s => s.replace(/\s+/g, ' ').trim()))].filter(Boolean);
-    return { removed: unique, checked: true, hook_unsupported: hookUnsupported };
+    return { removed: unique, checked: true, hook_unsupported: hookUnsupported, arch_unsupported: archUnsupported };
   } catch (e) {
     return null;
   } finally {
@@ -289,7 +295,7 @@ async function rewriteWithoutNumbers(apiKey, source, lines) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 10000);
   try {
-    const system = `You fix lines in a creator's video plan. Each line contains a number, quantity, percentage, statistic or claim that the creator never said (for example "the thing that saved me" when they never said it saved them). Rewrite each line so it keeps its meaning, voice, hook energy and roughly its length, but says nothing that is not in SOURCE. Do not add any new facts. Return ONLY JSON mapping each key to its rewritten line.`;
+    const system = `You fix lines in a creator's video plan. Each line contains a number, quantity, percentage, statistic or claim that the creator never said (for example "the thing that saved me" when they never said it saved them). Rewrite each line so it keeps its meaning, voice, hook energy and roughly its length, but says nothing that is not in SOURCE. Do not add any new facts. Stay concrete: replace an invented detail with a real image, line or number from SOURCE — never with a vague phrase like "something I didn't see coming". Return ONLY JSON mapping each key to its rewritten line.`;
     const r = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST', signal: ctrl.signal,
       headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
@@ -900,6 +906,14 @@ NEVER write in generic AI voice when you have this profile. Generic AI voice is:
    - Peak-end: the payoff is the strongest line in the video. Nothing after it except the short CTA and
      the sign-off.
    - Open loop: the hook raises a question only the turn or payoff answers. Never answer it in the setup.
+   - Concrete hooks: build the hook from a specific detail the creator actually gave — an image ("10pm,
+     flashlight, chasing one chicken"), a line they said, a number they said, a contradiction in their
+     story. Never a vague tease ("taught me something I didn't see coming") and never an invented
+     contrast ("fixed in 30 seconds what I couldn't in two weeks") — if the contrast isn't in the story,
+     use an image that is.
+   - Keep the button: if the creator ends with a throwaway aside or callback ("Anyway, the coop's done.
+     It leans a little."), it is the comic button — keep it as the last spoken line of the video,
+     right after the CTA. Don't move it earlier.
 
 10. The hook, script and captions are words the creator will say or post. Never put notes, labels or
     placeholders in them ("not found", "TBD", "[insert moment]", "needs a real moment"). If the story is
@@ -1009,7 +1023,8 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
       const arch = (parsed.story_architecture && typeof parsed.story_architecture === 'object') ? parsed.story_architecture : {};
       const lines = {};
       if (hasBad(parsed.hook) || (parsed.fact_check && parsed.fact_check.hook_unsupported)) lines.hook = parsed.hook;
-      for (const k of Object.keys(arch)) if (hasBad(arch[k])) lines['arch_' + k] = arch[k];
+      const archFlagged = (parsed.fact_check && Array.isArray(parsed.fact_check.arch_unsupported)) ? parsed.fact_check.arch_unsupported : [];
+      for (const k of Object.keys(arch)) if (hasBad(arch[k]) || archFlagged.includes(k)) lines['arch_' + k] = arch[k];
       if (Object.keys(lines).length) {
         const fixed = await rewriteWithoutNumbers(apiKey, srcText, lines);
         const fixedLog = [];

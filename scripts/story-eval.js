@@ -43,8 +43,8 @@ function numbersIn(text, { allowCountingTwo = false } = {}) {
   const out = new Map();
   const add = (n, idx) => { const k = String(n); if (!out.has(k)) out.set(k, t.slice(Math.max(0, idx - 30), idx + 30).replace(/\s+/g, ' ')); };
   let m;
-  const dre = /(\d+(?:\.\d+)?)\s*(k|m)?\b/g;
-  while ((m = dre.exec(t))) { const n = Number(m[1]); add(n, m.index); if (m[2] === 'k') add(n * 1000, m.index); if (m[2] === 'm') add(n * 1000000, m.index); }
+  const dre = /(\d+(?:\.\d+)?)\s*(k|m|grand)?\b/g;
+  while ((m = dre.exec(t))) { const n = Number(m[1]); add(n, m.index); if (m[2] === 'k' || m[2] === 'grand') add(n * 1000, m.index); if (m[2] === 'm') add(n * 1000000, m.index); }
   const toks = [...t.matchAll(/\b[a-z]+\b/g)];
   for (let i = 0; i < toks.length; i++) {
     const w = toks[i][0];
@@ -56,7 +56,7 @@ function numbersIn(text, { allowCountingTwo = false } = {}) {
     let val = NUM_WORDS[w], j = i;
     // tens + units ("forty five"), then multipliers ("four hundred", "two thousand")
     if (val >= 20 && val < 100 && toks[j + 1] && NUM_WORDS[toks[j + 1][0]] < 10) { val += NUM_WORDS[toks[j + 1][0]]; j++; }
-    while (toks[j + 1] && (toks[j + 1][0] === 'hundred' || toks[j + 1][0] === 'thousand')) { val *= NUM_WORDS[toks[j + 1][0]]; j++; }
+    while (toks[j + 1] && (toks[j + 1][0] === 'hundred' || toks[j + 1][0] === 'thousand' || toks[j + 1][0] === 'grand')) { val *= (toks[j + 1][0] === 'grand' ? 1000 : NUM_WORDS[toks[j + 1][0]]); j++; }
     if ((w === 'hundred' || w === 'thousand') && i > 0 && NUM_WORDS[toks[i - 1][0]] !== undefined) continue;
     add(val, toks[i].index); i = j;
   }
@@ -119,7 +119,9 @@ function score(c, r) {
   const inNums = numbersIn(c.input + ' ' + c.creator);
   // Patch Z.6 — 'two' as a counting word is only excused in SAM's output, never in the story itself.
   const outNums = numbersIn(spoken.replace(/\[BEAT:[^\]]*\]/g, ''), { allowCountingTwo: true });
-  const badNums = [...outNums.keys()].filter(n => !inNums.has(n)).map(n => `${n} ("…${outNums.get(n)}…")`);
+  // Patch Z.10 — same tolerance as the server guard: "250k" / "22 grand" / "22,000" are one number.
+  const numOk = n => { const x = Number(n); return [x, x * 1000, x / 1000, x * 1e6, x / 1e6].some(v => inNums.has(String(v))); };
+  const badNums = [...outNums.keys()].filter(n => !numOk(n)).map(n => `${n} ("…${outNums.get(n)}…")`);
   const allowed = domainsTyped(c.input + ' ' + c.creator);
   const badDomains = [...domainsOut(spoken)].filter(d => !allowed.has(d));
   const setupText = (arch.setup || '') + ' ' + beat('setup');
