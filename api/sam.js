@@ -1273,6 +1273,9 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
         if (typeof t !== 'string' || !t) return t;
         return t.replace(/\b(two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\b(?=\s+[a-z])/gi, (w, _k, off, all) => {
           const n = SMALL[w.toLowerCase()];
+          // Patch AH — part of a bigger number ("thirty-six", "twenty six", "6.5") is never a small number on its own
+          const before = all.slice(Math.max(0, off - 12), off);
+          if (/[-–.]$/.test(before) || /\b(twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand)\s+$/i.test(before)) return w;
           if (_numberOk(n, srcNums)) return w;
           // "two things" (a count of things SAM listed) is allowed by the guards — leave it
           if (n === 2 && !/^\s+(hundred|thousand|seconds?|minutes?|hours?|days?|nights?|weeks?|months?|years?|summers?|winters?|seasons?|times)\b/i.test(all.slice(off + w.length))) return w;
