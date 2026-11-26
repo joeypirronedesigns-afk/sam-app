@@ -270,3 +270,10 @@ Any content creator building a social media audience. NOT limited to DIY/tradesp
 - Apr 2026: Voice Trainer feature (7 commits). Identity bug user.uid vs user.email patched. Quiet Studio M1 UI overhaul (15 commits).
 - Apr-May 2026: C2 milestone: Persona Lab / Archivist codex builder. My Ideas data-loss bug patched. Dual-write architecture.
 - May 2026: v9.118.x sprint: Execution Pack, Stripe wiring, free trial removal, paywall fixes, mobile nav, email forwarding, welcome email redesign. All deployed to production.
+
+## Patch AL — v9.118.78 — Formula map + code-enforced retention arc
+- Brand settings: new "Your background" (underdog, creator's words) and "Series hashtag" fields. Stored like the sign-off (localStorage `sam_story_profile` + KV `storyprofile:<email>` via /api/auth save_storyprofile/get_storyprofile). Sent as `storyProfile` on playbook + regen.
+- server/sam.js: background is appended to creatorContext (so prompt, fact-check and number guards treat it as creator-stated); series hashtag added to platform context.
+- Rule 12 + `formula_map` in the playbook and script-regen schemas: step → exact line → where it came from.
+- Code checks after generation: open loop ("Let me explain." inserted after the hook if the opening opens no question), anchor (number/timeframe in hook), viewer turn (CTA speaks to "you"), sign-off (from brand settings), series hashtag (pinned first on every platform in enforcePlatforms, never trimmed). Lines not found in the final script are marked "edited". Missing steps add the spec's reflection question to gaps (max 2).
+- New "How SAM used the formula" section in the app (after architecture; refreshed on script Redo) and in the PDF.

@@ -142,6 +142,23 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({ success: true });
   }
 
+  // ── STORY PROFILE (Patch AL) — background (underdog) + series hashtag ───────
+  if (action === 'save_storyprofile' || action === 'get_storyprofile') {
+    const who = await getSessionEmail(req);
+    if (!who) return res.status(401).json({ error: 'Not signed in' });
+    const kv = await getKV();
+    const key = 'storyprofile:' + who.toLowerCase();
+    if (action === 'get_storyprofile') {
+      let v = await kv.get(key); if (typeof v === 'string') { try { v = JSON.parse(v); } catch (_) { v = null; } }
+      return res.status(200).json({ storyProfile: v || {} });
+    }
+    const b = (req.body || {}).storyProfile || {};
+    const v = { background: String(b.background || '').replace(/\s+/g, ' ').trim().slice(0, 600),
+                seriesTag: String(b.seriesTag || '').trim().slice(0, 60) };
+    if (v.background || v.seriesTag) await kv.set(key, JSON.stringify(v)); else await kv.del(key);
+    return res.status(200).json({ success: true });
+  }
+
   // ── LOGOUT (Patch AA) — end the session and clear the cookie ────────────────
   if (action === 'logout') {
     await destroySession(req, res);

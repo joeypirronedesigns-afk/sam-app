@@ -78,7 +78,9 @@ function trimToWord(text, max) {
 // Enforced in code: hashtags pulled out of the caption into the field, deduped, exactly `tags` kept;
 // caption trimmed so caption + hashtags fit the hard limit (YouTube Shorts: 100 combined). Adds a
 // `limits` object the app and PDF use to show "92 / 100 · 3 hashtags".
-function enforcePlatforms(parsed) {
+function enforcePlatforms(parsed, opts) {
+  // Patch AL — the creator's series hashtag is always first and never trimmed away.
+  const pin = (opts && opts.pinTag) ? String(opts.pinTag) : '';
   if (!parsed || !Array.isArray(parsed.platform_strategies)) return parsed;
   for (const p of parsed.platform_strategies) {
     if (!p || typeof p !== 'object') continue;
@@ -101,13 +103,15 @@ function enforcePlatforms(parsed) {
     caption = caption.replace(/((?:[ \t]*#[\p{L}\p{N}_]+)+)[ \t]*(?=\n|$)/gu, '').replace(TAG_RE, (m, sp) => sp + m.trim().slice(1));
     caption = caption.replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
     String(p.hashtags || '').split(/[\s,]+/).filter(t => /^#[\p{L}\p{N}_]+$/u.test(t)).forEach(add);
+    if (pin) { const k = pin.toLowerCase(); const at = tags.findIndex(x => x.toLowerCase() === k); if (at >= 0) tags.splice(at, 1); tags.unshift(pin); }
     let kept = tags.slice(0, s.tags);
     const sep = s.combined ? 1 : 2;              // Shorts: "hook #a #b #c" on one line
     if (s.combined) {
       caption = caption.replace(/\s*\n+\s*/g, ' ').trim();
       // A cut-off hook is worse than one fewer hashtag: drop the longest tag (down to 2) before trimming.
       while (kept.length > 2 && len(caption) + len(kept.join(' ')) + sep > s.limit) {
-        const longest = kept.reduce((a, b) => (len(b) > len(a) ? b : a));
+        const pool = pin ? kept.slice(1) : kept;
+        const longest = pool.reduce((a, b) => (len(b) > len(a) ? b : a));
         kept = kept.filter(t => t !== longest);
       }
     }

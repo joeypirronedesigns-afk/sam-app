@@ -9,7 +9,8 @@
     "@sparticuz/chromium": "^148.0.0",
     "@vercel/kv": "^1.0.0",
     "puppeteer-core": "^24.42.0",
-    "stripe": "^14.0.0"
+    "stripe": "^14.0.0",
+    "vercel": "^62.4.0"
   },
   "devDependencies": {
     "dotenv": "^17.4.2"

@@ -115,6 +115,111 @@ function cleanSignOff(v) {
   if (!/[.!?…]$/.test(t)) t += '.';
   return t;
 }
+// Patch AL — the creator's story profile (brand settings): their background (the underdog, in their
+// own words) and their series hashtag. Both are creator-stated, so SAM may use them verbatim.
+function cleanStoryProfile(v) {
+  v = (v && typeof v === 'object') ? v : {};
+  const background = String(v.background || '').replace(/\s+/g, ' ').trim().slice(0, 600);
+  let tag = String(v.seriesTag || '').trim().split(/\s+/)[0] || '';
+  tag = tag.replace(/^#+/, '').replace(/[^\p{L}\p{N}_]/gu, '');
+  return { background, seriesTag: tag.length >= 2 ? '#' + tag : '' };
+}
+
+// Patch AL — the formula, checked in code after SAM writes. Opening must open a loop (if it doesn't,
+// "Let me explain." goes right after the hook); every other step is verified against the final script
+// and shown to the creator as a map: step → the exact line → where it came from.
+const FORMULA_STEPS = [
+  { step: 'Anchor',         beat: 'Opening', ask: '' },
+  { step: 'Open loop',      beat: 'Opening', ask: '' },
+  { step: 'Underdog',       beat: 'Setup',   ask: 'What about your background made this harder for you than it would be for a pro?' },
+  { step: 'Stakes',         beat: 'Risk',    ask: 'Is there a deadline, a promise, or a cost riding on this?' },
+  { step: 'Struggle',       beat: 'Turn',    ask: 'What part of this was harder than you expected?' },
+  { step: 'Payoff',         beat: 'Payoff',  ask: '' },
+  { step: 'Viewer turn',    beat: 'Your Call', ask: 'Who watching this needs to hear it, and what would you tell them?' },
+  { step: 'Sign-off',       beat: 'Your Call', ask: '' },
+  { step: 'Series hashtag', beat: 'Posts',   ask: '' }
+];
+const LOOP_RE = /\?|\b(let me explain|i'?ll explain|here'?s (the part|what|why|how|the thing)|never told|let me (show|tell) you|stick (around|with me)|wait (till|until)|you'?ll see|what happened next|but first)\b/i;
+const ANCHOR_RE = /\d|\b(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|twenty|thirty|forty|fifty|hundred|thousand|day|days|week|weeks|month|months|year|years)\b/i;
+function _beatRange(lines, name) {
+  const at = lines.findIndex(l => new RegExp('^\\s*\\[BEAT:\\s*' + name + '\\s*\\]', 'i').test(l));
+  if (at < 0) return null;
+  let end = lines.findIndex((l, i) => i > at && /^\s*\[BEAT:/i.test(l));
+  if (end < 0) end = lines.length;
+  return [at + 1, end];
+}
+function _beatText(script, name) {
+  const lines = String(script || '').split('\n'); const r = _beatRange(lines, name);
+  return r ? lines.slice(r[0], r[1]).join(' ').trim() : '';
+}
+function enforceOpenLoop(parsed, hookIn) {
+  const H = (parsed && parsed.hook) || hookIn || '';
+  if (!parsed || !H) return false;
+  let added = false;
+  for (const f of ['full_script', 'narration_script']) {
+    if (typeof parsed[f] !== 'string' || !parsed[f]) continue;
+    const lines = parsed[f].split('\n'); const r = _beatRange(lines, 'Opening');
+    if (!r) continue;
+    const body = lines.slice(r[0], r[1]).join('\n');
+    if (LOOP_RE.test(body)) continue;
+    const i = lines.findIndex((l, k) => k >= r[0] && k < r[1] && l.includes(H));
+    if (i < 0) continue;
+    const hook = /[.!?…]$/.test(H.trim()) ? H : H.trim() + '.';
+    lines[i] = lines[i].replace(H, hook + ' Let me explain.').replace(/\.\.\s+Let/, '. Let');
+    parsed[f] = lines.join('\n'); added = true;
+  }
+  return added;
+}
+function buildFormulaMap(parsed, b, info) {
+  if (!parsed || typeof parsed !== 'object') return;
+  const script = parsed.full_script || parsed.narration_script || '';
+  if (!script) return;
+  const norm = _normSentence(script);
+  const ai = Array.isArray(parsed.formula_map) ? parsed.formula_map : [];
+  const aiFor = name => ai.find(x => x && String(x.step || '').toLowerCase() === name.toLowerCase()) || {};
+  const SIGN = cleanSignOff(b.signOff);
+  const sp = cleanStoryProfile(b.storyProfile);
+  const ctaText = _beatText(script, 'CTA').replace(SIGN, '').trim();
+  const HOOK = parsed.hook || ((b.story_architecture || {}).opening) || '';
+  const out = [];
+  for (const d of FORMULA_STEPS) {
+    const a = aiFor(d.step);
+    let line = String(a.line || '').trim(), from = String(a.from || '').trim();
+    let status = (line && !/^(none|missing|not found|n\/a)/i.test(line)) ? 'used' : 'missing';
+    if (status === 'missing') { line = ''; if (!from) from = 'Your story didn\'t give SAM this yet.'; }
+    if (status === 'used' && d.beat !== 'Posts' && !norm.includes(_normSentence(line))) {
+      status = 'edited'; from = 'SAM\'s fact-check changed this line — read the ' + d.beat + ' beat.'; line = '';
+    }
+    if (d.step === 'Anchor' && !ANCHOR_RE.test(HOOK)) { status = 'missing'; line = ''; from = 'The hook has no number, day count or timeframe.'; }
+    if (d.step === 'Open loop') {
+      if (info.loopAdded) { status = 'fixed'; line = 'Let me explain.'; from = 'Added by SAM\'s check — the opening didn\'t open a question.'; }
+      else if (status === 'missing' && LOOP_RE.test(_beatText(script, 'Opening'))) { status = 'used'; line = _beatText(script, 'Opening'); from = from || 'Your opening.'; }
+    }
+    if (d.step === 'Viewer turn' && !/\b(you|your|you're|you've|you'll)\b/i.test(ctaText)) { status = 'missing'; line = ''; from = 'The call to action doesn\'t speak to the viewer.'; }
+    if (d.step === 'Sign-off') {
+      if (SIGN) { status = 'used'; line = SIGN; from = 'Your brand settings (saved sign-off), added word for word.'; }
+      else { status = 'missing'; line = ''; from = 'No sign-off saved — add one in your brand settings.'; }
+    }
+    if (d.step === 'Series hashtag') {
+      const plats = (parsed.platform_strategies || []).filter(p => p && p.platform);
+      if (!sp.seriesTag) { status = 'missing'; line = ''; from = 'No series hashtag saved — add one in your brand settings.'; }
+      else {
+        const first = plats.filter(p => String(p.hashtags || '').split(/\s+/)[0].toLowerCase() === sp.seriesTag.toLowerCase()).length;
+        status = (plats.length && first === plats.length) ? 'used' : 'missing';
+        line = sp.seriesTag; from = 'Your brand settings — first hashtag on ' + first + ' of ' + plats.length + ' platforms.';
+      }
+    }
+    out.push({ step: d.step, beat: d.beat, line, from, status, ask: status === 'missing' ? d.ask : '' });
+  }
+  parsed.formula_map = out;
+  // Missing steps become SAM's questions (max 2, spec order).
+  const asks = out.filter(x => x.ask).map(x => x.ask).slice(0, 2);
+  if (asks.length) {
+    parsed.gaps = Array.isArray(parsed.gaps) ? parsed.gaps : [];
+    for (const q of asks) if (!parsed.gaps.some(g => _normSentence(g) === _normSentence(q))) parsed.gaps.unshift(q);
+  }
+}
+
 // Patch AE — web addresses the creator gave for THIS story (the story, steering notes, wizard steers).
 // Profile/handle domains are not enough on their own: a DIY post shouldn't send people to a brand site.
 function storyDomains(b) {
@@ -653,6 +758,13 @@ module.exports = async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
+  // Patch AL — the creator's background joins CREATOR CONTEXT, so the prompt, fact-check and number
+  // guards all treat it as creator-stated.
+  if (req.body && typeof req.body === 'object') {
+    const _sp = cleanStoryProfile(req.body.storyProfile);
+    if (_sp.background && !String(req.body.creatorContext || '').includes(_sp.background))
+      req.body.creatorContext = [req.body.creatorContext, 'BACKGROUND (the creator\'s own words): ' + _sp.background].filter(Boolean).join(' — ');
+  }
   const { mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage, emojiPreference, voiceProfile, bannedPhrases } = req.body;
   const userId = req.body.userId || req.headers['x-forwarded-for'] || 'anon';
   const tier = req.body.tier || 'free';
@@ -1004,7 +1116,9 @@ const hashtagRule = 'HASHTAG RULE — CRITICAL: Follow each platform\'s hashtag 
     : '')
     // Patch AE — links only from this story; the saved sign-off closes every script.
     + `\nLINKS: put a web address in the script or posts ONLY if the creator gave it for this story. Otherwise include no web address at all — don't send people to the creator's other sites.`
-    + (_signOff ? `\nCREATOR SIGN-OFF: the spoken script ends with exactly this line, word for word, right after the CTA: "${_signOff}"` : '');
+    + (_signOff ? `\nCREATOR SIGN-OFF: the spoken script ends with exactly this line, word for word, right after the CTA: "${_signOff}"` : '')
+    // Patch AL — series hashtag from brand settings (also enforced in code).
+    + (cleanStoryProfile(req.body.storyProfile).seriesTag ? `\nSERIES HASHTAG: ${cleanStoryProfile(req.body.storyProfile).seriesTag} is the FIRST hashtag on every platform.` : '');
   const formatContext = contentType ? `Content format requested: ${contentType}.` : '';
   const voiceLine = voiceProfile
     ? `VOICE PROFILE — THIS IS THE MOST IMPORTANT INSTRUCTION: You have a forensic voice fingerprint built from this creator's ACTUAL writing samples. Real analysis: ${voiceProfile}
@@ -1142,7 +1256,13 @@ NEVER write in generic AI voice when you have this profile. Generic AI voice is:
    - Captions echo the spoken hook: each platform caption leads with the same idea as the hook, so
      the title and the first words of the video match.
    - Series hashtag first: if the creator's context, sign-off or story names a series hashtag (a
-     #Tag they use for the series), it is the first hashtag on every platform.`;
+     #Tag they use for the series), it is the first hashtag on every platform.
+
+12. Show your work (Patch AL): fill "formula_map" — one entry per formula step, in order: Anchor, Open loop,
+   Underdog, Stakes, Struggle, Payoff, Viewer turn. "line" is the EXACT sentence from full_script that does
+   the job, copied word for word. "from" says where it came from in plain words, quoting the creator
+   (e.g. 'Your story: "they asked me to fix it up"' or 'Your background: "Dad wasn't in the trades"').
+   If the creator gave you nothing for a step, "line" is "missing" — never invent a line to fill it.`;
 
   const base = `${samIdentity} ${toneContext} ${emojiLine} ${hashtagRule} ${creatorLine} ${voiceLine}
 ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatContext} CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No explanation outside the JSON.`;
@@ -1392,6 +1512,11 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
         parsed.fact_check.removed = [...new Set([...(parsed.fact_check.removed || []), ...cut2.map(x => x.replace(/\s+/g, ' ').trim())])];
       }
     }
+    // Patch AL — the opening must open a loop.
+    const _alInfo = { loopAdded: false };
+    if (parsed && typeof parsed === 'object' && (mode === 'playbook' || (mode === 'regen_section' && (req.body || {}).section === 'script'))) {
+      _alInfo.loopAdded = enforceOpenLoop(parsed, ((req.body || {}).story_architecture || {}).opening);
+    }
     // Patch U.3 — the hook IS the opening beat. Enforced in code so they can never diverge.
     if (parsed && typeof parsed === 'object' && parsed.hook && parsed.story_architecture && typeof parsed.story_architecture === 'object') {
       parsed.story_architecture.opening = parsed.hook;
@@ -1401,7 +1526,9 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
     if (parsed && typeof parsed === 'object') {
       parsed.script_beats = parseScriptBeats(parsed.full_script || parsed.narration_script || '', (req.body || {}).pace);
       // Patch AB — platform limits enforced in code (hashtag caps, caption length, YouTube title).
-      enforcePlatforms(parsed);
+      enforcePlatforms(parsed, { pinTag: cleanStoryProfile((req.body || {}).storyProfile).seriesTag });
+      // Patch AL — show how the formula was applied (playbook and script redo).
+      if (mode === 'playbook' || (mode === 'regen_section' && (req.body || {}).section === 'script')) buildFormulaMap(parsed, req.body || {}, _alInfo);
     }
     res.write('data: ' + JSON.stringify({ done: true, result: parsed }) + '\n\n');
     res.end();
@@ -1468,6 +1595,7 @@ Return ONLY this JSON — be CONCISE in every field to fit within token limits:
     "flip": "What reverses at the turn. If nothing does, say 'no turn yet'."
   },
   "gaps": ["Concrete details the story needs that the creator did not give. Empty array if none."],
+  "formula_map": [{"step": "Anchor | Open loop | Underdog | Stakes | Struggle | Payoff | Viewer turn", "line": "exact sentence from full_script, or missing", "from": "where it came from, quoting the creator"}],
   "diagnosis": "2 sentences max. What the story is really about. If there is no turn yet, say so.",
   "hook": "Under 15 words. Creates an open loop. Must be true to the moment.",
   "hook_why": "One sentence.",
@@ -1583,7 +1711,7 @@ Requirements:
 - Make the writing better while keeping the same structure, stakes, and creator's voice.
 
 Format script lines as plain text. Use (note) for delivery notes when helpful.
-Return ONLY: {"full_script":"the complete script","pacing_note":"one delivery tip"}`,
+Return ONLY: {"full_script":"the complete script","pacing_note":"one delivery tip","formula_map":[{"step":"Anchor | Open loop | Underdog | Stakes | Struggle | Payoff | Viewer turn","line":"exact sentence from full_script, or missing","from":"where it came from, quoting the creator"}]}`,
 
         platforms: `Rewrite ONLY the platform strategy — captions and hashtags for each platform.
 Platforms: ${platforms.join(', ')}.

@@ -786,6 +786,29 @@ function buildPlaybookHTML(pb, brand) {
     </div>`);
   }
 
+  // ── Formula map (Patch AL) — step → exact line → where it came from ───────
+  const fmap = (Array.isArray(pb.formula_map) ? pb.formula_map : []).filter(m => m && m.step);
+  if (fmap.length) {
+    const mark = { used: ['✓ Used', brandColor], fixed: ['✎ Fixed by SAM', '#B7791F'], edited: ['✎ Edited', '#B7791F'], missing: ['✕ Missing', '#C0392B'] };
+    const rows = fmap.map(m => { const k = mark[m.status] || mark.used; return `<tr>
+      <td style="vertical-align:top;padding:7pt 10pt 7pt 0;border-top:0.5pt solid #ddd;width:92pt;">
+        <div style="font-weight:700;font-size:10pt;">${e(m.step)}</div>
+        <div style="font-size:8pt;color:#888;">${e(m.beat || '')}</div>
+        <div style="font-size:8pt;font-weight:700;color:${k[1]};margin-top:2pt;">${k[0]}</div></td>
+      <td style="vertical-align:top;padding:7pt 0;border-top:0.5pt solid #ddd;font-size:10pt;line-height:1.45;">
+        ${m.line ? `<div>“${e(m.line)}”</div>` : ''}
+        ${m.from ? `<div style="font-size:8.5pt;color:#666;margin-top:2pt;">${e(m.from)}</div>` : ''}
+        ${m.ask ? `<div style="font-size:8.5pt;margin-top:3pt;"><strong>SAM needs:</strong> ${e(m.ask)}</div>` : ''}</td></tr>`; }).join('');
+    pages.push(`<div class="pdf-page pdf-page--interior">
+      ${hdr(brandName, docType, pn(), brandLogo)}
+      <div class="section-body">
+        ${sLabel('How SAM Used the Formula')}
+        <table style="width:100%;border-collapse:collapse;">${rows}</table>
+      </div>
+      ${ftr(brandName)}
+    </div>`);
+  }
+
   // ── 04 Hook ────────────────────────────────────────────────────────────────
   if (pb.hook) {
     pages.push(`<div class="pdf-page pdf-page--interior">

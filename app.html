@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.77" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.78" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -10859,6 +10859,7 @@ function getBase() {
     outputLanguage: s.lang || '',
     creatorContext: creatorContext,
     signOff: (typeof getSignOff === 'function' && getSignOff()) || undefined,
+    storyProfile: (typeof getStoryProfile === 'function') ? getStoryProfile() : undefined,
     audienceDemographics: demographics,
     platforms: (wizardDone && WS.platforms && WS.platforms.length) ? WS.platforms : null,
     voiceProfile: voiceProfile || undefined,
@@ -16412,6 +16413,65 @@ async function restoreSignOff() {
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => restoreSignOff());
 else setTimeout(restoreSignOff, 0);
 
+// Patch AL — story profile: the creator's background (underdog) and series hashtag. Same storage as the sign-off.
+function getStoryProfile() {
+  let v = {};
+  try { v = JSON.parse(localStorage.getItem('sam_story_profile') || '{}') || {}; } catch (_) { v = {}; }
+  return { background: String(v.background || ''), seriesTag: String(v.seriesTag || '') };
+}
+let _storyProfileTimer = null;
+function setStoryProfile(patch) {
+  const v = Object.assign(getStoryProfile(), patch || {});
+  v.background = v.background.slice(0, 600); v.seriesTag = v.seriesTag.slice(0, 60);
+  try { localStorage.setItem('sam_story_profile', JSON.stringify(v)); } catch (_) {}
+  clearTimeout(_storyProfileTimer);
+  _storyProfileTimer = setTimeout(() => fetch('/api/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin',
+    body: JSON.stringify({ action: 'save_storyprofile', storyProfile: v }) }).catch(() => {}), 800);
+}
+async function restoreStoryProfile() {
+  let v = getStoryProfile();
+  if (!v.background && !v.seriesTag) {
+    try {
+      const r = await fetch('/api/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin',
+        body: JSON.stringify({ action: 'get_storyprofile' }) });
+      if (r.ok) { const sp = (await r.json()).storyProfile || {}; if (sp.background || sp.seriesTag) { v = { background: sp.background || '', seriesTag: sp.seriesTag || '' }; try { localStorage.setItem('sam_story_profile', JSON.stringify(v)); } catch (_) {} } }
+    } catch (_) {}
+  }
+  const bg = document.getElementById('brandBackground'); if (bg && v.background && !bg.value) bg.value = v.background;
+  const tg = document.getElementById('brandSeriesTag'); if (tg && v.seriesTag && !tg.value) tg.value = v.seriesTag;
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => restoreStoryProfile());
+else setTimeout(restoreStoryProfile, 0);
+
+// Patch AL — "How SAM used the formula": each step, the exact line, and where it came from.
+function formulaMapHTML(data) {
+  const map = Array.isArray(data && data.formula_map) ? data.formula_map : [];
+  if (!map.length) return '';
+  const esc = s => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const badge = { used: ['✓ Used', 'var(--accent)'], fixed: ['✎ Fixed by SAM', '#B7791F'], edited: ['✎ Edited', '#B7791F'], missing: ['✕ Missing', '#C0392B'] };
+  const rows = map.map(m => {
+    const b = badge[m.status] || badge.used;
+    return `<div style="display:grid;grid-template-columns:110px 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--rule);">
+      <div><div style="font-size:13px;font-weight:700;color:var(--ink);">${esc(m.step)}</div><div style="font-size:11px;color:var(--ink-muted);">${esc(m.beat)}</div><div style="font-size:11px;font-weight:700;color:${b[1]};margin-top:4px;">${b[0]}</div></div>
+      <div>${m.line ? `<div style="font-size:14px;color:var(--ink);line-height:1.5;">“${esc(m.line)}”</div>` : ''}
+        ${m.from ? `<div style="font-size:12px;color:var(--ink-soft);margin-top:3px;">${esc(m.from)}</div>` : ''}
+        ${m.ask ? `<div style="font-size:12px;color:var(--ink);margin-top:5px;"><strong>SAM needs:</strong> ${esc(m.ask)}</div>` : ''}</div>
+    </div>`;
+  }).join('');
+  return `<div class="playbook-section" id="playbook-sec-formula">
+    <div class="playbook-section-title">How SAM used the formula</div>
+    <div class="wizard-why" style="margin-bottom:8px;">Each step of your retention formula, the exact line SAM used for it, and where that line came from.</div>
+    <div class="formula-map">${rows}</div>
+  </div>`;
+}
+function refreshFormulaMap() {
+  const old = document.getElementById('playbook-sec-formula');
+  const html = formulaMapHTML(window._lastPlaybookData || {});
+  if (old) { if (html) old.outerHTML = html; else old.remove(); return; }
+  const arch = document.getElementById('playbook-sec-architecture');
+  if (arch && html) arch.insertAdjacentHTML('afterend', html);
+}
+
 // Patch AD — on load, bring the saved logo back (this browser first, then the account) and show it.
 function showBrandLogoPreview(src) {
   const img = document.getElementById('brandLogoImg'); if (!img || !src) return;
@@ -16802,6 +16862,7 @@ The story_architecture object below is the structural source of truth — the fu
       audienceDemographics: audienceContext,
       wizardContext: context,
       signOff: getSignOff() || undefined,
+      storyProfile: (typeof getStoryProfile === 'function') ? getStoryProfile() : undefined,
       delivery: WS.delivery || 'camera',
       pace: WS.pace || 'natural',
       storyType: WS.storyType || 'moment',
@@ -16926,6 +16987,7 @@ ${steer ? 'CREATOR DIRECTION: ' + steer : ''}
       creatorContext: s.niche || '',
       steer: steer,
       signOff: getSignOff() || undefined,
+      storyProfile: (typeof getStoryProfile === 'function') ? getStoryProfile() : undefined,
       userId: (typeof getTrialState === 'function' && getTrialState().email) ? getTrialState().email : (localStorage.getItem('sam_uid') || 'anon').replace(/^dev-/, ''),
       tier: WS.tier || 'free',
       story_architecture: (window._lastPlaybookData && window._lastPlaybookData.story_architecture) || null,
@@ -16946,6 +17008,7 @@ ${steer ? 'CREATOR DIRECTION: ' + steer : ''}
 
     // Re-render just this section
     regenRenderSection(sectionKey, sectionEl, data);
+    if (sectionKey === 'script') { refreshFormulaMap(); refreshGapsCard(); } // Patch AL
 
     // Patch U.5 — a new architecture comes with a new hook, and the old script no longer
     // matches the beats. Re-render the hook and gaps, then rewrite the script from the
@@ -17233,6 +17296,9 @@ function renderPlaybook(data) {
     </div>
     </div>`;
   }
+
+  // Patch AL — formula map, right after the architecture.
+  if (!data.needs_more) html += formulaMapHTML(data);
 
   // ③ HOOK
   if (data.hook) {
@@ -18985,6 +19051,14 @@ if (localStorage.getItem('sam_dev') === 'true') {
         <div style="margin-top:12px;">
           <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:6px;">Your sign-off <span style="font-weight:400;text-transform:none;opacity:0.6;">(optional — the line you end every video with)</span></div>
           <input type="text" class="brand-text-input" id="brandSignOff" maxlength="200" placeholder="e.g. I'm self-taught, documenting everything, and taking you with me." oninput="setSignOff(this.value);" />
+        </div>
+        <div style="margin-top:12px;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:6px;">Your background <span style="font-weight:400;text-transform:none;opacity:0.6;">(optional — what makes this harder for you than for a pro? SAM uses it for the underdog line)</span></div>
+          <textarea class="brand-text-input" id="brandBackground" maxlength="600" rows="3" placeholder="e.g. Self-taught. My dad wasn't in the trades. I grew up in the restaurant business." oninput="setStoryProfile({ background: this.value });" style="resize:vertical;min-height:64px;"></textarea>
+        </div>
+        <div style="margin-top:12px;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:6px;">Series hashtag <span style="font-weight:400;text-transform:none;opacity:0.6;">(optional — always the first hashtag on every platform)</span></div>
+          <input type="text" class="brand-text-input" id="brandSeriesTag" maxlength="60" placeholder="e.g. #FromStudsToSanctuary" oninput="setStoryProfile({ seriesTag: this.value });" />
         </div>
       </div>
 
