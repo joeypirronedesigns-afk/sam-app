@@ -41,6 +41,10 @@
     {
       "source": "/persona-lab/build",
       "destination": "/app.html"
+    },
+    {
+      "source": "/api/:path((?!sam$|pdf$|stripe-webhook$|stats$|router$).*)",
+      "destination": "/api/router?__path=:path"
     }
   ],
   "functions": {
@@ -51,41 +55,11 @@
     "api/sam.js": {
       "maxDuration": 120
     },
-    "api/waitlist.js": {
-      "maxDuration": 10
-    },
-    "api/stripe-checkout.js": {
-      "maxDuration": 10
-    },
     "api/stripe-webhook.js": {
       "maxDuration": 10
     },
-    "api/auth.js": {
-      "maxDuration": 10
-    },
-    "api/outreach-reddit.js": {
-      "maxDuration": 60
-    },
-    "api/outreach-youtube.js": {
-      "maxDuration": 120
-    },
-    "api/outreach-daily.js": {
-      "maxDuration": 180
-    },
-    "api/ear.js": {
+    "api/router.js": {
       "maxDuration": 300
-    },
-    "api/pulse-context.js": {
-      "maxDuration": 10
-    },
-    "api/ear-signals.js": {
-      "maxDuration": 10
-    },
-    "api/persona-lab/compose.js": {
-      "maxDuration": 60
-    },
-    "api/keepalive.js": {
-      "maxDuration": 10
     }
   },
   "headers": [

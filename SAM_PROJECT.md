@@ -42,7 +42,7 @@ Stripe payment link: https://buy.stripe.com/eVqeVfgkOajocUX2Dp8Zq00
 - Typography: Instrument Serif italic for headings, Inter for UI, JetBrains Mono for code
 - Sidebar: Left nav, 220px wide. Sections: DAILY, BUILD SAM'S BRAIN, STUDIO, MORE, EXECUTION PACK
 - Version stamp: data-qs-version attribute on div[data-qs-shell] — bump on every commit
-- Current version: v9.118.75+
+- Current version: v9.118.76+
 
 ---
 
@@ -111,6 +111,7 @@ Vercel CLI: Installed at /opt/homebrew/bin/vercel, logged in as joeypirronedesig
 - Patch AG (v9.118.73) — Free guides checked in code: factCheckGuide (Haiku, parallel with the script fact-check in playbook mode; also on the Regenerate button via chat mode `guideCheck` + `guideSource`) removes intro/item sentences that state things about the creator not in the story or promise results ('the tracker I wish I'd had', 'will save you thousands'); worksheet lines are never sent or touched; a body is never emptied; fails open. fixGuideTitle: 'The One Thing…' with 5 items → 'The 5 Things…'. Story cards: schema asks for first person (I/my, never he/his). Numbers: an untraceable small number word that had to stay (beat's only sentence, failed hook/card rewrite) is softened to 'a few' ('Six words on a sticky note' → 'A few words…'). Empty script beats are filled from their card. Scorecard misses (marathon empty beat, sticky 'six words') addressed by these two; re-run to confirm.
 - Patch AH (v9.118.74) — Scorecard after AG: main set 170/170. Fix: AG's number softening turned 'Thirty-six dollars' into 'Thirty-a few dollars' — a number word after a hyphen, dot or tens word is now left alone.
 - Patch AI (v9.118.75) — Retention arc (STORY_RULES rule 11), modeled on the 410-day video (168K 3-sec views, 36% to 1 min, flat curve after 0:10). Hook carries number + who it's for; open loop by second 5; underdog in setup from creator context only (else gap); CTA turns the story to the viewer (22 words max); peak line said once; no added commitment words ('promise'); grief/loss never in hook, caption first line or title; captions echo the hook; series hashtag first. Spec: docs/SAM_STORY_FORMULA.md. Validator + profile fields (Sections 7-8 of the spec) are still open tasks.
+- Patch AJ (v9.118.76) — Vercel Hobby plan (Pro dropped Nov 2026): Hobby allows 12 functions per deployment, 2048 MB memory, 300s max. All API code moved unchanged from api/ to server/. api/ now holds 5 functions: sam.js, pdf.js, stripe-webhook.js (thin wrappers requiring server/), stats.js (edge), and router.js, which serves every other /api route via the vercel.json rewrite /api/:path -> /api/router?__path=:path. NEW ENDPOINTS: add the handler to server/ AND a line to ROUTES in api/router.js — a new file in api/ counts toward the 12. pdf.js memory 3009 -> 2048.
 - Follow-ups from the AA audit: optionally set CRON_SECRET (locks /api/keepalive to Vercel's scheduler); api/me.js and api/memory.js still accept email from the body for reads/writes (privacy, move to resolveIdentity next); CORS '*' on auth endpoints can be tightened.
 
 ### Open Task List (v9.118.x)
