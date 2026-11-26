@@ -320,3 +320,7 @@ Any content creator building a social media audience. NOT limited to DIY/tradesp
 ## Patch AV — v9.118.88 — SAM knows today's date + notebook sorts itself
 - nowLine(req): real date/time in the creator's time zone (cookie sam_tz set by the app; default America/New_York) added to the chat system prompt and the shared tool base prompt.
 - Notebook: "✨ Sort for me" default when adding; General notes are re-sorted by guessCat (birthday/heritage/grew up → Background, entrepreneur → Work, sibling → People).
+
+## Patch AW — v9.118.89 — Cleanup from the launch check
+- Removed the unreachable v7.94 Photo Wizard (showPhotoWizard never called; it posted to /api/agent, which never existed, and read a client-side FAL key). 282 lines.
+- Signed-out Today page: sample SAM's Read and plan are labeled "Example · …" (also restored on sign-out); real briefs replace the label with "SAM'S READ · TODAY".
