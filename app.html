@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.78" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.80" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -16448,7 +16448,7 @@ function formulaMapHTML(data) {
   const map = Array.isArray(data && data.formula_map) ? data.formula_map : [];
   if (!map.length) return '';
   const esc = s => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const badge = { used: ['✓ Used', 'var(--accent)'], fixed: ['✎ Fixed by SAM', '#B7791F'], edited: ['✎ Edited', '#B7791F'], missing: ['✕ Missing', '#C0392B'] };
+  const badge = { used: ['✓ Used', 'var(--accent)'], fixed: ['✎ Fixed by SAM', '#B7791F'], edited: ['✎ Edited', '#B7791F'], missing: ['✕ Missing', '#C0392B'], sam: ["✎ SAM's words", '#B7791F'] };
   const rows = map.map(m => {
     const b = badge[m.status] || badge.used;
     return `<div style="display:grid;grid-template-columns:110px 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--rule);">
@@ -16568,6 +16568,8 @@ function renderStoryReflection(reply, diagEl) {
     const old = prev.find(p => p && p.q === q);
     return { q, a: old ? old.a : '' };
   });
+  // Patch AN — remember this reflection for this exact story.
+  WS._reflectReply = reply; WS._reflectKey = window._curReflectKey || '';
   WS.gapQuestion = ''; WS.gapAnswer = '';   // Patch W single-question fields, superseded
   WS.diagnosedStory = body;
   saveWizardState();
@@ -16615,6 +16617,16 @@ async function generateStoryReflection() {
   const text = (WS.storyText || '').trim();
   const photoText = (document.getElementById('wiz2phototext')?.value || '').trim();
   const hasPhoto = !!WS.storyPhoto;
+
+  // Patch AN — coming back to this page with the same story shows SAM's saved reflection and your
+  // answers. Before, every visit asked SAM again, the questions came back reworded, and answers were lost.
+  const _rKey = text + '|' + photoText + '|' + (hasPhoto ? String(WS.storyPhoto).length : 0);
+  window._curReflectKey = _rKey;
+  if (WS._reflectKey === _rKey && WS._reflectReply && diagEl) {
+    renderStoryReflection(WS._reflectReply, diagEl);
+    if (nextBtn) nextBtn.disabled = false;
+    return;
+  }
 
   // If no text AND no photo — ask them to go back
   if (!text && !hasPhoto && !photoText) {

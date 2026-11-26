@@ -152,24 +152,94 @@ function _beatText(script, name) {
   const lines = String(script || '').split('\n'); const r = _beatRange(lines, name);
   return r ? lines.slice(r[0], r[1]).join(' ').trim() : '';
 }
-function enforceOpenLoop(parsed, hookIn) {
+function enforceOpenLoop(parsed, hookIn, phraseIn) {
   const H = (parsed && parsed.hook) || hookIn || '';
-  if (!parsed || !H) return false;
+  const PH = phraseIn || 'Let me explain.';
+  if (!parsed) return false;
   let added = false;
   for (const f of ['full_script', 'narration_script']) {
     if (typeof parsed[f] !== 'string' || !parsed[f]) continue;
     const lines = parsed[f].split('\n'); const r = _beatRange(lines, 'Opening');
     if (!r) continue;
     const body = lines.slice(r[0], r[1]).join('\n');
-    if (LOOP_RE.test(body)) continue;
-    const i = lines.findIndex((l, k) => k >= r[0] && k < r[1] && l.includes(H));
-    if (i < 0) continue;
-    const hook = /[.!?…]$/.test(H.trim()) ? H : H.trim() + '.';
-    lines[i] = lines[i].replace(H, hook + ' Let me explain.').replace(/\.\.\s+Let/, '. Let');
-    parsed[f] = lines.join('\n'); added = true;
+    if (!phraseIn && LOOP_RE.test(body)) continue;
+    if (phraseIn && _normSentence(body).includes(_normSentence(PH))) continue;
+    let i = H ? lines.findIndex((l, k) => k >= r[0] && k < r[1] && l.includes(H)) : -1;
+    if (i >= 0) {
+      const hook = /[.!?…]$/.test(H.trim()) ? H : H.trim() + '.';
+      lines[i] = lines[i].replace(H, hook + ' ' + PH);
+    } else {
+      i = lines.findIndex((l, k) => k >= r[0] && k < r[1] && l.trim());
+      if (i < 0) continue;
+      const parts = lines[i].match(/[^.!?…]+(?:[.!?…]+|$)/g) || [lines[i]];
+      parts.splice(1, 0, ' ' + PH + ' ');
+      lines[i] = parts.join('').replace(/\s{2,}/g, ' ').trim();
+    }
+    parsed[f] = lines.join('\n'); added = PH;
   }
   return added;
 }
+// Patch AM — the creator's own opening wins. If their story starts with an anchor line (a number, under
+// 30 words) the hook is that line, unless SAM's hook keeps the same numbers and most of the same words.
+// A loop phrase the creator wrote ("Let me explain.") is the one the Opening uses.
+function _storyOnly(moment) { return String(moment || '').split(/\n\n\(The creator added/)[0].trim(); }
+function creatorOpening(moment) {
+  const story = _storyOnly(moment);
+  if (!story) return null;
+  const sents = (story.match(/[^.!?…]+(?:[.!?…]+|$)/g) || []).map(x => x.trim()).filter(Boolean);
+  if (!sents.length) return null;
+  let first = sents[0].replace(/\s+/g, ' ').replace(/\bmy to\b/i, 'me to').trim();
+  first = first.charAt(0).toUpperCase() + first.slice(1);
+  if (!/[.!?…]$/.test(first)) first += '.';
+  const words = first.split(' ').length;
+  const anchor = /\d/.test(first) && words <= 30 ? first : '';
+  let loop = '';
+  for (const x of sents.slice(1, 4)) {
+    const m = x.match(/\b(let me explain|i'?ll explain|here'?s the part i never told you|here'?s (?:what|why|how) [^,.!?]{0,40}|let me (?:show|tell) you[^,.!?]{0,30})/i);
+    if (m) { loop = m[0].charAt(0).toUpperCase() + m[0].slice(1) + '.'; break; }
+  }
+  return { anchor, loop };
+}
+function applyCreatorOpening(parsed, moment) {
+  const co = creatorOpening(moment);
+  if (!co || !co.anchor || !parsed) return false;
+  const nums = t => (String(t).match(/\d+/g) || []);
+  const hook = String(parsed.hook || '');
+  const an = new Set(nums(co.anchor)), hn = nums(hook);
+  const aw = new Set(_normSentence(co.anchor).split(' ')), hw = _normSentence(hook).split(' ').filter(Boolean);
+  const overlap = hw.length ? hw.filter(w => aw.has(w)).length / hw.length : 0;
+  const keep = hook && hn.length && hn.every(n => an.has(n)) && [...an].every(n => hn.includes(n)) && overlap >= 0.6;
+  if (keep) return false;
+  const oldW = new Set(_normSentence(hook).split(' ').filter(Boolean));
+  for (const f of ['full_script', 'narration_script']) {
+    if (typeof parsed[f] !== 'string') continue;
+    const lines = parsed[f].split('\n'); const r = _beatRange(lines, 'Opening');
+    if (!r) continue;
+    const body = lines.slice(r[0], r[1]).join(' ');
+    // drop sentences that restate SAM's old hook, then lead with the creator's line
+    const rest = (body.match(/[^.!?…]+(?:[.!?…]+|$)/g) || []).map(x => x.trim()).filter(x => {
+      const w = _normSentence(x).split(' ').filter(Boolean);
+      return w.length && w.filter(t => oldW.has(t)).length / w.length < 0.6;
+    });
+    lines.splice(r[0], r[1] - r[0], [co.anchor].concat(rest).join(' '));
+    parsed[f] = lines.join('\n');
+  }
+  parsed.hook = co.anchor;
+  return true;
+}
+function _bestSentence(beatText, line) {
+  const target = _normSentence(line).split(' ').filter(Boolean);
+  if (!target.length || !beatText) return '';
+  const sents = (beatText.match(/[^.!?…]+(?:[.!?…]+|$)/g) || []).map(x => x.trim()).filter(Boolean);
+  let best = '', score = 0;
+  for (let i = 0; i < sents.length; i++) for (let k = i + 1; k <= Math.min(sents.length, i + 3); k++) {
+    const run = sents.slice(i, k).join(' '); const w = new Set(_normSentence(run).split(' '));
+    const sc = target.filter(t => w.has(t)).length / target.length - (w.size > target.length * 2 ? 0.2 : 0);
+    if (sc > score) { score = sc; best = run; }
+  }
+  return score >= 0.5 ? best : '';
+}
+
 function buildFormulaMap(parsed, b, info) {
   if (!parsed || typeof parsed !== 'object') return;
   const script = parsed.full_script || parsed.narration_script || '';
@@ -188,11 +258,14 @@ function buildFormulaMap(parsed, b, info) {
     let status = (line && !/^(none|missing|not found|n\/a)/i.test(line)) ? 'used' : 'missing';
     if (status === 'missing') { line = ''; if (!from) from = 'Your story didn\'t give SAM this yet.'; }
     if (status === 'used' && d.beat !== 'Posts' && !norm.includes(_normSentence(line))) {
-      status = 'edited'; from = 'SAM\'s fact-check changed this line — read the ' + d.beat + ' beat.'; line = '';
+      const near = _bestSentence(_beatText(script, d.beat === 'Your Call' ? 'CTA' : d.beat), line);
+      if (near) line = near;
+      else { status = 'edited'; from = 'SAM\'s fact-check changed this line — read the ' + d.beat + ' beat.'; line = ''; }
     }
+    if (d.step === 'Anchor' && info.hookFromCreator) { status = 'used'; line = HOOK; from = 'Your story — your own first line.'; }
     if (d.step === 'Anchor' && !ANCHOR_RE.test(HOOK)) { status = 'missing'; line = ''; from = 'The hook has no number, day count or timeframe.'; }
     if (d.step === 'Open loop') {
-      if (info.loopAdded) { status = 'fixed'; line = 'Let me explain.'; from = 'Added by SAM\'s check — the opening didn\'t open a question.'; }
+      if (info.loopAdded) { status = info.loopFromCreator ? 'used' : 'fixed'; line = info.loopAdded; from = info.loopFromCreator ? 'Your story — your own words.' : 'Added by SAM\'s check — the opening didn\'t open a question.'; }
       else if (status === 'missing' && LOOP_RE.test(_beatText(script, 'Opening'))) { status = 'used'; line = _beatText(script, 'Opening'); from = from || 'Your opening.'; }
     }
     if (d.step === 'Viewer turn' && !/\b(you|your|you're|you've|you'll)\b/i.test(ctaText)) { status = 'missing'; line = ''; from = 'The call to action doesn\'t speak to the viewer.'; }
@@ -208,6 +281,13 @@ function buildFormulaMap(parsed, b, info) {
         status = (plats.length && first === plats.length) ? 'used' : 'missing';
         line = sp.seriesTag; from = 'Your brand settings — first hashtag on ' + first + ' of ' + plats.length + ' platforms.';
       }
+    }
+    // Patch AM — "from your story" is checked, not taken on SAM's word.
+    if (status === 'used' && line && !['Sign-off', 'Series hashtag', 'Open loop'].includes(d.step) && !(d.step === 'Anchor' && info.hookFromCreator)) {
+      const srcW = new Set(_normSentence([b.moment, b.creatorContext].filter(Boolean).join(' ')).split(' '));
+      const lw = _normSentence(line).split(' ').filter(w => w.length > 3 && !/^(that|this|with|from|have|just|like|what|when|there|their|they|about|into|your)$/.test(w));
+      const ov = lw.length ? lw.filter(w => srcW.has(w)).length / lw.length : 1;
+      if (ov < 0.5) { status = 'sam'; from = 'SAM\'s words — not in your story. Keep it only if it\'s true.'; }
     }
     out.push({ step: d.step, beat: d.beat, line, from, status, ask: status === 'missing' ? d.ask : '' });
   }
@@ -1258,7 +1338,11 @@ NEVER write in generic AI voice when you have this profile. Generic AI voice is:
    - Series hashtag first: if the creator's context, sign-off or story names a series hashtag (a
      #Tag they use for the series), it is the first hashtag on every platform.
 
-12. Show your work (Patch AL): fill "formula_map" — one entry per formula step, in order: Anchor, Open loop,
+12. The creator's own opening (Patch AM): if the story's first sentence already carries a number and who
+   it's for, that sentence IS the hook — tidy grammar only, keep their words and numbers. If they wrote
+   their own open-loop line ("Let me explain."), use it. Never add a day number or count they didn't say.
+
+13. Show your work (Patch AL): fill "formula_map" — one entry per formula step, in order: Anchor, Open loop,
    Underdog, Stakes, Struggle, Payoff, Viewer turn. "line" is the EXACT sentence from full_script that does
    the job, copied word for word. "from" says where it came from in plain words, quoting the creator
    (e.g. 'Your story: "they asked me to fix it up"' or 'Your background: "Dad wasn't in the trades"').
@@ -1490,6 +1574,9 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
       const fixT = t => String(t).replace(/\b(?:an?\s+)?(mistake_lesson|demo_proof|behind_the_scenes|moment_reflection)\b/gi, (m, k) => TW[k.toLowerCase()]);
       for (const f of ['diagnosis', 'diagnosis_why', 'hook_why', 'focus_directive']) if (typeof parsed[f] === 'string') parsed[f] = fixT(parsed[f]);
     }
+    // Patch AM — the creator's own anchor line is the hook when SAM's hook drifts from it.
+    let _amHook = false;
+    if (parsed && typeof parsed === 'object' && mode === 'playbook') _amHook = applyCreatorOpening(parsed, (req.body || {}).moment);
     // Patch AC — tidy spoken text (see tidySpoken).
     tidySpoken(parsed, req.body);
     // Patch Y.2 — the script's Opening beat must start with the hook, word for word.
@@ -1513,9 +1600,13 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
       }
     }
     // Patch AL — the opening must open a loop.
-    const _alInfo = { loopAdded: false };
+    const _alInfo = { loopAdded: false, loopFromCreator: false, hookFromCreator: _amHook };
     if (parsed && typeof parsed === 'object' && (mode === 'playbook' || (mode === 'regen_section' && (req.body || {}).section === 'script'))) {
-      _alInfo.loopAdded = enforceOpenLoop(parsed, ((req.body || {}).story_architecture || {}).opening);
+      const _co = creatorOpening((req.body || {}).moment) || {};
+      _alInfo.loopAdded = enforceOpenLoop(parsed, ((req.body || {}).story_architecture || {}).opening, _co.loop || '');
+      _alInfo.loopFromCreator = !!_co.loop;
+      // the creator's phrase was already in the opening: still credit it to them
+      if (!_alInfo.loopAdded && _co.loop && _normSentence(_beatText(parsed.full_script || '', 'Opening')).includes(_normSentence(_co.loop))) _alInfo.loopAdded = _co.loop;
     }
     // Patch U.3 — the hook IS the opening beat. Enforced in code so they can never diverge.
     if (parsed && typeof parsed === 'object' && parsed.hook && parsed.story_architecture && typeof parsed.story_architecture === 'object') {

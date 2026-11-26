@@ -277,3 +277,13 @@ Any content creator building a social media audience. NOT limited to DIY/tradesp
 - Rule 12 + `formula_map` in the playbook and script-regen schemas: step → exact line → where it came from.
 - Code checks after generation: open loop ("Let me explain." inserted after the hook if the opening opens no question), anchor (number/timeframe in hook), viewer turn (CTA speaks to "you"), sign-off (from brand settings), series hashtag (pinned first on every platform in enforcePlatforms, never trimmed). Lines not found in the final script are marked "edited". Missing steps add the spec's reflection question to gaps (max 2).
 - New "How SAM used the formula" section in the app (after architecture; refreshed on script Redo) and in the PDF.
+
+## Patch AM — v9.118.79 — Creator's opening wins + honest formula map
+- Output 52: SAM replaced the creator's anchor line with an invented "this is day 421" hook (number guard cut it from the script but the hook kept it), so the Opening was truncated and the open-loop check never fired.
+- applyCreatorOpening: if the story's first sentence has a number (≤30 words), it becomes the hook unless SAM's hook keeps the same numbers and ≥60% of the words. Opening sentences restating the old hook are removed.
+- creatorOpening: the creator's own loop phrase ("Let me explain.") is used for the Open loop; "Let me explain." default otherwise. Loop is inserted after the first sentence when the hook isn't found.
+- Formula map: when SAM's quoted line isn't verbatim, the closest sentence in that beat is shown; lines claiming to be from the story are checked against the story — <50% overlap shows "SAM's words — not in your story".
+- Prompt rule 12 (creator's own opening); old rule 12 is now 13.
+
+## Patch AN — v9.118.80 — Reflection answers survive navigation
+- Revisiting step 3 re-ran the reflection; reworded questions dropped the answers (matched by exact text). Now the reflection + answers are cached per story (WS._reflectKey/_reflectReply) and re-shown without a new API call while the story is unchanged.
