@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.82" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.84" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -12717,6 +12717,7 @@ async function sendChatMessage() {
         mode: 'chat',
         messages: messages,
         systemPrompt: SAM_SYSTEM_PROMPT,
+        notebook: true,
         userId: _uid,
         userEmail: (_u && _u.email) ? _u.email.toLowerCase() : '',
         voiceProfile: (_u && _u.voiceProfile) || getSamVoiceProfile() || undefined
@@ -12734,6 +12735,7 @@ async function sendChatMessage() {
     const result = await readStream(r);
     const reply = result?.reply || result?.content || result?.text || "I'm here! Try asking again.";
     addChatMessage('sam', reply);
+    showNotebookNotice('chatMessages', result);
 
   } catch(e) {
     hideChatTyping();
@@ -13244,6 +13246,7 @@ async function sendPersistentMessage() {
         mode: 'chat',
         messages: messages,
         systemPrompt: getSAMPersistentPrompt(),
+        notebook: true,
         userEmail: (typeof getCurrentUserCached === 'function' && getCurrentUserCached() && getCurrentUserCached().email) ? getCurrentUserCached().email.toLowerCase() : ''
       })
     });
@@ -13296,6 +13299,7 @@ async function sendPersistentMessage() {
     } else {
       addPersistentMessage('sam', reply, true);
     }
+    showNotebookNotice('persistentSAMMessages', result);
 
   } catch(e) {
     if (typing) typing.style.display = 'none';
@@ -13457,11 +13461,14 @@ function isDebugOrMeta(text) {
 function detectSAMIntent(text) {
   const t = text.toLowerCase();
 
+  // Patch AQ — a question to SAM ("can you tell me about my wife?") is a conversation, not a story to script.
+  if (/\?\s*$/.test(t.trim()) || /^\s*(can|could|do|does|did|what|who|where|when|why|how|is|are|tell me|remember|have you)\b/.test(t)) return null;
+
   // Pulse triggers — direct content asks (write/draft/give me a [hook|post|script|caption|video|short|reel])
   if (t.match(/(write|draft|make|give|build|create) me (a|an|some|the)?\s*(hook|post|script|caption|video|short|reel|tiktok|youtube|facebook|linkedin|instagram|reels?|tweet|thread)/)) return 'pulse';
 
   // Pulse triggers — moment/story/something happened
-  if (t.match(/i (just|was|went|did|tried|had|made|got|lost|found|built|fixed|broke|started|finished|quit|almost|nearly)|today i|yesterday i|last (week|night|month)|this morning|this week|someone (dm|messaged|commented|said)|my (wife|husband|kid|dog|boss|client|customer)|we (just|finally|actually)/)) return 'pulse';
+  if (t.match(/i (just|was|went|did|tried|had|made|got|lost|found|built|fixed|broke|started|finished|quit|almost|nearly)|today i|yesterday i|last (week|night|month)|this morning|this week|someone (dm|messaged|commented|said)|my (wife|husband|kid|dog|boss|client|customer) (just|said|did|made|got|told|asked|surprised|found|walked|came)|we (just|finally|actually)/)) return 'pulse';
 
   // Spark triggers — stuck, ideas, what to post
   if (t.match(/stuck|no idea|what (should|do) i post|content idea|run out|blank|nothing to post|help me (think|brainstorm|come up)/)) return 'spark';
@@ -16443,6 +16450,62 @@ async function restoreStoryProfile() {
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => restoreStoryProfile());
 else setTimeout(restoreStoryProfile, 0);
 
+// Patch AR — SAM's notebook: facts SAM keeps about the creator. Visible, addable, deletable.
+function _nbFetch(body) {
+  return fetch('/api/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin', body: JSON.stringify(body) })
+    .then(r => r.ok ? r.json() : Promise.reject(r.status));
+}
+function _nbRender(notes) {
+  const list = document.getElementById('nbList'); if (!list) return;
+  const esc = s => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  list.innerHTML = (notes && notes.length) ? notes.slice().reverse().map(n => `<div style="display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--rule);">
+      <div style="flex:1;font-size:14px;color:var(--ink);line-height:1.45;">${esc(n.text)}<div style="font-size:11px;color:var(--ink-muted);margin-top:2px;">${n.src === 'chat' ? 'Noted from chat' : 'Added by you'} · ${esc(String(n.at || '').slice(0, 10))}</div></div>
+      <button type="button" onclick="deleteNote('${esc(n.id)}')" title="Forget this" style="border:none;background:none;color:var(--ink-muted);cursor:pointer;font-size:16px;line-height:1;">✕</button></div>`).join('')
+    : '<div style="font-size:13px;color:var(--ink-muted);padding:10px 0;">Nothing yet. Add something below, or just tell SAM in chat.</div>';
+}
+function openNotebook() {
+  let ov = document.getElementById('nbOverlay');
+  if (!ov) {
+    ov = document.createElement('div'); ov.id = 'nbOverlay';
+    ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100000;display:flex;align-items:center;justify-content:center;padding:16px;';
+    ov.innerHTML = `<div style="background:var(--paper,#fff);color:var(--ink);border-radius:12px;max-width:520px;width:100%;max-height:85vh;display:flex;flex-direction:column;padding:20px;box-shadow:0 10px 40px rgba(0,0,0,0.25);font-family:'Inter',system-ui,sans-serif;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><div style="font-size:17px;font-weight:700;">📓 What SAM knows about you</div>
+        <button type="button" onclick="closeNotebook()" style="border:none;background:none;font-size:20px;cursor:pointer;color:var(--ink-muted);">×</button></div>
+      <div style="font-size:13px;color:var(--ink-soft);margin-bottom:10px;">SAM reads this every time she works with you. When you tell her something lasting in chat, she adds it here. Delete anything that's wrong.</div>
+      <div id="nbList" style="overflow:auto;flex:1;min-height:60px;"></div>
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <input id="nbInput" type="text" maxlength="200" placeholder="e.g. My wife's name is Amanda." onkeydown="if(event.key==='Enter'){event.preventDefault();addNote();}" style="flex:1;padding:9px 11px;border:1px solid var(--rule);border-radius:6px;font-size:14px;background:var(--paper);color:var(--ink);" />
+        <button type="button" onclick="addNote()" style="padding:9px 14px;background:var(--accent);color:var(--paper);border:none;border-radius:6px;font-weight:600;cursor:pointer;">Add</button>
+      </div></div>`;
+    ov.addEventListener('click', e => { if (e.target === ov) closeNotebook(); });
+    document.body.appendChild(ov);
+  }
+  ov.style.display = 'flex';
+  const list = document.getElementById('nbList'); if (list) list.innerHTML = '<div style="font-size:13px;color:var(--ink-muted);padding:10px 0;">Loading…</div>';
+  _nbFetch({ action: 'get_notebook' }).then(d => _nbRender(d.notes)).catch(() => { if (list) list.innerHTML = '<div style="font-size:13px;color:var(--ink-muted);padding:10px 0;">Sign in to see your notebook.</div>'; });
+}
+function closeNotebook() { const ov = document.getElementById('nbOverlay'); if (ov) ov.style.display = 'none'; }
+function addNote() {
+  const inp = document.getElementById('nbInput'); const t = inp ? inp.value.trim() : '';
+  if (!t) return; inp.value = '';
+  _nbFetch({ action: 'add_note', text: t }).then(d => _nbRender(d.notes)).catch(() => {});
+}
+function deleteNote(id) { _nbFetch({ action: 'delete_note', id }).then(d => _nbRender(d.notes)).catch(() => {}); }
+// A small line under SAM's reply when she noted or forgot something (not saved into chat history).
+function showNotebookNotice(containerId, result) {
+  const box = document.getElementById(containerId);
+  const noted = (result && Array.isArray(result.noted)) ? result.noted : [];
+  const forgot = (result && Array.isArray(result.forgot)) ? result.forgot : [];
+  if (!box || (!noted.length && !forgot.length)) return;
+  const esc = s => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const el = document.createElement('div');
+  el.style.cssText = 'font-size:12px;color:var(--ink-muted);margin:4px 0 10px;padding:6px 10px;border-left:2px solid var(--accent);';
+  el.innerHTML = (noted.length ? '📓 Noted: ' + noted.map(esc).join(' · ') : '') + (noted.length && forgot.length ? '<br>' : '') +
+    (forgot.length ? '🗑 Forgot: ' + forgot.map(esc).join(' · ') : '') +
+    ' <a href="#" onclick="openNotebook();return false;" style="color:var(--accent);">View notebook</a>';
+  box.appendChild(el); box.scrollTop = box.scrollHeight;
+}
+
 // Patch AL — "How SAM used the formula": each step, the exact line, and where it came from.
 function formulaMapHTML(data) {
   const map = Array.isArray(data && data.formula_map) ? data.formula_map : [];
@@ -19071,6 +19134,9 @@ if (localStorage.getItem('sam_dev') === 'true') {
         <div style="margin-top:12px;">
           <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:6px;">Series hashtag <span style="font-weight:400;text-transform:none;opacity:0.6;">(optional — always the first hashtag on every platform)</span></div>
           <input type="text" class="brand-text-input" id="brandSeriesTag" maxlength="60" placeholder="e.g. #FromStudsToSanctuary" oninput="setStoryProfile({ seriesTag: this.value });" />
+        </div>
+        <div style="margin-top:12px;">
+          <button type="button" onclick="openNotebook()" style="font-size:12px;font-weight:600;color:var(--ink);background:var(--surface-2);border:1px solid var(--rule);border-radius:6px;padding:8px 14px;cursor:pointer;font-family:'Inter',system-ui,sans-serif;">📓 What SAM knows about you</button>
         </div>
       </div>
 

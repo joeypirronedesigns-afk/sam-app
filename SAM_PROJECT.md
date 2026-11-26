@@ -294,3 +294,14 @@ Any content creator building a social media audience. NOT limited to DIY/tradesp
 
 ## Patch AP — Formula map never quotes across beats
 - Output 54: Struggle/Payoff rows showed runs spanning the Turn and Payoff beats. The fallback now searches one beat at a time (own beat first).
+
+## Patch AQ — v9.118.83 — Questions never trigger tools
+- "can you tell me about my wife" matched the Pulse "my (wife|dog...)" trigger. detectSAMIntent now returns null for questions (trailing "?" or question opener).
+
+## Patch AR — v9.118.84 — SAM's notebook (real memory)
+- Problem: nothing stored personal facts; the chat prompt claimed persistent memory ("tell me once, I've got it") that didn't exist. Chat only sees the last 10–20 messages; brain selfStory is overwritten per story.
+- server/_notebook.js (helper, not a function): KV `notebook:<email>` list of {id,text,src,at}, max 80 × 200 chars. extractNotes = one Haiku pass on the creator's latest chat message (adds stated durable facts, forgets ids on request; skips health/money/passwords). applyExtraction dedupes.
+- server/sam.js chat: when `notebook: true` and signed in (session cookie), notebook is in the system prompt; extraction runs in parallel with the reply; result carries `noted`/`forgot`. MEMORY & CONTINUITY prompt rewritten to claim only what exists.
+- Playbook: notebook appended to wizardContext as BACKGROUND ONLY (never script facts; not in number/fact-check sources).
+- server/auth.js: get_notebook / add_note / delete_note.
+- app.html: both chat panels send notebook:true and show "📓 Noted: … View notebook"; "What SAM knows about you" modal (add/delete) opened from the brand step or the chat notice. Pulse trigger "my wife/dog/…" now needs a story verb ("my wife just…").

@@ -3,6 +3,8 @@ const { trackUser, trackEvent, saveUserProfile, getUserProfile, updateUserEmail,
 const { normalizeSamContext, buildBrainPrompt } = require('./_context');
 const { checkGate } = require('./_gate');
 const { platformPrompt, specFor, enforcePlatforms } = require('./_platforms');
+const { getSessionEmail } = require('./_session');
+const NB = require('./_notebook'); // Patch AR — SAM's notebook
 
 // v9.118.16 (Patch C) — derive structured script_beats[] from [BEAT: ...] markers
 // emitted per v9.118.15 instructions. Additive: full_script stays unchanged,
@@ -1040,8 +1042,16 @@ module.exports = async function handler(req, res) {
           profileContext += '\n\nVOICE DNA — CRITICAL INSTRUCTION: Apply forensic voice fingerprint in every response. Match sentence rhythm, punctuation personality, actual phrases, energy signature. Never generic AI polish.\nVoice fingerprint: ' + vp.slice(0, 800);
         }
       }
+      // Patch AR — SAM's notebook (signed-in chat only). Read it, and note new facts in parallel with the reply.
+      const _nbEmail = req.body.notebook ? await getSessionEmail(req).catch(() => null) : null;
+      const _nbNotes = _nbEmail ? await NB.getNotes(_nbEmail).catch(() => []) : [];
+      if (_nbEmail) profileContext += NB.notebookPrompt(_nbNotes, false);
+      const _lastUser = [...(messages || [])].reverse().find(m => m && m.role === 'user');
+      const _nbExtract = (_nbEmail && _lastUser && typeof _lastUser.content === 'string')
+        ? NB.extractNotes(apiKey, _lastUser.content, _nbNotes).then(ex => NB.applyExtraction(_nbEmail, ex)).catch(() => ({ noted: [], forgot: [] }))
+        : Promise.resolve({ noted: [], forgot: [] });
       if (userId && userId !== 'anon' && !userId.startsWith('anon-')) {
-        profileContext += `\n\nMEMORY & CONTINUITY:\nYou have persistent memory of this user across sessions:\n- Their Voice DNA profile (above) — how they actually write\n- Their story context and niche (above, if present)\n- Past conversations stored in your database\nWhen the user asks "do you remember me" or "what do you know about me", be honest and specific. Reference what's actually in the profile. Never disclaim memory you have. If you genuinely don't have something (e.g., a specific event they mention from before that's not in context), say so plainly — don't fall back to generic "I can't remember between sessions" disclaimers, because that's false.\n\nHOW VOICE DNA UPDATES: The user's Voice DNA profile only updates when they explicitly submit new writing samples through the Voice Trainer (the 🧬 button in the nav, Workshop, or chat header). Chat conversations with you do NOT automatically update their voice profile — they're saved to your memory of past chats, but not analyzed into voice traits. If a user asks how to refine their voice profile or says "you'll learn my voice over time," gently point them to Voice Trainer rather than implying chat alone evolves their profile.`;
+        profileContext += `\n\nMEMORY & CONTINUITY (be exact about this):\nWhat you know about this user across sessions is ONLY: their profile above (Voice DNA, current story, niche, platforms)${_nbEmail ? ', SAM\'S NOTEBOOK above, ' : ' '}and their most recent messages. Nothing else carries over.\nWhen they ask "what do you know about me", answer from exactly those. If something isn't there, say plainly you don't have it.${_nbEmail ? ' When they tell you a lasting fact about themselves (people, pets, places, plans), it is saved to your notebook automatically — they can see and edit it under "What SAM knows about you". You may say "Noted." Never promise to remember anything else.' : ' Do not promise to remember things — you have no notebook in this session.'}\n\nHOW VOICE DNA UPDATES: The user's Voice DNA profile only updates when they explicitly submit new writing samples through the Voice Trainer (the 🧬 button in the nav, Workshop, or chat header). Chat conversations with you do NOT automatically update their voice profile — they're saved to your memory of past chats, but not analyzed into voice traits. If a user asks how to refine their voice profile or says "you'll learn my voice over time," gently point them to Voice Trainer rather than implying chat alone evolves their profile.`;
       }
       const baseSystem = systemPrompt || `You are SAM`;
       const chatSystem = systemPrompt ? systemPrompt + profileContext : `You are SAM — Strategic Assistant for Making — a friendly, sharp creative director built into the SAM app at samforcreators.com. You help creators understand and get the most out of SAM's 5 tools.
@@ -1075,7 +1085,8 @@ PERSONALITY: Confident, direct, warm. Keep responses to 2-4 sentences max. No ja
         });
         const data = await chatRes.json();
         const reply = data?.content?.[0]?.text || "I'm here! Try asking again.";
-        res.write('data: ' + JSON.stringify({ done: true, result: { reply } }) + '\n\n');
+        const _nb = await _nbExtract;
+        res.write('data: ' + JSON.stringify({ done: true, result: { reply, noted: _nb.noted, forgot: _nb.forgot } }) + '\n\n');
         return res.end();
       } catch(e) {
         res.write('data: ' + JSON.stringify({ error: e.message }) + '\n\n');
@@ -1659,7 +1670,9 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
 
     // ── PLAYBOOK MODE ─────────────────────────────────────────────────────────
     if (mode === 'playbook') {
-      const wizContext = req.body.wizardContext || '';
+      // Patch AR — notebook as background (never a source of script facts).
+      const _pbEmail = await getSessionEmail(req).catch(() => null);
+      const wizContext = (req.body.wizardContext || '') + (_pbEmail ? NB.notebookPrompt(await NB.getNotes(_pbEmail).catch(() => []), true) : '');
       const delivery   = req.body.delivery || 'camera';
       const pace       = req.body.pace || 'natural';
       const imageBase64 = req.body.imageBase64 || null;
