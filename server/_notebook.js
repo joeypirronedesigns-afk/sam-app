@@ -13,6 +13,8 @@ async function getKV() {
 function guessCat(t) {
   t = String(t || '').toLowerCase();
   if (/\b(dog|dogs|cat|cats|puppy|pet|pets|doodle|goldendoodle|bernadoodle)\b/.test(t)) return 'pets';
+  if (/\b(entrepreneur|founder|creator of|business owner|my job|i work)\b/.test(t)) return 'work';
+  if (/\b(birthday|born|sicilian|italian|heritage|grew up|years old|self-taught|industry|raised|love working|hobby|hobbies)\b/.test(t)) return 'background';
   if (/\b(wife|husband|partner|brother|sister|mom|mother|dad|father|parents|son|daughter|kids?|friend|family|name is)\b/.test(t)) return 'people';
   if (/\b(live|lives|living|moving|move|moved|relocat\w*|home|house|property|acre\w*|town|city|florida|maryland)\b/.test(t)) return 'home';
   if (/\b(grew up|self-taught|years old|age|born|background|used to|previously)\b/.test(t)) return 'background';
@@ -30,7 +32,7 @@ async function getNotes(email) {
   const kv = await getKV(); if (!kv) return [];
   let v = await kv.get(keyFor(email)).catch(() => null);
   if (typeof v === 'string') { try { v = JSON.parse(v); } catch (_) { v = null; } }
-  return Array.isArray(v) ? v.filter(n => n && n.id && n.text).map(n => (n.cat ? n : Object.assign({}, n, { cat: guessCat(n.text) }))) : [];
+  return Array.isArray(v) ? v.filter(n => n && n.id && n.text).map(n => ((n.cat && n.cat !== 'other') ? n : Object.assign({}, n, { cat: guessCat(n.text) }))) : [];
 }
 async function saveNotes(email, notes) {
   const kv = await getKV(); if (!kv || !email) return false;

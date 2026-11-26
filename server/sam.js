@@ -7,6 +7,17 @@ const { getSessionEmail } = require('./_session');
 const NB = require('./_notebook'); // Patch AR — SAM's notebook
 const { evolveVoice } = require('./_voiceEvolve'); // Patch AU — Voice DNA evolves with every story
 
+// Patch AV — SAM knows today's date and time, in the creator's own time zone (cookie set by the app).
+function nowLine(req) {
+  let tz = 'America/New_York';
+  const m = String((req.headers && req.headers.cookie) || '').match(/(?:^|;\s*)sam_tz=([^;]+)/);
+  if (m) { try { const c = decodeURIComponent(m[1]); new Intl.DateTimeFormat('en-US', { timeZone: c }); tz = c; } catch (_) {} }
+  const d = new Date();
+  const day = new Intl.DateTimeFormat('en-US', { timeZone: tz, weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(d);
+  const time = new Intl.DateTimeFormat('en-US', { timeZone: tz, hour: 'numeric', minute: '2-digit' }).format(d);
+  return `\n\nTODAY: ${day}, ${time} (${tz}). This is the real current date and time — use it for any date math (days until, how long ago, someone's age, a project's day count). Never say you don't know the date.`;
+}
+
 // v9.118.16 (Patch C) — derive structured script_beats[] from [BEAT: ...] markers
 // emitted per v9.118.15 instructions. Additive: full_script stays unchanged,
 // script_beats[] is a parallel structured view consumed by both UI and PDF renderers.
@@ -1042,7 +1053,7 @@ module.exports = async function handler(req, res) {
       const chatMaxTokens = hasImage ? 600 : Math.min(parseInt(req.body.maxTokens) || 400, 1500);
       // Prefer client-sent voiceProfile (localStorage) with Supabase as fallback
       const effectiveVoice = voiceProfile || (userProfile && userProfile.voice_profile) || '';
-      let profileContext = '';
+      let profileContext = nowLine(req); // Patch AV
       if (userProfile || effectiveVoice) {
         const brainCtx = normalizeSamContext(userProfile && userProfile.sam_context);
         if (effectiveVoice) brainCtx.voice.profile = effectiveVoice;
@@ -1397,7 +1408,7 @@ NEVER write in generic AI voice when you have this profile. Generic AI voice is:
    (e.g. 'Your story: "they asked me to fix it up"' or 'Your background: "Dad wasn't in the trades"').
    If the creator gave you nothing for a step, "line" is "missing" — never invent a line to fill it.`;
 
-  const base = `${samIdentity}${NB.notebookPrompt(_nbAll, true)} ${toneContext} ${emojiLine} ${hashtagRule} ${creatorLine} ${voiceLine}
+  const base = `${samIdentity}${nowLine(req)}${NB.notebookPrompt(_nbAll, true)} ${toneContext} ${emojiLine} ${hashtagRule} ${creatorLine} ${voiceLine}
 ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatContext} CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No explanation outside the JSON.`;
 
   const streamCall = async (system, userContent, maxTokens) => {

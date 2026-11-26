@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.87" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.88" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -16469,6 +16469,8 @@ const NB_CATS = [
   ['background', '🧭', 'Background'], ['goals', '🎯', 'Goals & plans'], ['preferences', '💬', 'How you like help'], ['other', '📝', 'General']
 ];
 const NB_SRC = { chat: 'From chat', story: 'From a story', you: 'Added by you' };
+// Patch AV — tell the server the creator's time zone so SAM knows today's real date and time.
+try { document.cookie = 'sam_tz=' + encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/New_York') + ';path=/;max-age=31536000;samesite=lax'; } catch (_) {}
 function _nbEsc(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function _nbSetCount(notes) {
   const el = document.getElementById('nbRailCount'); if (el) el.textContent = (notes && notes.length) ? String(notes.length) : '';
@@ -16515,7 +16517,7 @@ function openNotebook() {
       <div id="nbList" style="overflow:auto;flex:1;min-height:80px;"></div>
       <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
         <select id="nbCat" aria-label="Kind of fact" style="padding:9px;border:1px solid var(--rule);border-radius:6px;font-size:13px;background:var(--paper);color:var(--ink);">
-          ${NB_CATS.map(([k, i, l]) => `<option value="${k}"${k === 'other' ? ' selected' : ''}>${i} ${l}</option>`).join('')}</select>
+          <option value="auto" selected>✨ Sort for me</option>${NB_CATS.map(([k, i, l]) => `<option value="${k}">${i} ${l}</option>`).join('')}</select>
         <input id="nbInput" type="text" maxlength="200" placeholder="Add something SAM should know…" onkeydown="if(event.key==='Enter'){event.preventDefault();addNote();}" style="flex:1;min-width:160px;padding:9px 11px;border:1px solid var(--rule);border-radius:6px;font-size:14px;background:var(--paper);color:var(--ink);" />
         <button type="button" onclick="addNote()" style="padding:9px 14px;background:var(--accent);color:var(--paper);border:none;border-radius:6px;font-weight:600;cursor:pointer;">Add</button>
       </div>

@@ -316,3 +316,7 @@ Any content creator building a social media audience. NOT limited to DIY/tradesp
 ## Patch AU — v9.118.87 — Voice DNA evolves with every story
 - Voice DNA was frozen (only the Voice Trainer changed it; Joey's was 182 days old). server/_voiceEvolve.js: every new story given to any tool (same hook as the notebook: signed in, has `moment`, not chat/regen) → the creator's own words (story + answers, SAM's questions stripped) saved to sam_voice_samples (source 'story'; exact repeats skipped) → one Haiku pass evolves sam_users.voice_profile from the 12 newest samples (conservative; "No change" allowed) → voice_version + 1.
 - Result carries `voice_updated` {changed, version, profile}. App writes the new profile to the user cache immediately (next chat/script uses it), footer shows "Voice synced · just now", Story Engine output shows a "🧬 Voice DNA updated · vN" card with what changed (or "checked — no change"); inline tools show a one-line notice.
+
+## Patch AV — v9.118.88 — SAM knows today's date + notebook sorts itself
+- nowLine(req): real date/time in the creator's time zone (cookie sam_tz set by the app; default America/New_York) added to the chat system prompt and the shared tool base prompt.
+- Notebook: "✨ Sort for me" default when adding; General notes are re-sorted by guessCat (birthday/heritage/grew up → Background, entrepreneur → Work, sibling → People).
