@@ -279,7 +279,10 @@ function buildFormulaMap(parsed, b, info) {
     let status = (line && !/^(none|missing|not found|n\/a)/i.test(line)) ? 'used' : 'missing';
     if (status === 'missing') { line = ''; if (!from) from = 'Your story didn\'t give SAM this yet.'; }
     if (status === 'used' && d.beat !== 'Posts' && !norm.includes(_normSentence(line))) {
-      const near = _bestSentence(_beatText(script, d.beat === 'Your Call' ? 'CTA' : d.beat), line) || _bestSentence(script.replace(/\[BEAT:[^\]]*\]/g, ' '), line);
+      // Patch AP — search the step's own beat first, then each other beat on its own (never across beats).
+      const own = d.beat === 'Your Call' ? 'CTA' : d.beat;
+      let near = _bestSentence(_beatText(script, own), line);
+      for (const bn of ['Opening', 'Setup', 'Risk', 'Turn', 'Payoff', 'CTA']) { if (near) break; if (bn !== own) near = _bestSentence(_beatText(script, bn), line); }
       if (near) line = near;
       else { status = 'edited'; from = 'SAM\'s fact-check changed this line — read the ' + d.beat + ' beat.'; line = ''; }
     }

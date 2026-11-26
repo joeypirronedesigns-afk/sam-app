@@ -291,3 +291,6 @@ Any content creator building a social media audience. NOT limited to DIY/tradesp
 ## Patch AO — v9.118.81 — Loop said once + wider map matching
 - Output 53: "Let me explain." appeared at the end of the Opening and the start of the Setup. dedupeLoop removes the loop phrase from every beat after the Opening.
 - Formula map: when a quoted line is not in its own beat, the whole script is searched before marking it "Edited".
+
+## Patch AP — Formula map never quotes across beats
+- Output 54: Struggle/Payoff rows showed runs spanning the Turn and Payoff beats. The fallback now searches one beat at a time (own beat first).
