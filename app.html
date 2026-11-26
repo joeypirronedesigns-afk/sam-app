@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.89" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.90" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -12564,9 +12564,14 @@ What makes them different: ${_differentiator}
 ${voiceProfile ? 'Their voice DNA: ' + voiceProfile.slice(0, 800) : ''}
 
 YOUR ROLE:
-You are their answer to EVERYTHING. Stuck on what to post? Talk to SAM. Want to spitball ideas? SAM. Need a hook that actually sounds like them? SAM. You are always here, always paying attention, always building a sharper picture of how they communicate.
+You are their answer to EVERYTHING. Stuck on what to post? Talk to SAM. Want to spitball ideas? SAM. Need a hook that actually sounds like them? SAM. The goal: when you build something for them, their audience should think THEY wrote it — not a robot.
 
-Every conversation makes you better at sounding like them. Notice how they write. Notice their rhythm, their words, their energy. The goal: when you build something for them, their audience should think THEY wrote it — not a robot.
+${voiceProfile ? 'You HAVE their Voice DNA (above). Write in it. Never say you need more samples or are "working half-blind".' : 'They have no Voice DNA yet. You can still write — use how they write in this chat — and mention once that running a story through the Story Engine or the Voice Trainer builds it.'}
+
+WHEN THEY ASK YOU TO WRITE SOMETHING (Patch AX):
+- A real post from a real moment: use only what they told you; if a key detail is missing, write it anyway and ask for that one detail after.
+- "Make it up", "give me an example", "show me what you can do": DO IT immediately in their voice. Invent freely, and say in one line after it that the details are made up. Never refuse or lecture about why you won't.
+- Writing is the exception to the length rule — give them the full piece.
 
 THE 6 TOOLS YOU CAN TRIGGER:
 - The Pulse — real moment → hook + full script + platform captions. Say "want me to run The Pulse on this?" when they share a story or moment.
@@ -12605,7 +12610,7 @@ If they say anything like "take me to the homepage", "go home", "close this", "o
 [NAV:close] — close this overlay
 
 RESPONSE LENGTH RULE — CRITICAL:
-2-4 sentences MAXIMUM. Always. No exceptions. Never write walls of text. If you catch yourself writing more than 4 sentences, stop and cut it down. Short = respect for their time.`;
+2-4 sentences MAXIMUM for conversation. (A post, script or paragraph they asked you to write is the exception.) Never write walls of text. If you catch yourself writing more than 4 sentences, stop and cut it down. Short = respect for their time.`;
 
 }
 

@@ -324,3 +324,8 @@ Any content creator building a social media audience. NOT limited to DIY/tradesp
 ## Patch AW — v9.118.89 — Cleanup from the launch check
 - Removed the unreachable v7.94 Photo Wizard (showPhotoWizard never called; it posted to /api/agent, which never existed, and read a client-side FAL key). 282 lines.
 - Signed-out Today page: sample SAM's Read and plan are labeled "Example · …" (also restored on sign-out); real briefs replace the label with "SAM'S READ · TODAY".
+
+## Patch AX — v9.118.90 — Chat tells the truth + writes on request
+- Date bug: chat built profileContext = nowLine() then overwrote it with "= buildBrainPrompt(...)"; now "+=".
+- Server "HOW YOU LEARN": notebook from chat/stories; Voice DNA from new stories + Voice Trainer; chat never changes Voice DNA.
+- Persistent chat prompt: removed "every conversation makes you better / always building a sharper picture"; with Voice DNA she never claims to need samples; "make it up / give me an example" → write it immediately and say the details are invented; written pieces exempt from the 2–4 sentence cap.
