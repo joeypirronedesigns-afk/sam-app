@@ -12,3 +12,7 @@ node_modules/
 .env.*
 !.env.example
 .env*.local
+
+# Video project media — not part of the app
+Crazy Ai Clone video 1/
+*.wav
