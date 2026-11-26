@@ -147,7 +147,7 @@ module.exports = async function handler(req, res) {
     const who = await getSessionEmail(req);
     if (!who) return res.status(401).json({ error: 'Not signed in' });
     const NB = require('./_notebook');
-    if (action === 'add_note') await NB.addNote(who, (req.body || {}).text, 'you');
+    if (action === 'add_note') await NB.addNote(who, (req.body || {}).text, 'you', (req.body || {}).cat);
     if (action === 'delete_note') await NB.deleteNote(who, String((req.body || {}).id || ''));
     return res.status(200).json({ notes: await NB.getNotes(who) });
   }

@@ -871,6 +871,16 @@ module.exports = async function handler(req, res) {
     if (_sp.background && !String(req.body.creatorContext || '').includes(_sp.background))
       req.body.creatorContext = [req.body.creatorContext, 'BACKGROUND (the creator\'s own words): ' + _sp.background].filter(Boolean).join(' — ');
   }
+  // Patch AT — SAM's notebook across the whole app: any story the creator gives a tool (Story Engine,
+  // Pulse, Blueprint, Vision…) is read once for lasting facts about them. Runs alongside the main work;
+  // the response only closes after it finishes, so nothing is lost on serverless.
+  const _nbSession = await getSessionEmail(req).catch(() => null);
+  const _nbAll = _nbSession ? await NB.getNotes(_nbSession).catch(() => []) : [];
+  const _nbMode = (req.body || {}).mode, _nbMoment = (req.body || {}).moment;
+  const _nbBg = (_nbSession && _nbMode !== 'chat' && _nbMode !== 'regen_section' && typeof _nbMoment === 'string' && _nbMoment.trim().length > 40)
+    ? NB.extractNotes(process.env.ANTHROPIC_API_KEY, _nbMoment, _nbAll, 'story').then(ex => NB.applyExtraction(_nbSession, ex, 'story')).catch(() => ({ noted: [], forgot: [] }))
+    : null;
+  if (_nbBg) { const _end = res.end.bind(res); res.end = (...a) => { _nbBg.finally(() => _end(...a)); return res; }; }
   const { mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage, emojiPreference, voiceProfile, bannedPhrases } = req.body;
   const userId = req.body.userId || req.headers['x-forwarded-for'] || 'anon';
   const tier = req.body.tier || 'free';
@@ -1383,7 +1393,7 @@ NEVER write in generic AI voice when you have this profile. Generic AI voice is:
    (e.g. 'Your story: "they asked me to fix it up"' or 'Your background: "Dad wasn't in the trades"').
    If the creator gave you nothing for a step, "line" is "missing" — never invent a line to fill it.`;
 
-  const base = `${samIdentity} ${toneContext} ${emojiLine} ${hashtagRule} ${creatorLine} ${voiceLine}
+  const base = `${samIdentity}${NB.notebookPrompt(_nbAll, true)} ${toneContext} ${emojiLine} ${hashtagRule} ${creatorLine} ${voiceLine}
 ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatContext} CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No explanation outside the JSON.`;
 
   const streamCall = async (system, userContent, maxTokens) => {
@@ -1657,6 +1667,7 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
       // Patch AL — show how the formula was applied (playbook and script redo).
       if (mode === 'playbook' || (mode === 'regen_section' && (req.body || {}).section === 'script')) buildFormulaMap(parsed, req.body || {}, _alInfo);
     }
+    if (_nbBg && parsed && typeof parsed === 'object') parsed.notebook_noted = (await _nbBg).noted; // Patch AT
     res.write('data: ' + JSON.stringify({ done: true, result: parsed }) + '\n\n');
     res.end();
   };
@@ -1671,8 +1682,7 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
     // ── PLAYBOOK MODE ─────────────────────────────────────────────────────────
     if (mode === 'playbook') {
       // Patch AR — notebook as background (never a source of script facts).
-      const _pbEmail = await getSessionEmail(req).catch(() => null);
-      const wizContext = (req.body.wizardContext || '') + (_pbEmail ? NB.notebookPrompt(await NB.getNotes(_pbEmail).catch(() => []), true) : '');
+      const wizContext = req.body.wizardContext || '';
       const delivery   = req.body.delivery || 'camera';
       const pace       = req.body.pace || 'natural';
       const imageBase64 = req.body.imageBase64 || null;

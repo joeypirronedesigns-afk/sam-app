@@ -307,3 +307,8 @@ Any content creator building a social media audience. NOT limited to DIY/tradesp
 - app.html: both chat panels send notebook:true and show "📓 Noted: … View notebook"; "What SAM knows about you" modal (add/delete) opened from the brand step or the chat notice. Pulse trigger "my wife/dog/…" now needs a story verb ("my wife just…").
 
 ## Patch AS — v9.118.85 — Notebook button in the SAM chat header (📓, next to ↺)
+
+## Patch AT — v9.118.86 — Notebook fills from every story + first-class notebook UI
+- Any tool call with a `moment` (Story Engine, Pulse, Blueprint, Vision…; not chat/regen) from a signed-in creator runs one Haiku pass (kind 'story': only lasting life facts, never the story's events; no forgets). Runs in parallel; res.end is held until it finishes. Result carries `notebook_noted`.
+- Notebook is background in the shared `base` prompt for every tool (and chat). Notes carry a kind (people, pets, home, work, background, goals, preferences, other); old notes get one from guessCat.
+- UI: "4 · SAM's Notebook" in the Build SAM's Brain rail with a count; notebook modal redesigned (how-it-works 3 steps, grouped by kind, source badge: From chat / From a story / Added by you, add with kind, privacy line); "📓 SAM added to your notebook" card on Story Engine output; Noted line after inline tool runs.

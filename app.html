@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.85" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.86" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -8067,6 +8067,11 @@ textarea.lab-textarea,
     <span class="qs-dash-rail-step" aria-hidden="true">3</span>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="12" r="2.2"/><circle cx="16.5" cy="7.5" r="1.8"/><circle cx="17" cy="16.5" r="1.8"/><path d="M10.1 10.9L14.7 8.4"/><path d="M10.1 13.1L15.1 15.8"/></svg>
     The Reach
+  </button>
+  <button class="qs-dash-rail-item" data-qs-nav="notebook" onclick="openNotebook();if(window.innerWidth<=767)toggleMobileRail();" title="Everything SAM knows about you — and where she learned it">
+    <span class="qs-dash-rail-step" aria-hidden="true">4</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4h11a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H6z"/><path d="M6 4v17"/><path d="M9.5 8.5h5"/><path d="M9.5 12h5"/><path d="M4 7.5h3M4 12h3M4 16.5h3"/></svg>
+    SAM's Notebook <span id="nbRailCount" style="margin-left:auto;font-size:11px;color:var(--ink-muted);"></span>
   </button>
 </nav>
 
@@ -13215,6 +13220,7 @@ async function sendPersistentMessage() {
 
     if (data) {
       renderInlineToolOutput(intent, data, msgs);
+      showNotebookNotice('persistentSAMMessages', { noted: data && data.notebook_noted }); // Patch AT
       scrollPersistentToBottom();
 
       // Follow-up message
@@ -13294,6 +13300,7 @@ async function sendPersistentMessage() {
       const data = await runToolInline(tool, text);
       if (data) {
         renderInlineToolOutput(tool, data, msgs);
+        showNotebookNotice('persistentSAMMessages', { noted: data && data.notebook_noted }); // Patch AT
         scrollPersistentToBottom();
       }
     } else {
@@ -16455,28 +16462,63 @@ function _nbFetch(body) {
   return fetch('/api/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin', body: JSON.stringify(body) })
     .then(r => r.ok ? r.json() : Promise.reject(r.status));
 }
+const NB_CATS = [
+  ['people', '👥', 'People'], ['pets', '🐾', 'Pets'], ['home', '🏡', 'Home & places'], ['work', '🛠', 'Work & projects'],
+  ['background', '🧭', 'Background'], ['goals', '🎯', 'Goals & plans'], ['preferences', '💬', 'How you like help'], ['other', '📝', 'General']
+];
+const NB_SRC = { chat: 'From chat', story: 'From a story', you: 'Added by you' };
+function _nbEsc(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function _nbSetCount(notes) {
+  const el = document.getElementById('nbRailCount'); if (el) el.textContent = (notes && notes.length) ? String(notes.length) : '';
+}
 function _nbRender(notes) {
+  _nbSetCount(notes);
   const list = document.getElementById('nbList'); if (!list) return;
-  const esc = s => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  list.innerHTML = (notes && notes.length) ? notes.slice().reverse().map(n => `<div style="display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--rule);">
-      <div style="flex:1;font-size:14px;color:var(--ink);line-height:1.45;">${esc(n.text)}<div style="font-size:11px;color:var(--ink-muted);margin-top:2px;">${n.src === 'chat' ? 'Noted from chat' : 'Added by you'} · ${esc(String(n.at || '').slice(0, 10))}</div></div>
-      <button type="button" onclick="deleteNote('${esc(n.id)}')" title="Forget this" style="border:none;background:none;color:var(--ink-muted);cursor:pointer;font-size:16px;line-height:1;">✕</button></div>`).join('')
-    : '<div style="font-size:13px;color:var(--ink-muted);padding:10px 0;">Nothing yet. Add something below, or just tell SAM in chat.</div>';
+  if (!notes || !notes.length) {
+    list.innerHTML = `<div style="padding:14px;border:1px dashed var(--rule);border-radius:8px;font-size:13px;color:var(--ink-soft);line-height:1.55;">
+      Your notebook is empty. Try telling SAM in chat: <em>"My wife's name is Amanda"</em> or <em>"I grew up in the restaurant business."</em>
+      Or run a story through the Story Engine. SAM will pick up the lasting facts and they'll show up here.</div>`;
+    return;
+  }
+  list.innerHTML = NB_CATS.map(([key, icon, label]) => {
+    const items = notes.filter(n => (n.cat || 'other') === key);
+    if (!items.length) return '';
+    return `<div style="margin-top:14px;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:4px;">${icon} ${label} <span style="font-weight:400;">· ${items.length}</span></div>
+      ${items.slice().reverse().map(n => `<div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--rule);">
+        <div style="flex:1;font-size:14px;color:var(--ink);line-height:1.45;">${_nbEsc(n.text)}
+          <div style="font-size:11px;color:var(--ink-muted);margin-top:2px;">${NB_SRC[n.src] || 'Added by you'} · ${_nbEsc(String(n.at || '').slice(0, 10))}</div></div>
+        <button type="button" onclick="deleteNote('${_nbEsc(n.id)}')" title="Forget this" aria-label="Forget this" style="border:none;background:none;color:var(--ink-muted);cursor:pointer;font-size:15px;line-height:1;padding:2px 4px;">✕</button></div>`).join('')}
+    </div>`;
+  }).join('');
 }
 function openNotebook() {
   let ov = document.getElementById('nbOverlay');
   if (!ov) {
     ov = document.createElement('div'); ov.id = 'nbOverlay';
     ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100000;display:flex;align-items:center;justify-content:center;padding:16px;';
-    ov.innerHTML = `<div style="background:var(--paper,#fff);color:var(--ink);border-radius:12px;max-width:520px;width:100%;max-height:85vh;display:flex;flex-direction:column;padding:20px;box-shadow:0 10px 40px rgba(0,0,0,0.25);font-family:'Inter',system-ui,sans-serif;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><div style="font-size:17px;font-weight:700;">📓 What SAM knows about you</div>
-        <button type="button" onclick="closeNotebook()" style="border:none;background:none;font-size:20px;cursor:pointer;color:var(--ink-muted);">×</button></div>
-      <div style="font-size:13px;color:var(--ink-soft);margin-bottom:10px;">SAM reads this every time she works with you. When you tell her something lasting in chat, she adds it here. Delete anything that's wrong.</div>
-      <div id="nbList" style="overflow:auto;flex:1;min-height:60px;"></div>
-      <div style="display:flex;gap:8px;margin-top:12px;">
-        <input id="nbInput" type="text" maxlength="200" placeholder="e.g. My wife's name is Amanda." onkeydown="if(event.key==='Enter'){event.preventDefault();addNote();}" style="flex:1;padding:9px 11px;border:1px solid var(--rule);border-radius:6px;font-size:14px;background:var(--paper);color:var(--ink);" />
+    const step = (n, t, d) => `<div style="flex:1;min-width:130px;background:var(--surface-2);border:1px solid var(--rule);border-radius:8px;padding:10px;">
+      <div style="font-size:11px;font-weight:700;color:var(--accent);">${n}</div><div style="font-size:13px;font-weight:600;color:var(--ink);margin-top:2px;">${t}</div>
+      <div style="font-size:12px;color:var(--ink-soft);margin-top:2px;line-height:1.4;">${d}</div></div>`;
+    ov.innerHTML = `<div role="dialog" aria-label="SAM's Notebook" style="background:var(--paper,#fff);color:var(--ink);border-radius:12px;max-width:560px;width:100%;max-height:88vh;display:flex;flex-direction:column;padding:20px;box-shadow:0 10px 40px rgba(0,0,0,0.25);font-family:'Inter',system-ui,sans-serif;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-size:18px;font-weight:700;">📓 SAM's Notebook</div>
+        <button type="button" onclick="closeNotebook()" aria-label="Close" style="border:none;background:none;font-size:22px;cursor:pointer;color:var(--ink-muted);">×</button></div>
+      <div style="font-size:13px;color:var(--ink-soft);margin:4px 0 12px;">Everything SAM knows about you, and where she learned it.</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
+        ${step('1 · YOU TELL SAM', 'In chat or any story', 'Talk to her, or run a story through the Story Engine, Pulse or any tool.')}
+        ${step('2 · SHE NOTES IT', 'Only lasting facts', 'People, pets, places, projects, plans. You\'ll see "📓 Noted".')}
+        ${step('3 · SHE USES IT', 'Every time', 'Chats, scripts and ideas get your real context. It\'s background, never added to a script on its own.')}
+      </div>
+      <div id="nbList" style="overflow:auto;flex:1;min-height:80px;"></div>
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+        <select id="nbCat" aria-label="Kind of fact" style="padding:9px;border:1px solid var(--rule);border-radius:6px;font-size:13px;background:var(--paper);color:var(--ink);">
+          ${NB_CATS.map(([k, i, l]) => `<option value="${k}"${k === 'other' ? ' selected' : ''}>${i} ${l}</option>`).join('')}</select>
+        <input id="nbInput" type="text" maxlength="200" placeholder="Add something SAM should know…" onkeydown="if(event.key==='Enter'){event.preventDefault();addNote();}" style="flex:1;min-width:160px;padding:9px 11px;border:1px solid var(--rule);border-radius:6px;font-size:14px;background:var(--paper);color:var(--ink);" />
         <button type="button" onclick="addNote()" style="padding:9px 14px;background:var(--accent);color:var(--paper);border:none;border-radius:6px;font-weight:600;cursor:pointer;">Add</button>
-      </div></div>`;
+      </div>
+      <div style="font-size:11px;color:var(--ink-muted);margin-top:10px;line-height:1.45;">SAM only notes facts you stated. She never saves health details, money amounts or passwords. Tap ✕ to make her forget anything, or tell her "forget that" in chat.</div>
+    </div>`;
     ov.addEventListener('click', e => { if (e.target === ov) closeNotebook(); });
     document.body.appendChild(ov);
   }
@@ -16484,11 +16526,24 @@ function openNotebook() {
   const list = document.getElementById('nbList'); if (list) list.innerHTML = '<div style="font-size:13px;color:var(--ink-muted);padding:10px 0;">Loading…</div>';
   _nbFetch({ action: 'get_notebook' }).then(d => _nbRender(d.notes)).catch(() => { if (list) list.innerHTML = '<div style="font-size:13px;color:var(--ink-muted);padding:10px 0;">Sign in to see your notebook.</div>'; });
 }
+// Patch AT — the rail count on load, and the "SAM added to your notebook" card on Story Engine output.
+setTimeout(() => { _nbFetch({ action: 'get_notebook' }).then(d => _nbSetCount(d.notes)).catch(() => {}); }, 1500);
+function notebookNotedHTML(data) {
+  const noted = (data && Array.isArray(data.notebook_noted)) ? data.notebook_noted : [];
+  if (!noted.length) return '';
+  setTimeout(() => { _nbFetch({ action: 'get_notebook' }).then(d => _nbSetCount(d.notes)).catch(() => {}); }, 0);
+  return `<div class="playbook-section no-print" id="playbook-sec-notebook" style="border-left:3px solid var(--accent);">
+    <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;">📓 SAM added to your notebook</div>
+    <ul style="margin:0 0 8px;padding-left:18px;font-size:14px;color:var(--ink);line-height:1.6;">${noted.map(t => '<li>' + _nbEsc(t) + '</li>').join('')}</ul>
+    <div style="font-size:12px;color:var(--ink-soft);">She'll use these as background in every chat and story from now on. <a href="#" onclick="openNotebook();return false;" style="color:var(--accent);">Open notebook</a> to review or delete.</div>
+  </div>`;
+}
 function closeNotebook() { const ov = document.getElementById('nbOverlay'); if (ov) ov.style.display = 'none'; }
 function addNote() {
   const inp = document.getElementById('nbInput'); const t = inp ? inp.value.trim() : '';
   if (!t) return; inp.value = '';
-  _nbFetch({ action: 'add_note', text: t }).then(d => _nbRender(d.notes)).catch(() => {});
+  const cat = (document.getElementById('nbCat') || {}).value || 'other';
+  _nbFetch({ action: 'add_note', text: t, cat }).then(d => _nbRender(d.notes)).catch(() => {});
 }
 function deleteNote(id) { _nbFetch({ action: 'delete_note', id }).then(d => _nbRender(d.notes)).catch(() => {}); }
 // A small line under SAM's reply when she noted or forgot something (not saved into chat history).
@@ -16504,6 +16559,7 @@ function showNotebookNotice(containerId, result) {
     (forgot.length ? '🗑 Forgot: ' + forgot.map(esc).join(' · ') : '') +
     ' <a href="#" onclick="openNotebook();return false;" style="color:var(--accent);">View notebook</a>';
   box.appendChild(el); box.scrollTop = box.scrollHeight;
+  _nbFetch({ action: 'get_notebook' }).then(d => _nbSetCount(d.notes)).catch(() => {});
 }
 
 // Patch AL — "How SAM used the formula": each step, the exact line, and where it came from.
@@ -17344,6 +17400,7 @@ function renderPlaybook(data) {
 
   // Patch Z.3 — too thin to write honestly: SAM asks for what it needs instead of inventing it.
   if (data.needs_more) html += needsMoreHTML(data);
+  html += notebookNotedHTML(data); // Patch AT
 
   // ② STORY ARCHITECTURE
   if (data.story_architecture && !data.needs_more) {
