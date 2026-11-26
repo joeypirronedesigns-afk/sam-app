@@ -240,6 +240,27 @@ function _bestSentence(beatText, line) {
   return score >= 0.5 ? best : '';
 }
 
+// Patch AO — the loop line is said once: in the Opening. Copies in later beats are removed.
+function dedupeLoop(parsed, phrase) {
+  const ph = _normSentence(phrase || '');
+  if (!parsed || !ph) return;
+  for (const f of ['full_script', 'narration_script']) {
+    if (typeof parsed[f] !== 'string' || !parsed[f]) continue;
+    const lines = parsed[f].split('\n'); const r = _beatRange(lines, 'Opening');
+    if (!r || !_normSentence(lines.slice(r[0], r[1]).join(' ')).includes(ph)) continue;
+    for (let i = r[1]; i < lines.length; i++) {
+      if (/^\s*\[BEAT:/i.test(lines[i]) || !lines[i].trim()) continue;
+      const parts = lines[i].match(/[^.!?…,]+(?:[.!?…,]+|$)/g) || [];
+      const kept = parts.filter(x => _normSentence(x) !== ph);
+      if (kept.length !== parts.length) {
+        let t = kept.join('').replace(/\s{2,}/g, ' ').trim();
+        lines[i] = t.charAt(0).toUpperCase() + t.slice(1);
+      }
+    }
+    parsed[f] = lines.join('\n');
+  }
+}
+
 function buildFormulaMap(parsed, b, info) {
   if (!parsed || typeof parsed !== 'object') return;
   const script = parsed.full_script || parsed.narration_script || '';
@@ -258,7 +279,7 @@ function buildFormulaMap(parsed, b, info) {
     let status = (line && !/^(none|missing|not found|n\/a)/i.test(line)) ? 'used' : 'missing';
     if (status === 'missing') { line = ''; if (!from) from = 'Your story didn\'t give SAM this yet.'; }
     if (status === 'used' && d.beat !== 'Posts' && !norm.includes(_normSentence(line))) {
-      const near = _bestSentence(_beatText(script, d.beat === 'Your Call' ? 'CTA' : d.beat), line);
+      const near = _bestSentence(_beatText(script, d.beat === 'Your Call' ? 'CTA' : d.beat), line) || _bestSentence(script.replace(/\[BEAT:[^\]]*\]/g, ' '), line);
       if (near) line = near;
       else { status = 'edited'; from = 'SAM\'s fact-check changed this line — read the ' + d.beat + ' beat.'; line = ''; }
     }
@@ -1605,6 +1626,7 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
       const _co = creatorOpening((req.body || {}).moment) || {};
       _alInfo.loopAdded = enforceOpenLoop(parsed, ((req.body || {}).story_architecture || {}).opening, _co.loop || '');
       _alInfo.loopFromCreator = !!_co.loop;
+      dedupeLoop(parsed, _co.loop || 'Let me explain.');
       // the creator's phrase was already in the opening: still credit it to them
       if (!_alInfo.loopAdded && _co.loop && _normSentence(_beatText(parsed.full_script || '', 'Opening')).includes(_normSentence(_co.loop))) _alInfo.loopAdded = _co.loop;
     }

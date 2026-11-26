@@ -287,3 +287,7 @@ Any content creator building a social media audience. NOT limited to DIY/tradesp
 
 ## Patch AN — v9.118.80 — Reflection answers survive navigation
 - Revisiting step 3 re-ran the reflection; reworded questions dropped the answers (matched by exact text). Now the reflection + answers are cached per story (WS._reflectKey/_reflectReply) and re-shown without a new API call while the story is unchanged.
+
+## Patch AO — v9.118.81 — Loop said once + wider map matching
+- Output 53: "Let me explain." appeared at the end of the Opening and the start of the Setup. dedupeLoop removes the loop phrase from every beat after the Opening.
+- Formula map: when a quoted line is not in its own beat, the whole script is searched before marking it "Edited".
