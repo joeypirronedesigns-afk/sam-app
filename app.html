@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.76" data-qs-descriptor="Patch AJ - Hobby plan: one router function serves the API." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.77" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -12061,7 +12061,8 @@ async function getCurrentUser() {
           if (_ctx && typeof _ctx === 'object') {
             var _hadData = !!(WS.brandName || WS.storyText);
             if (_ctx.brandName && !WS.brandName) WS.brandName = _ctx.brandName;
-            if (_ctx.storyText && !WS.storyText) WS.storyText = _ctx.storyText;
+            // Patch AK — never refill a story the creator just cleared with 'Start a fresh story'.
+            if (_ctx.storyText && !WS.storyText && !WS._freshStart) WS.storyText = _ctx.storyText;
             if (_ctx.platforms && !WS.platforms) WS.platforms = _ctx.platforms;
             if (_ctx.creatorType && !WS.creatorType) WS.creatorType = _ctx.creatorType;
             if (_ctx.diagnosedAudience && !WS.diagnosedAudience) WS.diagnosedAudience = _ctx.diagnosedAudience;
@@ -15945,6 +15946,7 @@ function startWizard(mode) {
     WS.language = 'English';
     WS.platforms = [];
     WS.steers = [];
+    WS._freshStart = Date.now(); // Patch AK — blocks old-story hydration from the account copy
     saveWizardState();
   }
   document.getElementById('wizardProgressWrap').style.display = 'block';
@@ -16539,10 +16541,16 @@ async function generateStoryReflection() {
   const nextBtn = document.getElementById('wizardNextBtn');
 
   // Always re-read from localStorage to catch paste/voice input
-  try {
-    const fresh = JSON.parse(localStorage.getItem('sam-wizard-state') || '{}');
-    if (fresh.storyText) WS.storyText = fresh.storyText;
-  } catch(e) {}
+  // Patch AK — the story box on screen is the truth; saved copies only fill in when it's empty.
+  const _ta = document.getElementById('wiz2text');
+  if (_ta && _ta.value.trim()) {
+    WS.storyText = _ta.value;
+  } else {
+    try {
+      const fresh = JSON.parse(localStorage.getItem('sam-wizard-state') || '{}');
+      if (fresh.storyText) WS.storyText = fresh.storyText;
+    } catch(e) {}
+  }
 
   const text = (WS.storyText || '').trim();
   const photoText = (document.getElementById('wiz2phototext')?.value || '').trim();
