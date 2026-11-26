@@ -305,3 +305,5 @@ Any content creator building a social media audience. NOT limited to DIY/tradesp
 - Playbook: notebook appended to wizardContext as BACKGROUND ONLY (never script facts; not in number/fact-check sources).
 - server/auth.js: get_notebook / add_note / delete_note.
 - app.html: both chat panels send notebook:true and show "📓 Noted: … View notebook"; "What SAM knows about you" modal (add/delete) opened from the brand step or the chat notice. Pulse trigger "my wife/dog/…" now needs a story verb ("my wife just…").
+
+## Patch AS — v9.118.85 — Notebook button in the SAM chat header (📓, next to ↺)
