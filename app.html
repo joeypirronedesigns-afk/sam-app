@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.86" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.87" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -13221,6 +13221,7 @@ async function sendPersistentMessage() {
     if (data) {
       renderInlineToolOutput(intent, data, msgs);
       showNotebookNotice('persistentSAMMessages', { noted: data && data.notebook_noted }); // Patch AT
+      showVoiceNotice('persistentSAMMessages', data); // Patch AU
       scrollPersistentToBottom();
 
       // Follow-up message
@@ -13301,6 +13302,7 @@ async function sendPersistentMessage() {
       if (data) {
         renderInlineToolOutput(tool, data, msgs);
         showNotebookNotice('persistentSAMMessages', { noted: data && data.notebook_noted }); // Patch AT
+        showVoiceNotice('persistentSAMMessages', data); // Patch AU
         scrollPersistentToBottom();
       }
     } else {
@@ -16528,6 +16530,35 @@ function openNotebook() {
 }
 // Patch AT — the rail count on load, and the "SAM added to your notebook" card on Story Engine output.
 setTimeout(() => { _nbFetch({ action: 'get_notebook' }).then(d => _nbSetCount(d.notes)).catch(() => {}); }, 1500);
+// Patch AU — Voice DNA evolves with every story: use the new profile right away and show what changed.
+function applyVoiceUpdate(data) {
+  const v = data && data.voice_updated;
+  if (!v) return null;
+  if (v.profile && !v._applied) {
+    v._applied = true;
+    try { if (typeof writeUserCache === 'function') writeUserCache({ voiceProfile: v.profile, voiceVersion: v.version }); } catch (_) {}
+    const t = document.querySelector('.qs-dash-status-text'); if (t) t.textContent = 'Voice synced · just now';
+  }
+  return v;
+}
+function voiceUpdatedHTML(data) {
+  const v = applyVoiceUpdate(data);
+  if (!v) return '';
+  const same = !v.profile;
+  return `<div class="playbook-section no-print" id="playbook-sec-voice" style="border-left:3px solid var(--accent);">
+    <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;">🧬 Voice DNA ${same ? 'checked' : 'updated' + (v.version ? ' · v' + _nbEsc(v.version) : '')}</div>
+    <div style="font-size:14px;color:var(--ink);line-height:1.55;">${same ? 'This story sounded like the voice SAM already has for you. No change needed.' : _nbEsc(v.changed)}</div>
+    <div style="font-size:12px;color:var(--ink-soft);margin-top:6px;">Every story you give SAM (your words, not her scripts) is a fresh sample of how you talk. <a href="#" onclick="openVoiceTrainer();return false;" style="color:var(--accent);">See your Voice DNA</a></div>
+  </div>`;
+}
+function showVoiceNotice(containerId, data) {
+  const v = applyVoiceUpdate(data); const box = document.getElementById(containerId);
+  if (!v || !v.profile || !box) return;
+  const el = document.createElement('div');
+  el.style.cssText = 'font-size:12px;color:var(--ink-muted);margin:4px 0 10px;padding:6px 10px;border-left:2px solid var(--accent);';
+  el.innerHTML = '🧬 Voice DNA updated: ' + _nbEsc(v.changed) + ' <a href="#" onclick="openVoiceTrainer();return false;" style="color:var(--accent);">See it</a>';
+  box.appendChild(el); box.scrollTop = box.scrollHeight;
+}
 function notebookNotedHTML(data) {
   const noted = (data && Array.isArray(data.notebook_noted)) ? data.notebook_noted : [];
   if (!noted.length) return '';
@@ -17401,6 +17432,7 @@ function renderPlaybook(data) {
   // Patch Z.3 — too thin to write honestly: SAM asks for what it needs instead of inventing it.
   if (data.needs_more) html += needsMoreHTML(data);
   html += notebookNotedHTML(data); // Patch AT
+  html += voiceUpdatedHTML(data);   // Patch AU
 
   // ② STORY ARCHITECTURE
   if (data.story_architecture && !data.needs_more) {

@@ -5,6 +5,7 @@ const { checkGate } = require('./_gate');
 const { platformPrompt, specFor, enforcePlatforms } = require('./_platforms');
 const { getSessionEmail } = require('./_session');
 const NB = require('./_notebook'); // Patch AR — SAM's notebook
+const { evolveVoice } = require('./_voiceEvolve'); // Patch AU — Voice DNA evolves with every story
 
 // v9.118.16 (Patch C) — derive structured script_beats[] from [BEAT: ...] markers
 // emitted per v9.118.15 instructions. Additive: full_script stays unchanged,
@@ -877,10 +878,13 @@ module.exports = async function handler(req, res) {
   const _nbSession = await getSessionEmail(req).catch(() => null);
   const _nbAll = _nbSession ? await NB.getNotes(_nbSession).catch(() => []) : [];
   const _nbMode = (req.body || {}).mode, _nbMoment = (req.body || {}).moment;
-  const _nbBg = (_nbSession && _nbMode !== 'chat' && _nbMode !== 'regen_section' && typeof _nbMoment === 'string' && _nbMoment.trim().length > 40)
+  const _storyIn = !!(_nbSession && _nbMode !== 'chat' && _nbMode !== 'regen_section' && typeof _nbMoment === 'string' && _nbMoment.trim().length > 40);
+  const _nbBg = _storyIn
     ? NB.extractNotes(process.env.ANTHROPIC_API_KEY, _nbMoment, _nbAll, 'story').then(ex => NB.applyExtraction(_nbSession, ex, 'story')).catch(() => ({ noted: [], forgot: [] }))
     : null;
-  if (_nbBg) { const _end = res.end.bind(res); res.end = (...a) => { _nbBg.finally(() => _end(...a)); return res; }; }
+  // Patch AU — the same story refines Voice DNA (the creator's own words only; a repeat run is skipped).
+  const _vBg = _storyIn ? evolveVoice(process.env.ANTHROPIC_API_KEY, _nbSession, _nbMoment).catch(() => null) : null;
+  if (_nbBg || _vBg) { const _all = Promise.all([_nbBg, _vBg]); const _end = res.end.bind(res); res.end = (...a) => { _all.finally(() => _end(...a)); return res; }; }
   const { mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage, emojiPreference, voiceProfile, bannedPhrases } = req.body;
   const userId = req.body.userId || req.headers['x-forwarded-for'] || 'anon';
   const tier = req.body.tier || 'free';
@@ -1668,6 +1672,7 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
       if (mode === 'playbook' || (mode === 'regen_section' && (req.body || {}).section === 'script')) buildFormulaMap(parsed, req.body || {}, _alInfo);
     }
     if (_nbBg && parsed && typeof parsed === 'object') parsed.notebook_noted = (await _nbBg).noted; // Patch AT
+    if (_vBg && parsed && typeof parsed === 'object') { const _v = await _vBg; if (_v) parsed.voice_updated = _v; } // Patch AU
     res.write('data: ' + JSON.stringify({ done: true, result: parsed }) + '\n\n');
     res.end();
   };
