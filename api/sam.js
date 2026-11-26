@@ -1120,7 +1120,29 @@ NEVER write in generic AI voice when you have this profile. Generic AI voice is:
     creator didn't give a link, never write "[link]" — say where to find it in words ("search Content
     Creators United on Facebook") or leave it out. If the story is
     thin, write a short, honest draft using only what the creator gave you — fewer words, not filler —
-    and put everything that's missing in "gaps".`;
+    and put everything that's missing in "gaps".
+
+11. Retention arc (Patch AI — modeled on the creator's best-performing video). Inside the six beats:
+   - Anchor the hook: when the creator gave a number, day count or timeframe AND who it's for
+     ("410 days", "for my parents"), the hook carries both. Only from the creator's words.
+   - Open the loop by second 5: if the hook doesn't already open a question, the first line after it
+     does — short and plain ("Let me explain.", "Here's the part I never told you.") — and the payoff
+     answers it.
+   - The underdog in the setup: who the creator is and why this is hard for THEM (self-taught, no
+     background in it, first time doing it) — only from the story or CREATOR CONTEXT. If neither says
+     it, leave it out and add "what makes this harder for you than for a pro" to "gaps".
+   - Turn it to the viewer: the CTA is one line that makes the video about the person watching
+     ("If you're scared to start, this one's for you."), built from the story's real theme. If no such
+     line fits the story honestly, use a plain one-line CTA instead. The sign-off still follows it.
+   - Say the peak once: the payoff's emotional line never also appears in the hook or setup.
+   - Never add commitment words the creator didn't use ("promise", "swore", "vowed", "my word").
+   - Loss, illness, grief or death: never in the hook, never in a caption's first line, never in a
+     title. Put it mid-script, stated simply in the creator's words, and never call it a hook or a
+     scroll-stopper anywhere (strategy, notes, audience profile).
+   - Captions echo the spoken hook: each platform caption leads with the same idea as the hook, so
+     the title and the first words of the video match.
+   - Series hashtag first: if the creator's context, sign-off or story names a series hashtag (a
+     #Tag they use for the series), it is the first hashtag on every platform.`;
 
   const base = `${samIdentity} ${toneContext} ${emojiLine} ${hashtagRule} ${creatorLine} ${voiceLine}
 ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatContext} CRITICAL: Respond ONLY with valid JSON. No markdown. No backticks. No explanation outside the JSON.`;
@@ -1455,7 +1477,7 @@ Return ONLY this JSON — be CONCISE in every field to fit within token limits:
     "risk": "12 words max, in the creator's first-person voice (I, my) — never he/his.",
     "turn": "12 words max, in the creator's first-person voice (I, my) — never he/his.",
     "payoff": "18 words max, first person (I, my). What it means — the realization the turn earns, not a restatement of the event.",
-    "cta": "12 words max, first person."
+    "cta": "One line, 22 words max, first person — turns the story to the viewer (rule 11) or, if none fits honestly, a plain call to action."
   },
   "full_script": "Complete script — 200 words max. Realize all six story_architecture beats in order. Use [BEAT: Opening], [BEAT: Setup], [BEAT: Risk], [BEAT: Turn], [BEAT: Payoff], [BEAT: CTA] labels — each marker on its own line, preceding the script content for that beat.",
   "narration_script": "If narration delivery — 200 word version following the same six-beat fidelity rules as full_script: [BEAT: Opening] [BEAT: Setup] [BEAT: Risk] [BEAT: Turn] [BEAT: Payoff] [BEAT: CTA] in order, each marker on its own line, with the Risk → Turn → Payoff causal chain intact. Otherwise null.",
