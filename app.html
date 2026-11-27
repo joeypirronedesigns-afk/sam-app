@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.119.01" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.119.02" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -17289,9 +17289,28 @@ function gapsCardHTML(gaps) {
   const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   return `<div class="playbook-gaps" style="margin-top:12px;background:var(--surface-2);border:1px solid var(--rule);border-radius:var(--radius);padding:14px 16px;">
     <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:8px;">Make it stronger</div>
-    <div style="font-size:13px;color:var(--ink-soft);margin-bottom:8px;">SAM only used what you told it. Adding these would give the story more to stand on:</div>
-    <ul style="margin:0;padding-left:18px;font-size:14px;color:var(--ink);line-height:1.6;">${list.map(g => '<li>' + esc(g) + '</li>').join('')}</ul>
+    <div style="font-size:13px;color:var(--ink-soft);margin-bottom:8px;">SAM only used what you told it. Answer any of these in your own words and she'll rebuild the story with them:</div>
+    ${list.map((g, i) => `<div style="margin-top:${i ? '12px' : '4px'};">
+      <div style="font-size:14px;color:var(--ink);line-height:1.5;">${esc(g)}</div>
+      <textarea class="wizard-textarea gap-answer no-print" data-q="${esc(g)}" rows="2" placeholder="Your answer (optional)" style="box-sizing:border-box;width:100%;min-height:52px;margin-top:6px;"></textarea></div>`).join('')}
+    <div class="no-print" style="margin-top:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <button type="button" onclick="rebuildWithAnswers(this)" style="padding:9px 16px;background:var(--accent);color:var(--paper);border:none;border-radius:6px;font-weight:600;cursor:pointer;font-size:13px;">Rebuild with my answers</button>
+      <span class="gap-rebuild-msg" style="font-size:12px;color:var(--ink-muted);">Uses one Story Engine run.</span></div>
   </div>`;
+}
+
+// Patch BJ — answer SAM's "Make it stronger" questions on the output and rebuild with them (same story, same settings).
+function rebuildWithAnswers(btn) {
+  const boxes = Array.from(document.querySelectorAll('.playbook-gaps .gap-answer'));
+  const answered = boxes.map(b => ({ q: b.getAttribute('data-q') || '', a: (b.value || '').trim() })).filter(x => x.q && x.a);
+  const msg = btn && btn.parentElement ? btn.parentElement.querySelector('.gap-rebuild-msg') : null;
+  if (!answered.length) { if (msg) { msg.textContent = 'Answer at least one question first.'; msg.style.color = '#C0392B'; } return; }
+  WS.gapQA = Array.isArray(WS.gapQA) ? WS.gapQA.filter(x => x && !answered.some(n => n.q === x.q)) : [];
+  answered.forEach(x => WS.gapQA.push(x));
+  // the reflection cache belongs to the old answers; keep the story, rebuild the playbook
+  if (typeof saveWizardState === 'function') saveWizardState();
+  try { const pg = document.getElementById('wizardPage'); if (pg) pg.scrollTop = 0; } catch (_) {}
+  if (typeof retryPlaybook === 'function') retryPlaybook(); else if (typeof buildPlaybook === 'function') buildPlaybook();
 }
 
 function refreshGapsCard() {

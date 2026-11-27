@@ -441,3 +441,8 @@ Story → script → posted video → real results → back into the formula, pe
 - YouTube chapters re-timed from the real beat starts (the writer guessed 0:40/1:20/2:30/3:30 vs actual 0:29/0:56/1:40/2:08).
 - "Need more" length claim replaced with the computed runtime (said 4–5 min; script ran 2:49).
 - Formula map lines drop "(show: …)" cues and start at a sentence start.
+
+### Patch BJ — v9.119.02 — Answer "Make it stronger" in place
+- Each "Make it stronger" question on the output now has its own answer box, plus a **Rebuild with my answers** button.
+- Answers go into WS.gapQA (replacing an older answer to the same question). getStoryForPlaybook already feeds them to SAM as "(The creator added, when SAM asked …)". Then retryPlaybook() re-runs the Story Engine with the same story and settings, so there's no need to start over.
+- If no box is filled, it shows "Answer at least one question first." and spends no run.
