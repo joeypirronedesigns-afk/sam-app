@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.119.02" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.119.03" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -16476,12 +16476,12 @@ function formulaMapHTML(data) {
   const map = Array.isArray(data && data.formula_map) ? data.formula_map : [];
   if (!map.length) return '';
   const esc = s => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const badge = { used: ['✓ Used', 'var(--accent)'], fixed: ['✎ Fixed by SAM', '#B7791F'], edited: ['✎ Edited', '#B7791F'], missing: ['✕ Missing', '#C0392B'], sam: ["✎ SAM's words", '#B7791F'], misplaced: ['⚠ Wrong beat', '#B7791F'] };
+  const badge = { used: ['✓ Used', 'var(--accent)'], fixed: ['✎ Fixed by SAM', '#B7791F'], edited: ['✎ Edited', '#B7791F'], missing: ['✕ Missing', '#C0392B'], sam: ["✎ SAM's words", '#B7791F'], misplaced: ['⚠ Wrong beat', '#B7791F'], open: ['⚠ Still open', '#C0392B'] };
   const rows = map.map(m => {
     const b = badge[m.status] || badge.used;
     return `<div style="display:grid;grid-template-columns:110px 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--rule);">
       <div><div style="font-size:13px;font-weight:700;color:var(--ink);">${esc(m.step)}</div><div style="font-size:11px;color:var(--ink-muted);">${esc(m.beat)}</div><div style="font-size:11px;font-weight:700;color:${b[1]};margin-top:4px;">${b[0]}</div></div>
-      <div>${m.line ? `<div style="font-size:14px;color:var(--ink);line-height:1.5;">“${esc(m.line)}”</div>` : ''}
+      <div>${m.line ? `<div style="font-size:14px;color:var(--ink);line-height:1.5;">${m.plain ? esc(m.line) : '“' + esc(m.line) + '”'}</div>` : ''}
         ${m.from ? `<div style="font-size:12px;color:var(--ink-soft);margin-top:3px;">${esc(m.from)}</div>` : ''}
         ${m.ask ? `<div style="font-size:12px;color:var(--ink);margin-top:5px;"><strong>SAM needs:</strong> ${esc(m.ask)}</div>` : ''}</div>
     </div>`;

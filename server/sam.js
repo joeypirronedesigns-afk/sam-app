@@ -6,7 +6,7 @@ const { platformPrompt, specFor, enforcePlatforms } = require('./_platforms');
 const { getSessionEmail } = require('./_session');
 const NB = require('./_notebook'); // Patch AR — SAM's notebook
 const { evolveVoice } = require('./_voiceEvolve'); // Patch AU — Voice DNA evolves with every story
-const { writeFormulaScript, applySheetScript, dayNumber } = require('./_scriptWriter'); // Patch AY
+const { writeFormulaScript, applySheetScript, dayNumber, earlySents: _swEarly, UNDONE_RE: _SW_UNDONE } = require('./_scriptWriter'); // Patch AY
 const RES = require('./_results'); // Patch BE — How did it do?
 
 // Patch AV — SAM knows today's date and time, in the creator's own time zone (cookie set by the app).
@@ -335,10 +335,28 @@ function buildFormulaMap(parsed, b, info) {
     }
     // Patch AY — beat-role checks: each formula step has one home.
     const _beatOf = ln => { const n = _normSentence(ln); if (!n) return ''; for (const bn of ['Opening', 'Setup', 'Risk', 'Turn', 'Payoff', 'CTA']) if (_normSentence(_beatText(script, bn)).includes(n)) return bn; return ''; };
-    const _home = { Underdog: ['Setup'], Stakes: ['Risk', 'Opening'] };
+    // Patch BK — every story step has a home beat; a line found anywhere else is flagged, not passed.
+    const _home = { Underdog: ['Setup'], Stakes: ['Risk', 'Opening'], Struggle: ['Turn'], Payoff: ['Payoff'], 'Viewer turn': ['CTA'] };
+    const _why = { Underdog: 'the underdog belongs in the Setup.', Stakes: 'the stakes belong in the Risk beat.', Struggle: 'the struggle belongs in the Turn.', Payoff: 'the payoff belongs in the Payoff beat.', 'Viewer turn': 'the viewer line belongs in Your Call.' };
+    if (d.step === 'Payoff' && status === 'used' && line && _beatOf(line) !== 'Payoff') {
+      // the sheet may list several proof quotes — show the one the Payoff beat actually says
+      const proofs = ((parsed.story_sheet || {}).proof || []);
+      const payT = _beatText(script, 'Payoff').replace(/\(show:[^)]*\)\s*/gi, ''), payS = (payT.match(/[^.!?…]+(?:[.!?…]+|$)/g) || []).map(x => x.trim()).filter(Boolean);
+      let best = '', bestSc = 0;
+      for (const pq of proofs) {
+        const tw = _normSentence(pq).split(' ').filter(w => w.length > 3); if (!tw.length) continue;
+        // the shortest run of Payoff sentences (up to 6, short ".." beats) that holds at least half the quote's words
+        for (let i = 0; i < payS.length; i++) for (let k = i + 1; k <= Math.min(payS.length, i + 6); k++) {
+          const run = payS.slice(i, k).join(' '), ws = new Set(_normSentence(run).split(' '));
+          const sc = tw.filter(w => ws.has(w)).length / tw.length - (k - i) * 0.01;
+          if (sc >= 0.5 && sc > bestSc) { bestSc = sc; best = run; }
+        }
+      }
+      if (best) line = best;
+    }
     if (status === 'used' && line && _home[d.step]) {
       const at = _beatOf(line);
-      if (at && !_home[d.step].includes(at)) { status = 'misplaced'; from = 'This is in the ' + (at === 'CTA' ? 'Your Call' : at) + ' beat — ' + (d.step === 'Stakes' ? 'the stakes belong in the Risk beat.' : 'the underdog belongs in the Setup.'); }
+      if (at && !_home[d.step].includes(at)) { status = 'misplaced'; from = 'This is in the ' + (at === 'CTA' ? 'Your Call' : at) + ' beat — ' + _why[d.step]; }
     }
     if (d.step === 'Anchor') {
       const who = (String(b.moment || '').match(/\bmy (parents|mom|dad|mother|father|wife|husband|kids?|son|daughter|family|grandparents?|brother|sister|partner)\b/i) || [])[0];
@@ -350,6 +368,10 @@ function buildFormulaMap(parsed, b, info) {
       const pay = _beatText(script, 'Payoff');
       const fut = pay.match(/[^.!?…]*\b(will|i'll|we'll|going to|gonna|christmas day|when (they|she|he) (see|walk))\b[^.!?…]*[.!?…]?/i);
       if (fut && !_normSentence(b.moment || '').includes(_normSentence(fut[0]))) { status = 'sam'; line = fut[0].trim(); from = 'A future scene — not something you can show today. The payoff should be proof of what\'s done.'; }
+      // Patch BK — the payoff can't open on what isn't done
+      const _ps = (pay.replace(/\(show:[^)]*\)/gi, '').match(/[^.!?…]+(?:[.!?…]+|$)/g) || []).map(x => x.trim()).filter(Boolean);
+      const _undone = _swEarly(_ps).find(x => _SW_UNDONE.test(x));
+      if (_undone && status !== 'sam') { status = 'misplaced'; line = _undone; from = 'The payoff opens on what isn\'t done yet. Open on what viewers can see today — the rest belongs in the Turn or "Next up".'; }
     }
     // Patch BB — the creator's countdown ("29 days left") must be spoken, and the Risk beat can't repeat the hook.
     if (d.step === 'Stakes') {
@@ -377,6 +399,16 @@ function buildFormulaMap(parsed, b, info) {
     // Patch BI — show the spoken words only (no "(show: …)" filming cues), starting at a capital letter
     if (line) { line = line.replace(/\(show:[^)]*\)\s*/gi, '').trim(); const cap = line.search(/[A-Z"“]/); if (cap > 0 && cap < 40 && /^[a-z]/.test(line)) line = line.slice(cap); }
     out.push({ step: d.step, beat: d.beat, line, from, status, ask: status === 'missing' ? d.ask : '' });
+  }
+  // Patch BK — SAM's learning loop, made visible: lessons from your posted results, and her own self-check.
+  const _la = Array.isArray(parsed.lessons_applied) ? parsed.lessons_applied : [];
+  if (_la.length) out.push({ step: 'Your results', beat: 'Whole script', line: _la.join(' · '), from: 'Lessons from your "How did it do?" checks that SAM followed in this script.', status: 'used', ask: '', plain: true });
+  const _sc = parsed.self_check;
+  if (_sc && Array.isArray(_sc.issues)) {
+    const rem = _sc.remaining || [], fx = _sc.fixed || [];
+    out.push(!_sc.issues.length
+      ? { step: 'Self-check', beat: 'Whole script', line: 'Passed every formula rule on the first draft.', from: 'SAM checked her own draft before showing it to you.', status: 'used', ask: '', plain: true }
+      : { step: 'Self-check', beat: 'Whole script', line: (fx.length ? 'Fixed on her own: ' + fx.map(x => x.split(/[.(]/)[0].trim()).join('; ') : '') + (rem.length ? (fx.length ? ' · ' : '') + 'Still open: ' + rem.map(x => x.split(/[.(]/)[0].trim()).join('; ') : ''), from: 'SAM checked her own draft against the formula and rewrote what failed, once, before showing it to you.', status: rem.length ? 'open' : 'fixed', ask: '', plain: true });
   }
   parsed.formula_map = out;
   // Missing steps become SAM's questions (max 2, spec order).

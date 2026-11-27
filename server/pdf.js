@@ -789,14 +789,14 @@ function buildPlaybookHTML(pb, brand) {
   // ── Formula map (Patch AL) — step → exact line → where it came from ───────
   const fmap = (Array.isArray(pb.formula_map) ? pb.formula_map : []).filter(m => m && m.step);
   if (fmap.length) {
-    const mark = { used: ['✓ Used', brandColor], fixed: ['✎ Fixed by SAM', '#B7791F'], edited: ['✎ Edited', '#B7791F'], missing: ['✕ Missing', '#C0392B'], sam: ["✎ SAM's words", '#B7791F'], misplaced: ['⚠ Wrong beat', '#B7791F'] };
+    const mark = { used: ['✓ Used', brandColor], fixed: ['✎ Fixed by SAM', '#B7791F'], edited: ['✎ Edited', '#B7791F'], missing: ['✕ Missing', '#C0392B'], sam: ["✎ SAM's words", '#B7791F'], misplaced: ['⚠ Wrong beat', '#B7791F'], open: ['⚠ Still open', '#C0392B'] };
     const rows = fmap.map(m => { const k = mark[m.status] || mark.used; return `<tr>
       <td style="vertical-align:top;padding:4pt 10pt 4pt 0;border-top:0.5pt solid #ddd;width:92pt;">
         <div style="font-weight:700;font-size:10pt;">${e(m.step)}</div>
         <div style="font-size:8pt;color:#888;">${e(m.beat || '')}</div>
         <div style="font-size:8pt;font-weight:700;color:${k[1]};margin-top:2pt;">${k[0]}</div></td>
       <td style="vertical-align:top;padding:4pt 0;border-top:0.5pt solid #ddd;font-size:9pt;line-height:1.35;">
-        ${m.line ? `<div>“${e(m.line)}”</div>` : ''}
+        ${m.line ? `<div>${m.plain ? e(m.line) : '“' + e(m.line) + '”'}</div>` : ''}
         ${m.from ? `<div style="font-size:7.5pt;color:#666;margin-top:1pt;">${e(String(m.from).length > 170 ? String(m.from).slice(0, 167) + '…' : m.from)}</div>` : ''}
         ${m.ask ? `<div style="font-size:8.5pt;margin-top:3pt;"><strong>SAM needs:</strong> ${e(m.ask)}</div>` : ''}</td></tr>`; }).join('');
     pages.push(`<div class="pdf-page pdf-page--interior">
