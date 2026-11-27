@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.119.04" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.119.05" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -16792,9 +16792,13 @@ async function generateAudienceDiagnosis() {
       // Patch BL — no results check with an age chart yet: use who SAM found watching in your recent stories,
       // instead of the generic story guess.
       let prev = (d.outputs || []).find(x => x && x.audience && x.audience.trim().length > 20);
-      if (!prev) { const al = (d.lessons || []).filter(l => /\b(women|men|older|55|65|45-54)\b/i.test(l.text)); if (al.length) prev = { audience: al.map(l => l.text).join(' ') }; }
+      // Patch BM — whole sentences only (stored lessons can be cut mid-word), each said once
+      const _whole = t => { const m = String(t || '').trim().match(/^[\s\S]*?[.!?](?=\s|$)/); if (m) return m[0].trim(); const x = String(t || '').trim(), dash = x.search(/\s[—–-]\s|;/); return dash > 20 ? x.slice(0, dash).trim() + '.' : x.replace(/\s+\S*$/, '') + '…'; };
+      const AUD = /\b(women|men|older|demographic|55|65|45-54|55-64|age)\b/i;
+      let usedLesson = '';
+      if (!prev) { const al = (d.lessons || []).find(l => AUD.test(l.text)); if (al) { usedLesson = al.text; prev = { audience: _whole(al.text) }; } }
       if (prev) {
-        const who = prev.audience.trim(), lessons = (d.lessons || []).filter(l => /audience|viewers|women|men|older|55|65|45/i.test(l.text)).slice(0, 2);
+        const who = prev.audience.trim(), lessons = (d.lessons || []).filter(l => AUD.test(l.text) && l.text !== usedLesson).slice(0, 1).map(l => ({ text: _whole(l.text) }));
         const diag = `From your recent stories, SAM knows who watches you: ${_nbEsc(who)}` +
           (lessons.length ? `<br/><br/>What SAM has learned about them: ${lessons.map(l => _nbEsc(l.text)).join(' ')}` : '') +
           `<br/><br/><span style="font-size:13px;color:var(--ink-muted);">For exact numbers, run "How did it do?" with your audience age chart — this then updates from your real results.</span>`;

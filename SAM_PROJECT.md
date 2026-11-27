@@ -459,3 +459,9 @@ Story → script → posted video → real results → back into the formula, pe
 - Short scripts: the writer may ask ONE "Make it stronger" question when the Payoff or Turn is thin (e.g. how it looks or feels now). It goes into the new answer boxes, so Rebuild picks it up.
 - Clarity rule example: "my wife Amanda and our dog Penny".
 - Map: the Stakes row said "fact-check changed this line" when the line was only split into short ".." sentences. Added _looseFind (a 6-sentence window), and the honest fallback now reads "SAM reworded this one".
+
+### Patch BM — v9.119.05 — polish from output 65 (graded 9.5)
+- Self-check row: plain labels for each problem (_scLabel), replacing the broken text cut at the first quote mark.
+- Series thread row: no longer says "SAM reworded this one" when the line is fine.
+- Guide fact-check: also cuts any plan stated as already done (65's tip 5 said "I completed the bathrooms before…" when that's next week).
+- Step 6 fallback from lessons: whole sentences only (stored lessons are cut at 300 chars, which left "410 da"), never shows the same lesson twice, and only uses audience lessons (age/gender/demographic), not the 0:05 drop lesson.

@@ -289,6 +289,18 @@ function dedupeLoop(parsed, phrase) {
 }
 
 // Patch BL — the shortest run of sentences in a beat (up to 6) holding at least half the quote's content words.
+// Patch BM — a short plain label for each self-check problem (the full sentence is for the writer).
+function _scLabel(x) {
+  const t = String(x || ''), q = (t.match(/"([^"]{3,70})"/) || [])[1];
+  if (/Payoff opens on what is NOT done/.test(t)) return 'the payoff opened on unfinished work';
+  if (/future scene/.test(t)) return 'the payoff described the future';
+  if (/countdown/.test(t)) return 'the countdown number wasn\'t said';
+  if (/Risk beat repeats the hook/.test(t)) return 'the Risk beat repeated the hook';
+  if (/new viewer won/.test(t)) return 'unexplained reference' + (q ? ' ("' + q + '")' : '');
+  if (/repeats an earlier beat/.test(t)) return 'a repeated line' + (q ? ' ("' + q + '")' : '');
+  if (/CTA never speaks/.test(t)) return 'the call to action didn\'t speak to the viewer';
+  return t.split(/[.(]/)[0].trim();
+}
 function _looseFind(beatText, quote) {
   const tw = _normSentence(quote).split(' ').filter(w => w.length > 3); if (!tw.length || !beatText) return '';
   const ss = (String(beatText).replace(/\(show:[^)]*\)\s*/gi, '').match(/[^.!?…]+(?:[.!?…]+|$)/g) || []).map(x => x.trim()).filter(Boolean);
@@ -399,7 +411,7 @@ function buildFormulaMap(parsed, b, info) {
     }
     if (d.step === 'Series thread') {
       const m = script.replace(/\[BEAT:[^\]]*\]/g, ' ').match(/[^.!?…]*\b(day \d+|next up|next time|next video|tomorrow)\b[^.!?…]*[.!?…]?/i);
-      if (m) { status = 'used'; line = m[0].trim(); if (!from || /fact-check|didn't give SAM/.test(from)) from = 'Keeps viewers coming back for the next video.'; }
+      if (m) { status = 'used'; line = m[0].trim(); if (!from || /fact-check|didn't give SAM|reworded/.test(from)) from = 'Keeps viewers coming back for the next video.'; }
       else if (status !== 'used') { status = 'missing'; line = ''; from = 'Nothing tells viewers what comes next.'; }
     }
     // Patch AM — "from your story" is checked, not taken on SAM's word.
@@ -421,7 +433,7 @@ function buildFormulaMap(parsed, b, info) {
     const rem = _sc.remaining || [], fx = _sc.fixed || [];
     out.push(!_sc.issues.length
       ? { step: 'Self-check', beat: 'Whole script', line: 'Passed every formula rule on the first draft.', from: 'SAM checked her own draft before showing it to you.', status: 'used', ask: '', plain: true }
-      : { step: 'Self-check', beat: 'Whole script', line: (fx.length ? 'Fixed on her own: ' + fx.map(x => x.split(/[.(]/)[0].trim()).join('; ') : '') + (rem.length ? (fx.length ? ' · ' : '') + 'Still open: ' + rem.map(x => x.split(/[.(]/)[0].trim()).join('; ') : ''), from: 'SAM checked her own draft against the formula and rewrote what failed, once, before showing it to you.', status: rem.length ? 'open' : 'fixed', ask: '', plain: true });
+      : { step: 'Self-check', beat: 'Whole script', line: (fx.length ? 'Fixed on her own: ' + fx.map(_scLabel).join('; ') : '') + (rem.length ? (fx.length ? ' · ' : '') + 'Still open: ' + rem.map(_scLabel).join('; ') : ''), from: 'SAM checked her own draft against the formula and rewrote what failed, once, before showing it to you.', status: rem.length ? 'open' : 'fixed', ask: '', plain: true });
   }
   parsed.formula_map = out;
   // Missing steps become SAM's questions (max 2, spec order).
@@ -669,7 +681,7 @@ async function factCheckGuide(apiKey, source, lm) {
   ].filter(Boolean).join('\n');
   if (!draft.trim()) return null;
   const system = `You check a free guide a creator will give their audience. SOURCE is everything the creator actually said about themselves.
-Flag ONLY sentences in DRAFT that (a) state something about the CREATOR — their experience, history, numbers, results, feelings, tools they built or use, what they wish they'd had, what they learned — that SOURCE does not say or clearly imply, or (b) promise the reader a result ("will save you thousands", "guaranteed", "the exact system I use").
+Flag ONLY sentences in DRAFT that (a) state something about the CREATOR — their experience, history, numbers, results, feelings, tools they built or use, what they wish they'd had, what they learned — that SOURCE does not say or clearly imply, or (b) promise the reader a result ("will save you thousands", "guaranteed", "the exact system I use"), or (c) describe something the creator said they PLAN to do as already done ("I completed the bathrooms before…" when SOURCE says that is next).
 Advice, instructions and general how-to aimed at the reader are fine. Restating what the creator said in other words is fine.
 Return ONLY JSON: {"unsupported":[{"text":"the exact sentence copied from DRAFT"}]}. Empty array if nothing is wrong.`;
   const ctrl = new AbortController();
