@@ -50,7 +50,8 @@ async function saveOutput(email, parsed, moment) {
     formula: (Array.isArray(parsed.formula_map) ? parsed.formula_map : []).map(m => ({ step: m.step, status: m.status, line: String(m.line || '').slice(0, 200) })),
     alt_hooks: Array.isArray(parsed.alt_hooks) ? parsed.alt_hooks.slice(0, 2) : [],
     captions: (Array.isArray(parsed.platform_strategies) ? parsed.platform_strategies : []).map(p => ({ platform: p.platform, caption: String(p.caption || '').slice(0, 300) })),
-    story: String(moment || '').slice(0, 600)
+    story: String(moment || '').slice(0, 600),
+    audience: String((parsed.audience_profile && parsed.audience_profile.who) || '').slice(0, 400)   // Patch BL
   };
   const list = await getList('outputs', email); list.push(rec);
   await setList('outputs', email, list, MAX_OUTPUTS);

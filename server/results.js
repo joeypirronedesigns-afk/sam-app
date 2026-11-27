@@ -10,7 +10,7 @@ module.exports = async function handler(req, res) {
   const action = b.action;
 
   if (action === 'list') {
-    const outputs = (await R.getList('outputs', email)).slice().reverse().map(o => ({ id: o.id, at: o.at, hook: o.hook, pattern: o.pattern }));
+    const outputs = (await R.getList('outputs', email)).slice().reverse().map(o => ({ id: o.id, at: o.at, hook: o.hook, pattern: o.pattern, audience: o.audience || '' }));
     const debriefs = (await R.getList('debriefs', email)).slice().reverse();
     const lessons = await R.getList('lessons', email);
     return res.status(200).json({ outputs, debriefs, lessons });

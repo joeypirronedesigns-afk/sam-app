@@ -288,6 +288,18 @@ function dedupeLoop(parsed, phrase) {
   }
 }
 
+// Patch BL — the shortest run of sentences in a beat (up to 6) holding at least half the quote's content words.
+function _looseFind(beatText, quote) {
+  const tw = _normSentence(quote).split(' ').filter(w => w.length > 3); if (!tw.length || !beatText) return '';
+  const ss = (String(beatText).replace(/\(show:[^)]*\)\s*/gi, '').match(/[^.!?…]+(?:[.!?…]+|$)/g) || []).map(x => x.trim()).filter(Boolean);
+  let best = '', bestSc = 0;
+  for (let i = 0; i < ss.length; i++) for (let k = i + 1; k <= Math.min(ss.length, i + 6); k++) {
+    const ws = new Set(_normSentence(ss.slice(i, k).join(' ')).split(' '));
+    const sc = tw.filter(w => ws.has(w)).length / tw.length - (k - i) * 0.01;
+    if (sc >= 0.5 && sc > bestSc) { bestSc = sc; best = ss.slice(i, k).join(' '); }
+  }
+  return best;
+}
 function buildFormulaMap(parsed, b, info) {
   if (!parsed || typeof parsed !== 'object') return;
   const script = parsed.full_script || parsed.narration_script || '';
@@ -310,8 +322,9 @@ function buildFormulaMap(parsed, b, info) {
       const own = d.beat === 'Your Call' ? 'CTA' : d.beat;
       let near = _bestSentence(_beatText(script, own), line);
       for (const bn of ['Opening', 'Setup', 'Risk', 'Turn', 'Payoff', 'CTA']) { if (near) break; if (bn !== own) near = _bestSentence(_beatText(script, bn), line); }
+      if (!near) near = _looseFind(_beatText(script, own), line);   // Patch BL — short ".." beats split sentences finely
       if (near) line = near;
-      else { status = 'edited'; from = 'SAM\'s fact-check changed this line — read the ' + d.beat + ' beat.'; line = ''; }
+      else { status = 'edited'; from = 'SAM reworded this one — read the ' + d.beat + ' beat to check it still says what you meant.'; line = ''; }
     }
     if (d.step === 'Anchor' && info.hookFromCreator) { status = 'used'; line = HOOK; from = 'Your story — your own first line.'; }
     if (d.step === 'Anchor' && !ANCHOR_RE.test(HOOK)) { status = 'missing'; line = ''; from = 'The hook has no number, day count or timeframe.'; }

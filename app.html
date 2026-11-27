@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.119.03" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.119.04" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -16786,6 +16786,26 @@ async function generateAudienceDiagnosis() {
         if (typeof saveWizardState === 'function') saveWizardState();
         const el0 = document.getElementById('wiz6diagText');
         if (el0) el0.innerHTML = diag;
+        document.getElementById('wizardNextBtn').disabled = false;
+        return;
+      }
+      // Patch BL — no results check with an age chart yet: use who SAM found watching in your recent stories,
+      // instead of the generic story guess.
+      let prev = (d.outputs || []).find(x => x && x.audience && x.audience.trim().length > 20);
+      if (!prev) { const al = (d.lessons || []).filter(l => /\b(women|men|older|55|65|45-54)\b/i.test(l.text)); if (al.length) prev = { audience: al.map(l => l.text).join(' ') }; }
+      if (prev) {
+        const who = prev.audience.trim(), lessons = (d.lessons || []).filter(l => /audience|viewers|women|men|older|55|65|45/i.test(l.text)).slice(0, 2);
+        const diag = `From your recent stories, SAM knows who watches you: ${_nbEsc(who)}` +
+          (lessons.length ? `<br/><br/>What SAM has learned about them: ${lessons.map(l => _nbEsc(l.text)).join(' ')}` : '') +
+          `<br/><br/><span style="font-size:13px;color:var(--ink-muted);">For exact numbers, run "How did it do?" with your audience age chart — this then updates from your real results.</span>`;
+        WS.diagnosedAudience = diag.replace(/<[^>]+>/g, '');
+        const pick = /55\s*\+|55 and (up|older)|over 55|65/i.test(who) ? '55+' : (/45\s*[-–]\s*54/.test(who) ? '45-54' : (/35\s*[-–]\s*44/.test(who) ? '35-44' : null));
+        if (pick && (!WS.audienceAge || WS.audienceAge === '35-44' || WS.audienceAge === '25-44')) WS.audienceAge = pick;
+        const g = /\bwomen\b/i.test(who) && !/\bmen\b/i.test(who.replace(/women/gi, '')) ? 'Mostly women' : (/\bmen\b/i.test(who.replace(/women/gi, '')) && !/\bwomen\b/i.test(who) ? 'Mostly men' : null);
+        if (g && (!WS.audienceGender || WS.audienceGender === 'Mix of both')) WS.audienceGender = g;
+        if (typeof saveWizardState === 'function') saveWizardState();
+        const el1 = document.getElementById('wiz6diagText');
+        if (el1) el1.innerHTML = diag;
         document.getElementById('wizardNextBtn').disabled = false;
         return;
       }

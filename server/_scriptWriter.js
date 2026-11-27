@@ -67,6 +67,15 @@ function selfCheck(j, moment) {
   if (hw.size >= 4 && rw.length && rw.filter(w => hw.has(w)).length / hw.size >= 0.6) out.push('The Risk beat repeats the hook. Say each thing once.');
   const unclear = spoken.match(/\b(before|when|after|until|till) we (leave|go|move|head out)\b(?!\s+(to|back|for|home|south|north))[^.!?…]*/i);
   if (unclear) out.push('"' + unclear[0].trim() + '" — a new viewer won\'t know where or why. Add a few plain words of context from the story or background, or cut that clause.');
+  // Patch BL — say each thing once: a sentence that mostly repeats one from an earlier beat
+  const KEYS = ['setup', 'risk', 'turn', 'payoff', 'cta'], cw = x => norm(x).split(' ').filter(w => w.length > 3);
+  const seen = _sents(b.opening).map(cw);
+  for (const k of KEYS) {
+    const ss = _sents(String(b[k] || '').replace(/\(show:[^)]*\)/gi, ''));
+    const rep = ss.find(x => { const w = cw(x); return w.length >= 3 && seen.some(p => p.length >= 3 && w.filter(t => p.includes(t)).length / w.length >= 0.7); });
+    if (rep && !/^next up\b/i.test(rep)) { out.push('"' + rep + '" repeats an earlier beat. Say each thing once — replace it with something new from the story, or cut it.'); break; }
+    ss.forEach(x => seen.push(cw(x)));
+  }
   if (!/\b(you|your|you're|you've|you'll)\b/i.test(String(b.cta || ''))) out.push('The CTA never speaks to the viewer. Use the creator\'s own line to the viewer.');
   return out;
 }
@@ -97,7 +106,7 @@ THE FORMULA (six beats):
   Patch BK: the Payoff OPENS on the reveal — what the viewer can see or feel right now. What is NOT done yet ("still needs a final coat", "not started yet") never opens the Payoff: put it in the Turn as part of the struggle, or leave it to the "Next up" tease.
 - CTA: the VIEWER TURN — one line that makes it about the person watching, from the creator's own words when they wrote one, kept whole and in their order (e.g. "…you can do yours. Keep showing up."). Then, if the creator said what's next, ONE short tease of 15 words max — "Next up: …" naming the 2–3 most visual or dramatic items, never the whole to-do list. Do NOT write the creator's sign-off; it is added after.
 
-CLEAR TO A STRANGER (Patch BK): a new viewer knows nothing about the creator. Any line that leans on something unexplained ("before we leave", "Jason", "the old one") either gets a few plain words of context from STORY or BACKGROUND ("before we move back to Florida", "Jason, our plumber") or the unclear clause is cut. Never invent the context.
+CLEAR TO A STRANGER (Patch BK): a new viewer knows nothing about the creator. Any line that leans on something unexplained ("before we leave", "Jason", "the old one") either gets a few plain words of context from STORY or BACKGROUND ("before we move back to Florida", "Jason, our plumber", "my wife Amanda and our dog Penny") or the unclear clause is cut. Never invent the context.
 
 SAY EACH THING ONCE (Patch BB): never repeat a clause from an earlier beat. The hook's promise line is not said again in the Risk beat; the big number (e.g. "450 days") appears at most twice in the whole script. Your best-performing scripts said each thing once and kept moving.
 
@@ -119,7 +128,7 @@ Return ONLY JSON:
 "pattern":"the id of the pattern you used for the hook",
 "pattern_why":"one plain sentence to the creator: why this pattern fits THIS story",
 "alt_hooks":[{"pattern":"a different pattern id","hook":"an alternate opening line built only from the story"},{"pattern":"another different id","hook":"..."}],
-"pacing_note":"one delivery tip"${lessons ? ',\n"lessons_applied":["for each audience lesson you followed: the lesson in 3–6 words → where/how this script follows it"]' : ''}${LONG ? ',\n"chapters":["0:00 Title", "..."],\n"need_more":["what the creator should add for a full 8–12 minute video, or empty"]' : ''}}`;
+"pacing_note":"one delivery tip"${lessons ? ',\n"lessons_applied":["for each audience lesson you followed: the lesson in 3–6 words → where/how this script follows it"]' : ''}${LONG ? ',\n"chapters":["0:00 Title", "..."],\n"need_more":["what the creator should add for a full 8–12 minute video, or empty"]' : ',\n"need_more":["Patch BL: at most ONE short question to the creator, only if the Payoff or Turn is thin because the story never says how it looks or feels now, or what went wrong (e.g. \"Now that the first coat is on, how does it look and feel to you?\"). Otherwise empty."]'}}`;
   const user = `STORY AND ANSWERS (the creator's words):\n${moment}\n\n${creatorContext ? `CREATOR CONTEXT / BACKGROUND:\n${creatorContext}` : ''}`;
   const errors = [];
   const source = [moment, creatorContext, notebook].filter(Boolean).join('\n');
