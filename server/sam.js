@@ -360,7 +360,7 @@ function buildFormulaMap(parsed, b, info) {
     }
     if (d.step === 'Series thread') {
       const m = script.replace(/\[BEAT:[^\]]*\]/g, ' ').match(/[^.!?…]*\b(day \d+|next up|next time|next video|tomorrow)\b[^.!?…]*[.!?…]?/i);
-      if (m) { status = 'used'; line = m[0].trim(); from = from || 'Keeps viewers coming back for the next video.'; }
+      if (m) { status = 'used'; line = m[0].trim(); if (!from || /fact-check|didn't give SAM/.test(from)) from = 'Keeps viewers coming back for the next video.'; }
       else if (status !== 'used') { status = 'missing'; line = ''; from = 'Nothing tells viewers what comes next.'; }
     }
     // Patch AM — "from your story" is checked, not taken on SAM's word.

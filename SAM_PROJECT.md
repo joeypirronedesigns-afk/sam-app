@@ -413,3 +413,7 @@ Story → script → posted video → real results → back into the formula, pe
 - server/_patterns.js: 12 proven short-form patterns (countdown, milestone, promise, contrarian, before→after, mistake & fix, one small thing, first time, you asked, the untold part, start in motion, what it cost) — name, when, shape, why, invented example. No creator setup.
 - Script writer gets the list, picks ONE pattern for the hook/arc (anchor still lands in the Opening), returns pattern + one-line why + 2 alternate hooks from other patterns (same truth rules; alternates with numbers not in the story are dropped).
 - Output: "Hook pattern" row leads the formula map; hook section shows "Pattern: X. why" and a collapsed "Other hooks" with copy buttons (app + PDF). Anchor person check now reads the whole Opening.
+
+## Patch BD — v9.118.96 — Close in the right order
+- orderCTA(): viewer line first (kept whole across ".." pauses, with its own short tag like "Keep showing up." after it), then "Next up", then the sign-off. Output 59 had "Keep showing up. Next up: … If you're tackling…".
+- Map: Series thread no longer shows the "fact-check changed this line" note when it's used.

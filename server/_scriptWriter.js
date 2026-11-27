@@ -55,7 +55,7 @@ THE FORMULA (six beats):
 - RISK: the STAKES — the deadline, the promise, or the cost. (Not the underdog. Not backstory.) If the creator gave a countdown or number ("29 days left"), SAY THE NUMBER here — it is the urgency.
 - TURN: the honest STRUGGLE — what was harder than expected or a moment of doubt, in their words. If they gave none, use the plain decision or pivot from their story — never invent doubt or feelings.
 - PAYOFF: fast PROOF of what is done or visible TODAY — a quick rhythm of short items from their story — then ONE emotional line built from their own words. Never a future scene (no "Christmas Day… their faces"), never something that hasn't happened.
-- CTA: the VIEWER TURN — one line that makes it about the person watching, from the creator's own words when they wrote one. Then, if the creator said what's next, ONE short tease of 15 words max — "Next up: …" naming the 2–3 most visual or dramatic items, never the whole to-do list. Do NOT write the creator's sign-off; it is added after.
+- CTA: the VIEWER TURN — one line that makes it about the person watching, from the creator's own words when they wrote one, kept whole and in their order (e.g. "…you can do yours. Keep showing up."). Then, if the creator said what's next, ONE short tease of 15 words max — "Next up: …" naming the 2–3 most visual or dramatic items, never the whole to-do list. Do NOT write the creator's sign-off; it is added after.
 
 SAY EACH THING ONCE (Patch BB): never repeat a clause from an earlier beat. The hook's promise line is not said again in the Risk beat; the big number (e.g. "450 days") appears at most twice in the whole script. Your best-performing scripts said each thing once and kept moving.
 
@@ -110,8 +110,26 @@ Return ONLY JSON:
 }
 
 // Swap the sheet-built script into the playbook result (before every guard and check runs on it).
+// Patch BD — the close always runs: the creator's viewer line (with its own tag, e.g. "Keep showing up.")
+// first, then the "Next up" tease last (the sign-off is added after it).
+function orderCTA(text) {
+  const parts = (String(text || '').match(/[^.!?…]+(?:[.!?…]+|$)/g) || []).map(x => x.trim()).filter(Boolean);
+  if (parts.length < 2) return String(text || '').trim();
+  const next = parts.filter(x => /^next up\b/i.test(x));
+  let rest = parts.filter(x => !/^next up\b/i.test(x));
+  const isYou = x => /\b(you|your|you're|you've)\b/i.test(x);
+  const vi = rest.findIndex(isYou);
+  if (vi > 0) {
+    let ve = vi; while (ve + 1 < rest.length && isYou(rest[ve + 1])) ve++;   // the viewer line can span a ".." pause
+    const before = rest.slice(0, vi), tags = before.filter(x => x.split(/\s+/).length <= 5), keep = before.filter(x => x.split(/\s+/).length > 5);
+    rest = keep.concat(rest.slice(vi, ve + 1), tags, rest.slice(ve + 1));
+  }
+  return rest.concat(next).join(' ').replace(/\s{2,}/g, ' ').trim();
+}
+
 function applySheetScript(parsed, sc) {
   if (!parsed || !sc || sc.failed || !sc.beats) return false;
+  if (sc.beats.cta) sc.beats.cta = orderCTA(sc.beats.cta);
   const b = sc.beats, order = [['Opening', 'opening'], ['Setup', 'setup'], ['Risk', 'risk'], ['Turn', 'turn'], ['Payoff', 'payoff'], ['CTA', 'cta']];
   if (order.some(([, k]) => !String(b[k] || '').trim())) return false;
   parsed.hook = String(sc.hook).trim();
@@ -143,4 +161,4 @@ function applySheetScript(parsed, sc) {
   return true;
 }
 
-module.exports = { writeFormulaScript, applySheetScript, dayNumber, quoteIsReal, SCRIPT_MODEL };
+module.exports = { orderCTA, writeFormulaScript, applySheetScript, dayNumber, quoteIsReal, SCRIPT_MODEL };
