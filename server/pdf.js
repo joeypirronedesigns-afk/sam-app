@@ -803,6 +803,7 @@ function buildPlaybookHTML(pb, brand) {
       ${hdr(brandName, docType, pn(), brandLogo)}
       <div class="section-body">
         ${sLabel('How SAM Used the Formula')}
+        ${pb.script_engine ? `<p style="font-size:8.5pt;margin:0 0 8pt;color:${pb.script_engine === 'fallback' ? '#C0392B' : '#666'};">${pb.script_engine === 'fallback' ? '⚠ Story-sheet writer failed — backup writer used.' + (pb.script_engine_note ? ' Reason: ' + e(pb.script_engine_note) : '') : '✓ Written by the story-sheet writer (' + e(String(pb.script_engine).replace(/^sheet-v1 · /, '')) + ')'}</p>` : ''}
         <table style="width:100%;border-collapse:collapse;">${rows}</table>
       </div>
       ${ftr(brandName)}

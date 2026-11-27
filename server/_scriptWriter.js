@@ -3,6 +3,18 @@
 // Step B: write each beat ONLY from its slot. Code then checks every sheet quote against what the creator
 // actually wrote; a quote that isn't there is treated as missing (never as fact).
 const SCRIPT_MODEL = process.env.SAM_SCRIPT_MODEL || 'claude-opus-5-5';
+// Patch BA — if the first model fails, try these in order before giving up.
+const FALLBACK_MODELS = [SCRIPT_MODEL, 'claude-sonnet-5-5', 'claude-sonnet-4-6'].filter((m, i, a) => a.indexOf(m) === i);
+
+// Lenient JSON: strip code fences, cut to the outer braces, drop trailing commas.
+function parseLooseJSON(raw) {
+  let t = String(raw || '').replace(/^\s*```(?:json)?/i, '').replace(/```\s*$/, '');
+  const a = t.indexOf('{'), b = t.lastIndexOf('}');
+  if (a < 0 || b <= a) throw new Error('no JSON object in reply');
+  t = t.slice(a, b + 1);
+  try { return JSON.parse(t); } catch (_) {}
+  return JSON.parse(t.replace(/,\s*([}\]])/g, '$1').replace(/[\u201c\u201d]/g, '"'));
+}
 
 const norm = t => String(t || '').toLowerCase().replace(/[“”"’']/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
 
@@ -57,19 +69,21 @@ Return ONLY JSON:
 "shots":["3–5 shots to film, only of things in the story"],
 "pacing_note":"one delivery tip"}`;
   const user = `STORY AND ANSWERS (the creator's words):\n${moment}\n\n${creatorContext ? `CREATOR CONTEXT / BACKGROUND:\n${creatorContext}` : ''}`;
-  const ac = new AbortController(); const timer = setTimeout(() => ac.abort(), 95000);
+  const errors = [];
+  for (const model of FALLBACK_MODELS) {
+  const ac = new AbortController(); const timer = setTimeout(() => ac.abort(), 110000);
   try {
     const r = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST', signal: ac.signal,
       headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
-      body: JSON.stringify({ model: SCRIPT_MODEL, max_tokens: 2000, system, messages: [{ role: 'user', content: user }] })
+      body: JSON.stringify({ model, max_tokens: 3500, system, messages: [{ role: 'user', content: user }] })
     });
-    if (!r.ok) { console.error('[script-writer] API', r.status, (await r.text().catch(() => '')).slice(0, 200)); return null; }
+    if (!r.ok) { const e = `${model}: API ${r.status} ${(await r.text().catch(() => '')).slice(0, 160)}`; console.error('[script-writer]', e); errors.push(e); continue; }
     const d = await r.json();
     const raw = (d && d.content && d.content.map(c => c.text || '').join('')) || '';
-    const m = raw.match(/\{[\s\S]*\}/); if (!m) return null;
-    const j = JSON.parse(m[0]);
-    if (!j || !j.beats || !j.hook) return null;
+    let j;
+    try { j = parseLooseJSON(raw); } catch (pe) { const e = `${model}: unreadable reply (${pe.message}; stop=${d && d.stop_reason})`; console.error('[script-writer]', e); errors.push(e); continue; }
+    if (!j || !j.beats || !j.hook) { errors.push(`${model}: reply missing beats/hook`); continue; }
     // Validate the sheet against the creator's words.
     const source = [moment, creatorContext, notebook].filter(Boolean).join('\n');
     const sheet = j.sheet || {}, checked = {};
@@ -78,14 +92,16 @@ Return ONLY JSON:
       checked[k] = q && quoteIsReal(q, source) ? q : '';
     }
     checked.proof = (Array.isArray(sheet.proof) ? sheet.proof : []).map(x => String(x || '').trim()).filter(q => q && quoteIsReal(q, source)).slice(0, 6);
-    return { ...j, sheet: checked, model: SCRIPT_MODEL };
-  } catch (e) { console.error('[script-writer]', e && e.message); return null; }
+    return { ...j, sheet: checked, model, errors };
+  } catch (e) { const m = `${model}: ${e && e.name === 'AbortError' ? 'timed out' : (e && e.message)}`; console.error('[script-writer]', m); errors.push(m); }
   finally { clearTimeout(timer); }
+  }
+  return { failed: true, errors };
 }
 
 // Swap the sheet-built script into the playbook result (before every guard and check runs on it).
 function applySheetScript(parsed, sc) {
-  if (!parsed || !sc || !sc.beats) return false;
+  if (!parsed || !sc || sc.failed || !sc.beats) return false;
   const b = sc.beats, order = [['Opening', 'opening'], ['Setup', 'setup'], ['Risk', 'risk'], ['Turn', 'turn'], ['Payoff', 'payoff'], ['CTA', 'cta']];
   if (order.some(([, k]) => !String(b[k] || '').trim())) return false;
   parsed.hook = String(sc.hook).trim();

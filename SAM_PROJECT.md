@@ -398,3 +398,8 @@ Story → script → posted video → real results → back into the formula, pe
 - Not yet: Redo on the script section still uses the old single-call path; grader + auto-revise and the test set are part 2.
 
 ## Patch AZ — v9.118.92 — 4 best-script boxes (was 3); examples passed up to 3000 chars each
+
+## Patch BA — v9.118.93 — Script writer reports on itself + retries
+- Output 56: the Opus story-sheet writer silently failed (map showed the old writer: AI-map quotes, open loop "Fixed by SAM", answered "next up" never used).
+- _scriptWriter: tries claude-opus-5-5 → claude-sonnet-5-5 → claude-sonnet-4-6; lenient JSON parse (code fences, trailing commas); max_tokens 3500; 110 s timeout; collects every error.
+- Output carries script_engine ("sheet-v1 · <model>" or "fallback") + script_engine_note (the reasons); shown at the top of the formula map in the app and PDF. Fallback keeps the old-writer checks (creator opening, anchor check).

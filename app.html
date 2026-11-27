@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.92" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.93" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -16350,6 +16350,7 @@ function formulaMapHTML(data) {
   return `<div class="playbook-section" id="playbook-sec-formula">
     <div class="playbook-section-title">How SAM used the formula</div>
     <div class="wizard-why" style="margin-bottom:8px;">Each step of your retention formula, the exact line SAM used for it, and where that line came from.</div>
+    ${data.script_engine ? `<div style="font-size:12px;margin-bottom:8px;color:${data.script_engine === 'fallback' ? '#C0392B' : 'var(--ink-soft)'};">${data.script_engine === 'fallback' ? '⚠ The story-sheet writer failed, so this script came from the backup writer.' + (data.script_engine_note ? ' Reason: ' + esc(data.script_engine_note) : '') : '✓ Written by the story-sheet writer (' + esc(data.script_engine.replace(/^sheet-v1 · /, '')) + ')'}</div>` : ''}
     <div class="formula-map">${rows}</div>
   </div>`;
 }

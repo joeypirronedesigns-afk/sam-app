@@ -353,7 +353,7 @@ function buildFormulaMap(parsed, b, info) {
       else if (status !== 'used') { status = 'missing'; line = ''; from = 'Nothing tells viewers what comes next.'; }
     }
     // Patch AM — "from your story" is checked, not taken on SAM's word.
-    if (status === 'used' && line && !['Sign-off', 'Series hashtag', 'Open loop', 'Series thread'].includes(d.step) && !(d.step === 'Anchor' && (info.hookFromCreator || parsed.script_engine))) {
+    if (status === 'used' && line && !['Sign-off', 'Series hashtag', 'Open loop', 'Series thread'].includes(d.step) && !(d.step === 'Anchor' && (info.hookFromCreator || (parsed.script_engine && parsed.script_engine !== 'fallback')))) {
       const srcW = new Set(_normSentence([b.moment, b.creatorContext].filter(Boolean).join(' ')).split(' '));
       const lw = _normSentence(line).split(' ').filter(w => w.length > 3 && !/^(that|this|with|from|have|just|like|what|when|there|their|they|about|into|your)$/.test(w));
       const ov = lw.length ? lw.filter(w => srcW.has(w)).length / lw.length : 1;
@@ -1501,8 +1501,13 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
     // Patch AY — swap in the sheet-built script before every guard runs (falls back to the main call's script).
     if (_scriptP && parsed && typeof parsed === 'object' && mode === 'playbook') {
       const _sc = await _scriptP;
-      if (_sc && applySheetScript(parsed, _sc)) console.log('[script-writer] used', _sc.model);
-      else console.warn('[script-writer] unavailable — using the playbook script');
+      if (_sc && applySheetScript(parsed, _sc)) { console.log('[script-writer] used', _sc.model); if (_sc.errors && _sc.errors.length) parsed.script_engine_note = 'Retried after: ' + _sc.errors.join(' | '); }
+      else {
+        // Patch BA — say so on the output instead of failing silently.
+        parsed.script_engine = 'fallback';
+        parsed.script_engine_note = (_sc && _sc.errors && _sc.errors.length) ? _sc.errors.join(' | ') : 'script writer returned nothing';
+        console.warn('[script-writer] unavailable — using the playbook script:', parsed.script_engine_note);
+      }
     }
     // Patch W.2 — correct near-miss spellings of the creator's own domains in every output field.
     if (parsed && typeof parsed === 'object') {
@@ -1675,7 +1680,7 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
     }
     // Patch AM — the creator's own anchor line is the hook when SAM's hook drifts from it.
     let _amHook = false;
-    if (parsed && typeof parsed === 'object' && mode === 'playbook' && !parsed.script_engine) _amHook = applyCreatorOpening(parsed, (req.body || {}).moment);
+    if (parsed && typeof parsed === 'object' && mode === 'playbook' && (!parsed.script_engine || parsed.script_engine === 'fallback')) _amHook = applyCreatorOpening(parsed, (req.body || {}).moment);
     // Patch AC — tidy spoken text (see tidySpoken).
     tidySpoken(parsed, req.body);
     // Patch Y.2 — the script's Opening beat must start with the hook, word for word.
