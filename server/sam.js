@@ -143,7 +143,7 @@ function cleanStoryProfile(v) {
   tag = tag.replace(/^#+/, '').replace(/[^\p{L}\p{N}_]/gu, '');
   // Patch AY — series start date (Day N) and up to 3 of the creator's best scripts (examples).
   const startDate = /^\d{4}-\d{2}-\d{2}$/.test(String(v.startDate || '')) ? String(v.startDate) : '';
-  const bestScripts = (Array.isArray(v.bestScripts) ? v.bestScripts : []).map(x => String(x || '').trim().slice(0, 3000)).filter(x => x.length > 40).slice(0, 3);
+  const bestScripts = (Array.isArray(v.bestScripts) ? v.bestScripts : []).map(x => String(x || '').trim().slice(0, 3000)).filter(x => x.length > 40).slice(0, 4);
   return { background, seriesTag: tag.length >= 2 ? '#' + tag : '', startDate, bestScripts };
 }
 

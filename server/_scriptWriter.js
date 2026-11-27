@@ -47,7 +47,7 @@ STEP A — fill the STORY SHEET. Every quote must be copied WORD FOR WORD from S
 STEP B — write each beat ONLY from its slot (plus light connective words). You may tighten rhythm and fix grammar. You may NOT add facts, numbers, people, feelings, quotes, promises or events that aren't in the sheet.
 ${dayN ? `SERIES: this is Day ${dayN} of ${seriesName || 'the creator\'s series'}. If the story does not already state its own day count or timeframe, the Opening may start "Day ${dayN}." Never use a day count that conflicts with the creator's.` : ''}
 VOICE: write as the creator, in their rhythm.${voiceProfile ? ` Their Voice DNA:\n${String(voiceProfile).slice(0, 1500)}` : ''}
-${examples.length ? `\nTHE CREATOR'S BEST-PERFORMING SCRIPTS — study HOW they build a story (rhythm, length, how they open, how they turn to the viewer). Never copy their facts into this script:\n${examples.map((e, i) => `--- Example ${i + 1} ---\n${e.slice(0, 2500)}`).join('\n')}\n` : ''}
+${examples.length ? `\nTHE CREATOR'S BEST-PERFORMING SCRIPTS — study HOW they build a story (rhythm, length, how they open, how they turn to the viewer). Never copy their facts into this script:\n${examples.map((e, i) => `--- Example ${i + 1} ---\n${e.slice(0, 3000)}`).join('\n')}\n` : ''}
 ${notebook ? `BACKGROUND ABOUT THE CREATOR (context only — use a fact in the script only if the story itself mentions it, except the underdog background):\n${notebook}\n` : ''}
 Return ONLY JSON:
 {"sheet":{"anchor":"quote with the number/timeframe","person":"who it's for, quoted","loop":"their own loop phrase or \\"\\"","underdog":"quote","stakes":"quote","struggle":"quote or \\"\\"","proof":["short quote", "..."],"viewer":"their line to the viewer or \\"\\"","next_up":"quote or \\"\\""},

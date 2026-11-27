@@ -396,3 +396,5 @@ Story → script → posted video → real results → back into the formula, pe
 - Brand settings: Project start date (Day N, computed in the creator's time zone) and "Your best scripts" (up to 3, examples for structure only). Saved in the story profile (KV + local).
 - vercel.json: api/sam.js maxDuration 120 → 300 (Hobby max) since the playbook now waits on two model calls.
 - Not yet: Redo on the script section still uses the old single-call path; grader + auto-revise and the test set are part 2.
+
+## Patch AZ — v9.118.92 — 4 best-script boxes (was 3); examples passed up to 3000 chars each
