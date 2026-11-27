@@ -44,7 +44,7 @@ function quoteIsReal(quote, source) {
 }
 
 async function writeFormulaScript(o) {
-  const { apiKey, moment, creatorContext, notebook, voiceProfile, seriesName, dayN, bestScripts, todayLine } = o;
+  const { apiKey, moment, creatorContext, notebook, voiceProfile, seriesName, dayN, bestScripts, todayLine, lessons } = o;
   if (!apiKey || !moment || String(moment).trim().length < 40) return null;
   const examples = (bestScripts || []).filter(Boolean);
   const system = `You are SAM's script writer for short-form video. You write ONE script that follows a proven retention formula, using ONLY what the creator said.${todayLine || ''}
@@ -67,7 +67,7 @@ STEP B — write each beat ONLY from its slot (plus light connective words). You
 ${dayN ? `SERIES: this is Day ${dayN} of ${seriesName || 'the creator\'s series'}. If the story does not already state its own day count or timeframe, the Opening may start "Day ${dayN}." Never use a day count that conflicts with the creator's.` : ''}
 VOICE: write as the creator, in their rhythm.${voiceProfile ? ` Their Voice DNA:\n${String(voiceProfile).slice(0, 1500)}` : ''}
 ${examples.length ? `\nTHE CREATOR'S BEST-PERFORMING SCRIPTS — study HOW they build a story (rhythm, length, how they open, how they turn to the viewer). Never copy their facts into this script:\n${examples.map((e, i) => `--- Example ${i + 1} ---\n${e.slice(0, 3000)}`).join('\n')}\n` : ''}
-${notebook ? `BACKGROUND ABOUT THE CREATOR (context only — use a fact in the script only if the story itself mentions it, except the underdog background):\n${notebook}\n` : ''}
+${lessons || ''}${notebook ? `BACKGROUND ABOUT THE CREATOR (context only — use a fact in the script only if the story itself mentions it, except the underdog background):\n${notebook}\n` : ''}
 Return ONLY JSON:
 {"sheet":{"anchor":"quote with the number/timeframe","person":"who it's for, quoted","loop":"their own loop phrase or \\"\\"","underdog":"quote","stakes":"quote","struggle":"quote or \\"\\"","proof":["short quote", "..."],"viewer":"their line to the viewer or \\"\\"","next_up":"quote or \\"\\""},
 "hook":"the Opening's first line — number/timeframe + who it's for, under 18 words",

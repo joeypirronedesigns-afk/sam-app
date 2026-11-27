@@ -417,3 +417,9 @@ Story → script → posted video → real results → back into the formula, pe
 ## Patch BD — v9.118.96 — Close in the right order
 - orderCTA(): viewer line first (kept whole across ".." pauses, with its own short tag like "Keep showing up." after it), then "Next up", then the sign-off. Output 59 had "Keep showing up. Next up: … If you're tackling…".
 - Map: Series thread no longer shows the "fact-check changed this line" note when it's used.
+
+## Patch BE — v9.118.97 — "How did it do?" (Performance Loop, phase 1 — screenshots, no Meta API)
+- Every Story Engine output is saved per creator (KV `outputs:<email>`, last 30: hook, pattern, beats+timings, formula map, alt hooks, captions, story) → `output_id` on the result.
+- /api/results (server/results.js via the router — no new function): list | debrief | delete_lesson. Debrief = one vision call (opus-5-5 → sonnet-5-5 → sonnet-4-6) that reads only visible numbers from 1–3 Insights screenshots, ties drops/holds to the script's beat timings, gives a verdict + why + beat-by-beat, a repost plan (A) and lessons (B). Compared with the creator's own earlier checks (KV `debriefs:<email>`).
+- Lessons (KV `lessons:<email>`): new = "watch" (1 video); reinforced by a later check = "rule" (2+). The script writer reads them on every new story (RULE / WATCH block). Deletable.
+- UI: "5 · How did it do?" in Build SAM's Brain; "📈 After you post" card on each Story Engine output; modal with video picker, screenshot upload (downscaled to 1400px JPEG in the browser), report, and "What SAM has learned" tab. Gate: signed in + checkGate.

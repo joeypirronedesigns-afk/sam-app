@@ -28,6 +28,7 @@ const ROUTES = {
   'pulse-context': () => require('../server/pulse-context.js'),
   'reach': () => require('../server/reach.js'),
   'reach-status': () => require('../server/reach-status.js'),
+  'results': () => require('../server/results.js'),  // Patch BE — How did it do?
   'story-engine-save': () => require('../server/story-engine-save.js'),
   'story-engine-status': () => require('../server/story-engine-status.js'),
   'stripe-checkout': () => require('../server/stripe-checkout.js'),

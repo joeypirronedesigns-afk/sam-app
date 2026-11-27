@@ -7,6 +7,7 @@ const { getSessionEmail } = require('./_session');
 const NB = require('./_notebook'); // Patch AR — SAM's notebook
 const { evolveVoice } = require('./_voiceEvolve'); // Patch AU — Voice DNA evolves with every story
 const { writeFormulaScript, applySheetScript, dayNumber } = require('./_scriptWriter'); // Patch AY
+const RES = require('./_results'); // Patch BE — How did it do?
 
 // Patch AV — SAM knows today's date and time, in the creator's own time zone (cookie set by the app).
 function tzFromReq(req) {
@@ -1747,6 +1748,10 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
     }
     if (_nbBg && parsed && typeof parsed === 'object') parsed.notebook_noted = (await _nbBg).noted; // Patch AT
     if (_vBg && parsed && typeof parsed === 'object') { const _v = await _vBg; if (_v) parsed.voice_updated = _v; } // Patch AU
+    // Patch BE — keep this script so "How did it do?" can tie real results to its beats later.
+    if (mode === 'playbook' && _nbSession && parsed && typeof parsed === 'object' && parsed.full_script) {
+      parsed.output_id = await RES.saveOutput(_nbSession, parsed, (req.body || {}).moment).catch(() => null);
+    }
     res.write('data: ' + JSON.stringify({ done: true, result: parsed }) + '\n\n');
     res.end();
   };
@@ -1880,7 +1885,8 @@ CRITICAL: Return ONLY valid JSON. Keep ALL fields concise — the JSON must be c
           seriesName: _sp.seriesTag ? _sp.seriesTag.replace(/^#/, '').replace(/([a-z])([A-Z])/g, '$1 $2') : '',
           dayN: dayNumber(_sp.startDate, tzFromReq(req)),
           bestScripts: _sp.bestScripts,
-          todayLine: nowLine(req)
+          todayLine: nowLine(req),
+          lessons: _nbSession ? RES.lessonsPrompt(await RES.getList('lessons', _nbSession).catch(() => [])) : ''
         }).catch(() => null);
       }
       return await streamCall(playbookPrompt, playbookUserContent, 12000);

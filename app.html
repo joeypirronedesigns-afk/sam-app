@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.96" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.97" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -8072,6 +8072,11 @@ textarea.lab-textarea,
     <span class="qs-dash-rail-step" aria-hidden="true">4</span>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4h11a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H6z"/><path d="M6 4v17"/><path d="M9.5 8.5h5"/><path d="M9.5 12h5"/><path d="M4 7.5h3M4 12h3M4 16.5h3"/></svg>
     SAM's Notebook <span id="nbRailCount" style="margin-left:auto;font-size:11px;color:var(--ink-muted);"></span>
+  </button>
+  <button class="qs-dash-rail-item" data-qs-nav="results" onclick="openResults();if(window.innerWidth<=767)toggleMobileRail();" title="Upload a posted video's results — SAM explains why and learns for the next one">
+    <span class="qs-dash-rail-step" aria-hidden="true">5</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19h16"/><path d="M6 16l4-5 3 3 5-7"/><path d="M15 7h3v3"/></svg>
+    How did it do?
   </button>
 </nav>
 
@@ -16332,6 +16337,140 @@ function showNotebookNotice(containerId, result) {
   _nbFetch({ action: 'get_notebook' }).then(d => _nbSetCount(d.notes)).catch(() => {});
 }
 
+// Patch BE — "How did it do?": upload real results screenshots; SAM ties them to the script and learns.
+var _resState = { outputs: [], lessons: [], debriefs: [], images: [], tab: 'check' };
+function _resFetch(body) {
+  return fetch('/api/results', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin', body: JSON.stringify(body) })
+    .then(r => r.json().then(j => (r.ok ? j : Promise.reject(j))));
+}
+function _resShrink(file) {
+  return new Promise((resolve, reject) => {
+    const fr = new FileReader();
+    fr.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const max = 1400, sc = Math.min(1, max / Math.max(img.width, img.height));
+        const c = document.createElement('canvas'); c.width = Math.round(img.width * sc); c.height = Math.round(img.height * sc);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        const url = c.toDataURL('image/jpeg', 0.82);
+        resolve({ media_type: 'image/jpeg', data: url.split(',')[1], preview: url });
+      };
+      img.onerror = reject; img.src = fr.result;
+    };
+    fr.onerror = reject; fr.readAsDataURL(file);
+  });
+}
+function openResults(outputId) {
+  let ov = document.getElementById('resOverlay');
+  if (!ov) {
+    ov = document.createElement('div'); ov.id = 'resOverlay';
+    ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100000;display:flex;align-items:center;justify-content:center;padding:16px;';
+    ov.innerHTML = `<div role="dialog" aria-label="How did it do?" style="background:var(--paper,#fff);color:var(--ink);border-radius:12px;max-width:640px;width:100%;max-height:90vh;display:flex;flex-direction:column;padding:20px;box-shadow:0 10px 40px rgba(0,0,0,0.25);font-family:'Inter',system-ui,sans-serif;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-size:18px;font-weight:700;">📈 How did it do?</div>
+        <button type="button" onclick="closeResults()" aria-label="Close" style="border:none;background:none;font-size:22px;cursor:pointer;color:var(--ink-muted);">×</button></div>
+      <div style="font-size:13px;color:var(--ink-soft);margin:4px 0 10px;">Upload your video's results after it's had a few days to run. SAM reads the numbers, ties them to your script, and learns for the next one.</div>
+      <div style="display:flex;gap:6px;margin-bottom:10px;">
+        <button type="button" id="resTabCheck" onclick="_resTab('check')" style="padding:6px 12px;border-radius:6px;border:1px solid var(--rule);cursor:pointer;font-size:12px;font-weight:600;">Check a video</button>
+        <button type="button" id="resTabLessons" onclick="_resTab('lessons')" style="padding:6px 12px;border-radius:6px;border:1px solid var(--rule);cursor:pointer;font-size:12px;font-weight:600;">What SAM has learned</button>
+      </div>
+      <div id="resBody" style="overflow:auto;flex:1;min-height:120px;"></div>
+    </div>`;
+    ov.addEventListener('click', e => { if (e.target === ov) closeResults(); });
+    document.body.appendChild(ov);
+  }
+  ov.style.display = 'flex';
+  _resState.images = []; _resState.pre = outputId || '';
+  document.getElementById('resBody').innerHTML = '<div style="font-size:13px;color:var(--ink-muted);">Loading…</div>';
+  _resFetch({ action: 'list' }).then(d => { Object.assign(_resState, d); _resTab('check'); })
+    .catch(() => { document.getElementById('resBody').innerHTML = '<div style="font-size:13px;color:var(--ink-muted);">Sign in to check your results.</div>'; });
+}
+function closeResults() { const ov = document.getElementById('resOverlay'); if (ov) ov.style.display = 'none'; }
+function _resTab(t) {
+  _resState.tab = t;
+  ['Check', 'Lessons'].forEach(n => { const b = document.getElementById('resTab' + n); if (b) { const on = t === n.toLowerCase(); b.style.background = on ? 'var(--accent)' : 'var(--surface-2)'; b.style.color = on ? 'var(--paper)' : 'var(--ink)'; } });
+  if (t === 'lessons') return _resRenderLessons();
+  const esc = _nbEsc, outs = _resState.outputs || [];
+  const opts = outs.map(o => `<option value="${esc(o.id)}"${o.id === _resState.pre ? ' selected' : ''}>${esc(String(o.at).slice(0, 10))} · ${esc(String(o.hook).slice(0, 70))}</option>`).join('');
+  const last = (_resState.debriefs || [])[0];
+  document.getElementById('resBody').innerHTML = `
+    <label style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted);">Which video?</label>
+    <select id="resOutput" style="box-sizing:border-box;width:100%;padding:9px;border:1px solid var(--rule);border-radius:6px;margin:4px 0 12px;background:var(--paper);color:var(--ink);font-size:13px;">
+      ${opts}<option value=""${outs.length ? '' : ' selected'}>A video SAM didn't script</option></select>
+    <label style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted);">Results screenshots (1–3)</label>
+    <div style="font-size:12px;color:var(--ink-soft);margin:2px 0 6px;">The video's Insights screen: views, watch time, the retention graph, reactions, shares.</div>
+    <input id="resFiles" type="file" accept="image/*" multiple onchange="_resAddFiles(this.files)" style="font-size:13px;" />
+    <div id="resThumbs" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;"></div>
+    <textarea id="resNote" rows="2" maxlength="500" placeholder="Anything SAM should know? (optional — e.g. posted at 9pm, boosted it)" style="box-sizing:border-box;width:100%;margin-top:10px;padding:9px;border:1px solid var(--rule);border-radius:6px;font-size:13px;background:var(--paper);color:var(--ink);resize:vertical;"></textarea>
+    <button type="button" id="resGo" onclick="_resRun()" style="margin-top:10px;padding:10px 16px;background:var(--accent);color:var(--paper);border:none;border-radius:6px;font-weight:600;cursor:pointer;">Read my results</button>
+    <div id="resOut" style="margin-top:14px;"></div>
+    ${last ? `<div style="font-size:12px;color:var(--ink-muted);margin-top:10px;">Last check: ${esc(String(last.at).slice(0, 10))} — ${esc(last.headline || '')}</div>` : ''}`;
+  _resThumbs();
+}
+async function _resAddFiles(files) {
+  for (const f of Array.from(files || []).slice(0, 3 - _resState.images.length)) {
+    try { _resState.images.push(await _resShrink(f)); } catch (_) {}
+  }
+  _resThumbs();
+}
+function _resThumbs() {
+  const el = document.getElementById('resThumbs'); if (!el) return;
+  el.innerHTML = _resState.images.map((im, i) => `<div style="position:relative;"><img src="${im.preview}" alt="" style="height:80px;border-radius:6px;border:1px solid var(--rule);" />
+    <button type="button" onclick="_resState.images.splice(${i},1);_resThumbs();" aria-label="Remove" style="position:absolute;top:2px;right:2px;border:none;border-radius:50%;width:20px;height:20px;cursor:pointer;background:rgba(0,0,0,0.6);color:#fff;font-size:12px;line-height:1;">×</button></div>`).join('');
+}
+function _resRun() {
+  const out = document.getElementById('resOut'), btn = document.getElementById('resGo');
+  if (!_resState.images.length) { out.innerHTML = '<div style="font-size:13px;color:#C0392B;">Add at least one screenshot.</div>'; return; }
+  btn.disabled = true; btn.textContent = 'SAM is reading your results…';
+  out.innerHTML = '';
+  _resFetch({ action: 'debrief', output_id: (document.getElementById('resOutput') || {}).value || '', note: (document.getElementById('resNote') || {}).value || '',
+    images: _resState.images.map(i => ({ media_type: i.media_type, data: i.data })) })
+    .then(d => { _resState.lessons = d.lessons || _resState.lessons; out.innerHTML = _resReport(d); })
+    .catch(e => { out.innerHTML = '<div style="font-size:13px;color:#C0392B;">' + _nbEsc((e && (e.message || e.error)) || 'Something went wrong. Try again.') + '</div>'; })
+    .finally(() => { btn.disabled = false; btn.textContent = 'Read my results'; });
+}
+function _resReport(d) {
+  const esc = _nbEsc, r = d.result || {};
+  if (r.read_ok === false) return `<div style="font-size:14px;color:#C0392B;">${esc(r.headline || 'SAM could not read these screenshots.')}</div>`;
+  const vc = { strong: ['Strong', '#1E8449'], solid: ['Solid', 'var(--accent)'], weak: ['Needs work', '#C0392B'], unclear: ['Unclear', 'var(--ink-muted)'] }[r.verdict] || ['Result', 'var(--ink-muted)'];
+  const labels = { views: 'Views', views_3s: '3-sec views', views_1min: '1-min views', avg_watch_sec: 'Avg watch (s)', length_sec: 'Length (s)', reach: 'Reach', reactions: 'Reactions', comments: 'Comments', shares: 'Shares', follows: 'Follows' };
+  const m = r.metrics || {};
+  const tiles = Object.keys(labels).filter(k => m[k] !== null && m[k] !== undefined && m[k] !== '').map(k => `<div style="background:var(--surface-2);border:1px solid var(--rule);border-radius:8px;padding:8px 10px;min-width:90px;"><div style="font-size:11px;color:var(--ink-muted);">${labels[k]}</div><div style="font-size:16px;font-weight:700;">${esc(typeof m[k] === 'number' ? m[k].toLocaleString() : m[k])}</div></div>`).join('');
+  const drop = r.biggest_drop && r.biggest_drop.t_sec != null ? `<div style="font-size:13px;margin-top:10px;"><strong>Biggest drop:</strong> ${esc(r.biggest_drop.pct_lost != null ? r.biggest_drop.pct_lost + '% ' : '')}at ${Math.floor(Number(r.biggest_drop.t_sec) / 60)}:${String(Math.round(Number(r.biggest_drop.t_sec) % 60)).padStart(2, '0')}${r.biggest_drop.beat ? ' — during the ' + esc(r.biggest_drop.beat) : ''}</div>` : '';
+  const list = (arr) => (arr || []).map(x => `<li>${esc(x)}</li>`).join('');
+  const ch = d.changed || {}, rp = r.repost || {};
+  return `<div style="border-top:1px solid var(--rule);padding-top:12px;">
+    <div style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#fff;background:${vc[1]};padding:3px 8px;border-radius:4px;">${vc[0]}</div>
+    <div style="font-size:16px;font-weight:600;margin-top:8px;line-height:1.4;">${esc(r.headline || '')}</div>
+    ${d.output ? `<div style="font-size:12px;color:var(--ink-muted);margin-top:4px;">Script: "${esc(String(d.output.hook).slice(0, 90))}"${d.output.pattern ? ' · ' + esc(d.output.pattern) : ''}</div>` : ''}
+    ${tiles ? `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">${tiles}</div>` : ''}
+    ${drop}
+    ${(r.why || []).length ? `<div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted);margin-top:14px;">Why</div><ul style="margin:4px 0 0;padding-left:18px;font-size:14px;line-height:1.55;">${list(r.why)}</ul>` : ''}
+    ${(r.beat_findings || []).length ? `<div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted);margin-top:14px;">Beat by beat</div>${r.beat_findings.map(b => `<div style="font-size:13px;margin-top:4px;"><strong>${esc(b.beat)}:</strong> ${esc(b.finding)}</div>`).join('')}` : ''}
+    <div style="margin-top:14px;padding:10px 12px;border-left:3px solid var(--accent);background:var(--surface-2);border-radius:4px;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent);">B · Used on your next script</div>
+      ${(ch.added || []).length || (ch.reinforced || []).length ? `<ul style="margin:6px 0 0;padding-left:18px;font-size:13px;line-height:1.55;">${(ch.reinforced || []).map(t => `<li><strong>Confirmed again:</strong> ${esc(t)}</li>`).join('')}${(ch.added || []).map(t => `<li><strong>New:</strong> ${esc(t)}</li>`).join('')}</ul>` : '<div style="font-size:13px;margin-top:4px;">No new lesson from this one.</div>'}
+      <div style="font-size:11px;color:var(--ink-muted);margin-top:6px;">One post is one data point. A lesson becomes a rule SAM follows once a second video confirms it. <a href="#" onclick="_resTab('lessons');return false;" style="color:var(--accent);">See everything SAM has learned</a></div>
+    </div>
+    ${(rp.first_line || rp.trim || rp.caption) ? `<details style="margin-top:12px;"><summary style="cursor:pointer;font-size:13px;font-weight:600;">A · Re-edit and repost this video</summary>
+      <div style="font-size:13px;line-height:1.55;margin-top:6px;">
+        ${rp.first_line ? `<div><strong>New first line:</strong> ${esc(rp.first_line)}</div>` : ''}
+        ${rp.first_3s ? `<div><strong>First 3 seconds:</strong> ${esc(rp.first_3s)}</div>` : ''}
+        ${rp.trim ? `<div><strong>Trim:</strong> ${esc(rp.trim)}</div>` : ''}
+        ${rp.caption ? `<div><strong>New caption:</strong> ${esc(rp.caption)}</div>` : ''}</div></details>` : ''}
+  </div>`;
+}
+function _resRenderLessons() {
+  const esc = _nbEsc, ls = (_resState.lessons || []).slice().sort((a, b) => (b.status === 'rule') - (a.status === 'rule') || (b.count || 0) - (a.count || 0));
+  document.getElementById('resBody').innerHTML = ls.length ? `<div style="font-size:12px;color:var(--ink-soft);margin-bottom:6px;">SAM's script writer reads these on every new story. Rules are confirmed by 2+ videos; "Watching" means one video so far.</div>` +
+    ls.map(l => `<div style="display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--rule);">
+      <div style="flex:1;font-size:14px;line-height:1.45;"><span style="font-size:10px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:2px 6px;border-radius:4px;margin-right:6px;color:#fff;background:${l.status === 'rule' ? 'var(--accent)' : '#B7791F'};">${l.status === 'rule' ? 'Rule' : 'Watching'}</span>${esc(l.text)}
+        <div style="font-size:11px;color:var(--ink-muted);margin-top:2px;">${l.type === 'keep' ? 'Keep doing' : 'Fix'} · ${l.count || 1} video${(l.count || 1) > 1 ? 's' : ''}</div></div>
+      <button type="button" onclick="_resDeleteLesson('${esc(l.id)}')" title="Forget this lesson" aria-label="Forget this lesson" style="border:none;background:none;color:var(--ink-muted);cursor:pointer;font-size:15px;">✕</button></div>`).join('')
+    : '<div style="padding:14px;border:1px dashed var(--rule);border-radius:8px;font-size:13px;color:var(--ink-soft);line-height:1.55;">Nothing yet. After you post a video SAM scripted, give it a few days, then upload its results under "Check a video". SAM will tell you why it worked or didn\'t, and remember the lesson for your next script.</div>';
+}
+function _resDeleteLesson(id) { _resFetch({ action: 'delete_lesson', id }).then(d => { _resState.lessons = d.lessons || []; _resRenderLessons(); }).catch(() => {}); }
+
 // Patch AL — "How SAM used the formula": each step, the exact line, and where it came from.
 function formulaMapHTML(data) {
   const map = Array.isArray(data && data.formula_map) ? data.formula_map : [];
@@ -17173,6 +17312,10 @@ function renderPlaybook(data) {
   if (data.needs_more) html += needsMoreHTML(data);
   html += notebookNotedHTML(data); // Patch AT
   html += voiceUpdatedHTML(data);   // Patch AU
+  if (data.output_id) html += `<div class="playbook-section no-print" id="playbook-sec-results" style="border-left:3px solid var(--accent);">
+    <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;">📈 After you post</div>
+    <div style="font-size:14px;color:var(--ink);line-height:1.55;">Give it a few days, then upload the results screenshots. SAM will tell you why it worked or didn't, and use the lesson on your next script.</div>
+    <button type="button" onclick="openResults('${data.output_id}')" style="margin-top:8px;padding:8px 14px;background:var(--accent);color:var(--paper);border:none;border-radius:6px;font-weight:600;cursor:pointer;font-size:13px;">How did it do?</button></div>`; // Patch BE
 
   // ② STORY ARCHITECTURE
   if (data.story_architecture && !data.needs_more) {
