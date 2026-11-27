@@ -50,10 +50,12 @@ async function writeFormulaScript(o) {
 THE FORMULA (six beats):
 - OPENING (0–5s): the ANCHOR — a number or timeframe AND who it's for, in one line — then an OPEN LOOP (the creator's own phrase if they wrote one, e.g. "Let me explain."; otherwise "Let me explain.").
 - SETUP: who the creator is and why this is hard for THEM (the UNDERDOG) — from their story or BACKGROUND only.
-- RISK: the STAKES — the deadline, the promise, or the cost. (Not the underdog. Not backstory.)
+- RISK: the STAKES — the deadline, the promise, or the cost. (Not the underdog. Not backstory.) If the creator gave a countdown or number ("29 days left"), SAY THE NUMBER here — it is the urgency.
 - TURN: the honest STRUGGLE — what was harder than expected or a moment of doubt, in their words. If they gave none, use the plain decision or pivot from their story — never invent doubt or feelings.
 - PAYOFF: fast PROOF of what is done or visible TODAY — a quick rhythm of short items from their story — then ONE emotional line built from their own words. Never a future scene (no "Christmas Day… their faces"), never something that hasn't happened.
-- CTA: the VIEWER TURN — one line that makes it about the person watching, from the creator's own words when they wrote one. Then, if the creator said what's next, "Next up: …". Do NOT write the creator's sign-off; it is added after.
+- CTA: the VIEWER TURN — one line that makes it about the person watching, from the creator's own words when they wrote one. Then, if the creator said what's next, ONE short tease of 15 words max — "Next up: …" naming the 2–3 most visual or dramatic items, never the whole to-do list. Do NOT write the creator's sign-off; it is added after.
+
+SAY EACH THING ONCE (Patch BB): never repeat a clause from an earlier beat. The hook's promise line is not said again in the Risk beat; the big number (e.g. "450 days") appears at most twice in the whole script. Your best-performing scripts said each thing once and kept moving.
 
 STEP A — fill the STORY SHEET. Every quote must be copied WORD FOR WORD from STORY, ANSWERS or BACKGROUND below (you may trim, never reword). If a slot has nothing, use "".
 STEP B — write each beat ONLY from its slot (plus light connective words). You may tighten rhythm and fix grammar. You may NOT add facts, numbers, people, feelings, quotes, promises or events that aren't in the sheet.

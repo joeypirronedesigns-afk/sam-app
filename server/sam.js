@@ -347,6 +347,17 @@ function buildFormulaMap(parsed, b, info) {
       const fut = pay.match(/[^.!?…]*\b(will|i'll|we'll|going to|gonna|christmas day|when (they|she|he) (see|walk))\b[^.!?…]*[.!?…]?/i);
       if (fut && !_normSentence(b.moment || '').includes(_normSentence(fut[0]))) { status = 'sam'; line = fut[0].trim(); from = 'A future scene — not something you can show today. The payoff should be proof of what\'s done.'; }
     }
+    // Patch BB — the creator's countdown ("29 days left") must be spoken, and the Risk beat can't repeat the hook.
+    if (d.step === 'Stakes') {
+      const cd = String(b.moment || '').match(/\b(\d+)\s+(days?|weeks?|hours?)\s+(left|to go|away|until|till|before)\b/i);
+      const spoken = script.replace(/\[BEAT:[^\]]*\]/g, ' ');
+      if (cd && !new RegExp('\\b' + cd[1] + '\\b').test(spoken)) { status = 'missing'; line = ''; from = 'Your countdown "' + cd[0] + '" is never said — it\'s the urgency.'; }
+      else if (HOOK) {
+        const hw = new Set(_normSentence(HOOK).split(' ').filter(w => w.length > 3));
+        const rw = _normSentence(_beatText(script, 'Risk')).split(' ').filter(w => w.length > 3);
+        if (hw.size >= 4 && rw.length && rw.filter(w => hw.has(w)).length / hw.size >= 0.6) { status = 'misplaced'; from = 'The Risk beat repeats the hook — say each thing once.'; }
+      }
+    }
     if (d.step === 'Series thread') {
       const m = script.replace(/\[BEAT:[^\]]*\]/g, ' ').match(/[^.!?…]*\b(day \d+|next up|next time|next video|tomorrow)\b[^.!?…]*[.!?…]?/i);
       if (m) { status = 'used'; line = m[0].trim(); from = from || 'Keeps viewers coming back for the next video.'; }

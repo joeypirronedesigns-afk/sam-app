@@ -403,3 +403,8 @@ Story → script → posted video → real results → back into the formula, pe
 - Output 56: the Opus story-sheet writer silently failed (map showed the old writer: AI-map quotes, open loop "Fixed by SAM", answered "next up" never used).
 - _scriptWriter: tries claude-opus-5-5 → claude-sonnet-5-5 → claude-sonnet-4-6; lenient JSON parse (code fences, trailing commas); max_tokens 3500; 110 s timeout; collects every error.
 - Output carries script_engine ("sheet-v1 · <model>" or "fallback") + script_engine_note (the reasons); shown at the top of the formula map in the app and PDF. Fallback keeps the old-writer checks (creator opening, anchor check).
+
+## Patch BB — v9.118.94 — Output 57 (first Opus run) graded 8.5
+- Writer: say the creator's countdown number in the Risk beat; say each thing once (no hook repeat in Risk; big number ≤2×); "Next up" = one ≤15-word tease of the 2–3 most visual items.
+- Map: Stakes → missing if the story's "N days left" is never spoken; → "Wrong beat" if the Risk beat repeats ≥60% of the hook.
+- PDF: formula map rows tighter + long sources truncated (output 57 overflowed to a blank page).
