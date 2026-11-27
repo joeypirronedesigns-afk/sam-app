@@ -329,3 +329,70 @@ Any content creator building a social media audience. NOT limited to DIY/tradesp
 - Date bug: chat built profileContext = nowLine() then overwrote it with "= buildBrainPrompt(...)"; now "+=".
 - Server "HOW YOU LEARN": notebook from chat/stories; Voice DNA from new stories + Voice Trainer; chat never changes Voice DNA.
 - Persistent chat prompt: removed "every conversation makes you better / always building a sharper picture"; with Voice DNA she never claims to need samples; "make it up / give me an example" → write it immediately and say the details are invented; written pieces exempt from the 2–4 sentence cap.
+
+---
+# ▶ HANDOFF — where we left off (2026-11-26, Thanksgiving) — live at v9.118.90
+
+## Working style (keep)
+- Joey = hands, Claude = brains. No Claude Code. Claude edits files through the desktop-app bridge; Joey runs git + `vercel --prod` in Terminal, one command at a time.
+- Commit only the app files (`git add server app.html SAM_PROJECT.md ...`), never `git add -A` (it swept in 14 .wav files once).
+- Vercel HOBBY plan only (12-function limit, daily cron only). New endpoints = a file in server/ + one line in api/router.js ROUTES. Never a new file in api/.
+- Explain findings + strategy before shipping anything big. When reviewing SAM outputs: fix SAM, don't hand-polish scripts.
+
+## Still to verify (Joey)
+1. After AX deploy: ↺ new chat, ask SAM (a) today's date/time, (b) "make up a Facebook post that sounds like me", (c) "do you learn my voice from chat?" → must answer no (stories + Voice Trainer only).
+2. Run one new story through the Story Engine → expect "📓 SAM added to your notebook" + "🧬 Voice DNA updated · vN" cards; sidebar shows "Voice synced · just now".
+3. Stripe → Developers → Webhooks: endpoint is https://samforcreators.com/api/stripe-webhook and recent deliveries are 200. (Built-in browser was not signed in to Stripe; Joey to sign in, Claude reads only.)
+4. Welcome email: confirm in Resend → Emails, or do a test purchase with a second email and refund it.
+5. Add notebook fact: "The cottage renovation started on September 3, 2025." (lets SAM compute the Day count)
+6. Brand settings: confirm sign-off text is what Joey wants ("I'm self-taught, documenting everything, and taking you with me." — output 54 showed it trimmed to "Documenting everything & taking you with me.").
+
+## Known small issues (not urgent)
+- stripe-webhook's `module.exports.config = { bodyParser:false }` is overwritten by the later `module.exports =` (pre-existing; signature check still works because the handler reads the raw stream).
+- Webhook owner-notify email lists Pro as $39 (label only; Stripe price IDs decide the charge).
+- Formula map "Struggle" step: SAM sometimes fills it with a commitment line instead of asking — consider a code check.
+- CTA "Subscribe…" isn't right for Facebook-first posts — consider platform-aware CTA wording.
+
+## NEXT BUILD — the Performance Loop (SAM's moat)
+Story → script → posted video → real results → back into the formula, per creator. Honest comparisons only (n ≥ 5 per side, always show n, "a pattern in your posts", never "proof"; compare to the creator's own median so one viral post can't skew it).
+
+### Phase 1 — loop without Facebook (start here; ~2 sessions; works for every user, no Meta review)
+- Supabase tables (Joey runs the SQL in the Supabase SQL editor):
+  - `sam_outputs` (id, email, created_at, story, hook, script, captions jsonb, formula_map jsonb, beat timings jsonb, project_day)
+  - `sam_posts` (id, email, output_id, platform, post_url, post_id, published_at, length_sec, caption)
+  - `sam_post_metrics` (post_id, age_days 1|3|7|28, plays, reach, avg_watch_sec, total_watch_min, reactions, comments, shares, source 'api'|'screenshot', captured_at)
+- Save every Story Engine output (end of the playbook finish path in server/sam.js).
+- "I posted this" on each output → paste post link (later: pick from Page videos).
+- Metrics from a Business Suite screenshot: one Haiku vision call → 3-s views, 1-min views, drop point, comments, shares.
+- Insights: hold rate = avg_watch ÷ length; share & comment rate per 1k plays; reach vs creator median. Compare posts with/without each formula step, hook type, viewer-turn, SAM's-words lines, posting hour, length.
+- Show it: evidence badges on the formula map ("your posts with an open loop held 41% vs 27%, n=9/6").
+
+### Phase 2 — Facebook connect (Joey's Page first, Meta app in development mode)
+- "Connect Facebook Page" (OAuth) → long-lived Page token in Supabase. Fold the daily metrics pull into the existing daily keepalive cron (Hobby = daily only; no new function).
+- Reels API gives lifetime plays, reach, avg time watched, minutes viewed, reactions/comments/shares; no documented retention curve for Reels → keep the screenshot path.
+- Auto-match new videos to outputs by caption similarity + date; Joey confirms with one tap (never link silently).
+
+### Phase 3 — use it everywhere
+- Story Engine prompt block "WHAT WORKS FOR THIS CREATOR (from their own posts)".
+- Today page "SAM's Read" from real numbers (replaces the Example card).
+- Durable findings into the notebook (e.g. "Audience most active at 7am").
+
+### Phase 4 — public
+- Meta App Review + business verification so other creators can connect (weeks).
+- YouTube Analytics next (has a real audience-retention curve), then TikTok (views/likes/comments/shares only).
+- Later: anonymized cross-creator priors for new users with < 5 posts.
+
+## Review of the 11/26 night story (graded 7/10) — fixes to make BEFORE Performance Loop Phase 1
+1. Anchor must include WHO it's for when the story names them ("my parents"). creatorOpening only fires when the story's first sentence is ≤30 words — add: build the anchor from the story's sentence that has the number + person; or regenerate the hook when it lacks the person.
+2. Beat-role check: stakes (deadline / promise / cost) must be in the Risk beat; underdog (self-taught, background) in Setup. Formula map flags "misplaced" when swapped.
+3. Payoff = what is shown/done today (fast visual proof). Future scenes ("Christmas Day… the look on their faces") are invented → label "SAM's words" / regenerate.
+4. New formula step "Series thread": "Day N" (from notebook/start date 9/3/2025) + "Next up: …" from the creator's stated next task; if none stated, ask "What's next in the build?" — never invent it.
+5. Invented lines slipped through: "(That's not a flex. That's just the truth.)", "built specifically around my parents' needs. Their comfort." → check the fact-check + "SAM's words" detection catches parentheticals and needs/feelings not in the story.
+
+## Patch AY — v9.118.91 — The 10/10 engine, part 1 (2026-11-27)
+- Interview first: "SAM reflects" now asks only for the formula pieces the story lacks — who it's for, stakes, struggle, proof on camera today, what's next (max 3; never asks about a saved background).
+- server/_scriptWriter.js: the script is written by a dedicated call on claude-opus-5-5 (env SAM_SCRIPT_MODEL overrides), in parallel with the main playbook call. Step A fills a STORY SHEET of exact creator quotes per slot (anchor+person, loop, underdog, stakes, struggle, proof[], viewer, next_up); Step B writes each beat only from its slot. Code validates every quote against story + answers + background (whole words, ≥85% word match); unverified = missing. The sheet script is swapped in at the start of finish, so every existing guard (fact-check, number guards, open loop, sign-off, platform rules) still runs on it. Falls back to the main call's script if Opus fails.
+- Formula map built from the sheet ("Your words: …"); new step "Series thread" (Day N / Next up); beat-role checks: stakes outside Risk or underdog outside Setup → "⚠ Wrong beat"; hook that omits the person the story names → missing; future-scene payoff → "SAM's words".
+- Brand settings: Project start date (Day N, computed in the creator's time zone) and "Your best scripts" (up to 3, examples for structure only). Saved in the story profile (KV + local).
+- vercel.json: api/sam.js maxDuration 120 → 300 (Hobby max) since the playbook now waits on two model calls.
+- Not yet: Redo on the script section still uses the old single-call path; grader + auto-revise and the test set are part 2.

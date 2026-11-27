@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.90" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.91" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -16160,12 +16160,20 @@ else setTimeout(restoreSignOff, 0);
 function getStoryProfile() {
   let v = {};
   try { v = JSON.parse(localStorage.getItem('sam_story_profile') || '{}') || {}; } catch (_) { v = {}; }
-  return { background: String(v.background || ''), seriesTag: String(v.seriesTag || '') };
+  return { background: String(v.background || ''), seriesTag: String(v.seriesTag || ''),
+           startDate: String(v.startDate || ''), bestScripts: Array.isArray(v.bestScripts) ? v.bestScripts.map(x => String(x || '')).slice(0, 3) : [] };
+}
+// Patch AY — one of the creator's best scripts (index 0–2)
+function setBestScript(i, text) {
+  const bs = getStoryProfile().bestScripts; while (bs.length < 3) bs.push('');
+  bs[i] = String(text || '').slice(0, 3000);
+  setStoryProfile({ bestScripts: bs });
 }
 let _storyProfileTimer = null;
 function setStoryProfile(patch) {
   const v = Object.assign(getStoryProfile(), patch || {});
   v.background = v.background.slice(0, 600); v.seriesTag = v.seriesTag.slice(0, 60);
+  v.startDate = /^\d{4}-\d{2}-\d{2}$/.test(v.startDate || '') ? v.startDate : '';
   try { localStorage.setItem('sam_story_profile', JSON.stringify(v)); } catch (_) {}
   clearTimeout(_storyProfileTimer);
   _storyProfileTimer = setTimeout(() => fetch('/api/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin',
@@ -16173,15 +16181,17 @@ function setStoryProfile(patch) {
 }
 async function restoreStoryProfile() {
   let v = getStoryProfile();
-  if (!v.background && !v.seriesTag) {
+  if (!v.background && !v.seriesTag && !v.startDate && !(v.bestScripts || []).some(Boolean)) {
     try {
       const r = await fetch('/api/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin',
         body: JSON.stringify({ action: 'get_storyprofile' }) });
-      if (r.ok) { const sp = (await r.json()).storyProfile || {}; if (sp.background || sp.seriesTag) { v = { background: sp.background || '', seriesTag: sp.seriesTag || '' }; try { localStorage.setItem('sam_story_profile', JSON.stringify(v)); } catch (_) {} } }
+      if (r.ok) { const sp = (await r.json()).storyProfile || {}; if (sp.background || sp.seriesTag || sp.startDate || (sp.bestScripts || []).some(Boolean)) { v = { background: sp.background || '', seriesTag: sp.seriesTag || '', startDate: sp.startDate || '', bestScripts: Array.isArray(sp.bestScripts) ? sp.bestScripts : [] }; try { localStorage.setItem('sam_story_profile', JSON.stringify(v)); } catch (_) {} } }
     } catch (_) {}
   }
   const bg = document.getElementById('brandBackground'); if (bg && v.background && !bg.value) bg.value = v.background;
   const tg = document.getElementById('brandSeriesTag'); if (tg && v.seriesTag && !tg.value) tg.value = v.seriesTag;
+  const sd = document.getElementById('brandStartDate'); if (sd && v.startDate && !sd.value) sd.value = v.startDate;
+  (v.bestScripts || []).forEach((t, i) => { const el = document.getElementById('brandBestScript' + i); if (el && t && !el.value) el.value = t; });
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => restoreStoryProfile());
 else setTimeout(restoreStoryProfile, 0);
@@ -16327,7 +16337,7 @@ function formulaMapHTML(data) {
   const map = Array.isArray(data && data.formula_map) ? data.formula_map : [];
   if (!map.length) return '';
   const esc = s => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const badge = { used: ['✓ Used', 'var(--accent)'], fixed: ['✎ Fixed by SAM', '#B7791F'], edited: ['✎ Edited', '#B7791F'], missing: ['✕ Missing', '#C0392B'], sam: ["✎ SAM's words", '#B7791F'] };
+  const badge = { used: ['✓ Used', 'var(--accent)'], fixed: ['✎ Fixed by SAM', '#B7791F'], edited: ['✎ Edited', '#B7791F'], missing: ['✕ Missing', '#C0392B'], sam: ["✎ SAM's words", '#B7791F'], misplaced: ['⚠ Wrong beat', '#B7791F'] };
   const rows = map.map(m => {
     const b = badge[m.status] || badge.used;
     return `<div style="display:grid;grid-template-columns:110px 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--rule);">
@@ -16585,7 +16595,7 @@ async function generateStoryReflection() {
         tier: _r1Base.tier,
         userId: 'anon',
         messages: [{ role: 'user', content: text }],
-        systemPrompt: `You are SAM. Read what this person wrote and reflect back the core of their story in plain words — maximum 3 sentences. Sentence 1: what happened, in their terms. Sentence 2: what changed or what it means — the turn, if there is one. Use only what they said; never add events, feelings or stakes they did not state. No praise, no compliments, no motivational lines, no telling them their story is powerful or brave. Do NOT write a post, script, caption or any content format. No dashes, headers, structured output or bullet points. Never say "I can see" or "It sounds like". Then interview them like a storytelling coach: for each of these that the story is MISSING, add a line starting with "QUESTION:" — at most 3, most important first. (1) The moment: the single instant something changed, if it isn't clear. (2) The stakes: what it cost them or what was at risk, if they didn't say. (3) The ending: how it turned out or the result, if they didn't say. Ask in plain, short words about their specific story, one question per line. If nothing is missing, add no QUESTION lines.`
+        systemPrompt: `You are SAM. Read what this person wrote and reflect back the core of their story in plain words — maximum 3 sentences. Sentence 1: what happened, in their terms. Sentence 2: what changed or what it means — the turn, if there is one. Use only what they said; never add events, feelings or stakes they did not state. No praise, no compliments, no motivational lines, no telling them their story is powerful or brave. Do NOT write a post, script, caption or any content format. No dashes, headers, structured output or bullet points. Never say "I can see" or "It sounds like". Then interview them like a storytelling coach (Patch AY — the retention formula needs these five things; ask ONLY for the ones their words don't already give): for each MISSING one add a line starting with "QUESTION:" — at most 3, in this priority order. (1) WHO IT'S FOR: who this is for or about, if they never named them. (2) THE STAKES: a deadline, a promise, or a cost riding on it. (3) THE STRUGGLE: what was harder than they expected, or a moment they doubted it. (4) THE PROOF: what viewers can actually SEE done or changing on camera today. (5) WHAT'S NEXT: the next step in the project, so the next video has a hook. Ask in plain, short words about their specific story, one question per line. If nothing is missing, add no QUESTION lines.${(typeof getStoryProfile === 'function' && getStoryProfile().background) ? ' Their background is already known (' + getStoryProfile().background.replace(/[\u0060$]/g, '').slice(0, 300) + ') — never ask about it.' : ''}`
       })
     });
     const reply = await readSamReply(res);
@@ -18953,6 +18963,16 @@ if (localStorage.getItem('sam_dev') === 'true') {
         <div style="margin-top:12px;">
           <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:6px;">Series hashtag <span style="font-weight:400;text-transform:none;opacity:0.6;">(optional — always the first hashtag on every platform)</span></div>
           <input type="text" class="brand-text-input" id="brandSeriesTag" maxlength="60" placeholder="e.g. #FromStudsToSanctuary" oninput="setStoryProfile({ seriesTag: this.value });" />
+        </div>
+        <div style="margin-top:12px;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:6px;">Project start date <span style="font-weight:400;text-transform:none;opacity:0.6;">(optional — for a series, SAM counts the day: "Day 451")</span></div>
+          <input type="date" class="brand-text-input" id="brandStartDate" oninput="setStoryProfile({ startDate: this.value });" />
+        </div>
+        <div style="margin-top:12px;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:6px;">Your best scripts <span style="font-weight:400;text-transform:none;opacity:0.6;">(optional — paste up to 3 scripts from your best-performing videos, word for word. SAM studies how you build a story. She never copies their facts.)</span></div>
+          <textarea class="brand-text-input" id="brandBestScript0" maxlength="3000" rows="4" placeholder="Best video #1 — paste what you actually said" oninput="setBestScript(0, this.value)" style="resize:vertical;min-height:80px;"></textarea>
+          <textarea class="brand-text-input" id="brandBestScript1" maxlength="3000" rows="3" placeholder="Best video #2 (optional)" oninput="setBestScript(1, this.value)" style="resize:vertical;min-height:60px;margin-top:6px;"></textarea>
+          <textarea class="brand-text-input" id="brandBestScript2" maxlength="3000" rows="3" placeholder="Best video #3 (optional)" oninput="setBestScript(2, this.value)" style="resize:vertical;min-height:60px;margin-top:6px;"></textarea>
         </div>
         <div style="margin-top:12px;">
           <button type="button" onclick="openNotebook()" style="font-size:12px;font-weight:600;color:var(--ink);background:var(--surface-2);border:1px solid var(--rule);border-radius:6px;padding:8px 14px;cursor:pointer;font-family:'Inter',system-ui,sans-serif;">📓 What SAM knows about you</button>

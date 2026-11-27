@@ -789,7 +789,7 @@ function buildPlaybookHTML(pb, brand) {
   // ── Formula map (Patch AL) — step → exact line → where it came from ───────
   const fmap = (Array.isArray(pb.formula_map) ? pb.formula_map : []).filter(m => m && m.step);
   if (fmap.length) {
-    const mark = { used: ['✓ Used', brandColor], fixed: ['✎ Fixed by SAM', '#B7791F'], edited: ['✎ Edited', '#B7791F'], missing: ['✕ Missing', '#C0392B'], sam: ["✎ SAM's words", '#B7791F'] };
+    const mark = { used: ['✓ Used', brandColor], fixed: ['✎ Fixed by SAM', '#B7791F'], edited: ['✎ Edited', '#B7791F'], missing: ['✕ Missing', '#C0392B'], sam: ["✎ SAM's words", '#B7791F'], misplaced: ['⚠ Wrong beat', '#B7791F'] };
     const rows = fmap.map(m => { const k = mark[m.status] || mark.used; return `<tr>
       <td style="vertical-align:top;padding:7pt 10pt 7pt 0;border-top:0.5pt solid #ddd;width:92pt;">
         <div style="font-weight:700;font-size:10pt;">${e(m.step)}</div>

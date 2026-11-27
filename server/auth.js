@@ -164,8 +164,10 @@ module.exports = async function handler(req, res) {
     }
     const b = (req.body || {}).storyProfile || {};
     const v = { background: String(b.background || '').replace(/\s+/g, ' ').trim().slice(0, 600),
-                seriesTag: String(b.seriesTag || '').trim().slice(0, 60) };
-    if (v.background || v.seriesTag) await kv.set(key, JSON.stringify(v)); else await kv.del(key);
+                seriesTag: String(b.seriesTag || '').trim().slice(0, 60),
+                startDate: /^\d{4}-\d{2}-\d{2}$/.test(String(b.startDate || '')) ? String(b.startDate) : '',   // Patch AY
+                bestScripts: (Array.isArray(b.bestScripts) ? b.bestScripts : []).slice(0, 3).map(x => String(x || '').trim().slice(0, 3000)) };
+    if (v.background || v.seriesTag || v.startDate || v.bestScripts.some(Boolean)) await kv.set(key, JSON.stringify(v)); else await kv.del(key);
     return res.status(200).json({ success: true });
   }
 

@@ -6,12 +6,17 @@ const { platformPrompt, specFor, enforcePlatforms } = require('./_platforms');
 const { getSessionEmail } = require('./_session');
 const NB = require('./_notebook'); // Patch AR — SAM's notebook
 const { evolveVoice } = require('./_voiceEvolve'); // Patch AU — Voice DNA evolves with every story
+const { writeFormulaScript, applySheetScript, dayNumber } = require('./_scriptWriter'); // Patch AY
 
 // Patch AV — SAM knows today's date and time, in the creator's own time zone (cookie set by the app).
-function nowLine(req) {
+function tzFromReq(req) {
   let tz = 'America/New_York';
   const m = String((req.headers && req.headers.cookie) || '').match(/(?:^|;\s*)sam_tz=([^;]+)/);
   if (m) { try { const c = decodeURIComponent(m[1]); new Intl.DateTimeFormat('en-US', { timeZone: c }); tz = c; } catch (_) {} }
+  return tz;
+}
+function nowLine(req) {
+  const tz = tzFromReq(req);
   const d = new Date();
   const day = new Intl.DateTimeFormat('en-US', { timeZone: tz, weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(d);
   const time = new Intl.DateTimeFormat('en-US', { timeZone: tz, hour: 'numeric', minute: '2-digit' }).format(d);
@@ -136,7 +141,10 @@ function cleanStoryProfile(v) {
   const background = String(v.background || '').replace(/\s+/g, ' ').trim().slice(0, 600);
   let tag = String(v.seriesTag || '').trim().split(/\s+/)[0] || '';
   tag = tag.replace(/^#+/, '').replace(/[^\p{L}\p{N}_]/gu, '');
-  return { background, seriesTag: tag.length >= 2 ? '#' + tag : '' };
+  // Patch AY — series start date (Day N) and up to 3 of the creator's best scripts (examples).
+  const startDate = /^\d{4}-\d{2}-\d{2}$/.test(String(v.startDate || '')) ? String(v.startDate) : '';
+  const bestScripts = (Array.isArray(v.bestScripts) ? v.bestScripts : []).map(x => String(x || '').trim().slice(0, 3000)).filter(x => x.length > 40).slice(0, 3);
+  return { background, seriesTag: tag.length >= 2 ? '#' + tag : '', startDate, bestScripts };
 }
 
 // Patch AL — the formula, checked in code after SAM writes. Opening must open a loop (if it doesn't,
@@ -150,6 +158,7 @@ const FORMULA_STEPS = [
   { step: 'Struggle',       beat: 'Turn',    ask: 'What part of this was harder than you expected?' },
   { step: 'Payoff',         beat: 'Payoff',  ask: '' },
   { step: 'Viewer turn',    beat: 'Your Call', ask: 'Who watching this needs to hear it, and what would you tell them?' },
+  { step: 'Series thread',  beat: 'Your Call', ask: 'What\'s next in the build? SAM ends with it so viewers come back for the next video.' },
   { step: 'Sign-off',       beat: 'Your Call', ask: '' },
   { step: 'Series hashtag', beat: 'Posts',   ask: '' }
 ];
@@ -304,7 +313,7 @@ function buildFormulaMap(parsed, b, info) {
     if (d.step === 'Anchor' && !ANCHOR_RE.test(HOOK)) { status = 'missing'; line = ''; from = 'The hook has no number, day count or timeframe.'; }
     if (d.step === 'Open loop') {
       if (info.loopAdded) { status = info.loopFromCreator ? 'used' : 'fixed'; line = info.loopAdded; from = info.loopFromCreator ? 'Your story — your own words.' : 'Added by SAM\'s check — the opening didn\'t open a question.'; }
-      else if (status === 'missing' && LOOP_RE.test(_beatText(script, 'Opening'))) { status = 'used'; line = _beatText(script, 'Opening'); from = from || 'Your opening.'; }
+      else if (LOOP_RE.test(_beatText(script, 'Opening'))) { const lm = _beatText(script, 'Opening').match(LOOP_RE); status = 'used'; line = lm && lm[0] !== '?' ? lm[0].charAt(0).toUpperCase() + lm[0].slice(1) + '.' : _beatText(script, 'Opening'); from = 'In your Opening, before 0:05.'; }
     }
     if (d.step === 'Viewer turn' && !/\b(you|your|you're|you've|you'll)\b/i.test(ctaText)) { status = 'missing'; line = ''; from = 'The call to action doesn\'t speak to the viewer.'; }
     if (d.step === 'Sign-off') {
@@ -320,8 +329,31 @@ function buildFormulaMap(parsed, b, info) {
         line = sp.seriesTag; from = 'Your brand settings — first hashtag on ' + first + ' of ' + plats.length + ' platforms.';
       }
     }
+    // Patch AY — beat-role checks: each formula step has one home.
+    const _beatOf = ln => { const n = _normSentence(ln); if (!n) return ''; for (const bn of ['Opening', 'Setup', 'Risk', 'Turn', 'Payoff', 'CTA']) if (_normSentence(_beatText(script, bn)).includes(n)) return bn; return ''; };
+    const _home = { Underdog: ['Setup'], Stakes: ['Risk', 'Opening'] };
+    if (status === 'used' && line && _home[d.step]) {
+      const at = _beatOf(line);
+      if (at && !_home[d.step].includes(at)) { status = 'misplaced'; from = 'This is in the ' + (at === 'CTA' ? 'Your Call' : at) + ' beat — ' + (d.step === 'Stakes' ? 'the stakes belong in the Risk beat.' : 'the underdog belongs in the Setup.'); }
+    }
+    if (d.step === 'Anchor') {
+      const who = (String(b.moment || '').match(/\bmy (parents|mom|dad|mother|father|wife|husband|kids?|son|daughter|family|grandparents?|brother|sister|partner)\b/i) || [])[0];
+      if (who && HOOK && !new RegExp('\\b(' + who.split(' ')[1].replace(/s$/, '') + 's?|' + (who.split(' ')[1] === 'parents' ? 'mom|dad|folks' : 'them') + ')\\b', 'i').test(HOOK)) {
+        status = 'missing'; line = HOOK; from = 'The hook doesn\'t say who it\'s for — your story says "' + who + '".';
+      }
+    }
+    if (d.step === 'Payoff') {
+      const pay = _beatText(script, 'Payoff');
+      const fut = pay.match(/[^.!?…]*\b(will|i'll|we'll|going to|gonna|christmas day|when (they|she|he) (see|walk))\b[^.!?…]*[.!?…]?/i);
+      if (fut && !_normSentence(b.moment || '').includes(_normSentence(fut[0]))) { status = 'sam'; line = fut[0].trim(); from = 'A future scene — not something you can show today. The payoff should be proof of what\'s done.'; }
+    }
+    if (d.step === 'Series thread') {
+      const m = script.replace(/\[BEAT:[^\]]*\]/g, ' ').match(/[^.!?…]*\b(day \d+|next up|next time|next video|tomorrow)\b[^.!?…]*[.!?…]?/i);
+      if (m) { status = 'used'; line = m[0].trim(); from = from || 'Keeps viewers coming back for the next video.'; }
+      else if (status !== 'used') { status = 'missing'; line = ''; from = 'Nothing tells viewers what comes next.'; }
+    }
     // Patch AM — "from your story" is checked, not taken on SAM's word.
-    if (status === 'used' && line && !['Sign-off', 'Series hashtag', 'Open loop'].includes(d.step) && !(d.step === 'Anchor' && info.hookFromCreator)) {
+    if (status === 'used' && line && !['Sign-off', 'Series hashtag', 'Open loop', 'Series thread'].includes(d.step) && !(d.step === 'Anchor' && (info.hookFromCreator || parsed.script_engine))) {
       const srcW = new Set(_normSentence([b.moment, b.creatorContext].filter(Boolean).join(' ')).split(' '));
       const lw = _normSentence(line).split(' ').filter(w => w.length > 3 && !/^(that|this|with|from|have|just|like|what|when|there|their|they|about|into|your)$/.test(w));
       const ov = lw.length ? lw.filter(w => srcW.has(w)).length / lw.length : 1;
@@ -895,6 +927,7 @@ module.exports = async function handler(req, res) {
     : null;
   // Patch AU — the same story refines Voice DNA (the creator's own words only; a repeat run is skipped).
   const _vBg = _storyIn ? evolveVoice(process.env.ANTHROPIC_API_KEY, _nbSession, _nbMoment).catch(() => null) : null;
+  let _scriptP = null; // Patch AY — the sheet-built script (playbook), started alongside the main call
   if (_nbBg || _vBg) { const _all = Promise.all([_nbBg, _vBg]); const _end = res.end.bind(res); res.end = (...a) => { _all.finally(() => _end(...a)); return res; }; }
   const { mode, moment, platforms, contentType, creatorContext, tone, audienceDemographics, outputLanguage, emojiPreference, voiceProfile, bannedPhrases } = req.body;
   const userId = req.body.userId || req.headers['x-forwarded-for'] || 'anon';
@@ -1465,6 +1498,12 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
       res.write('data: ' + JSON.stringify({ error: 'SAM had trouble formatting the response. Please try again.' }) + '\n\n');
       res.end(); return;
     }
+    // Patch AY — swap in the sheet-built script before every guard runs (falls back to the main call's script).
+    if (_scriptP && parsed && typeof parsed === 'object' && mode === 'playbook') {
+      const _sc = await _scriptP;
+      if (_sc && applySheetScript(parsed, _sc)) console.log('[script-writer] used', _sc.model);
+      else console.warn('[script-writer] unavailable — using the playbook script');
+    }
     // Patch W.2 — correct near-miss spellings of the creator's own domains in every output field.
     if (parsed && typeof parsed === 'object') {
       const b = req.body || {};
@@ -1636,7 +1675,7 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
     }
     // Patch AM — the creator's own anchor line is the hook when SAM's hook drifts from it.
     let _amHook = false;
-    if (parsed && typeof parsed === 'object' && mode === 'playbook') _amHook = applyCreatorOpening(parsed, (req.body || {}).moment);
+    if (parsed && typeof parsed === 'object' && mode === 'playbook' && !parsed.script_engine) _amHook = applyCreatorOpening(parsed, (req.body || {}).moment);
     // Patch AC — tidy spoken text (see tidySpoken).
     tidySpoken(parsed, req.body);
     // Patch Y.2 — the script's Opening beat must start with the hook, word for word.
@@ -1807,6 +1846,19 @@ CRITICAL: Return ONLY valid JSON. Keep ALL fields concise — the JSON must be c
       const playbookUserContent = imageBase64
         ? [{ type: 'image', source: { type: 'base64', media_type: imageType, data: imageBase64 } }, { type: 'text', text: moment }]
         : moment;
+      // Patch AY — the script itself is written by the dedicated script writer, in parallel.
+      {
+        const _sp = cleanStoryProfile(req.body.storyProfile);
+        _scriptP = writeFormulaScript({
+          apiKey, moment, creatorContext: req.body.creatorContext || '',
+          notebook: (_nbAll || []).map(n => '- ' + n.text).join('\n'),
+          voiceProfile: voiceProfile || (userProfile && userProfile.voice_profile) || '',
+          seriesName: _sp.seriesTag ? _sp.seriesTag.replace(/^#/, '').replace(/([a-z])([A-Z])/g, '$1 $2') : '',
+          dayN: dayNumber(_sp.startDate, tzFromReq(req)),
+          bestScripts: _sp.bestScripts,
+          todayLine: nowLine(req)
+        }).catch(() => null);
+      }
       return await streamCall(playbookPrompt, playbookUserContent, 12000);
     }
 
