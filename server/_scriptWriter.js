@@ -60,6 +60,9 @@ function selfCheck(j, moment) {
   if (undone) out.push('The Payoff opens on what is NOT done yet ("' + undone + '"). Open the Payoff on what the viewer can see or feel right now; move the unfinished part into the Turn or drop it ("Next up" covers it).');
   const fut = String(b.payoff || '').match(/[^.!?…]*\b(will|i'll|we'll|going to|gonna|christmas day|when (they|she|he) (see|walk))\b[^.!?…]*[.!?…]?/i);
   if (fut && !story.includes(norm(fut[0]))) out.push('The Payoff describes a future scene ("' + fut[0].trim() + '"). The Payoff is proof of what is done today.');
+  // Patch BN — the Payoff can't drift into goals ("the goal has always been…", "that's what I'm building toward")
+  const goal = !fut && pay.find(x => /\b(the goal|my goal|building toward|working toward|someday|one day|plan(ning)? to|can't wait)\b/i.test(x));
+  if (goal) out.push('The Payoff drifts into the goal ("' + goal + '"). Goals belong in the Risk beat; end the Payoff on what is real today and one feeling about it.');
   const cd = String(moment || '').match(/\b(\d+)\s+(days?|weeks?|hours?)\s+(left|to go|away|until|till|before)\b/i);
   const spoken = ['opening', 'setup', 'risk', 'turn', 'payoff', 'cta'].map(k => b[k] || '').join(' ');
   if (cd && !new RegExp('\\b' + cd[1] + '\\b').test(spoken + ' ' + (j.hook || ''))) out.push('The countdown "' + cd[0] + '" is never said. Say the number in the Risk beat.');
@@ -103,7 +106,7 @@ THE FORMULA (six beats):
 - RISK: the STAKES — the deadline, the promise, or the cost. (Not the underdog. Not backstory.) If the creator gave a countdown or number ("29 days left"), SAY THE NUMBER here — it is the urgency.
 - TURN: the honest STRUGGLE — what was harder than expected or a moment of doubt, in their words. If they gave none, use the plain decision or pivot from their story — never invent doubt or feelings.
 - PAYOFF: fast PROOF of what is done or visible TODAY — a quick rhythm of short items from their story — then ONE emotional line built from their own words. Never a future scene (no "Christmas Day… their faces"), never something that hasn't happened.
-  Patch BK: the Payoff OPENS on the reveal — what the viewer can see or feel right now. What is NOT done yet ("still needs a final coat", "not started yet") never opens the Payoff: put it in the Turn as part of the struggle, or leave it to the "Next up" tease.
+  Patch BK: the Payoff OPENS on the reveal — what the viewer can see or feel right now. What is NOT done yet ("still needs a final coat", "not started yet") never opens the Payoff: put it in the Turn as part of the struggle, or leave it to the "Next up" tease. The Payoff also never drifts into goals or the dream ("the goal has always been…", "that's what I'm building toward") — goals are stakes, so they go in the Risk.
 - CTA: the VIEWER TURN — one line that makes it about the person watching, from the creator's own words when they wrote one, kept whole and in their order (e.g. "…you can do yours. Keep showing up."). Then, if the creator said what's next, ONE short tease of 15 words max — "Next up: …" naming the 2–3 most visual or dramatic items, never the whole to-do list. Do NOT write the creator's sign-off; it is added after.
 
 CLEAR TO A STRANGER (Patch BK): a new viewer knows nothing about the creator. Any line that leans on something unexplained ("before we leave", "Jason", "the old one") either gets a few plain words of context from STORY or BACKGROUND ("before we move back to Florida", "Jason, our plumber", "my wife Amanda and our dog Penny") or the unclear clause is cut. Never invent the context.

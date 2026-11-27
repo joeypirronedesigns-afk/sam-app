@@ -298,6 +298,7 @@ function _scLabel(x) {
   if (/Risk beat repeats the hook/.test(t)) return 'the Risk beat repeated the hook';
   if (/new viewer won/.test(t)) return 'unexplained reference' + (q ? ' ("' + q + '")' : '');
   if (/repeats an earlier beat/.test(t)) return 'a repeated line' + (q ? ' ("' + q + '")' : '');
+  if (/drifts into the goal/.test(t)) return 'the payoff drifted into future goals';
   if (/CTA never speaks/.test(t)) return 'the call to action didn\'t speak to the viewer';
   return t.split(/[.(]/)[0].trim();
 }

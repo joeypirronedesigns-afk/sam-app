@@ -465,3 +465,8 @@ Story → script → posted video → real results → back into the formula, pe
 - Series thread row: no longer says "SAM reworded this one" when the line is fine.
 - Guide fact-check: also cuts any plan stated as already done (65's tip 5 said "I completed the bathrooms before…" when that's next week).
 - Step 6 fallback from lessons: whole sentences only (stored lessons are cut at 300 chars, which left "410 da"), never shows the same lesson twice, and only uses audience lessons (age/gender/demographic), not the 0:05 drop lesson.
+
+### Patch BN — v9.119.06 — from output 66 (graded 9)
+- Output 66 was written by claude-sonnet-4-6: Opus 5.5 and Sonnet 5.5 both failed first, and nothing on the page said so. When a stronger model is skipped, the engine line (UI + PDF) now shows "⚠ Stronger model skipped — <reason>", using the existing script_engine_note.
+- The Payoff drifted into goals ("The goal has always been fully furnished bedrooms… That's what I'm building toward. That's the promise."). Added a prompt rule (goals are stakes, so they go in the Risk) and a self-check that catches it and gets it fixed.
+- Step 6 confirmed working: it showed "Women 45 and older…" from the last story, plus the cleaned audience lesson.
