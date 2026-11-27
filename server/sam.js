@@ -6,7 +6,7 @@ const { platformPrompt, specFor, enforcePlatforms } = require('./_platforms');
 const { getSessionEmail } = require('./_session');
 const NB = require('./_notebook'); // Patch AR — SAM's notebook
 const { evolveVoice } = require('./_voiceEvolve'); // Patch AU — Voice DNA evolves with every story
-const { writeFormulaScript, applySheetScript, dayNumber, earlySents: _swEarly, UNDONE_RE: _SW_UNDONE } = require('./_scriptWriter'); // Patch AY
+const { capI, writeFormulaScript, applySheetScript, dayNumber, earlySents: _swEarly, UNDONE_RE: _SW_UNDONE } = require('./_scriptWriter'); // Patch AY
 const RES = require('./_results'); // Patch BE — How did it do?
 
 // Patch AV — SAM knows today's date and time, in the creator's own time zone (cookie set by the app).
@@ -355,8 +355,8 @@ function buildFormulaMap(parsed, b, info) {
       if (!sp.seriesTag) { status = 'missing'; line = ''; from = 'No series hashtag saved — add one in your brand settings.'; }
       else {
         const first = plats.filter(p => String(p.hashtags || '').split(/\s+/)[0].toLowerCase() === sp.seriesTag.toLowerCase()).length;
-        status = (plats.length && first === plats.length) ? 'used' : 'missing';
-        line = sp.seriesTag; from = 'Your brand settings — first hashtag on ' + first + ' of ' + plats.length + ' platforms.';
+        status = (!plats.length || first === plats.length) ? 'used' : 'missing';   // Patch BO — a script Redo has no captions to check
+        line = sp.seriesTag; from = plats.length ? 'Your brand settings — first hashtag on ' + first + ' of ' + plats.length + ' platforms.' : 'Your brand settings — pinned first on every platform.';
       }
     }
     // Patch AY — beat-role checks: each formula step has one home.
@@ -1576,7 +1576,7 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
       res.end(); return;
     }
     // Patch AY — swap in the sheet-built script before every guard runs (falls back to the main call's script).
-    if (_scriptP && parsed && typeof parsed === 'object' && mode === 'playbook') {
+    if (_scriptP && parsed && typeof parsed === 'object' && (mode === 'playbook' || (mode === 'regen_section' && (req.body || {}).section === 'script'))) {
       const _sc = await _scriptP;
       if (_sc && applySheetScript(parsed, _sc)) { console.log('[script-writer] used', _sc.model); if (_sc.errors && _sc.errors.length) parsed.script_engine_note = 'Retried after: ' + _sc.errors.join(' | '); }
       else {
@@ -1821,6 +1821,15 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
         parsed.alt_hooks = parsed.alt_hooks.filter(a => ![...numbersInText(a.hook, { allowCountingTwo: true })].some(n => !_numberOk(n, _src)));
       }
     }
+    // Patch BO — capital I everywhere SAM writes words to be said or posted.
+    if (parsed && typeof parsed === 'object') {
+      for (const f of ['full_script', 'narration_script', 'hook']) parsed[f] = capI(parsed[f]);
+      if (parsed.story_architecture && typeof parsed.story_architecture === 'object') for (const k of Object.keys(parsed.story_architecture)) parsed.story_architecture[k] = capI(parsed.story_architecture[k]);
+      if (Array.isArray(parsed.script_beats)) parsed.script_beats.forEach(x => { if (x) x.content = capI(x.content); });
+      if (Array.isArray(parsed.alt_hooks)) parsed.alt_hooks.forEach(x => { if (x) x.hook = capI(x.hook); });
+      if (Array.isArray(parsed.formula_map)) parsed.formula_map.forEach(x => { if (x && !x.plain) x.line = capI(x.line); });
+      if (Array.isArray(parsed.platform_strategies)) parsed.platform_strategies.forEach(x => { if (x) for (const k of ['caption', 'hook', 'title', 'description']) if (typeof x[k] === 'string') x[k] = capI(x[k]); });
+    }
     if (_nbBg && parsed && typeof parsed === 'object') parsed.notebook_noted = (await _nbBg).noted; // Patch AT
     if (_vBg && parsed && typeof parsed === 'object') { const _v = await _vBg; if (_v) parsed.voice_updated = _v; } // Patch AU
     // Patch BE — keep this script so "How did it do?" can tie real results to its beats later.
@@ -1971,6 +1980,23 @@ CRITICAL: Return ONLY valid JSON. Keep ALL fields concise — the JSON must be c
     // ── REGEN SECTION MODE ────────────────────────────────────────────────────
     if (mode === 'regen_section') {
       const section = req.body.section || '';
+      // Patch BO — a script Redo goes through the same story-sheet writer as the first build (it used the old writer,
+      // which is why output 67 lost the formula, the "Next up", the capital I's and the self-check).
+      if (section === 'script') {
+        const _sp = cleanStoryProfile(req.body.storyProfile);
+        const _steer = String(req.body.steer || '').trim();
+        _scriptP = writeFormulaScript({
+          apiKey, moment: String(req.body.moment || '') + (_steer ? `\n\nCREATOR DIRECTION FOR THIS REWRITE (follow it, still only the creator's facts): ${_steer}` : ''),
+          creatorContext: req.body.creatorContext || '', format: req.body.contentType || '',
+          notebook: (_nbAll || []).map(n => '- ' + n.text).join('\n'),
+          voiceProfile: voiceProfile || (userProfile && userProfile.voice_profile) || '',
+          seriesName: _sp.seriesTag ? _sp.seriesTag.replace(/^#/, '').replace(/([a-z])([A-Z])/g, '$1 $2') : '',
+          dayN: dayNumber(_sp.startDate, tzFromReq(req)),
+          bestScripts: _sp.bestScripts,
+          todayLine: nowLine(req),
+          lessons: _nbSession ? RES.lessonsPrompt(await RES.getList('lessons', _nbSession).catch(() => [])) : ''
+        }).catch(() => null);
+      }
       const sectionLabel = req.body.sectionLabel || section;
       const wizContext = req.body.wizardContext || '';
       const steer = req.body.steer || '';

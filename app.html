@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.119.06" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.119.07" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -17083,6 +17083,7 @@ ${steer ? 'CREATOR DIRECTION: ' + steer : ''}
       tone: s.tone || 'Authentic/Natural',
       outputLanguage: WS.language || '',
       creatorContext: s.niche || '',
+      contentType: WS.format || 'short-form video',   // Patch BO — Redo keeps the chosen length
       steer: steer,
       signOff: getSignOff() || undefined,
       storyProfile: (typeof getStoryProfile === 'function') ? getStoryProfile() : undefined,
@@ -17106,7 +17107,9 @@ ${steer ? 'CREATOR DIRECTION: ' + steer : ''}
 
     // Re-render just this section
     regenRenderSection(sectionKey, sectionEl, data);
-    if (sectionKey === 'script') { refreshFormulaMap(); refreshGapsCard(); } // Patch AL
+    if (sectionKey === 'script') { refreshFormulaMap(); refreshGapsCard();
+      // Patch BO — the story-sheet writer may sharpen the hook too; keep the Hook card in step with the script
+      const _hk = document.getElementById('playbook-sec-hook'); if (_hk && data && data.hook) { try { regenRenderSection('hook', _hk, window._lastPlaybookData || data); } catch (_) {} } } // Patch AL
 
     // Patch U.5 — a new architecture comes with a new hook, and the old script no longer
     // matches the beats. Re-render the hook and gaps, then rewrite the script from the

@@ -1,6 +1,6 @@
 // Regression set: every script problem found in outputs 63–66, plus the clean versions that must pass.
 // Run: node tests/selfcheck.test.js   (no API calls, no credits)
-const { selfCheck } = require('../server/_scriptWriter.js');
+const { selfCheck, capI } = require('../server/_scriptWriter.js');
 const story = "there's only 29 days left till Christmas for me to complete everything and deliver the sanctuary I promised to my parents 450 days ago";
 const base = {
   opening: '29 days left till Christmas to deliver the sanctuary I promised my parents 450 days ago. Let me explain.',
@@ -29,5 +29,11 @@ for (const [name, over, expect] of cases) {
   if (!ok) fail++;
   console.log((ok ? 'PASS ' : 'FAIL ') + name + (ok ? '' : '  → ' + JSON.stringify(issues)));
 }
+// 67: lowercase "i" from the creator's typing must come out as "I" (and nothing else changes)
+for (const [inp, out] of [
+  ["450 days ago, i promised my parents i'd turn a busted cottage.", "450 days ago, I promised my parents I'd turn a busted cottage."],
+  ["Messier than i expected.. i'm glad i protected the tiles", "Messier than I expected.. I'm glad I protected the tiles"],
+  ["i.e. my iPhone, #diy, @joey", "i.e. my iPhone, #diy, @joey"],
+]) { const got = capI(inp), ok = got === out; if (!ok) fail++; console.log((ok ? 'PASS ' : 'FAIL ') + 'capital I: ' + inp + (ok ? '' : '  → ' + got)); }
 console.log(fail ? `\n${fail} FAILED` : '\nall passed');
 process.exit(fail ? 1 : 0);

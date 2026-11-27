@@ -53,6 +53,8 @@ function earlySents(sents) {
   for (const x of sents) { if (w >= lim) break; out.push(x); w += x.split(/\s+/).length; }
   return out;
 }
+// Patch BO — "i", "i'm", "i'd" are always capital I in anything SAM writes (the creator's casual typing isn't copied).
+function capI(t) { return typeof t === 'string' ? t.replace(/(^|[^\p{L}\p{N}_'’.@#/-])i(?=$|[\s'’,!?;:…)\]"”-]|\.(?!\p{L}))/gmu, '$1I') : t; }
 function selfCheck(j, moment) {
   const out = [], b = (j && j.beats) || {}, story = norm(moment);
   const pay = _sents(String(b.payoff || '').replace(/\(show:[^)]*\)/gi, ''));
@@ -246,4 +248,4 @@ function applySheetScript(parsed, sc) {
   return true;
 }
 
-module.exports = { selfCheck, earlySents, UNDONE_RE, orderCTA, writeFormulaScript, applySheetScript, dayNumber, quoteIsReal, SCRIPT_MODEL };
+module.exports = { capI, selfCheck, earlySents, UNDONE_RE, orderCTA, writeFormulaScript, applySheetScript, dayNumber, quoteIsReal, SCRIPT_MODEL };

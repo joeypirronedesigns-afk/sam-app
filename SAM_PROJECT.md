@@ -470,3 +470,10 @@ Story → script → posted video → real results → back into the formula, pe
 - Output 66 was written by claude-sonnet-4-6: Opus 5.5 and Sonnet 5.5 both failed first, and nothing on the page said so. When a stronger model is skipped, the engine line (UI + PDF) now shows "⚠ Stronger model skipped — <reason>", using the existing script_engine_note.
 - The Payoff drifted into goals ("The goal has always been fully furnished bedrooms… That's what I'm building toward. That's the promise."). Added a prompt rule (goals are stakes, so they go in the Risk) and a self-check that catches it and gets it fixed.
 - Step 6 confirmed working: it showed "Women 45 and older…" from the last story, plus the cleaned audience lesson.
+
+### Patch BO — v9.119.07 — the script Redo used the OLD writer (output 67)
+- Output 67 came from a section Redo. A script Redo (directly, or set off by an architecture Redo) went through the old regen prompt, not the story-sheet writer. That produced lowercase "i" copied from the creator's typing, a generic structure with the to-do list as the Payoff and a future scene, no "Next up", the playbook-style map ("Your story: '…'"), "0 of 0 platforms", no Hook pattern / Your results / Self-check rows, and the series question asked again. The engine line still said Opus because a Redo doesn't send script_engine, so the old value stayed.
+- Fix: regen_section 'script' now runs writeFormulaScript (steer passed as CREATOR DIRECTION) and applySheetScript, the same path as the first build. The client sends contentType with a Redo and re-renders the Hook card after a script Redo.
+- capI(): "i", "i'm", "i'd" → "I" in code across script, hook, cards, beats, alt hooks, captions and map lines. "i.e.", iPhone, #tags and @handles stay as they are.
+- Hashtag row on a Redo (no captions in that response): "pinned first on every platform", not "0 of 0 Missing".
+- tests/redo.test.js: mocked end-to-end Redo (no API calls) checks the sheet writer, capital I, Next up, sheet map, Self-check row and hashtag row. tests/selfcheck.test.js also covers capI. Run both before every deploy.
