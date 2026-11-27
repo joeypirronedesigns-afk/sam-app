@@ -39,8 +39,9 @@ module.exports = async function handler(req, res) {
       const a = await R.applyLessons(email, output ? output.id : 'unlinked', result);
       changed = a.changed; allLessons = a.lessons;
       const debriefs = await R.getList('debriefs', email);
-      debriefs.push({ at: new Date().toISOString(), output_id: output ? output.id : null, hook: output ? output.hook : '', platform: result.platform, verdict: result.verdict, headline: result.headline, metrics: result.metrics, biggest_drop: result.biggest_drop });
+      debriefs.push({ at: new Date().toISOString(), output_id: output ? output.id : null, hook: output ? output.hook : '', platform: result.platform, verdict: result.verdict, headline: result.headline, metrics: result.metrics, biggest_drop: result.biggest_drop, audience: result.audience || null });
       await R.setList('debriefs', email, debriefs, R.MAX_DEBRIEFS);
+      await R.markBriefDirty(email);   // Patch BG — SAM's read rebuilds with this
     }
     return res.status(200).json({ result, output: output ? { id: output.id, hook: output.hook, pattern: output.pattern } : null, changed, lessons: allLessons });
   }

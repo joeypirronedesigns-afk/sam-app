@@ -60,12 +60,15 @@ function parseScriptBeats(scriptText, pace) {
   // Patch W.3 — timings follow the actual script length instead of a fixed 0–70s template.
   // Words-per-minute by pace; delivery notes in (parentheses) are not spoken.
   const wpm = { fast: 170, natural: 150, slow: 125 }[pace] || 150;
+  const _total = out.reduce((n, b) => n + Math.max(2, Math.round(b.content.replace(/\([^)]*\)/g, ' ').split(/\s+/).filter(Boolean).length / wpm * 60)), 0);
   let t = 0;
   for (const b of out) {
     const words = b.content.replace(/\([^)]*\)/g, ' ').split(/\s+/).filter(Boolean).length;
     const secs = Math.max(2, Math.round(words / wpm * 60));
     const start = Math.round(t), end = Math.round(t + secs);
-    b.timing = start + '–' + end + 's';
+    // Patch BG — minutes once a script runs past a minute and a half (long-form)
+    const mm = x => Math.floor(x / 60) + ':' + String(x % 60).padStart(2, '0');
+    b.timing = (_total > 90) ? mm(start) + '–' + mm(end) : start + '–' + end + 's';
     t += secs;
   }
   return out;
@@ -438,7 +441,9 @@ function tidySpoken(parsed, b) {
     }
     // sign-off: a line from the creator's own profile/context sitting before other CTA text moves last
     const ctaAt = lines.findIndex(l => /^\s*\[BEAT:\s*CTA\s*\]/i.test(l));
-    if (ctaAt >= 0 && SIGN_SRC) {
+    // Patch BG — only for creators without a saved sign-off and only for the old writer; otherwise it moved
+    // the creator's own viewer line ("If you're tackling…", from their story) behind "Next up".
+    if (ctaAt >= 0 && SIGN_SRC && !cleanSignOff(b.signOff) && !(parsed.script_engine && parsed.script_engine !== 'fallback')) {
       const body = lines.slice(ctaAt + 1).join(' ');
       const parts = _splitSentences(body).filter(x => x !== '\n' && x.trim());
       const isSign = x => { const n = _normSentence(x); return n.split(' ').length >= 5 && SIGN_SRC.includes(n); };
@@ -1878,8 +1883,8 @@ CRITICAL: Return ONLY valid JSON. Keep ALL fields concise — the JSON must be c
       // Patch AY — the script itself is written by the dedicated script writer, in parallel.
       {
         const _sp = cleanStoryProfile(req.body.storyProfile);
-        _scriptP = writeFormulaScript({
-          apiKey, moment, creatorContext: req.body.creatorContext || '',
+        if (!/caption|linkedin/i.test(String(req.body.contentType || ''))) _scriptP = writeFormulaScript({
+          apiKey, moment, creatorContext: req.body.creatorContext || '', format: req.body.contentType || '',
           notebook: (_nbAll || []).map(n => '- ' + n.text).join('\n'),
           voiceProfile: voiceProfile || (userProfile && userProfile.voice_profile) || '',
           seriesName: _sp.seriesTag ? _sp.seriesTag.replace(/^#/, '').replace(/([a-z])([A-Z])/g, '$1 $2') : '',

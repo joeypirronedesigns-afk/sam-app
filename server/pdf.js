@@ -849,6 +849,7 @@ function buildPlaybookHTML(pb, brand) {
         ${(pb.is_draft || /^not found/i.test(String(pb.five_second_moment || ''))) ? callout('Draft — this story is missing its moment. Answer SAM\'s questions or add that moment, and SAM will rebuild the script around it.') : ''}
         ${scriptBody}
         ${pb.pacing_note ? callout('Pacing: ' + pb.pacing_note) : ''}
+        ${(Array.isArray(pb.chapters) && pb.chapters.length) ? callout('YouTube chapters:\n' + pb.chapters.join('\n')) : ''}
       </div>
       ${ftr(brandName)}
     </div>`);

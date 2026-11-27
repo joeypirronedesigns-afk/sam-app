@@ -8,6 +8,7 @@ const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const { loadUserContext, buildBrainPrompt } = require('./_context');
 const { checkGate } = require('./_gate');
+const RES = require('./_results'); // Patch BG — real results feed SAM's read
 
 // v9.113.1 — Daily Brief gate copy (per brief PART A3, with one-word tweak: "what matters most today")
 const DAILY_BRIEF_COPY_ANON = 'Sign in to get your daily brief. SAM reads your work and tells you what matters most today.';
@@ -105,6 +106,9 @@ async function generateBrief(profile, briefDate) {
     brain = null;
   }
 
+  // Patch BG — the creator's real results checks, lessons and newest script.
+  if (email) analyticsBlock += await RES.briefBlock(email).catch(() => '');
+
   if (brain) {
     brainPrompt = buildBrainPrompt(brain) || '';
 
@@ -166,6 +170,10 @@ COACH MEMORY — when anchor memory block is present:
 - If ANCHOR MEMORY says the creator completed yesterday's anchor: prepend one short line acknowledging that before the metrics sentence. E.g. "You hit yesterday's anchor — now we compound it." Then continue with metrics.
 - If ANCHOR MEMORY says the anchor was missed: prepend one short line acknowledging that before the metrics. E.g. "Yesterday's anchor didn't happen — today we make the smallest possible version non-negotiable." Then continue with metrics.
 - Keep this line to 10 words max. Never effusive. Never punishing.
+
+RESULTS CHECKS — when present they are the strongest signal you have (real numbers from the creator's own posted videos):
+- verdict_line must reference the newest results check or a RULE lesson with its real numbers or finding.
+- todays_plan[0] should apply a lesson to the next video (e.g. tighten the opening, lead with the number). If the newest script hasn't been checked yet and is a few days old, one plan item can be "Check how it did" (route: today).
 
 ANALYTICS ECHO — REQUIRED when analytics insight is present:
 - verdict_line MUST BEGIN with at least one concrete "what to improve" metric using the actual numbers from the analytics block (e.g. "3-second views down 82% and reach down 65%" or "only 353 out of 18,900 views reach 1 minute").
@@ -264,7 +272,9 @@ module.exports = async function handler(req, res) {
 
   try {
     // Check cache first
-    const forceRefresh = req.query.force === '1';
+    // Patch BG — new results or a new script since this morning's brief → rebuild it.
+    const dirty = await RES.isBriefDirty(email).catch(() => false);
+    const forceRefresh = req.query.force === '1' || dirty;
     const cached = forceRefresh ? null : await getCachedBrief(email, briefDate);
     if (cached) {
       return res.status(200).json({
@@ -285,6 +295,7 @@ module.exports = async function handler(req, res) {
 
     const brief = await generateBrief(profile, briefDate);
     await saveBrief(email, briefDate, timezone, brief, profile);
+    await RES.clearBriefDirty(email).catch(() => {});
 
     return res.status(200).json({ ...brief, cached: false });
 

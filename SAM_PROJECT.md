@@ -427,3 +427,9 @@ Story → script → posted video → real results → back into the formula, pe
 ## Patch BF — v9.118.98 — Cleaner lessons (first real check: the 410-day video)
 - Lessons were cut at 220 chars mid-word → one sentence, ≤30 words asked; trimmed at a word boundary (300) with "…".
 - Lessons must be about content or audience; platform-counting caveats (e.g. "Follows showed 0") go in "why", and are filtered if they slip through.
+
+## Patch BG — v9.118.99 — Close order (for real), long-form scripts, SAM's read refreshes from real results
+- Close order: an old Patch AC rule in tidySpoken moved any CTA sentence found in the creator's story to the end — so "If you're tackling something similar…" landed after "Next up". It now runs only for creators without a saved sign-off and only for the old writer.
+- Long-form: the script writer ignored the chosen format. Now `format` (WS.format → contentType) is passed; "long" = 1,200–1,700 spoken words, six beats as full sections, (show: …) cues, YouTube chapters, and `need_more` questions instead of padding (max_tokens 9000, 200 s timeout). Caption/LinkedIn formats skip the sheet writer. Beat timings switch to m:ss when the script runs past 90 s. Chapters shown in app + PDF.
+- SAM's read (Today): KV `brief_dirty:<email>` is set by every results check and every new Story Engine script; daily-brief rebuilds instead of serving the morning cache, then clears it. The brief prompt gets the newest results checks (numbers, biggest drop, audience), lessons and the newest script, with a rule to lead with them. The app reloads the brief after a check and after a new playbook.
+- Audience diagnosis (wizard step 6): uses the latest results check's real age/gender/non-follower split (debriefs now store `audience`) and lessons, instead of the fixed "people 35–54" paragraph; sets the age/gender chips from real data unless the creator picked them by hand.

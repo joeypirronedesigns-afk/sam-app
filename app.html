@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.98" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.99" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -16425,7 +16425,7 @@ function _resRun() {
   out.innerHTML = '';
   _resFetch({ action: 'debrief', output_id: (document.getElementById('resOutput') || {}).value || '', note: (document.getElementById('resNote') || {}).value || '',
     images: _resState.images.map(i => ({ media_type: i.media_type, data: i.data })) })
-    .then(d => { _resState.lessons = d.lessons || _resState.lessons; out.innerHTML = _resReport(d); })
+    .then(d => { _resState.lessons = d.lessons || _resState.lessons; out.innerHTML = _resReport(d); try { if (window.reloadDailyBrief) window.reloadDailyBrief(); } catch (_) {} })
     .catch(e => { out.innerHTML = '<div style="font-size:13px;color:#C0392B;">' + _nbEsc((e && (e.message || e.error)) || 'Something went wrong. Try again.') + '</div>'; })
     .finally(() => { btn.disabled = false; btn.textContent = 'Read my results'; });
 }
@@ -16758,6 +16758,39 @@ async function generateStoryReflection() {
 
 
 async function generateAudienceDiagnosis() {
+  // Patch BG — when the creator has checked real results, the diagnosis comes from who actually watched.
+  try {
+    const ac = new AbortController(); const t = setTimeout(() => ac.abort(), 4000);
+    const r = await fetch('/api/results', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin', body: JSON.stringify({ action: 'list' }), signal: ac.signal });
+    clearTimeout(t);
+    if (r.ok) {
+      const d = await r.json();
+      const withAud = (d.debriefs || []).find(x => x && x.audience && Array.isArray(x.audience.age) && x.audience.age.length);
+      if (withAud) {
+        const A = withAud.audience, ages = A.age.filter(a => a && a.range && a.pct != null).sort((a, b) => b.pct - a.pct);
+        const share = re => ages.filter(a => re.test(a.range)).reduce((n, a) => n + Number(a.pct || 0), 0);
+        const over55 = Math.round(share(/^(55|65)/) * 10) / 10;
+        const top = ages.slice(0, 3).map(a => `<strong>${_nbEsc(a.range)}</strong> ${_nbEsc(a.pct)}%`).join(', ');
+        const lessons = (d.lessons || []).filter(l => l.status === 'rule' || /audience|viewers|demographic|55|65/i.test(l.text)).slice(0, 2);
+        const diag = `Based on your <strong>real results</strong> (checked ${_nbEsc(String(withAud.at).slice(0, 10))}${withAud.hook ? ' · "' + _nbEsc(String(withAud.hook).slice(0, 60)) + '"' : ''}), the people actually watching you are mostly ${top}` +
+          (over55 ? ` — <strong>${over55}% are 55 or older</strong>` : '') + `.` +
+          (A.women_pct != null ? ` About <strong>${_nbEsc(A.women_pct)}% are women</strong>.` : '') +
+          (A.non_follower_pct != null ? ` ${_nbEsc(A.non_follower_pct)}% weren't following you yet — your stories travel beyond your followers.` : '') +
+          (lessons.length ? `<br/><br/>What SAM has learned about them: ${lessons.map(l => _nbEsc(l.text)).join(' ')}` : '') +
+          `<br/><br/><span style="font-size:13px;color:var(--ink-muted);">This updates every time you run "How did it do?" on a new video.</span>`;
+        WS.diagnosedAudience = diag.replace(/<[^>]+>/g, '');
+        // real data replaces the old guess — but never a choice the creator made by hand
+        const pick = over55 >= 40 ? '55+' : (ages[0] && /^45/.test(ages[0].range) ? '45-54' : (ages[0] && /^35/.test(ages[0].range) ? '35-44' : (ages[0] && /^25/.test(ages[0].range) ? '25-34' : null)));
+        if (pick && (!WS.audienceAge || WS.audienceAge === '35-44' || WS.audienceAge === '25-44')) WS.audienceAge = pick;
+        if (A.women_pct != null && (!WS.audienceGender || WS.audienceGender === 'Mix of both')) WS.audienceGender = A.women_pct >= 60 ? 'Mostly women' : (A.women_pct <= 40 ? 'Mostly men' : 'Mix of both');
+        if (typeof saveWizardState === 'function') saveWizardState();
+        const el0 = document.getElementById('wiz6diagText');
+        if (el0) el0.innerHTML = diag;
+        document.getElementById('wizardNextBtn').disabled = false;
+        return;
+      }
+    }
+  } catch (_) {}
   // Generate a quick audience diagnosis from the story
   const text = WS.storyText || '';
   const storyType = WS.storyType;
@@ -17312,6 +17345,7 @@ function renderPlaybook(data) {
   if (data.needs_more) html += needsMoreHTML(data);
   html += notebookNotedHTML(data); // Patch AT
   html += voiceUpdatedHTML(data);   // Patch AU
+  if (data.output_id) setTimeout(() => { try { if (window.reloadDailyBrief) window.reloadDailyBrief(); } catch (_) {} }, 1500); // Patch BG
   if (data.output_id) html += `<div class="playbook-section no-print" id="playbook-sec-results" style="border-left:3px solid var(--accent);">
     <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;">📈 After you post</div>
     <div style="font-size:14px;color:var(--ink);line-height:1.55;">Give it a few days, then upload the results screenshots. SAM will tell you why it worked or didn't, and use the lesson on your next script.</div>
@@ -17413,6 +17447,7 @@ function renderPlaybook(data) {
         ${draftBannerHTML(data)}
         ${scriptBody}
         ${data.pacing_note ? `<div class="wizard-why" style="margin-top:12px;"><strong>Delivery note:</strong> ${data.pacing_note}</div>` : ''}
+        ${(Array.isArray(data.chapters) && data.chapters.length) ? `<div class="wizard-why" style="margin-top:12px;"><strong>YouTube chapters:</strong><br>${data.chapters.map(c => _nbEsc(c)).join('<br>')}</div>` : ''}
         ${factCheckHTML(data.fact_check)}
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center;">

@@ -44,10 +44,21 @@ function quoteIsReal(quote, source) {
 }
 
 async function writeFormulaScript(o) {
-  const { apiKey, moment, creatorContext, notebook, voiceProfile, seriesName, dayN, bestScripts, todayLine, lessons } = o;
+  const { apiKey, moment, creatorContext, notebook, voiceProfile, seriesName, dayN, bestScripts, todayLine, lessons, format } = o;
+  // Patch BG — long-form YouTube (8–12 min) gets a long script, not a short one.
+  const LONG = /long/i.test(String(format || ''));
   if (!apiKey || !moment || String(moment).trim().length < 40) return null;
   const examples = (bestScripts || []).filter(Boolean);
-  const system = `You are SAM's script writer for short-form video. You write ONE script that follows a proven retention formula, using ONLY what the creator said.${todayLine || ''}
+  const system = `You are SAM's script writer for ${LONG ? 'LONG-FORM YouTube video (8–12 minutes)' : 'short-form video'}. You write ONE script that follows a proven retention formula, using ONLY what the creator said.${todayLine || ''}
+${LONG ? `
+LONG-FORM (Patch BG): target 1,200–1,700 spoken words (about 8–12 minutes at a natural pace). Same six beats, but each beat is a full section:
+- OPENING (first 30–45s): the anchor + open loop, then a quick preview of what this video covers.
+- SETUP: the series, the people, the underdog — use BACKGROUND facts the creator gave about themselves (they are the creator's own words).
+- RISK: the stakes and everything still left to do, in detail.
+- TURN: walk through the work step by step as the creator described it — what they did, what went wrong, how they handled it. Mark on-screen moments with (show: …).
+- PAYOFF: a slower reveal of what is done, then the meaning, in their words.
+- CTA: the viewer turn, "Next up", and a subscribe line suited to YouTube.
+Add 3–6 chapter titles with rough timestamps in "chapters". If the creator's material can honestly fill only part of that length, write what is TRUE (shorter is fine) and list exactly what you need in "need_more" (e.g. "Walk me through the microcrete coats step by step") — never pad with invented events or feelings.` : ''}
 
 THE FORMULA (six beats):
 - OPENING (0–5s): the ANCHOR — a number or timeframe AND who it's for, in one line — then an OPEN LOOP (the creator's own phrase if they wrote one, e.g. "Let me explain."; otherwise "Let me explain.").
@@ -77,16 +88,16 @@ Return ONLY JSON:
 "pattern":"the id of the pattern you used for the hook",
 "pattern_why":"one plain sentence to the creator: why this pattern fits THIS story",
 "alt_hooks":[{"pattern":"a different pattern id","hook":"an alternate opening line built only from the story"},{"pattern":"another different id","hook":"..."}],
-"pacing_note":"one delivery tip"}`;
+"pacing_note":"one delivery tip"${LONG ? ',\n"chapters":["0:00 Title", "..."],\n"need_more":["what the creator should add for a full 8–12 minute video, or empty"]' : ''}}`;
   const user = `STORY AND ANSWERS (the creator's words):\n${moment}\n\n${creatorContext ? `CREATOR CONTEXT / BACKGROUND:\n${creatorContext}` : ''}`;
   const errors = [];
   for (const model of FALLBACK_MODELS) {
-  const ac = new AbortController(); const timer = setTimeout(() => ac.abort(), 110000);
+  const ac = new AbortController(); const timer = setTimeout(() => ac.abort(), LONG ? 200000 : 110000);
   try {
     const r = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST', signal: ac.signal,
       headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
-      body: JSON.stringify({ model, max_tokens: 3500, system, messages: [{ role: 'user', content: user }] })
+      body: JSON.stringify({ model, max_tokens: LONG ? 9000 : 3500, system, messages: [{ role: 'user', content: user }] })
     });
     if (!r.ok) { const e = `${model}: API ${r.status} ${(await r.text().catch(() => '')).slice(0, 160)}`; console.error('[script-writer]', e); errors.push(e); continue; }
     const d = await r.json();
@@ -139,6 +150,9 @@ function applySheetScript(parsed, sc) {
   parsed.story_architecture = { opening: parsed.hook, setup: c.setup || '', risk: c.risk || '', turn: c.turn || '', payoff: c.payoff || '', cta: c.cta || '' };
   if (Array.isArray(sc.shots) && sc.shots.length) parsed.b_roll = sc.shots.slice(0, 5);
   if (sc.pacing_note) parsed.pacing_note = sc.pacing_note;
+  // Patch BG — long-form extras
+  if (Array.isArray(sc.chapters) && sc.chapters.length) parsed.chapters = sc.chapters.slice(0, 8).map(String);
+  if (Array.isArray(sc.need_more) && sc.need_more.length) parsed.gaps = (Array.isArray(parsed.gaps) ? parsed.gaps : []).concat(sc.need_more.slice(0, 3).map(String));
   // The formula map comes from the sheet: each step's source is the creator's own quote.
   const s = sc.sheet || {}, q = t => (t ? 'Your words: "' + t + '"' : '');
   parsed.formula_map = [

@@ -17,6 +17,27 @@ async function setList(kind, email, list, max) {
   return true;
 }
 
+// Patch BG — new data (a results check or a new script) makes today's "SAM's read" out of date.
+async function markBriefDirty(email) { const k = await kv(); if (k && email) await k.set(key('brief_dirty', email), Date.now()).catch(() => {}); }
+async function isBriefDirty(email) { const k = await kv(); return !!(k && email && await k.get(key('brief_dirty', email)).catch(() => null)); }
+async function clearBriefDirty(email) { const k = await kv(); if (k && email) await k.del(key('brief_dirty', email)).catch(() => {}); }
+
+// The daily brief's view of real results: latest checks, lessons, and the newest script.
+async function briefBlock(email) {
+  const [debriefs, lessons, outputs] = await Promise.all([getList('debriefs', email), getList('lessons', email), getList('outputs', email)]);
+  const parts = [];
+  const recent = debriefs.slice(-3).reverse();
+  if (recent.length) parts.push('RESULTS CHECKS (the creator uploaded real performance screenshots — newest first):\n' + recent.map(d =>
+    `- ${String(d.at).slice(0, 10)} · "${String(d.hook || 'a video').slice(0, 80)}" · ${d.verdict || ''} · ${d.headline || ''}` +
+    (d.metrics ? ' · ' + Object.entries(d.metrics).filter(([, v]) => v !== null && v !== undefined && v !== '').map(([k, v]) => k + '=' + v).join(', ') : '') +
+    (d.biggest_drop && d.biggest_drop.t_sec != null ? ` · biggest drop ${d.biggest_drop.pct_lost != null ? d.biggest_drop.pct_lost + '% ' : ''}at ${d.biggest_drop.t_sec}s` : '') +
+    (d.audience && Array.isArray(d.audience.age) && d.audience.age.length ? ' · audience ' + d.audience.age.slice(0, 3).map(a => a.range + ' ' + a.pct + '%').join(', ') : '')).join('\n'));
+  if (lessons.length) parts.push('LESSONS FROM THOSE RESULTS:\n' + lessons.slice(-8).map(l => `- ${l.status === 'rule' ? 'RULE' : 'WATCH'}: ${l.text}`).join('\n'));
+  const last = outputs[outputs.length - 1];
+  if (last) parts.push(`NEWEST SCRIPT SAM WROTE (${String(last.at).slice(0, 10)}): "${String(last.hook).slice(0, 120)}"${last.pattern ? ' · pattern ' + last.pattern : ''} — not yet checked unless listed above.`);
+  return parts.length ? '\n\n' + parts.join('\n\n') : '';
+}
+
 // Save a finished Story Engine output (compact). Returns its id.
 async function saveOutput(email, parsed, moment) {
   if (!email || !parsed || typeof parsed !== 'object' || !parsed.full_script) return null;
@@ -33,6 +54,7 @@ async function saveOutput(email, parsed, moment) {
   };
   const list = await getList('outputs', email); list.push(rec);
   await setList('outputs', email, list, MAX_OUTPUTS);
+  await markBriefDirty(email);
   return id;
 }
 
@@ -93,7 +115,9 @@ Return ONLY JSON:
 "beat_findings":[{"beat":"Opening|Setup|Risk|Turn|Payoff|Your Call","finding":"what the numbers say about it"}],
 "reinforce":["existing lesson ids this result supports"],
 "new_lessons":[{"text":"short actionable lesson","type":"keep|fix"}],
-"repost":{"first_line":"new opening line","first_3s":"what to show in the first 3 seconds","trim":"what to cut","caption":"new caption"}}
+"repost":{"first_line":"new opening line","first_3s":"what to show in the first 3 seconds","trim":"what to cut","caption":"new caption"},
+"audience":{"age":[{"range":"65+","pct":0}],"women_pct":null,"non_follower_pct":null}}
+For "audience": copy the age breakdown, % women and % non-followers ONLY if a screenshot shows them; otherwise leave the array empty and nulls.
 If the screenshots can't be read, set "read_ok": false and explain in "headline".`;
   const content = images.slice(0, 3).map(im => ({ type: 'image', source: { type: 'base64', media_type: im.media_type || 'image/jpeg', data: im.data } }));
   content.push({ type: 'text', text: 'Here are the results screenshots for this video. Read them and debrief.' });
@@ -138,4 +162,4 @@ async function applyLessons(email, outputId, result) {
   return { lessons, changed };
 }
 
-module.exports = { getList, setList, saveOutput, lessonsPrompt, debrief, applyLessons, MAX_DEBRIEFS };
+module.exports = { markBriefDirty, isBriefDirty, clearBriefDirty, briefBlock, getList, setList, saveOutput, lessonsPrompt, debrief, applyLessons, MAX_DEBRIEFS };
