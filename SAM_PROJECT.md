@@ -436,3 +436,8 @@ Story → script → posted video → real results → back into the formula, pe
 
 ## Patch BH — v9.119.00 — Step 6 always re-checks for real audience data
 - Step 6 showed the diagnosis saved in the wizard session forever; now it shows the saved text instantly, then re-runs generateAudienceDiagnosis (real results first) and re-syncs the age/gender chips.
+
+## Patch BI — v9.119.01 — Long-form polish (output 62)
+- YouTube chapters re-timed from the real beat starts (the writer guessed 0:40/1:20/2:30/3:30 vs actual 0:29/0:56/1:40/2:08).
+- "Need more" length claim replaced with the computed runtime (said 4–5 min; script ran 2:49).
+- Formula map lines drop "(show: …)" cues and start at a sentence start.

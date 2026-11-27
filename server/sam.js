@@ -374,6 +374,8 @@ function buildFormulaMap(parsed, b, info) {
       const ov = lw.length ? lw.filter(w => srcW.has(w)).length / lw.length : 1;
       if (ov < 0.5) { status = 'sam'; from = 'SAM\'s words — not in your story. Keep it only if it\'s true.'; }
     }
+    // Patch BI — show the spoken words only (no "(show: …)" filming cues), starting at a capital letter
+    if (line) { line = line.replace(/\(show:[^)]*\)\s*/gi, '').trim(); const cap = line.search(/[A-Z"“]/); if (cap > 0 && cap < 40 && /^[a-z]/.test(line)) line = line.slice(cap); }
     out.push({ step: d.step, beat: d.beat, line, from, status, ask: status === 'missing' ? d.ask : '' });
   }
   parsed.formula_map = out;
@@ -1738,6 +1740,16 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
     // Additive only; full_script preserved unchanged. Empty array when no markers found.
     if (parsed && typeof parsed === 'object') {
       parsed.script_beats = parseScriptBeats(parsed.full_script || parsed.narration_script || '', (req.body || {}).pace);
+      // Patch BI — long-form: chapter times come from the real beat timings, and "need more" states the real length.
+      if (Array.isArray(parsed.chapters) && parsed.chapters.length && parsed.script_beats.length) {
+        const starts = parsed.script_beats.filter(b => b.key !== 'cta').map(b => String(b.timing || '').split('–')[0]);
+        parsed.chapters = parsed.chapters.map(c => String(c).replace(/^\s*\d{1,2}:\d{2}\s*[-–—:]?\s*/, '').trim()).filter(Boolean)
+          .slice(0, starts.length).map((title, i) => (/^\d+:\d{2}$/.test(starts[i]) ? starts[i] : (parseInt(starts[i], 10) ? '0:' + String(parseInt(starts[i], 10)).padStart(2, '0') : '0:00')) + ' ' + title);
+        if (parsed.chapters[0]) parsed.chapters[0] = parsed.chapters[0].replace(/^\S+/, '0:00');
+        const last = parsed.script_beats[parsed.script_beats.length - 1];
+        const runs = String(last && last.timing || '').split('–')[1] || '';
+        if (runs && Array.isArray(parsed.gaps)) parsed.gaps = parsed.gaps.map(g => String(g).replace(/(current material|this script|what you gave me)[^.]*?(fills|runs|covers)\s+(about\s+)?[\d–-]+\s*(minutes|min)/i, `$1 runs about ${runs}`));
+      }
       // Patch AB — platform limits enforced in code (hashtag caps, caption length, YouTube title).
       enforcePlatforms(parsed, { pinTag: cleanStoryProfile((req.body || {}).storyProfile).seriesTag });
       // Patch AL — show how the formula was applied (playbook and script redo).
