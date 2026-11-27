@@ -8020,7 +8020,7 @@ textarea.lab-textarea,
      Commit 1: tokens + layout regions. No tile wiring.
      Remove body.quiet-studio-shell to restore legacy.
 ════════════════════════════════════════════════════ -->
-<div data-qs-shell="true" data-qs-version="v9.118.94" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
+<div data-qs-shell="true" data-qs-version="v9.118.95" data-qs-descriptor="Patch AK - a fresh story is never refilled with the previous one." data-qs-primitives="v9.9" data-qs-dashboard="v9.18">
   <aside class="qs-rail" aria-label="Quiet Studio navigation">
 
 <!-- Rail header — SAM mark + brand stack -->
@@ -17212,7 +17212,13 @@ function renderPlaybook(data) {
       <div class="wizard-why" style="margin-bottom:16px;">This is the first thing your audience hears or reads. You have 1-3 seconds. This line was chosen because it creates an open loop — a question in the viewer's mind they have to stay to answer.</div>
       <div class="regen-content">
         <div class="playbook-hook">${data.hook}</div>
-        ${data.hook_why ? `<div class="wizard-why" style="margin-top:12px;"><strong>Why this hook:</strong> ${data.hook_why}</div>` : ''}
+        ${data.hook_pattern ? `<div class="wizard-why" style="margin-top:12px;"><strong>Pattern: ${_nbEsc(data.hook_pattern.name)}.</strong> ${_nbEsc(data.hook_pattern.why)}</div>` : (data.hook_why ? `<div class="wizard-why" style="margin-top:12px;"><strong>Why this hook:</strong> ${data.hook_why}</div>` : '')}
+        ${(Array.isArray(data.alt_hooks) && data.alt_hooks.length) ? `<details class="no-print" style="margin-top:12px;"><summary style="cursor:pointer;font-size:12px;font-weight:600;color:var(--ink-muted);">Other hooks (${data.alt_hooks.length})</summary>
+          ${data.alt_hooks.map(a => `<div style="margin-top:10px;padding:10px 12px;background:var(--surface-2);border:1px solid var(--rule);border-radius:8px;">
+            <div style="font-size:11px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--ink-muted);">${_nbEsc(a.pattern)}</div>
+            <div style="font-size:15px;color:var(--ink);margin-top:3px;">${_nbEsc(a.hook)}</div>
+            <button class="playbook-copy-btn" style="margin-top:6px;" onclick="wizCopy(this,'${_nbEsc(escQ(a.hook))}')">Copy</button></div>`).join('')}
+        </details>` : ''}
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center;">
         <button class="playbook-copy-btn" style="margin-top:0;" onclick="wizCopy(this,'${escQ(data.hook)}')">Copy hook</button>

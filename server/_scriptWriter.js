@@ -16,6 +16,8 @@ function parseLooseJSON(raw) {
   return JSON.parse(t.replace(/,\s*([}\]])/g, '$1').replace(/[\u201c\u201d]/g, '"'));
 }
 
+const { patternPrompt, byId: PATTERN_BY_ID } = require('./_patterns'); // Patch BC
+
 const norm = t => String(t || '').toLowerCase().replace(/[“”"’']/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
 
 // Day N of a series (start date = Day 1), in the creator's time zone.
@@ -57,6 +59,9 @@ THE FORMULA (six beats):
 
 SAY EACH THING ONCE (Patch BB): never repeat a clause from an earlier beat. The hook's promise line is not said again in the Risk beat; the big number (e.g. "450 days") appears at most twice in the whole script. Your best-performing scripts said each thing once and kept moving.
 
+HOOK PATTERNS (Patch BC) — proven structures. Pick the ONE that best fits THIS story's real material and shape the hook (and the arc around it) with it. The anchor still has to land in the Opening: the number/timeframe and who it's for appear in the hook or the line right after it.
+${patternPrompt()}
+
 STEP A — fill the STORY SHEET. Every quote must be copied WORD FOR WORD from STORY, ANSWERS or BACKGROUND below (you may trim, never reword). If a slot has nothing, use "".
 STEP B — write each beat ONLY from its slot (plus light connective words). You may tighten rhythm and fix grammar. You may NOT add facts, numbers, people, feelings, quotes, promises or events that aren't in the sheet.
 ${dayN ? `SERIES: this is Day ${dayN} of ${seriesName || 'the creator\'s series'}. If the story does not already state its own day count or timeframe, the Opening may start "Day ${dayN}." Never use a day count that conflicts with the creator's.` : ''}
@@ -69,6 +74,9 @@ Return ONLY JSON:
 "beats":{"opening":"...","setup":"...","risk":"...","turn":"...","payoff":"...","cta":"..."},
 "cards":{"setup":"≤12 words","risk":"≤12 words","turn":"≤12 words","payoff":"≤18 words","cta":"≤14 words"},
 "shots":["3–5 shots to film, only of things in the story"],
+"pattern":"the id of the pattern you used for the hook",
+"pattern_why":"one plain sentence to the creator: why this pattern fits THIS story",
+"alt_hooks":[{"pattern":"a different pattern id","hook":"an alternate opening line built only from the story"},{"pattern":"another different id","hook":"..."}],
 "pacing_note":"one delivery tip"}`;
   const user = `STORY AND ANSWERS (the creator's words):\n${moment}\n\n${creatorContext ? `CREATOR CONTEXT / BACKGROUND:\n${creatorContext}` : ''}`;
   const errors = [];
@@ -125,6 +133,12 @@ function applySheetScript(parsed, sc) {
     { step: 'Series thread', line: s.next_up || 'missing', from: q(s.next_up) }
   ];
   parsed.story_sheet = s;
+  // Patch BC — the hook pattern SAM chose, and two alternates from other patterns.
+  const P = PATTERN_BY_ID[String(sc.pattern || '').trim()];
+  if (P) parsed.hook_pattern = { id: P.id, name: P.name, why: String(sc.pattern_why || '').trim() || P.why, general: P.why };
+  parsed.alt_hooks = (Array.isArray(sc.alt_hooks) ? sc.alt_hooks : [])
+    .map(a => ({ pattern: (PATTERN_BY_ID[String(a && a.pattern || '').trim()] || {}).name || '', hook: String(a && a.hook || '').trim() }))
+    .filter(a => a.pattern && a.hook && a.hook.length < 200 && norm(a.hook) !== norm(parsed.hook)).slice(0, 2);
   parsed.script_engine = 'sheet-v1 · ' + (sc.model || '');
   return true;
 }

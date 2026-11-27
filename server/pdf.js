@@ -817,7 +817,8 @@ function buildPlaybookHTML(pb, brand) {
       <div class="section-body">
         ${sLabel('Your Hook')}
         <div class="hero-hook">${e(pb.hook)}</div>
-        ${pb.hook_why ? callout(pb.hook_why) : ''}
+        ${pb.hook_pattern ? callout('Pattern: ' + pb.hook_pattern.name + '. ' + pb.hook_pattern.why) : (pb.hook_why ? callout(pb.hook_why) : '')}
+        ${(Array.isArray(pb.alt_hooks) && pb.alt_hooks.length) ? `<div class="sp-16"></div>${card('Other Hooks', pb.alt_hooks.map(a => a.pattern + ': ' + a.hook).join('\n\n'), null)}` : ''}
       </div>
       ${ftr(brandName)}
     </div>`);

@@ -338,7 +338,7 @@ function buildFormulaMap(parsed, b, info) {
     }
     if (d.step === 'Anchor') {
       const who = (String(b.moment || '').match(/\bmy (parents|mom|dad|mother|father|wife|husband|kids?|son|daughter|family|grandparents?|brother|sister|partner)\b/i) || [])[0];
-      if (who && HOOK && !new RegExp('\\b(' + who.split(' ')[1].replace(/s$/, '') + 's?|' + (who.split(' ')[1] === 'parents' ? 'mom|dad|folks' : 'them') + ')\\b', 'i').test(HOOK)) {
+      if (who && HOOK && !new RegExp('\\b(' + who.split(' ')[1].replace(/s$/, '') + 's?|' + (who.split(' ')[1] === 'parents' ? 'mom|dad|folks' : 'them') + ')\\b', 'i').test(HOOK + ' ' + _beatText(script, 'Opening'))) {
         status = 'missing'; line = HOOK; from = 'The hook doesn\'t say who it\'s for — your story says "' + who + '".';
       }
     }
@@ -1736,6 +1736,14 @@ ${bannedLine} ${demographicsLine} ${languageLine} ${platformContext} ${formatCon
       enforcePlatforms(parsed, { pinTag: cleanStoryProfile((req.body || {}).storyProfile).seriesTag });
       // Patch AL — show how the formula was applied (playbook and script redo).
       if (mode === 'playbook' || (mode === 'regen_section' && (req.body || {}).section === 'script')) buildFormulaMap(parsed, req.body || {}, _alInfo);
+      // Patch BC — the hook pattern leads the map; alternate hooks with numbers the creator never said are dropped.
+      if (Array.isArray(parsed.formula_map) && parsed.hook_pattern) {
+        parsed.formula_map.unshift({ step: 'Hook pattern', beat: 'Opening', line: parsed.hook_pattern.name, from: parsed.hook_pattern.why + (parsed.hook_pattern.general && parsed.hook_pattern.general !== parsed.hook_pattern.why ? ' ' + parsed.hook_pattern.general : ''), status: 'used', ask: '' });
+      }
+      if (Array.isArray(parsed.alt_hooks) && parsed.alt_hooks.length) {
+        const _src = numbersInText([(req.body || {}).moment, (req.body || {}).creatorContext].filter(Boolean).join(' '));
+        parsed.alt_hooks = parsed.alt_hooks.filter(a => ![...numbersInText(a.hook, { allowCountingTwo: true })].some(n => !_numberOk(n, _src)));
+      }
     }
     if (_nbBg && parsed && typeof parsed === 'object') parsed.notebook_noted = (await _nbBg).noted; // Patch AT
     if (_vBg && parsed && typeof parsed === 'object') { const _v = await _vBg; if (_v) parsed.voice_updated = _v; } // Patch AU

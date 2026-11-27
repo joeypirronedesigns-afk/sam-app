@@ -408,3 +408,8 @@ Story → script → posted video → real results → back into the formula, pe
 - Writer: say the creator's countdown number in the Risk beat; say each thing once (no hook repeat in Risk; big number ≤2×); "Next up" = one ≤15-word tease of the 2–3 most visual items.
 - Map: Stakes → missing if the story's "N days left" is never spoken; → "Wrong beat" if the Risk beat repeats ≥60% of the hook.
 - PDF: formula map rows tighter + long sources truncated (output 57 overflowed to a blank page).
+
+## Patch BC — v9.118.95 — Built-in hook pattern library (auto-picked)
+- server/_patterns.js: 12 proven short-form patterns (countdown, milestone, promise, contrarian, before→after, mistake & fix, one small thing, first time, you asked, the untold part, start in motion, what it cost) — name, when, shape, why, invented example. No creator setup.
+- Script writer gets the list, picks ONE pattern for the hook/arc (anchor still lands in the Opening), returns pattern + one-line why + 2 alternate hooks from other patterns (same truth rules; alternates with numbers not in the story are dropped).
+- Output: "Hook pattern" row leads the formula map; hook section shows "Pattern: X. why" and a collapsed "Other hooks" with copy buttons (app + PDF). Anchor person check now reads the whole Opening.
