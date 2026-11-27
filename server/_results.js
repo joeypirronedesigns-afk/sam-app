@@ -66,7 +66,7 @@ async function debrief({ apiKey, output, images, lessons, history, note, todayLi
 STEP 1 — READ the screenshots. Copy only numbers that are actually visible; never estimate or invent one. If a number isn't shown, use null. Retention: read the curve at the points you can see (seconds → % still watching) and the biggest drop.
 STEP 2 — TIE the numbers to the script. The script's beats and their timings are below. Say which beat was playing at each big drop or hold (e.g. "lost 40% by 0:06 — during the Opening, before 'Let me explain' finished").
 STEP 3 — VERDICT in plain words: did it work, and WHY — compared with this creator's own earlier results when given (not with other creators). Strong videos get the same treatment: what made it work.
-STEP 4 — LESSONS for the next video: short, specific, actionable ("Keep the Opening under 5 seconds — this audience leaves at 0:06"). Reinforce an existing lesson (by id) when this result supports it instead of writing a duplicate. One post is one data point — say so; never overstate.
+STEP 4 — LESSONS for the next video: ONE sentence each, 30 words max, specific and actionable ("Keep the Opening under 5 seconds — this audience leaves at 0:06"). A lesson is always about the CONTENT or the AUDIENCE: the hook, the first seconds, a beat, length, captions, on-screen text, posting time, who is watching. Never make a lesson out of how a platform counts or reports numbers (missing follows, delayed stats) — put that in "why" instead. Reinforce an existing lesson (by id) when this result supports it instead of writing a duplicate. One post is one data point — say so; never overstate.
 STEP 5 — REPOST PLAN (for creators who re-edit): a new first line / first 3 seconds, what to trim, and a new caption — built only from the script's own material.
 
 THE SCRIPT (hook pattern: ${output && output.pattern || 'unknown'}):
@@ -126,7 +126,10 @@ async function applyLessons(email, outputId, result) {
   });
   const norm = t => String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   for (const nl of (Array.isArray(result.new_lessons) ? result.new_lessons : []).slice(0, 4)) {
-    const text = String(nl && nl.text || '').trim().slice(0, 220);
+    let text = String(nl && nl.text || '').trim();
+    if (text.length > 300) { const cut = text.slice(0, 300); text = cut.slice(0, Math.max(cut.lastIndexOf('. '), cut.lastIndexOf(' '))).replace(/[,;:—-]\s*$/, '') + '…'; }
+    // a "lesson" about platform counting is not a content lesson
+    if (/\b(attribution|counter|counts? differently|reporting lag|lag(s|ging)?|insights? (bug|glitch)|cross-check)\b/i.test(text)) continue;
     if (!text || lessons.some(l => norm(l.text) === norm(text))) continue;
     lessons.push({ id: newId(), text, type: nl.type === 'keep' ? 'keep' : 'fix', count: 1, status: 'watch', evidence: [outputId], at: new Date().toISOString() });
     changed.added.push(text);

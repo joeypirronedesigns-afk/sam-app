@@ -423,3 +423,7 @@ Story → script → posted video → real results → back into the formula, pe
 - /api/results (server/results.js via the router — no new function): list | debrief | delete_lesson. Debrief = one vision call (opus-5-5 → sonnet-5-5 → sonnet-4-6) that reads only visible numbers from 1–3 Insights screenshots, ties drops/holds to the script's beat timings, gives a verdict + why + beat-by-beat, a repost plan (A) and lessons (B). Compared with the creator's own earlier checks (KV `debriefs:<email>`).
 - Lessons (KV `lessons:<email>`): new = "watch" (1 video); reinforced by a later check = "rule" (2+). The script writer reads them on every new story (RULE / WATCH block). Deletable.
 - UI: "5 · How did it do?" in Build SAM's Brain; "📈 After you post" card on each Story Engine output; modal with video picker, screenshot upload (downscaled to 1400px JPEG in the browser), report, and "What SAM has learned" tab. Gate: signed in + checkGate.
+
+## Patch BF — v9.118.98 — Cleaner lessons (first real check: the 410-day video)
+- Lessons were cut at 220 chars mid-word → one sentence, ≤30 words asked; trimmed at a word boundary (300) with "…".
+- Lessons must be about content or audience; platform-counting caveats (e.g. "Follows showed 0") go in "why", and are filtered if they slip through.
